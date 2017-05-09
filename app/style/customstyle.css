@@ -1,0 +1,27 @@
+.editable {
+    display: block;
+    max-width: 200px;
+}
+
+#ce, #cec, #cet{
+    width: 100%;
+    word-wrap: normal;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+    font-size: 1.8rem;
+    line-height: 1.5em;
+    font-weight: 200;
+    color: #3d4043;
+    outline: none;
+}
+
+#ce pre, #cec pre {
+    white-space: pre-wrap;
+    display: inline-block;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-family: Consolas,"Liberation Mono",Menlo,Courier,monospace;
+}
+#cet {
+	font-size: 2.4rem;
+}

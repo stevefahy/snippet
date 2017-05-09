@@ -1,0 +1,20 @@
+<div ng-controller="cardCtrl">
+    <div ng-repeat="card in cards">
+        <form class="form-horizontal">
+            <div class="input-group">
+                <div id="cet" contenteditable="true" ng-change="contentChanged(card.title, 'cet')" ng-keydown="checkKey($event,'cet')" ng-paste="handlePaste($event)" ng-focus="getFocus(card.title)" ng-model="card.title">
+                </div>
+                <div class="input-group">
+                    <div id="ce" contenteditable="true" ng-change="contentChanged(card.content, 'ce')" ng-keydown="checkKey($event,'ce')" ng-paste="handlePaste($event)" ng-focus="getFocus(card.content)" ng-model="card.content">
+                    </div>
+                    <div class="input-group">
+                        <input class="form-control" type="text" ng-model="card.user">
+                    </div>
+                    <div class="input-group">
+                        <input class="form-control" type="text" ng-model="card.lang">
+                    </div>
+                    <button type="submit" class="btn btn-sm btn-warning" ng-click="deleteCard(card._id)">Delete</button>
+                    <button type="submit" class="btn btn-sm btn-success btn-pair-right" ng-click="updateCard(card._id, card)">Update</button>
+        </form>
+        </div>
+        </div>

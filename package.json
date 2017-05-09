@@ -1,10 +1,14 @@
 {
-    "name": "Snippet",
+    "name": "snippet",
     "version": "0.0.1",
-    "description": "Snippet application.",
-    "main": "/app/app.js",
-    "author": "Steve Fahy",
+    "description": "snippet app",
+    "main": "app.js",
+    "author": "Stevef",
     "dependencies": {
-        "express": "^4.13.4"
+        "mongoose":	"*",
+        "express": "*",
+        "regex": "*",
+        "body-parser": "*",
+        "angular-sanitize": "*"
     }
 }

@@ -1,0 +1,27 @@
+<div ng-controller="cardcreateCtrl">
+    <div class="panel-heading">
+        <h4 class="panel-title">Card create</h4>
+    </div>
+    <div class="panel-body">
+        <form class="form-horizontal">
+            <div class="input-group">
+                <div class="input-group">
+                    <span class="input-group-addon">Title</span>
+                    <input class="form-control" type="text" ng-model="card_create.title">
+                </div>
+                <div class="input-group">
+                    <div id="cec" contenteditable="true" ng-change="contentChanged(card_create.content, 'cec')" ng-keydown="checkKey($event, 'cec')" ng-paste="handlePaste($event)" ng-focus="getFocus(card_create.content)" ng-model="card_create.content">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">User</span>
+                        <input class="form-control" type="text" ng-model="card_create.user">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">Lang</span>
+                        <input class="form-control" type="text" ng-model="card_create.lang">
+                    </div>
+                    <button type="submit" class="btn btn-success" ng-click="createCard()">Create</button>
+                </div>
+        </form>
+        </div>
+    </div>
