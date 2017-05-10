@@ -48,8 +48,8 @@ db.once('open', function() {
 require('./app/routes/routes.js')(app); // load our routes and pass in our app
 
  app.get('*', function(req, res) {
-        //res.sendFile('./app/index.html'); // load the single view file (angular will handle the page changes on the front-end)
-    res.sendFile('index.html', { root: path.join(__dirname, './app') });
+    //res.sendFile('./app/index.html'); // load the single view file (angular will handle the page changes on the front-end)
+    res.sendFile('index.html', { root: path.join(__dirname, '.') });
     });
 
 // listen (start app with node server.js) ======================================
