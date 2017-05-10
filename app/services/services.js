@@ -3,16 +3,16 @@
 cardApp.factory('Cards', ['$http', function($http) {
     return {
         get: function() {
-            return $http.get('/api/cards');
+            return $http.get('api/cards');
         },
         create: function(carddata) {
-            return $http.post('/api/cards', carddata);
+            return $http.post('api/cards', carddata);
         },
         delete: function(id) {
-            return $http.delete('/api/cards/' + id);
+            return $http.delete('api/cards/' + id);
         },
         update: function(pms) {
-            var theurl = '/api/cards/' + pms.id;
+            var theurl = 'api/cards/' + pms.id;
             return $http.put(theurl, pms);
         },
         search: function(input) {
