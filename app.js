@@ -9,7 +9,7 @@ var regex = require('regex');
 var bodyParser = require('body-parser');
 var path = require('path');
 
-app.use(express.static('./app')); 
+app.use(express.static('app')); 
 app.use(bodyParser.urlencoded({ 'extended': 'true' })); // parse application/x-www-form-urlencoded
 app.use(bodyParser.json()); // parse application/json
 app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
@@ -48,7 +48,7 @@ db.once('open', function() {
 require('./app/routes/routes.js')(app); // load our routes and pass in our app
 
  app.get('*', function(req, res) {
-    //res.sendFile('./app/index.html'); // load the single view file (angular will handle the page changes on the front-end)
+    //res.sendFile('index.html'); // load the single view file (angular will handle the page changes on the front-end)
     res.sendFile('index.html', { root: path.join(__dirname, '.') });
     });
 
