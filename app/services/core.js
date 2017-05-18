@@ -9,7 +9,7 @@ cardApp.service('Format', ['$window', '$rootScope', function($window, $rootScope
     this.removePreTag = function(content) {
         var content_less_pre;
         if (content !== undefined) {
-            var reg_pre = /(<pre>)(.*?)(<\/pre>)/ig;
+            var reg_pre = /(<pre.*?>)(.*?)(<\/pre>)/ig;
             content_less_pre = content;
             var pre_match = content_less_pre.match(reg_pre);
             for (var v in pre_match) {
@@ -37,21 +37,88 @@ cardApp.service('Format', ['$window', '$rootScope', function($window, $rootScope
     // Currently not used
     /*
     this.removeEmptyTags = function(content,elem){
-    	var reg_empty = /<[^\/>][^>]*><\/[^>]+>/igm;
-    	var empty_tags = content_less_pre.match(reg_empty);
-    	for(var i in empty_tags){
-    		empty_tags[i].replace();
-    	}
+        var reg_empty = /<[^\/>][^>]*><\/[^>]+>/igm;
+        var empty_tags = content_less_pre.match(reg_empty);
+        for(var i in empty_tags){
+            empty_tags[i].replace();
+        }
     };
     this.markdown = function(content,elem){
-    	var reg_mark = /(\*\*.*?)/ig;
-    	md = content.match(reg_mark);
-    	for(var i in md){
-    		md = md.replace('**', '<b>');
-    	}
+        var reg_mark = /(\*\*.*?)/ig;
+        md = content.match(reg_mark);
+        for(var i in md){
+            md = md.replace('**', '<b>');
+        }
 
     };
     */
+
+    this.findNodeNumber = function(el, word) {
+        var found = {};
+        found.f = 'x';
+        for (var x = 0; x < el.childNodes.length; x++) {
+            if (found.f == 'x') {
+                if (el.childNodes.item(x).nodeType == 3) {
+                    found = findChars(el.childNodes.item(x), word);
+                } else if (el.childNodes.item(x).nodeType == 1) {
+                    for (var y = 0; y < el.childNodes.item(x).childNodes.length; y++) {
+                        if (found.f == 'x') {
+                            if (el.childNodes.item(x).childNodes.item(y).nodeValue !== null) {
+                                found = findChars(el.childNodes.item(x).childNodes.item(y), word);
+                            }
+                            if (el.childNodes.item(x).childNodes.item(y).childNodes) {
+                                found = getChildNodes(el.childNodes.item(x).childNodes.item(y), word, found);
+                            }
+                        }
+                    }
+                }
+            } else {
+                return found;
+            }
+        }
+        return found;
+    };
+
+    function getChildNodes(node, word, found) {
+        if (found.f == 'x') {
+            for (var z = 0; z < node.childNodes.length; z++) {
+                if (found.f == 'x') {
+                    if (node.childNodes.item(z).nodeValue !== null) {
+                        found = findChars(node.childNodes.item(z), word);
+                    }
+                    if (node.childNodes.item(z).childNodes && found.f == 'x') {
+                        found = getChildNodes(node.childNodes.item(z), word, found);
+                    }
+                }
+            }
+        }
+        return found;
+    }
+
+    function setNodePos(n, o) {
+        var node_pos = {};
+        node_pos.node = n;
+        node_pos.offset = o;
+        return node_pos;
+    }
+
+    function findChars(node, word) {
+        var found = {};
+        found.f = 'x';
+        if (node.nodeValue) {
+            if (node.nodeValue.indexOf(word) !== -1) {
+                // FOUND
+                if (node.parentNode.tagName != 'PRE') {
+                    // Not within a PRE tag
+                    var np = setNodePos(node, node.nodeValue.indexOf(word));
+                    found.f = 'y';
+                    found.p = np;
+                }
+            }
+        }
+        return found;
+    }
+
     this.contentChanged = function(content, elem) {
         var open_count = 0;
         var close_count = 0;
@@ -86,23 +153,10 @@ cardApp.service('Format', ['$window', '$rootScope', function($window, $rootScope
         }
     };
 
-    this.getTextNode = function(node, str) {
-        var node_pos = {};
-        var children = node.childNodes;
-        for (var i in children) {
-            if (children[i].nodeType == 3) {
-                if (children[i].nodeValue.indexOf(str) !== -1) {
-                    node_pos.node = i;
-                    node_pos.offset = children[i].nodeValue.indexOf(str);
-                    return node_pos;
-                }
-            }
-        }
-    };
-
     this.selectText = function(element, word) {
         var doc = document;
-        var node_pos = self.getTextNode(doc.getElementById(element), word);
+        var current_node;
+        var node_pos = self.findNodeNumber(doc.getElementById(element), word);
         var text = doc.getElementById(element);
         if (doc.body.createTextRange) {
             range = document.body.createTextRange();
@@ -113,12 +167,12 @@ cardApp.service('Format', ['$window', '$rootScope', function($window, $rootScope
             var sel = window.getSelection();
             range = document.createRange();
             el = doc.getElementById(element);
-            var current_node = el.childNodes[node_pos.node];
+            current_node = node_pos.p.node;
             var current_text = current_node.nodeValue;
             var word_index = current_text.indexOf(word);
             if (word_index >= 0) {
-                range.setStart(el.childNodes[node_pos.node], node_pos.offset);
-                range.setEnd(el.childNodes[node_pos.node], node_pos.offset + word.length);
+                range.setStart(current_node, node_pos.p.offset);
+                range.setEnd(current_node, node_pos.p.offset + word.length);
                 selection.removeAllRanges();
                 selection.addRange(range);
             }

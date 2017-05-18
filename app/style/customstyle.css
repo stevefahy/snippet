@@ -3,7 +3,7 @@
     max-width: 200px;
 }
 
-#ce, #cec, #cet{
+.ce, #cec, #cet{
     width: 100%;
     word-wrap: normal;
     overflow: hidden;
@@ -15,7 +15,7 @@
     outline: none;
 }
 
-#ce pre, #cec pre {
+.ce pre, #cec pre {
     white-space: pre-wrap;
     display: inline-block;
     margin-top: 10px;
