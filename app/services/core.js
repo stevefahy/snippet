@@ -137,8 +137,8 @@ cardApp.service('Format', ['$window', '$rootScope', function($window, $rootScope
                 var reg2 = /(b{2})(.*?)(b{2})/igm;
                 var mark_count_new = (content_less_pre.match(reg2) || []).length;
                 var mark_list_current = content_less_pre.match(reg2);
-                //console.log(mark_list_current);
-                if(mark_list_current){
+                console.log(mark_list_current);
+                if(mark_list_current !== null){
                 var updatedChars2 = mark_list_current[0];
                         updatedChars3 = updatedChars2.replace('bb', '<b>');
                         updatedChars3 = updatedChars3.replace('bb', '</b>');
