@@ -103,6 +103,7 @@ cardApp.service('Format', ['$window', '$rootScope', function($window, $rootScope
     }
 
     function findChars(node, word) {
+        //console.log(node.nodeValue + ' : ' + word);
         var found = {};
         found.f = 'x';
         if (node.nodeValue) {
@@ -132,6 +133,23 @@ cardApp.service('Format', ['$window', '$rootScope', function($window, $rootScope
                 content_less_pre = self.removePreTag(content);
                 tag_count_new = (content_less_pre.match(reg) || []).length;
                 tag_list_current = content_less_pre.match(reg);
+
+                var reg2 = /(b{2})(.*?)(b{2})/igm;
+                var mark_count_new = (content_less_pre.match(reg2) || []).length;
+                var mark_list_current = content_less_pre.match(reg2);
+                //console.log(mark_list_current);
+                if(mark_list_current){
+                var updatedChars2 = mark_list_current[0];
+                        updatedChars3 = updatedChars2.replace('bb', '<b>');
+                        updatedChars3 = updatedChars3.replace('bb', '</b>');
+                        //updatedChars2 = updatedChars2.replace(/(b{2})/igm, "<b>")
+                          //  .replace(/(b{2})$/igm, "</b>");
+                            //console.log(updatedChars2);
+                        self.selectText(elem, updatedChars2);
+                        self.pasteHtmlAtCaret(updatedChars3 + '&nbsp;');
+                }
+
+
                 if (tag_list_current !== null) {
                     for (var k in tag_list_current) {
                         open_count += (tag_list_current[k].match(/(&lt;([^\/])&gt;)/g) || []).length;
@@ -157,6 +175,7 @@ cardApp.service('Format', ['$window', '$rootScope', function($window, $rootScope
         var doc = document;
         var current_node;
         var node_pos = self.findNodeNumber(doc.getElementById(element), word);
+        //console.log(node_pos);
         var text = doc.getElementById(element);
         if (doc.body.createTextRange) {
             range = document.body.createTextRange();
