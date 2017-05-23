@@ -5,6 +5,7 @@ cardApp.service('Format', ['$window', '$rootScope', function($window, $rootScope
     var self = this;
     var tag_count_previous;
     var paste_in_progress = false;
+    var marky_started_array = [];
 
     this.removePreTag = function(content) {
         var content_less_pre;
@@ -42,14 +43,6 @@ cardApp.service('Format', ['$window', '$rootScope', function($window, $rootScope
         for(var i in empty_tags){
             empty_tags[i].replace();
         }
-    };
-    this.markdown = function(content,elem){
-        var reg_mark = /(\*\*.*?)/ig;
-        md = content.match(reg_mark);
-        for(var i in md){
-            md = md.replace('**', '<b>');
-        }
-
     };
     */
 
@@ -103,7 +96,6 @@ cardApp.service('Format', ['$window', '$rootScope', function($window, $rootScope
     }
 
     function findChars(node, word) {
-        //console.log(node.nodeValue + ' : ' + word);
         var found = {};
         found.f = 'x';
         if (node.nodeValue) {
@@ -120,6 +112,143 @@ cardApp.service('Format', ['$window', '$rootScope', function($window, $rootScope
         return found;
     }
 
+    function moveCaretAfter(id) {
+        var current_node = $("#" + id).get(0);
+        $("<span id='delete'>&#x200b</span>").insertAfter(current_node);
+        var range = document.createRange();
+        range.setStartAfter(current_node.nextSibling);
+        range.setStart(current_node.nextSibling, 1);
+        range.setEnd(current_node.nextSibling, 1);
+        range.collapse(true);
+        var selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        $('#' + id).removeAttr('id');
+    }
+
+    function moveCaretInto(id) {
+        $("#" + id).html('&#x200b');
+        var current_node = $("#" + id).get(0);
+        range = document.createRange();
+        range.setStart(current_node.firstChild, 1);
+        range.setEnd(current_node.firstChild, 1);
+        $('#' + id).removeAttr('id');
+    }
+
+    function evluateChar(marky_array, ma) {
+        var char_watch = '';
+        for (var cw = 0; cw < marky_array[ma].charnum; cw++) {
+            char_watch += marky_array[ma].chars;
+        }
+        return char_watch;
+    }
+    // Check if an Array includes an index value and return that value index
+    function include(arr, obj) {
+        return (arr.indexOf(obj) != -1);
+    }
+    // Check if an Array of Objects includes a value
+    function arrayObjectIndexOf(myArray, searchTerm, property) {
+        for (var i = 0, len = myArray.length; i < len; i++) {
+            if (myArray[i][property] === searchTerm) return i;
+        }
+        return -1;
+    }
+
+    this.markyCheck = function(content, elem, pre) {
+        // pre false - currently not within a pre
+        // pre true - currently within a pre
+        if (!pre) {
+            content_less_pre = self.removePreTag(content);
+            content_to_match = content_less_pre;
+        } else {
+            if (!include(marky_started_array, 'pp')) {
+                marky_started_array.push('pp');
+            }
+            content_to_match = content;
+        }
+        // Array to dynamically set marky chars to html tags
+        var marky_array = [{
+            chars: 'b',
+            charnum: 2,
+            charstring: 'bb',
+            html: 'b'
+
+        }, {
+            chars: 'i',
+            charnum: 2,
+            charstring: 'ii',
+            html: 'i'
+
+        }, {
+            chars: 'p',
+            charnum: 2,
+            charstring: 'pp',
+            html: 'pre'
+
+        }];
+        var ignore_non_pre = false;
+        for (var ma = 0; ma < marky_array.length; ma++) {
+            if (pre) {
+                if (marky_array[ma].html !== 'pre') {
+                    ignore_non_pre = true;
+                } else {
+                    ignore_non_pre = false;
+                }
+            }
+            var mark_count_new;
+            var mark_list_current;
+            if (!ignore_non_pre) {
+                var reg2_str = "(" + marky_array[ma].chars + '{' + marky_array[ma].charnum + '})';
+                mark_count_new = (content_to_match.match(new RegExp(reg2_str, 'igm')) || []).length;
+                mark_list_current = content_to_match.match(new RegExp(reg2_str, 'igm'));
+            }
+            if (mark_list_current !== null && mark_list_current !== undefined) {
+                //marky open
+                var currentChars = mark_list_current[0];
+                var char_watch = evluateChar(marky_array, ma);
+                if (!include(marky_started_array, char_watch)) {
+                    // Open Marky tag
+                    marky_started_array.push(JSON.parse(JSON.stringify(mark_list_current[0])));
+                    var updateChars = currentChars.replace(char_watch, "<" + marky_array[ma].html + " id='marky'></" + marky_array[ma].html + ">");
+                    self.selectText(elem, currentChars);
+                    self.pasteHtmlAtCaret(updateChars);
+                    moveCaretInto('marky');
+                } else {
+                    // Check whether to Close Marky tag 
+                    // Close it if it has been opened, otherwise this is another Marky being opened
+                    char_watch = evluateChar(marky_array, ma);
+                    //if (marky_started_array[0] === char_watch) {
+                    if (include(marky_started_array, char_watch)) {
+                        // Close Marky tag and remove it from the marky_started_array
+                        var item_index = marky_started_array.indexOf(char_watch);
+                        marky_started_array.splice(item_index, 1);
+                        var ns = marky_array[ma].html + ":contains('" + char_watch + "')";
+                        var node = $($(ns));
+                        var node_content = $(node).html();
+                        var before_index = node_content.indexOf(char_watch);
+                        var node_content_before = node_content.substr(0, before_index);
+                        var node_content_after = node_content.substr(before_index + Number(marky_array[ma].charnum), node_content.length);
+                        node_content = node_content_before + node_content_after;
+                        $(node).html(node_content);
+                        $(node.attr('id', 'marky'));
+                        moveCaretAfter('marky');
+                        // if still within an an unclosed Marky then continue with that unclosed Marky
+                        if (marky_started_array.length > 0) {
+                            // Change to for loop
+                            var marky_html_index = arrayObjectIndexOf(marky_array, marky_started_array[0], 'charstring');
+                            if (marky_html_index !== -1) {
+                                var marky_html = marky_array[marky_html_index].html;
+                                var new_tag = '<' + marky_html + '>&#x200b</' + marky_html + '>';
+                                self.pasteHtmlAtCaret(new_tag);
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+    };
+
     this.contentChanged = function(content, elem) {
         var open_count = 0;
         var close_count = 0;
@@ -127,28 +256,13 @@ cardApp.service('Format', ['$window', '$rootScope', function($window, $rootScope
             selection = window.getSelection();
             var anchor_node = selection.anchorNode.parentNode.tagName;
             if (anchor_node != 'PRE') {
+                // HTML
                 var reg = /(&lt;.*?&gt;)(.*?)(&lt;\/.*?&gt;)/ig;
                 var tag_count_new;
                 var tag_list_current;
                 content_less_pre = self.removePreTag(content);
                 tag_count_new = (content_less_pre.match(reg) || []).length;
                 tag_list_current = content_less_pre.match(reg);
-
-                var reg2 = /(b{2})(.*?)(b{2})/igm;
-                var mark_count_new = (content_less_pre.match(reg2) || []).length;
-                var mark_list_current = content_less_pre.match(reg2);
-                console.log(mark_list_current);
-                if(mark_list_current !== null){
-                var updatedChars2 = mark_list_current[0];
-                        updatedChars3 = updatedChars2.replace('bb', '<b>');
-                        updatedChars3 = updatedChars3.replace('bb', '</b>');
-                        //updatedChars2 = updatedChars2.replace(/(b{2})/igm, "<b>")
-                          //  .replace(/(b{2})$/igm, "</b>");
-                            //console.log(updatedChars2);
-                        self.selectText(elem, updatedChars2);
-                        self.pasteHtmlAtCaret(updatedChars3 + '&nbsp;');
-                }
-
 
                 if (tag_list_current !== null) {
                     for (var k in tag_list_current) {
@@ -161,10 +275,18 @@ cardApp.service('Format', ['$window', '$rootScope', function($window, $rootScope
                         var updatedChars = tag_list_current[i];
                         updatedChars = updatedChars.replace(/&lt;/g, "<")
                             .replace(/&gt;/g, ">");
+                        var open_index = updatedChars.indexOf('>');
+                        var updatedChars2 = updatedChars.substr(0, open_index) + " id='marky'" + updatedChars.substr(open_index, updatedChars.length);
                         self.selectText(elem, updatedChars);
-                        self.pasteHtmlAtCaret(updatedChars + '&nbsp;');
+                        self.pasteHtmlAtCaret(updatedChars2);
+                        moveCaretAfter('marky');
                     }
                 }
+                // MARKY
+                self.markyCheck(content, elem, false);
+            } else {
+                // MARKY (Close PRE)
+                self.markyCheck(content, elem, true);
             }
         } else {
             self.paste_in_progress = false;
@@ -175,7 +297,6 @@ cardApp.service('Format', ['$window', '$rootScope', function($window, $rootScope
         var doc = document;
         var current_node;
         var node_pos = self.findNodeNumber(doc.getElementById(element), word);
-        //console.log(node_pos);
         var text = doc.getElementById(element);
         if (doc.body.createTextRange) {
             range = document.body.createTextRange();
@@ -222,6 +343,7 @@ cardApp.service('Format', ['$window', '$rootScope', function($window, $rootScope
                     sel.removeAllRanges();
                     sel.addRange(range);
                 }
+
             }
         } else if (document.selection && document.selection.type != "Control") {
             // IE < 9
@@ -271,6 +393,9 @@ cardApp.service('Format', ['$window', '$rootScope', function($window, $rootScope
 }]);
 
 cardApp.service('replaceTags', function() {
+
+    var self = this;
+
     this.replace = function(str) {
         // find string between and including &lt;pre&gt; to &lt;/pre&gt;
         var regex = /&lt;pre&gt;(?:(?!&lt;pre&gt;).)*(?:(?!&lt;pre&gt;).)*&lt;\/pre&gt;/gi;
@@ -299,7 +424,25 @@ cardApp.service('replaceTags', function() {
         }
         return str;
     };
+
+    this.removeDeleteId = function(str) {
+        str = $("<div>" + str + "</div>");
+        $('span#delete', str).each(function(e) {
+            $(this).replaceWith($(this).html());
+        });
+        // check if any remain
+        if ($(str).find('span#delete').length > 0) {
+            str = str.html();
+            return self.removeDeleteId(str);
+        } else {
+            str = str.html();
+            return str;
+        }
+    };
+
 });
+
+
 
 cardApp.directive("contenteditable", function() {
     return {
