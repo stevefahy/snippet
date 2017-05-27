@@ -10,6 +10,7 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 
         $scope.cards = data;
     });
 
+
     // DELETE ==================================================================
     $scope.deleteCard = function(id) {
         Cards.delete(id)
