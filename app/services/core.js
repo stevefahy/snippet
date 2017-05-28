@@ -8,23 +8,24 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     var marky_started_array = [];
     var prevent_key = false;
 
+    var initial_key = '90';
     // Array to dynamically set marky chars to html tags
     var marky_array = [{
         chars: 'b',
         charnum: 2,
-        charstring: 'xb',
+        charstring: 'zb',
         html: 'b'
 
     }, {
         chars: 'i',
         charnum: 2,
-        charstring: 'xi',
+        charstring: 'zi',
         html: 'i'
 
     }, {
         chars: 'p',
         charnum: 2,
-        charstring: 'xp',
+        charstring: 'zp',
         html: 'pre'
 
     }];
@@ -316,7 +317,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
                             .then(
                             function() {
                                 return $timeout(function() {
-                                    //prevent_key = false;
+                                    prevent_key = false;
                                 }, 0);
                             }
                         );
@@ -434,8 +435,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         if(prevent_key){
             $event.preventDefault();
         }
-        // x
-        if($event.keyCode == '88'){
+        // z
+        if($event.keyCode == initial_key){
             start_key = true;
         }
         // b, i, p
