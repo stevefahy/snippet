@@ -435,7 +435,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         if(prevent_key){
             $event.preventDefault();
         }
-        // z
+        // x
         if($event.keyCode == initial_key){
             start_key = true;
         }
