@@ -2,10 +2,10 @@
     <div ng-repeat="card in cards">
         <form class="form-horizontal">
             <div class="input-group">
-                <div id="cet" contenteditable="true" ng-change="contentChanged(card.title, 'cet')" ng-keydown="checkKey($event,'cet')" ng-paste="handlePaste($event)" ng-focus="getFocus(card.title)" ng-model="card.title">
+                <div id="cet" contenteditable="true" ng-change="contentChanged(card.title, 'cet')"  ng-keydown="checkKey($event,'ce'+card._id)" ng-paste="handlePaste($event)" ng-focus="getFocus(card.title)" ng-model="card.title">
                 </div>
                 <div class="input-group">
-                    <div class='ce' ng-attr-id="{{ 'ce' + card._id }}" contenteditable="true" ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id)" ng-paste="handlePaste($event)" ng-focus="getFocus(card.content)" ng-model="card.content" ng-model-options="{ debounce: 1000 }" >
+                    <div class='ce' ng-attr-id="{{ 'ce' + card._id }}" contenteditable="true" ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id)" ng-paste="handlePaste($event)" ng-focus="getFocus(card.content); keyListen('ce'+card._id)" ng-model="card.content" ng-model-options="{ debounce: 1000 }" >
                     </div>
                     <div class="input-group">
                         <input class="form-control" type="text" ng-model="card.user">
