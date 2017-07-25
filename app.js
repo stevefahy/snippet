@@ -28,13 +28,16 @@ for (var k in interfaces) {
         }
     }
 }
-if (addresses == '192.168.192.54') {
+// Samsung Series 9 laptop
+//if (addresses == '192.168.192.54') {
+if (addresses == '192.168.192.60') {
     // MongoDB
     var dburl = database.localUrl;
 } else {
     // MongoDB
     var dburl = database.remoteUrl;
 }
+console.log(dburl);
 mongoose.connect(dburl); // Connect to local MongoDB instance. A remoteUrl is also available (modulus.io)
 
 var db = mongoose.connection;
