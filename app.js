@@ -37,11 +37,9 @@ if (addresses == '192.168.192.60') {
     var dburl = database.remoteUrl;
 }
 //mongoose.connect(dburl); // Connect to local MongoDB instance. A remoteUrl is also available (modulus.io)
+mongoose.connect('mongodb://localhost:27017/card'); 
 
-var db = mongoose.createConnection('mongodb://localhost/card');
-//var Tank = db.model('Tank', yourSchema);
-
-//var db = mongoose.connection;
+var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
     
@@ -63,4 +61,4 @@ app.listen(port);
 
 console.log("App listening on port " + port);
 console.log("Mongoose connection: " + dburl);
-console.log("mongoose.connection: " + db);
+console.log("mongoose.connection: " + dburl);
