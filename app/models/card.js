@@ -18,7 +18,5 @@ cardSchema.pre('save', function(next) {
     next();
 });
 
-var conn = mongoose.createConnection('mongodb://127.0.0.1:27017/card');
-var Card = conn.model('Card', cardSchema);
-//var Card = mongoose.model('Card', cardSchema);
+var Card = mongoose.model('Card', cardSchema);
 module.exports = Card;
