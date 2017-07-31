@@ -60,3 +60,4 @@ app.listen(port);
 
 console.log("App listening on port " + port);
 console.log("Mongoose connection: " + dburl);
+console.log("mongoose.connection: " + db);
