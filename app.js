@@ -36,7 +36,7 @@ if (addresses == '192.168.192.60') {
     // MongoDB
     var dburl = database.remoteUrl;
 }
-//mongoose.connect(dburl); // Connect to local MongoDB instance. A remoteUrl is also available (modulus.io)
+mongoose.connect(dburl); // Connect to local MongoDB instance. A remoteUrl is also available (modulus.io)
 //mongoose.connect('mongodb://localhost/cat'); 
 
 var db = mongoose.connection;
