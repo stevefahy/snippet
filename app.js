@@ -29,6 +29,7 @@ for (var k in interfaces) {
 }
 // Samsung Series 9 laptop
 //if (addresses == '192.168.192.54') {
+// Dell XPS 13
 if (addresses == '192.168.192.60') {
     // MongoDB
     var dburl = database.localUrl;
@@ -37,7 +38,6 @@ if (addresses == '192.168.192.60') {
     var dburl = database.remoteUrl;
 }
 mongoose.connect(dburl); // Connect to local MongoDB instance. A remoteUrl is also available (modulus.io)
-//mongoose.connect('mongodb://localhost/cat'); 
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -57,8 +57,5 @@ require('./app/routes/routes.js')(app); // load our routes and pass in our app
 // listen (start app with node server.js) ======================================
 app.listen(port);
 
- 
-
-console.log("Appx listening on port " + port);
+console.log("App listening on port " + port);
 console.log("Mongoose connection: " + dburl);
-console.log("mongoose.connection: " + dburl);
