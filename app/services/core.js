@@ -239,6 +239,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
                     // Use timeout to fix bug on Galaxy S6 (Chrome, FF, Canary)
                     $timeout(function() {
                             self.selectText(elem, currentChars);
+
                         }, 0)
                         .then(
                             function() {
@@ -250,7 +251,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
                         .then(
                             function() {
                                 return $timeout(function() {
-                                    document.getElementById(elem).setAttribute("contenteditable", true);
+                                    //document.getElementById(elem).setAttribute("contenteditable", true);
                                     document.getElementById(elem).focus();
                                     moveCaretInto('marky');
                                 }, 0);
@@ -271,7 +272,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
                         .then(
                                 function() {
                                     return $timeout(function() {
-                                        document.getElementById(elem).setAttribute("contenteditable", true);
+                                        //document.getElementById(elem).setAttribute("contenteditable", true);
                                         document.getElementById(elem).focus();
                                         moveCaretAfter('marky');
                                     }, 0);
@@ -328,6 +329,10 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     };
 
     this.selectText = function(element, word) {
+        
+        $('#'+element).focus();
+        $('#'+element).trigger('click');
+
         var doc = document;
         var current_node;
         var node_pos = self.findNodeNumber(doc.getElementById(element), word);
@@ -416,7 +421,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     };
 
     function stopEditing(elem) {
-        document.getElementById(elem).setAttribute("contenteditable", false);
+        $('#hidden_input').focus();
+        //document.getElementById(elem).setAttribute("contenteditable", false);
     }
 
     this.checkKey = function($event, elem) {
