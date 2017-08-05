@@ -30,3 +30,6 @@
     left: -1000px;
     top: 10px;
 }
+input[type="checkbox"] {
+    margin-right: 5px;
+}

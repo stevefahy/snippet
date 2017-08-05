@@ -8,17 +8,33 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     var marky_started_array = [];
     var ignore_non_pre = false;
     var initial_key = 'z';
+    var secondkey_array = [];
     // Array to dynamically set marky chars to html tags
     var marky_array = [{
         charstring: 'zb',
-        html: 'b'
+        html: 'b',
+        attribute: '',
+        close: true
     }, {
         charstring: 'zi',
-        html: 'i'
+        html: 'i',
+        attribute: '',
+        close: true
     }, {
         charstring: 'zp',
-        html: 'pre'
+        html: 'pre',
+        attribute: '',
+        close: true
+    }, {
+        charstring: 'zc',
+        html: 'input',
+        attribute: 'type="checkbox"',
+        close: false
     }];
+
+    for(var i=0; i<marky_array.length; i++){
+        secondkey_array.push(marky_array[i].charstring.charAt(1));
+    }
 
     this.removePreTag = function(content) {
         var content_less_pre;
@@ -234,8 +250,20 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
                 var char_watch = evluateChar(marky_array, ma);
                 if (!include(marky_started_array, char_watch)) {
                     // Open Marky tag
-                    marky_started_array.push(JSON.parse(JSON.stringify(mark_list_current[0])));
-                    var updateChars = currentChars.replace(char_watch, "<" + marky_array[ma].html + " id='marky'></" + marky_array[ma].html + ">");
+                    var close_tag = true;
+                    // change so that this is a setting for tags which do not need to be closed.
+                    // Check whether this Tag is to be closed as well as opened
+                    if(marky_array[ma].close === false){
+                        close_tag = false;
+                    }
+                    // Only add this Tag to the marky_started_array if it needs to be closed
+                    if (close_tag){
+                        marky_started_array.push(JSON.parse(JSON.stringify(mark_list_current[0])));
+                    }
+                    var updateChars = currentChars.replace(char_watch, "<" + marky_array[ma].html + " " + marky_array[ma].attribute + " id='marky'>");
+                    if(close_tag){
+                        updateChars += "</" + marky_array[ma].html + ">"
+                    }
                     // Use timeout to fix bug on Galaxy S6 (Chrome, FF, Canary)
                     $timeout(function() {
                             self.selectText(elem, currentChars);
@@ -253,7 +281,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
                                 return $timeout(function() {
                                     //document.getElementById(elem).setAttribute("contenteditable", true);
                                     document.getElementById(elem).focus();
-                                    moveCaretInto('marky');
+                                    if(close_tag){
+                                        moveCaretInto('marky');
+                                    } else {
+                                        moveCaretAfter('marky');
+                                    }
+
                                 }, 0);
                             }
                         );
@@ -330,8 +363,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
 
     this.selectText = function(element, word) {
         
-        $('#'+element).focus();
-        $('#'+element).trigger('click');
+        //$('#'+element).focus();
+        //$('#'+element).trigger('click');
 
         var doc = document;
         var current_node;
@@ -400,21 +433,17 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
             var a = getCharacterPrecedingCaret(editableEl);
             return a;
         };
-
+        // TODO automate this
         document.getElementById(elem).onkeyup = function(e) {
             var kc = getKeyCode();
             if (kc == initial_key) {
                 start_key = true;
             } else if (start_key) {
-                if (kc == 'b') {
-                    stopEditing(this.id);
-                    start_key = false;
-                } else if (kc == 'i') {
-                    stopEditing(this.id);
-                    start_key = false;
-                } else if (kc == 'p') {
-                    stopEditing(this.id);
-                    start_key = false;
+                for(var i = 0; i<secondkey_array.length; i++){
+                    if (kc == secondkey_array[i]) {
+                        stopEditing(this.id);
+                        start_key = false;
+                    }
                 }
             }
         };
