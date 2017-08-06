@@ -27,7 +27,7 @@
 }
 #hidden_input {
     position: absolute;
-    left: -1000px;
+    left: -3000px;
     top: 10px;
 }
 input[type="checkbox"] {
