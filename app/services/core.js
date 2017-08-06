@@ -28,11 +28,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     }, {
         charstring: 'zc',
         html: 'input',
-        attribute: 'type="checkbox"',
+        attribute: 'type="checkbox" onclick="checkBoxChanged(this)"',
         close: false
     }];
 
-    for(var i=0; i<marky_array.length; i++){
+    for (var i = 0; i < marky_array.length; i++) {
         secondkey_array.push(marky_array[i].charstring.charAt(1));
     }
 
@@ -253,15 +253,15 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
                     var close_tag = true;
                     // change so that this is a setting for tags which do not need to be closed.
                     // Check whether this Tag is to be closed as well as opened
-                    if(marky_array[ma].close === false){
+                    if (marky_array[ma].close === false) {
                         close_tag = false;
                     }
                     // Only add this Tag to the marky_started_array if it needs to be closed
-                    if (close_tag){
+                    if (close_tag) {
                         marky_started_array.push(JSON.parse(JSON.stringify(mark_list_current[0])));
                     }
                     var updateChars = currentChars.replace(char_watch, "<" + marky_array[ma].html + " " + marky_array[ma].attribute + " id='marky'>");
-                    if(close_tag){
+                    if (close_tag) {
                         updateChars += "</" + marky_array[ma].html + ">"
                     }
                     // Use timeout to fix bug on Galaxy S6 (Chrome, FF, Canary)
@@ -281,7 +281,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
                                 return $timeout(function() {
                                     //document.getElementById(elem).setAttribute("contenteditable", true);
                                     document.getElementById(elem).focus();
-                                    if(close_tag){
+                                    if (close_tag) {
                                         moveCaretInto('marky');
                                     } else {
                                         moveCaretAfter('marky');
@@ -299,10 +299,10 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
                     if (include(marky_started_array, char_watch)) {
                         var ma_arg = marky_array[ma];
                         $timeout(function() {
-                            marky_started_array = closeMarky(ma_arg, marky_started_array, char_watch);
-                        }, 0)
+                                marky_started_array = closeMarky(ma_arg, marky_started_array, char_watch);
+                            }, 0)
 
-                        .then(
+                            .then(
                                 function() {
                                     return $timeout(function() {
                                         //document.getElementById(elem).setAttribute("contenteditable", true);
@@ -362,7 +362,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     };
 
     this.selectText = function(element, word) {
-        
+
         //$('#'+element).focus();
         //$('#'+element).trigger('click');
 
@@ -439,7 +439,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
             if (kc == initial_key) {
                 start_key = true;
             } else if (start_key) {
-                for(var i = 0; i<secondkey_array.length; i++){
+                for (var i = 0; i < secondkey_array.length; i++) {
                     if (kc == secondkey_array[i]) {
                         stopEditing(this.id);
                         start_key = false;

@@ -11,6 +11,16 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 
         $scope.cards = data;
     });
 
+    // Function called from core.js by dynamically added input type=checkbox.
+    // It rewrites the HTML to save the checkbox state.
+    checkBoxChanged = function(checkbox){
+        if(checkbox.checked){
+            checkbox.setAttribute("checked", "true");
+        } else {
+            checkbox.removeAttribute("checked");
+        }
+
+    }
 
     // DELETE ==================================================================
     $scope.deleteCard = function(id) {
