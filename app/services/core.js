@@ -6,9 +6,10 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     var tag_count_previous;
     var paste_in_progress = false;
     var marky_started_array = [];
-    var ignore_non_pre = false;
     var initial_key = 'z';
     var secondkey_array = [];
+    var within_pre = false;
+    var start_key = false;
     // Array to dynamically set marky chars to html tags
     var marky_array = [{
         charstring: 'zb',
@@ -31,7 +32,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         attribute: 'type="checkbox" onclick="checkBoxChanged(this)"',
         close: false
     }];
-
+    // Create secondkey_array from marky_array
     for (var i = 0; i < marky_array.length; i++) {
         secondkey_array.push(marky_array[i].charstring.charAt(1));
     }
@@ -130,17 +131,18 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         if (node.nodeValue) {
             if (node.nodeValue.indexOf(word) !== -1) {
                 // FOUND
-                if (node.parentNode.tagName != 'PRE') {
-                    // Not within a PRE tag
-                    var np = setNodePos(node, node.nodeValue.indexOf(word));
-                    found.f = 'y';
-                    found.p = np;
-                }
+                //if (node.parentNode.tagName != 'PRE') {
+                // Not within a PRE tag
+                var np = setNodePos(node, node.nodeValue.indexOf(word));
+                found.f = 'y';
+                found.p = np;
+                //}
             }
         }
         return found;
     }
-
+ 
+    // TODO remove delete id?
     function moveCaretAfter(id) {
         var current_node = $("#" + id).get(0);
         $("<span id='delete'>&#x200b</span>").insertAfter(current_node);
@@ -168,6 +170,45 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         selection.addRange(range);
         $('#' + id).removeAttr('id');
         return;
+    }
+    
+    function moveAfterPre(id) {
+        var pre_node = $("#" + id).get(0);
+        var nested_level = marky_started_array.length - 1;
+        // If this PRE element is nested within elements
+        if (nested_level > 0) {
+            // Find the previous_node (formatting elements) which this is currently nested within.
+            var previous_node = $("#" + id).get(0);
+            for (var i = 0; i < nested_level; i++) {
+                par = 'parentNode';
+                previous_node = previous_node[par];
+            }
+            // Insert this PRE element after the elements within which it was nested
+            $(pre_node).insertAfter(previous_node);
+            // Now re-apply currently open tags to the pre contents in sequence
+            for (var msa = 0; msa < marky_started_array.length - 1; msa++) {
+                // Find the HTML for this charstring and create that element
+                var result = $.grep(marky_array, function(e) { return e.charstring == marky_started_array[msa]; });
+                var updateChars = document.createElement(result[0].html);
+                updateChars.attribute = result[0].attribute;
+                if (msa === 0) {
+                    pre_node.appendChild(updateChars);
+                    updateChars.id = 'temp';
+                } else {
+                    $('#temp').get(0).appendChild(updateChars);
+                    $('#temp').removeAttr('id');
+                    updateChars.id = 'temp';
+                }
+                // Last
+                if (msa == marky_started_array.length - 2) {
+                    $('#marky').removeAttr('id');
+                    $('#temp').removeAttr('id');
+                    updateChars.id = 'marky';
+                }
+            }
+
+        }
+        moveCaretInto('marky');
     }
 
     function evluateChar(marky_array, ma) {
@@ -205,16 +246,26 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
 
     function unclosedMarky(marky_started_array, marky_array) {
         // if still within an an unclosed Marky then continue with that unclosed Marky
-        if (marky_started_array.length > 0) {
-            // Change to for loop
-            for (var z = 0; z < marky_started_array.length; z++) {
-                var marky_html_index = arrayObjectIndexOf(marky_array, marky_started_array[z], 'charstring');
-                if (marky_html_index !== -1) {
-                    var marky_html = marky_array[marky_html_index].html;
+        var complete_tag;
+        var loop_count = 0;
+        for (var z = 0; z < marky_started_array.length; z++) {
+            var marky_html_index = arrayObjectIndexOf(marky_array, marky_started_array[z], 'charstring');
+            if (marky_html_index !== -1) {
+                var marky_html = marky_array[marky_html_index].html;
+                if (marky_html != 'pre') {
                     var new_tag = '<' + marky_html + '>&#x200b</' + marky_html + '>';
-                    self.pasteHtmlAtCaret(new_tag);
+                    if (loop_count > 0) {
+                        var pos = complete_tag.indexOf('&#x200b');
+                        complete_tag = complete_tag.slice(0, pos) + new_tag + complete_tag.slice(pos + 7, complete_tag.length);
+                    } else {
+                        complete_tag = new_tag;
+                    }
+                    loop_count++;
                 }
             }
+        }
+        if (complete_tag != undefined) {
+            self.pasteHtmlAtCaret(complete_tag);
         }
         return;
     }
@@ -226,32 +277,21 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
             content_less_pre = self.removePreTag(content);
             content_to_match = content_less_pre;
         } else {
-            if (!include(marky_started_array, 'pp')) {
-                marky_started_array.push('pp');
-            }
             content_to_match = content;
         }
         for (var ma = 0; ma < marky_array.length; ma++) {
-            if (pre) {
-                if (marky_array[ma].html !== 'pre') {
-                    ignore_non_pre = true;
-                } else {
-                    ignore_non_pre = false;
-                }
-            }
             var mark_list_current;
-            if (!ignore_non_pre) {
-                var reg2_str = "(" + marky_array[ma].charstring + ")";
-                mark_list_current = content_to_match.match(new RegExp(reg2_str, 'igm'));
-            }
+            var reg2_str = "(" + marky_array[ma].charstring + ")";
+            mark_list_current = content_to_match.match(new RegExp(reg2_str, 'igm'));
             if (mark_list_current !== null && mark_list_current !== undefined) {
                 //marky open
                 var currentChars = mark_list_current[0];
                 var char_watch = evluateChar(marky_array, ma);
                 if (!include(marky_started_array, char_watch)) {
+                    // TODO DUPE! ma_arg
+                    var ma_arg = marky_array[ma];
                     // Open Marky tag
                     var close_tag = true;
-                    // change so that this is a setting for tags which do not need to be closed.
                     // Check whether this Tag is to be closed as well as opened
                     if (marky_array[ma].close === false) {
                         close_tag = false;
@@ -262,12 +302,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
                     }
                     var updateChars = currentChars.replace(char_watch, "<" + marky_array[ma].html + " " + marky_array[ma].attribute + " id='marky'>");
                     if (close_tag) {
-                        updateChars += "</" + marky_array[ma].html + ">"
+                        updateChars += "</" + marky_array[ma].html + ">";
                     }
                     // Use timeout to fix bug on Galaxy S6 (Chrome, FF, Canary)
                     $timeout(function() {
                             self.selectText(elem, currentChars);
-
                         }, 0)
                         .then(
                             function() {
@@ -279,19 +318,19 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
                         .then(
                             function() {
                                 return $timeout(function() {
-                                    //document.getElementById(elem).setAttribute("contenteditable", true);
                                     document.getElementById(elem).focus();
                                     if (close_tag) {
-                                        moveCaretInto('marky');
+                                        if (ma_arg.html == 'pre') {
+                                            moveAfterPre('marky');
+                                        } else {
+                                            moveCaretInto('marky');
+                                        }
                                     } else {
                                         moveCaretAfter('marky');
                                     }
-
                                 }, 0);
                             }
                         );
-
-
                 } else {
                     // Check whether to Close Marky tag 
                     // Close it if it has been opened, otherwise this is another Marky being opened
@@ -301,11 +340,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
                         $timeout(function() {
                                 marky_started_array = closeMarky(ma_arg, marky_started_array, char_watch);
                             }, 0)
-
                             .then(
                                 function() {
                                     return $timeout(function() {
-                                        //document.getElementById(elem).setAttribute("contenteditable", true);
                                         document.getElementById(elem).focus();
                                         moveCaretAfter('marky');
                                     }, 0);
@@ -347,9 +384,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
 
     this.contentChanged = function(content, elem) {
         if (!self.paste_in_progress) {
-            selection = window.getSelection();
-            var anchor_node = selection.anchorNode.parentNode.tagName;
-            if (anchor_node != 'PRE') {
+            if (within_pre == false) {
                 // MARKY
                 self.markyCheck(content, elem, false);
             } else {
@@ -362,10 +397,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     };
 
     this.selectText = function(element, word) {
-
-        //$('#'+element).focus();
-        //$('#'+element).trigger('click');
-
         var doc = document;
         var current_node;
         var node_pos = self.findNodeNumber(doc.getElementById(element), word);
@@ -425,7 +456,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         return;
     };
 
-    var start_key = false;
     this.keyListen = function(elem) {
         var getKeyCode = function() {
             var editableEl = document.getElementById(elem);
@@ -433,16 +463,15 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
             var a = getCharacterPrecedingCaret(editableEl);
             return a;
         };
-        // TODO automate this
         document.getElementById(elem).onkeyup = function(e) {
             var kc = getKeyCode();
             if (kc == initial_key) {
                 start_key = true;
             } else if (start_key) {
+                start_key = false;
                 for (var i = 0; i < secondkey_array.length; i++) {
                     if (kc == secondkey_array[i]) {
                         stopEditing(this.id);
-                        start_key = false;
                     }
                 }
             }
@@ -450,15 +479,26 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     };
 
     function stopEditing(elem) {
+        // TODO Still need anchornode check?
+        selection = window.getSelection();
+        var anchor_node = selection.anchorNode.parentNode.tagName;
+        if (anchor_node === 'PRE') {
+            within_pre = true;
+        } else {
+            within_pre = false;
+        }
+        if (marky_started_array.indexOf('zp') >= 0) {
+            within_pre = true;
+        }
         $('#hidden_input').focus();
-        //document.getElementById(elem).setAttribute("contenteditable", false);
     }
 
     this.checkKey = function($event, elem) {
         // Stop the default behavior for the ENTER key and insert <br><br> instead
         if ($event.keyCode == 13) {
             $event.preventDefault();
-            self.pasteHtmlAtCaret('<br><br>');
+            self.pasteHtmlAtCaret("<br><span id='focus'></span>");
+            moveCaretInto('focus');
             return false;
         }
     };
