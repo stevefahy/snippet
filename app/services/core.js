@@ -141,7 +141,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         }
         return found;
     }
- 
+
     // TODO remove delete id?
     function moveCaretAfter(id) {
         var current_node = $("#" + id).get(0);
@@ -171,7 +171,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         $('#' + id).removeAttr('id');
         return;
     }
-    
+
     function moveAfterPre(id) {
         var pre_node = $("#" + id).get(0);
         var nested_level = marky_started_array.length - 1;
@@ -343,7 +343,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
                             .then(
                                 function() {
                                     return $timeout(function() {
-                                        document.getElementById(elem).focus();
+                                        //document.getElementById(elem).focus();
                                         moveCaretAfter('marky');
                                     }, 0);
                                 }
@@ -490,6 +490,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         if (marky_started_array.indexOf('zp') >= 0) {
             within_pre = true;
         }
+        // Move the hidden input filed so that scrolling does not occur on mobile
+        $("#hidden_input").css({ top: $(window).scrollTop() });
         $('#hidden_input').focus();
     }
 
