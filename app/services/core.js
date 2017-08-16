@@ -25,15 +25,16 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     setFilePath = function(file) {
         $('#test').html(file);
         //document.getElementById('lblpath').innerHTML = file;
-        Android.showToast('file: ' + file);
-        pasteHtmlAtCaret("<img src ='" + complete_tag + "' width='40' height='40'>");
+        //Android.showToast('file: ' + file);
+        self.pasteHtmlAtCaret("steve");
+        self.pasteHtmlAtCaret("<img src ='" + complete_tag + "' width='40' height='40'>");
 
     };
 
     setFileUri = function(uri) {
-        $('#test').html('uri: ' + uri);
+        //$('#test').html('uri: ' + uri);
         //document.getElementById('lbluri').innerHTML = uri;
-        Android.showToast(uri);
+        //Android.showToast(uri);
     };
 
     var ua = navigator.userAgent;
