@@ -2,8 +2,8 @@
     <div ng-repeat="card in cards">
         <form class="form-horizontal">
             <div class="input-group">
-                <div id="cet" contenteditable="true" ng-change="contentChanged(card.title, 'cet')" ng-keydown="checkKey($event,'ce'+card._id)" ng-paste="handlePaste($event)" ng-focus="getFocus(card.title)" ng-model="card.title">
-                </div>
+                <!--<div id="cet" contenteditable="true" ng-change="contentChanged(card.title, 'cet')" ng-keydown="checkKey($event,'ce'+card._id)" ng-paste="handlePaste($event)" ng-focus="getFocus(card.title)" ng-model="card.title">
+                </div>-->
                 <div class="input-group">
                     <div class='ce' ng-attr-id="{{ 'ce' + card._id }}" contenteditable="true" ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id)" ng-paste="handlePaste($event)" ng-focus="getFocus(card.content); keyListen('ce'+card._id)" ng-model="card.content" ng-model-options="{ debounce: 1000 }">
                     </div>
@@ -18,6 +18,8 @@
                     <!-- Hidden input field which gains focus while text formatting is being prepared -->
                     <div id="hidden_input_container">
                     <input class="form-control" type="text" autocorrect="off" autocapitalize="none" id="hidden_input"></div>
+                    <!-- -->
+                    <input id="file-input" type="file" name="name" />
         </form>
         </div>
         </div>

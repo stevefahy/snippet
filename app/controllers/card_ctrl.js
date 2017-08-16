@@ -20,7 +20,7 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 
             checkbox.removeAttribute("checked");
         }
 
-    }
+    };
 
     
 
@@ -39,13 +39,13 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 
         var pms = { 'id': id, 'card': card };
         // validate the text to make sure that something is there
         // if text is empty, nothing will happen
-        if (card.title !== undefined) {
+        //if (card.title !== undefined) {
             // call the create function from our service (returns a promise object)
             Cards.update(pms)
                 .success(function(data) {
                     $rootScope.$broadcast('search');
                 });
-        }
+       // }
     };
 
 }]);

@@ -31,6 +31,52 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         html: 'input',
         attribute: 'type="checkbox" onclick="checkBoxChanged(this)"',
         close: false
+    }, {
+        charstring: 'z1',
+        html: 'h1',
+        attribute: '',
+        close: true
+    }, {
+        charstring: 'z2',
+        html: 'h2',
+        attribute: '',
+        close: true
+    }, {
+        charstring: 'z3',
+        html: 'h3',
+        attribute: '',
+        close: true
+    }, {
+        charstring: 'z4',
+        html: 'h4',
+        attribute: '',
+        close: true
+    }, {
+        charstring: 'z5',
+        html: 'h5',
+        attribute: '',
+        close: true
+    }, {
+        charstring: 'z6',
+        html: 'h6',
+        attribute: '',
+        close: true
+    }, {
+        charstring: 'zr',
+        html: 'hr',
+        attribute: '',
+        close: false
+    }, {
+        charstring: 'zq',
+        html: 'q',
+        attribute: '',
+        close: true
+    }, {
+        charstring: 'zm',
+        html: '',
+        attribute: '',
+        script: 'getImage',
+        close: false
     }];
     // Create secondkey_array from marky_array
     for (var i = 0; i < marky_array.length; i++) {
@@ -287,23 +333,82 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
                 //marky open
                 var currentChars = mark_list_current[0];
                 var char_watch = evluateChar(marky_array, ma);
-                if (!include(marky_started_array, char_watch)) {
-                    // TODO DUPE! ma_arg
-                    var ma_arg = marky_array[ma];
-                    // Open Marky tag
-                    var close_tag = true;
-                    // Check whether this Tag is to be closed as well as opened
-                    if (marky_array[ma].close === false) {
-                        close_tag = false;
+                if (marky_array[ma].html !== '') {
+                    if (!include(marky_started_array, char_watch)) {
+                        // TODO DUPE! ma_arg
+                        var ma_arg = marky_array[ma];
+                        // Open Marky tag
+                        var close_tag = true;
+                        // Check whether this Tag is to be closed as well as opened
+                        if (marky_array[ma].close === false) {
+                            close_tag = false;
+                        }
+                        // Only add this Tag to the marky_started_array if it needs to be closed
+                        if (close_tag) {
+                            marky_started_array.push(JSON.parse(JSON.stringify(mark_list_current[0])));
+                        }
+                        var updateChars = currentChars.replace(char_watch, "<" + marky_array[ma].html + " " + marky_array[ma].attribute + " id='marky'>");
+
+                        if (close_tag) {
+                            updateChars += "</" + marky_array[ma].html + ">";
+                        }
+                        // Use timeout to fix bug on Galaxy S6 (Chrome, FF, Canary)
+                        $timeout(function() {
+                                self.selectText(elem, currentChars);
+                            }, 0)
+                            .then(
+                                function() {
+                                    return $timeout(function() {
+                                        self.pasteHtmlAtCaret(updateChars);
+                                    }, 0);
+                                }
+                            )
+                            .then(
+                                function() {
+                                    return $timeout(function() {
+                                        document.getElementById(elem).focus();
+                                        if (close_tag) {
+                                            if (ma_arg.html == 'pre') {
+                                                moveAfterPre('marky');
+                                            } else {
+                                                moveCaretInto('marky');
+                                            }
+                                        } else {
+                                            moveCaretAfter('marky');
+                                        }
+                                    }, 0);
+                                }
+                            );
+                    } else {
+                        // Check whether to Close Marky tag 
+                        // Close it if it has been opened, otherwise this is another Marky being opened
+                        char_watch = evluateChar(marky_array, ma);
+                        if (include(marky_started_array, char_watch)) {
+                            var ma_arg = marky_array[ma];
+                            $timeout(function() {
+                                    marky_started_array = closeMarky(ma_arg, marky_started_array, char_watch);
+                                }, 0)
+                                .then(
+                                    function() {
+                                        return $timeout(function() {
+                                            //document.getElementById(elem).focus();
+                                            moveCaretAfter('marky');
+                                        }, 0);
+                                    }
+                                )
+                                .then(
+                                    function() {
+                                        return $timeout(function() {
+                                            unclosedMarky(marky_started_array, marky_array);
+                                        }, 0);
+                                    }
+                                );
+                        }
                     }
-                    // Only add this Tag to the marky_started_array if it needs to be closed
-                    if (close_tag) {
-                        marky_started_array.push(JSON.parse(JSON.stringify(mark_list_current[0])));
-                    }
-                    var updateChars = currentChars.replace(char_watch, "<" + marky_array[ma].html + " " + marky_array[ma].attribute + " id='marky'>");
-                    if (close_tag) {
-                        updateChars += "</" + marky_array[ma].html + ">";
-                    }
+                } else if (marky_array[ma].script !== '' && marky_array[ma].script !== undefined) {
+                    // Not HTML but SCRIPT      
+                    console.log(marky_array[ma].script);
+                    $('#file-input').trigger('click');
                     // Use timeout to fix bug on Galaxy S6 (Chrome, FF, Canary)
                     $timeout(function() {
                             self.selectText(elem, currentChars);
@@ -311,51 +416,10 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
                         .then(
                             function() {
                                 return $timeout(function() {
-                                    self.pasteHtmlAtCaret(updateChars);
-                                }, 0);
-                            }
-                        )
-                        .then(
-                            function() {
-                                return $timeout(function() {
-                                    document.getElementById(elem).focus();
-                                    if (close_tag) {
-                                        if (ma_arg.html == 'pre') {
-                                            moveAfterPre('marky');
-                                        } else {
-                                            moveCaretInto('marky');
-                                        }
-                                    } else {
-                                        moveCaretAfter('marky');
-                                    }
+                                    self.pasteHtmlAtCaret('');
                                 }, 0);
                             }
                         );
-                } else {
-                    // Check whether to Close Marky tag 
-                    // Close it if it has been opened, otherwise this is another Marky being opened
-                    char_watch = evluateChar(marky_array, ma);
-                    if (include(marky_started_array, char_watch)) {
-                        var ma_arg = marky_array[ma];
-                        $timeout(function() {
-                                marky_started_array = closeMarky(ma_arg, marky_started_array, char_watch);
-                            }, 0)
-                            .then(
-                                function() {
-                                    return $timeout(function() {
-                                        //document.getElementById(elem).focus();
-                                        moveCaretAfter('marky');
-                                    }, 0);
-                                }
-                            )
-                            .then(
-                                function() {
-                                    return $timeout(function() {
-                                        unclosedMarky(marky_started_array, marky_array);
-                                    }, 0);
-                                }
-                            );
-                    }
                 }
             }
         }
