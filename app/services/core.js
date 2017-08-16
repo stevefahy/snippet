@@ -87,19 +87,22 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     }
 
     this.choosePhoto = function() {
+        
         console.log('choosePhoto');
         if (ua === 'AndroidApp') {
-            var file = Android.choosePhoto();
-            Android.showToast(file);
+            Android.choosePhoto();
+            //Android.showToast(file);
         }
         //window.alert("file = " + file);
     };
 
     androidToJS = function (arg){
+        $('#test').html('androidToJS 1');
         Android.showToast('one ' + arg);
     };
 
     this.androidToJS = function (arg){
+         $('#test').html('androidToJS 2');
         Android.showToast('two: ' + arg);
     };
 

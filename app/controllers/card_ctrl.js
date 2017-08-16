@@ -14,10 +14,12 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 
     $window.androidToJS = this.androidToJS;
 
     androidToJS = function (arg){
+         $('#test').html('androidToJS 3');
         Android.showToast('one ' + arg);
     };
 
     this.androidToJS = function (arg){
+         $('#test').html('androidToJS 4');
         Android.showToast('two: ' + arg);
     };
 
