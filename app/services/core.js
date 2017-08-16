@@ -11,6 +11,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     var within_pre = false;
     var start_key = false;
 
+    window.androidToJS = this.androidToJS;
+
     var ua = navigator.userAgent;
     console.log('ua: ' + ua);
     // Array to dynamically set marky chars to html tags
@@ -94,6 +96,10 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
             //Android.showToast(file);
         }
         //window.alert("file = " + file);
+    };
+    function androidToJS(arg){
+        $('#test').html('androidToJS 0');
+        Android.showToast('one ' + arg);
     };
 
     androidToJS = function (arg){
