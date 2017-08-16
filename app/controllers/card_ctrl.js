@@ -5,6 +5,7 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 
     $scope.checkKey = Format.checkKey;
     $scope.handlePaste = Format.handlePaste;
     $scope.keyListen = Format.keyListen;
+    $scope.showAndroidToast = Format.showAndroidToast;
 
     // update from cardcreate_ctrl createCard
     $scope.$on('cards', function(event, data) {

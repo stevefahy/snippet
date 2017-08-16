@@ -83,6 +83,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         secondkey_array.push(marky_array[i].charstring.charAt(1));
     }
 
+    this.showAndroidToast = function(toast) {
+        console.log('show toast js');
+        Android.showToast(toast);
+    };
+
     this.removePreTag = function(content) {
         var content_less_pre;
         if (content !== undefined) {
