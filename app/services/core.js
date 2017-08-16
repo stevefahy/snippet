@@ -14,10 +14,24 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     //window.androidToJS = this.androidToJS;
 
     $window.androidToJS = this.androidToJS;
+    $window.setFilePath = this.setFilePath;
+    $window.setFileUri = this.setFileUri;
 
     androidToJS = function (arg){
-         $('#test').html('androidToJS 3a');
+        //$('#test').html('androidToJS 3a');
         Android.showToast('one ' + arg);
+    };
+
+    setFilePath = function(file) {
+        $('#test').html(file);
+        //document.getElementById('lblpath').innerHTML = file;
+        Android.showToast('file: ' + file);
+    };
+
+    setFileUri = function(uri) {
+        $('#test').html('uri: ' + uri);
+        //document.getElementById('lbluri').innerHTML = uri;
+        Android.showToast(uri);
     };
 
     var ua = navigator.userAgent;
@@ -121,15 +135,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     };
     */
 
-    this.setFilePath = function(file) {
-        //document.getElementById('lblpath').innerHTML = file;
-        Android.showToast(file);
-    };
 
-    this.setFileUri = function(uri) {
-        //document.getElementById('lbluri').innerHTML = uri;
-        Android.showToast(uri);
-    };
 
     this.showAndroidToast = function(toast) {
         console.log('show toast js');
