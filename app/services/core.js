@@ -10,6 +10,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     var secondkey_array = [];
     var within_pre = false;
     var start_key = false;
+
+    var ua = navigator.userAgent;
+    console.log('ua: ' + ua);
     // Array to dynamically set marky chars to html tags
     var marky_array = [{
         charstring: 'zb',
@@ -85,7 +88,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
 
     this.showAndroidToast = function(toast) {
         console.log('show toast js');
-        Android.showToast(toast);
+        if(ua === 'AndroidApp'){
+            Android.showToast(toast);
+        }
     };
 
     this.removePreTag = function(content) {
