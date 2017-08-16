@@ -26,8 +26,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         $('#test').html(file);
         //document.getElementById('lblpath').innerHTML = file;
         //Android.showToast('file: ' + file);
-        self.pasteHtmlAtCaret("<img src ='file://" + file + "' width='40' height='40'>");
-
+        self.pasteHtmlAtCaret("<img src ='file:/" + file + "' width='40' height='40'>");
+        self.pasteHtmlAtCaret("<img src ='content://media/external/images/media/3644/20170815_090018.jpg' width='40' height='40'>");
+        self.pasteHtmlAtCaret("<img src ='https://www.google.ie/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png' width='40' height='40'>");
     };
 
     setFileUri = function(uri) {
