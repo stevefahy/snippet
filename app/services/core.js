@@ -26,7 +26,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         $('#test').html(file);
         //document.getElementById('lblpath').innerHTML = file;
         Android.showToast('file: ' + file);
-        self.pasteHtmlAtCaret("<img src ='" + complete_tag + "' width='40' height='40'>");
+        pasteHtmlAtCaret("<img src ='" + complete_tag + "' width='40' height='40'>");
 
     };
 
