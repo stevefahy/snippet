@@ -90,6 +90,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         console.log('choosePhoto');
         if (ua === 'AndroidApp') {
             var file = Android.choosePhoto();
+            Android.showToast(file);
         }
         //window.alert("file = " + file);
     };
