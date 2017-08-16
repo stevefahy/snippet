@@ -86,9 +86,17 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         secondkey_array.push(marky_array[i].charstring.charAt(1));
     }
 
+    this.choosePhoto = function() {
+        console.log('choosePhoto');
+        if (ua === 'AndroidApp') {
+            var file = Android.choosePhoto();
+        }
+        //window.alert("file = " + file);
+    };
+
     this.showAndroidToast = function(toast) {
         console.log('show toast js');
-        if(ua === 'AndroidApp'){
+        if (ua === 'AndroidApp') {
             Android.showToast(toast);
         }
     };
