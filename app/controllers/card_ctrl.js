@@ -7,6 +7,8 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 
     $scope.keyListen = Format.keyListen;
     $scope.showAndroidToast = Format.showAndroidToast;
     $scope.choosePhoto = Format.choosePhoto;
+    $scope.setFilePath = Format.setFilePath;
+    $scope.setFileUri = Format.setFileUri;
 
     // update from cardcreate_ctrl createCard
     $scope.$on('cards', function(event, data) {
