@@ -1,4 +1,4 @@
-cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 'Format', function($scope, Cards, replaceTags, $rootScope, Format) {
+cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 'Format', '$window', function($scope, Cards, replaceTags, $rootScope, Format, $window) {
 
     $scope.getFocus = Format.getFocus;
     $scope.contentChanged = Format.contentChanged;
