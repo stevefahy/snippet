@@ -11,7 +11,14 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     var within_pre = false;
     var start_key = false;
 
-    window.androidToJS = this.androidToJS;
+    //window.androidToJS = this.androidToJS;
+
+    $window.androidToJS = this.androidToJS;
+
+    androidToJS = function (arg){
+         $('#test').html('androidToJS 3a');
+        Android.showToast('one ' + arg);
+    };
 
     var ua = navigator.userAgent;
     console.log('ua: ' + ua);
@@ -97,6 +104,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         }
         //window.alert("file = " + file);
     };
+    /*
     function androidToJS(arg){
         $('#test').html('androidToJS 0');
         Android.showToast('one ' + arg);
@@ -111,7 +119,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
          $('#test').html('androidToJS 2');
         Android.showToast('two: ' + arg);
     };
-
+    */
 
     this.setFilePath = function(file) {
         //document.getElementById('lblpath').innerHTML = file;

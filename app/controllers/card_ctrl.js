@@ -11,17 +11,20 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 
     $scope.setFileUri = Format.setFileUri;
     //$scope.androidToJS = Format.androidToJS;
 
+    /*
     $window.androidToJS = this.androidToJS;
-
     androidToJS = function (arg){
          $('#test').html('androidToJS 3');
         Android.showToast('one ' + arg);
     };
+    */
 
+    /*
     this.androidToJS = function (arg){
          $('#test').html('androidToJS 4');
         Android.showToast('two: ' + arg);
     };
+    */
 
     // update from cardcreate_ctrl createCard
     $scope.$on('cards', function(event, data) {
