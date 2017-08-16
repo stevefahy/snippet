@@ -96,12 +96,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     };
 
     function setFilePath(file) {
-        document.getElementById('lblpath').innerHTML = file;
+        //document.getElementById('lblpath').innerHTML = file;
         Android.showToast(file);
     }
 
     function setFileUri(uri) {
-        document.getElementById('lbluri').innerHTML = uri;
+        //document.getElementById('lbluri').innerHTML = uri;
         Android.showToast(uri);
     }
 
