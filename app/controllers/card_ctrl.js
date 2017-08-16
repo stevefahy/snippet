@@ -9,6 +9,9 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 
     $scope.choosePhoto = Format.choosePhoto;
     $scope.setFilePath = Format.setFilePath;
     $scope.setFileUri = Format.setFileUri;
+    $scope.androidToJS = Format.androidToJS;
+
+    $window.androidToJS = Format.androidToJS;
 
     // update from cardcreate_ctrl createCard
     $scope.$on('cards', function(event, data) {

@@ -95,6 +95,15 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         //window.alert("file = " + file);
     };
 
+    androidToJS = function (arg){
+        Android.showToast('one ' + arg);
+    };
+
+    this.androidToJS = function (arg){
+        Android.showToast('two: ' + arg);
+    };
+
+
     this.setFilePath = function(file) {
         //document.getElementById('lblpath').innerHTML = file;
         Android.showToast(file);
