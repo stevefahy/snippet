@@ -9,6 +9,7 @@
         "express": "*",
         "regex": "*",
         "body-parser": "*",
-        "angular-sanitize": "*"
+        "angular-sanitize": "*",
+        "multer": "*"
     }
 }

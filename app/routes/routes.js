@@ -11,6 +11,40 @@ function getCards(res) {
 }
 
 module.exports = function(app) {
+    /*
+        app.post('/api/file', function(req, res) {
+            var upload = multer({
+                storage: storage
+            }).single('userFile');
+            upload(req, res, function(err) {
+                res.end('File is uploaded');
+            });
+        });
+        */
+        /*
+    app.post('/api/photo', function(req, res) {
+         console.log('photo');
+         
+        upload(req, res, function(err) {
+            console.log(req.body);
+            console.log(req.files);
+            if (err) {
+                return res.end("Error uploading file.");
+            }
+            res.end("File is uploaded");
+        });
+        
+    });
+    */
+
+   app.post('/api/cards/photo:input', function(req, res) {
+        var input = req.params.input;
+        // use mongoose to get all cards in the database
+        console.log('photo');
+        //getCards(res);
+    });
+ 
+
     app.get('/api/cards', function(req, res) {
         // use mongoose to get all cards in the database
         getCards(res);

@@ -8,8 +8,9 @@ var database = require('./app/configs/database'); // load the database config
 var regex = require('regex');
 var bodyParser = require('body-parser');
 var path = require('path');
+var multer = require('multer');
 
-app.use(express.static('app')); 
+app.use(express.static('app'));
 app.use(bodyParser.urlencoded({ 'extended': 'true' })); // parse application/x-www-form-urlencoded
 app.use(bodyParser.json()); // parse application/json
 app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
@@ -42,17 +43,44 @@ mongoose.connect(dburl); // Connect to local MongoDB instance. A remoteUrl is al
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
-    
+
 });
+
+
+// File upload
+/*
+var storage = multer.diskStorage({
+    destination: function(req, file, callback) {
+        callback(null, './uploads');
+    },
+    filename: function(req, file, callback) {
+        console.log(file);
+        callback(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+    }
+});
+*/
+
+var storage = multer.diskStorage({
+    destination: function(req, file, callback) {
+        callback(null, './uploads');
+    },
+    filename: function(req, file, callback) {
+        console.log(file);
+        callback(null, file.fieldname + '-' + Date.now());
+    }
+});
+var upload = multer({ storage : storage }).array('userPhoto',2);
+
+
 
 
 // routes ======================================================================
 require('./app/routes/routes.js')(app); // load our routes and pass in our app
 
- app.get('*', function(req, res) {
+app.get('*', function(req, res) {
     //res.sendFile('index.html'); // load the single view file (angular will handle the page changes on the front-end)
     res.sendFile('index.html', { root: path.join(__dirname, 'app') });
-    });
+});
 
 // listen (start app with node server.js) ======================================
 app.listen(port);

@@ -29,7 +29,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         self.pasteHtmlAtCaret("<img src ='file:/" + file + "' width='40' height='40'>");
         self.pasteHtmlAtCaret("<img src ='" + file + "' width='40' height='40'>");
         self.pasteHtmlAtCaret("<img src ='//media/external/images/media/3644/20170815_090018.jpg' width='40' height='40'>");
-         self.pasteHtmlAtCaret("<img src ='/media/external/images/media/3644/20170815_090018.jpg' width='40' height='40'>");
+        self.pasteHtmlAtCaret("<img src ='/media/external/images/media/3644/20170815_090018.jpg' width='40' height='40'>");
         self.pasteHtmlAtCaret("<img src ='content://media/external/images/media/3644/20170815_090018.jpg' width='40' height='40'>");
         self.pasteHtmlAtCaret("<img src ='https://www.google.ie/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png' width='40' height='40'>");
     };
@@ -736,3 +736,37 @@ cardApp.directive("contenteditable", function() {
         }
     };
 });
+
+
+cardApp.directive('fileModel', ['$parse', function ($parse) {
+    return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+            var model = $parse(attrs.fileModel);
+            var modelSetter = model.assign;
+            element.bind('change', function(){
+                scope.$apply(function(){
+                    console.log(element[0].files[0]);
+                    modelSetter(scope, element[0].files[0]);
+                });
+            });
+        }
+    };
+}]);
+
+cardApp.service('fileUpload', ['$http', function ($http) {
+    this.uploadFileToUrl = function(file, uploadUrl){
+        var fd = new FormData();
+        fd.append('file', file);
+        $http.post(uploadUrl, fd, {
+            transformRequest: angular.identity,
+            headers: {'Content-Type': undefined}
+        })
+        .success(function(){
+            console.log('upload success');
+        })
+        .error(function(){
+            console.log('upload error');
+        });
+    }
+}]);
