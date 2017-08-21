@@ -11,21 +11,15 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     var within_pre = false;
     var start_key = false;
 
-    //window.androidToJS = this.androidToJS;
-
     $window.androidToJS = this.androidToJS;
     $window.setFilePath = this.setFilePath;
     $window.setFileUri = this.setFileUri;
 
     androidToJS = function (arg){
-        //$('#test').html('androidToJS 3a');
         Android.showToast('one ' + arg);
     };
 
     setFilePath = function(file) {
-        $('#test').html(file);
-        //document.getElementById('lblpath').innerHTML = file;
-        //Android.showToast('file: ' + file);
         self.pasteHtmlAtCaret("<img src ='file:/" + file + "' width='40' height='40'>");
         self.pasteHtmlAtCaret("<img src ='" + file + "' width='40' height='40'>");
         self.pasteHtmlAtCaret("<img src ='//media/external/images/media/3644/20170815_090018.jpg' width='40' height='40'>");
@@ -35,13 +29,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     };
 
     setFileUri = function(uri) {
-        //$('#test').html('uri: ' + uri);
-        //document.getElementById('lbluri').innerHTML = uri;
         Android.showToast(uri);
     };
 
     var ua = navigator.userAgent;
-    console.log('ua: ' + ua);
+
     // Array to dynamically set marky chars to html tags
     var marky_array = [{
         charstring: 'zb',
@@ -474,9 +466,10 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
                         }
                     }
                 } else if (marky_array[ma].script !== '' && marky_array[ma].script !== undefined) {
-                    // Not HTML but SCRIPT      
+                    // Not HTML but SCRIPT 
+                    // TODO Fix so that the actual script which is passed is called     
                     console.log(marky_array[ma].script);
-                    $('#file-input').trigger('click');
+                    $('#upload-trigger').trigger('click');
                     // Use timeout to fix bug on Galaxy S6 (Chrome, FF, Canary)
                     $timeout(function() {
                             self.selectText(elem, currentChars);
@@ -737,40 +730,3 @@ cardApp.directive("contenteditable", function() {
         }
     };
 });
-
-/*
-cardApp.directive('fileModel', ['$parse', function ($parse) {
-    return {
-        restrict: 'A',
-        link: function(scope, element, attrs) {
-            var model = $parse(attrs.fileModel);
-            var modelSetter = model.assign;
-            element.bind('change', function(){
-                scope.$apply(function(){
-                    console.log(element[0].files[0]);
-                    modelSetter(scope, element[0].files[0]);
-                });
-            });
-        }
-    };
-}]);
-
-cardApp.service('fileUpload', ['$http', function ($http) {
-    this.uploadFileToUrl = function(file, uploadUrl){
-        var fd = new FormData();
-        fd.append('file', file);
-        $http.post(uploadUrl, fd, {
-            transformRequest: angular.identity,
-            headers: {
-                'Content-Type': undefined
-            }
-        })
-        .success(function(){
-            console.log('upload success');
-        })
-        .error(function(){
-            console.log('upload error');
-        });
-    }
-}]);
-*/

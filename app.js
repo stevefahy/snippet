@@ -10,7 +10,6 @@ var bodyParser = require('body-parser');
 var path = require('path');
 var formidable = require('formidable');
 var fs = require('fs');
-//var multer = require('multer');
 
 app.use(express.static('app'));
 app.use(bodyParser.urlencoded({ 'extended': 'true' })); // parse application/x-www-form-urlencoded
@@ -47,35 +46,6 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
 
 });
-
-
-// File upload
-/*
-var storage = multer.diskStorage({
-    destination: function(req, file, callback) {
-        callback(null, './uploads');
-    },
-    filename: function(req, file, callback) {
-        console.log(file);
-        callback(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-    }
-});
-*/
-/*
-var storage = multer.diskStorage({
-    destination: function(req, file, callback) {
-        callback(null, './uploads');
-    },
-    filename: function(req, file, callback) {
-        console.log(file);
-        callback(null, file.fieldname + '-' + Date.now());
-    }
-});
-var upload = multer({ storage : storage }).array('userPhoto',2);
-*/
-
-
-
 
 // routes ======================================================================
 require('./app/routes/routes.js')(app); // load our routes and pass in our app

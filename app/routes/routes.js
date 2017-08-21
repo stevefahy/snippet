@@ -15,71 +15,30 @@ function getCards(res) {
 }
 
 module.exports = function(app) {
-    /*
-        app.post('/api/file', function(req, res) {
-            var upload = multer({
-                storage: storage
-            }).single('userFile');
-            upload(req, res, function(err) {
-                res.end('File is uploaded');
-            });
-        });
-        */
-    /*
-    app.post('/api/photo', function(req, res) {
-         console.log('photo');
-         
-        upload(req, res, function(err) {
-            console.log(req.body);
-            console.log(req.files);
-            if (err) {
-                return res.end("Error uploading file.");
-            }
-            res.end("File is uploaded");
-        });
-        
-    });
-    */
-    /*
-   app.post('/api/cards/photo:input', function(req, res) {
-        var input = req.params.input;
-        // use mongoose to get all cards in the database
-        console.log('photo');
-        //getCards(res);
-    });
-    */
+   
     app.post('/upload', function(req, res) {
-        //console.log('upload route');
-        //getCards(res);
-
         // create an incoming form object
         var form = new formidable.IncomingForm();
-
         // specify that we want to allow the user to upload multiple files in a single request
         form.multiples = true;
-
         // store all uploads in the /uploads directory
+        // TODO Change directory location
         form.uploadDir = path.join(__dirname, '../../uploads');
-
         // every time a file has been uploaded successfully,
         // rename it to it's orignal name
         form.on('file', function(field, file) {
             fs.rename(file.path, path.join(form.uploadDir, file.name));
         });
-
         // log any errors that occur
         form.on('error', function(err) {
             console.log('An error has occured: \n' + err);
         });
-
         // once all the files have been uploaded, send a response to the client
         form.on('end', function() {
             res.end('success');
         });
-
         // parse the incoming request containing the form data
         form.parse(req);
-
     });
 
 
@@ -87,6 +46,7 @@ module.exports = function(app) {
         // use mongoose to get all cards in the database
         getCards(res);
     });
+
     app.post('/api/cards/search/:input', function(req, res) {
         // use mongoose to search all cards in the database
         var input = req.params.input;
@@ -99,6 +59,7 @@ module.exports = function(app) {
                 res.json(results);
             });
     });
+
     // create card and send back all cards after creation
     app.post('/api/cards', function(req, res) {
         // create a card, information comes from AJAX request from Angular
@@ -138,6 +99,7 @@ module.exports = function(app) {
             });
         });
     });
+    
     // delete a card
     app.delete('/api/cards/:card_id', function(req, res) {
         Card.remove({

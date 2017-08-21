@@ -19,41 +19,11 @@
                     <div id="hidden_input_container">
                         <input class="form-control" type="text" autocorrect="off" autocapitalize="none" id="hidden_input">
                     </div>
-                    <!-- -->
-                    <input id="file-input" type="file" name="name" ng-click="choosePhoto()" />
-                    <div id="test">empty</div>
-                    <!--
-                    <form id="uploadForm" enctype="multipart/form-data" action="/api/photo" method="post">
-                        <input type="file" name="userPhoto" multiple />
-                        <input type="submit" value="Upload Image" name="submit">
-                        <input type='text' id='random' name='random'>
-                        <br>
-                        <span id="status">waiting...</span>
-                    </form>
-                    -->
-                    <!--
-                    <form class="form-horizontal" enctype="multipart/form-data">
-                        <div class="input-group">
-                            <input class="form-control" type="file" ng-model="input">
-                            <input accept="image/*" name="file" ng-value="fileToUpload" value="{{fileToUpload}}" file-model="fileToUpload" set-file-data="fileToUpload = value;" type="file" id="my_file" />
-                             <input type="file" ng-file-select="onFileSelect($files)">
-                        </div>
-                        <button type="submit" class="btn btn-sm btn-warning" ng-click="uploadPhoto(fileToUpload)">Upload</button>
-                    </form>
-                    -->
-                    <!--
-                     <input type="file" file-model="myFile" />
-                    <button ng-click="uploadFile()">upload me</button>
-                    -->
-
-
                     <div class="progress">
-                    <div class="progress-bar" role="progressbar"></div>
+                        <div class="progress-bar" role="progressbar"></div>
                     </div>
                     <input id="upload-input" type="file" name="uploads[]" multiple="multiple">
-                    <button class="btn btn-sm upload-btn" type="button" ng-click="uploadFile()">Upload File</button>
-
+                    <button id="upload-trigger" class="btn btn-sm upload-btn" type="button" ng-click="uploadFile()">Upload File</button>
         </form>
         </div>
-
         </div>
