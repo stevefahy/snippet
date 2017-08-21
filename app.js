@@ -8,7 +8,9 @@ var database = require('./app/configs/database'); // load the database config
 var regex = require('regex');
 var bodyParser = require('body-parser');
 var path = require('path');
-var multer = require('multer');
+var formidable = require('formidable');
+var fs = require('fs');
+//var multer = require('multer');
 
 app.use(express.static('app'));
 app.use(bodyParser.urlencoded({ 'extended': 'true' })); // parse application/x-www-form-urlencoded
@@ -59,7 +61,7 @@ var storage = multer.diskStorage({
     }
 });
 */
-
+/*
 var storage = multer.diskStorage({
     destination: function(req, file, callback) {
         callback(null, './uploads');
@@ -70,6 +72,7 @@ var storage = multer.diskStorage({
     }
 });
 var upload = multer({ storage : storage }).array('userPhoto',2);
+*/
 
 
 

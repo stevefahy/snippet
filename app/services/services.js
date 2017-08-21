@@ -2,8 +2,13 @@
 // Each function returns a promise object 
 cardApp.factory('Cards', ['$http', function($http) {
     return {
+        /*
         upload: function(input) {
             return $http.post('api/cards/photo/' + input);
+        },
+        */
+        upload: function() {
+            return $http.post('upload');
         },
         get: function() {
             return $http.get('api/cards');

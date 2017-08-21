@@ -114,7 +114,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     for (var i = 0; i < marky_array.length; i++) {
         secondkey_array.push(marky_array[i].charstring.charAt(1));
     }
-
+    /*
     this.choosePhoto = function() {
         
         console.log('choosePhoto');
@@ -124,6 +124,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         }
         //window.alert("file = " + file);
     };
+    */
     /*
     function androidToJS(arg){
         $('#test').html('androidToJS 0');
@@ -737,7 +738,7 @@ cardApp.directive("contenteditable", function() {
     };
 });
 
-
+/*
 cardApp.directive('fileModel', ['$parse', function ($parse) {
     return {
         restrict: 'A',
@@ -760,7 +761,9 @@ cardApp.service('fileUpload', ['$http', function ($http) {
         fd.append('file', file);
         $http.post(uploadUrl, fd, {
             transformRequest: angular.identity,
-            headers: {'Content-Type': undefined}
+            headers: {
+                'Content-Type': undefined
+            }
         })
         .success(function(){
             console.log('upload success');
@@ -770,3 +773,4 @@ cardApp.service('fileUpload', ['$http', function ($http) {
         });
     }
 }]);
+*/
