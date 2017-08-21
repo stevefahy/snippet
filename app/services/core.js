@@ -14,22 +14,28 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     $window.androidToJS = this.androidToJS;
     $window.setFilePath = this.setFilePath;
     $window.setFileUri = this.setFileUri;
+    $window.setFile = this.setFile;
 
     androidToJS = function (arg){
         Android.showToast('one ' + arg);
     };
 
     setFilePath = function(file) {
-        self.pasteHtmlAtCaret("<img src ='file:/" + file + "' width='40' height='40'>");
+        //self.pasteHtmlAtCaret("<img src ='file:/" + file + "' width='40' height='40'>");
         self.pasteHtmlAtCaret("<img src ='" + file + "' width='40' height='40'>");
-        self.pasteHtmlAtCaret("<img src ='//media/external/images/media/3644/20170815_090018.jpg' width='40' height='40'>");
-        self.pasteHtmlAtCaret("<img src ='/media/external/images/media/3644/20170815_090018.jpg' width='40' height='40'>");
-        self.pasteHtmlAtCaret("<img src ='content://media/external/images/media/3644/20170815_090018.jpg' width='40' height='40'>");
-        self.pasteHtmlAtCaret("<img src ='https://www.google.ie/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png' width='40' height='40'>");
+        //self.pasteHtmlAtCaret("<img src ='//media/external/images/media/3644/20170815_090018.jpg' width='40' height='40'>");
+        //self.pasteHtmlAtCaret("<img src ='/media/external/images/media/3644/20170815_090018.jpg' width='40' height='40'>");
+        //self.pasteHtmlAtCaret("<img src ='content://media/external/images/media/3644/20170815_090018.jpg' width='40' height='40'>");
+        //self.pasteHtmlAtCaret("<img src ='https://www.google.ie/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png' width='40' height='40'>");
     };
 
     setFileUri = function(uri) {
         Android.showToast(uri);
+    };
+
+    setFile = function(image) {
+        Android.showToast(image);
+        self.pasteHtmlAtCaret("<img src ='file:/" + file + "' width='40' height='40'>");
     };
 
     //var ua = navigator.userAgent;
