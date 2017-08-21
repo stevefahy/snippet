@@ -1,5 +1,7 @@
 cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 'Format', '$window', function($scope, Cards, replaceTags, $rootScope, Format, $window) {
 
+    var ua = navigator.userAgent;
+
     $scope.getFocus = Format.getFocus;
     $scope.contentChanged = Format.contentChanged;
     $scope.checkKey = Format.checkKey;
@@ -41,9 +43,21 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 
         }
 
     };
+    /*
+            console.log('choosePhoto');
+        if (ua === 'AndroidApp') {
+            Android.choosePhoto();
+            //Android.showToast(file);
+        }
+        */
+
     // UPLOAD ==================================================================
     $scope.uploadFile = function() {
-        console.log('upload pressed');
+        console.log('upload pressed: ' + ua);
+        if (ua === 'AndroidApp') {
+            Android.choosePhoto();
+            Android.showToast(file);
+        }
         $('#upload-input').click();
         $('.progress-bar').text('0%');
         $('.progress-bar').width('0%');

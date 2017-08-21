@@ -32,7 +32,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         Android.showToast(uri);
     };
 
-    var ua = navigator.userAgent;
+    //var ua = navigator.userAgent;
 
     // Array to dynamically set marky chars to html tags
     var marky_array = [{
