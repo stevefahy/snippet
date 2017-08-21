@@ -35,7 +35,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
 
     setFile = function(image) {
         Android.showToast(image);
-        self.pasteHtmlAtCaret("<img src ='file:/" + file + "' width='40' height='40'>");
+        self.pasteHtmlAtCaret("<img src ='file:/" + image + "' width='40' height='40'>");
     };
 
     //var ua = navigator.userAgent;
