@@ -39,7 +39,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         Android.showToast(image);
         // TODO Pass this file reference to the file upload function
         // TODO embed uploaded image
-        self.pasteHtmlAtCaret("<img src ='" + image + "' width='40' height='40'>");
+        //self.pasteHtmlAtCaret("<img src ='" + image + "' width='40' height='40'>");
     };
 
     //var ua = navigator.userAgent;
@@ -201,6 +201,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     };
 
     this.uploadFileAndroid = function(files) {
+        Android.showToast('uploadFileAndroid');
         console.log('uploadFileAndroid');
         //var files = $(this).get(0).files;
         if (files.length > 0) {
