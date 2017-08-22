@@ -23,7 +23,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
 
     setFilePath = function(file) {
         Android.showToast('setFilePath: ' + file);
-        self.pasteHtmlAtCaret("<img src ='file:/" + file + "'/>");
+        //self.pasteHtmlAtCaret("<img src ='file:/" + file + "'/>");
         //self.uploadFileAndroid(file);
         //self.pasteHtmlAtCaret("<img src ='file:/" + file + "' width='40' height='40'>");
         //self.pasteHtmlAtCaret("<img src ='" + file + "' width='40' height='40'>");
@@ -151,7 +151,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         console.log('upload pressed: ' + ua);
         if (ua === 'AndroidApp') {
             Android.choosePhoto();
-            Android.showToast(file);
+            //Android.showToast(file);
         }
         $('#upload-input').click();
         $('.progress-bar').text('0%');
@@ -168,6 +168,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
                     var file = files[i];
                     // add the files to formData object for the data payload
                     formData.append('uploads[]', file, file.name);
+                    //self.pasteHtmlAtCaret("<img src ='" + file + "'/>");
                 }
                 $.ajax({
                     url: '/upload',
