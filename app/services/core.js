@@ -10,17 +10,19 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     var secondkey_array = [];
     var within_pre = false;
     var start_key = false;
+    var ua = navigator.userAgent;
 
     $window.androidToJS = this.androidToJS;
     $window.setFilePath = this.setFilePath;
     $window.setFileUri = this.setFileUri;
     $window.setFile = this.setFile;
 
-    androidToJS = function (arg){
+    androidToJS = function(arg) {
         Android.showToast('one ' + arg);
     };
 
     setFilePath = function(file) {
+        uploadFileAndroid(file);
         //self.pasteHtmlAtCaret("<img src ='file:/" + file + "' width='40' height='40'>");
         self.pasteHtmlAtCaret("<img src ='" + file + "' width='40' height='40'>");
         //self.pasteHtmlAtCaret("<img src ='//media/external/images/media/3644/20170815_090018.jpg' width='40' height='40'>");
@@ -141,8 +143,108 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         Android.showToast('two: ' + arg);
     };
     */
+    // UPLOAD ==================================================================
+    this.uploadFile = function() {
+        console.log('upload pressed: ' + ua);
+        if (ua === 'AndroidApp') {
+            Android.choosePhoto();
+            Android.showToast(file);
+        }
+        $('#upload-input').click();
+        $('.progress-bar').text('0%');
+        $('.progress-bar').width('0%');
 
+        $('#upload-input').on('change', function() {
+            var files = $(this).get(0).files;
+            if (files.length > 0) {
+                // create a FormData object which will be sent as the data payload in the
+                // AJAX request
+                var formData = new FormData();
+                // loop through all the selected files and add them to the formData object
+                for (var i = 0; i < files.length; i++) {
+                    var file = files[i];
+                    // add the files to formData object for the data payload
+                    formData.append('uploads[]', file, file.name);
+                }
+                $.ajax({
+                    url: '/upload',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(data) {
+                        console.log('upload successful!\n' + data);
+                    },
+                    xhr: function() {
+                        // create an XMLHttpRequest
+                        var xhr = new XMLHttpRequest();
+                        // listen to the 'progress' event
+                        xhr.upload.addEventListener('progress', function(evt) {
+                            if (evt.lengthComputable) {
+                                // calculate the percentage of upload completed
+                                var percentComplete = evt.loaded / evt.total;
+                                percentComplete = parseInt(percentComplete * 100);
+                                // update the Bootstrap progress bar with the new percentage
+                                $('.progress-bar').text(percentComplete + '%');
+                                $('.progress-bar').width(percentComplete + '%');
+                                // once the upload reaches 100%, set the progress bar text to done
+                                if (percentComplete === 100) {
+                                    $('.progress-bar').html('Done');
+                                }
+                            }
+                        }, false);
+                        return xhr;
+                    }
+                });
+            }
+        });
+    };
 
+    this.uploadFileAndroid = function(files) {
+        console.log('uploadFileAndroid');
+        //var files = $(this).get(0).files;
+        if (files.length > 0) {
+            // create a FormData object which will be sent as the data payload in the
+            // AJAX request
+            var formData = new FormData();
+            // loop through all the selected files and add them to the formData object
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                // add the files to formData object for the data payload
+                formData.append('uploads[]', file, file.name);
+            }
+            $.ajax({
+                url: '/upload',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    console.log('upload successful!\n' + data);
+                },
+                xhr: function() {
+                    // create an XMLHttpRequest
+                    var xhr = new XMLHttpRequest();
+                    // listen to the 'progress' event
+                    xhr.upload.addEventListener('progress', function(evt) {
+                        if (evt.lengthComputable) {
+                            // calculate the percentage of upload completed
+                            var percentComplete = evt.loaded / evt.total;
+                            percentComplete = parseInt(percentComplete * 100);
+                            // update the Bootstrap progress bar with the new percentage
+                            $('.progress-bar').text(percentComplete + '%');
+                            $('.progress-bar').width(percentComplete + '%');
+                            // once the upload reaches 100%, set the progress bar text to done
+                            if (percentComplete === 100) {
+                                $('.progress-bar').html('Done');
+                            }
+                        }
+                    }, false);
+                    return xhr;
+                }
+            });
+        }
+    };
 
     this.showAndroidToast = function(toast) {
         console.log('show toast js');
@@ -477,6 +579,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
                     // Not HTML but SCRIPT 
                     // TODO Fix so that the actual script which is passed is called     
                     console.log(marky_array[ma].script);
+                    //uploadFileAndroid('file');
                     $('#upload-trigger').trigger('click');
                     // Use timeout to fix bug on Galaxy S6 (Chrome, FF, Canary)
                     $timeout(function() {
