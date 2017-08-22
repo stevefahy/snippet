@@ -203,7 +203,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     };
 
     this.uploadFileAndroid = function(files) {
-        Android.showToast('uploadFileAndroid');
+        Android.showToast('files: ' + files);
+        Android.showToast('uploadFileAndroid: ' + files.length);
         console.log('uploadFileAndroid');
         //var files = $(this).get(0).files;
         if (files.length > 0) {
