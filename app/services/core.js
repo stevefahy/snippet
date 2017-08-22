@@ -18,12 +18,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     $window.setFile = this.setFile;
 
     androidToJS = function(arg) {
-        Android.showToast('one ' + arg);
+        //Android.showToast('one ' + arg);
     };
 
     setFilePath = function(file) {
         Android.showToast('setFilePath: ' + file);
-        this.uploadFileAndroid(file);
+        uploadFileAndroid(file);
         //self.pasteHtmlAtCaret("<img src ='file:/" + file + "' width='40' height='40'>");
         //self.pasteHtmlAtCaret("<img src ='" + file + "' width='40' height='40'>");
         //self.pasteHtmlAtCaret("<img src ='//media/external/images/media/3644/20170815_090018.jpg' width='40' height='40'>");
