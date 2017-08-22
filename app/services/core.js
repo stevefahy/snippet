@@ -202,21 +202,21 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         });
     };
 
-    this.uploadFileAndroid = function(files) {
-        Android.showToast('files: ' + files);
-        Android.showToast('uploadFileAndroid: ' + files.length);
+    this.uploadFileAndroid = function(file) {
+        Android.showToast('file: ' + file);
+        //Android.showToast('uploadFileAndroid: ' + file.length);
         console.log('uploadFileAndroid');
         //var files = $(this).get(0).files;
-        if (files.length > 0) {
+        //if (files.length > 0) {
             // create a FormData object which will be sent as the data payload in the
             // AJAX request
             var formData = new FormData();
             // loop through all the selected files and add them to the formData object
-            for (var i = 0; i < files.length; i++) {
-                var file = files[i];
+            //for (var i = 0; i < files.length; i++) {
+                //var file = files[i];
                 // add the files to formData object for the data payload
                 formData.append('uploads[]', file, file.name);
-            }
+            //}
             $.ajax({
                 url: '/upload',
                 type: 'POST',
@@ -247,7 +247,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
                     return xhr;
                 }
             });
-        }
+        //}
     };
 
     this.showAndroidToast = function(toast) {
