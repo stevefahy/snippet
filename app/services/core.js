@@ -34,7 +34,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
 
     setFileUri = function(uri) {
         Android.showToast('setFileUri: ' + uri);
-        self.uploadFileAndroid(file);
+        self.uploadFileAndroid(uri);
     };
 
     setFile = function(image) {
