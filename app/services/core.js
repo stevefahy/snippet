@@ -22,6 +22,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     };
 
     setFilePath = function(file) {
+        Android.showToast('setFilePath: ' + file);
         this.uploadFileAndroid(file);
         //self.pasteHtmlAtCaret("<img src ='file:/" + file + "' width='40' height='40'>");
         //self.pasteHtmlAtCaret("<img src ='" + file + "' width='40' height='40'>");
@@ -32,11 +33,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     };
 
     setFileUri = function(uri) {
-        Android.showToast(uri);
+        //Android.showToast(uri);
     };
 
     setFile = function(image) {
-        Android.showToast(image);
+        //Android.showToast(image);
         // TODO Pass this file reference to the file upload function
         // TODO embed uploaded image
         //self.pasteHtmlAtCaret("<img src ='" + image + "' width='40' height='40'>");
