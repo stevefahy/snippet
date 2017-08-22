@@ -22,9 +22,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     };
 
     setFilePath = function(file) {
-        uploadFileAndroid(file);
+        this.uploadFileAndroid(file);
         //self.pasteHtmlAtCaret("<img src ='file:/" + file + "' width='40' height='40'>");
-        self.pasteHtmlAtCaret("<img src ='" + file + "' width='40' height='40'>");
+        //self.pasteHtmlAtCaret("<img src ='" + file + "' width='40' height='40'>");
         //self.pasteHtmlAtCaret("<img src ='//media/external/images/media/3644/20170815_090018.jpg' width='40' height='40'>");
         //self.pasteHtmlAtCaret("<img src ='/media/external/images/media/3644/20170815_090018.jpg' width='40' height='40'>");
         //self.pasteHtmlAtCaret("<img src ='content://media/external/images/media/3644/20170815_090018.jpg' width='40' height='40'>");
@@ -579,7 +579,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
                     // Not HTML but SCRIPT 
                     // TODO Fix so that the actual script which is passed is called     
                     console.log(marky_array[ma].script);
-                    //uploadFileAndroid('file');
+                    //this.uploadFileAndroid('file');
                     $('#upload-trigger').trigger('click');
                     // Use timeout to fix bug on Galaxy S6 (Chrome, FF, Canary)
                     $timeout(function() {
