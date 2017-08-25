@@ -171,8 +171,10 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
                     formData.append('uploads[]', file, file.name);
                     //self.pasteHtmlAtCaret("<img src ='" + file + "'/>");
                 }
+
                 $.ajax({
-                    url: '/upload',
+                    //url: '/upload',
+                    url: 'http://www.snipbee.com:8060/upload',
                     type: 'POST',
                     data: formData,
                     processData: false,
