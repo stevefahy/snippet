@@ -174,7 +174,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
 
                 $.ajax({
                     //url: '/upload',
-                    url: 'http://www.snipbee.com:8060/upload',
+                    url: 'http://www.snipbee.com/upload',
                     type: 'POST',
                     data: formData,
                     processData: false,
