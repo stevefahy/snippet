@@ -17,6 +17,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q',  function(
     // Set serverUrl based upon current host (local or live)
     if(location.hostname === 'localhost'){
         serverUrl = 'http://localhost:8060/upload';
+        //serverUrl = '/upload';
     } else {
         serverUrl = 'http://www.snipbee.com/upload';
     }
@@ -110,7 +111,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q',  function(
         $('.progress-bar').width('0%');
 
         $('#upload-input').on('change', function() {
-
+            console.log(serverUrl);
             var files = $(this).get(0).files;
             if (files.length > 0) {
                 // create a FormData object which will be sent as the data payload in the
