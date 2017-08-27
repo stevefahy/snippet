@@ -10,6 +10,8 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 
     $scope.showAndroidToast = Format.showAndroidToast;
     $scope.uploadFile = Format.uploadFile;
     $scope.uploadFileAndroid = Format.uploadFileAndroid;
+
+
     //$scope.choosePhoto = Format.choosePhoto;
     //$scope.setFilePath = Format.setFilePath;
     //$scope.setFileUri = Format.setFileUri;

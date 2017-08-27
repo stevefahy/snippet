@@ -4,7 +4,7 @@ var app = express(); // create our app w/ express
 var mongoose = require('mongoose'); // mongoose for mongodb
 var mongodb = require('mongodb');
 var port = process.env.PORT || 8090; // set the port
-var database = require('./app/configs/database'); // load the database config
+var urls = require('./app/configs/urls'); // load the urls config
 var regex = require('regex');
 var bodyParser = require('body-parser');
 var path = require('path');
@@ -37,10 +37,10 @@ for (var k in interfaces) {
 // Dell XPS 13
 if (addresses == '192.168.192.60') {
     // MongoDB
-    var dburl = database.localUrl;
+    var dburl = urls.localUrl;
 } else {
     // MongoDB
-    var dburl = database.remoteUrl;
+    var dburl = urls.remoteUrl;
 }
 mongoose.connect(dburl); // Connect to local MongoDB instance. A remoteUrl is also available (modulus.io)
 
@@ -53,13 +53,19 @@ db.once('open', function() {
 // routes ======================================================================
 require('./app/routes/routes.js')(app); // load our routes and pass in our app
 
+
+
 app.get('*', function(req, res) {
     //res.sendFile('index.html'); // load the single view file (angular will handle the page changes on the front-end)
     res.sendFile('index.html', { root: path.join(__dirname, 'app') });
 });
 
+
 // listen (start app with node server.js) ======================================
 app.listen(port);
+
+
+
 
 console.log("App listening on port " + port);
 console.log("Mongoose connection: " + dburl);

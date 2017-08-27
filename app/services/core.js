@@ -1,6 +1,6 @@
 var cardApp = angular.module("cardApp", ['ngSanitize']);
 
-cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($window, $rootScope, $timeout, $q) {
+cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q',  function($window, $rootScope, $timeout, $q) {
 
     var self = this;
     var tag_count_previous;
@@ -16,6 +16,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     $window.setFilePath = this.setFilePath;
     $window.setFileUri = this.setFileUri;
     $window.setFile = this.setFile;
+
+    if(location.hostname === 'localhost'){
+        serverUrl = 'http://localhost:8060/upload';
+    } else {
+        serverUrl = 'http://www.snipbee.com/upload';
+    }
 
     androidToJS = function(arg) {
         //Android.showToast('one ' + arg);
@@ -159,6 +165,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         $('.progress-bar').width('0%');
 
         $('#upload-input').on('change', function() {
+
             var files = $(this).get(0).files;
             if (files.length > 0) {
                 // create a FormData object which will be sent as the data payload in the
@@ -174,7 +181,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
 
                 $.ajax({
                     //url: '/upload',
-                    url: 'http://www.snipbee.com/upload',
+                    //url: 'http://www.snipbee.com/upload',
+                    url: serverUrl,
                     type: 'POST',
                     data: formData,
                     processData: false,
