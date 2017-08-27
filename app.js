@@ -53,19 +53,13 @@ db.once('open', function() {
 // routes ======================================================================
 require('./app/routes/routes.js')(app); // load our routes and pass in our app
 
-
-
 app.get('*', function(req, res) {
     //res.sendFile('index.html'); // load the single view file (angular will handle the page changes on the front-end)
     res.sendFile('index.html', { root: path.join(__dirname, 'app') });
 });
 
-
 // listen (start app with node server.js) ======================================
 app.listen(port);
-
-
-
 
 console.log("App listening on port " + port);
 console.log("Mongoose connection: " + dburl);

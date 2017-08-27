@@ -15,10 +15,9 @@ function getCards(res) {
 }
 
 module.exports = function(app) {
-
-
+/*
     app.post('/upload', function(req, res) {
-        console.log('post');
+        console.log('called');
         // create an incoming form object
         var form = new formidable.IncomingForm();
         // specify that we want to allow the user to upload multiple files in a single request
@@ -42,7 +41,7 @@ module.exports = function(app) {
         // parse the incoming request containing the form data
         form.parse(req);
     });
-    
+    */
     /*
    app.post('/upload', function(req, res) {
         // create an incoming form object
