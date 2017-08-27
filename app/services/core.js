@@ -17,12 +17,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q',  function(
     $window.setFileUri = this.setFileUri;
     $window.setFile = this.setFile;
 
+    // Set serverUrl based upon current host (local or live)
     if(location.hostname === 'localhost'){
         serverUrl = 'http://localhost:8060/upload';
     } else {
         serverUrl = 'http://www.snipbee.com/upload';
     }
-    console.log('serverUrl: ' + serverUrl);
 
     androidToJS = function(arg) {
         //Android.showToast('one ' + arg);
@@ -156,7 +156,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q',  function(
     */
     // UPLOAD ==================================================================
     this.uploadFile = function() {
-        console.log('upload pressed: ' + ua);
         if (ua === 'AndroidApp') {
             Android.choosePhoto();
             //Android.showToast(file);
@@ -181,8 +180,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q',  function(
                 }
 
                 $.ajax({
-                    //url: '/upload',
-                    //url: 'http://www.snipbee.com/upload',
                     url: serverUrl,
                     type: 'POST',
                     data: formData,
@@ -215,7 +212,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q',  function(
             }
         });
     };
-
+/*
     this.uploadFileAndroid = function(file) {
         Android.showToast('file: ' + file);
         //Android.showToast('uploadFileAndroid: ' + file.length);
@@ -263,7 +260,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q',  function(
             });
         //}
     };
-
+    */
     this.showAndroidToast = function(toast) {
         console.log('show toast js');
         if (ua === 'AndroidApp') {
