@@ -22,7 +22,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q',  function(
     } else {
         serverUrl = 'http://www.snipbee.com/upload';
     }
-
+    console.log('serverUrl: ' + serverUrl);
+    
     androidToJS = function(arg) {
         //Android.showToast('one ' + arg);
     };
