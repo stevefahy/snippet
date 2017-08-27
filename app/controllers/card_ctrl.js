@@ -1,7 +1,5 @@
 cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 'Format', '$window', function($scope, Cards, replaceTags, $rootScope, Format, $window) {
 
-
-
     $scope.getFocus = Format.getFocus;
     $scope.contentChanged = Format.contentChanged;
     $scope.checkKey = Format.checkKey;
@@ -9,28 +7,6 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 
     $scope.keyListen = Format.keyListen;
     $scope.showAndroidToast = Format.showAndroidToast;
     $scope.uploadFile = Format.uploadFile;
-    $scope.uploadFileAndroid = Format.uploadFileAndroid;
-
-
-    //$scope.choosePhoto = Format.choosePhoto;
-    //$scope.setFilePath = Format.setFilePath;
-    //$scope.setFileUri = Format.setFileUri;
-    //$scope.androidToJS = Format.androidToJS;
-
-    /*
-    $window.androidToJS = this.androidToJS;
-    androidToJS = function (arg){
-         $('#test').html('androidToJS 3');
-        Android.showToast('one ' + arg);
-    };
-    */
-
-    /*
-    this.androidToJS = function (arg){
-         $('#test').html('androidToJS 4');
-        Android.showToast('two: ' + arg);
-    };
-    */
 
     // update from cardcreate_ctrl createCard
     $scope.$on('cards', function(event, data) {
@@ -47,15 +23,7 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 
         }
 
     };
-    /*
-            console.log('choosePhoto');
-        if (ua === 'AndroidApp') {
-            Android.choosePhoto();
-            //Android.showToast(file);
-        }
-        */
 
-    
     // DELETE ==================================================================
     $scope.deleteCard = function(id) {
         Cards.delete(id)

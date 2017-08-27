@@ -12,10 +12,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q',  function(
     var start_key = false;
     var ua = navigator.userAgent;
 
-    $window.androidToJS = this.androidToJS;
-    $window.setFilePath = this.setFilePath;
-    $window.setFileUri = this.setFileUri;
-    $window.setFile = this.setFile;
+    //$window.androidToJS = this.androidToJS;
 
     // Set serverUrl based upon current host (local or live)
     if(location.hostname === 'localhost'){
@@ -24,36 +21,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q',  function(
         serverUrl = 'http://www.snipbee.com/upload';
     }
 
+    /*
     androidToJS = function(arg) {
-        //Android.showToast('one ' + arg);
+        Android.showToast('one ' + arg);
     };
-
-    setFilePath = function(file) {
-        Android.showToast('setFilePath: ' + file);
-        self.uploadFileAndroid(file);
-        //self.pasteHtmlAtCaret("<img src ='file:/" + file + "'/>");
-        //self.uploadFileAndroid(file);
-        //self.pasteHtmlAtCaret("<img src ='file:/" + file + "' width='40' height='40'>");
-        //self.pasteHtmlAtCaret("<img src ='" + file + "' width='40' height='40'>");
-        //self.pasteHtmlAtCaret("<img src ='//media/external/images/media/3644/20170815_090018.jpg' width='40' height='40'>");
-        //self.pasteHtmlAtCaret("<img src ='/media/external/images/media/3644/20170815_090018.jpg' width='40' height='40'>");
-        //self.pasteHtmlAtCaret("<img src ='content://media/external/images/media/3644/20170815_090018.jpg' width='40' height='40'>");
-        //self.pasteHtmlAtCaret("<img src ='https://www.google.ie/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png' width='40' height='40'>");
-    };
-
-    setFileUri = function(uri) {
-        //Android.showToast('setFileUri: ' + uri);
-        //self.uploadFileAndroid(uri);
-    };
-
-    setFile = function(image) {
-        //Android.showToast(image);
-        // TODO Pass this file reference to the file upload function
-        // TODO embed uploaded image
-        //self.pasteHtmlAtCaret("<img src ='" + image + "' width='40' height='40'>");
-    };
-
-    //var ua = navigator.userAgent;
+    */
 
     // Array to dynamically set marky chars to html tags
     var marky_array = [{
@@ -127,38 +99,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q',  function(
     for (var i = 0; i < marky_array.length; i++) {
         secondkey_array.push(marky_array[i].charstring.charAt(1));
     }
-    /*
-    this.choosePhoto = function() {
-        
-        console.log('choosePhoto');
-        if (ua === 'AndroidApp') {
-            Android.choosePhoto();
-            //Android.showToast(file);
-        }
-        //window.alert("file = " + file);
-    };
-    */
-    /*
-    function androidToJS(arg){
-        $('#test').html('androidToJS 0');
-        Android.showToast('one ' + arg);
-    };
-
-    androidToJS = function (arg){
-        $('#test').html('androidToJS 1');
-        Android.showToast('one ' + arg);
-    };
-
-    this.androidToJS = function (arg){
-         $('#test').html('androidToJS 2');
-        Android.showToast('two: ' + arg);
-    };
-    */
+   
     // UPLOAD ==================================================================
     this.uploadFile = function() {
         if (ua === 'AndroidApp') {
             Android.choosePhoto();
-            //Android.showToast(file);
         }
         $('#upload-input').click();
         $('.progress-bar').text('0%');
@@ -212,55 +157,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q',  function(
             }
         });
     };
-/*
-    this.uploadFileAndroid = function(file) {
-        Android.showToast('file: ' + file);
-        //Android.showToast('uploadFileAndroid: ' + file.length);
-        console.log('uploadFileAndroid');
-        //var files = $(this).get(0).files;
-        //if (files.length > 0) {
-            // create a FormData object which will be sent as the data payload in the
-            // AJAX request
-            var formData = new FormData();
-            // loop through all the selected files and add them to the formData object
-            //for (var i = 0; i < files.length; i++) {
-                //var file = files[i];
-                // add the files to formData object for the data payload
-                formData.append('uploads[]', file, file.name);
-            //}
-            $.ajax({
-                url: '/upload',
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(data) {
-                    console.log('upload successful!\n' + data);
-                },
-                xhr: function() {
-                    // create an XMLHttpRequest
-                    var xhr = new XMLHttpRequest();
-                    // listen to the 'progress' event
-                    xhr.upload.addEventListener('progress', function(evt) {
-                        if (evt.lengthComputable) {
-                            // calculate the percentage of upload completed
-                            var percentComplete = evt.loaded / evt.total;
-                            percentComplete = parseInt(percentComplete * 100);
-                            // update the Bootstrap progress bar with the new percentage
-                            $('.progress-bar').text(percentComplete + '%');
-                            $('.progress-bar').width(percentComplete + '%');
-                            // once the upload reaches 100%, set the progress bar text to done
-                            if (percentComplete === 100) {
-                                $('.progress-bar').html('Done');
-                            }
-                        }
-                    }, false);
-                    return xhr;
-                }
-            });
-        //}
-    };
-    */
+
     this.showAndroidToast = function(toast) {
         console.log('show toast js');
         if (ua === 'AndroidApp') {

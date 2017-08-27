@@ -15,62 +15,6 @@ function getCards(res) {
 }
 
 module.exports = function(app) {
-/*
-    app.post('/upload', function(req, res) {
-        console.log('called');
-        // create an incoming form object
-        var form = new formidable.IncomingForm();
-        // specify that we want to allow the user to upload multiple files in a single request
-        form.multiples = true;
-        // store all uploads in the /uploads directory
-        // TODO Change directory location
-        form.uploadDir = path.join(__dirname, '../../uploads');
-        // every time a file has been uploaded successfully,
-        // rename it to it's orignal name
-        form.on('file', function(field, file) {
-            fs.rename(file.path, path.join(form.uploadDir, file.name));
-        });
-        // log any errors that occur
-        form.on('error', function(err) {
-            console.log('An error has occured: \n' + err);
-        });
-        // once all the files have been uploaded, send a response to the client
-        form.on('end', function() {
-            res.end('success');
-        });
-        // parse the incoming request containing the form data
-        form.parse(req);
-    });
-    */
-    /*
-   app.post('/upload', function(req, res) {
-        // create an incoming form object
-        var form = new formidable.IncomingForm();
-        // specify that we want to allow the user to upload multiple files in a single request
-        form.multiples = true;
-        // store all uploads in the /uploads directory
-        // TODO Change directory location
-        form.uploadDir = path.join(__dirname, '../../upload');
-        //form.uploadDir = "http://www.snipbee.com:8060/upload";
-        //var dirname = "/home/steve/node/file-upload";
-        //form.uploadDir = dirname + "/uploads/";
-        // every time a file has been uploaded successfully,
-        // rename it to it's orignal name
-        form.on('file', function(field, file) {
-            fs.rename(file.path, path.join(form.uploadDir, file.name));
-        });
-        // log any errors that occur
-        form.on('error', function(err) {
-            console.log('An error has occured: \n' + err);
-        });
-        // once all the files have been uploaded, send a response to the client
-        form.on('end', function() {
-            res.end('success');
-        });
-        // parse the incoming request containing the form data
-        form.parse(req);
-    });
-*/
 
     app.get('/api/cards', function(req, res) {
         // use mongoose to get all cards in the database
