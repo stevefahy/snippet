@@ -20,10 +20,10 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q',  function(
     if(location.hostname === 'localhost'){
         serverUrl = 'http://localhost:8060/upload';
     } else {
-        serverUrl = 'http://www.snipbee.com/upload';
+        serverUrl = 'http://www.snipbee.com/snip/upload';
     }
     console.log('serverUrl: ' + serverUrl);
-    
+
     androidToJS = function(arg) {
         //Android.showToast('one ' + arg);
     };
