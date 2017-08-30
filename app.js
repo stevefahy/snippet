@@ -19,6 +19,7 @@ app.use(bodyParser.urlencoded({ 'extended': 'true' })); // parse application/x-w
 app.use(bodyParser.json()); // parse application/json
 app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
 
+
 // configuration ===============================================================
 // Check for local or production environment
 var os = require('os');
