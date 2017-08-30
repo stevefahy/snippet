@@ -105,122 +105,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         secondkey_array.push(marky_array[i].charstring.charAt(1));
     }
 
-
-    /*
-        function resizeImagex(file) {
-
-            // return a new promise
-            //return $q(function(resolve, reject) {
-
-            filename = file.name;
-            console.log('resizeImage: ' + filename);
-            var canvas = document.createElement('canvas');
-            var ctx = canvas.getContext('2d');
-            var img = document.createElement("img");
-            img.onload = function() {
-
-
-                console.log('image created');
-                console.log('Before scaling width ' + img.width + ' height: ' + img.height);
-                ctx.drawImage(img, 0, 0);
-
-                var MAX_WIDTH = 1080;
-                var MAX_HEIGHT = 1080;
-                var width = img.width;
-                var height = img.height;
-
-
-                if (width > height && width > MAX_WIDTH) {
-                    console.log("Pictures", "Reduce width from " + width + " to " + MAX_WIDTH);
-                    // landscape
-                    ratio = width / MAX_WIDTH;
-                    width = MAX_WIDTH;
-                    height = height / ratio;
-                } else if (height > width && height > MAX_HEIGHT) {
-                    console.log("Pictures", "Reduce height from " + height + " to " + MAX_HEIGHT);
-                    // portrait
-                    ratio = height / MAX_HEIGHT;
-                    height = MAX_HEIGHT;
-                    width = width / ratio;
-                }
-                console.log("Picture after scaling Width and height are " + width + "--" + height);
-                canvas.width = width;
-                canvas.height = height;
-                ctx = canvas.getContext("2d");
-                ctx.drawImage(img, 0, 0, width, height);
-
-                //var dataurl = canvas.toDataURL("image/png");
-                var dataURL = canvas.toDataURL('image/jpeg', 0.9);
-                //console.log('dataurl: ' + dataurl);
-                var blob = dataURItoBlob(dataURL);
-
-                //resolve(dataURL);
-
-                //return blob;
-                //postImage(blob, filename);
-                //postImage(blob, filename);
-                //postImage(form, file);
-
-
-
-
-                var reader = new FileReader();
-                reader.addEventListener("load", function() {
-                    //preview.src = reader.result;
-                    img.src = reader.result;
-
-                }, false);
-
-                reader.readAsDataURL(file);
-
-
-
-            };
-
-            //});
-
-        }
-        */
-    /*
-        postImage = function(file, filename) {
-            console.log('file returned: ' + filename);
-            // add the files to formData object for the data payload
-            form.append('uploads[]', file, filename);
-            //self.pasteHtmlAtCaret("<img src ='" + file + "'/>");
-            //checkFinished(form);
-            //console.log('I: '+i);
-            //if (i == 0) {
-            //uploadImages(form);
-            //}
-        };
-        */
-
-
-
-
-    /*
-    checkFinished = function(form) {
-        // uploadImages(form);
-
-    };
-
-    function asyncGreet(name) {
-        okToGreet = true;
-        // perform some asynchronous operation, resolve or reject the promise when appropriate.
-        return $q(function(resolve, reject) {
-            setTimeout(function() {
-                if (okToGreet) {
-                    resolve('Hello, ' + name + '!');
-                } else {
-                    reject('Greeting ' + name + ' is not allowed.');
-                }
-            }, 1000);
-        });
-    }
-*/
     function createImageElement() {
-        console.log('createImageElement()');
-        //var deferred = $q.defer();
         return $q(function(resolve, reject) {
             var img = document.createElement("img");
             resolve(img);
@@ -228,17 +113,14 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     }
 
     function loadFileReader(img, file) {
-        console.log('loadFileReader');
         return $q(function(resolve, reject) {
             var reader = new FileReader();
             reader.addEventListener("load", function() {
-                //preview.src = reader.result;
                 img.src = reader.result;
                 resolve(img);
             }, false);
             reader.readAsDataURL(file);
         });
-
     }
 
     function resizeImage(img) {
@@ -246,30 +128,24 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
             var canvas = document.createElement('canvas');
             var ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0);
-            //var MAX_WIDTH = 1080;
-            //var MAX_HEIGHT = 1080;
             var width = img.width;
             var height = img.height;
             if (width > height && width > MAX_WIDTH) {
-                console.log("Pictures", "Reduce width from " + width + " to " + MAX_WIDTH);
                 // landscape
                 ratio = width / MAX_WIDTH;
                 width = MAX_WIDTH;
                 height = height / ratio;
             } else if (height > width && height > MAX_HEIGHT) {
-                console.log("Pictures", "Reduce height from " + height + " to " + MAX_HEIGHT);
                 // portrait
                 ratio = height / MAX_HEIGHT;
                 height = MAX_HEIGHT;
                 width = width / ratio;
             }
-            console.log("Picture after scaling Width and height are " + width + "--" + height);
             canvas.width = width;
             canvas.height = height;
             ctx = canvas.getContext("2d");
             ctx.drawImage(img, 0, 0, width, height);
-
-            //var dataurl = canvas.toDataURL("image/png");
+            // compress to 90% JPEG
             var dataURL = canvas.toDataURL('image/jpeg', 0.9);
             resolve(dataURL);
         });
@@ -279,27 +155,24 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         return $q(function(resolve, reject) {
             // convert base64/URLEncoded data component to raw binary data held in a string
             var byteString;
-            if (dataURI.split(',')[0].indexOf('base64') >= 0)
+            if (dataURI.split(',')[0].indexOf('base64') >= 0) {
                 byteString = atob(dataURI.split(',')[1]);
-            else
+            } else {
                 byteString = unescape(dataURI.split(',')[1]);
-
+            }
             // separate out the mime component
             var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-
             // write the bytes of the string to a typed array
             var ia = new Uint8Array(byteString.length);
             for (var i = 0; i < byteString.length; i++) {
                 ia[i] = byteString.charCodeAt(i);
             }
-            console.log('blob done');
             var newBlob = new Blob([ia], { type: mimeString });
             resolve(newBlob);
         });
     };
 
     uploadImages = function(form) {
-        console.log('upload images: ' + form);
         $.ajax({
             url: serverUrl,
             type: 'POST',
@@ -307,7 +180,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
             processData: false,
             contentType: false,
             success: function(data) {
-                console.log('upload successful!\n' + data);
+                //console.log('upload successful!\n' + data);
             },
             xhr: function() {
                 // create an XMLHttpRequest
@@ -331,139 +204,49 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
             }
         });
     };
-    /*
-       function lastTask(){
-            console.log('FIN');
-            uploadImages(formData);
-        }
-        */
 
     prepareImage = function(files) {
-        console.log('START');;
-        //var defer = $q.defer();
         var promises = [];
-        //files = ['one','two'];
         self.formData = new FormData();
         angular.forEach(files, function(file, key) {
-            // console.log(value + ' : ' + key);
-            console.log('prepareImage: ' + file.name);
             promises.push(
-                //var promise = createImageElement();
-                //promise.then(function(img) {
                 createImageElement().then(function(img) {
-                    //promise.then(function(img) {
                     return loadFileReader(img, file);
                 }).then(function(img) {
-                    console.log('Before scaling width ' + img.width + ' height: ' + img.height);
                     return resizeImage(img);
                 }).then(function(dataurl) {
-                    console.log('dataurl');
                     return dataURItoBlob(dataurl);
                 }).then(function(blob) {
-                    console.log('append: ' + file.name);
                     self.formData.append('uploads[]', blob, file.name);
-                    console.log(self.formData);
-                    console.log('blob');
                 })
-
             );
-
         });
 
-        //$q.all(promises).then(lastTask);
         $q.all(promises).then(function(formData) {
-            //lastTask();
-            console.log('FIN');
+            // Image processing of ALL images complete. Upload form
             uploadImages(self.formData);
         });
     };
 
-    /*
-        createForm = function() {
-            console.log('FORM Create');
-            //var formData = new FormData();
-        };
-        */
-    //formData = new FormData();
     // UPLOAD ==================================================================
     this.uploadFile = function() {
-        //var formData = new FormData();
         if (ua === 'AndroidApp') {
             Android.choosePhoto();
         }
         $('#upload-input').click();
         $('.progress-bar').text('0%');
         $('.progress-bar').width('0%');
-        // Unbind the on change event to prevent it form firing twice after first call
+        // Unbind the on change event to prevent it from firing twice after first call
         $('#upload-input').unbind();
         $('#upload-input').on('change', function() {
-
             var files = $(this).get(0).files;
-            console.log('INPUT: ' + files.length);
             if (files.length > 0) {
-                // createForm();
-                // create a FormData object which will be sent as the data payload in the
-                // AJAX request
-                //console.log('FORM Create');
-                //var formData = new FormData();
                 prepareImage(files);
-                // loop through all the selected files and add them to the formData object
-                // for (var i = 0; i < files.length; i++) {
-                // console.log(files.length);
-                // for (var i = files.length - 1; i >= 0; i--) {
-                // var file = files[i];
-                //console.log('alterx: ' + file.name);
-                //prepareImage(file);
-                //resizeImage(formData, file, i);
-                //resizeImage(file);
-                //postImage(formData, file);
-                //formData.append('uploads[]', file, file.name);
-                /*
-                file2 = resizeImage(file);
-                console.log('file2 ' + file2);
-                // add the files to formData object for the data payload
-                formData.append('uploads[]', file, file.name);
-                //self.pasteHtmlAtCaret("<img src ='" + file + "'/>");
-                */
-                // }
-                /*
-                $.ajax({
-                    url: serverUrl,
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function(data) {
-                        console.log('upload successful!\n' + data);
-                    },
-                    xhr: function() {
-                        // create an XMLHttpRequest
-                        var xhr = new XMLHttpRequest();
-                        // listen to the 'progress' event
-                        xhr.upload.addEventListener('progress', function(evt) {
-                            if (evt.lengthComputable) {
-                                // calculate the percentage of upload completed
-                                var percentComplete = evt.loaded / evt.total;
-                                percentComplete = parseInt(percentComplete * 100);
-                                // update the Bootstrap progress bar with the new percentage
-                                $('.progress-bar').text(percentComplete + '%');
-                                $('.progress-bar').width(percentComplete + '%');
-                                // once the upload reaches 100%, set the progress bar text to done
-                                if (percentComplete === 100) {
-                                    $('.progress-bar').html('Done');
-                                }
-                            }
-                        }, false);
-                        return xhr;
-                    }
-                });
-                */
             }
         });
     };
 
     this.showAndroidToast = function(toast) {
-        console.log('show toast js');
         if (ua === 'AndroidApp') {
             Android.showToast(toast);
         }
@@ -1038,8 +821,6 @@ cardApp.service('replaceTags', function() {
     };
 
 });
-
-
 
 cardApp.directive("contenteditable", function() {
     return {
