@@ -485,6 +485,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         return;
     }
 
+    resumeScrolling = function() {
+        // Turn back on Body scrolling 
+        $("body").css({ "overflow": "visible", "position": "relative" });
+    };
+
     this.markyCheck = function(content, elem, pre) {
         // pre false - currently not within a pre
         // pre true - currently within a pre
@@ -536,6 +541,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
                                 function() {
                                     return $timeout(function() {
                                         document.getElementById(elem).focus();
+                                         //resumeScrolling();
                                         if (close_tag) {
                                             if (ma_arg.html == 'pre') {
                                                 moveAfterPre('marky');
@@ -725,8 +731,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         if (marky_started_array.indexOf('zp') >= 0) {
             within_pre = true;
         }
+
         // Move the hidden input filed so that scrolling does not occur on mobile
-        $("#hidden_input").css({ top: $(window).scrollTop() });
+        $("#hidden_input_container").css({ top: $(window).scrollTop()+50 });
+        // Turn off Body scrolling temporarily
+        //$("body").css({ "overflow": "hidden", "position": "fixed" });
         $('#hidden_input').focus();
     }
 

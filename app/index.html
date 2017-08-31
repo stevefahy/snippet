@@ -1,12 +1,13 @@
 <!doctype html>
 <!-- ASSIGN OUR ANGULAR MODULE -->
-<htm ng-app="cardApp">
+<html ng-app="cardApp">
 
     <head>
         <!-- META -->
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, target-densityDpi=device-dpi">
         <!-- Optimize mobile viewport -->
         <title>Snipbee</title>
         <!-- SCROLLS -->
@@ -26,7 +27,9 @@
             <div ng-include src="'./views/card.html'"></div>
             <div ng-include src="'./views/card_search.html'"></div>
             <div ng-include src="'./views/card_create.html'"></div>
+            
         </div>
+        
         <!-- Angular -->
         <!--<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>-->
         <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.11/angular.min.js"></script>
@@ -44,5 +47,6 @@
         <script src="./controllers/cardcreate_ctrl.js"></script>
         <!-- load Services -->
         <script src="./services/services.js"></script>
+            <div id="footer">Footer - Just scroll...</div>
     </body>
     </html>
