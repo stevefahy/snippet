@@ -16,7 +16,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     var MAX_HEIGHT = 1080;
     var IMAGES_URL = 'fileuploads/images/';
 
-    //$window.androidToJS = this.androidToJS;
+    $window.androidToJS = this.androidToJS;
 
     // Set serverUrl based upon current host (local or live)
     if (location.hostname === 'localhost') {
@@ -28,11 +28,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     }
 
 
-    /*
+    
     androidToJS = function(arg) {
         Android.showToast('one ' + arg);
     };
-    */
+    
 
     // Array to dynamically set marky chars to html tags
     var marky_array = [{
@@ -242,18 +242,19 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     this.uploadFile = function() {
         if (ua === 'AndroidApp') {
             Android.choosePhoto();
+        } else {
+            $('#upload-input').click();
+            $('.progress-bar').text('0%');
+            $('.progress-bar').width('0%');
+            // Unbind the on change event to prevent it from firing twice after first call
+            $('#upload-input').unbind();
+            $('#upload-input').on('change', function() {
+                var files = $(this).get(0).files;
+                if (files.length > 0) {
+                    prepareImage(files);
+                }
+            });
         }
-        $('#upload-input').click();
-        $('.progress-bar').text('0%');
-        $('.progress-bar').width('0%');
-        // Unbind the on change event to prevent it from firing twice after first call
-        $('#upload-input').unbind();
-        $('#upload-input').on('change', function() {
-            var files = $(this).get(0).files;
-            if (files.length > 0) {
-                prepareImage(files);
-            }
-        });
     };
 
     this.showAndroidToast = function(toast) {
@@ -589,11 +590,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
                     // TODO Fix so that the actual script which is passed is called     
                     //console.log(marky_array[ma].script);
                     //this.uploadFileAndroid('file');
-                    if(marky_array[ma].script === 'getImage'){
+                    if (marky_array[ma].script === 'getImage') {
                         $('#upload-trigger').trigger('click');
                     }
                     // Use timeout to fix bug on Galaxy S6 (Chrome, FF, Canary)
-                    
+
                     $timeout(function() {
                             self.selectText(elem, currentChars);
                         }, 0)
@@ -604,7 +605,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
                                 }, 0);
                             }
                         );
-                        
+
                 }
             }
         }
