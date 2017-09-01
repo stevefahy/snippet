@@ -44,8 +44,9 @@ module.exports = function(app) {
             lang: req.body.lang,
             done: false
         }, function(err, card) {
-            if (err)
+            if (err){
                 res.send(err);
+            }
             // get and return all the cards after you create another
             getCards(res);
         });
@@ -53,6 +54,7 @@ module.exports = function(app) {
 
     // update a card
     app.put('/api/cards/:card_id', function(req, res) {
+        console.log('update route');
         Card.findById({ _id: req.params.card_id }, function(err, card) {
             if (err) {
                 res.send(err);
@@ -68,8 +70,12 @@ module.exports = function(app) {
             card.lang = toupdate.lang;
             var newcard = new Card(card);
             newcard.save(function(err, card) {
-                if (err)
+                if (err){
+                    console.log('error: ' + err);
                     res.send(err);
+                } else {
+                    console.log('success: ' + card);
+                }
             });
         });
     });
