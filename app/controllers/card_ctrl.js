@@ -34,7 +34,7 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 
 
     // UPDATE ==================================================================
     $scope.updateCard = function(id, card) {
-        console.log('update');
+        console.log('update: ' + card);
         card.content = replaceTags.replace(card.content);
         card.content = replaceTags.removeDeleteId(card.content);
         var pms = { 'id': id, 'card': card };
