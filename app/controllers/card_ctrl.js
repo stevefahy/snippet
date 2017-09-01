@@ -33,6 +33,7 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 
     };
 
     // UPDATE ==================================================================
+    /*
     $scope.updateCard = function(id, card) {
         console.log('update: ' + card);
         card.content = replaceTags.replace(card.content);
@@ -47,9 +48,28 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 
                 $rootScope.$broadcast('search');
                 console.log('success: ' + data);
             })
-            .error(function(error){
+            .error(function(error) {
                 console.log('error: ' + error);
             });
     };
-
+    */
+    $scope.updateCard = function(id, card) {
+        console.log('update: ' + card);
+        setTimeout(function() {
+            $scope.$apply(function() {
+                card.content = replaceTags.replace(card.content);
+                card.content = replaceTags.removeDeleteId(card.content);
+                var pms = { 'id': id, 'card': card };
+                // call the create function from our service (returns a promise object)
+                Cards.update(pms)
+                    .success(function(data) {
+                        $rootScope.$broadcast('search');
+                        console.log('success: ' + data);
+                    })
+                    .error(function(error) {
+                        console.log('error: ' + error);
+                    });
+            });
+        }, 1000);
+    };
 }]);

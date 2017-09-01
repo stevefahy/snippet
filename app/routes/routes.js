@@ -54,7 +54,6 @@ module.exports = function(app) {
 
     // update a card
     app.put('/api/cards/:card_id', function(req, res) {
-        console.log('update route');
         Card.findById({ _id: req.params.card_id }, function(err, card) {
             if (err) {
                 res.send(err);
