@@ -27,25 +27,10 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         serverUrl = 'http://www.snipbee.com/upload';
     }
 
-
-    /*
-        insertImage = function(data) {
-        if (data.response === 'saved') {
-            var new_image = "<img src='" + IMAGES_URL + data.file + "'>";
-            self.pasteHtmlAtCaret(new_image);
-        }
-    };
-    */
-
     androidToJS = function(data) {
-        Android.showToast('one ' + data);
-        console.log('response: ' + data.response);
-        console.log('file: ' + data.file);
         insertImage(data);
-
     };
     
-
     // Array to dynamically set marky chars to html tags
     var marky_array = [{
         charstring: 'zb',
