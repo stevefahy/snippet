@@ -39,7 +39,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
 
     androidToJS = function(data) {
         Android.showToast('one ' + data);
-        console.log('response: 'data.response);
+        console.log('response: ' + data.response);
         console.log('file: ' + data.file);
         insertImage(data);
 
