@@ -14,6 +14,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     // Image resize max width or height
     var MAX_WIDTH = 1080;
     var MAX_HEIGHT = 1080;
+    var IMAGES_URL = 'fileuploads/images/';
 
     //$window.androidToJS = this.androidToJS;
 
@@ -173,6 +174,13 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         });
     };
 
+    insertImage = function(data) {
+        if (data.response === 'saved') {
+            var new_image = "<img src='" + IMAGES_URL + data.file + "'>";
+            self.pasteHtmlAtCaret(new_image);
+        }
+    };
+
     uploadImages = function(form) {
         $.ajax({
             url: serverUrl,
@@ -181,7 +189,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
             processData: false,
             contentType: false,
             success: function(data) {
-                //console.log('upload successful!\n' + data);
+                console.log('upload successful!\n' + data);
+                insertImage(data);
             },
             xhr: function() {
                 // create an XMLHttpRequest
@@ -578,10 +587,13 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
                 } else if (marky_array[ma].script !== '' && marky_array[ma].script !== undefined) {
                     // Not HTML but SCRIPT 
                     // TODO Fix so that the actual script which is passed is called     
-                    console.log(marky_array[ma].script);
+                    //console.log(marky_array[ma].script);
                     //this.uploadFileAndroid('file');
-                    $('#upload-trigger').trigger('click');
+                    if(marky_array[ma].script === 'getImage'){
+                        $('#upload-trigger').trigger('click');
+                    }
                     // Use timeout to fix bug on Galaxy S6 (Chrome, FF, Canary)
+                    
                     $timeout(function() {
                             self.selectText(elem, currentChars);
                         }, 0)
@@ -592,6 +604,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
                                 }, 0);
                             }
                         );
+                        
                 }
             }
         }
