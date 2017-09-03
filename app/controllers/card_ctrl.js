@@ -54,11 +54,13 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 
     };
     */
     $scope.updateCard = function(id, card) {
-        console.log('update: ' + card);
+        console.log('update');
+        card.content = Format.setMediaSize(id,card);
         setTimeout(function() {
             $scope.$apply(function() {
                 card.content = replaceTags.replace(card.content);
                 card.content = replaceTags.removeDeleteId(card.content);
+
                 var pms = { 'id': id, 'card': card };
                 // call the create function from our service (returns a promise object)
                 Cards.update(pms)

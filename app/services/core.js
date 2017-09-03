@@ -30,7 +30,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     androidToJS = function(data) {
         insertImage(data);
     };
-    
+
     // Array to dynamically set marky chars to html tags
     var marky_array = [{
         charstring: 'zb',
@@ -173,7 +173,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
 
     insertImage = function(data) {
         if (data.response === 'saved') {
-            var new_image = "<img src='" + IMAGES_URL + data.file + "'>";
+            var new_image = "<img class='resize-drag' src='" + IMAGES_URL + data.file + "'>";
             self.pasteHtmlAtCaret(new_image);
         }
     };
@@ -288,6 +288,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         }
         return tag_count_previous_local;
     };
+
+    this.setMediaSize = function(id,card) {
+        var content =  document.getElementById('ce'+id);
+        return content.innerHTML;
+    };
+
     // Currently not used
     /*
     this.removeEmptyTags = function(content,elem){
@@ -783,6 +789,21 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         }
     };
 }]);
+
+/*
+cardApp.service('setMediaSize', function() {
+    this.setSize = function(str) {
+        console.log('setMediaSize');
+        $(function() {
+            $('.element img').each(function() {
+                console.log('img: ' + $(this).attr('src'));
+               // $(this).attr('src', jQuery(this).attr('src').replace("old/directory", "new/directory"));
+            });
+        });
+
+    };
+});
+*/
 
 cardApp.service('replaceTags', function() {
 

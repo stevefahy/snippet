@@ -1,26 +1,27 @@
 <div ng-controller="cardCtrl">
     <div ng-repeat="card in cards">
-        <form class="form-horizontal">
-            <div class="input-group">
-                <!--<div id="cet" contenteditable="true" ng-change="contentChanged(card.title, 'cet')" ng-keydown="checkKey($event,'ce'+card._id)" ng-paste="handlePaste($event)" ng-focus="getFocus(card.title)" ng-model="card.title">
-                </div>-->
+        <div class=" resize-container">
+            <form class="form-horizontal">
                 <div class="input-group">
-                    <div class='ce' ng-attr-id="{{ 'ce' + card._id }}" contenteditable="true" ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id)" ng-paste="handlePaste($event)" ng-focus="getFocus(card.content); keyListen('ce'+card._id)" ng-model="card.content" ng-model-options="{ debounce: 1000 }">
-                    </div>
+                    <!--<div id="cet" contenteditable="true" ng-change="contentChanged(card.title, 'cet')" ng-keydown="checkKey($event,'ce'+card._id)" ng-paste="handlePaste($event)" ng-focus="getFocus(card.title)" ng-model="card.title">
+                </div>-->
                     <div class="input-group">
-                        <input class="form-control" type="text" ng-model="card.user">
-                    </div>
-                    <div class="input-group">
-                        <input class="form-control" type="text" ng-model="card.lang">
-                    </div>
-                    <button type="submit" class="btn btn-sm btn-warning" ng-click="deleteCard(card._id)">Delete</button>
-                    <button type="submit" class="btn btn-sm btn-success btn-pair-right" ng-click="updateCard(card._id, card)">Update</button>
-
-                    <div class="progress">
-                        <div class="progress-bar" role="progressbar"></div>
-                    </div>
-                    <input id="upload-input" type="file" name="uploads[]" multiple="multiple">
-                    <button id="upload-trigger" class="btn btn-sm upload-btn" type="button" ng-click="uploadFile()">Upload File</button>
-        </form>
-        </div>
+                        <div class='ce' ng-attr-id="{{ 'ce' + card._id }}" contenteditable="true" ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id)" ng-paste="handlePaste($event)" ng-focus="getFocus(card.content); keyListen('ce'+card._id)" ng-model="card.content" ng-model-options="{ debounce: 1000 }">
+                        </div>
+                        <div class="input-group">
+                            <input class="form-control" type="text" ng-model="card.user">
+                        </div>
+                        <div class="input-group">
+                            <input class="form-control" type="text" ng-model="card.lang">
+                        </div>
+                        <button type="submit" class="btn btn-sm btn-warning" ng-click="deleteCard(card._id)">Delete</button>
+                        <button type="submit" class="btn btn-sm btn-success btn-pair-right" ng-click="updateCard(card._id, card)">Update</button>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar"></div>
+                        </div>
+                        <input id="upload-input" type="file" name="uploads[]" multiple="multiple">
+                        <button id="upload-trigger" class="btn btn-sm upload-btn" type="button" ng-click="uploadFile()">Upload File</button>
+            </form>
+            </div>
+            </div>
         </div>
