@@ -1,15 +1,16 @@
 {
-    "name": "snippet",
-    "version": "0.0.1",
-    "description": "snippet app",
-    "main": "app.js",
-    "author": "Stevef",
-    "dependencies": {
-        "mongoose":	"*",
-        "express": "*",
-        "regex": "*",
-        "body-parser": "*",
-        "angular-sanitize": "*",
-        "formidable": "*"
-    }
+  "name": "snippet",
+  "version": "0.0.1",
+  "description": "snippet app",
+  "main": "app.js",
+  "author": "Stevef",
+  "dependencies": {
+    "angular-sanitize": "*",
+    "body-parser": "*",
+    "exif-js": "^2.2.1",
+    "express": "*",
+    "formidable": "*",
+    "mongoose": "*",
+    "regex": "*"
+  }
 }

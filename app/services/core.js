@@ -16,6 +16,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     var MAX_HEIGHT = 1080;
     var IMAGES_URL = 'fileuploads/images/';
 
+
     $window.androidToJS = this.androidToJS;
 
     // Set serverUrl based upon current host (local or live)
@@ -122,11 +123,22 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         });
     }
 
-    function resizeImage(img) {
+    function loadExifReader(img, file) {
+        return $q(function(resolve, reject) {
+            var reader = new FileReader();
+            reader.onloadend = function() {
+                var exif = EXIF.readFromBinaryFile(reader.result);
+                var obj = { 'image': img, 'exif': exif };
+                resolve(obj);
+            };
+            reader.readAsArrayBuffer(file);
+        });
+    }
+
+    function resizeImage(img, exif) {
         return $q(function(resolve, reject) {
             var canvas = document.createElement('canvas');
             var ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0);
             var width = img.width;
             var height = img.height;
             if (width > height && width > MAX_WIDTH) {
@@ -142,8 +154,49 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
             }
             canvas.width = width;
             canvas.height = height;
-            ctx = canvas.getContext("2d");
+            var orientation = exif.Orientation;
+            ctx.save();
+            switch (orientation) {
+                case 2:
+                    ctx.translate(width, 0);
+                    ctx.scale(-1, 1);
+                    break;
+                case 3:
+                    ctx.translate(width, height);
+                    ctx.rotate(Math.PI);
+                    break;
+                case 4:
+                    ctx.translate(0, height);
+                    ctx.scale(1, -1);
+                    break;
+                case 5:
+                    ctx.rotate(0.5 * Math.PI);
+                    ctx.scale(1, -1);
+                    break;
+                case 6:
+                    // portrait so switch width height
+                    canvas.width = height;
+                    canvas.height = width;
+                    ctx.rotate(0.5 * Math.PI);
+                    ctx.translate(0, -height);
+                    break;
+                case 7:
+                    ctx.rotate(0.5 * Math.PI);
+                    ctx.translate(width, -height);
+                    ctx.scale(-1, 1);
+                    break;
+                case 8:
+                    // portrait so switch width height
+                    canvas.width = height;
+                    canvas.height = width;
+                    ctx.rotate(-0.5 * Math.PI);
+                    ctx.translate(-width, 0);
+                    break;
+            }
+
             ctx.drawImage(img, 0, 0, width, height);
+            ctx.restore();
+
             // compress to 90% JPEG
             var dataURL = canvas.toDataURL('image/jpeg', 0.9);
             resolve(dataURL);
@@ -220,7 +273,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
                 createImageElement().then(function(img) {
                     return loadFileReader(img, file);
                 }).then(function(img) {
-                    return resizeImage(img);
+                    return loadExifReader(img, file);
+                }).then(function(obj) {
+                    return resizeImage(obj.image, obj.exif);
                 }).then(function(dataurl) {
                     return dataURItoBlob(dataurl);
                 }).then(function(blob) {
@@ -289,8 +344,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         return tag_count_previous_local;
     };
 
-    this.setMediaSize = function(id,card) {
-        var content =  document.getElementById('ce'+id);
+    this.setMediaSize = function(id, card) {
+        var content = document.getElementById('ce' + id);
         return content.innerHTML;
     };
 

@@ -1,10 +1,11 @@
 interact('.resize-drag')
+/*
     .draggable({
         // enable inertial throwing
         inertia: true,
         // keep the element within the area of it's parent
         restrict: {
-            restriction: "none",
+            restriction: "parent",
             endOnly: true,
             elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
         },
@@ -22,7 +23,7 @@ interact('.resize-drag')
                 (Math.sqrt(event.dx * event.dx +
                     event.dy * event.dy) | 0) + 'px');
         }
-    })
+    })*/
     .resizable({
         preserveAspectRatio: true,
         edges: { left: true, right: true, bottom: true, top: true }

@@ -11,7 +11,7 @@
     /*overflow: hidden;*/
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
     font-size: 1.8rem;
-    line-height: 1.5em;
+    line-height: 1.4em;
     font-weight: 200;
     color: #3d4043;
     outline: none;
@@ -64,10 +64,17 @@ input[type="checkbox"] {
     padding-bottom: 2px;
     padding-left: 6px;
 }
+
+
+
 /* Scale image to fit view. Breaks position bottom 0 if not */
+
 img {
     max-width: 100%;
 }
+
+
+
 /*
 #footer {
     bottom: 0;
@@ -77,9 +84,12 @@ img {
     background-color: yellowgreen;
 }
 */
+
+
 /*
 html, body {height:100%;overflow:auto}
 */
+
 .resize-drag {
     /*
   background-color: #29e;
@@ -88,21 +98,38 @@ html, body {height:100%;overflow:auto}
   font-family: sans-serif;
   border-radius: 8px;
   padding: 20px;
-  margin: 30px 20px;
+  margin: 30px 20px;*/
+    /*width: 1080px;*/
+    /* This makes things *much* easier */
+    box-sizing: border-box;
 
-  width: 1080px;
-  */
-  
+    /* shape-outside: url(2.png);*/
+    shape-image-threshold: 0.5;
+    float: left;
 
-  /* This makes things *much* easier */
-  box-sizing: border-box;
+    padding-top: 6px;
 
-   /* shape-outside: url(2.png);*/
-  shape-image-threshold: 0.5;
-  float: left;
+    padding-right: 12px;
+    clear: both;
 }
 
 .resize-container {
-  width: 100%;
-  height: 100%;
+    width: 100%;
+    height: 100%;
+}
+
+span {
+    width: 100%;
+}
+
+.input-group {
+    clear: both;
+}
+h1, h2, h3 {
+    margin-top: 10px;
+    margin-bottom: 5px;
+    clear:both;
+}
+br {
+  clear: both;
 }
