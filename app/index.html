@@ -1,7 +1,10 @@
 <!doctype html>
 <!-- ASSIGN OUR ANGULAR MODULE -->
 <html ng-app="cardApp">
-<base href="/">
+<!--<base href="/">-->
+    <script>
+        document.write('<base href="' + document.location + '" />');
+      </script>
 <head>
     <!-- META -->
     <meta charset="utf-8">
