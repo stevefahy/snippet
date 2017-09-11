@@ -24,6 +24,30 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 
 
     };
 
+    // EDIT Dropdown
+    /* When the user clicks on the button, 
+toggle between hiding and showing the dropdown content */
+    $scope.myFunction = function(id) {
+        console.log('myDropdown' + id);
+        document.getElementById("myDropdown"+id).classList.toggle("show");
+    }
+
+    // Close the dropdown menu if the user clicks outside of it
+    window.onclick = function(event) {
+        if (!event.target.matches('.dropbtn')) {
+
+            var dropdowns = document.getElementsByClassName("dropdown-content");
+            var i;
+            for (i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                }
+            }
+        }
+    }
+
+
     // DELETE ==================================================================
     $scope.deleteCard = function(id) {
         Cards.delete(id)
@@ -54,8 +78,8 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 
     };
     */
     $scope.updateCard = function(id, card) {
-        console.log('update');
-        card.content = Format.setMediaSize(id,card);
+        console.log('update: ' + id + ', ' + card);
+        card.content = Format.setMediaSize(id, card);
         setTimeout(function() {
             $scope.$apply(function() {
                 card.content = replaceTags.replace(card.content);

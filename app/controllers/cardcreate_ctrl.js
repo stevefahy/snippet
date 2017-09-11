@@ -9,7 +9,7 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', 'Cards', 'replaceT
     $scope.card_create = {
         title: '',
         content: '',
-        user: 'Steve',
+        user: 'steve.fahy',
         lang: 'en'
     };
     // CREATE ==================================================================
@@ -19,7 +19,7 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', 'Cards', 'replaceT
         if ($scope.card_create.title !== undefined) {
             Cards.create($scope.card_create)
                 .success(function(data) {
-                    $rootScope.$broadcast('search');
+                   // $rootScope.$broadcast('search');
                 });
         }
     };

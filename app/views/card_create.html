@@ -1,17 +1,35 @@
-<div ng-controller="cardcreateCtrl">
-    <div class="panel-heading">
-        <h4 class="panel-title">Card create</h4>
-    </div>
-    <div class="panel-body">
-        <form class="form-horizontal">
-            <div class="input-group">
-                <!--<div class="input-group">
+<div class="container-fluid">
+    <div ng-controller="cardcreateCtrl">
+        <!-- <div class="panel-body">-->
+        <!--<form class="form-horizontal">-->
+            <!-- <div class="input-group">-->
+            <!--<div class="input-group">
                     <span class="input-group-addon">Title</span>
                     <input class="form-control" type="text" ng-model="card_create.title">
                 </div>-->
-                <div class="input-group">
-                    <div id="cec" contenteditable="true" ng-change="contentChanged(card_create.content, 'cec')" ng-keydown="checkKey($event, 'cec')" ng-paste="handlePaste($event)" ng-focus="getFocus(card_create.content)" ng-model="card_create.content">
+ <button  id="create_submit" type="submit" class="btn btn-success" ng-click="createCard()">Share</button>
+            <div id="user">
+                <div class="username">{{card_create.user}}</div>
+                <div class="status"></div>
+                <div class="edit">
+                    <div class="dropdown">
+                        <div onclick="myFunction()" class="dropbtn"><span class="glyphicon glyphicon-option-vertical"></span></div>
+                        <div id="myDropdown" class="dropdown-content">
+                            <div ng-click="updateCard(card._id, card)">Update</div>
+                            <div ng-click="deleteCard(card._id)">Delete</div>
+                        </div>
                     </div>
+                </div>
+            </div>
+            
+           
+           <!-- <div class="input-group">-->
+             
+                <div id="cec" contenteditable="true" ng-change="contentChanged(card_create.content, 'cec')" ng-keydown="checkKey($event, 'cec')" ng-paste="handlePaste($event)" ng-focus="getFocus(card_create.content)" ng-model="card_create.content">
+                </div>
+                <!--<button  type="submit"></button>-->
+                <!--<button  type="submit" class="btn btn-success" ng-click="createCard()">Create</button>-->
+                <!--
                     <div class="input-group">
                         <span class="input-group-addon">User</span>
                         <input class="form-control" type="text" ng-model="card_create.user">
@@ -20,8 +38,9 @@
                         <span class="input-group-addon">Lang</span>
                         <input class="form-control" type="text" ng-model="card_create.lang">
                     </div>
-                    <button type="submit" class="btn btn-success" ng-click="createCard()">Create</button>
-                </div>
-        </form>
-        </div>
+                    -->
+               
+           <!-- </div>-->
+        <!--</form>-->
     </div>
+</div>

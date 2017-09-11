@@ -4,6 +4,8 @@ var formidable = require('formidable');
 var fs = require('fs');
 var path = require('path');
 
+
+
 function getCards(res) {
     Card.find(function(err, cards) {
         // if there is an error retrieving, send the error. nothing after res.send(err) will execute
@@ -15,7 +17,24 @@ function getCards(res) {
 }
 
 module.exports = function(app) {
-
+    /*
+     app.get('/create_card', function(req, res) {
+        // use mongoose to get all cards in the database
+        //getCards(res);
+        console.log('routex');
+        // $location.path( path );
+        //$location.path('/create_card');
+        //window.location = '/create_card';
+         //res.sendfile(__dirname + '/views/card_create.html');
+        // res.sendFile('/views/card_create.html');
+    });
+    
+     app.get('/create_card', function(req, res) {
+        // use mongoose to get all cards in the database
+        console.log('here');
+        res.sendFile(__dirname + '/views/card_create.html');
+    });
+    */
     app.get('/api/cards', function(req, res) {
         // use mongoose to get all cards in the database
         getCards(res);

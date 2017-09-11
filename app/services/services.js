@@ -2,6 +2,12 @@
 // Each function returns a promise object 
 cardApp.factory('Cards', ['$http', function($http) {
     return {
+        create_card: function() {
+            console.log('service create_card');
+            
+        return $http.get("/create_card");
+            //$location.path('/create_card');
+        },
         get: function() {
             return $http.get('api/cards');
         },

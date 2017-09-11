@@ -1,4 +1,17 @@
-var cardApp = angular.module("cardApp", ['ngSanitize']);
+var cardApp = angular.module("cardApp", ['ngSanitize','ngRoute']);
+
+cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
+  $routeProvider
+     .when('/', {
+            //template: '<h1>Home</h1><a href="/create_card">create_card</a>'
+            templateUrl: './views/card.html'
+        })
+  .when("/create_card", {
+    templateUrl: 'views/card_create.html' 
+    //template: '<h1>Create Card</h1><a href="/">Home</a>'
+  });
+  $locationProvider.html5Mode(true);
+});
 
 cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($window, $rootScope, $timeout, $q) {
 
@@ -226,7 +239,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
 
     insertImage = function(data) {
         if (data.response === 'saved') {
-            var new_image = "<img class='resize-drag' src='" + IMAGES_URL + data.file + "'>";
+            var new_image = "<img class='resize-drag' src='" + IMAGES_URL + data.file + "'><span id='delete'>&#x200b</span>";
             self.pasteHtmlAtCaret(new_image);
         }
     };

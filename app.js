@@ -58,6 +58,23 @@ app.get('*', function(req, res) {
     res.sendFile('index.html', { root: path.join(__dirname, 'app') });
 });
 
+
+/*
+app.get('/create_card', function(req, res) {
+    //res.sendFile('index.html'); // load the single view file (angular will handle the page changes on the front-end)
+    res.sendFile('/views/card_create.html', { root: path.join(__dirname, 'app') });
+});
+*/
+
+
+/*
+app.get('/create_card', function (req, res) {
+    //res.send('g');
+    res.sendFile('/views/card_create.html', { root: path.join(__dirname, 'app') });
+    //console.log('create card page');
+});
+*/
+
 // listen (start app with node server.js) ======================================
 app.listen(port);
 

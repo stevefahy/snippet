@@ -1,7 +1,7 @@
 <!doctype html>
 <!-- ASSIGN OUR ANGULAR MODULE -->
 <html ng-app="cardApp">
-
+<base href="/">
 <head>
     <!-- META -->
     <meta charset="utf-8">
@@ -17,21 +17,33 @@
     <!-- load fonts -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,300">
+    <link href='https://fonts.googleapis.com/css?family=Arimo:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/css?family=Amatic+SC|Anton|Architects+Daughter|Baloo+Bhaijaan|Boogaloo|Carter+One|Caveat+Brush|Cherry+Swash:700|Condiment|Courgette|Damion|Dancing+Script|Kaushan+Script|Lobster|Lobster+Two|Merienda+One|Niconne|Oleo+Script+Swash+Caps|Oregano|Pacifico|Permanent+Marker|Reenie+Beanie|Righteous|Sedgwick+Ave|Sedgwick+Ave+Display|Wendy+One" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Oleo+Script:400,700" rel="stylesheet">
     <!-- Custom styles -->
     <link rel="stylesheet" href="./style/customstyle.css">
 </head>
 
 <body>
-    <div class="container-fluid">
+    <div class="header">
+        <div class="logo"><img src="./views/images/bee_64.png"></div>
+        <div class="header_text">Snipbee</div>
+        <hr>
+    </div>
+     <ng-view></ng-view>
+    
         <!-- Include templates -->
-        <div ng-include src="'./views/card.html'"></div>
+       <!-- <div ng-include src="'./views/card.html'"></div>-->
+        <!--<div ng-include src="'./views/card_create.html'"></div>-->
+    
+    <div class="footer">
         <div ng-include src="'./views/card_search.html'"></div>
-        <div ng-include src="'./views/card_create.html'"></div>
     </div>
     <!-- Angular -->
     <!--<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>-->
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.11/angular.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.23/angular-resource.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.11/angular-route.js"></script>
     <!-- jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <!-- sanitize -->
