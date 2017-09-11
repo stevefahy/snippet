@@ -1,16 +1,16 @@
-var cardApp = angular.module("cardApp", ['ngSanitize','ngRoute']);
+var cardApp = angular.module("cardApp", ['ngSanitize', 'ngRoute']);
 
 cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
-  $routeProvider
-     .when('/', {
+    $routeProvider
+        .when('/', {
             //template: '<h1>Home</h1><a href="/create_card">create_card</a>'
             templateUrl: './views/card.html'
         })
-  .when("/create_card", {
-    templateUrl: 'views/card_create.html' 
-    //template: '<h1>Create Card</h1><a href="/">Home</a>'
-  });
-  $locationProvider.html5Mode(true);
+        .when("/create_card", {
+            templateUrl: 'views/card_create.html'
+            //template: '<h1>Create Card</h1><a href="/">Home</a>'
+        });
+    $locationProvider.html5Mode(true);
 });
 
 cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($window, $rootScope, $timeout, $q) {
