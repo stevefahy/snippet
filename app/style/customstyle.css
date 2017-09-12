@@ -18,7 +18,7 @@
     outline: none;
 
     clear: both;
-    
+
 
 
     /* font-family: sans-serif; */
@@ -72,6 +72,7 @@ input[type="checkbox"] {
     padding-bottom: 2px;
     padding-left: 6px;
 }
+
 
 
 
@@ -188,6 +189,7 @@ h4 {
     font-weight: 600;
 }
 
+
 /*
 hr {
     background-image: url('./views/images/hr2.png');
@@ -195,24 +197,30 @@ hr {
     margin-bottom: 10px;
     border: 0;
     /*border-top: 1px solid #CCCCCC;*/
-    /* width: 100%; */
-    /* max-width: 140vw; */
-    /* margin-left: calc(-50vw + 50%); */
-    /*
+
+
+/* width: 100%; */
+
+
+/* max-width: 140vw; */
+
+
+/* margin-left: calc(-50vw + 50%); */
+
+
+/*
 }
 */
 
 hr {
-        margin-top: 0px;
+    margin-top: 0px;
     margin-bottom: 10px;
     border: 0;
-    
     border: 0;
-    height: 1px;
-    background: url(../views/images/hr5.png);
-
+    height: 2px;
+    background: url(../views/images/hr8.png);
     width: 100%;
-       }
+}
 
 
 .glyphicon {
@@ -265,6 +273,7 @@ span.glyphicon {
 
 
 
+
 /*
 #search_input{
     visibility: hidden;
@@ -279,6 +288,7 @@ span.glyphicon.glyphicon-search {
     margin-top: 7px;
     font-size: 17px;
 }
+
 span.glyphicon.glyphicon-plus {
     margin-left: 15px;
     margin-top: 7px;
@@ -307,7 +317,8 @@ form.form-horizontal.ng-valid.ng-dirty.ng-valid-parse {
     margin-top: 60px;
 }
 
-.username,.status {
+.username,
+.status {
 
     word-wrap: normal;
     /*overflow: hidden;*/
@@ -318,31 +329,41 @@ form.form-horizontal.ng-valid.ng-dirty.ng-valid-parse {
     /*color: #3d4043;*/
     color: #000000;
 }
-.status{
-    float:left;
+
+.status {
+    float: left;
 }
+
 .username.ng-binding {
     float: left;
     /* clear: both; */
     margin-right: 5px;
 }
-.edit{
+
+.edit {
     float: right;
 }
+
 div#user {
     float: left;
     width: 100%;
 }
+
 span.glyphicon.glyphicon-option-vertical {
     margin-top: 2px;
     z-index: -100;
 }
+
 .header hr {
     margin-bottom: 0px;
 }
 
+
 /* EDIT MENU */
+
+
 /* Dropdown Button */
+
 .dropbtn {
     /*
     background-color: #4CAF50;
@@ -354,29 +375,38 @@ span.glyphicon.glyphicon-option-vertical {
     cursor: pointer;
 }
 
+
 /* Dropdown button on hover & focus */
-.dropbtn:hover, .dropbtn:focus {
+
+.dropbtn:hover,
+.dropbtn:focus {
     /*background-color: #3e8e41;*/
 }
 
+
 /* The container <div> - needed to position the dropdown content */
+
 .dropdown {
     position: relative;
     display: inline-block;
 }
 
+
 /* Dropdown Content (Hidden by Default) */
+
 .dropdown-content {
     right: 0px;
     display: none;
     position: absolute;
     background-color: #f9f9f9;
     min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 1;
 }
 
+
 /* Links inside the dropdown */
+
 .dropdown-content div {
     color: black;
     padding: 12px 16px;
@@ -384,19 +414,29 @@ span.glyphicon.glyphicon-option-vertical {
     display: block;
 }
 
+
 /* Change color of dropdown links on hover */
-.dropdown-content a:hover {background-color: #f1f1f1}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1
+}
+
 
 /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
-.show {display:block;}
 
-input#upload-input, #upload-trigger {
+.show {
+    display: block;
+}
+
+input#upload-input,
+#upload-trigger {
     position: absolute;
     left: -1000px;
 }
-#create_submit{
+
+#create_submit {
     z-index: 1001;
-        position: absolute;
+    position: absolute;
     top: 9px;
     /* right: 0px; */
     left: 225px;
