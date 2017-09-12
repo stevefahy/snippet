@@ -188,16 +188,32 @@ h4 {
     font-weight: 600;
 }
 
+/*
 hr {
+    background-image: url('./views/images/hr2.png');
     margin-top: 0px;
     margin-bottom: 10px;
     border: 0;
-    border-top: 1px solid #ddd;
+    /*border-top: 1px solid #CCCCCC;*/
     /* width: 100%; */
     /* max-width: 140vw; */
     /* margin-left: calc(-50vw + 50%); */
-    width: 100%;
+    /*
 }
+*/
+
+hr {
+        margin-top: 0px;
+    margin-bottom: 10px;
+    border: 0;
+    
+    border: 0;
+    height: 1px;
+    background: url(../views/images/hr5.png);
+
+    width: 100%;
+       }
+
 
 .glyphicon {
     -webkit-text-stroke: 1px white;
