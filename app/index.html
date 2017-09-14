@@ -1,10 +1,16 @@
 <!doctype html>
 <!-- ASSIGN OUR ANGULAR MODULE -->
 <html ng-app="cardApp">
-<base href="/">
+<!--<base href="/">-->
     <script>
        // document.write('<base href="' + document.location + '" />');
       //  document.write('<base href="' + document.location  + '" />');
+      console.log(document.location);
+      if (document.location.hostname === "localhost" || document.location.hostname === "127.0.0.1"){
+         document.write('<base href="/" />');
+      } else {
+         document.write('<base href="/snip/" />');
+      }
       </script>
 <head>
     <!-- META -->
@@ -25,7 +31,7 @@
     <link href="https://fonts.googleapis.com/css?family=Amatic+SC|Anton|Architects+Daughter|Baloo+Bhaijaan|Boogaloo|Carter+One|Caveat+Brush|Cherry+Swash:700|Condiment|Courgette|Damion|Dancing+Script|Kaushan+Script|Lobster|Lobster+Two|Merienda+One|Niconne|Oleo+Script+Swash+Caps|Oregano|Pacifico|Permanent+Marker|Reenie+Beanie|Righteous|Sedgwick+Ave|Sedgwick+Ave+Display|Wendy+One" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Oleo+Script:400,700" rel="stylesheet">
     <!-- Custom styles -->
-    <link rel="stylesheet" href="./style/customstyle.css">
+    <link rel="stylesheet" href="style/customstyle.css">
 
     <!-- Angular -->
     <!--<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>-->
@@ -37,26 +43,26 @@
     <!-- sanitize -->
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.3/angular-sanitize.js"></script>
     <!-- InteractJS -->
-    <script src="./js/interact_1.2.9.min.js"></script>
-    <script src="./js/interact.js"></script>
+    <script src="js/interact_1.2.9.min.js"></script>
+    <script src="js/interact.js"></script>
     <!-- exifjs For reading exif data from images -->
-    <script src="./js/exif.js"></script>
+    <script src="js/exif.js"></script>
     <!-- load our main application -->
-    <script src="./services/core.js"></script>
+    <script src="services/core.js"></script>
     <!-- load Controllers -->
     <!--<script src="./controllers/main_ctrl.js"></script>-->
-    <script src="./controllers/card_ctrl.js"></script>
-    <script src="./controllers/cardsearch_ctrl.js"></script>
-    <script src="./controllers/cardcreate_ctrl.js"></script>
+    <script src="controllers/card_ctrl.js"></script>
+    <script src="controllers/cardsearch_ctrl.js"></script>
+    <script src="controllers/cardcreate_ctrl.js"></script>
     <!-- load Services -->
-    <script src="./services/services.js"></script>
+    <script src="services/services.js"></script>
 
 
 </head>
 
 <body>
     <div class="header">
-        <div class="logo"><img src="./views/images/bee_64.png"></div>
+        <div class="logo"><img src="views/images/bee_64.png"></div>
         <div class="header_text">Snipbee</div>
         <hr>
     </div>
@@ -67,7 +73,7 @@
         <!--<div ng-include src="'./views/card_create.html'"></div>-->
     
     <div class="footer">
-        <div ng-include src="'./views/card_search.html'"></div>
+        <div ng-include src="'views/card_search.html'"></div>
     </div>
     
     <!--<div id="footer">Footer - Just scroll...</div>-->
