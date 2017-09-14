@@ -4,8 +4,7 @@ cardApp.factory('Cards', ['$http', function($http) {
     return {
         create_card: function() {
             console.log('service create_card');
-            
-        return $http.get("/create_card");
+            return $http.get("/create_card");
             //$location.path('/create_card');
         },
         get: function() {
@@ -24,6 +23,9 @@ cardApp.factory('Cards', ['$http', function($http) {
         },
         search: function(input) {
             return $http.post('api/cards/search/' + input);
+        },
+        search_user: function(username) {
+            return $http.post('api/cards/search_user/' + username);
         }
     };
 }]);

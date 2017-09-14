@@ -1,4 +1,4 @@
-cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 'Format', '$window', function($scope, Cards, replaceTags, $rootScope, Format, $window) {
+cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 'Format', '$window', '$routeParams', function($scope, Cards, replaceTags, $rootScope, Format, $window, $routeParams) {
 
     $scope.getFocus = Format.getFocus;
     $scope.contentChanged = Format.contentChanged;
@@ -8,6 +8,23 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 
     $scope.showAndroidToast = Format.showAndroidToast;
     $scope.uploadFile = Format.uploadFile;
 
+    var username = $routeParams.username;
+    var snip = $routeParams.snip;
+
+
+    if (username != undefined) {
+        console.log('username: ' + username);
+        
+        Cards.search_user(username)
+            .success(function(data) {
+                // update card_ctrl $scope.cards
+                $rootScope.$broadcast('cards', data);
+            });
+            
+    }
+     if (snip != undefined) {
+        console.log('snip: ' + snip);
+     }
     // update from cardcreate_ctrl createCard
     $scope.$on('cards', function(event, data) {
         $scope.cards = data;
@@ -29,7 +46,7 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 
 toggle between hiding and showing the dropdown content */
     $scope.myFunction = function(id) {
         console.log('myDropdown' + id);
-        document.getElementById("myDropdown"+id).classList.toggle("show");
+        document.getElementById("myDropdown" + id).classList.toggle("show");
     }
 
     // Close the dropdown menu if the user clicks outside of it

@@ -35,7 +35,26 @@ module.exports = function(app) {
         res.sendFile(__dirname + '/views/card_create.html');
     });
     */
-    app.get('/api/cards', function(req, res) {
+    
+    app.post('/api/cards/search_user/:username', function(req, res) {
+        // use mongoose to get all cards in the database
+        //getCards(res);
+
+        var username = req.params.username;
+        console.log('searching for: ' + username);
+        //res.json({ user: username });
+        Card.find({ 'user': new RegExp('^' + username + '$', "i") }, function(err, cards) {
+            if (err) return handleError(err);
+            // $scope.cards = card;
+            res.json(cards); 
+
+            //res.send(cards);
+            //$location.path('/');
+            // res.sendFile('index.html', { root: path.join(__dirname, 'app') });
+        }).limit(2);
+    });
+    
+    app.get('/api/cards/', function(req, res) {
         // use mongoose to get all cards in the database
         getCards(res);
     });
@@ -63,7 +82,7 @@ module.exports = function(app) {
             lang: req.body.lang,
             done: false
         }, function(err, card) {
-            if (err){
+            if (err) {
                 res.send(err);
             }
             // get and return all the cards after you create another
@@ -88,7 +107,7 @@ module.exports = function(app) {
             card.lang = toupdate.lang;
             var newcard = new Card(card);
             newcard.save(function(err, card) {
-                if (err){
+                if (err) {
                     console.log('error: ' + err);
                     res.send(err);
                 } else {

@@ -53,10 +53,47 @@ db.once('open', function() {
 // routes ======================================================================
 require('./app/routes/routes.js')(app); // load our routes and pass in our app
 
-app.get('*', function(req, res) {
+// WEB ROUTE
+app.get('/*', function(req, res) {
     //res.sendFile('index.html'); // load the single view file (angular will handle the page changes on the front-end)
     res.sendFile('index.html', { root: path.join(__dirname, 'app') });
 });
+/*
+app.get('/s/*', function(req, res) {
+    //res.sendFile('index.html'); // load the single view file (angular will handle the page changes on the front-end)
+    res.sendFile('index.html', { root: path.join(__dirname, 'app') });
+});
+*/
+
+
+
+// API
+// Use for API only. Angular handles web routes
+app.post('/api/cards/search_user/:id', function(req, res) {
+    //res.sendFile('index.html'); // load the single view file (angular will handle the page changes on the front-end)
+    //res.json({ user: 'tobi' });
+    var id = req.params.id;
+    res.json({ user: id });
+    //res.sendFile('index.html', { root: path.join(__dirname, 'app') });
+});
+
+
+/*
+var Card = require('./app/models/card.js');
+
+app.get('/:username', function(req, res, next) {
+    var username = req.params.username;
+    //res.json({ user: username });
+    Card.find({ 'user': new RegExp('^'+username+'$', "i")} , function(err, cards) {
+        if (err) return handleError(err);
+       // $scope.cards = card;
+        return res.json(cards); 
+        //res.send(cards);
+       // res.sendFile('index.html', { root: path.join(__dirname, 'app') });
+    }).limit(2);
+
+});
+*/
 
 
 /*
