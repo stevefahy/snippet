@@ -15,6 +15,8 @@ app.use(express.static('app'));
 
 app.use('/fileuploads', express.static(path.join(__dirname, '../upload_dir')));
 
+app.use('/assets', express.static(path.join(__dirname, '/app/assets')));
+
 app.use('/snip', express.static(path.join(__dirname, '/app')));
 
 app.use(bodyParser.urlencoded({ 'extended': 'true' })); // parse application/x-www-form-urlencoded
