@@ -6,29 +6,29 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
    // $locationProvider.html5Mode(true);
     $routeProvider
         .when('/', {
-            templateUrl: '/views/card.html',
+            templateUrl: '/snip/views/card.html',
            // controller: 'cardCtrl'
         })
         
         .when('/*', {
-            templateUrl: '/views/card.html'
+            templateUrl: '/snip/views/card.html'
         })
         
         .when("/create_card", {
-            templateUrl: '/views/card_create.html',
+            templateUrl: '/snip/views/card_create.html',
             controller: 'cardcreateCtrl'
             //template: '<h1>Create Card</h1><a href="/">Home</a>'
         })
         
 
         .when("/s/:snip", {
-            templateUrl: '/views/card.html'
+            templateUrl: '/snip/views/card.html'
            // controller: 'cardCtrl'
         })
         
 
         .when("/:username", {
-          templateUrl: '/views/card.html'
+          templateUrl: '/snip/views/card.html'
            // controller: 'cardCtrl'
         });
         //.when("/s/:snip", {
