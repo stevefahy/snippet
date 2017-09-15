@@ -1,4 +1,3 @@
-
 var Card = require('../models/card');
 var formidable = require('formidable');
 var fs = require('fs');
@@ -50,25 +49,29 @@ module.exports = function(app) {
             
     });
 */
-    
-    app.post('/api/cards/search_user/:username', function(req, res) {
-        // use mongoose to get all cards in the database
-        //getCards(res);
 
+    app.post('/api/cards/search_user/:username', function(req, res) {
         var username = req.params.username;
         console.log('im searching for: ' + username);
-        //res.json({ user: username });
         Card.find({ 'user': new RegExp('^' + username + '$', "i") }, function(err, cards) {
-            if (err) return handleError(err);
-            // $scope.cards = card;
-            res.json(cards); 
-
-            //res.send(cards);
-            //$location.path('/');
-            // res.sendFile('index.html', { root: path.join(__dirname, 'app') });
+            if (err) {
+                return res.send(err);
+            }
+            res.json(cards);
         }).limit(2);
     });
-    
+
+    app.post('/api/cards/search_id/:snip', function(req, res) {
+        var snip = req.params.snip;
+        console.log('_id searching for: ' + snip);
+        Card.find({ '_id': snip }, function(err, cards) {
+            if (err) {
+                return res.send(err);
+            }
+            res.json(cards);
+        });
+    });
+
     app.get('/api/cards/', function(req, res) {
         // use mongoose to get all cards in the database
         getCards(res);

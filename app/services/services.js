@@ -27,6 +27,9 @@ cardApp.factory('Cards', ['$http', function($http) {
         },
         search_user: function(username) {
             return $http.post('api/cards/search_user/' + username);
+        },
+        search_id: function(snip) {
+            return $http.post('api/cards/search_id/' + snip);
         }
     };
 }]);

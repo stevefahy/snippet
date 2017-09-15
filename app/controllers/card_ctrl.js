@@ -11,36 +11,42 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 
     //var url = $location.absUrl();
     //$scope.firstParameter = url[2];
     //$scope.secondParameter = url[3];
-    var url = $location.absUrl().indexOf('/s/');
-    console.log('url: ' + url);
+    // var url = $location.absUrl().indexOf('/s/');
+    // console.log('url: ' + url);
     console.log($routeParams);
     console.log($routeParams.username);
-var snip;
-var username;
-    if(url >= 0){
-        snip = $routeParams.snip;
-    } else {
-        username = $routeParams.username;
-    }
-    
-    
-    console.log('snip: ' + snip);
-    console.log('username: ' + username);
+    console.log($routeParams.snip);
+    //var snip;
+    //var username;
+    //if (url >= 0) {
+    var snip = $routeParams.snip;
+    //} else {
+    var username = $routeParams.username;
+    //}
+
+
+    // console.log('snip: ' + snip);
+    // console.log('username: ' + username);
 
     if (username != undefined) {
-       // console.log('username: ' + username);
-        
+        console.log('username: ' + username);
+
         Cards.search_user(username)
             .success(function(data) {
                 // update card_ctrl $scope.cards
                 $rootScope.$broadcast('cards', data);
             });
-            
+
     }
-     if (snip != undefined) {
+    if (snip != undefined) {
         console.log('snip: ' + snip);
-     }
-     
+        Cards.search_id(snip)
+            .success(function(data) {
+                // update card_ctrl $scope.cards
+                $rootScope.$broadcast('cards', data);
+            });
+    }
+
     // update from cardcreate_ctrl createCard
     $scope.$on('cards', function(event, data) {
         $scope.cards = data;
