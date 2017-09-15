@@ -1,4 +1,4 @@
-cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 'Format', '$window', '$routeParams', function($scope, Cards, replaceTags, $rootScope, Format, $window, $routeParams) {
+cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 'Format', '$window', '$routeParams', '$location', function($scope, Cards, replaceTags, $rootScope, Format, $window, $routeParams, $location) {
 
     $scope.getFocus = Format.getFocus;
     $scope.contentChanged = Format.contentChanged;
@@ -8,12 +8,27 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 
     $scope.showAndroidToast = Format.showAndroidToast;
     $scope.uploadFile = Format.uploadFile;
 
-    var username = $routeParams.username;
-    var snip = $routeParams.snip;
-
+    //var url = $location.absUrl();
+    //$scope.firstParameter = url[2];
+    //$scope.secondParameter = url[3];
+    var url = $location.absUrl().indexOf('/s/');
+    console.log('url: ' + url);
+    console.log($routeParams);
+    console.log($routeParams.username);
+var snip;
+var username;
+    if(url >= 0){
+        snip = $routeParams.snip;
+    } else {
+        username = $routeParams.username;
+    }
+    
+    
+    console.log('snip: ' + snip);
+    console.log('username: ' + username);
 
     if (username != undefined) {
-        console.log('username: ' + username);
+       // console.log('username: ' + username);
         
         Cards.search_user(username)
             .success(function(data) {
@@ -25,6 +40,7 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 
      if (snip != undefined) {
         console.log('snip: ' + snip);
      }
+     
     // update from cardcreate_ctrl createCard
     $scope.$on('cards', function(event, data) {
         $scope.cards = data;
@@ -47,7 +63,7 @@ toggle between hiding and showing the dropdown content */
     $scope.myFunction = function(id) {
         console.log('myDropdown' + id);
         document.getElementById("myDropdown" + id).classList.toggle("show");
-    }
+    };
 
     // Close the dropdown menu if the user clicks outside of it
     window.onclick = function(event) {
@@ -62,7 +78,7 @@ toggle between hiding and showing the dropdown content */
                 }
             }
         }
-    }
+    };
 
 
     // DELETE ==================================================================

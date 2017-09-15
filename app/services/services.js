@@ -22,6 +22,7 @@ cardApp.factory('Cards', ['$http', function($http) {
             return $http.put(theurl, pms);
         },
         search: function(input) {
+            console.log('search2');
             return $http.post('api/cards/search/' + input);
         },
         search_user: function(username) {

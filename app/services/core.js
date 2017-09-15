@@ -1,26 +1,41 @@
 var cardApp = angular.module("cardApp", ['ngSanitize', 'ngRoute']);
 
+var prefix = '/s/';
+
 cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
+   // $locationProvider.html5Mode(true);
     $routeProvider
         .when('/', {
-            templateUrl: './views/card.html'
+            templateUrl: '/views/card.html',
+           // controller: 'cardCtrl'
         })
-        /*
+        
         .when('/*', {
-            templateUrl: './views/card.html'
+            templateUrl: '/views/card.html'
         })
-        */
+        
         .when("/create_card", {
-            templateUrl: '.views/card_create.html'
+            templateUrl: '/views/card_create.html',
+            controller: 'cardcreateCtrl'
             //template: '<h1>Create Card</h1><a href="/">Home</a>'
         })
-        .when("/:username", {
-            templateUrl: './views/card.html',
-        })
+        
+
         .when("/s/:snip", {
-            templateUrl: './views/card.html',
+            templateUrl: '/views/card.html'
+           // controller: 'cardCtrl'
+        })
+        
+
+        .when("/:username", {
+          templateUrl: '/views/card.html'
+           // controller: 'cardCtrl'
         });
+        //.when("/s/:snip", {
+          //  templateUrl: '/views/card.html'
+        //});
     $locationProvider.html5Mode(true);
+   // $locationProvider.html5mode({ enabled: true, requireBase: false }); 
 });
 
 cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($window, $rootScope, $timeout, $q) {

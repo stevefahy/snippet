@@ -53,17 +53,50 @@ db.once('open', function() {
 // routes ======================================================================
 require('./app/routes/routes.js')(app); // load our routes and pass in our app
 
+//app.use('/*', express.static(path.join(__dirname, '/')));
+
+
+
+
 // WEB ROUTE
+
+app.get('/', function(req, res) {
+    //res.sendFile('index.html'); // load the single view file (angular will handle the page changes on the front-end)
+    res.sendFile('index.html', { root: path.join(__dirname, 'app') });
+    console.log('express1');
+});
+app.get('/:username', function(req, res) {
+    //res.sendFile('index.html'); // load the single view file (angular will handle the page changes on the front-end)
+    res.sendFile('index.html', { root: path.join(__dirname, 'app') });
+    console.log('express2');
+});
+
+
+app.get('/s/:snip', function(req, res) {
+    //res.sendFile('index.html'); // load the single view file (angular will handle the page changes on the front-end)
+    res.sendFile('index.html', { root: path.join(__dirname, 'app') });
+    console.log('express3');
+});
+
+
+
+
+//app.use('/s/', admin); // mount the sub app
+/*
 app.get('/*', function(req, res) {
     //res.sendFile('index.html'); // load the single view file (angular will handle the page changes on the front-end)
     res.sendFile('index.html', { root: path.join(__dirname, 'app') });
+    console.log('express2');
 });
+*/
 /*
 app.get('/s/*', function(req, res) {
     //res.sendFile('index.html'); // load the single view file (angular will handle the page changes on the front-end)
     res.sendFile('index.html', { root: path.join(__dirname, 'app') });
+    console.log('express 2');
 });
 */
+
 
 
 

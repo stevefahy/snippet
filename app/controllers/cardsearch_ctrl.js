@@ -23,6 +23,7 @@ cardApp.controller("cardsearchCtrl", ['$scope', 'Cards', '$rootScope', '$locatio
     });
 
     $scope.searchCard = function() {
+        console.log('search');
         $location.path('/');
         // validate the formData to make sure that something is there
         if ($scope.input !== undefined) {
