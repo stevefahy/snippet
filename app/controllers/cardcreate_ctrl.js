@@ -1,6 +1,5 @@
 cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', 'Cards', 'replaceTags', 'Format', function($scope, $rootScope, Cards, replaceTags, Format) {
 
-
     $scope.getFocus = Format.getFocus;
     $scope.contentChanged = Format.contentChanged;
     $scope.checkKey = Format.checkKey;
@@ -19,7 +18,7 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', 'Cards', 'replaceT
         if ($scope.card_create.title !== undefined) {
             Cards.create($scope.card_create)
                 .success(function(data) {
-                   // $rootScope.$broadcast('search');
+                    // $rootScope.$broadcast('search');
                 });
         }
     };

@@ -14,9 +14,7 @@ var fs = require('fs');
 app.use(express.static('app'));
 
 app.use('/fileuploads', express.static(path.join(__dirname, '../upload_dir')));
-
 app.use('/assets', express.static(path.join(__dirname, '/app/assets')));
-
 app.use('/snip', express.static(path.join(__dirname, '/app')));
 
 app.use(bodyParser.urlencoded({ 'extended': 'true' })); // parse application/x-www-form-urlencoded
@@ -36,8 +34,6 @@ for (var k in interfaces) {
         }
     }
 }
-// Samsung Series 9 laptop
-//if (addresses == '192.168.192.54') {
 // Dell XPS 13
 if (addresses == '192.168.192.60') {
     // MongoDB
@@ -57,97 +53,26 @@ db.once('open', function() {
 // routes ======================================================================
 require('./app/routes/routes.js')(app); // load our routes and pass in our app
 
-//app.use('/*', express.static(path.join(__dirname, '/')));
-
-
-
-
 // WEB ROUTE
-
 app.get('/', function(req, res) {
-    //res.sendFile('index.html'); // load the single view file (angular will handle the page changes on the front-end)
+    // load the single view file (angular will handle the page changes on the front-end)
     res.sendFile('index.html', { root: path.join(__dirname, 'app') });
-    console.log('express1');
 });
 app.get('/:username', function(req, res) {
-    //res.sendFile('index.html'); // load the single view file (angular will handle the page changes on the front-end)
+    // load the single view file (angular will handle the page changes on the front-end)
     res.sendFile('index.html', { root: path.join(__dirname, 'app') });
-    console.log('express2');
 });
-
-
 app.get('/s/:snip', function(req, res) {
-    //res.sendFile('index.html'); // load the single view file (angular will handle the page changes on the front-end)
+    // load the single view file (angular will handle the page changes on the front-end)
     res.sendFile('index.html', { root: path.join(__dirname, 'app') });
-    console.log('express3');
 });
-
-
-
-
-//app.use('/s/', admin); // mount the sub app
-/*
-app.get('/*', function(req, res) {
-    //res.sendFile('index.html'); // load the single view file (angular will handle the page changes on the front-end)
-    res.sendFile('index.html', { root: path.join(__dirname, 'app') });
-    console.log('express2');
-});
-*/
-/*
-app.get('/s/*', function(req, res) {
-    //res.sendFile('index.html'); // load the single view file (angular will handle the page changes on the front-end)
-    res.sendFile('index.html', { root: path.join(__dirname, 'app') });
-    console.log('express 2');
-});
-*/
-
-
-
 
 // API
 // Use for API only. Angular handles web routes
 app.post('/api/cards/search_user/:id', function(req, res) {
-    //res.sendFile('index.html'); // load the single view file (angular will handle the page changes on the front-end)
-    //res.json({ user: 'tobi' });
     var id = req.params.id;
     res.json({ user: id });
-    //res.sendFile('index.html', { root: path.join(__dirname, 'app') });
 });
-
-
-/*
-var Card = require('./app/models/card.js');
-
-app.get('/:username', function(req, res, next) {
-    var username = req.params.username;
-    //res.json({ user: username });
-    Card.find({ 'user': new RegExp('^'+username+'$', "i")} , function(err, cards) {
-        if (err) return handleError(err);
-       // $scope.cards = card;
-        return res.json(cards); 
-        //res.send(cards);
-       // res.sendFile('index.html', { root: path.join(__dirname, 'app') });
-    }).limit(2);
-
-});
-*/
-
-
-/*
-app.get('/create_card', function(req, res) {
-    //res.sendFile('index.html'); // load the single view file (angular will handle the page changes on the front-end)
-    res.sendFile('/views/card_create.html', { root: path.join(__dirname, 'app') });
-});
-*/
-
-
-/*
-app.get('/create_card', function (req, res) {
-    //res.send('g');
-    res.sendFile('/views/card_create.html', { root: path.join(__dirname, 'app') });
-    //console.log('create card page');
-});
-*/
 
 // listen (start app with node server.js) ======================================
 app.listen(port);

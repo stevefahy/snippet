@@ -1,41 +1,26 @@
 var cardApp = angular.module("cardApp", ['ngSanitize', 'ngRoute']);
 
+// Prefix for loading a snip id
 var prefix = '/s/';
 
 cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
-   // $locationProvider.html5Mode(true);
     $routeProvider
         .when('/', {
-            templateUrl: '/snip/views/card.html',
-           // controller: 'cardCtrl'
+            templateUrl: '/snip/views/card.html'
         })
-        
         .when('/*', {
             templateUrl: '/snip/views/card.html'
         })
-        
         .when("/create_card", {
-            templateUrl: '/snip/views/card_create.html',
-            controller: 'cardcreateCtrl'
-            //template: '<h1>Create Card</h1><a href="/">Home</a>'
+            templateUrl: '/snip/views/card_create.html'
         })
-        
-
         .when("/s/:snip", {
             templateUrl: '/snip/views/card.html'
-           // controller: 'cardCtrl'
         })
-        
-
         .when("/:username", {
-          templateUrl: '/snip/views/card.html'
-           // controller: 'cardCtrl'
+            templateUrl: '/snip/views/card.html'
         });
-        //.when("/s/:snip", {
-          //  templateUrl: '/views/card.html'
-        //});
     $locationProvider.html5Mode(true);
-   // $locationProvider.html5mode({ enabled: true, requireBase: false }); 
 });
 
 cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($window, $rootScope, $timeout, $q) {
@@ -54,14 +39,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     var MAX_HEIGHT = 1080;
     var IMAGES_URL = 'fileuploads/images/';
 
-
     $window.androidToJS = this.androidToJS;
 
     // Set serverUrl based upon current host (local or live)
     if (location.hostname === 'localhost') {
         // TODO should this not have /upload then route_folder for both would just be / in upload_app route.js
         serverUrl = 'http://localhost:8060/upload';
-        //serverUrl = '/upload';
     } else {
         serverUrl = 'http://www.snipbee.com/upload';
     }
@@ -138,6 +121,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         script: 'getImage',
         close: false
     }];
+
     // Create secondkey_array from marky_array
     for (var i = 0; i < marky_array.length; i++) {
         secondkey_array.push(marky_array[i].charstring.charAt(1));
@@ -277,7 +261,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
             processData: false,
             contentType: false,
             success: function(data) {
-                console.log('upload successful!\n' + data);
                 insertImage(data);
             },
             xhr: function() {
@@ -701,7 +684,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
                                 }, 0);
                             }
                         );
-
                 }
             }
         }
@@ -883,23 +865,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     };
 }]);
 
-/*
-cardApp.service('setMediaSize', function() {
-    this.setSize = function(str) {
-        console.log('setMediaSize');
-        $(function() {
-            $('.element img').each(function() {
-                console.log('img: ' + $(this).attr('src'));
-               // $(this).attr('src', jQuery(this).attr('src').replace("old/directory", "new/directory"));
-            });
-        });
-
-    };
-});
-*/
 
 cardApp.service('replaceTags', function() {
-
     var self = this;
 
     this.replace = function(str) {

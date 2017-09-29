@@ -1,54 +1,44 @@
 <!doctype html>
 <!-- ASSIGN OUR ANGULAR MODULE -->
 <html ng-app="cardApp">
-<!--<base href="/">-->
 
 <head>
     <script>
-    // document.write('<base href="' + document.location + '" />');
-    //  document.write('<base href="' + document.location  + '" />');
     var pathArray = location.href.split('/');
     var protocol = pathArray[0];
     var host = pathArray[2];
     var theurl = protocol + '//' + host + '/';
-    console.log(protocol + ' : ' + host + ' : ' + theurl);
-    console.log(document.location);
     if (document.location.hostname === "localhost" || document.location.hostname === "127.0.0.1") {
-        //document.write('<base href="/" />');
         document.write('<base href="' + theurl + '" />');
     } else {
-        //document.write('<base href="' + document.location  + '" />');
-        //document.write('<base href="/snip" />');
         document.write('<base href="/snip/" />');
     }
     </script>
     <!-- META -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, target-densityDpi=device-dpi">
-    <!-- Optimize mobile viewport -->
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, target-densityDpi=device-dpi">-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>Snipbee</title>
-    <!-- SCROLLS -->
+    <!-- Bootstrap -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <!-- Bootstrap theme -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-    <!-- load fonts -->
+    <!-- Load Fonts -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,300">
     <link href='https://fonts.googleapis.com/css?family=Arimo:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
     <link href="https://fonts.googleapis.com/css?family=Amatic+SC|Anton|Architects+Daughter|Baloo+Bhaijaan|Boogaloo|Carter+One|Caveat+Brush|Cherry+Swash:700|Condiment|Courgette|Damion|Dancing+Script|Kaushan+Script|Lobster|Lobster+Two|Merienda+One|Niconne|Oleo+Script+Swash+Caps|Oregano|Pacifico|Permanent+Marker|Reenie+Beanie|Righteous|Sedgwick+Ave|Sedgwick+Ave+Display|Wendy+One" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Oleo+Script:400,700" rel="stylesheet">
-    <!-- Custom styles -->
+    <!-- Custom Styles -->
     <link rel="stylesheet" href="/snip/style/customstyle.css">
     <!-- Angular -->
-    <!--<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>-->
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.11/angular.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.23/angular-resource.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.11/angular-route.js"></script>
     <!-- jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <!-- sanitize -->
+    <!-- Sanitize -->
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.3/angular-sanitize.js"></script>
     <!-- InteractJS -->
     <!--<script src="js/interact_1.2.9.min.js"></script>
@@ -72,14 +62,11 @@
         <div class="header_text">Snipbee</div>
         <hr>
     </div>
+    <!-- Templates loaded into ng-view -->
     <ng-view></ng-view>
-    <!-- Include templates -->
-    <!-- <div ng-include src="'./views/card.html'"></div>-->
-    <!--<div ng-include src="'./views/card_create.html'"></div>-->
     <div class="footer">
         <div ng-include src="'/snip/views/card_search.html'"></div>
     </div>
-    <!--<div id="footer">Footer - Just scroll...</div>-->
     <!-- Hidden input field which gains focus while text formatting is being prepared -->
     <div id="hidden_input_container">
         <input class="form-control" type="text" autocorrect="off" autocapitalize="none" id="hidden_input">

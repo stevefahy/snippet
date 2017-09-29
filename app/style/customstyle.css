@@ -8,21 +8,13 @@
 #cet {
     width: 100%;
     word-wrap: normal;
-    /*overflow: hidden;*/
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arimo, Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
     font-size: 1.5rem;
     line-height: 1.4em;
     font-weight: 200;
-    /*color: #3d4043;*/
     color: #000000;
     outline: none;
-
     clear: both;
-
-
-
-    /* font-family: sans-serif; */
-    /*font-family: arimo;*/
 }
 
 .ce pre,
@@ -73,60 +65,13 @@ input[type="checkbox"] {
     padding-left: 6px;
 }
 
-
-
-
-
-
-
-
-/* Scale image to fit view. Breaks position bottom 0 if not */
-
-
-/*
-img {
-    max-width: 100%;
-}
-*/
-
-
-/*
-#footer {
-    bottom: 0;
-    position: fixed;
-    width: 30px;
-    height: 50px;
-    background-color: yellowgreen;
-}
-*/
-
-
-/*
-html, body {height:100%;overflow:auto}
-*/
-
 .resize-drag {
-    /*
-  background-color: #29e;
-  color: white;
-  font-size: 20px;
-  font-family: sans-serif;
-  border-radius: 8px;
-  padding: 20px;
-  margin: 30px 20px;*/
-    /*width: 1080px;*/
     /* This makes things *much* easier */
     box-sizing: border-box;
-
-    /* shape-outside: url(2.png);*/
     shape-image-threshold: 0.5;
-    /*float: left;*/
     padding-top: 6px;
     padding-bottom: 12px;
-
-
     clear: both;
-
     width: 100vw;
     max-width: 100vw;
     margin-left: calc(-50vw + 50%);
@@ -145,14 +90,6 @@ span {
     clear: both;
 }
 
-h1,
-h2,
-h3 {
-    margin-top: 10px;
-    margin-bottom: 5px;
-    clear: both;
-}
-
 br {
     clear: both;
 }
@@ -160,9 +97,14 @@ br {
 b,
 strong {
     font-weight: 600;
-    /*  font-size: 16px;*/
-    /* font-family: sans-serif; */
-    /* font-family: arimo;*/
+}
+
+h1,
+h2,
+h3 {
+    margin-top: 10px;
+    margin-bottom: 5px;
+    clear: both;
 }
 
 .h1,
@@ -189,29 +131,6 @@ h4 {
     font-weight: 600;
 }
 
-
-/*
-hr {
-    background-image: url('./views/images/hr2.png');
-    margin-top: 0px;
-    margin-bottom: 10px;
-    border: 0;
-    /*border-top: 1px solid #CCCCCC;*/
-
-
-/* width: 100%; */
-
-
-/* max-width: 140vw; */
-
-
-/* margin-left: calc(-50vw + 50%); */
-
-
-/*
-}
-*/
-
 hr {
     margin-top: 0px;
     margin-bottom: 10px;
@@ -219,10 +138,8 @@ hr {
     border: 0;
     height: 2px;
     background-image: url("/snip/assets/images/hr9.png");
-    /*background: url(../views/images/hr9.png);*/
     width: 100%;
 }
-
 
 .glyphicon {
     -webkit-text-stroke: 1px white;
@@ -245,7 +162,6 @@ span.glyphicon {
 
 .logo {
     margin-right: 9px;
-    /* width: 20px; */
     float: left;
     margin-left: 10px;
     margin-top: 10px;
@@ -270,20 +186,8 @@ span.glyphicon {
     position: fixed;
     width: 100%;
     background-color: #FAFAFA;
-    height:50px;
+    height: 50px;
 }
-
-
-
-
-/*
-#search_input{
-    visibility: hidden;
-}
-#search_button{
-    visibility: hidden;
-}
-*/
 
 span.glyphicon.glyphicon-search {
     margin-left: 15px;
@@ -324,12 +228,10 @@ form.form-horizontal.ng-valid.ng-dirty.ng-valid-parse {
 .status {
 
     word-wrap: normal;
-    /*overflow: hidden;*/
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arimo, Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
     font-size: 1.5rem;
     line-height: 1.4em;
     font-weight: 600;
-    /*color: #3d4043;*/
     color: #000000;
 }
 
@@ -339,7 +241,6 @@ form.form-horizontal.ng-valid.ng-dirty.ng-valid-parse {
 
 .username.ng-binding {
     float: left;
-    /* clear: both; */
     margin-right: 5px;
 }
 
@@ -362,17 +263,13 @@ span.glyphicon.glyphicon-option-vertical {
 }
 
 
+
 /* EDIT MENU */
 
 
 /* Dropdown Button */
 
 .dropbtn {
-    /*
-    background-color: #4CAF50;
-    color: white;
-    padding: 16px;
-    */
     font-size: 16px;
     border: none;
     cursor: pointer;
@@ -441,6 +338,5 @@ input#upload-input,
     z-index: 1001;
     position: absolute;
     top: 9px;
-    /* right: 0px; */
     left: 225px;
 }

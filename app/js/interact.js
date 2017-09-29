@@ -1,5 +1,5 @@
 interact('.resize-drag')
-/*
+    /*
     .draggable({
         // enable inertial throwing
         inertia: true,
@@ -23,7 +23,8 @@ interact('.resize-drag')
                 (Math.sqrt(event.dx * event.dx +
                     event.dy * event.dy) | 0) + 'px');
         }
-    })*/
+    })
+    */
     .resizable({
         preserveAspectRatio: true,
         edges: { left: true, right: true, bottom: true, top: true }

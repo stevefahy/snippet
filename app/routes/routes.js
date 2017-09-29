@@ -3,8 +3,6 @@ var formidable = require('formidable');
 var fs = require('fs');
 var path = require('path');
 
-
-
 function getCards(res) {
     Card.find(function(err, cards) {
         // if there is an error retrieving, send the error. nothing after res.send(err) will execute
@@ -16,43 +14,9 @@ function getCards(res) {
 }
 
 module.exports = function(app) {
-    /*
-     app.get('/create_card', function(req, res) {
-        // use mongoose to get all cards in the database
-        //getCards(res);
-        console.log('routex');
-        // $location.path( path );
-        //$location.path('/create_card');
-        //window.location = '/create_card';
-         //res.sendfile(__dirname + '/views/card_create.html');
-        // res.sendFile('/views/card_create.html');
-    });
-    
-     app.get('/create_card', function(req, res) {
-        // use mongoose to get all cards in the database
-        console.log('here');
-        res.sendFile(__dirname + '/views/card_create.html');
-    });
-    */
-    /*
-     app.get('/:username', function(req, res) {
-        // use mongoose to get all cards in the database
-        //getCards(res);
-        var username = req.params.username;
-        console.log('searching for: ' + username);
-        
-          Cards.search_user(username)
-            .success(function(data) {
-                // update card_ctrl $scope.cards
-                $rootScope.$broadcast('cards', data);
-            });
-            
-    });
-*/
 
     app.post('/api/cards/search_user/:username', function(req, res) {
         var username = req.params.username;
-        console.log('im searching for: ' + username);
         Card.find({ 'user': new RegExp('^' + username + '$', "i") }, function(err, cards) {
             if (err) {
                 return res.send(err);
@@ -63,7 +27,6 @@ module.exports = function(app) {
 
     app.post('/api/cards/search_id/:snip', function(req, res) {
         var snip = req.params.snip;
-        console.log('_id searching for: ' + snip);
         Card.find({ '_id': snip }, function(err, cards) {
             if (err) {
                 return res.send(err);
@@ -80,14 +43,12 @@ module.exports = function(app) {
     app.post('/api/cards/search/:input', function(req, res) {
         // use mongoose to search all cards in the database
         var input = req.params.input;
-        //console.log('search3:' + input);
         Card.find()
             .or([{ 'title': new RegExp(input, "i") }, { 'content': new RegExp(input, "i") }])
             .sort('title').exec(function(err, results) {
                 if (err) {
                     return res.send(err);
                 }
-                //console.log(results);
                 res.json(results);
             });
     });
