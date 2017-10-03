@@ -1,4 +1,4 @@
-cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 'Format', '$window', '$routeParams', '$location', function($scope, Cards, replaceTags, $rootScope, Format, $window, $routeParams, $location) {
+cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 'Format', 'Edit', '$window', '$routeParams', '$location', function($scope, Cards, replaceTags, $rootScope, Format, Edit, $window, $routeParams, $location) {
 
     $scope.getFocus = Format.getFocus;
     $scope.contentChanged = Format.contentChanged;
@@ -7,6 +7,8 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 
     $scope.keyListen = Format.keyListen;
     $scope.showAndroidToast = Format.showAndroidToast;
     $scope.uploadFile = Format.uploadFile;
+
+    $scope.dropDownToggle = Edit.dropDownToggle;
 
     // Use the url /snip id to load a snip
     var snip = $routeParams.snip;
@@ -45,27 +47,6 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 
 
     };
 
-    // EDIT Dropdown
-    // On user click toggle between hiding and showing the dropdown content
-    $scope.myFunction = function(id) {
-        document.getElementById("myDropdown" + id).classList.toggle("show");
-    };
-
-    // Close the dropdown menu if the user clicks outside of it
-    window.onclick = function(event) {
-        if (!event.target.matches('.dropbtn')) {
-            var dropdowns = document.getElementsByClassName("dropdown-content");
-            var i;
-            for (i = 0; i < dropdowns.length; i++) {
-                var openDropdown = dropdowns[i];
-                if (openDropdown.classList.contains('show')) {
-                    openDropdown.classList.remove('show');
-                }
-            }
-        }
-    };
-
-
     // DELETE ==================================================================
     $scope.deleteCard = function(id) {
         Cards.delete(id)
@@ -88,7 +69,7 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 
                 Cards.update(pms)
                     .success(function(data) {
                         $rootScope.$broadcast('search');
-                        console.log('success: ' + data);
+                        console.log('update success: ' + data);
                     })
                     .error(function(error) {
                         console.log('error: ' + error);

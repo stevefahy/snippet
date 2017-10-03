@@ -53,9 +53,8 @@ module.exports = function(app) {
             });
     });
 
-    // create card and send back all cards after creation
+    // create card and send back the created card after creation
     app.post('/api/cards', function(req, res) {
-        // create a card, information comes from AJAX request from Angular
         Card.create({
             title: req.body.title,
             content: req.body.content,
@@ -66,8 +65,8 @@ module.exports = function(app) {
             if (err) {
                 res.send(err);
             }
-            // get and return all the cards after you create another
-            getCards(res);
+            // return the created card
+            res.send(card);
         });
     });
 

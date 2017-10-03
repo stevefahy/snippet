@@ -313,9 +313,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
 
     // UPLOAD ==================================================================
     this.uploadFile = function() {
+        console.log('upload');
         if (ua === 'AndroidApp') {
             Android.choosePhoto();
         } else {
+            console.log('upload');
             $('#upload-input').click();
             $('.progress-bar').text('0%');
             $('.progress-bar').width('0%');
@@ -366,6 +368,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     };
 
     this.setMediaSize = function(id, card) {
+        console.log(id + ' : ' + card);
         var content = document.getElementById('ce' + id);
         return content.innerHTML;
     };
@@ -785,6 +788,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     };
 
     this.keyListen = function(elem) {
+        console.log('elem: ' + elem);
         var getKeyCode = function() {
             var editableEl = document.getElementById(elem);
             // lowercase
@@ -910,6 +914,31 @@ cardApp.service('replaceTags', function() {
         } else {
             str = str.html();
             return str;
+        }
+    };
+
+});
+
+cardApp.service('Edit', function() {
+
+    //EDIT Dropdown
+    // On user click toggle between hiding and showing the dropdown content
+    this.dropDownToggle = function(id) {
+        console.log('myFunction: ' + id);
+        document.getElementById("myDropdown" + id).classList.toggle("show");
+    };
+
+    // Close the dropdown menu if the user clicks outside of it
+    window.onclick = function(event) {
+        if (!event.target.matches('.dropbtn')) {
+            var dropdowns = document.getElementsByClassName("dropdown-content");
+            var i;
+            for (i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                }
+            }
         }
     };
 

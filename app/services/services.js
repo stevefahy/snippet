@@ -9,7 +9,10 @@ cardApp.factory('Cards', ['$http', function($http) {
             return $http.get('api/cards');
         },
         create: function(carddata) {
-            return $http.post('api/cards', carddata);
+            return $http.post('api/cards', carddata)
+                .then(function(response) {
+                    return response;
+                });
         },
         delete: function(id) {
             return $http.delete('api/cards/' + id);

@@ -1,20 +1,13 @@
 <div class="container-fluid">
     <div ng-controller="cardcreateCtrl">
-        <button id="create_submit" type="submit" class="btn btn-success" ng-click="createCard()">Share</button>
+        <button id="create_submit" type="submit" class="btn btn-success" ng-click="createCard(card_create._id, card_create)">Share</button>
         <div id="user">
             <div class="username">{{card_create.user}}</div>
             <div class="status"></div>
-            <div class="edit">
-                <div class="dropdown">
-                    <div onclick="myFunction()" class="dropbtn"><span class="glyphicon glyphicon-option-vertical"></span></div>
-                    <div id="myDropdown" class="dropdown-content">
-                        <div ng-click="updateCard(card._id, card)">Update</div>
-                        <div ng-click="deleteCard(card._id)">Delete</div>
-                    </div>
-                </div>
-            </div>
         </div>
-        <div id="cec" contenteditable="true" ng-change="contentChanged(card_create.content, 'cec')" ng-keydown="checkKey($event, 'cec')" ng-paste="handlePaste($event)" ng-focus="getFocus(card_create.content)" ng-model="card_create.content">
+        <div class='ce' ng-attr-id="{{ 'ce' + card_create._id }}" contenteditable="true" ng-change="contentChanged(card_create.content, 'ce'+card_create._id)" ng-keydown="checkKey($event,'ce'+card_create._id)" ng-paste="handlePaste($event)" ng-focus="getFocus(card_create.content); keyListen('ce'+card_create._id)" ng-model="card_create.content" ng-model-options="{ debounce: 1000 }">
         </div>
+        <input id="upload-input" type="file" name="uploads[]" multiple="multiple">
+        <button id="upload-trigger" class="btn btn-sm upload-btn" type="button" ng-click="uploadFile()">Upload File</button>
     </div>
 </div>
