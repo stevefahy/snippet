@@ -76,6 +76,12 @@ module.exports = function(app, passport) {
             failureRedirect: '/'
         }));
 
+       app.get('/auth/google/callback2',
+        passport.authenticate('google', {
+            successRedirect: '/c/create_card',
+            failureRedirect: '/'
+        }));
+
 
     app.post('/api/cards/search_user/:username', function(req, res) {
         var username = req.params.username;
