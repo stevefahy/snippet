@@ -6,19 +6,19 @@ var prefix = '/s/';
 cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
     $routeProvider
         .when('/', {
-            templateUrl: '/snip/views/card.html'
+            templateUrl: '/views/card.html'
         })
         //.when('/*', {
         //    templateUrl: '/snip/views/card.html'
         //})
         .when("/c/create_card", {
-            templateUrl: '/snip/views/card_create.html'
+            templateUrl: '/views/card_create.html'
         })
         .when("/s/:snip", {
-            templateUrl: '/snip/views/card.html'
+            templateUrl: '/views/card.html'
         })
         .when("/:username", {
-            templateUrl: '/snip/views/card.html'
+            templateUrl: '/views/card.html'
         })
         .otherwise({
             redirectTo: '/'
