@@ -11,6 +11,16 @@
     "express": "*",
     "formidable": "*",
     "mongoose": "*",
-    "regex": "*"
+    "regex": "*",
+    "passport": "~0.3.2",
+    "passport-local": "~1.0.0",
+    "passport-facebook": "~2.1.1",
+    "passport-twitter": "~1.0.4",
+    "passport-google-oauth": "~1.0.0",
+    "bcrypt-nodejs": "latest",
+    "morgan": "~1.7.0",
+    "cookie-parser": "~1.4.3",
+    "method-override": "~2.3.6",
+    "express-session": "~1.14.1"
   }
 }

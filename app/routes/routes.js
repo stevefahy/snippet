@@ -13,7 +13,69 @@ function getCards(res) {
     });
 }
 
-module.exports = function(app) {
+// route middleware to ensure user is logged in
+function isLoggedIn(req, res, next) {
+    // console.log(req);
+    if (req.isAuthenticated()) {
+        return next();
+    } else {
+        res.redirect('/');
+    }
+}
+
+module.exports = function(app, passport) {
+
+    // WEB ROUTE
+    app.get('/', function(req, res) {
+        // load the single view file (angular will handle the page changes on the front-end)
+        res.sendFile('index.html', { root: path.join(__dirname, '../') });
+    });
+    app.get('/:username', function(req, res) {
+        // load the single view file (angular will handle the page changes on the front-end)
+        res.sendFile('index.html', { root: path.join(__dirname, '../') });
+    });
+    app.get('/s/:snip', function(req, res) {
+        // load the single view file (angular will handle the page changes on the front-end)
+        res.sendFile('index.html', { root: path.join(__dirname, '../') });
+    });
+    app.get('/c/create_card', isLoggedIn, function(req, res) {
+        res.sendFile('index.html', { root: path.join(__dirname, '../') });
+    });
+    // Route to check passort authentication
+    app.get('/api/user_data', isLoggedIn, function(req, res) {
+        if (req.user === undefined) {
+            // The user is not logged in
+            res.json({ 'username': 'forbidden' });
+        } else {
+            res.json({
+                user: req.user
+            });
+        }
+    });
+    // API
+    // Use for API only. Angular handles web routes
+    /*
+    app.post('/api/cards/search_user/:id', function(req, res) {
+        var id = req.params.id;
+        res.json({ user: id });
+    });
+    */
+
+    // google ---------------------------------
+
+    // send to google to do the authentication
+    //app.get('/auth/google', function (req, res){
+    //  console.log('auth google');
+    //});
+    app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+    // the callback after google has authenticated the user
+    app.get('/auth/google/callback',
+        passport.authenticate('google', {
+            successRedirect: '/c/create_card',
+            failureRedirect: '/'
+        }));
+
 
     app.post('/api/cards/search_user/:username', function(req, res) {
         var username = req.params.username;
@@ -26,6 +88,7 @@ module.exports = function(app) {
     });
 
     app.post('/api/cards/search_id/:snip', function(req, res) {
+        console.log('snip');
         var snip = req.params.snip;
         Card.find({ '_id': snip }, function(err, cards) {
             if (err) {
@@ -41,6 +104,7 @@ module.exports = function(app) {
     });
 
     app.post('/api/cards/search/:input', function(req, res) {
+        console.log('search input');
         // use mongoose to search all cards in the database
         var input = req.params.input;
         Card.find()

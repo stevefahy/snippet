@@ -8,10 +8,10 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
         .when('/', {
             templateUrl: '/snip/views/card.html'
         })
-        .when('/*', {
-            templateUrl: '/snip/views/card.html'
-        })
-        .when("/create_card", {
+        //.when('/*', {
+        //    templateUrl: '/snip/views/card.html'
+        //})
+        .when("/c/create_card", {
             templateUrl: '/snip/views/card_create.html'
         })
         .when("/s/:snip", {
@@ -19,8 +19,16 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
         })
         .when("/:username", {
             templateUrl: '/snip/views/card.html'
+        })
+        .otherwise({
+            redirectTo: '/'
         });
-    $locationProvider.html5Mode(true);
+    // use the HTML5 History API
+    $locationProvider.html5Mode({
+        enabled: true,
+        requireBase: false,
+        rewriteLinks: false
+    });
 });
 
 cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($window, $rootScope, $timeout, $q) {
@@ -313,11 +321,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
 
     // UPLOAD ==================================================================
     this.uploadFile = function() {
-        console.log('upload');
         if (ua === 'AndroidApp') {
             Android.choosePhoto();
         } else {
-            console.log('upload');
             $('#upload-input').click();
             $('.progress-bar').text('0%');
             $('.progress-bar').width('0%');
@@ -368,7 +374,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     };
 
     this.setMediaSize = function(id, card) {
-        console.log(id + ' : ' + card);
         var content = document.getElementById('ce' + id);
         return content.innerHTML;
     };
@@ -788,7 +793,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     };
 
     this.keyListen = function(elem) {
-        console.log('elem: ' + elem);
         var getKeyCode = function() {
             var editableEl = document.getElementById(elem);
             // lowercase
@@ -924,7 +928,6 @@ cardApp.service('Edit', function() {
     //EDIT Dropdown
     // On user click toggle between hiding and showing the dropdown content
     this.dropDownToggle = function(id) {
-        console.log('myFunction: ' + id);
         document.getElementById("myDropdown" + id).classList.toggle("show");
     };
 

@@ -10,6 +10,27 @@ var bodyParser = require('body-parser');
 var path = require('path');
 var formidable = require('formidable');
 var fs = require('fs');
+// Auth
+var passport = require('passport');
+var morgan = require('morgan');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
+var session = require('express-session');
+// set up our express application
+//app.use(morgan('dev')); // log every request to the console
+app.use(cookieParser()); // read cookies (needed for auth)
+
+// Passport
+require('./app/configs/passport')(passport); // pass passport for configuration
+// required for passport
+app.use(session({
+    secret: 'ilovescotchscotchyscotchscotch', // session secret
+    resave: true,
+    saveUninitialized: true
+}));
+app.use(passport.initialize());
+app.use(passport.session()); // persistent login sessions
+//app.use(flash()); // use connect-flash for flash messages stored in session
 
 app.use(express.static('app'));
 
@@ -18,7 +39,7 @@ app.use('/assets', express.static(path.join(__dirname, '/app/assets')));
 app.use('/snip', express.static(path.join(__dirname, '/app')));
 
 app.use(bodyParser.urlencoded({ 'extended': 'true' })); // parse application/x-www-form-urlencoded
-app.use(bodyParser.json()); // parse application/json
+app.use(bodyParser.json()); // parse application/json. Get information from html forms
 app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
 
 // configuration ===============================================================
@@ -38,11 +59,14 @@ for (var k in interfaces) {
 if (addresses == '192.168.192.60') {
     // MongoDB
     var dburl = urls.localUrl;
+    //var dbuserurl = localUserUrl;
 } else {
     // MongoDB
     var dburl = urls.remoteUrl;
+    //var dbuserurl = remoteUserUrl;
 }
 mongoose.connect(dburl); // Connect to local MongoDB instance. A remoteUrl is also available (modulus.io)
+//mongoose.connect(dbuserurl); // User login
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -50,29 +74,10 @@ db.once('open', function() {
 
 });
 
+
 // routes ======================================================================
-require('./app/routes/routes.js')(app); // load our routes and pass in our app
-
-// WEB ROUTE
-app.get('/', function(req, res) {
-    // load the single view file (angular will handle the page changes on the front-end)
-    res.sendFile('index.html', { root: path.join(__dirname, 'app') });
-});
-app.get('/:username', function(req, res) {
-    // load the single view file (angular will handle the page changes on the front-end)
-    res.sendFile('index.html', { root: path.join(__dirname, 'app') });
-});
-app.get('/s/:snip', function(req, res) {
-    // load the single view file (angular will handle the page changes on the front-end)
-    res.sendFile('index.html', { root: path.join(__dirname, 'app') });
-});
-
-// API
-// Use for API only. Angular handles web routes
-app.post('/api/cards/search_user/:id', function(req, res) {
-    var id = req.params.id;
-    res.json({ user: id });
-});
+//require('./app/routes/routes.js')(app); // load our routes and pass in our app
+require('./app/routes/routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
 
 // listen (start app with node server.js) ======================================
 app.listen(port);

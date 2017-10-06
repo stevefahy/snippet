@@ -1,4 +1,4 @@
-cardApp.controller("cardsearchCtrl", ['$scope', 'Cards', '$rootScope', '$location', function($scope, Cards, $rootScope, $location) {
+cardApp.controller("cardsearchCtrl", ['$scope', 'Cards', '$rootScope', '$location', '$http', function($scope, Cards, $rootScope, $location, $http) {
 
     $scope.showDiv = false;
 

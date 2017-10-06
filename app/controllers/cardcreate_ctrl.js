@@ -1,4 +1,4 @@
-cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', 'Cards', 'replaceTags', 'Format', 'Edit', function($scope, $rootScope, $location, Cards, replaceTags, Format, Edit) {
+cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$http', 'Cards', 'replaceTags', 'Format', 'Edit', function($scope, $rootScope, $location, $http, Cards, replaceTags, Format, Edit) {
 
     $scope.getFocus = Format.getFocus;
     $scope.contentChanged = Format.contentChanged;
@@ -15,9 +15,16 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', 'Card
         _id: 'card_create',
         title: '',
         content: '',
-        user: 'steve.fahy',
+        user: '',
         lang: 'en'
     };
+
+    // Get the current users details
+    $http.get("/api/user_data").then(function(result) {
+        //console.log('result: ' + JSON.stringify(result.data));
+        $scope.currentUser = result.data.user;
+        $scope.card_create.user = $scope.currentUser.google.name;
+    });
 
     // CREATE ==================================================================
     $scope.createCard = function(id, card_create) {
