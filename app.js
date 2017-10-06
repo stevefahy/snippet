@@ -49,7 +49,7 @@ app.use(cookieParser()); // read cookies (needed for auth)
 require('./app/configs/passport')(passport); // pass passport for configuration
 // required for passport
 app.use(session({
-    secret: 'ilovescotchscotchyscotchscotch', // session secret
+    secret: 'ilovescotchscotchyscotchscotchx', // session secret
     resave: true,
     saveUninitialized: true
 }));
