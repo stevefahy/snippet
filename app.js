@@ -16,6 +16,31 @@ var morgan = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
+
+// Check for local or production environment
+var os = require('os');
+var interfaces = os.networkInterfaces();
+var addresses = [];
+for (var k in interfaces) {
+    for (var k2 in interfaces[k]) {
+        var address = interfaces[k][k2];
+        if (address.family === 'IPv4' && !address.internal) {
+            addresses.push(address.address);
+        }
+    }
+}
+// Dell XPS 13
+if (addresses == '192.168.192.60') {
+    // MongoDB
+    var dburl = urls.localUrl;
+    // Google Auth callBackURL
+    global.callbackURL = 'http://localhost:8090/auth/google/callback';
+} else {
+    // MongoDB
+    var dburl = urls.remoteUrl;
+    // Google Auth callBackURL
+    global.callbackURL = 'http://www.snipbee.com/snip/auth/google/callback';
+}
 // set up our express application
 //app.use(morgan('dev')); // log every request to the console
 app.use(cookieParser()); // read cookies (needed for auth)
@@ -43,28 +68,7 @@ app.use(bodyParser.json()); // parse application/json. Get information from html
 app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
 
 // configuration ===============================================================
-// Check for local or production environment
-var os = require('os');
-var interfaces = os.networkInterfaces();
-var addresses = [];
-for (var k in interfaces) {
-    for (var k2 in interfaces[k]) {
-        var address = interfaces[k][k2];
-        if (address.family === 'IPv4' && !address.internal) {
-            addresses.push(address.address);
-        }
-    }
-}
-// Dell XPS 13
-if (addresses == '192.168.192.60') {
-    // MongoDB
-    var dburl = urls.localUrl;
-    //var dbuserurl = localUserUrl;
-} else {
-    // MongoDB
-    var dburl = urls.remoteUrl;
-    //var dbuserurl = remoteUserUrl;
-}
+
 mongoose.connect(dburl); // Connect to local MongoDB instance. A remoteUrl is also available (modulus.io)
 //mongoose.connect(dbuserurl); // User login
 

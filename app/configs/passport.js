@@ -298,7 +298,8 @@ module.exports = function(passport) {
 
             clientID: configAuth.googleAuth.clientID,
             clientSecret: configAuth.googleAuth.clientSecret,
-            callbackURL: configAuth.googleAuth.callbackURL,
+            callbackURL     : global.callbackURL,
+            //callbackURL: configAuth.googleAuth.callbackURL,
             passReqToCallback: true // allows us to pass in the req from our route (lets us check if a user is logged in or not)
 
         },
