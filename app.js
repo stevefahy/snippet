@@ -39,7 +39,7 @@ if (addresses == '192.168.192.60') {
     // MongoDB
     var dburl = urls.remoteUrl;
     // Google Auth callBackURL
-    global.callbackURL = 'http://www.snipbee.com/snip/auth/google/callback';
+    global.callbackURL = 'http://www.snipbee.com/auth/google/callback';
 }
 // set up our express application
 //app.use(morgan('dev')); // log every request to the console
