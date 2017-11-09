@@ -1,0 +1,26 @@
+<div ng-controller="contactsCtrl">
+    <br>
+    <br>
+    <br> Contacts
+    <br>
+    <input id="invite_email" class="form-control" type="text" ng-model="invite_input">
+    <button id="invite_button" type="submit" class="btn btn-sm btn-warning" ng-click="inviteUser(invite_input)">Invite</button>
+    <br> repeat
+    <ul class="list-group">
+        <div ng-repeat="contact in contacts">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{contact.google.name}}
+            </li>
+        </div>
+    </ul>
+    <label>Find a user: </label>
+    <input id="search-query">
+    <ul class="list-group">
+        <div ng-repeat="search_result in search_results">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{search_result.google.name}}
+                <button  type="button" class="btn btn-success btn-xs btn-adduser" ng-click="addUser(search_result._id, $index)" ng-if="!search_result.is_contact">add contact</button>
+            </li>
+        </div>
+    </ul>
+</div>

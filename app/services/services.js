@@ -32,3 +32,41 @@ cardApp.factory('Cards', ['$http', function($http) {
         }
     };
 }]);
+
+cardApp.factory('Invites', ['$http', function($http) {
+    return {
+        create_invite: function(invite_input) {
+            //console.log(invitedata);
+            return $http.post('api/invite', invite_input)
+                .then(function(response) {
+                    return response;
+                });
+        },
+        search_id: function(code) {
+            return $http.post('api/invite/search_id/' + code);
+        }
+    };
+
+}]);
+
+cardApp.factory('Email', ['$http', function($http) {
+    return {
+        postEmail: function(email_data) {
+            return $http.post("api/post_email", email_data);
+        }
+    };
+}]);
+
+cardApp.factory('Users', ['$http', function($http) {
+    return {
+        search_id: function(id) {
+            return $http.post('api/users/search_id/' + id);
+        },
+        add_contact: function(id) {
+            return $http.post('api/users/add_contact/' + id);
+        },
+        delete_contact: function(id) {
+            return $http.post('api/users/delete_contact/' + id);
+        }
+    };
+}]);

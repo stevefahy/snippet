@@ -4,10 +4,9 @@ var Schema = mongoose.Schema;
 
 // Card
 var cardSchema = new Schema({
-    title: String,
     content: String,
     user: String,
-    lang: String,
+    //conversationId: { type: Schema.Types.ObjectId, required: true },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }
 });

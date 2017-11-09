@@ -4,8 +4,12 @@ var FacebookStrategy = require('passport-facebook').Strategy;
 var TwitterStrategy = require('passport-twitter').Strategy;
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
-// load up the user model
+var mongoose = require('mongoose');
+var ObjectId = mongoose.Types.ObjectId;
+
+// load up the models
 var User = require('../models/user');
+var Invite = require('../models/invite');
 
 // load the auth variables
 var configAuth = require('./auth'); // use this one for testing
@@ -298,8 +302,7 @@ module.exports = function(passport) {
 
             clientID: configAuth.googleAuth.clientID,
             clientSecret: configAuth.googleAuth.clientSecret,
-            callbackURL     : global.callbackURL,
-            //callbackURL: configAuth.googleAuth.callbackURL,
+            callbackURL: global.callbackURL,
             passReqToCallback: true // allows us to pass in the req from our route (lets us check if a user is logged in or not)
 
         },
@@ -333,17 +336,21 @@ module.exports = function(passport) {
 
                             return done(null, user);
                         } else {
+                            //
+                            // NEW USER
+                            //
                             var newUser = new User();
-
+                            newUser._id = new mongoose.Types.ObjectId();
+                            //newUser.contacts = ''; Empty
                             newUser.google.id = profile.id;
                             newUser.google.token = token;
                             newUser.google.name = profile.displayName;
                             newUser.google.email = (profile.emails[0].value || '').toLowerCase(); // pull the first email
 
                             newUser.save(function(err) {
-                                if (err)
+                                if (err) {
                                     return done(err);
-
+                                }
                                 return done(null, newUser);
                             });
                         }

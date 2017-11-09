@@ -13,10 +13,10 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
 
     $scope.card_create = {
         _id: 'card_create',
-        title: '',
+        //title: '',
         content: '',
         user: '',
-        lang: 'en'
+        //lang: 'en'
     };
 
     // Get the current users details

@@ -20,8 +20,14 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
         .when("/:username", {
             templateUrl: '/views/card.html'
         })
+        .when("/c/contacts", {
+            templateUrl: '/views/contacts.html'
+        })
+        .when("/api/join/:code", {
+            templateUrl: '/views/join.html'
+        })
         .otherwise({
-            redirectTo: '/'
+            //  redirectTo: '/'
         });
     // use the HTML5 History API
     $locationProvider.html5Mode({
