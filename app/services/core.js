@@ -8,9 +8,6 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
         .when('/', {
             templateUrl: '/views/card.html'
         })
-        //.when('/*', {
-        //    templateUrl: '/snip/views/card.html'
-        //})
         .when("/c/create_card", {
             templateUrl: '/views/card_create.html'
         })
@@ -23,11 +20,17 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
         .when("/c/contacts", {
             templateUrl: '/views/contacts.html'
         })
+        .when("/chat/conversations", {
+            templateUrl: '/views/conversations.html'
+        })
+        .when("/chat/conversation/:id", {
+            templateUrl: '/views/conversation.html'
+        })
         .when("/api/join/:code", {
             templateUrl: '/views/join.html'
         })
         .otherwise({
-            //  redirectTo: '/'
+            redirectTo: '/'
         });
     // use the HTML5 History API
     $locationProvider.html5Mode({
@@ -930,8 +933,7 @@ cardApp.service('replaceTags', function() {
 });
 
 cardApp.service('Edit', function() {
-
-    //EDIT Dropdown
+    // EDIT Dropdown
     // On user click toggle between hiding and showing the dropdown content
     this.dropDownToggle = function(id) {
         document.getElementById("myDropdown" + id).classList.toggle("show");

@@ -6,7 +6,6 @@ var Schema = mongoose.Schema;
 // User
 // define the schema for our user model
 var userSchema = new Schema({
-    //contacts_id:  Schema.Types.ObjectId,
     _id: Schema.Types.ObjectId,
     contacts: [{ "type": Schema.Types.ObjectId, "ref": "User" }],
     local: {

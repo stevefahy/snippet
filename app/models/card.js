@@ -4,9 +4,15 @@ var Schema = mongoose.Schema;
 
 // Card
 var cardSchema = new Schema({
+    conversationId: {
+        type: Schema.Types.ObjectId,
+        required: true
+    },
     content: String,
-    user: String,
-    //conversationId: { type: Schema.Types.ObjectId, required: true },
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }
 });

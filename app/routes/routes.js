@@ -1,6 +1,7 @@
 var Card = require('../models/card');
 var User = require('../models/user');
 var Invite = require('../models/invite');
+var Conversation = require('../models/conversation');
 var formidable = require('formidable');
 var fs = require('fs');
 var path = require('path');
@@ -29,6 +30,11 @@ function getContacts(res) {
     });
 }
 
+function getConversationId(id) {
+    var query = Conversation.findOne({ '_id': id });
+    return query;
+}
+
 // route middleware to ensure user is logged in
 function isLoggedIn(req, res, next) {
     // console.log(req);
@@ -41,6 +47,35 @@ function isLoggedIn(req, res, next) {
         res.redirect('/login');
     }
 }
+
+// route middleware to ensure user is logged in and a member of the conversation
+function isMember(req, res, next) {
+    // must be logged in to be a member
+    if (req.isAuthenticated()) {
+        // get the memebers of this conversation
+        var query = getConversationId(req.params.id);
+        query.exec(function(err, conversation) {
+            if (err) {
+                console.log('err: ' + err);
+                return console.log(err);
+            }
+            // Check that the conversation exists.
+            if (conversation === null) {
+                res.redirect('/');
+            } else if (conversation.participants.indexOf(req.user._id) >= 0) {
+                // if the current is is a member of this conversation continue
+                return next();
+            } else {
+                // otherwise redirect to login
+                res.redirect('/login');
+            }
+        });
+    } else {
+        // causing infinite loop
+        res.redirect('/login');
+    }
+}
+
 
 module.exports = function(app, passport) {
     //
@@ -82,6 +117,14 @@ module.exports = function(app, passport) {
     app.get('/c/contacts', isLoggedIn, function(req, res) {
         res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
     });
+    // CONVERSATION
+    app.get('/chat/conversation/:id', isMember, function(req, res) {
+        res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
+    });
+    // CONVERSATIONS
+    app.get('/chat/conversations', isLoggedIn, function(req, res) {
+        res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
+    });
     // Route to check passort authentication
     app.get('/api/user_data', isLoggedIn, function(req, res) {
         if (req.user === undefined) {
@@ -93,7 +136,6 @@ module.exports = function(app, passport) {
             });
         }
     });
-
     //
     // API
     //------------------------------------------------------------------
@@ -263,12 +305,25 @@ module.exports = function(app, passport) {
     // search for cards by username
     app.post('/api/cards/search_user/:username', function(req, res) {
         var username = req.params.username;
-        Card.find({ 'user': new RegExp('^' + username + '$', "i") }, function(err, cards) {
+        // get the user id for this user name
+        User.findOne({ 'google.name': new RegExp('^' + username + '$', "i") }, function(err, user) {
             if (err) {
                 return res.send(err);
             }
-            res.json(cards);
-        }).limit(20);
+            if (user === null) {
+                res.redirect('/');
+            } else {
+                var user_id = user._id;
+                // get the cards for this user
+                Card.find({ 'user': user_id }, function(err, cards) {
+                    if (err) {
+                        console.log('err: ' + err);
+                        return res.send(err);
+                    }
+                    res.json(cards);
+                }).limit(20);
+            }
+        });
     });
     // search for a card by id
     app.post('/api/cards/search_id/:snip', function(req, res) {
@@ -302,18 +357,20 @@ module.exports = function(app, passport) {
     // create card and send back the created card after creation
     app.post('/api/cards', function(req, res) {
         Card.create({
+            conversationId: req.body.conversationId,
             content: req.body.content,
-            user: req.body.user,
-            //conversationId: { type: Schema.Types.ObjectId, required: true },
+            user: req.user._id,
             done: false
         }, function(err, card) {
             if (err) {
+                console.log('err: ' + err);
                 res.send(err);
             }
             // return the created card
             res.send(card);
         });
     });
+
     // update a card by id
     app.put('/api/cards/:card_id', function(req, res) {
         Card.findById({ _id: req.params.card_id }, function(err, card) {
@@ -330,11 +387,11 @@ module.exports = function(app, passport) {
             newcard.save(function(err, card) {
                 if (err) {
                     res.send(err);
-                } else {
-                }
+                } else {}
             });
         });
     });
+
     // delete a card
     app.delete('/api/cards/:card_id', function(req, res) {
         Card.remove({
@@ -364,6 +421,7 @@ module.exports = function(app, passport) {
             res.send(invite);
         });
     });
+
     // search for an invite by id
     app.post('/api/invite/search_id/:code', function(req, res) {
         var code = req.params.code;
@@ -396,7 +454,6 @@ module.exports = function(app, passport) {
             if (error) {
                 //
             } else {
-                //console.log('Email sent: ' + info.response);
                 res.send(200);
             }
         });
@@ -408,5 +465,91 @@ module.exports = function(app, passport) {
     // User has accepted invite to join via email.
     app.get('/api/join/:code', function(req, res) {
         res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
+    });
+    //
+    // CONVERSATION
+    //
+    // create conversation
+    app.post('/chat/conversation', function(req, res) {
+        Conversation.create({
+            conversation_name: req.body.conversation_name,
+            admin: req.body.admin,
+            participants: req.body.participants,
+            done: false
+        }, function(err, conversation) {
+            if (err) {
+                console.log('error: ' + err);
+                res.send(err);
+            }
+            // return the created conversation
+            res.send(conversation);
+        });
+    });
+
+    // Update a conversation updatedAt time (For sorting conversations by most recent updates)
+    app.put('/chat/conversation_time/:id', function(req, res) {
+        Conversation.findById({ _id: req.params.id }, function(err, conversation) {
+            if (err) {
+                res.send(err);
+            }
+            var new_conversation = new Conversation(conversation);
+            new_conversation.updatedAt = new Date().toISOString();
+            new_conversation.save(function(err, conversation) {
+                if (err) {
+                    res.send(err);
+                } else {
+                    res.json(conversation);
+                }
+            });
+        });
+
+    });
+
+    // get all conversations for this user
+    // TODO - web route?
+    app.get('/chat/conversations', function(req, res) {
+        res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
+    });
+
+    // get all conversations for current user
+    app.get('/chat/conversation', function(req, res) {
+        Conversation.find({ 'participants': req.user._id }, function(err, conversations) {
+            if (err) {
+                return res.send(err);
+            }
+            res.send(conversations);
+        });
+    });
+
+    // get a conversation by conversation id
+    app.get('/chat/conversation/:id', function(req, res) {
+        Conversation.findOne({ '_id': req.params.id }, function(err, conversation) {
+            if (err) {
+                return done(err);
+            }
+            res.json(conversation);
+        });
+    });
+
+    // get all conversations by user id
+    // TODO check redundant?
+    app.get('/chat/user_conversations/:id', function(req, res) {
+        Conversation.find({ 'participants': req.params.id }, function(err, conversations) {
+            if (err) {
+                return done(err);
+            }
+            res.json(conversations);
+        });
+    });
+
+    // get all cards for a conversation by conversation id
+    app.get('/chat/get_conversation/:id', function(req, res) {
+        // TODO if no id exists then re-route
+        Card.find({ 'conversationId': req.params.id }, function(err, cards) {
+            if (err) {
+                return done(err);
+            }
+            res.json(cards);
+        });
     });
 };

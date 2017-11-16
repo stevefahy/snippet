@@ -57,7 +57,7 @@ app.use(session({
     resave: true,
     saveUninitialized: true
 }));
-app.use(favicon(path.join(__dirname,'/app/assets','images','favicon.ico')));
+app.use(favicon(path.join(__dirname, '/app/assets', 'images', 'favicon.ico')));
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 //app.use(flash()); // use connect-flash for flash messages stored in session
@@ -75,7 +75,7 @@ app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse applica
 
 
 app.use(function(req, res, next) {
-    if(req.user) {
+    if (req.user) {
         req.user.whatever = 'you like';
     }
     next();

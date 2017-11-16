@@ -70,3 +70,41 @@ cardApp.factory('Users', ['$http', function($http) {
         }
     };
 }]);
+
+cardApp.factory('Conversations', ['$http', function($http) {
+    return {
+        create: function(conversation_data) {
+            return $http.post('chat/conversation', conversation_data)
+                .then(function(response) {
+                    return response;
+                });
+        },
+        find: function() {
+            return $http.get('chat/conversation')
+                .then(function(response) {
+                    return response;
+                });
+        },
+        find_conversation: function(id) {
+            return $http.get('chat/conversation/' + id)
+                .then(function(response) {
+                    return response;
+                });
+        },
+        find_user_conversations: function(id) {
+            return $http.get('chat/user_conversations/' + id)
+                .then(function(response) {
+                    return response;
+                });
+        },
+        getConversationId: function() {
+            return property;
+        },
+        setConversationId: function(value) {
+            property = value;
+        },
+        updateTime: function(id) {
+            return $http.put('chat/conversation_time/' + id);
+        }
+    };
+}]);

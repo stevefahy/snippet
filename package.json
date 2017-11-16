@@ -23,7 +23,7 @@
     "method-override": "~2.3.6",
     "express-session": "~1.14.1",
     "serve-favicon": "*",
-    "nodemailer":"*",
+    "nodemailer": "*",
     "base64url": "*"
   }
 }

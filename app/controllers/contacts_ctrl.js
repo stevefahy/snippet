@@ -1,4 +1,4 @@
-cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http', 'Invites', 'Email', 'Users', function($scope, $rootScope, $location, $http, Invites, Email, Users) {
+cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http', 'Invites', 'Email', 'Users', 'Conversations', function($scope, $rootScope, $location, $http, Invites, Email, Users, Conversations) {
 
     $scope.contacts = [];
     $scope.search_results = [];
@@ -10,12 +10,66 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
         group_id: ''
     };
 
+    $scope.chat_create = {
+        conversation_name: '',
+        //admin: '',
+        participants: []
+    };
+    // contacts checkboxes
+    $scope.selection = [];
+    // contacts checkboxes selected
+    $scope.selected = [];
+    // contact checkbox value changed
+    $scope.checkBoxChange = function(checkbox, value) {
+        var index = $scope.selected.indexOf(checkbox);
+        if (value === true && index < 0) {
+            // selected. Add to the selected array if not already there.
+            $scope.selected.push(checkbox);
+            // deselected. Remove from the selected array if already there.
+        } else if (value === false && index >= 0) {
+            $scope.selected.splice(index, 1);
+        }
+
+    };
+
+    // Start a conversation
+    $scope.selectedUsers = function() {
+        $scope.startChat($scope.selected);
+    };
+
     // Get the current users details
     $http.get("/api/user_data").then(function(result) {
         $scope.currentUser = result.data.user;
         // load this users list of contacts
         loadUserContacts();
     });
+
+    // Continue a conversation by conversation id
+    $scope.chat = function(conversation, index) {
+        $location.path("/chat/conversation/" + conversation);
+    };
+
+    // Start a conversation
+    $scope.startChat = function(new_participants) {
+        // reset the participants array.
+        $scope.chat_create.participants = [];
+        // set the creating user as admin if a group
+        if (new_participants.length > 1) {
+            $scope.chat_create.admin = $scope.currentUser._id;
+        }
+        // Add current user as a participant
+        $scope.chat_create.participants.push($scope.currentUser._id);
+        // Add all users contained in the new_participants array
+        new_participants.map(function(key, array) {
+            $scope.chat_create.participants.push(key);
+        });
+        // Create conversation in DB.
+        Conversations.create($scope.chat_create)
+            .then(function(res) {
+                // Go to the conversation after it has been created
+                $location.path("/chat/conversation/" + res.data._id);
+            });
+    };
 
     // add a user to the current users contact list
     $scope.addUser = function(id, index) {
@@ -66,6 +120,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
         // reset the contacts model
         $scope.contacts = [];
         var result = $scope.currentUser.contacts.map(function(key, array) {
+            // Search for each user in the contacts list by id
             Users.search_id(key)
                 .success(function(res) {
                     if (res.error === 'null') {
@@ -74,7 +129,23 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
                             .success(function(data) {});
                     }
                     if (res.success) {
-                        // add the contact
+                        // Check if individual conversation already created with this contact
+                        // Get all coversations containing current user.
+                        $http.get("/chat/conversation").then(function(result) {
+                            result.data.map(function(key, array) {
+                                // check that this is a two person chat.
+                                // Groups of three or more are loaded in conversations.html
+                                if (key.participants.length === 2) {
+                                    // Check that current user is a participant of this conversation
+                                    if (key.participants.indexOf(res.success._id) >= 0) {
+                                        // set conversation_exists and conversation_id for the contacts
+                                        res.success.conversation_exists = true;
+                                        res.success.conversation_id = key._id;
+                                    }
+                                }
+                            });
+                        });
+                        // add the user as a contact
                         $scope.contacts.push(res.success);
                     }
                 })
