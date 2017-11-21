@@ -104,6 +104,7 @@ module.exports = function(app, passport) {
     // /:USERNAME (users home page)
     app.get('/:username', function(req, res) {
         res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
+        // res.json({'steve':'steve'});
     });
     // /:SNIP (single snip)
     app.get('/s/:snip', function(req, res) {
@@ -148,11 +149,13 @@ module.exports = function(app, passport) {
     // send to google to do the authentication
     app.get('/auth/google',
         passport.authenticate('google', {
-            scope: ['profile', 'email']
+            scope: ['profile', 'email'],
+            prompt: "select_account"
         }),
         function(req, res) {
             //
         });
+
     // Login from /api/join route
     // send to google to do the authentication. Pass the invite id to google within state.
     app.get("/auth/google/join/:code", function(request, response) {
@@ -327,7 +330,6 @@ module.exports = function(app, passport) {
     });
     // search for a card by id
     app.post('/api/cards/search_id/:snip', function(req, res) {
-        console.log('snip');
         var snip = req.params.snip;
         Card.find({ '_id': snip }, function(err, cards) {
             if (err) {
@@ -356,6 +358,8 @@ module.exports = function(app, passport) {
     });
     // create card and send back the created card after creation
     app.post('/api/cards', function(req, res) {
+        //console.log('create: ' + req.io);
+        //req.io.emit('some_event',{ my: 'datax' });
         Card.create({
             conversationId: req.body.conversationId,
             content: req.body.content,
@@ -486,6 +490,7 @@ module.exports = function(app, passport) {
         });
     });
 
+    // TODO just update the updatedAt
     // Update a conversation updatedAt time (For sorting conversations by most recent updates)
     app.put('/chat/conversation_time/:id', function(req, res) {
         Conversation.findById({ _id: req.params.id }, function(err, conversation) {
@@ -505,8 +510,25 @@ module.exports = function(app, passport) {
 
     });
 
+    // Update a conversation viewed number by ocnversation id and user id
+    app.put('/chat/conversation_viewed/:id/:user_id/:number', function(req, res) {
+        Conversation.update({ _id: req.params.id, 'participants._id': req.params.user_id }, {
+                '$set': {
+                    'participants.$.viewed': req.params.number
+                }
+            },
+            function(err, conversation) {
+                if (err) {
+                    console.log('err: ' + err);
+                    res.send(err);
+                }
+                res.json(conversation);
+            });
+    });
+
     // get all conversations for this user
     // TODO - web route?
+    // TODO - check all these use are used and without redundancy
     app.get('/chat/conversations', function(req, res) {
         res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
     });
@@ -522,9 +544,10 @@ module.exports = function(app, passport) {
     });
 
     // get a conversation by conversation id
-    app.get('/chat/conversation/:id', function(req, res) {
+    app.get('/chat/conversation_id/:id', function(req, res) {
         Conversation.findOne({ '_id': req.params.id }, function(err, conversation) {
             if (err) {
+                console.log('err: ' + err);
                 return done(err);
             }
             res.json(conversation);
@@ -534,7 +557,7 @@ module.exports = function(app, passport) {
     // get all conversations by user id
     // TODO check redundant?
     app.get('/chat/user_conversations/:id', function(req, res) {
-        Conversation.find({ 'participants': req.params.id }, function(err, conversations) {
+        Conversation.find({ 'participants._id': req.params.id }, function(err, conversations) {
             if (err) {
                 return done(err);
             }

@@ -18,6 +18,77 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var favicon = require('serve-favicon');
 var nodemailer = require('nodemailer');
+//
+// socket.io
+//
+//var http = require('http').Server(app);
+//var io = require('socket.io')(http);
+var io = require('socket.io');
+var http = require('http');
+var server = http.createServer(app);
+var io = io.listen(server);
+
+io.on('connection', function(socket) {
+    //console.log('socket.io SERVER connection made: ' + socket.id);
+
+    var ns;
+
+    socket.on('create_ns', function(ns) {
+        //console.log('SERVER client request to create ns: ' + ns);
+        // create unique namespace requested by client
+        var nsp = io.of('/' + ns);
+        var nspn;
+        // nsp namespace connection
+        nsp.on('connection', function(nsp) {
+            //console.log('SERVER NS connected: ' + nsp.nsp.name);
+            //console.log('SERVER socket clients: ' + Object.keys(io.sockets.sockets));
+            //console.log('SERVER socket namespaces: ' + Object.keys(io.nsps));
+            // store the namespace name
+            nspn = nsp.nsp.name;
+            // confirm that namespace has been created to client
+            nsp.emit('joined_ns', nsp.nsp.name);
+            // emited by cardcreate_ctrl when card has been created
+            nsp.on('card_posted', function(data) {
+                //console.log('card_posted, conv id: ' + data.conversation_id + ' , participants: ' + data.participants);
+                // notify relevant namespace of the cards creation
+                for (var i in data.participants) {
+                    //console.log('check for namespace:' + data.participants[i]._id);
+                    // dont emit to the user which sent the card
+                    if (data.participants[i]._id === nspn.substring(1, nspn.length)) {
+                        //console.log(data.participants[i]._id + '===' + nspn.substring(1, nspn.length));
+                    } else {
+                        for (var y in Object.keys(io.nsps)) {
+                            //console.log('nsp: ' + Object.keys(io.nsps)[y]);
+                            if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.participants[i]._id) {
+                                //console.log('emit to: ' + data.participants[i]._id);
+                                var nsp_new = io.of('/' + data.participants[i]._id);
+                                nsp_new.emit('notify_users', { conversation_id: data.conversation_id, participants: data.participants });
+                            }
+                        }
+                    }
+                }
+            });
+            // on namespace disconnect
+            nsp.on('disconnect', function(sock) {
+                console.log('SERVER NS disconnected: ' + nspn);
+                // delete this namespace after it has disconnected
+                delete io.nsps[nspn];
+                console.log('SERVER socket clients: ' + Object.keys(io.sockets.sockets));
+                console.log('SERVER socket namespaces: ' + Object.keys(io.nsps));
+            });
+
+        });
+
+    });
+
+    // on socket disconnect
+    socket.on('disconnect', function() {
+        console.log('socket.io server disconnected: ' + socket.id);
+        console.log('SERVER socket clients: ' + Object.keys(io.sockets.sockets));
+        console.log('SERVER socket namespaces: ' + Object.keys(io.nsps));
+    });
+
+});
 
 // Check for local or production environment
 var os = require('os');
@@ -74,12 +145,6 @@ app.use(bodyParser.json()); // parse application/json. Get information from html
 app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
 
 
-app.use(function(req, res, next) {
-    if (req.user) {
-        req.user.whatever = 'you like';
-    }
-    next();
-});
 // configuration ===============================================================
 
 mongoose.connect(dburl); // Connect to local MongoDB instance. A remoteUrl is also available (modulus.io)
@@ -93,11 +158,12 @@ db.once('open', function() {
 
 
 // routes ======================================================================
-//require('./app/routes/routes.js')(app); // load our routes and pass in our app
+
 require('./app/routes/routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
 
 // listen (start app with node server.js) ======================================
-app.listen(port);
+
+server.listen(port);
 
 console.log("App listening on port " + port);
 console.log("Mongoose connection: " + dburl);

@@ -310,7 +310,6 @@ module.exports = function(passport) {
 
             // asynchronous
             process.nextTick(function() {
-
                 // check if the user is already logged in
                 if (!req.user) {
 

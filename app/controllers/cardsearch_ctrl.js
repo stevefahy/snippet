@@ -13,6 +13,10 @@ cardApp.controller("cardsearchCtrl", ['$scope', 'Cards', '$rootScope', '$locatio
         $scope.searchCard();
     });
 
+    $scope.changePath = function(path) {
+        $location.path(path);
+    };
+
     $scope.searchCard = function() {
         console.log('search');
         $location.path('/');

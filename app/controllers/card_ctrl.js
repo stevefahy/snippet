@@ -1,4 +1,4 @@
-cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', '$http', 'Format', 'Edit', '$window', '$routeParams', '$location', function($scope, Cards, replaceTags, $rootScope, $http, Format, Edit, $window, $routeParams, $location) {
+cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', '$http', 'Format', 'Edit', '$window', '$routeParams', '$location', 'socket', function($scope, Cards, replaceTags, $rootScope, $http, Format, Edit, $window, $routeParams, $location, socket) {
 
     $scope.getFocus = Format.getFocus;
     $scope.contentChanged = Format.contentChanged;
@@ -30,6 +30,7 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 
                 $rootScope.$broadcast('cards', data);
             });
     }
+
     if (snip !== undefined) {
         Cards.search_id(snip)
             .success(function(data) {
@@ -37,6 +38,7 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 
                 $rootScope.$broadcast('cards', data);
             });
     }
+
     loadUserData = function() {
         if (snip === undefined && username === undefined) {
             Cards.search_user($scope.currentUser)

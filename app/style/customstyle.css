@@ -26,6 +26,11 @@
     font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
 }
 
+#cecard_create {
+    height: 20px;
+    border: 1px solid #0003;
+}
+
 #cet {
     font-size: 2.4rem;
 }
@@ -82,9 +87,12 @@ input[type="checkbox"] {
     height: 100%;
 }
 
+
+/*
 span {
     width: 100%;
 }
+*/
 
 .input-group {
     clear: both;
@@ -266,6 +274,8 @@ span.glyphicon.glyphicon-option-vertical {
 
 
 
+
+
 /* EDIT MENU */
 
 
@@ -279,6 +289,8 @@ span.glyphicon.glyphicon-option-vertical {
 
 
 
+
+
 /* Dropdown button on hover & focus */
 
 .dropbtn:hover,
@@ -288,12 +300,16 @@ span.glyphicon.glyphicon-option-vertical {
 
 
 
+
+
 /* The container <div> - needed to position the dropdown content */
 
 .dropdown {
     position: relative;
     display: inline-block;
 }
+
+
 
 
 
@@ -311,6 +327,8 @@ span.glyphicon.glyphicon-option-vertical {
 
 
 
+
+
 /* Links inside the dropdown */
 
 .dropdown-content div {
@@ -322,11 +340,15 @@ span.glyphicon.glyphicon-option-vertical {
 
 
 
+
+
 /* Change color of dropdown links on hover */
 
 .dropdown-content a:hover {
     background-color: #f1f1f1
 }
+
+
 
 
 
@@ -401,4 +423,10 @@ li.list-group-item.d-flex.justify-content-between.align-items-center.ng-binding 
 
 #contacts_cb {
     float: right;
+}
+
+#conversations_badge {
+    float: none;
+    margin-left: 5px;
+    margin-top: -1px;
 }

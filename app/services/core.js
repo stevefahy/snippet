@@ -3,6 +3,7 @@ var cardApp = angular.module("cardApp", ['ngSanitize', 'ngRoute']);
 // Prefix for loading a snip id
 var prefix = '/s/';
 
+
 cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
     $routeProvider
         .when('/', {

@@ -1,5 +1,6 @@
 // Service
 // Each function returns a promise object 
+
 cardApp.factory('Cards', ['$http', function($http) {
     return {
         create_card: function() {
@@ -85,11 +86,11 @@ cardApp.factory('Conversations', ['$http', function($http) {
                     return response;
                 });
         },
-        find_conversation: function(id) {
-            return $http.get('chat/conversation/' + id)
-                .then(function(response) {
-                    return response;
-                });
+        updateViewed: function(id, user_id, number) {
+            return $http.put('chat/conversation_viewed/' + id + '/' + user_id + '/' + number);
+        },
+        find_conversation_id: function(id) {
+            return $http.get('chat/conversation_id/' + id);
         },
         find_user_conversations: function(id) {
             return $http.get('chat/user_conversations/' + id)
@@ -108,3 +109,54 @@ cardApp.factory('Conversations', ['$http', function($http) {
         }
     };
 }]);
+
+cardApp.factory('socket', function($rootScope, $window) {
+    var socket;
+
+    return {
+
+        connect: function(data, callback) {
+            socket = io();
+            //console.log('client request connect: ' + data);
+
+            socket.on('connect', function() {
+                //console.log('socket.io CLIENT connection made: ' + socket.id + ' : ' + data);
+                // Connected, request unique namespace to be created
+                socket.emit('create_ns', data);
+                // create the unique namespace on the client
+                socket = io('/' + data);
+                // server confirming that the namespace has been created
+                socket.on('joined_ns', function(data) {
+                    // console.log('CLIENT joined_ns: ' + data);
+                    // console.log('NS socket.id: ' + socket.id);
+                });
+                // server notifying users by namespace of update
+                socket.on('notify_users', function(msg) {
+                    //console.log('notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
+                    $rootScope.$broadcast('NOTIFICATION', msg);
+                });
+
+            });
+
+
+        },
+        on: function(eventName, callback) {
+            socket.on(eventName, function() {
+                var args = arguments;
+                $rootScope.$apply(function() {
+                    callback.apply(socket, args);
+                });
+            });
+        },
+        emit: function(eventName, data, callback) {
+            socket.emit(eventName, data, function() {
+                var args = arguments;
+                $rootScope.$apply(function() {
+                    if (callback) {
+                        callback.apply(socket, args);
+                    }
+                });
+            });
+        }
+    };
+});

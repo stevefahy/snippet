@@ -1,14 +1,12 @@
-cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$http', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', function($scope, $rootScope, $location, $http, Cards, replaceTags, Format, Edit, Conversations) {
+cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'socket', function($scope, $rootScope, $location, $http, $window, Cards, replaceTags, Format, Edit, Conversations, socket) {
 
     $scope.getFocus = Format.getFocus;
     $scope.contentChanged = Format.contentChanged;
     $scope.checkKey = Format.checkKey;
     $scope.handlePaste = Format.handlePaste;
-
     $scope.keyListen = Format.keyListen;
     $scope.showAndroidToast = Format.showAndroidToast;
     $scope.uploadFile = Format.uploadFile;
-
     $scope.myFunction = Edit.myFunction;
 
     var current_conversation_id = Conversations.getConversationId();
@@ -28,7 +26,6 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
 
     // CREATE ==================================================================
     $scope.createCard = function(id, card_create) {
-
         $scope.card_create.conversationId = current_conversation_id;
         $scope.card_create.content = replaceTags.replace($scope.card_create.content);
         $scope.card_create.content = Format.setMediaSize(id, card_create);
@@ -41,10 +38,10 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
                 $rootScope.$broadcast('CONV_UPDATED', response.data);
                 // Update the Conversation updateAt time.
                 Conversations.updateTime(current_conversation_id)
-                .then(function(response){
-                    //console.log('conv time updated: ' + response);
-                });
+                    .then(function(response) {
+                        socket.emit('card_posted', { conversation_id: response.data._id, participants: response.data.participants });
+                    });
             });
     };
-    
+
 }]);

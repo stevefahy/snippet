@@ -40,6 +40,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
     // Get the current users details
     $http.get("/api/user_data").then(function(result) {
         $scope.currentUser = result.data.user;
+        console.log($scope.currentUser);
         // load this users list of contacts
         loadUserContacts();
     });
@@ -50,6 +51,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
     };
 
     // Start a conversation
+    // TODO - make sure two users cannot create a chat simultanously
     $scope.startChat = function(new_participants) {
         // reset the participants array.
         $scope.chat_create.participants = [];
@@ -58,10 +60,11 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
             $scope.chat_create.admin = $scope.currentUser._id;
         }
         // Add current user as a participant
-        $scope.chat_create.participants.push($scope.currentUser._id);
+        $scope.chat_create.participants.push({ _id: $scope.currentUser._id, viewed: 0 });
+
         // Add all users contained in the new_participants array
         new_participants.map(function(key, array) {
-            $scope.chat_create.participants.push(key);
+            $scope.chat_create.participants.push({ _id: key, viewed: 0 });
         });
         // Create conversation in DB.
         Conversations.create($scope.chat_create)
