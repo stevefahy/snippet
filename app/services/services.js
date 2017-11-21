@@ -136,6 +136,11 @@ cardApp.factory('socket', function($rootScope, $window) {
                     $rootScope.$broadcast('NOTIFICATION', msg);
                 });
 
+                //
+                socket.on('return_ping', function(msg) {
+                    $rootScope.$broadcast('PING', msg);
+                });
+
             });
 
 

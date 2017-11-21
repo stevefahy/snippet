@@ -68,6 +68,11 @@ io.on('connection', function(socket) {
                     }
                 }
             });
+
+            nsp.on('send_ping', function(){
+                nsp.emit('return_ping', {sockets:  Object.keys(io.sockets.sockets), nsps: Object.keys(io.nsps)});
+            });
+            
             // on namespace disconnect
             nsp.on('disconnect', function(sock) {
                 console.log('SERVER NS disconnected: ' + nspn);
