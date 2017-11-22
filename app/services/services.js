@@ -175,8 +175,9 @@ cardApp.factory('socket', function($rootScope, $window) {
 
         },
         checkConnection: function(id, name, info) {
-            //console.log('client check: ' + socket.id + ', details: ' + id + ' : ' + name + ' : ' + info);
             console.log('socket.connected: ' + socket.connected);
+            //console.log('client check: ' + socket.id + ', details: ' + id + ' : ' + name + ' : ' + info);
+            
             /*
             if (socket.id === undefined) {
                 this.connect(id, name, info);
