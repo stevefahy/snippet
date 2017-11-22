@@ -112,7 +112,7 @@ cardApp.factory('Conversations', ['$http', function($http) {
 
 cardApp.factory('socket', function($rootScope, $window) {
     var socket;
-    var _self = this;
+    //var _self = this;
     return {
 
         connect: function(data, callback) {
@@ -155,7 +155,7 @@ cardApp.factory('socket', function($rootScope, $window) {
         checkConnection: function(id){
             console.log('client check: ' + socket.id);
             if(socket.id === undefined){
-                _self.connect(id);
+                this.connect(id);
             }
         },
         on: function(eventName, callback) {
