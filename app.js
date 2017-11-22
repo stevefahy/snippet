@@ -49,6 +49,17 @@ io.on('connection', function(socket) {
             nspn = nsp.nsp.name;
             // confirm that namespace has been created to client
             nsp.emit('joined_ns', nsp.nsp.name);
+
+            nsp.on('clean_sockets', function(data) {
+                console.log('SERVER cleaning: ' + data);
+                for (var i in data) {
+                    console.log('deleting: ' + i);
+                    delete io.sockets.sockets[i];
+                }
+                console.log('SERVER CLEANED socket clients: ' + Object.keys(io.sockets.sockets));
+                console.log('SERVER CLEANED socket namespaces: ' + Object.keys(io.nsps));
+            });
+            
             // emited by cardcreate_ctrl when card has been created
             nsp.on('card_posted', function(data) {
                 console.log('SERVER NS connected: ' + nsp.nsp.name);

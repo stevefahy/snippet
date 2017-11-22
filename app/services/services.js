@@ -112,6 +112,7 @@ cardApp.factory('Conversations', ['$http', function($http) {
 
 cardApp.factory('socket', function($rootScope, $window) {
     var socket;
+    var socket_array = [];
     //var _self = this;
     return {
 
@@ -122,7 +123,8 @@ cardApp.factory('socket', function($rootScope, $window) {
             socket.on('connect', function() {
                 console.log('socket.io CLIENT connection made: ' + socket.id + ' : ' + data);
                 var original_socket = socket.id;
-                var original_namespace = data;
+                socket_array.push(original_socket);
+                //var original_namespace = data;
                 // Connected, request unique namespace to be created
                 socket.emit('create_ns', data);
                 // create the unique namespace on the client
@@ -131,9 +133,16 @@ cardApp.factory('socket', function($rootScope, $window) {
                 socket.on('joined_ns', function(data) {
                     console.log('CLIENT joined_ns: ' + data);
                     console.log('NS socket.id: ' + socket.id);
+                    // reconnecting
                     if (name !== undefined) {
                         console.log('2: ' + socket.id + ' : ' + name + ' : ' + info);
                         socket.emit(name, info);
+                        var index = socket_array.indexOf(socket.id);
+                        if (index > -1) {
+                            socket_array.splice(index, 1);
+                        }
+                        console.log('socket_array: ' + socket_array);
+                        socket.emit('clean_sockets', socket_array);
                     }
                 });
                 // server notifying users by namespace of update
