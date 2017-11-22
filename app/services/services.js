@@ -115,9 +115,8 @@ cardApp.factory('socket', function($rootScope, $window) {
     //var _self = this;
     return {
 
-        connect: function(data, callback) {
+        connect: function(data, name, info) {
             socket = io();
-            var user_id = data;
             console.log('client request connect: ' + data);
 
             socket.on('connect', function() {
@@ -132,6 +131,10 @@ cardApp.factory('socket', function($rootScope, $window) {
                 socket.on('joined_ns', function(data) {
                     console.log('CLIENT joined_ns: ' + data);
                     console.log('NS socket.id: ' + socket.id);
+                    if (name !== undefined) {
+                        console.log('2: ' + id + ' : ' + name + ' : ' + info);
+                        socket.emit(name, info);
+                    }
                 });
                 // server notifying users by namespace of update
                 socket.on('notify_users', function(msg) {
@@ -152,10 +155,11 @@ cardApp.factory('socket', function($rootScope, $window) {
 
 
         },
-        checkConnection: function(id){
+        checkConnection: function(id, name, info) {
             console.log('client check: ' + socket.id);
-            if(socket.id === undefined){
-                this.connect(id);
+            console.log(id + ' : ' + name + ' : ' + info);
+            if (socket.id === undefined) {
+                this.connect(id, name, info);
             }
         },
         on: function(eventName, callback) {
