@@ -177,7 +177,7 @@ cardApp.factory('socket', function($rootScope, $window) {
         checkConnection: function(id, name, info) {
             console.log('socket.connected: ' + socket.connected);
             console.log('client check: ' + socket.id + ', details: ' + id + ' : ' + name + ' : ' + info);
-            
+
             /*
             if (socket.id === undefined) {
                 this.connect(id, name, info);
@@ -186,11 +186,17 @@ cardApp.factory('socket', function($rootScope, $window) {
             }
             */
         },
-        getSocket: function(){
+        getSocket: function() {
             return socket;
         },
-        getSocketStatus: function(){
-            return 'steve';//socket.connected;
+        getSocketStatus: function() {
+            return socket.connected;
+        },
+        getConversationId: function() {
+            return property;
+        },
+        setConversationId: function(value) {
+            property = value;
         },
         on: function(eventName, callback) {
             socket.on(eventName, function() {
