@@ -176,7 +176,7 @@ cardApp.factory('socket', function($rootScope, $window) {
         },
         checkConnection: function(id, name, info) {
             console.log('socket.connected: ' + socket.connected);
-            //console.log('client check: ' + socket.id + ', details: ' + id + ' : ' + name + ' : ' + info);
+            console.log('client check: ' + socket.id + ', details: ' + id + ' : ' + name + ' : ' + info);
             
             /*
             if (socket.id === undefined) {
@@ -185,6 +185,12 @@ cardApp.factory('socket', function($rootScope, $window) {
                 this.emit(name, info);
             }
             */
+        },
+        getSocket: function(){
+            return socket;
+        },
+        getSocketStatus: function(){
+            return socket.connected;
         },
         on: function(eventName, callback) {
             socket.on(eventName, function() {
