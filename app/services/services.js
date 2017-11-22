@@ -130,9 +130,9 @@ cardApp.factory('socket', function($rootScope, $window) {
                 // create the unique namespace on the client
                 socket = io('/' + data);
 
-                 // server notifying users by namespace of update
+                // server notifying users by namespace of update
                 socket.on('connect', function() {
-                    console.log('socket.io CLIENT NS connection made');
+                    console.log('socket.io CLIENT NS connection made: ' + socket.id);
                 });
                 // server confirming that the namespace has been created
                 socket.on('joined_ns', function(data) {
@@ -157,7 +157,7 @@ cardApp.factory('socket', function($rootScope, $window) {
                 });
 
                 socket.on('disconnect', function() {
-                    console.log('CLIENT disconnected by server: ' + socket.id);
+                    console.log('CLIENT NS disconnected by server: ' + socket.original_socket);
                 });
 
                 //
@@ -165,6 +165,10 @@ cardApp.factory('socket', function($rootScope, $window) {
                     $rootScope.$broadcast('PING', msg);
                 });
 
+            });
+
+            socket.on('disconnect', function() {
+                console.log('CLIENT SOCKET disconnected by server: ' + socket.original_socket);
             });
 
 
