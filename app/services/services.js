@@ -190,7 +190,7 @@ cardApp.factory('socket', function($rootScope, $window) {
             return socket;
         },
         getSocketStatus: function(){
-            return socket.connected;
+            return 'steve';//socket.connected;
         },
         on: function(eventName, callback) {
             socket.on(eventName, function() {
