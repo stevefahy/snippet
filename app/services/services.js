@@ -132,7 +132,7 @@ cardApp.factory('socket', function($rootScope, $window) {
                     console.log('CLIENT joined_ns: ' + data);
                     console.log('NS socket.id: ' + socket.id);
                     if (name !== undefined) {
-                        console.log('2: ' + id + ' : ' + name + ' : ' + info);
+                        console.log('2: ' + socket.id + ' : ' + name + ' : ' + info);
                         socket.emit(name, info);
                     }
                 });
