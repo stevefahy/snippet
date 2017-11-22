@@ -39,7 +39,7 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
                 // Update the Conversation updateAt time.
                 Conversations.updateTime(current_conversation_id)
                     .then(function(response) {
-                        socket.checkConnection();
+                        socket.checkConnection($scope.currentUser._id);
                         socket.emit('card_posted', { conversation_id: response.data._id, participants: response.data.participants });
                     });
             });

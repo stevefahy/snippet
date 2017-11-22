@@ -152,10 +152,10 @@ cardApp.factory('socket', function($rootScope, $window) {
 
 
         },
-        checkConnection: function(){
+        checkConnection: function(id){
             console.log('client check: ' + socket.id);
             if(socket.id === undefined){
-                socket.connect(user_id);
+                socket.connect(id);
             }
         },
         on: function(eventName, callback) {
