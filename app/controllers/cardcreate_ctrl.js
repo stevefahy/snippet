@@ -40,10 +40,15 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
                 // Update the Conversation updateAt time.
                 Conversations.updateTime(current_conversation_id)
                     .then(function(response) {
-                         console.log('socket: ' + socket.getSocket());
-                         console.log('socket.connected: ' + socket.getSocketStatus());
+                         //console.log('socket: ' + socket.getSocket());
+                         var socket_status = socket.getSocketStatus();
+                         console.log('socket.connected: ' + socket_status);
                         //socket.checkConnection($scope.currentUser._id, 'card_posted', { conversation_id: response.data._id, participants: response.data.participants });
-                        socket.emit('card_posted', { conversation_id: response.data._id, participants: response.data.participants });
+                        if(socket_status){
+                            socket.emit('card_posted', { conversation_id: response.data._id, participants: response.data.participants });
+                        } else {
+                            socket.connect($scope.currentUser._id, 'card_posted', { conversation_id: response.data._id, participants: response.data.participants });
+                        }
                     });
             });
     };

@@ -139,6 +139,8 @@ cardApp.factory('socket', function($rootScope, $window) {
                 socket.on('joined_ns', function(data) {
                     console.log('CLIENT joined_ns: ' + data);
                     console.log('NS socket.id: ' + socket.id);
+                    //$rootScope.$broadcast('RECONNECTED', socket.id);
+                    
                     // reconnecting
                     if (name !== undefined) {
                         console.log('2: ' + socket.id + ' : ' + name + ' : ' + info);
@@ -150,6 +152,7 @@ cardApp.factory('socket', function($rootScope, $window) {
                         console.log('socket_array: ' + socket_array);
                         socket.emit('clean_sockets', socket_array);
                     }
+                    
                 });
                 // server notifying users by namespace of update
                 socket.on('notify_users', function(msg) {
@@ -158,7 +161,7 @@ cardApp.factory('socket', function($rootScope, $window) {
                 });
 
                 socket.on('disconnect', function() {
-                    console.log('CLIENT NS disconnected by server: ' + original_socket + ' : ' + original_ns);
+                    console.log('CLIENT NS disconnected by server: ' + original_ns);
                 });
 
                 //
@@ -178,13 +181,13 @@ cardApp.factory('socket', function($rootScope, $window) {
             console.log('socket.connected: ' + socket.connected);
             console.log('client check: ' + socket.id + ', details: ' + id + ' : ' + name + ' : ' + info);
 
-            /*
+            
             if (socket.id === undefined) {
                 this.connect(id, name, info);
             } else {
                 this.emit(name, info);
             }
-            */
+            
         },
         getSocket: function() {
             return socket;
