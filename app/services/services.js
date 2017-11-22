@@ -160,6 +160,8 @@ cardApp.factory('socket', function($rootScope, $window) {
             console.log(id + ' : ' + name + ' : ' + info);
             if (socket.id === undefined) {
                 this.connect(id, name, info);
+            } else {
+                this.emit(name, info);
             }
         },
         on: function(eventName, callback) {
