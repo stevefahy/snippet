@@ -23,7 +23,7 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
         $scope.currentUser = result.data.user;
         $scope.card_create.user = $scope.currentUser.google.name;
     });
-
+socket.getSocketStatus();
     // CREATE ==================================================================
     $scope.createCard = function(id, card_create) {
         $scope.card_create.conversationId = current_conversation_id;
@@ -41,7 +41,7 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
                     .then(function(response) {
                          console.log('socket.connected: ' + socket.getSocketStatus());
                         //socket.checkConnection($scope.currentUser._id, 'card_posted', { conversation_id: response.data._id, participants: response.data.participants });
-                        //socket.emit('card_posted', { conversation_id: response.data._id, participants: response.data.participants });
+                        socket.emit('card_posted', { conversation_id: response.data._id, participants: response.data.participants });
                     });
             });
     };
