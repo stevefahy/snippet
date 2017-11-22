@@ -117,22 +117,22 @@ cardApp.factory('socket', function($rootScope, $window) {
 
         connect: function(data, callback) {
             socket = io();
-            //console.log('client request connect: ' + data);
+            console.log('client request connect: ' + data);
 
             socket.on('connect', function() {
-                //console.log('socket.io CLIENT connection made: ' + socket.id + ' : ' + data);
+                console.log('socket.io CLIENT connection made: ' + socket.id + ' : ' + data);
                 // Connected, request unique namespace to be created
                 socket.emit('create_ns', data);
                 // create the unique namespace on the client
                 socket = io('/' + data);
                 // server confirming that the namespace has been created
                 socket.on('joined_ns', function(data) {
-                    // console.log('CLIENT joined_ns: ' + data);
-                    // console.log('NS socket.id: ' + socket.id);
+                    console.log('CLIENT joined_ns: ' + data);
+                    console.log('NS socket.id: ' + socket.id);
                 });
                 // server notifying users by namespace of update
                 socket.on('notify_users', function(msg) {
-                    //console.log('notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
+                    console.log('notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
                     $rootScope.$broadcast('NOTIFICATION', msg);
                 });
 
