@@ -30,6 +30,8 @@ var io = io.listen(server);
 
 io.on('connection', function(socket) {
     console.log('socket.io SERVER connection made: ' + socket.id);
+    console.log('SERVER socket clients: ' + Object.keys(io.sockets.sockets));
+    console.log('SERVER socket namespaces: ' + Object.keys(io.nsps));
 
     var ns;
 
@@ -49,6 +51,9 @@ io.on('connection', function(socket) {
             nsp.emit('joined_ns', nsp.nsp.name);
             // emited by cardcreate_ctrl when card has been created
             nsp.on('card_posted', function(data) {
+                console.log('SERVER NS connected: ' + nsp.nsp.name);
+                console.log('SERVER socket clients: ' + Object.keys(io.sockets.sockets));
+                console.log('SERVER socket namespaces: ' + Object.keys(io.nsps));
                 console.log('card_posted, conv id: ' + data.conversation_id + ' , participants: ' + data.participants);
                 // notify relevant namespace of the cards creation
                 for (var i in data.participants) {
@@ -69,10 +74,10 @@ io.on('connection', function(socket) {
                 }
             });
 
-            nsp.on('send_ping', function(){
-                nsp.emit('return_ping', {sockets:  Object.keys(io.sockets.sockets), nsps: Object.keys(io.nsps)});
+            nsp.on('send_ping', function() {
+                nsp.emit('return_ping', { sockets: Object.keys(io.sockets.sockets), nsps: Object.keys(io.nsps) });
             });
-            
+
             // on namespace disconnect
             nsp.on('disconnect', function(sock) {
                 console.log('SERVER NS disconnected: ' + nspn);

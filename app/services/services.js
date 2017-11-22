@@ -136,6 +136,10 @@ cardApp.factory('socket', function($rootScope, $window) {
                     $rootScope.$broadcast('NOTIFICATION', msg);
                 });
 
+                socket.on('disconnect', function() {
+                    console.log('CLIENT disconnected by server: ' + socket.id);
+                });
+
                 //
                 socket.on('return_ping', function(msg) {
                     $rootScope.$broadcast('PING', msg);
@@ -144,6 +148,9 @@ cardApp.factory('socket', function($rootScope, $window) {
             });
 
 
+        },
+        checkConnection: function(){
+            console.log('client check: ' + socket.id);
         },
         on: function(eventName, callback) {
             socket.on(eventName, function() {
