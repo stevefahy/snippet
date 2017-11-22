@@ -23,15 +23,16 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
         $scope.currentUser = result.data.user;
         $scope.card_create.user = $scope.currentUser.google.name;
     });
-socket.getSocketStatus();
+
     // CREATE ==================================================================
     $scope.createCard = function(id, card_create) {
         $scope.card_create.conversationId = current_conversation_id;
         $scope.card_create.content = replaceTags.replace($scope.card_create.content);
         $scope.card_create.content = Format.setMediaSize(id, card_create);
-
+        console.log('card_create');
         Cards.create($scope.card_create)
             .then(function(response) {
+                console.log('response: ' + response);
                 // reset the input box
                 $scope.card_create.content = '';
                 // redirect to root to display created card by id
