@@ -129,6 +129,11 @@ cardApp.factory('socket', function($rootScope, $window) {
                 socket.emit('create_ns', data);
                 // create the unique namespace on the client
                 socket = io('/' + data);
+
+                 // server notifying users by namespace of update
+                socket.on('connect', function() {
+                    console.log('socket.io CLIENT NS connection made');
+                });
                 // server confirming that the namespace has been created
                 socket.on('joined_ns', function(data) {
                     console.log('CLIENT joined_ns: ' + data);
