@@ -133,6 +133,7 @@ cardApp.factory('socket', function($rootScope, $window) {
                 // server notifying users by namespace of update
                 socket.on('connect', function() {
                     console.log('socket.io CLIENT NS connection made: ' + socket.id);
+                    var original_ns = socket.id;
                 });
                 // server confirming that the namespace has been created
                 socket.on('joined_ns', function(data) {
@@ -157,7 +158,7 @@ cardApp.factory('socket', function($rootScope, $window) {
                 });
 
                 socket.on('disconnect', function() {
-                    console.log('CLIENT NS disconnected by server: ' + socket.original_socket);
+                    console.log('CLIENT NS disconnected by server: ' + original_socket + ' : ' + original_ns);
                 });
 
                 //
@@ -168,7 +169,7 @@ cardApp.factory('socket', function($rootScope, $window) {
             });
 
             socket.on('disconnect', function() {
-                console.log('CLIENT SOCKET disconnected by server: ' + socket.original_socket);
+                console.log('CLIENT SOCKET disconnected by server: ' + original_socket + ' : ' + original_ns);
             });
 
 
