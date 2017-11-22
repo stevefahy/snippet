@@ -59,7 +59,7 @@ io.on('connection', function(socket) {
                 console.log('SERVER CLEANED socket clients: ' + Object.keys(io.sockets.sockets));
                 console.log('SERVER CLEANED socket namespaces: ' + Object.keys(io.nsps));
             });
-            
+
             // emited by cardcreate_ctrl when card has been created
             nsp.on('card_posted', function(data) {
                 console.log('SERVER NS connected: ' + nsp.nsp.name);
@@ -74,7 +74,7 @@ io.on('connection', function(socket) {
                         console.log(data.participants[i]._id + '===' + nspn.substring(1, nspn.length));
                     } else {
                         for (var y in Object.keys(io.nsps)) {
-                            console.log('nsp: ' + Object.keys(io.nsps)[y]);
+                            console.log('nsp: ' + Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) + ' ==? ' + data.participants[i]._id);
                             if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.participants[i]._id) {
                                 console.log('emit to: ' + data.participants[i]._id);
                                 var nsp_new = io.of('/' + data.participants[i]._id);
