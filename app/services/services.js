@@ -117,10 +117,13 @@ cardApp.factory('socket', function($rootScope, $window) {
 
         connect: function(data, callback) {
             socket = io();
+            var user_id = data;
             console.log('client request connect: ' + data);
 
             socket.on('connect', function() {
                 console.log('socket.io CLIENT connection made: ' + socket.id + ' : ' + data);
+                var original_socket = socket.id;
+                var original_namespace = data;
                 // Connected, request unique namespace to be created
                 socket.emit('create_ns', data);
                 // create the unique namespace on the client
@@ -151,6 +154,9 @@ cardApp.factory('socket', function($rootScope, $window) {
         },
         checkConnection: function(){
             console.log('client check: ' + socket.id);
+            if(socket.id === undefined){
+                socket.connect(user_id);
+            }
         },
         on: function(eventName, callback) {
             socket.on(eventName, function() {
