@@ -97,9 +97,8 @@ module.exports = function(app, passport) {
         }
     });
     // LOGOUT
-    app.get('/logout', function(req, res) {
+    app.get('/api/logout', function(req, res) {
         req.logout();
-        res.redirect('/');
     });
     // /:USERNAME (users home page)
     app.get('/:username', function(req, res) {

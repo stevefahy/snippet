@@ -29,26 +29,18 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
         $scope.card_create.conversationId = current_conversation_id;
         $scope.card_create.content = replaceTags.replace($scope.card_create.content);
         $scope.card_create.content = Format.setMediaSize(id, card_create);
-        console.log('card_create');
+
         Cards.create($scope.card_create)
             .then(function(response) {
-                console.log('response: ' + response);
                 // reset the input box
                 $scope.card_create.content = '';
-                // redirect to root to display created card by id
+                // notify conversation_ctrl that the conversation has been updated
                 $rootScope.$broadcast('CONV_UPDATED', response.data);
                 // Update the Conversation updateAt time.
                 Conversations.updateTime(current_conversation_id)
                     .then(function(response) {
-                         //console.log('socket: ' + socket.getSocket());
-                         var socket_status = socket.getSocketStatus();
-                         console.log('socket.connected: ' + socket_status);
-                        //socket.checkConnection($scope.currentUser._id, 'card_posted', { conversation_id: response.data._id, participants: response.data.participants });
-                        if(socket_status){
-                            socket.emit('card_posted', { conversation_id: response.data._id, participants: response.data.participants });
-                        } else {
-                            socket.connect($scope.currentUser._id, 'card_posted', { conversation_id: response.data._id, participants: response.data.participants });
-                        }
+                        // socket.io emit the card posted to the server
+                        socket.emit('card_posted', {sender_id: socket.getId(), conversation_id: response.data._id, participants: response.data.participants });
                     });
             });
     };

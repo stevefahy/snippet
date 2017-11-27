@@ -21,62 +21,41 @@ var nodemailer = require('nodemailer');
 //
 // socket.io
 //
-//var http = require('http').Server(app);
-//var io = require('socket.io')(http);
 var io = require('socket.io');
 var http = require('http');
 var server = http.createServer(app);
 var io = io.listen(server);
 
 io.on('connection', function(socket) {
-    console.log('socket.io SERVER connection made: ' + socket.id);
-    console.log('SERVER socket clients: ' + Object.keys(io.sockets.sockets));
-    console.log('SERVER socket namespaces: ' + Object.keys(io.nsps));
-
+    //console.log('SERVER CONNECTION: ' + socket.id + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    // namespace sent by client
     var ns;
 
     socket.on('create_ns', function(ns) {
-        console.log('SERVER client request to create ns: ' + ns);
+        //console.log('create ns: ' + ns);
         // create unique namespace requested by client
-        var nsp = io.of('/' + ns);
+        socket = io.of('/' + ns);
+        // namespace name
         var nspn;
-        // nsp namespace connection
-        nsp.on('connection', function(nsp) {
-            console.log('SERVER NS connected: ' + nsp.nsp.name);
-            console.log('SERVER socket clients: ' + Object.keys(io.sockets.sockets));
-            console.log('SERVER socket namespaces: ' + Object.keys(io.nsps));
+        // namespace connection made
+        socket.on('connection', function(socket) {
             // store the namespace name
-            nspn = nsp.nsp.name;
+            nspn = ns;
             // confirm that namespace has been created to client
-            nsp.emit('joined_ns', nsp.nsp.name);
-
-            nsp.on('clean_sockets', function(data) {
-                console.log('SERVER cleaning: ' + data);
-                for (var i in data) {
-                    console.log('deleting: ' + i);
-                    delete io.sockets.sockets[i];
-                }
-                console.log('SERVER CLEANED socket clients: ' + Object.keys(io.sockets.sockets));
-                console.log('SERVER CLEANED socket namespaces: ' + Object.keys(io.nsps));
-            });
-
+            socket.emit('joined_ns', socket.id);
             // emited by cardcreate_ctrl when card has been created
-            nsp.on('card_posted', function(data) {
-                console.log('SERVER NS connected: ' + nsp.nsp.name);
-                console.log('SERVER socket clients: ' + Object.keys(io.sockets.sockets));
-                console.log('SERVER socket namespaces: ' + Object.keys(io.nsps));
-                console.log('card_posted, conv id: ' + data.conversation_id + ' , participants: ' + data.participants);
-                // notify relevant namespace of the cards creation
+            socket.on('card_posted', function(data) {
+                //console.log('card_posted, conv id: ' + data.conversation_id + ' , participants: ' + data.participants);
+                // notify relevant namespace(s) of the cards creation
                 for (var i in data.participants) {
-                    console.log('check for namespace:' + data.participants[i]._id);
                     // dont emit to the user which sent the card
                     if (data.participants[i]._id === nspn.substring(1, nspn.length)) {
-                        console.log(data.participants[i]._id + '===' + nspn.substring(1, nspn.length));
+                        //
                     } else {
                         for (var y in Object.keys(io.nsps)) {
-                            console.log('nsp: ' + Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) + ' ==? ' + data.participants[i]._id);
+                            // if the namespace exists on the server
                             if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.participants[i]._id) {
-                                console.log('emit to: ' + data.participants[i]._id);
+                                // emit to the participant
                                 var nsp_new = io.of('/' + data.participants[i]._id);
                                 nsp_new.emit('notify_users', { conversation_id: data.conversation_id, participants: data.participants });
                             }
@@ -85,30 +64,24 @@ io.on('connection', function(socket) {
                 }
             });
 
-            nsp.on('send_ping', function() {
-                nsp.emit('return_ping', { sockets: Object.keys(io.sockets.sockets), nsps: Object.keys(io.nsps) });
-            });
-
             // on namespace disconnect
-            nsp.on('disconnect', function(sock) {
-                console.log('SERVER NS disconnected: ' + nspn);
-                // delete this namespace after it has disconnected
-                delete io.nsps[nspn];
-                console.log('SERVER socket clients: ' + Object.keys(io.sockets.sockets));
-                console.log('SERVER socket namespaces: ' + Object.keys(io.nsps));
+            socket.on('disconnect', function(sockets) {
+                //console.log('SERVER NS DISCONNECT: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+            });
+            // close socket connection and delete nsmespace from io.nsps array
+            socket.on('delete', function(sockets) {
+                //console.log('SERVER NS DELETE: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+                delete io.nsps['/' + nspn];
+                socket.disconnect('unauthorized');
             });
 
         });
-
     });
 
     // on socket disconnect
-    socket.on('disconnect', function() {
-        console.log('socket.io server disconnected: ' + socket.id);
-        console.log('SERVER socket clients: ' + Object.keys(io.sockets.sockets));
-        console.log('SERVER socket namespaces: ' + Object.keys(io.nsps));
+    socket.on('disconnect', function(sockets) {
+        //console.log('SERVER DISCONNECT, clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     });
-
 });
 
 // Check for local or production environment

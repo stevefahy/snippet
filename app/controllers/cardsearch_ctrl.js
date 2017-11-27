@@ -1,4 +1,4 @@
-cardApp.controller("cardsearchCtrl", ['$scope', 'Cards', '$rootScope', '$location', '$http', function($scope, Cards, $rootScope, $location, $http) {
+cardApp.controller("cardsearchCtrl", ['$scope', 'Cards', '$rootScope', '$location', '$http', 'socket', function($scope, Cards, $rootScope, $location, $http, socket) {
 
     $scope.showDiv = false;
 
@@ -15,6 +15,12 @@ cardApp.controller("cardsearchCtrl", ['$scope', 'Cards', '$rootScope', '$locatio
 
     $scope.changePath = function(path) {
         $location.path(path);
+    };
+
+    $scope.logOut = function() {
+        // close socket.io connection and delete namespace
+        socket.delete();
+        $scope.changePath('/api/logout');
     };
 
     $scope.searchCard = function() {

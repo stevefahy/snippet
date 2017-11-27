@@ -30,6 +30,9 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
         .when("/api/join/:code", {
             templateUrl: '/views/join.html'
         })
+        .when("/api/logout", {
+            templateUrl: '/views/login.html'
+        })
         .otherwise({
             redirectTo: '/'
         });

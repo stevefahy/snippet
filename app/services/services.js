@@ -111,95 +111,37 @@ cardApp.factory('Conversations', ['$http', function($http) {
 }]);
 
 cardApp.factory('socket', function($rootScope, $window) {
+
     var socket;
-    var socket_array = [];
-    //var _self = this;
+    socket = io();
+
     return {
-
-        connect: function(data, name, info) {
-            socket = io();
-            console.log('client request connect: ' + data);
-
+        // called by index_ctrl once when the app loads 
+        connect: function(id) {
+            // Connected, request unique namespace to be created
+            socket.emit('create_ns', id);
+            // create the unique namespace on the client
+            socket = io('/' + id);
+            // namespace connect
             socket.on('connect', function() {
-                console.log('socket.io CLIENT connection made: ' + socket.id + ' : ' + data);
-                var original_socket = socket.id;
-                socket_array.push(original_socket);
-                //var original_namespace = data;
-                // Connected, request unique namespace to be created
-                socket.emit('create_ns', data);
-                // create the unique namespace on the client
-                socket = io('/' + data);
-
-                // server notifying users by namespace of update
-                socket.on('connect', function() {
-                    console.log('socket.io CLIENT NS connection made: ' + socket.id);
-                    var original_ns = socket.id;
-                });
-                // server confirming that the namespace has been created
-                socket.on('joined_ns', function(data) {
-                    console.log('CLIENT joined_ns: ' + data);
-                    console.log('NS socket.id: ' + socket.id);
-                    //$rootScope.$broadcast('RECONNECTED', socket.id);
-
-                    // reconnecting
-                    if (name !== undefined) {
-                        console.log('2: ' + socket.id + ' : ' + name + ' : ' + info);
-                        socket.emit(name, info);
-                        var index = socket_array.indexOf(socket.id);
-                        if (index > -1) {
-                            socket_array.splice(index, 1);
-                        }
-                        console.log('socket_array: ' + socket_array);
-                        socket.emit('clean_sockets', socket_array);
-                    }
-
-                });
-                // server notifying users by namespace of update
-                socket.on('notify_users', function(msg) {
-                    console.log('notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
-                    $rootScope.$broadcast('NOTIFICATION', msg);
-                });
-
-                socket.on('disconnect', function() {
-                    console.log('CLIENT NS disconnected by server: ' + socket.id);
-                    var id = this.getId();
-                    console.log('id: ' + id);
-                    this.connect(id);
-                });
-
-                //
-                socket.on('return_ping', function(msg) {
-                    $rootScope.$broadcast('PING', msg);
-                });
-
+                //console.log('CLIENT NS connect: ' + socket.id);
             });
-
-            socket.on('disconnect', function() {
-                console.log('CLIENT SOCKET disconnected by server: ' + socket.id);
-                var id = this.getId();
-                console.log('id: ' + id);
-                this.connect(id);
+            // server confirming that the namespace has been created
+            socket.on('joined_ns', function(id) {
+                //console.log('CLIENT joined_ns: ' + socket.id);
             });
-
-
+            // server notifying users by namespace of update
+            socket.on('notify_users', function(msg) {
+                //console.log('notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
+                $rootScope.$broadcast('NOTIFICATION', msg);
+            });
+            // namespace disconnected by server
+            socket.on('disconnect', function(reason) {
+                //console.log('CLIENT NS disconnected by server: ' + reason);
+            });
         },
-        checkConnection: function(id, name, info) {
-            console.log('socket.connected: ' + socket.connected);
-            console.log('client check: ' + socket.id + ', details: ' + id + ' : ' + name + ' : ' + info);
-
-
-            if (socket.id === undefined) {
-                this.connect(id, name, info);
-            } else {
-                this.emit(name, info);
-            }
-
-        },
-        getSocket: function() {
-            return socket;
-        },
-        getSocketStatus: function() {
-            return socket.connected;
+        delete: function() {
+            socket.emit('delete');
         },
         getId: function() {
             return property;
