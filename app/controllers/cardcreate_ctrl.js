@@ -1,4 +1,4 @@
-cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'socket', function($scope, $rootScope, $location, $http, $window, Cards, replaceTags, Format, Edit, Conversations, socket) {
+cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$timeout', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'socket', function($scope, $rootScope, $location, $http, $window, $timeout, Cards, replaceTags, Format, Edit, Conversations, socket) {
 
     $scope.getFocus = Format.getFocus;
     $scope.contentChanged = Format.contentChanged;
@@ -10,6 +10,32 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
     $scope.myFunction = Edit.myFunction;
 
     var current_conversation_id = Conversations.getConversationId();
+
+    //$window.document.hasFocus();
+
+    setFocus = function() {
+        $timeout(function() {
+            console.log('focus');
+            var element = $window.document.getElementById('cecard_create');
+            if (element) {
+                console.log('foc');
+                element.focus();
+                $rootScope.$broadcast('CONV_CHECK');
+            }
+        });
+    };
+
+    var ua = navigator.userAgent;
+    // only check focus on web version
+    if (ua !== 'AndroidApp') {
+        $window.onfocus = function() {
+            console.log('focus');
+            this.setFocus();
+        };
+        console.log('loaded');
+        $window.focus();
+        setFocus();
+    }
 
     $scope.card_create = {
         _id: 'card_create',
@@ -40,7 +66,7 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
                 Conversations.updateTime(current_conversation_id)
                     .then(function(response) {
                         // socket.io emit the card posted to the server
-                        socket.emit('card_posted', {sender_id: socket.getId(), conversation_id: response.data._id, participants: response.data.participants });
+                        socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: response.data._id, participants: response.data.participants });
                     });
             });
     };

@@ -8,8 +8,6 @@ cardApp.controller("indexCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope',
             // and request that a unique namespace be created for this user with their user id
             socket.setId(result.data.user._id);
             socket.connect(socket.getId());
-            
-
         }
     });
 

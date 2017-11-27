@@ -14,6 +14,22 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var id = $routeParams.id;
     // Set the conversation id so that it can be retrieved by cardcreate_ctrl
     Conversations.setConversationId(id);
+    /*
+    $window.onblur = function() {
+        console.log('blur');
+    };
+
+    $window.onfocus = function() {
+        console.log('focus');
+    };
+    */
+    //$window.focus();
+
+     $scope.$on('$viewContentLoaded', function() {
+        //Here your view content is fully loaded !!
+        console.log('view loaded');
+       // $window.focus();
+    });
 
     $http.get("/api/user_data").then(function(result) {
         if (result.data.user) {
@@ -83,10 +99,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         $http.get("/chat/get_conversation/" + id).then(function(result) {
             // find only the new cards which have been posted
             var updates = result.data.slice(conversation_length, result.data.length);
-            // update the conversation with the new cards
-            updates.map(function(key) {
-                updateConversation(key);
-            });
+            console.log(conversation_length + ' :' + result.data.length);
+            if (conversation_length < result.data.length) {
+                // update the conversation with the new cards
+                updates.map(function(key) {
+                    updateConversation(key);
+                });
+            }
         });
     };
 
@@ -100,6 +119,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // Broadcast by cardcreate_ctrl when a new card has been created
     $scope.$on('CONV_UPDATED', function(event, data) {
         updateConversation(data);
+    });
+
+    // Broadcast by cardcreate_ctrl when the window regains focus
+    $scope.$on('CONV_CHECK', function() {
+        //updateConversation(data);
+        console.log('getConversationUpdate: ' + id);
+        getConversationUpdate(id);
     });
 
     // update the conversation with the new card data

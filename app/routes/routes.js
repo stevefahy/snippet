@@ -50,7 +50,9 @@ function isLoggedIn(req, res, next) {
 
 // route middleware to ensure user is logged in and a member of the conversation
 function isMember(req, res, next) {
+    console.log('isMember');
     // must be logged in to be a member
+    console.log('req.isAuthenticated(): ' + req.isAuthenticated());
     if (req.isAuthenticated()) {
         // get the memebers of this conversation
         var query = getConversationId(req.params.id);
@@ -62,11 +64,14 @@ function isMember(req, res, next) {
             // Check that the conversation exists.
             if (conversation === null) {
                 res.redirect('/');
+                console.log('null');
             } else if (conversation.participants.indexOf(req.user._id) >= 0) {
                 // if the current is is a member of this conversation continue
+                console.log('next');
                 return next();
             } else {
                 // otherwise redirect to login
+                console.log('login');
                 res.redirect('/login');
             }
         });
