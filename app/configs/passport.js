@@ -312,15 +312,19 @@ module.exports = function(passport) {
             process.nextTick(function() {
                 // check if the user is already logged in
                 if (!req.user) {
-
+                    console.log('!req.user');
                     User.findOne({ 'google.id': profile.id }, function(err, user) {
                         if (err)
                             return done(err);
 
                         if (user) {
-
+                            console.log('user: ' + user);
                             // if there is a user id already but no token (user was linked at one point and then removed)
                             if (!user.google.token) {
+                                console.log('!user.google.token');
+                                console.log(token);
+                                console.log(profile.displayName);
+                                console.log((profile.emails[0].value || '').toLowerCase());
                                 user.google.token = token;
                                 user.google.name = profile.displayName;
                                 user.google.email = (profile.emails[0].value || '').toLowerCase(); // pull the first email
@@ -338,6 +342,11 @@ module.exports = function(passport) {
                             //
                             // NEW USER
                             //
+                            console.log('new user');
+                            console.log(profile.id);
+                            console.log(token);
+                            console.log(profile.displayName);
+                            console.log((profile.emails[0].value || '').toLowerCase());
                             var newUser = new User();
                             newUser._id = new mongoose.Types.ObjectId();
                             //newUser.contacts = ''; Empty
@@ -356,11 +365,11 @@ module.exports = function(passport) {
                     });
 
                 } else {
-console.log('user exists: ' + profile.id);
-console.log(token);
-console.log(profile.displayName);
-console.log((profile.emails[0].value || '').toLowerCase());
-console.log(req.user);
+                    console.log('user exists: ' + profile.id);
+                    console.log(token);
+                    console.log(profile.displayName);
+                    console.log((profile.emails[0].value || '').toLowerCase());
+                    console.log(req.user);
                     // user already exists and is logged in, we have to link accounts
                     var user = req.user; // pull the user out of the session
 
@@ -375,7 +384,7 @@ console.log(req.user);
 
                         return done(null, user);
                     });
-                    
+
                 }
 
             });
