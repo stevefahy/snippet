@@ -14,7 +14,6 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope', 
     var snip = $routeParams.snip;
     // Use the url /username to load a users snips
     var username = $routeParams.username;
-    console.log('username: ' + username);
 
     // Get the current users details
     $http.get("/api/user_data").then(function(result) {

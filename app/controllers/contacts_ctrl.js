@@ -40,7 +40,6 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
     // Get the current users details
     $http.get("/api/user_data").then(function(result) {
         $scope.currentUser = result.data.user;
-        console.log($scope.currentUser);
         // load this users list of contacts
         loadUserContacts();
     });

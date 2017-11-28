@@ -94,13 +94,11 @@ module.exports = function(app, passport) {
     });
     // LOGGED IN
     app.get('/', isLoggedIn, function(req, res) {
-        console.log(req.user);
         if (req.user !== undefined) {
             // load the single view file (angular will handle the page changes on the front-end)
             res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
         } else {
             res.sendFile('login.html', { root: path.join(__dirname, '../views/') });
-            //res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
         }
     });
  
@@ -108,17 +106,17 @@ module.exports = function(app, passport) {
     app.get('/api/logout', function(req, res) {
         req.logout();
         req.logOut();
+        
         req.session.destroy(function(err) {
-            //Inside a callback… bulletproof!
-            res.sendFile('login.html', { root: path.join(__dirname, '../views/') });
-        });
-
+            if(err){
+                console.log('err: ' + err);
+            }
+        }); 
     });
 
     // /:USERNAME (users home page)
     app.get('/:username', function(req, res) {
         res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
-        // res.json({'steve':'steve'});
     });
     // /:SNIP (single snip)
     app.get('/s/:snip', function(req, res) {
@@ -340,7 +338,7 @@ module.exports = function(app, passport) {
                         console.log('err: ' + err);
                         return res.send(err);
                     }
-                    console.log('cards: ' + cards);
+                    //console.log('cards: ' + cards);
                     res.json(cards.reverse());
                 }).sort('-updatedAt').limit(10);
             }

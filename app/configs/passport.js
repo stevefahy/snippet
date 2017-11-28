@@ -307,24 +307,17 @@ module.exports = function(passport) {
 
         },
         function(req, token, refreshToken, profile, done) {
-
             // asynchronous
             process.nextTick(function() {
                 // check if the user is already logged in
                 if (!req.user) {
-                    console.log('!req.user');
                     User.findOne({ 'google.id': profile.id }, function(err, user) {
                         if (err)
                             return done(err);
 
                         if (user) {
-                            console.log('user: ' + user);
                             // if there is a user id already but no token (user was linked at one point and then removed)
                             if (!user.google.token) {
-                                console.log('!user.google.token');
-                                console.log(token);
-                                console.log(profile.displayName);
-                                console.log((profile.emails[0].value || '').toLowerCase());
                                 user.google.token = token;
                                 user.google.name = profile.displayName;
                                 user.google.email = (profile.emails[0].value || '').toLowerCase(); // pull the first email
@@ -342,11 +335,6 @@ module.exports = function(passport) {
                             //
                             // NEW USER
                             //
-                            console.log('new user');
-                            console.log(profile.id);
-                            console.log(token);
-                            console.log(profile.displayName);
-                            console.log((profile.emails[0].value || '').toLowerCase());
                             var newUser = new User();
                             newUser._id = new mongoose.Types.ObjectId();
                             //newUser.contacts = ''; Empty
@@ -365,25 +353,67 @@ module.exports = function(passport) {
                     });
 
                 } else {
-                    console.log('user exists: ' + profile.id);
-                    console.log(token);
-                    console.log(profile.displayName);
-                    console.log((profile.emails[0].value || '').toLowerCase());
-                    console.log(req.user);
-                    // user already exists and is logged in, we have to link accounts
-                    var user = req.user; // pull the user out of the session
+                    // A user is already logged in
+                    // If the logged in user is the as the user loggin in
+                    if (req.user.google.id === profile.id) {
+                        var user = req.user; // pull the user out of the session
 
-                    user.google.id = profile.id;
-                    user.google.token = token;
-                    user.google.name = profile.displayName;
-                    user.google.email = (profile.emails[0].value || '').toLowerCase(); // pull the first email
+                        user.google.id = profile.id;
+                        user.google.token = token;
+                        user.google.name = profile.displayName;
+                        user.google.email = (profile.emails[0].value || '').toLowerCase(); // pull the first email
 
-                    user.save(function(err) {
-                        if (err)
-                            return done(err);
+                        user.save(function(err) {
+                            if (err)
+                                return done(err);
 
-                        return done(null, user);
-                    });
+                            return done(null, user);
+                        });
+                    } else {
+                        // The user logging in is different to the currently logged in user
+                        // Find the user logging in
+                        User.findOne({ 'google.id': profile.id }, function(err, user) {
+                            if (err)
+                                return done(err);
+
+                            if (user) {
+                                // if there is a user id already but no token (user was linked at one point and then removed)
+                                if (!user.google.token) {
+                                    user.google.token = token;
+                                    user.google.name = profile.displayName;
+                                    user.google.email = (profile.emails[0].value || '').toLowerCase(); // pull the first email
+
+                                    user.save(function(err) {
+                                        if (err)
+                                            return done(err);
+
+                                        return done(null, user);
+                                    });
+                                }
+
+                                return done(null, user);
+                            } else {
+                                //
+                                // NEW USER
+                                //
+                                var newUser = new User();
+                                newUser._id = new mongoose.Types.ObjectId();
+                                //newUser.contacts = ''; Empty
+                                newUser.google.id = profile.id;
+                                newUser.google.token = token;
+                                newUser.google.name = profile.displayName;
+                                newUser.google.email = (profile.emails[0].value || '').toLowerCase(); // pull the first email
+
+                                newUser.save(function(err) {
+                                    if (err) {
+                                        return done(err);
+                                    }
+                                    return done(null, newUser);
+                                });
+                            }
+                        });
+                        
+                    }
 
                 }
 

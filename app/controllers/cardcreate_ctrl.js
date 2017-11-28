@@ -15,10 +15,8 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
 
     setFocus = function() {
         $timeout(function() {
-            console.log('focus');
             var element = $window.document.getElementById('cecard_create');
             if (element) {
-                console.log('foc');
                 element.focus();
                 $rootScope.$broadcast('CONV_CHECK');
             }
@@ -29,10 +27,8 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
     // only check focus on web version
     if (ua !== 'AndroidApp') {
         $window.onfocus = function() {
-            console.log('focus');
             this.setFocus();
         };
-        console.log('loaded');
         $window.focus();
         setFocus();
     }

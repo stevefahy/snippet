@@ -20,6 +20,7 @@ cardApp.controller("cardsearchCtrl", ['$scope', 'Cards', '$rootScope', '$locatio
     $scope.logOut = function() {
         // close socket.io connection and delete namespace
         socket.delete();
+        Cards.logout();
         $scope.changePath('/api/logout');
     };
 

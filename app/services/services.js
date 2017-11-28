@@ -3,6 +3,9 @@
 
 cardApp.factory('Cards', ['$http', function($http) {
     return {
+        logout: function() {
+            return $http.get("/api/logout");
+        },
         create_card: function() {
             return $http.get("/create_card");
         },
