@@ -103,10 +103,18 @@ module.exports = function(app, passport) {
             //res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
         }
     });
+ 
     // LOGOUT
     app.get('/api/logout', function(req, res) {
         req.logout();
+        req.logOut();
+        req.session.destroy(function(err) {
+            //Inside a callback… bulletproof!
+            res.sendFile('login.html', { root: path.join(__dirname, '../views/') });
+        });
+
     });
+
     // /:USERNAME (users home page)
     app.get('/:username', function(req, res) {
         res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
