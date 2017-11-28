@@ -356,6 +356,11 @@ module.exports = function(passport) {
                     });
 
                 } else {
+console.log('user exists: ' + profile.id);
+console.log(token);
+console.log(profile.displayName);
+console.log((profile.emails[0].value || '').toLowerCase());
+console.log(req.user);
                     // user already exists and is logged in, we have to link accounts
                     var user = req.user; // pull the user out of the session
 
