@@ -94,11 +94,13 @@ module.exports = function(app, passport) {
     });
     // LOGGED IN
     app.get('/', isLoggedIn, function(req, res) {
+        console.log(req.user);
         if (req.user !== undefined) {
             // load the single view file (angular will handle the page changes on the front-end)
             res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
         } else {
-            res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
+            res.sendFile('login.html', { root: path.join(__dirname, '../views/') });
+            //res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
         }
     });
     // LOGOUT
@@ -312,12 +314,15 @@ module.exports = function(app, passport) {
     // search for cards by username
     app.post('/api/cards/search_user/:username', function(req, res) {
         var username = req.params.username;
+        console.log('username: ' + username);
         // get the user id for this user name
         User.findOne({ 'google.name': new RegExp('^' + username + '$', "i") }, function(err, user) {
             if (err) {
+                console.log('err: ' + err);
                 return res.send(err);
             }
             if (user === null) {
+                console.log('user not found');
                 res.redirect('/');
             } else {
                 var user_id = user._id;
@@ -327,8 +332,9 @@ module.exports = function(app, passport) {
                         console.log('err: ' + err);
                         return res.send(err);
                     }
-                    res.json(cards);
-                }).limit(20);
+                    console.log('cards: ' + cards);
+                    res.json(cards.reverse());
+                }).sort('-updatedAt').limit(10);
             }
         });
     });
