@@ -249,8 +249,8 @@ module.exports = function(app, passport) {
                 });
             }
             // redirect to the newly created users home page (/:USERNAME)
-            //res.redirect('/' + req.user.google.name);
-            res.redirect('/#');
+            res.redirect('/' + req.user.google.name);
+            //res.redirect('/');
         });
     //
     // CONTACTS
