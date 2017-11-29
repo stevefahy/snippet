@@ -1,4 +1,4 @@
-var cardApp = angular.module("cardApp", ['ngSanitize', 'ngRoute']);
+var cardApp = angular.module("cardApp", ['ngSanitize', 'ngRoute', 'angularMoment']);
 
 // Prefix for loading a snip id
 var prefix = '/s/';
@@ -7,7 +7,7 @@ var prefix = '/s/';
 cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
     $routeProvider
         .when('/', {
-            templateUrl: '/views/card.html'
+            templateUrl: '/views/conversations.html'
         })
         .when("/c/create_card", {
             templateUrl: '/views/card_create.html'

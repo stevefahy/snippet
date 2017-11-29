@@ -37,41 +37,45 @@ function getConversationId(id) {
 
 // route middleware to ensure user is logged in
 function isLoggedIn(req, res, next) {
-    // console.log(req);
     if (req.isAuthenticated()) {
-        //console.log('middleware logged in');
         return next();
     } else {
-        //console.log('middleware not logged in');
         // causing infinite loop
         res.redirect('/login');
     }
 }
 
+// TODO make service
+// find the array index of an object value
+function findWithAttr(array, attr, value) {
+    for (var i = 0; i < array.length; i += 1) {
+        if (String(array[i][attr]) === String(value)) {
+            return i;
+        }
+    }
+    return -1;
+}
+
 // route middleware to ensure user is logged in and a member of the conversation
 function isMember(req, res, next) {
-    console.log('isMember');
     // must be logged in to be a member
-    console.log('req.isAuthenticated(): ' + req.isAuthenticated());
     if (req.isAuthenticated()) {
-        // get the memebers of this conversation
+        // get the members of this conversation
         var query = getConversationId(req.params.id);
         query.exec(function(err, conversation) {
             if (err) {
                 console.log('err: ' + err);
                 return console.log(err);
             }
+            var user_pos = findWithAttr(conversation.participants, '_id', req.user._id);
             // Check that the conversation exists.
             if (conversation === null) {
                 res.redirect('/');
-                console.log('null');
-            } else if (conversation.participants.indexOf(req.user._id) >= 0) {
+            } else if (user_pos >= 0) {
                 // if the current is is a member of this conversation continue
-                console.log('next');
                 return next();
             } else {
                 // otherwise redirect to login
-                console.log('login');
                 res.redirect('/login');
             }
         });
@@ -80,7 +84,6 @@ function isMember(req, res, next) {
         res.redirect('/login');
     }
 }
-
 
 module.exports = function(app, passport) {
     //
@@ -101,17 +104,18 @@ module.exports = function(app, passport) {
             res.sendFile('login.html', { root: path.join(__dirname, '../views/') });
         }
     });
- 
+
     // LOGOUT
     app.get('/api/logout', function(req, res) {
         req.logout();
         req.logOut();
-        
+        res.sendFile('login.html', { root: path.join(__dirname, '../views/') });
+
         req.session.destroy(function(err) {
-            if(err){
+            if (err) {
                 console.log('err: ' + err);
             }
-        }); 
+        });
     });
 
     // /:USERNAME (users home page)
@@ -245,7 +249,8 @@ module.exports = function(app, passport) {
                 });
             }
             // redirect to the newly created users home page (/:USERNAME)
-            res.redirect('/' + req.user.google.name);
+            //res.redirect('/' + req.user.google.name);
+            res.redirect('/#');
         });
     //
     // CONTACTS
@@ -320,15 +325,14 @@ module.exports = function(app, passport) {
     // search for cards by username
     app.post('/api/cards/search_user/:username', function(req, res) {
         var username = req.params.username;
-        console.log('username: ' + username);
         // get the user id for this user name
         User.findOne({ 'google.name': new RegExp('^' + username + '$', "i") }, function(err, user) {
             if (err) {
                 console.log('err: ' + err);
                 return res.send(err);
             }
+            // user not found
             if (user === null) {
-                console.log('user not found');
                 res.redirect('/');
             } else {
                 var user_id = user._id;
@@ -338,7 +342,6 @@ module.exports = function(app, passport) {
                         console.log('err: ' + err);
                         return res.send(err);
                     }
-                    //console.log('cards: ' + cards);
                     res.json(cards.reverse());
                 }).sort('-updatedAt').limit(10);
             }

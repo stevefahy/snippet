@@ -88,6 +88,7 @@ input[type="checkbox"] {
 }
 
 
+
 /*
 span {
     width: 100%;
@@ -229,8 +230,10 @@ form.form-horizontal.ng-valid.ng-dirty.ng-valid-parse {
 }
 
 .container-fluid {
-    margin-top: 60px;
-    margin-bottom: 60px;
+    padding-top: 57px;
+    padding-bottom: 60px;
+    padding-right: 10px;
+    padding-left: 10px;
 }
 
 .username,
@@ -276,6 +279,7 @@ span.glyphicon.glyphicon-option-vertical {
 
 
 
+
 /* EDIT MENU */
 
 
@@ -286,6 +290,7 @@ span.glyphicon.glyphicon-option-vertical {
     border: none;
     cursor: pointer;
 }
+
 
 
 
@@ -302,12 +307,14 @@ span.glyphicon.glyphicon-option-vertical {
 
 
 
+
 /* The container <div> - needed to position the dropdown content */
 
 .dropdown {
     position: relative;
     display: inline-block;
 }
+
 
 
 
@@ -329,6 +336,7 @@ span.glyphicon.glyphicon-option-vertical {
 
 
 
+
 /* Links inside the dropdown */
 
 .dropdown-content div {
@@ -342,11 +350,13 @@ span.glyphicon.glyphicon-option-vertical {
 
 
 
+
 /* Change color of dropdown links on hover */
 
 .dropdown-content a:hover {
     background-color: #f1f1f1
 }
+
 
 
 
@@ -429,4 +439,21 @@ li.list-group-item.d-flex.justify-content-between.align-items-center.ng-binding 
     float: none;
     margin-left: 5px;
     margin-top: -1px;
+}
+
+#conversation_part {
+    margin-bottom: 5px;
+    padding-left: 8px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    background-color: #FFFFFF;
+    -webkit-border-radius: 0px !important;
+    -moz-border-radius: 0px !important;
+    border-radius: 10px !important;
+    border-style: outset;
+    border-color: currentColor;
+}
+
+#conversation_container {
+        background-color: #f0ad4e1a;
 }

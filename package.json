@@ -5,6 +5,7 @@
   "main": "app.js",
   "author": "Stephen Fahy",
   "dependencies": {
+    "angular-moment": "^1.1.0",
     "angular-sanitize": "*",
     "base64url": "*",
     "bcrypt-nodejs": "latest",
@@ -15,6 +16,7 @@
     "express-session": "~1.14.1",
     "formidable": "*",
     "method-override": "~2.3.6",
+    "moment": "^2.19.3",
     "mongoose": "*",
     "morgan": "~1.7.0",
     "nodemailer": "*",
