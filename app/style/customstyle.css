@@ -158,7 +158,7 @@ hr {
 span.glyphicon {
     width: auto;
 }
-
+/*
 .header_text {
     float: left;
     font-family: 'Caveat Brush', cursive;
@@ -170,7 +170,24 @@ span.glyphicon {
     margin-left: 15px;
     color: white;
 }
-
+*/
+.header_text {
+    font-kerning: 1pt;
+    text-shadow: 1px 1px rgb(175, 115, 94);
+    /* font-style: italic; */
+    /* font-family: 'Fira Sans Extra Condensed', sans-serif; */
+    float: left;
+    /* font-family: 'Caveat Brush', cursive; */
+    font-size: 30px;
+    font-weight: 600;
+    margin-top: 2px;
+    margin-bottom: 6px;
+    margin-bottom: px;
+    margin-left: 0px;
+    color: white;
+    /* font-style: italic; */
+    font-family: 'Montserrat Alternates', sans-serif;
+}
 .logo {
     margin-right: 9px;
     float: left;

@@ -127,20 +127,20 @@ cardApp.factory('socket', function($rootScope, $window) {
             socket = io('/' + id);
             // namespace connect
             socket.on('connect', function() {
-                //console.log('CLIENT NS connect: ' + socket.id);
+                console.log('CLIENT NS connect: ' + socket.id);
             });
             // server confirming that the namespace has been created
             socket.on('joined_ns', function(id) {
-                //console.log('CLIENT joined_ns: ' + socket.id);
+                console.log('CLIENT joined_ns: ' + socket.id);
             });
             // server notifying users by namespace of update
             socket.on('notify_users', function(msg) {
-                //console.log('notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
+                console.log('notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
                 $rootScope.$broadcast('NOTIFICATION', msg);
             });
             // namespace disconnected by server
             socket.on('disconnect', function(reason) {
-                //console.log('CLIENT NS disconnected by server: ' + reason);
+                console.log('CLIENT NS disconnected by server: ' + reason);
             });
         },
         delete: function() {

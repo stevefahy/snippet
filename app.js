@@ -27,12 +27,12 @@ var server = http.createServer(app);
 var io = io.listen(server);
 
 io.on('connection', function(socket) {
-    //console.log('SERVER CONNECTION: ' + socket.id + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    console.log('SERVER CONNECTION: ' + socket.id + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     // namespace sent by client
     var ns;
 
     socket.on('create_ns', function(ns) {
-        //console.log('create ns: ' + ns);
+        console.log('create ns: ' + ns);
         // create unique namespace requested by client
         socket = io.of('/' + ns);
         // namespace name
@@ -45,7 +45,7 @@ io.on('connection', function(socket) {
             socket.emit('joined_ns', socket.id);
             // emited by cardcreate_ctrl when card has been created
             socket.on('card_posted', function(data) {
-                //console.log('card_posted, conv id: ' + data.conversation_id + ' , participants: ' + data.participants);
+                console.log('card_posted, conv id: ' + data.conversation_id + ' , participants: ' + data.participants);
                 // notify relevant namespace(s) of the cards creation
                 for (var i in data.participants) {
                     // dont emit to the user which sent the card
@@ -66,11 +66,11 @@ io.on('connection', function(socket) {
 
             // on namespace disconnect
             socket.on('disconnect', function(sockets) {
-                //console.log('SERVER NS DISCONNECT: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+                console.log('SERVER NS DISCONNECT: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
             });
             // close socket connection and delete nsmespace from io.nsps array
             socket.on('delete', function(sockets) {
-                //console.log('SERVER NS DELETE: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+                console.log('SERVER NS DELETE: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
                 delete io.nsps['/' + nspn];
                 socket.disconnect('unauthorized');
             });
@@ -80,7 +80,7 @@ io.on('connection', function(socket) {
 
     // on socket disconnect
     socket.on('disconnect', function(sockets) {
-        //console.log('SERVER DISCONNECT, clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+        console.log('SERVER DISCONNECT, clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     });
 });
 
