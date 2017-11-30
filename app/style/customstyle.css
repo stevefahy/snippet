@@ -69,9 +69,8 @@ input[type="checkbox"] {
     padding-bottom: 2px;
     padding-left: 6px;
 }
-
+/*
 .resize-drag {
-    /* This makes things *much* easier */
     box-sizing: border-box;
     shape-image-threshold: 0.5;
     padding-top: 6px;
@@ -80,6 +79,22 @@ input[type="checkbox"] {
     width: 100vw;
     max-width: 100vw;
     margin-left: calc(-50vw + 50%);
+}
+*/
+
+.resize-drag {
+    padding-top: 6px;
+    padding-bottom: 12px;
+    /* clear: both; */
+    /*width: 100vw;*/
+    max-width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    /* max-width: 100%; */
+    /* width: 100%; */
+    margin-left: -8px;
+    padding-right: 39px;
+    /* margin-right: -8px; */
+    /* margin-left: -16.66667%; */
 }
 
 .resize-container {
@@ -273,6 +288,7 @@ form.form-horizontal.ng-valid.ng-dirty.ng-valid-parse {
 }
 
 .username.ng-binding {
+    color: darkslategrey;
     float: left;
     margin-right: 5px;
 }
@@ -429,7 +445,7 @@ button.btn.btn-block.btn-social.btn-google {
 .user {
     float: right;
 }
-
+/*
 .username2 {
     float: right;
     position: relative;
@@ -439,6 +455,19 @@ button.btn.btn-block.btn-social.btn-google {
     align-items: right;
     color: white;
     font-size: 16px;
+}
+*/
+.username2 {
+    float: right;
+    position: relative;
+    margin-top: 14px;
+    margin-right: 15px;
+    text-align: right;
+    align-items: right;
+    color: #fbf9f9;
+    font-size: 16px;
+    font-weight: 600;
+    text-shadow: 0.5px 0.5px rgb(68, 50, 44);
 }
 
 li.list-group-item.d-flex.justify-content-between.align-items-center.ng-binding {
@@ -482,4 +511,12 @@ li.list-group-item.d-flex.justify-content-between.align-items-center.ng-binding 
 
 #conversation_container {
         background-color: oldlace;
+}
+#time{
+    font-size: 11px;
+    color: darkslategray;
+    font-weight: 500;
+}
+#conversation_part{
+    /*display: inline-block;*/
 }
