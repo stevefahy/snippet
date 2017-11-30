@@ -162,12 +162,13 @@ span.glyphicon {
 .header_text {
     float: left;
     font-family: 'Caveat Brush', cursive;
-    font-size: 26px;
+    font-size: 32px;
     font-weight: 400;
-    margin-top: 8px;
+    margin-top: 3px;
     margin-bottom: 6px;
     margin-bottom: px;
     margin-left: 15px;
+    color: white;
 }
 
 .logo {
@@ -195,8 +196,11 @@ span.glyphicon {
     top: 0;
     position: fixed;
     width: 100%;
-    background-color: #FAFAFA;
+    background-color: rgb(213, 181, 86);
     height: 50px;
+    border-bottom-style: outset;
+    border-bottom-width: 1.5px;
+    border-bottom-color: peachpuff;
 }
 
 span.glyphicon.glyphicon-search {
@@ -412,10 +416,12 @@ button.btn.btn-block.btn-social.btn-google {
 .username2 {
     float: right;
     position: relative;
-    margin-top: 15px;
+    margin-top: 14px;
     margin-right: 15px;
     text-align: right;
     align-items: right;
+    color: white;
+    font-size: 16px;
 }
 
 li.list-group-item.d-flex.justify-content-between.align-items-center.ng-binding {
@@ -449,11 +455,14 @@ li.list-group-item.d-flex.justify-content-between.align-items-center.ng-binding 
     background-color: #FFFFFF;
     -webkit-border-radius: 0px !important;
     -moz-border-radius: 0px !important;
-    border-radius: 10px !important;
+    border-radius: 6px !important;
     border-style: outset;
     border-color: currentColor;
+    border-width: 1.5px;
+    border-bottom-color: ivory;
+    /* border-bottom-width: 1px; */
 }
 
 #conversation_container {
-        background-color: #f0ad4e1a;
+        background-color: oldlace;
 }
