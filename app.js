@@ -24,10 +24,14 @@ var nodemailer = require('nodemailer');
 //
 // socket.io
 //
-var io = require('socket.io');
+
 var http = require('http');
 var server = http.createServer(app);
-var io = io.listen(server);
+var io = require('socket.io')(server);
+//var io = io.listen(server);
+// https://stackoverflow.com/questions/26665840/socket-io-failed-connection-closed-before-receiving-a-handshake-response
+//server.listen();
+
 
 io.sockets.setMaxListeners(0);
 
