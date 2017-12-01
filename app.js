@@ -26,6 +26,8 @@ var http = require('http');
 var server = http.createServer(app);
 var io = io.listen(server);
 
+io.sockets.setMaxListeners(0);
+
 io.on('connection', function(socket) {
     console.log('SERVER CONNECTION: ' + socket.id + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     // namespace sent by client
