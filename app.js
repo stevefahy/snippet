@@ -2,6 +2,9 @@
 var express = require('express');
 var app = express(); // create our app w/ express
 var mongoose = require('mongoose'); // mongoose for mongodb
+
+mongoose.Promise = require('bluebird');
+
 var mongodb = require('mongodb');
 var port = process.env.PORT || 8090; // set the port
 var urls = require('./app/configs/urls'); // load the urls config
