@@ -109,12 +109,14 @@ module.exports = function(app, passport) {
     app.get('/api/logout', function(req, res) {
         req.logout();
         req.logOut();
-        res.sendFile('login.html', { root: path.join(__dirname, '../views/') });
+        
 
         req.session.destroy(function(err) {
             if (err) {
                 console.log('err: ' + err);
             }
+console.log('destroy');
+res.sendFile('login.html', { root: path.join(__dirname, '../views/') });
         });
     });
 
