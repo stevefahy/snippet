@@ -130,8 +130,14 @@ input[type="checkbox"] {
     /* border-bottom-style: solid; */
     /* border-width: 10px; */
     /* border-color: black; */
-    http: //localhost:8090/login;
-    border: 1px solid #e6e6e6;
+    /*border: 1px solid #e6e6e6;*/
+    border-top-color: rgb(230, 230, 230);
+    border-top-style: solid;
+    border-top-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: rgb(230, 230, 230);
+    border-bottom-width: 1px;
+    
 }
 
 .resize-container {
