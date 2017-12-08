@@ -49,7 +49,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
         });
     };
-    getConversation(id, 200);
+    getConversation(id, 500);
 
     // find the array index of an object value
     function findWithAttr(array, attr, value) {

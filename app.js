@@ -33,6 +33,7 @@ var io = require('socket.io')(server);
 //server.listen();
 //io = io.listen(server);
 
+server.setMaxListeners(0);
 
 io.sockets.setMaxListeners(0);
 
@@ -49,6 +50,7 @@ io.on('connection', function(socket) {
         var nspn;
         // namespace connection made
         socket.on('connection', function(socket) {
+            socket.setMaxListeners(0);
             // store the namespace name
             nspn = ns;
             // confirm that namespace has been created to client
@@ -83,6 +85,8 @@ io.on('connection', function(socket) {
                 console.log('SERVER NS DELETE: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
                 delete io.nsps['/' + nspn];
                 socket.disconnect('unauthorized');
+
+                socket.removeAllListeners('connection');
             });
 
         });

@@ -251,8 +251,8 @@ res.sendFile('login.html', { root: path.join(__dirname, '../views/') });
                 });
             }
             // redirect to the newly created users home page (/:USERNAME)
-            res.redirect('/' + req.user.google.name);
-            //res.redirect('/');
+            //res.redirect('/' + req.user.google.name);
+            res.redirect('/');
         });
     //
     // CONTACTS

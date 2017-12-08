@@ -52,6 +52,8 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
         $scope.card_create.content = replaceTags.replace($scope.card_create.content);
         $scope.card_create.content = Format.setMediaSize(id, card_create);
 
+        $scope.card_create.content = Format.removeDeleteIds();
+
         Cards.create($scope.card_create)
             .then(function(response) {
                 // reset the input box

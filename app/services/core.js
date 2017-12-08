@@ -267,10 +267,36 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         });
     };
 
+    // Scroll to the bottom of the list
+    scrollToBottom = function(speed) {
+        $('html, body').animate({
+            scrollTop: $('#bottom').offset().top
+        }, speed, function() {});
+    };
+
+    this.removeDeleteIds = function() {
+        $('#cecard_create').html($('#cecard_create').html().replace(/<span id="delete">/g, ""));
+        $('#cecard_create').html($('#cecard_create').html().replace(/<\/span>/g, ""));
+        $('#cecard_create').html($('#cecard_create').html().replace(/\u200B/g, ""));
+        return $('#cecard_create').html();
+    };
+
     insertImage = function(data) {
         if (data.response === 'saved') {
             var new_image = "<img class='resize-drag' src='" + IMAGES_URL + data.file + "'><span id='delete'>&#x200b</span>";
             self.pasteHtmlAtCaret(new_image);
+
+            // remove zero width space above image if it exists 
+            var clone = $('#cecard_create').clone();
+            //clone.find('#delete').remove();
+            var old_text = clone.html();
+            var new_text = old_text.replace(/\u200B/g, '');
+            new_text += "<span id='delete_image'>&#x200b</span>";
+            $window.document.getElementById("cecard_create").innerHTML = new_text;
+
+            moveCaretInto('delete_image');
+
+            scrollToBottom(1000);
         }
     };
 
@@ -470,6 +496,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
 
     // TODO remove delete id?
     function moveCaretAfter(id) {
+
+        self.removeDeleteIds();
+
         var current_node = $("#" + id).get(0);
         $("<span id='delete'>&#x200b</span>").insertAfter(current_node);
         var range = document.createRange();
@@ -480,11 +509,20 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         var selection = window.getSelection();
         selection.removeAllRanges();
         selection.addRange(range);
+
+        // Fix for Firefox which replaces the zero width space with a <br> tag
+        if (ua.toLowerCase().indexOf('firefox') > -1) {
+            $('#' + id).html($('#' + id).html().replace(/<br>/g, ""));
+        }
+
         $('#' + id).removeAttr('id');
         return;
     }
 
     function moveCaretInto(id) {
+
+        self.removeDeleteIds();
+
         $("#" + id).html('&#x200b');
         var current_node = $("#" + id).get(0);
         range = document.createRange();
@@ -494,6 +532,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         var selection = window.getSelection();
         selection.removeAllRanges();
         selection.addRange(range);
+
+        // Fix for Firefox which replaces the zero width space with a <br> tag
+        if (ua.toLowerCase().indexOf('firefox') > -1) {
+            $('#' + id).html($('#' + id).html().replace(/<br>/g, ""));
+        }
+
         $('#' + id).removeAttr('id');
         return;
     }
@@ -579,7 +623,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
             if (marky_html_index !== -1) {
                 var marky_html = marky_array[marky_html_index].html;
                 if (marky_html != 'pre') {
-                    var new_tag = '<' + marky_html + '>&#x200b</' + marky_html + '>';
+                    var new_tag = '<' + marky_html + ' id="focus">&#x200b</' + marky_html + '>';
                     if (loop_count > 0) {
                         var pos = complete_tag.indexOf('&#x200b');
                         complete_tag = complete_tag.slice(0, pos) + new_tag + complete_tag.slice(pos + 7, complete_tag.length);
@@ -791,13 +835,18 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
                 // Preserve the selection
                 if (lastNode) {
                     range = range.cloneRange();
-                    range.setStartAfter(lastNode);
+                    // Firefox fix
+                    if (ua.toLowerCase().indexOf('firefox') > -1) {
+                        range.setStart(lastNode, 0);
+                    } else {
+                        range.setStartAfter(lastNode);
+                    }
                     range.collapse(true);
                     sel.removeAllRanges();
                     sel.addRange(range);
                 }
-
             }
+
         } else if (document.selection && document.selection.type != "Control") {
             // IE < 9
             document.selection.createRange().pasteHTML(html);
@@ -919,6 +968,7 @@ cardApp.service('replaceTags', function() {
         return str;
     };
 
+    // TOD is this now redundant?
     this.removeDeleteId = function(str) {
         str = $("<div>" + str + "</div>");
         $('span#delete', str).each(function(e) {
