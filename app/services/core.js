@@ -64,6 +64,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
 
     $window.androidRequest = this.androidRequest;
 
+    console.log('running?');
+    if (ua === 'AndroidApp') {
+        console.log('sendDetails');
+        Android.sendDetails();
+    }
+
     // Set serverUrl based upon current host (local or live)
     if (location.hostname === 'localhost') {
         // TODO should this not have /upload then route_folder for both would just be / in upload_app route.js
@@ -78,6 +84,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
 
     androidRequest = function(data) {
         console.log(data);
+        alert('req');
     };
 
     // Array to dynamically set marky chars to html tags
