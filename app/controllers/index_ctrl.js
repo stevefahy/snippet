@@ -15,7 +15,8 @@ cardApp.controller("indexCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope',
             console.log('running?');
             if (ua === 'AndroidApp') {
                 console.log('sendDetails');
-                Android.sendDetails(result.data.user._id);
+               var token =  Android.sendDetails(result.data.user._id);
+               console.log('token: ' + token);
             }
         }
     });
