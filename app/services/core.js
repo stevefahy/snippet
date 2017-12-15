@@ -64,11 +64,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
 
     $window.androidRequest = this.androidRequest;
 
-    console.log('running?');
-    if (ua === 'AndroidApp') {
-        console.log('sendDetails');
-        Android.sendDetails();
-    }
+ 
 
     // Set serverUrl based upon current host (local or live)
     if (location.hostname === 'localhost') {
