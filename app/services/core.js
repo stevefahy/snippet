@@ -83,8 +83,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     };
 
     androidRequest = function(data) {
-        console.log(data);
-        alert('req');
+        console.log('androidRequest: ' + data);
+       // alert('req');
     };
 
     // Array to dynamically set marky chars to html tags
