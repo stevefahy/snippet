@@ -45,7 +45,7 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
 });
 
 cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($window, $rootScope, $timeout, $q) {
-
+    console.log('loaded');
     var self = this;
     var tag_count_previous;
     var paste_in_progress = false;
@@ -79,6 +79,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     };
 
     androidRequest = function(data) {
+        //delete
         console.log('androidRequest: ' + data);
        // alert('req');
     };

@@ -11,12 +11,15 @@ cardApp.controller("indexCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope',
             socket.setId(result.data.user._id);
             socket.connect(socket.getId());
 
-            //
-            console.log('running?');
+            // Request the unique FCM token from the Android app
             if (ua === 'AndroidApp') {
                 console.log('sendDetails');
                var token =  Android.sendDetails(result.data.user._id);
                console.log('token: ' + token);
+               // TODO create device group
+               // check if device group exists
+               // if not create it
+               // check if this token is part of the device group (store in mongo)
             }
         }
     });
