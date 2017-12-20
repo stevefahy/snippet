@@ -79,7 +79,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     };
 
     androidTokenRefresh = function(data) {
-        //delete
+        data = JSON.parse(data);
         console.log('androidTokenRefresh: ' + data + ',id: ' + data.id + ' ,refreshedToken: ' + data.refreshedToken);
        // alert('req');
     };
