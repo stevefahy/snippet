@@ -80,7 +80,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
 
     androidTokenRefresh = function(data) {
         //delete
-        console.log('androidTokenRefresh: ' + data + ',id: ' + data.id + ' ,refreshedToken: ' + refreshedToken);
+        console.log('androidTokenRefresh: ' + data + ',id: ' + data.id + ' ,refreshedToken: ' + data.refreshedToken);
        // alert('req');
     };
 
