@@ -1,8 +1,9 @@
 <!doctype html>
 <!-- ASSIGN OUR ANGULAR MODULE -->
-<html ng-app="cardApp">
+<html>
 
 <head>
+    <!--
     <script>
     var pathArray = location.href.split('/');
     var protocol = pathArray[0];
@@ -11,10 +12,11 @@
     if (document.location.hostname === "localhost" || document.location.hostname === "127.0.0.1") {
         document.write('<base href="' + theurl + '" />');
     } else {
-        //document.write('<base href="/snip/" />');
+       
         document.write('<base href="/" />');
     }
     </script>
+-->
     <!-- META -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -37,30 +39,26 @@
     <link rel="stylesheet" href="/style/customstyle.css">
     <link rel="stylesheet" href="/style/bootstrap-social.css">
     <!-- Angular -->
+    <!--
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.11/angular.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.23/angular-resource.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.11/angular-route.js"></script>
-    <!-- jQuery -->
+
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <!-- Sanitize -->
+
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.3/angular-sanitize.js"></script>
-    <!-- Moment -->
     <script src="/js/moment.min.js"></script>
     <script>
     moment().format();
     </script>
     <script src="/js/angular_moment.js"></script>
-    <!-- InteractJS -->
-    <!--<script src="js/interact_1.2.9.min.js"></script>
-    <script src="js/interact.js"></script>-->
-    <!-- exifjs For reading exif data from images -->
+   
     <script src="/js/exif.js"></script>
-    <!-- load our main application -->
+   
     <script src="/services/core.js"></script>
-    <!-- load Controllers -->
-    <!--<script src="./controllers/main_ctrl.js"></script>-->
+   
     <script src="/controllers/index_ctrl.js"></script>
     <script src="/controllers/card_ctrl.js"></script>
     <script src="/controllers/cardsearch_ctrl.js"></script>
@@ -69,14 +67,15 @@
     <script src="/controllers/join_ctrl.js"></script>
     <script src="/controllers/conversation_ctrl.js"></script>
     <script src="/controllers/conversations_ctrl.js"></script>
-    <!-- load Services -->
+
     <script src="/services/services.js"></script>
-    <!-- socket.io -->
+    
     <script src="/socket.io/socket.io.js"></script>
+-->
 </head>
 
 <body>
-    <div ng-controller="indexCtrl">
+   <!-- <div ng-controller="indexCtrl">-->
         <div class="header">
             <div class="logo"><img src="/assets/images/bee_64.png"></div>
             <div class="header_text">Snipbee</div>
@@ -88,7 +87,7 @@
     <span class="fa fa-google"></span> Sign in with Google </a>
             </div>
         </div>
-    </div>
+   <!-- </div>-->
 </body>
 
 </html>
