@@ -80,7 +80,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', f
     };
 
     androidTokenRefresh = function(data) {
-        refreshedToken = JSON.parse(data);
+        //refreshedToken = JSON.parse(data);
         console.log('androidTokenRefresh: ' + refreshedToken + ',id: ' + refreshedToken.id + ' ,refreshedToken: ' + refreshedToken.refreshedToken);
         if(refreshedToken.id != undefined && refreshedToken.refreshedToken != undefined){
             // get notifcation data and check if this needs to be updated or added
@@ -88,6 +88,10 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', f
             Users.update_notification(refreshedToken);
         }
     };
+    // TESTING
+    //refreshedToken = {'id': '584fc35d0f8e4a1d', 'refreshedToken': 'fh3Er8wNvVk:APA91bF7osMSayM_dD3_qySD_vZkiPGcEqdJM8vKmQcAmkeAIbc5w79BPnNwfh3EY4qfaP8MPnSb2nx2xeQvRGdfl6E2qT78KKPVc00ylSB-Fp6luMNGdlrSS2EnKP5JXcJpvNqleKwa'};
+    //refreshedToken = {'id': '584fc35d0f8e4a1d', 'refreshedToken': 'stevetoken2'};
+    //androidTokenRefresh(refreshedToken);
 
     // Array to dynamically set marky chars to html tags
     var marky_array = [{

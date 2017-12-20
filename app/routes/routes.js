@@ -9,6 +9,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var nodemailer = require('nodemailer');
 var base64url = require('base64url');
+var request = require('request');
 
 function getCards(res) {
     Card.find(function(err, cards) {
@@ -339,22 +340,187 @@ module.exports = function(app, passport) {
                 res.json({ 'error': 'null' });
             } else {
                 console.log('user: ' + user);
-                res.json({ 'success': user });
+                //res.json({ 'success': user });
                 // if no notification group create it
                 console.log('user.notification_key_name: ' + user.notification_key_name);
-                if (user.notification_key_name === undefined) {
-                    
-                    // Save
-                    var updateuser = new User(req.user);
-                    updateduser.notification_key_name = user._id;
-                    updateuser.save(function(err, user) {
+                console.log('user.notification_key: ' + user.notification_key);
+                // First time. Create notification key
+                if (user.notification_key === undefined) {
+                    var data = {
+                        "operation": "create",
+                        "notification_key_name": req.user._id,
+                        "registration_ids": [req.body.refreshedToken]
+                    };
+
+                    var headers = {
+                        'Authorization': 'key=AAAAvGGxXsg:APA91bHS_Bh4m97-NBhD2LHKMz7AmcrYTGhkD4B4K7nv7pxwZUL1HmgI09igdfkDv3oEbcaOjo043yoVnC4g6c9aMp-CbIeZkuLEvWiZtlR_b_sQfqEknTY3hVJGzS94rul-bA8vBsgJ',
+                        'Content-Type': 'application/json',
+                        'project_id': '809092865736'
+
+                    };
+
+                    var options = {
+                        uri: 'https://android.googleapis.com/gcm/notification',
+                        method: 'POST',
+                        headers: headers,
+                        json: data
+                    };
+
+                    request(options, function(err, response, body) {
                         if (err) {
-                            res.send(err);
+                            console.log('err: ' + err);
+                            throw err;
                         } else {
-                            res.json(user);
+                            console.log(body);
+                            var notification_key = body.notification_key;
+                            //var notification_key = 'APA91bEG5H3StdrWn4kH2IrstKKbKHHIr16CtMUijPccHs9ugXwHuh-ZUnEo5iAFCV_BQV4K-OW-4y4p5pV16_CDt7bY95QCOrG0tp4-isMAfOaWpECt-S-jjus9iXZmLToZptpkl8EO';
+
+                            // Save
+                            var updateuser = new User(user);
+                            updateuser.notification_key_name = user._id;
+                            updateuser.notification_key = notification_key;
+                            //$scope.chat_create.participants.push({ _id: $scope.currentUser._id, viewed: 0 });
+                            updateuser.tokens.push({ _id: req.body.id, token: req.body.refreshedToken });
+
+                            updateuser.save(function(err, user) {
+                                if (err) {
+                                    res.send(err);
+                                } else {
+                                    res.json(user);
+                                }
+                            });
+
                         }
                     });
+
+                } else {
+                    // Second time. Update tokens if necessary.
+                    // Find the Android device id
+                    //console.log('id: ' + req.body.id);
+                    //console.log('token: ' + req.body.refreshedToken);
+                    var id_pos = findWithAttr(user.tokens, '_id', req.body.id);
+                    console.log('found: ' + id_pos);
+
+                    if (id_pos >= 0) {
+                        // This device was already registered
+                        // Check if the token has been changed
+                        if (user.tokens[id_pos].token != req.body.refreshedToken) {
+                            // The token has been changed. Update DB and FCM
+                            console.log('update token');
+
+                            var new_user = new User(user);
+                            new_user.tokens[id_pos].token = req.body.refreshedToken;
+                            //new_user.updatedAt = new Date().toISOString();
+                            new_user.save(function(err, user) {
+                                if (err) {
+                                    res.send(err);
+                                } else {
+                                    res.json(user);
+                                }
+                            });
+
+                            // FCM Delete old token and add new token
+                            var token_array = [];
+                            for (var i in user.tokens) {
+                                token_array.push(user.tokens[i].token);
+                            }
+                            token_array.reverse();
+                            var new_data = {
+                                "operation": "remove",
+                                "notification_key_name": req.user._id,
+                                "notification_key": user.notification_key,
+                                "registration_ids": token_array
+                            };
+
+                            var new_headers = {
+                                'Authorization': 'key=AAAAvGGxXsg:APA91bHS_Bh4m97-NBhD2LHKMz7AmcrYTGhkD4B4K7nv7pxwZUL1HmgI09igdfkDv3oEbcaOjo043yoVnC4g6c9aMp-CbIeZkuLEvWiZtlR_b_sQfqEknTY3hVJGzS94rul-bA8vBsgJ',
+                                'Content-Type': 'application/json',
+                                'project_id': '809092865736'
+
+                            };
+
+                            var new_options = {
+                                uri: 'https://android.googleapis.com/gcm/notification',
+                                method: 'POST',
+                                headers: new_headers,
+                                json: new_data
+                            };
+
+                            request(new_options, function(err, response, body) {
+                                if (err) {
+                                    console.log('err: ' + err);
+                                    throw err;
+                                } else {
+                                    console.log(body);
+                                }
+                            });
+
+
+                        } else {
+                            console.log('token up to date');
+                        }
+
+
+                    } else {
+                        // New Device.
+                        // Update DB and FCM
+                        console.log('update token');
+
+                        var new_user = new User(user);
+                        //new_user.tokens[id_pos].token = req.body.refreshedToken;
+                        new_user.tokens.push({ _id: req.body.id, token: req.body.refreshedToken });
+                        //new_user.updatedAt = new Date().toISOString();
+                        new_user.save(function(err, user) {
+                            if (err) {
+                                res.send(err);
+                            } else {
+                                res.json(user);
+                            }
+                        });
+
+                        // FCM Delete old token and add new token
+                        var token_array = [];
+                        for (var i in user.tokens) {
+                            token_array.push(user.tokens[i].token);
+                        }
+                        token_array.reverse();
+                        var new_data = {
+                            "operation": "add",
+                            "notification_key_name": req.user._id,
+                            "notification_key": user.notification_key,
+                            "registration_ids": token_array
+                        };
+
+                        var new_headers = {
+                            'Authorization': 'key=AAAAvGGxXsg:APA91bHS_Bh4m97-NBhD2LHKMz7AmcrYTGhkD4B4K7nv7pxwZUL1HmgI09igdfkDv3oEbcaOjo043yoVnC4g6c9aMp-CbIeZkuLEvWiZtlR_b_sQfqEknTY3hVJGzS94rul-bA8vBsgJ',
+                            'Content-Type': 'application/json',
+                            'project_id': '809092865736'
+
+                        };
+
+                        var new_options = {
+                            uri: 'https://android.googleapis.com/gcm/notification',
+                            method: 'POST',
+                            headers: new_headers,
+                            json: new_data
+                        };
+
+                        request(new_options, function(err, response, body) {
+                            if (err) {
+                                console.log('err: ' + err);
+                                throw err;
+                            } else {
+                                console.log(body);
+                            }
+                        });
+
+                    }
+
+
+
+
                 }
+
 
 
                 //notification_key_name: String,

@@ -28,6 +28,7 @@
     "regex": "*",
     "serve-favicon": "*",
     "socket.io": "^2.0.4",
-    "bluebird": "*"
+    "bluebird": "*",
+    "request": "*"
   }
 }
