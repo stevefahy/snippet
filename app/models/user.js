@@ -8,6 +8,9 @@ var Schema = mongoose.Schema;
 var userSchema = new Schema({
     _id: Schema.Types.ObjectId,
     contacts: [{ "type": Schema.Types.ObjectId, "ref": "User" }],
+    notification_key_name: String,
+    notification_key: String,
+    tokens: [{ id: String, token: String}],
     local: {
         email: String,
         password: String

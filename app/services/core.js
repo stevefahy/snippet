@@ -44,7 +44,7 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
     });
 });
 
-cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($window, $rootScope, $timeout, $q) {
+cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', function($window, $rootScope, $timeout, $q, Users) {
     console.log('loaded');
     var self = this;
     var tag_count_previous;
@@ -59,12 +59,13 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     var MAX_WIDTH = 1080;
     var MAX_HEIGHT = 1080;
     var IMAGES_URL = 'fileuploads/images/';
+    var refreshedToken;
 
     $window.androidToJS = this.androidToJS;
 
-    $window.androidRequest = this.androidRequest;
+    $window.androidTokenRefresh = this.androidTokenRefresh;
 
- 
+
 
     // Set serverUrl based upon current host (local or live)
     if (location.hostname === 'localhost') {
@@ -79,9 +80,13 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
     };
 
     androidTokenRefresh = function(data) {
-        data = JSON.parse(data);
-        console.log('androidTokenRefresh: ' + data + ',id: ' + data.id + ' ,refreshedToken: ' + data.refreshedToken);
-       // alert('req');
+        refreshedToken = JSON.parse(data);
+        console.log('androidTokenRefresh: ' + refreshedToken + ',id: ' + refreshedToken.id + ' ,refreshedToken: ' + refreshedToken.refreshedToken);
+        //if(data.id != undefined && data.refreshedToken != undefined){
+            // get notifcation data and check if this needs to be updated or added
+            // cant get it until the user is logged in
+            //Users.get_notification();
+        //}
     };
 
     // Array to dynamically set marky chars to html tags
