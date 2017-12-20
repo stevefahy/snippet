@@ -78,9 +78,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', function($
         insertImage(data);
     };
 
-    androidRequest = function(data) {
+    androidTokenRefresh = function(data) {
         //delete
-        console.log('androidRequest: ' + data);
+        console.log('androidTokenRefresh: ' + data + ',id: ' + data.id + ' ,refreshedToken: ' + refreshedToken);
        // alert('req');
     };
 
