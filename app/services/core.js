@@ -80,7 +80,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', f
     };
 
     androidTokenRefresh = function(data) {
-        //refreshedToken = JSON.parse(data);
+        refreshedToken = JSON.parse(data);
         console.log('androidTokenRefresh: ' + refreshedToken + ',id: ' + refreshedToken.id + ' ,refreshedToken: ' + refreshedToken.refreshedToken);
         if(refreshedToken.id != undefined && refreshedToken.refreshedToken != undefined){
             // get notifcation data and check if this needs to be updated or added
