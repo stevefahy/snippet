@@ -321,6 +321,15 @@ res.sendFile('login.html', { root: path.join(__dirname, '../views/') });
             });
         }
     });
+    // get user notification data
+    app.post('/api/users/update_notification', function(req, res) {
+        
+        //var notification_key_name = req.user.notification_key_name;
+        console.log('id: ' + req.body.id);
+        console.log('token: ' + req.body.refreshedToken);
+        console.log('user id: ' + req.user._id);
+        
+    });
     //
     // CARDS
     //

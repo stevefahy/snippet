@@ -82,11 +82,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', f
     androidTokenRefresh = function(data) {
         refreshedToken = JSON.parse(data);
         console.log('androidTokenRefresh: ' + refreshedToken + ',id: ' + refreshedToken.id + ' ,refreshedToken: ' + refreshedToken.refreshedToken);
-        //if(data.id != undefined && data.refreshedToken != undefined){
+        if(refreshedToken.id != undefined && refreshedToken.refreshedToken != undefined){
             // get notifcation data and check if this needs to be updated or added
             // cant get it until the user is logged in
-            //Users.get_notification();
-        //}
+            Users.update_notification(refreshedToken);
+        }
     };
 
     // Array to dynamically set marky chars to html tags

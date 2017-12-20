@@ -26,7 +26,7 @@ cardApp.controller("indexCtrl", ['$scope', 'Cards', 'replaceTags', '$rootScope',
                 // cant get it until the user is logged in
                 //Users.get_notification();
                 //}
-                console.log('Format.refreshedToken: ' + Format.refreshedToken);
+                //console.log('Format.refreshedToken: ' + Format.refreshedToken);
 
             }
         }

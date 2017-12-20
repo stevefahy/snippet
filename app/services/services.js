@@ -72,8 +72,8 @@ cardApp.factory('Users', ['$http', function($http) {
         delete_contact: function(id) {
             return $http.post('api/users/delete_contact/' + id);
         },
-        get_notification: function(id){
-            return $http.get('api/users/get_notification/' + id);
+        get_notification: function(refreshedToken){
+            return $http.post('api/users/update_notification', refreshedToken);
         }
     };
 }]);
