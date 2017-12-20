@@ -329,11 +329,13 @@ res.sendFile('login.html', { root: path.join(__dirname, '../views/') });
         console.log('token: ' + req.body.refreshedToken);
         console.log('user id: ' + req.user._id);
 
-        User.findById({ '_id': req.body.id }, function(error, user) {
+        User.findById({ '_id': req.user._id }, function(error, user) {
             if (error) {
+                console.log('user error');
                 res.json(error);
             } else if (user === null) {
                 // no user found
+                console.log('no user');
                 res.json({ 'error': 'null' });
             } else {
                 console.log('user: ' + user);
