@@ -109,14 +109,14 @@ module.exports = function(app, passport) {
     app.get('/api/logout', function(req, res) {
         req.logout();
         req.logOut();
-        
+
 
         req.session.destroy(function(err) {
             if (err) {
                 console.log('err: ' + err);
             }
-console.log('destroy');
-res.sendFile('login.html', { root: path.join(__dirname, '../views/') });
+            console.log('destroy');
+            res.sendFile('login.html', { root: path.join(__dirname, '../views/') });
         });
     });
 
@@ -323,7 +323,7 @@ res.sendFile('login.html', { root: path.join(__dirname, '../views/') });
     });
     // get user notification data
     app.post('/api/users/update_notification', function(req, res) {
-        
+
         //var notification_key_name = req.user.notification_key_name;
         console.log('id: ' + req.body.id);
         console.log('token: ' + req.body.refreshedToken);
@@ -340,11 +340,33 @@ res.sendFile('login.html', { root: path.join(__dirname, '../views/') });
             } else {
                 console.log('user: ' + user);
                 res.json({ 'success': user });
+                // if no notification group create it
+                console.log('user.notification_key_name: ' + user.notification_key_name);
+                if (user.notification_key_name === undefined) {
+                    
+                    // Save
+                    var updateuser = new User(req.user);
+                    updateduser.notification_key_name = user._id;
+                    updateuser.save(function(err, user) {
+                        if (err) {
+                            res.send(err);
+                        } else {
+                            res.json(user);
+                        }
+                    });
+                }
+
+
+                //notification_key_name: String,
+                // the users id
+                //notification_key: String,   
+
+                // else check whether the token needs to be added to the group or updated.
             }
         });
 
 
-        
+
     });
     //
     // CARDS
