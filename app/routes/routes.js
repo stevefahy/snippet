@@ -423,16 +423,16 @@ module.exports = function(app, passport) {
                             });
 
                             // FCM Delete old token and add new token
-                            var token_array = [];
-                            for (var i in user.tokens) {
-                                token_array.push(user.tokens[i].token);
-                            }
-                            token_array.reverse();
+                            //var token_array = [];
+                            //for (var i in user.tokens) {
+                            //    token_array.push(user.tokens[i].token);
+                            //}
+                            //token_array.reverse();
                             var new_data = {
                                 "operation": "remove",
                                 "notification_key_name": req.user._id,
                                 "notification_key": user.notification_key,
-                                "registration_ids": token_array
+                                "registration_ids": new_user.tokens
                             };
 
                             var new_headers = {
