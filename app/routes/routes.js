@@ -430,8 +430,8 @@ module.exports = function(app, passport) {
                              //   token_array.push(new_user.tokens[i].token);
                             //}
                             for (var key in new_user.tokens) {
-                                if (new_user.tokens.hasOwnProperty(key)) {
-                                    console.log(key + " -> " + new_user.tokens[key]);
+                                if (new_user.tokens[key].token {
+                                    console.log(key + " -> " + new_user.tokens[key].token);
                                     token_array.push(new_user.tokens[key].token);
 
                                 }
