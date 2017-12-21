@@ -1,0 +1,6 @@
+{
+   "operation": "add",
+   "notification_key_name": "5a1dc84360b50707d8a82d7d",
+   "notification_key": "APA91bFhRrsyQW2piTA5EF7SwNSv8l-Gmm7nauO9aQptdRj40wE2VGgoBItP8w0n_3x92S2vFlAythMTwzeiE33ElqK9tmuMTS0RBWP4YAIEyqiQ0MZA--e0FDQpe8IArXZoVUkosOyb",
+   "registration_ids": ["cEw8uXo1iEU:APA91bEz6VJQqcTXtitmfa8RsoHbXIQDxaHHhL2Qzl7qz6e6KBAX7JuhqoX7OKgUasii1T1IwpyntCqkX1SPYyDnZwn07k5pLCfZnTMmUkVKrE8LPFs2qsLILxzvTVHdbJe2YCobDJMw","e2CdHGC7caM:APA91bGqeCa4UVC3uRxqfVv-kV3-wgHgykYV6syxupgHgQPSel9qP1KzKq41mTZyGnzX3vOhrJha2_UX3KJGqU_sTZtSf9qA7v9guQFSUTqBTG9bHYEx35nb28WuJtS2UIfIiiAf_ItP"]
+}

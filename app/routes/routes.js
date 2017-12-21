@@ -473,6 +473,7 @@ module.exports = function(app, passport) {
                         //new_user.tokens[id_pos].token = req.body.refreshedToken;
                         new_user.tokens.push({ _id: req.body.id, token: req.body.refreshedToken });
                         //new_user.updatedAt = new Date().toISOString();
+                        console.log('tokens: ' + new_user.tokens);
                         new_user.save(function(err, user) {
                             if (err) {
                                 res.send(err);
@@ -482,16 +483,16 @@ module.exports = function(app, passport) {
                         });
 
                         // FCM Delete old token and add new token
-                        var token_array = [];
-                        for (var i in user.tokens) {
-                            token_array.push(user.tokens[i].token);
-                        }
-                        token_array.reverse();
+                        //var token_array = [];
+                        //for (var i in user.tokens) {
+                        //    token_array.push(user.tokens[i].token);
+                        //}
+                        //token_array.reverse();
                         var new_data = {
                             "operation": "add",
                             "notification_key_name": req.user._id,
-                            "notification_key": user.notification_key,
-                            "registration_ids": token_array
+                            "notification_key": new_user.notification_key,
+                            "registration_ids": new_user.tokens
                         };
 
                         var new_headers = {
