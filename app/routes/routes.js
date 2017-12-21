@@ -500,8 +500,9 @@ module.exports = function(app, passport) {
                         var token_array = [];
                         for (var i in new_user.tokens) {
                             if (new_user.tokens[i].token) {
-                                console.log(new_user.tokens[i]);
-                                token_array.push('"' + new_user.tokens[i].token + '"');
+                                console.log(new_user.tokens[i].token);
+                                //token_array.push('"' + new_user.tokens[i].token + '"');
+                                token_array.push(new_user.tokens[i].token);
                             }
                         }
                         token_array.reverse();
