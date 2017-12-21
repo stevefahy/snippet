@@ -506,11 +506,14 @@ module.exports = function(app, passport) {
                         }
                         token_array.reverse();
                         console.log('token_array: ' + token_array);
+                        console.log('new_user.notification_key: ' + new_user.notification_key);
+                        console.log('notification_key_name: ' + req.user._id);
+                        console.log('auth: ' + 'key=' + fcm.firebaseserverkey);
                         var new_data = {
                             "operation": "add",
                             "notification_key_name": req.user._id,
                             "notification_key": new_user.notification_key,
-                            "registration_ids": [token_array]
+                            "registration_ids": "["+token_array+"]"
                         };
 
                         var new_headers = {
@@ -526,6 +529,7 @@ module.exports = function(app, passport) {
                             headers: new_headers,
                             json: new_data
                         };
+                        console.log('new_options: ' + new_options);
 
                         request(new_options, function(err, response, body) {
                             if (err) {
