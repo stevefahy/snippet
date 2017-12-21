@@ -10,6 +10,7 @@ var Schema = mongoose.Schema;
 var nodemailer = require('nodemailer');
 var base64url = require('base64url');
 var request = require('request');
+var fcm = require('../configs/fcm'); // load the urls config
 
 function getCards(res) {
     Card.find(function(err, cards) {
@@ -346,6 +347,7 @@ module.exports = function(app, passport) {
                 console.log('user.notification_key: ' + user.notification_key);
                 // First time. Create notification key
                 if (user.notification_key === undefined) {
+                    console.log('First time. Create notification key');
                     var data = {
                         "operation": "create",
                         "notification_key_name": req.user._id,
@@ -353,7 +355,7 @@ module.exports = function(app, passport) {
                     };
 
                     var headers = {
-                        'Authorization': 'key=AAAAvGGxXsg:APA91bHS_Bh4m97-NBhD2LHKMz7AmcrYTGhkD4B4K7nv7pxwZUL1HmgI09igdfkDv3oEbcaOjo043yoVnC4g6c9aMp-CbIeZkuLEvWiZtlR_b_sQfqEknTY3hVJGzS94rul-bA8vBsgJ',
+                        'Authorization': 'key='+fcm.firebaseserverkey,
                         'Content-Type': 'application/json',
                         'project_id': '809092865736'
 
@@ -400,13 +402,14 @@ module.exports = function(app, passport) {
                     //console.log('token: ' + req.body.refreshedToken);
                     var id_pos = findWithAttr(user.tokens, '_id', req.body.id);
                     console.log('found: ' + id_pos);
-
+                    console.log('Second time. Update tokens if necessary');
                     if (id_pos >= 0) {
                         // This device was already registered
                         // Check if the token has been changed
                         if (user.tokens[id_pos].token != req.body.refreshedToken) {
                             // The token has been changed. Update DB and FCM
-                            console.log('update token');
+
+                            console.log('The token has been changed. Update DB and FCM');
 
                             var new_user = new User(user);
                             new_user.tokens[id_pos].token = req.body.refreshedToken;
@@ -433,7 +436,7 @@ module.exports = function(app, passport) {
                             };
 
                             var new_headers = {
-                                'Authorization': 'key=AAAAvGGxXsg:APA91bHS_Bh4m97-NBhD2LHKMz7AmcrYTGhkD4B4K7nv7pxwZUL1HmgI09igdfkDv3oEbcaOjo043yoVnC4g6c9aMp-CbIeZkuLEvWiZtlR_b_sQfqEknTY3hVJGzS94rul-bA8vBsgJ',
+                                'Authorization': 'key='+fcm.firebaseserverkey,
                                 'Content-Type': 'application/json',
                                 'project_id': '809092865736'
 
@@ -464,7 +467,7 @@ module.exports = function(app, passport) {
                     } else {
                         // New Device.
                         // Update DB and FCM
-                        console.log('update token');
+                        console.log('new device update token');
 
                         var new_user = new User(user);
                         //new_user.tokens[id_pos].token = req.body.refreshedToken;
@@ -492,7 +495,7 @@ module.exports = function(app, passport) {
                         };
 
                         var new_headers = {
-                            'Authorization': 'key=AAAAvGGxXsg:APA91bHS_Bh4m97-NBhD2LHKMz7AmcrYTGhkD4B4K7nv7pxwZUL1HmgI09igdfkDv3oEbcaOjo043yoVnC4g6c9aMp-CbIeZkuLEvWiZtlR_b_sQfqEknTY3hVJGzS94rul-bA8vBsgJ',
+                            'Authorization': 'key='+fcm.firebaseserverkey,
                             'Content-Type': 'application/json',
                             'project_id': '809092865736'
 
