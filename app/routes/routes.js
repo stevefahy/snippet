@@ -413,6 +413,7 @@ module.exports = function(app, passport) {
 
                             var new_user = new User(user);
                             new_user.tokens[id_pos].token = req.body.refreshedToken;
+                            console.log('tokens: ' + new_user.tokens);
                             //new_user.updatedAt = new Date().toISOString();
                             new_user.save(function(err, user) {
                                 if (err) {
@@ -425,6 +426,7 @@ module.exports = function(app, passport) {
                             // FCM Delete old token and add new token
                             var token_array = [];
                             for (var i in new_user.tokens) {
+                                console.log(new_user.tokens[i]);
                                 token_array.push(new_user.tokens[i].token);
                             }
                             token_array.reverse();
