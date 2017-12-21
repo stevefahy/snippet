@@ -355,7 +355,7 @@ module.exports = function(app, passport) {
                     };
 
                     var headers = {
-                        'Authorization': 'key='+fcm.firebaseserverkey,
+                        'Authorization': 'key=' + fcm.firebaseserverkey,
                         'Content-Type': 'application/json',
                         'project_id': '809092865736'
 
@@ -425,9 +425,16 @@ module.exports = function(app, passport) {
 
                             // FCM Delete old token and add new token
                             var token_array = [];
-                            for (var i in new_user.tokens) {
-                                console.log(new_user.tokens[i]);
-                                token_array.push(new_user.tokens[i].token);
+                            //for (var i in new_user.tokens) {
+                            //    console.log(new_user.tokens[i]);
+                             //   token_array.push(new_user.tokens[i].token);
+                            //}
+                            for (var key in new_user.tokens) {
+                                if (new_user.tokens.hasOwnProperty(key)) {
+                                    console.log(key + " -> " + new_user.tokens[key]);
+                                    token_array.push(new_user.tokens[key].token);
+
+                                }
                             }
                             token_array.reverse();
                             console.log('token_array: ' + token_array);
@@ -439,7 +446,7 @@ module.exports = function(app, passport) {
                             };
 
                             var new_headers = {
-                                'Authorization': 'key='+fcm.firebaseserverkey,
+                                'Authorization': 'key=' + fcm.firebaseserverkey,
                                 'Content-Type': 'application/json',
                                 'project_id': '809092865736'
 
@@ -499,7 +506,7 @@ module.exports = function(app, passport) {
                         };
 
                         var new_headers = {
-                            'Authorization': 'key='+fcm.firebaseserverkey,
+                            'Authorization': 'key=' + fcm.firebaseserverkey,
                             'Content-Type': 'application/json',
                             'project_id': '809092865736'
 
