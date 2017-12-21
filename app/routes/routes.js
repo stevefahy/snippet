@@ -443,7 +443,7 @@ module.exports = function(app, passport) {
                             token_array.reverse();
                             console.log('token_array: ' + token_array);
                             var new_data = {
-                                "operation": "remove",
+                                "operation": "add",
                                 "notification_key_name": req.user._id,
                                 "notification_key": user.notification_key,
                                 "registration_ids": token_array
@@ -505,6 +505,7 @@ module.exports = function(app, passport) {
                             }
                         }
                         token_array.reverse();
+                        console.log('token_array: ' + token_array);
                         var new_data = {
                             "operation": "add",
                             "notification_key_name": req.user._id,
