@@ -513,7 +513,7 @@ module.exports = function(app, passport) {
                             "operation": "add",
                             "notification_key_name": req.user._id,
                             "notification_key": new_user.notification_key,
-                            "registration_ids": "["+token_array+"]"
+                            "registration_ids": token_array
                         };
 
                         var new_headers = {
