@@ -473,6 +473,7 @@ module.exports = function(app, passport) {
                             };
                             */
                             data.operation = "add";
+                            data.notification_key = new_user.notification_key;
                             /*
                             var new_headers = {
                                 'Authorization': 'key=' + fcm.firebaseserverkey,
@@ -546,6 +547,7 @@ module.exports = function(app, passport) {
                             "registration_ids": token_array
                         };
                         */
+                        data.notification_key = new_user.notification_key;
                         data.operation = "add";
                         /*
                         var new_headers = {
