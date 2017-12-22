@@ -65,6 +65,7 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
                     .then(function(response) {
                         // socket.io emit the card posted to the server
                         socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: response.data._id, participants: response.data.participants });
+                        // TODO send notifications
                     });
             });
     };

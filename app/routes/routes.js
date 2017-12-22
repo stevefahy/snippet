@@ -408,15 +408,6 @@ module.exports = function(app, passport) {
                             });
                             // Get the updated array of tokens before updating FCM
                             token_array = createTokenArray(new_user.tokens);
-                            /*
-                            var token_array = [];
-                            for (var i in new_user.tokens) {
-                                if (new_user.tokens[i].token) {
-                                    token_array.push(new_user.tokens[i].token);
-                                }
-                            }
-                            token_array.reverse();
-                            */
                             // FCM Delete old token and add new token
                             data.operation = "add";
                             data.notification_key = new_user.notification_key;
@@ -443,15 +434,6 @@ module.exports = function(app, passport) {
                         });
                         // Get the updated array of tokens before updating FCM
                         token_array = createTokenArray(new_user.tokens);
-                        /*
-                        var token_array = [];
-                        for (var i in new_user.tokens) {
-                            if (new_user.tokens[i].token) {
-                                token_array.push(new_user.tokens[i].token);
-                            }
-                        }
-                        token_array.reverse();
-                        */
                         // FCM add new token to the group
                         data.notification_key = new_user.notification_key;
                         data.operation = "add";
