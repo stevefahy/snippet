@@ -345,28 +345,49 @@ module.exports = function(app, passport) {
                 // if no notification group create it
                 console.log('user.notification_key_name: ' + user.notification_key_name);
                 console.log('user.notification_key: ' + user.notification_key);
+
+                var data = {
+                    "operation": "",
+                    "notification_key_name": req.user._id,
+                    "registration_ids": [req.body.refreshedToken]
+                };
+
+                var headers = {
+                    'Authorization': 'key=' + fcm.firebaseserverkey,
+                    'Content-Type': 'application/json',
+                    'project_id': fcm.project_id
+
+                };
+
+                var options = {
+                    uri: 'https://android.googleapis.com/gcm/notification',
+                    method: 'POST',
+                    headers: headers,
+                    json: data
+                };
+
                 // First time. Create notification key
                 if (user.notification_key === undefined) {
                     console.log('First time. Create notification key');
+                    /*
                     var data = {
                         "operation": "create",
                         "notification_key_name": req.user._id,
                         "registration_ids": [req.body.refreshedToken]
                     };
+                    */
 
-                    var headers = {
-                        'Authorization': 'key=' + fcm.firebaseserverkey,
-                        'Content-Type': 'application/json',
-                        'project_id': fcm.project_id
+                    data.operation = "create";
 
-                    };
 
+                    /*
                     var options = {
                         uri: 'https://android.googleapis.com/gcm/notification',
                         method: 'POST',
                         headers: headers,
                         json: data
                     };
+                    */
 
                     request(options, function(err, response, body) {
                         if (err) {
@@ -443,28 +464,33 @@ module.exports = function(app, passport) {
                             */
                             token_array.reverse();
                             console.log('token_array: ' + token_array);
+                            /*
                             var new_data = {
                                 "operation": "add",
                                 "notification_key_name": req.user._id,
                                 "notification_key": new_user.notification_key,
                                 "registration_ids": token_array
                             };
-
+                            */
+                            data.operation = "add";
+                            /*
                             var new_headers = {
                                 'Authorization': 'key=' + fcm.firebaseserverkey,
                                 'Content-Type': 'application/json',
                                 'project_id': fcm.project_id
 
                             };
-
+                            */
+                            /*
                             var new_options = {
                                 uri: 'https://android.googleapis.com/gcm/notification',
                                 method: 'POST',
-                                headers: new_headers,
-                                json: new_data
+                                headers: headers,
+                                json: data
                             };
+                            */
 
-                            request(new_options, function(err, response, body) {
+                            request(options, function(err, response, body) {
                                 if (err) {
                                     console.log('err: ' + err);
                                     throw err;
@@ -512,29 +538,34 @@ module.exports = function(app, passport) {
                         console.log('new_user.notification_key: ' + new_user.notification_key);
                         console.log('notification_key_name: ' + req.user._id);
                         console.log('auth: ' + 'key=' + fcm.firebaseserverkey);
+                        /*
                         var new_data = {
                             "operation": "add",
                             "notification_key_name": req.user._id,
                             "notification_key": new_user.notification_key,
                             "registration_ids": token_array
                         };
-
+                        */
+                        data.operation = "add";
+                        /*
                         var new_headers = {
                             'Authorization': 'key=' + fcm.firebaseserverkey,
                             'Content-Type': 'application/json',
                             'project_id': fcm.project_id
 
                         };
-
+                        */
+                        /*
                         var new_options = {
                             uri: 'https://android.googleapis.com/gcm/notification',
                             method: 'POST',
-                            headers: new_headers,
-                            json: new_data
+                            headers: headers,
+                            json: data
                         };
-                        console.log('new_options: ' + new_options);
+                        */
+                        //console.log('new_options: ' + new_options);
 
-                        request(new_options, function(err, response, body) {
+                        request(options, function(err, response, body) {
                             if (err) {
                                 console.log('err: ' + err);
                                 throw err;
