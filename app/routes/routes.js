@@ -357,7 +357,7 @@ module.exports = function(app, passport) {
                     var headers = {
                         'Authorization': 'key=' + fcm.firebaseserverkey,
                         'Content-Type': 'application/json',
-                        'project_id': '809092865736'
+                        'project_id': fcm.project_id
 
                     };
 
@@ -427,8 +427,9 @@ module.exports = function(app, passport) {
                             var token_array = [];
                             for (var i in new_user.tokens) {
                                 if (new_user.tokens[i].token) {
-                                    console.log(new_user.tokens[i]);
-                                    token_array.push('"' + new_user.tokens[i].token + '"');
+                                    console.log(new_user.tokens[i].token);
+                                    //token_array.push('"' + new_user.tokens[i].token + '"');
+                                    token_array.push(new_user.tokens[i].token);
                                 }
                             }
                             /*
@@ -445,14 +446,14 @@ module.exports = function(app, passport) {
                             var new_data = {
                                 "operation": "add",
                                 "notification_key_name": req.user._id,
-                                "notification_key": user.notification_key,
-                                "registration_ids": [token_array]
+                                "notification_key": new_user.notification_key,
+                                "registration_ids": token_array
                             };
 
                             var new_headers = {
                                 'Authorization': 'key=' + fcm.firebaseserverkey,
                                 'Content-Type': 'application/json',
-                                'project_id': '809092865736'
+                                'project_id': fcm.project_id
 
                             };
 
@@ -482,6 +483,7 @@ module.exports = function(app, passport) {
                         // New Device.
                         // Update DB and FCM
                         console.log('new device update token');
+                        // WORKS!
 
                         var new_user = new User(user);
                         //new_user.tokens[id_pos].token = req.body.refreshedToken;
@@ -520,7 +522,7 @@ module.exports = function(app, passport) {
                         var new_headers = {
                             'Authorization': 'key=' + fcm.firebaseserverkey,
                             'Content-Type': 'application/json',
-                            'project_id': '809092865736'
+                            'project_id': fcm.project_id
 
                         };
 
