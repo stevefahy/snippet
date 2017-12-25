@@ -10,7 +10,7 @@ var Schema = mongoose.Schema;
 var nodemailer = require('nodemailer');
 var base64url = require('base64url');
 var request = require('request');
-var fcm = require('../configs/fcm'); // load the urls config
+var fcm = require('../configs/fcm');
 
 function getCards(res) {
     Card.find(function(err, cards) {
@@ -165,6 +165,17 @@ module.exports = function(app, passport) {
         } else {
             res.json({
                 user: req.user
+            });
+        }
+    });
+    // Get the FCM data
+    app.get('/api/fcm_data', isLoggedIn, function(req, res) {
+        if (req.user === undefined) {
+            // The user is not logged in
+            res.json({ 'username': 'forbidden' });
+        } else {
+            res.json({
+                fcm: fcm
             });
         }
     });
@@ -334,6 +345,19 @@ module.exports = function(app, passport) {
             });
         }
     });
+    // notify user
+    app.post('/api/users/send_notification', function(req, res) {
+        console.log('send_notification: ' + JSON.stringify(req.body));
+        var options = req.body;
+        request(options, function(err, response, body) {
+            if (err) {
+                throw err;
+            } else {
+                console.log(body);
+            }
+        });
+    });
+
     // update user notification data
     app.post('/api/users/update_notification', function(req, res) {
         // Find the current users details

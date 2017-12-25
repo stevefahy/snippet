@@ -72,8 +72,14 @@ cardApp.factory('Users', ['$http', function($http) {
         delete_contact: function(id) {
             return $http.post('api/users/delete_contact/' + id);
         },
-        update_notification: function(refreshedToken){
+        update_notification: function(refreshedToken) {
             return $http.post('api/users/update_notification', refreshedToken);
+        },
+        send_notification: function(notification_data) {
+            return $http.post('api/users/send_notification', notification_data);
+               // .then(function(response) {
+                 //   return response;
+               // });
         }
     };
 }]);
@@ -115,6 +121,13 @@ cardApp.factory('Conversations', ['$http', function($http) {
         }
     };
 }]);
+/*
+cardApp.factory('Notifications', function() {
+    return {
+       
+    };
+});
+*/
 
 cardApp.factory('socket', function($rootScope, $window) {
 
