@@ -13,8 +13,6 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
 
     var current_conversation_id = Conversations.getConversationId();
 
-    //$window.document.hasFocus();
-
     setFocus = function() {
         $timeout(function() {
             var element = $window.document.getElementById('cecard_create');
@@ -64,7 +62,6 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
     // Get the FCM details
     $http.get("/api/fcm_data").then(function(result) {
         fcm = result.data.fcm;
-        console.log('FCM result: ' + JSON.stringify(fcm));
     });
 
     // CREATE ==================================================================
@@ -87,32 +84,21 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
                     .then(function(response) {
                         // socket.io emit the card posted to the server
                         socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: response.data._id, participants: response.data.participants });
-                        // TODO send notifications
-                        // send if web? Yes
-                        // truncate body?
-                        // add title ?
-                        // send even if the user is in the conversation?
-                        // notify relevant users of the cards creation
-                        //
+                        // Send notifications
                         // Set the FCM data for the request
                         var data = {
-                            //"operation": "",
-                            //"notification_key_name": req.user._id,
-                            //"registration_ids": [req.body.refreshedToken]
                             "to": "",
                             "notification": {
                                 "title": "",
                                 "body": ""
                             },
                             "data": {
-                                "url":""
+                                "url": ""
                             }
                         };
                         var headers = {
                             'Authorization': 'key=' + fcm.firebaseserverkey,
                             'Content-Type': 'application/json'
-                            //'project_id': fcm.project_id
-
                         };
                         var options = {
                             uri: 'https://fcm.googleapis.com/fcm/send',
@@ -120,37 +106,25 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
                             headers: headers,
                             json: data
                         };
-                        console.log(headers.Authorization);
-                        console.log('response.data: ' + JSON.stringify(response.data));
                         for (var i in response.data.participants) {
                             // dont emit to the user which sent the card
                             if (response.data.participants[i]._id !== $scope.currentUser._id) {
-                                // get the participants notification key
-                                // get the message body
-                                console.log('$scope.card_create: ' + JSON.stringify($scope.card_create));
-                                console.log(sent_content);
-                                // Find the other user
+                                // Find the other user(s)
                                 findUser(response.data.participants[i]._id, function(result) {
-                                    console.log(JSON.stringify(result));
-                                    // TEST
-                                    // Send data so that the conversation is opened
-                                    //result.notification_key = "APA91bFOx5o5-W7AICr2ZtND0nKCeYl4i0U1M3wBH1r_Ad6Ud8nsnkRzZQzbLscvfdy_AX9Xbg0zjkphLCHU3y3P5m0L7MMpfwbXEROGO37SUA25WKXDPGwGPCSUR0wvA58qPiSSlp60";
-                                    console.log('result.notification_key: ' + result.notification_key);
+                                    // get the participants notification key
+                                    // get the message title and body
                                     if (result.notification_key !== undefined) {
                                         data.to = result.notification_key;
                                         data.notification.title = $scope.card_create.user;
                                         data.notification.body = sent_content;
-                                        //
+                                        // get the conversation id
                                         data.data.url = response.data._id;
-                                        //var notify_obj = {'data':data, 'headers':headers , 'options':options};
                                         Users.send_notification(options);
                                     }
                                 });
-
                             }
                         }
                     });
             });
     };
-
 }]);

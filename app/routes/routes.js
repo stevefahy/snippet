@@ -77,7 +77,6 @@ function isMember(req, res, next) {
         var query = getConversationId(req.params.id);
         query.exec(function(err, conversation) {
             if (err) {
-                console.log('err: ' + err);
                 return console.log(err);
             }
             var user_pos = findWithAttr(conversation.participants, '_id', req.user._id);
@@ -128,7 +127,6 @@ module.exports = function(app, passport) {
             if (err) {
                 console.log('err: ' + err);
             }
-            console.log('destroy');
             res.sendFile('login.html', { root: path.join(__dirname, '../views/') });
         });
     });
@@ -347,13 +345,12 @@ module.exports = function(app, passport) {
     });
     // notify user
     app.post('/api/users/send_notification', function(req, res) {
-        console.log('send_notification: ' + JSON.stringify(req.body));
         var options = req.body;
         request(options, function(err, response, body) {
             if (err) {
                 throw err;
             } else {
-                console.log(body);
+                //console.log(body);
             }
         });
     });
@@ -389,9 +386,7 @@ module.exports = function(app, passport) {
                 };
                 // First time. Create notification key
                 if (user.notification_key === undefined) {
-
                     data.operation = "create";
-
                     request(options, function(err, response, body) {
                         if (err) {
                             throw err;
@@ -483,7 +478,6 @@ module.exports = function(app, passport) {
         // get the user id for this user name
         User.findOne({ 'google.name': new RegExp('^' + username + '$', "i") }, function(err, user) {
             if (err) {
-                console.log('err: ' + err);
                 return res.send(err);
             }
             // user not found
@@ -494,7 +488,6 @@ module.exports = function(app, passport) {
                 // get the cards for this user
                 Card.find({ 'user': user_id }, function(err, cards) {
                     if (err) {
-                        console.log('err: ' + err);
                         return res.send(err);
                     }
                     res.json(cards.reverse());
@@ -541,7 +534,6 @@ module.exports = function(app, passport) {
             done: false
         }, function(err, card) {
             if (err) {
-                console.log('err: ' + err);
                 res.send(err);
             }
             // return the created card
@@ -693,7 +685,6 @@ module.exports = function(app, passport) {
             },
             function(err, conversation) {
                 if (err) {
-                    console.log('err: ' + err);
                     res.send(err);
                 }
                 res.json(conversation);
@@ -721,7 +712,6 @@ module.exports = function(app, passport) {
     app.get('/chat/conversation_id/:id', function(req, res) {
         Conversation.findOne({ '_id': req.params.id }, function(err, conversation) {
             if (err) {
-                console.log('err: ' + err);
                 return done(err);
             }
             res.json(conversation);

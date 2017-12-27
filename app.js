@@ -29,13 +29,8 @@ var request = require('request');
 var http = require('http');
 var server = http.createServer(app);
 var io = require('socket.io')(server);
-//var io = io.listen(server);
-// https://stackoverflow.com/questions/26665840/socket-io-failed-connection-closed-before-receiving-a-handshake-response
-//server.listen();
-//io = io.listen(server);
 
 server.setMaxListeners(0);
-
 io.sockets.setMaxListeners(0);
 
 io.on('connection', function(socket) {
@@ -133,7 +128,7 @@ app.use(cookieParser()); // read cookies (needed for auth)
 require('./app/configs/passport')(passport); // pass passport for configuration
 // required for passport
 app.use(session({
-    secret: 'ilovescotchscotchyscotchscotchx', // session secret
+    secret: 'bigsniplongsessionbeesecretbeesnip', // session secret
     resave: true,
     saveUninitialized: true
 }));
@@ -146,7 +141,6 @@ app.use(express.static('app'));
 
 app.use('/fileuploads', express.static(path.join(__dirname, '../upload_dir')));
 app.use('/assets', express.static(path.join(__dirname, '/app/assets')));
-//app.use('/snip', express.static(path.join(__dirname, '/app')));
 app.use('/', express.static(path.join(__dirname, '/app')));
 
 app.use(bodyParser.urlencoded({ 'extended': 'true' })); // parse application/x-www-form-urlencoded

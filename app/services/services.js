@@ -77,9 +77,6 @@ cardApp.factory('Users', ['$http', function($http) {
         },
         send_notification: function(notification_data) {
             return $http.post('api/users/send_notification', notification_data);
-               // .then(function(response) {
-                 //   return response;
-               // });
         }
     };
 }]);
@@ -121,13 +118,6 @@ cardApp.factory('Conversations', ['$http', function($http) {
         }
     };
 }]);
-/*
-cardApp.factory('Notifications', function() {
-    return {
-       
-    };
-});
-*/
 
 cardApp.factory('socket', function($rootScope, $window) {
 

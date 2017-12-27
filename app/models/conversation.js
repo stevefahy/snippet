@@ -6,7 +6,7 @@ var Schema = mongoose.Schema;
 var conversationSchema = new Schema({
     conversation_name: String,
     admin: [{ "type": Schema.Types.ObjectId, "ref": "User" }],
-    participants: [{ _id: Schema.Types.ObjectId, viewed: Number}],
+    participants: [{ _id: Schema.Types.ObjectId, viewed: Number }],
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }
 });

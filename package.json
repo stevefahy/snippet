@@ -1,7 +1,7 @@
 {
-  "name": "snippet",
+  "name": "snipbee",
   "version": "0.0.1",
-  "description": "snippet app",
+  "description": "snipbee app",
   "main": "app.js",
   "author": "Stephen Fahy",
   "dependencies": {

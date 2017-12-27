@@ -1,22 +1,7 @@
 <!doctype html>
-<!-- ASSIGN OUR ANGULAR MODULE -->
 <html>
 
 <head>
-    <!--
-    <script>
-    var pathArray = location.href.split('/');
-    var protocol = pathArray[0];
-    var host = pathArray[2];
-    var theurl = protocol + '//' + host + '/';
-    if (document.location.hostname === "localhost" || document.location.hostname === "127.0.0.1") {
-        document.write('<base href="' + theurl + '" />');
-    } else {
-       
-        document.write('<base href="/" />');
-    }
-    </script>
--->
     <!-- META -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -38,56 +23,20 @@
     <!-- Custom Styles -->
     <link rel="stylesheet" href="/style/customstyle.css">
     <link rel="stylesheet" href="/style/bootstrap-social.css">
-    <!-- Angular -->
-    <!--
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.11/angular.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.23/angular-resource.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.11/angular-route.js"></script>
-
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.3/angular-sanitize.js"></script>
-    <script src="/js/moment.min.js"></script>
-    <script>
-    moment().format();
-    </script>
-    <script src="/js/angular_moment.js"></script>
-   
-    <script src="/js/exif.js"></script>
-   
-    <script src="/services/core.js"></script>
-   
-    <script src="/controllers/index_ctrl.js"></script>
-    <script src="/controllers/card_ctrl.js"></script>
-    <script src="/controllers/cardsearch_ctrl.js"></script>
-    <script src="/controllers/cardcreate_ctrl.js"></script>
-    <script src="/controllers/contacts_ctrl.js"></script>
-    <script src="/controllers/join_ctrl.js"></script>
-    <script src="/controllers/conversation_ctrl.js"></script>
-    <script src="/controllers/conversations_ctrl.js"></script>
-
-    <script src="/services/services.js"></script>
-    
-    <script src="/socket.io/socket.io.js"></script>
--->
 </head>
 
 <body>
-   <!-- <div ng-controller="indexCtrl">-->
-        <div class="header">
-            <div class="logo"><img src="/assets/images/bee_64.png"></div>
-            <div class="header_text">Snipbee</div>
-            <hr>
-        </div>
-        <div class="container text-center login-body">
-            <div class="social-buttons">
-                <a href="/auth/google/" class="btn btn-block btn-social btn-google">
+    <div class="header">
+        <div class="logo"><img src="/assets/images/bee_64.png"></div>
+        <div class="header_text">Snipbee</div>
+        <hr>
+    </div>
+    <div class="container text-center login-body">
+        <div class="social-buttons">
+            <a href="/auth/google/" class="btn btn-block btn-social btn-google">
     <span class="fa fa-google"></span> Sign in with Google </a>
-            </div>
         </div>
-   <!-- </div>-->
+    </div>
 </body>
 
 </html>
