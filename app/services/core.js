@@ -371,7 +371,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', f
     // UPLOAD ==================================================================
     this.uploadFile = function() {
         if (ua === 'AndroidApp') {
-            console.log('choosePhoto');
             Android.choosePhoto();
         } else {
             $('#upload-input').click();

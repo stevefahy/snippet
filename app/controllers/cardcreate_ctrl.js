@@ -36,6 +36,17 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
             });
     };
 
+    checkForImage = function(content) {
+        var res;
+        if (content.indexOf('<img') >= 0) {
+            var img_tag = content.substr(content.indexOf('<img'), content.indexOf('.jpg">') + 6);
+            res = "Posted a photo.";
+        } else {
+            res = content;
+        }
+        return res;
+    };
+
     var ua = navigator.userAgent;
     // only check focus on web version
     if (ua !== 'AndroidApp') {
@@ -76,6 +87,7 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
             .then(function(response) {
                 // reset the input box
                 var sent_content = $scope.card_create.content;
+                sent_content = checkForImage(sent_content);
                 $scope.card_create.content = '';
                 // notify conversation_ctrl that the conversation has been updated
                 $rootScope.$broadcast('CONV_UPDATED', response.data);
