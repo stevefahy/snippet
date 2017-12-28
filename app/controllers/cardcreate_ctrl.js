@@ -47,6 +47,12 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
         return res;
     };
 
+    function stripHTML(html) {
+        var tmp = document.createElement("DIV");
+        tmp.innerHTML = html;
+        return tmp.textContent || tmp.innerText || "";
+    }
+
     var ua = navigator.userAgent;
     // only check focus on web version
     if (ua !== 'AndroidApp') {
@@ -88,6 +94,8 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
                 // reset the input box
                 var sent_content = $scope.card_create.content;
                 sent_content = checkForImage(sent_content);
+                sent_content = stripHTML(sent_content);
+                console.log(sent_content);
                 $scope.card_create.content = '';
                 // notify conversation_ctrl that the conversation has been updated
                 $rootScope.$broadcast('CONV_UPDATED', response.data);
