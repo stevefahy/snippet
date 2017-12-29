@@ -412,7 +412,7 @@ module.exports = function(passport) {
                                 });
                             }
                         });
-                        
+
                     }
 
                 }

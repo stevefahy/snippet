@@ -79,6 +79,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // called by NOTIFICATION broadcast when another user has updated this conversation
     getConversationUpdate = function(id) {
+        console.log('getConversationUpdate: ' + id);
         // get all cards for a conversation by conversation id
         $http.get("/chat/get_conversation/" + id).then(function(result) {
             // find only the new cards which have been posted
