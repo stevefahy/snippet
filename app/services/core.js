@@ -16,7 +16,7 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
             templateUrl: '/views/card.html'
         })
         .when("/:username", {
-            templateUrl: '/views/card.html'
+            templateUrl: '/views/conversation.html'
         })
         .when("/c/contacts", {
             templateUrl: '/views/contacts.html'
@@ -25,6 +25,9 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
             templateUrl: '/views/conversations.html'
         })
         .when("/chat/conversation/:id", {
+            templateUrl: '/views/conversation.html'
+        })
+        .when("/chat/user_public_conversation/:username", {
             templateUrl: '/views/conversation.html'
         })
         .when("/api/join/:code", {
@@ -997,23 +1000,28 @@ cardApp.service('replaceTags', function() {
 });
 
 cardApp.service('Edit', function() {
+    // Close currently opened dropdowns
+    closeDropdowns = function() {
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        var i;
+        for (i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+                openDropdown.classList.remove('show');
+            }
+        }
+    };
     // EDIT Dropdown
     // On user click toggle between hiding and showing the dropdown content
     this.dropDownToggle = function(id) {
+        closeDropdowns();
         document.getElementById("myDropdown" + id).classList.toggle("show");
     };
 
     // Close the dropdown menu if the user clicks outside of it
     window.onclick = function(event) {
-        if (!event.target.matches('.dropbtn')) {
-            var dropdowns = document.getElementsByClassName("dropdown-content");
-            var i;
-            for (i = 0; i < dropdowns.length; i++) {
-                var openDropdown = dropdowns[i];
-                if (openDropdown.classList.contains('show')) {
-                    openDropdown.classList.remove('show');
-                }
-            }
+        if (!event.target.matches('.glyphicon-option-vertical')) {
+            closeDropdowns();
         }
     };
 

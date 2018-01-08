@@ -107,6 +107,18 @@ cardApp.factory('Conversations', ['$http', function($http) {
                     return response;
                 });
         },
+        find_user_public_conversation: function(username) {
+            return $http.get('chat/user_public_conversation/' + username)
+                .then(function(response) {
+                    return response;
+                });
+        },
+        find_user_public_conversation_id: function(username) {
+            return $http.get('chat/user_public_conversation_id/' + username)
+                .then(function(response) {
+                    return response;
+                });
+        },
         getConversationId: function() {
             return property;
         },

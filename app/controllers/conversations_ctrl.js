@@ -1,6 +1,13 @@
 cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$http', 'Invites', 'Email', 'Users', 'Conversations', '$q', function($scope, $rootScope, $location, $http, Invites, Email, Users, Conversations, $q) {
     // array of conversations
     $scope.conversations = [];
+    //
+    $scope.chat_create = {
+        conversation_name: '',
+        participants: []
+    };
+    //
+    var public_found = false;
     // TODO - Better way to get user details across controllers. service? middleware? app.use?
     // Get the current users details
     $http.get("/api/user_data").then(function(result) {
@@ -11,6 +18,9 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
                 .then(function(res) {
                     var conversations_raw = res.data;
                     conversations_raw.map(function(key, array) {
+                        if (key.conversation_type === 'public') {
+                            public_found = true;
+                        }
                         var user_received;
                         // get the index position of the current user within the participants array
                         var user_pos = findWithAttr(key.participants, '_id', $scope.currentUser._id);
@@ -41,15 +51,38 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
                             });
                             // Add this other user to the conversations model
                             $scope.conversations.push(key);
-                        } else if (key.participants.length > 2) {
+                        } else if (key.participants.length > 0) {
                             // group conversation. Get the conversation name and add to model.
                             key.name = key.conversation_name;
                             $scope.conversations.push(key);
                         }
                     });
+                    if (public_found == false) {
+                        // create the initial public conversation for this user
+                        createPublicConversation();
+                    }
                 });
         }
     });
+
+    createPublicConversation = function() {
+        // reset the participants array.
+        $scope.chat_create.participants = [];
+        // set the conversation type
+        $scope.chat_create.conversation_type = 'public';
+        // set the conversation name
+        $scope.chat_create.conversation_name = 'Public';
+        // set the creating user as admin
+        $scope.chat_create.admin = $scope.currentUser._id;
+        // Add current user as a participant
+        $scope.chat_create.participants.push({ _id: $scope.currentUser._id, viewed: 0 });
+        // Create conversation in DB.
+        Conversations.create($scope.chat_create)
+            .then(function(res) {
+                res.data.name = res.data.conversation_name;
+                $scope.conversations.push(res.data);
+            });
+    };
 
     // Get the number of cards in a converastion by ocnversation id
     getConversationLength = function(id) {
@@ -75,6 +108,15 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
     $scope.chat = function(conversation, index) {
         // redirect to the chat
         $location.path("/chat/conversation/" + conversation);
+    };
+
+    // Continue chat
+    $scope.chatPublic = function(admin, index) {
+        // redirect to the chat
+        // Find the username
+        findUser(admin, function(result) {
+            $location.path("/"+result);
+        });
     };
 
     // TODO make service

@@ -279,7 +279,7 @@ div#user {
 
 span.glyphicon.glyphicon-option-vertical {
     margin-top: 2px;
-    z-index: -100;
+ 
 }
 
 .header hr {
@@ -329,6 +329,7 @@ span.glyphicon.glyphicon-option-vertical {
 /* Links inside the dropdown */
 
 .dropdown-content div {
+    cursor: pointer;
     color: black;
     padding: 12px 16px;
     text-decoration: none;

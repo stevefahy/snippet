@@ -4,7 +4,8 @@
             <li class="list-group-item d-flex justify-content-between align-items-center">
                 {{conversation.name}}
                 <span class="badge" id="conversations_badge" ng-if="conversation.new_messages > 0">{{conversation.new_messages}}</span>
-                <button type="button" class="btn btn-success btn-xs btn-adduser" ng-click="chat(conversation._id, $index)">chat</button>
+                <button ng-if="conversation.conversation_type == 'private'" type="button" class="btn btn-success btn-xs btn-adduser" ng-click="chat(conversation._id, $index)">chat</button>
+                <button ng-if="conversation.conversation_type == 'public'" type="button" class="btn btn-success btn-xs btn-adduser" ng-click="chatPublic(conversation.admin, $index)">chat</button>
             </li>
         </div>
     </div>

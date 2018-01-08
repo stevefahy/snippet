@@ -643,6 +643,7 @@ module.exports = function(app, passport) {
     app.post('/chat/conversation', function(req, res) {
         Conversation.create({
             conversation_name: req.body.conversation_name,
+            conversation_type: req.body.conversation_type,
             admin: req.body.admin,
             participants: req.body.participants,
             done: false
@@ -729,12 +730,108 @@ module.exports = function(app, passport) {
         });
     });
 
+    // get user public conversation by user name
+    app.get('/chat/user_public_conversation/:username', function(req, res) {
+        // Get the user id associated with this name
+        User.findOne({ 'google.name': req.params.username }, function(error, user) {
+            if (error) {
+                console.log('error: ' + error);
+                res.json(error);
+            } else if (user === null) {
+                // no user found
+                console.log('no user found');
+                res.json({ 'error': 'null' });
+            } else {
+                console.log('found user: ' + user._id);
+                //res.json({ 'success': user });
+                // Get the public conversation for this user id
+                Conversation.findOne({ 'participants._id': user._id, 'conversation_type': 'public' }, function(err, conversation) {
+                    if (err) {
+                        console.log('err: ' + err);
+                        return done(err);
+                    }
+                    console.log('conversation: ' + conversation);
+                    //res.json(conversation);
+                    // Get and return cards for this conversation
+                    Card.find({ 'conversationId': conversation._id }, function(err, cards) {
+                        if (err) {
+                            return done(err);
+                        }
+                        //console.log('conversation public cards 1: ' + cards);
+                        //cards.map(function(key, array) {
+                        //  console.log('key: ' + JSON.stringify(key));
+                        //  key.test = 'user.google.name';
+                        // });
+                        //cards.forEach(function(card) {
+                            //card.test = "Enders Game";
+                        //});
+                        //cards.username = user.google.name;
+                        //console.log('conversation public cards 2: ' + cards.username);
+                        res.json(cards);
+                    });
+
+                });
+
+            }
+        });
+    });
+
+   // get user public conversation id by user name
+    app.get('/chat/user_public_conversation_id/:username', function(req, res) {
+        // Get the user id associated with this name
+        User.findOne({ 'google.name': req.params.username }, function(error, user) {
+            if (error) {
+                console.log('error: ' + error);
+                res.json(error);
+            } else if (user === null) {
+                // no user found
+                console.log('no user found');
+                res.json({ 'error': 'null' });
+            } else {
+                console.log('found user: ' + user._id);
+                //res.json({ 'success': user });
+                // Get the public conversation for this user id
+                Conversation.findOne({ 'participants._id': user._id, 'conversation_type': 'public' }, function(err, conversation) {
+                    if (err) {
+                        console.log('err: ' + err);
+                        //return done(err);
+                        res.json({'error':'not found'});
+                    }
+                    console.log('conversation: ' + conversation);
+                    res.json(conversation);
+                    // Get and return cards for this conversation
+                    /*
+                    Card.find({ 'conversationId': conversation._id }, function(err, cards) {
+                        if (err) {
+                            return done(err);
+                        }
+                        //console.log('conversation public cards 1: ' + cards);
+                        //cards.map(function(key, array) {
+                        //  console.log('key: ' + JSON.stringify(key));
+                        //  key.test = 'user.google.name';
+                        // });
+                        //cards.forEach(function(card) {
+                            //card.test = "Enders Game";
+                        //});
+                        //cards.username = user.google.name;
+                        //console.log('conversation public cards 2: ' + cards.username);
+                        res.json(cards);
+                    });
+                    */
+
+                });
+
+            }
+        });
+    });
+
     // get all cards for a conversation by conversation id
     app.get('/chat/get_conversation/:id', function(req, res) {
         // TODO if no id exists then re-route
         Card.find({ 'conversationId': req.params.id }, function(err, cards) {
             if (err) {
-                return done(err);
+                console.log('err: ' + err);
+                //return done(err);
             }
             res.json(cards);
         });

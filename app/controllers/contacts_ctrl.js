@@ -42,7 +42,39 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
         $scope.currentUser = result.data.user;
         // load this users list of contacts
         loadUserContacts();
+        // Check whether a public conversation has been created for this user
+        //publicConversationCheck();
+        //createPublicConversation();
+
     });
+/*
+    createPublicConversation = function() {
+        // reset the participants array.
+        $scope.chat_create.participants = [];
+        // set the conversation type
+        $scope.chat_create.conversation_type = 'public';
+        // set the conversation name
+        $scope.chat_create.conversation_name = 'Public';
+        // set the creating user as admin
+        $scope.chat_create.admin = $scope.currentUser._id;
+        // Add current user as a participant
+        $scope.chat_create.participants.push({ _id: $scope.currentUser._id, viewed: 0 });
+        // Create conversation in DB.
+        Conversations.create($scope.chat_create)
+            .then(function(res) {
+                // Go to the conversation after it has been created
+                //$location.path("/chat/conversation/" + res.data._id);
+                console.log('public conversation created');
+            });
+    };
+
+    publicConversationCheck = function() {
+        Conversations.find_user_public_conversation($scope.currentUser._id)
+            .then(function(res) {
+                console.log('public conv check: ' + res);
+            });
+    };
+    */
 
     // Continue a conversation by conversation id
     $scope.chat = function(conversation, index) {
@@ -54,6 +86,8 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
     $scope.startChat = function(new_participants) {
         // reset the participants array.
         $scope.chat_create.participants = [];
+        //
+        $scope.chat_create.conversation_type = 'private';
         // set the creating user as admin if a group
         if (new_participants.length > 1) {
             $scope.chat_create.admin = $scope.currentUser._id;

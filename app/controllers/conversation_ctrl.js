@@ -9,17 +9,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.uploadFile = Format.uploadFile;
     $scope.myFunction = Edit.myFunction;
 
-    var conversation_length = 0;
-    // Use the url / id to load the conversation
-    var id = $routeParams.id;
-    // Set the conversation id so that it can be retrieved by cardcreate_ctrl
-    Conversations.setConversationId(id);
+    $scope.dropDownToggle = Edit.dropDownToggle;
 
-    $http.get("/api/user_data").then(function(result) {
-        if (result.data.user) {
-            $scope.currentUser = result.data.user;
-        }
-    });
+    var conversation_length = 0;
 
     // Get the conversation by id
     getConversation = function(id, speed) {
@@ -49,7 +41,37 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
         });
     };
-    getConversation(id, 500);
+
+    // Use the url / id to load the conversation
+    var id = $routeParams.id;
+    if (id === undefined) {
+        // Use the username to load that users public conversation
+        if ($routeParams.username != undefined) {
+            username = $routeParams.username;
+            Conversations.find_user_public_conversation_id(username)
+                .then(function(res) {
+                    // check if this is a valid username
+                    if (res.data.error) {
+                        //console.log('error: ' + res.data.error);
+                    } else {
+                        // get the public conversation id for this username
+                        id = res.data._id;
+                        // Set the conversation id so that it can be retrieved by cardcreate_ctrl
+                        Conversations.setConversationId(id);
+                        getConversation(id, 500);
+                    }
+                });
+        }
+    } else {
+        Conversations.setConversationId(id);
+        getConversation(id, 500);
+    }
+
+    $http.get("/api/user_data").then(function(result) {
+        if (result.data.user) {
+            $scope.currentUser = result.data.user;
+        }
+    });
 
     // find the array index of an object value
     function findWithAttr(array, attr, value) {
@@ -63,23 +85,25 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // update the conversation viewed number by conversation id if it is more than the stored number
     updateConversationViewed = function(id, number) {
-        Conversations.find_conversation_id(id)
-            .then(function(res) {
-                var user_pos = findWithAttr(res.data.participants, '_id', $scope.currentUser._id);
-                // check that the current number is greater thsn the stored number
-                if (number > res.data.participants[user_pos].viewed) {
-                    // update the viewed number by conversation id, current user id with the number
-                    Conversations.updateViewed(id, $scope.currentUser._id, number)
-                        .then(function(res) {
-                            //console.log(res.data);
-                        });
-                }
-            });
+        // if logged in
+        if ($scope.currentUser) {
+            Conversations.find_conversation_id(id)
+                .then(function(res) {
+                    var user_pos = findWithAttr(res.data.participants, '_id', $scope.currentUser._id);
+                    // check that the current number is greater thsn the stored number
+                    if (number > res.data.participants[user_pos].viewed) {
+                        // update the viewed number by conversation id, current user id with the number
+                        Conversations.updateViewed(id, $scope.currentUser._id, number)
+                            .then(function(res) {
+                                //console.log(res.data);
+                            });
+                    }
+                });
+        }
     };
 
     // called by NOTIFICATION broadcast when another user has updated this conversation
     getConversationUpdate = function(id) {
-        console.log('getConversationUpdate: ' + id);
         // get all cards for a conversation by conversation id
         $http.get("/chat/get_conversation/" + id).then(function(result) {
             // find only the new cards which have been posted
@@ -145,5 +169,32 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             getConversationUpdate(msg.conversation_id);
         }
     });
+
+    // DELETE ==================================================================
+    $scope.deleteCard = function(card_id) {
+        Cards.delete(card_id)
+            .success(function(data) {
+                //$rootScope.$broadcast('search');
+                getConversation(id, 500);
+            });
+    };
+
+    // UPDATE ==================================================================
+    $scope.updateCard = function(id, card) {
+        card.content = Format.setMediaSize(id, card);
+        setTimeout(function() {
+            $scope.$apply(function() {
+                card.content = replaceTags.replace(card.content);
+                card.content = replaceTags.removeDeleteId(card.content);
+                var pms = { 'id': id, 'card': card };
+                // call the create function from our service (returns a promise object)
+                Cards.update(pms)
+                    .success(function(data) {
+                        $rootScope.$broadcast('search');
+                    })
+                    .error(function(error) {});
+            });
+        }, 1000);
+    };
 
 }]);
