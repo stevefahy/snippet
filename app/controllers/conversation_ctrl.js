@@ -11,7 +11,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     $scope.dropDownToggle = Edit.dropDownToggle;
 
-    $scope.send_conv_id = Format.send_conv_id;
+    $scope.sendConvId = Format.sendConvId;
 
     var conversation_length = 0;
     $scope.isMember = false;
@@ -192,7 +192,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             $scope.showAndroidToast('stever');
             //Android.showAndroidToast('steve');
         }
-        $scope.send_conv_id(Conversations.getConversationId());
+        $scope.sendConvId(Conversations.getConversationId());
         
     };
 
