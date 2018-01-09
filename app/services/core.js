@@ -79,11 +79,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', f
         insertImage(data);
     };
 
-    this.sendConvId = function(id) {
-        if (ua === 'AndroidApp') {
-            Android.conversationId(id);
-        }
-    };
+
 
 
 
@@ -401,6 +397,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', f
     this.showAndroidToast = function(toast) {
         if (ua === 'AndroidApp') {
             Android.showToast(toast);
+        }
+    };
+
+    this.sendConvId = function(id) {
+        if (ua === 'AndroidApp') {
+            Android.conversationId(id);
         }
     };
 

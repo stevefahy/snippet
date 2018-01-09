@@ -189,10 +189,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log('Conversations.getConversationId(): ' + Conversations.getConversationId());
         //return Conversations.getConversationId();
         if (ua == 'AndroidApp') {
-            $scope.showAndroidToast('stever');
+            $scope.showAndroidToast('steve');
             //Android.showAndroidToast('steve');
+            //Conversations.getConversationId()
+            $scope.sendConvId('faz');
         }
-        $scope.sendConvId(Conversations.getConversationId());
+        
         
     };
 
