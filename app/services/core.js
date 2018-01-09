@@ -79,6 +79,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', f
         insertImage(data);
     };
 
+    this.send_conv_id = function(id) {
+        if (ua === 'AndroidApp') {
+            Android.conversation_id(id);
+        }
+    };
+
     androidTokenRefresh = function(data) {
         refreshedToken = JSON.parse(data);
         if (refreshedToken.id != undefined && refreshedToken.refreshedToken != undefined) {

@@ -11,6 +11,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     $scope.dropDownToggle = Edit.dropDownToggle;
 
+    $scope.send_conv_id = Format.send_conv_id;
+
     var conversation_length = 0;
     $scope.isMember = false;
 
@@ -186,7 +188,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     getConversationId = function(){
         console.log('Conversations.getConversationId(): ' + Conversations.getConversationId());
         //return Conversations.getConversationId();
-        Android.conversation_id(Conversations.getConversationId());
+        $scope.send_conv_id(Conversations.getConversationId());
+        
     };
 
     // called by NOTIFICATION broadcast when another user has updated this conversation
