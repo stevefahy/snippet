@@ -14,6 +14,31 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var conversation_length = 0;
     $scope.isMember = false;
 
+    setFocus = function() {
+        $timeout(function() {
+            //var element = $window.document.getElementById('cecard_create');
+            //if (element) {
+            //element.focus();
+            console.log('conv focus');
+
+            loadConversation(function(result) {
+                $rootScope.$broadcast('CONV_CHECK');
+            });
+
+            //}
+        });
+    };
+
+    var ua = navigator.userAgent;
+    // only check focus on web version
+    if (ua !== 'AndroidApp') {
+        $window.onfocus = function() {
+            this.setFocus();
+        };
+        $window.focus();
+        setFocus();
+    }
+
     // Function called from core.js by dynamically added input type=checkbox.
     // It rewrites the HTML to save the checkbox state.
     checkBoxChanged = function(checkbox) {
@@ -31,7 +56,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             $scope.currentUser = result.data.user;
         }
         console.log($scope.currentUser);
-        laodConversation();
+        loadConversation();
     });
 
     // Get the FCM details
@@ -94,7 +119,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Use the url / id to load the conversation
     var id = $routeParams.id;
-    laodConversation = function() {
+    loadConversation = function(callback) {
         if (id === undefined) {
             // Use the username to load that users public conversation
             if ($routeParams.username != undefined) {
@@ -114,6 +139,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             getConversation(id, 500);
                             $scope.isMember = checkPermission(id);
                             console.log($scope.isMember);
+                            //callback();
                         }
                     });
             }
@@ -122,6 +148,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             getConversation(id, 500);
             $scope.isMember = checkPermission(id);
             console.log($scope.isMember);
+            //callback();
         }
     };
     //console.log(id);
@@ -160,6 +187,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     getConversationUpdate = function(id) {
         // get all cards for a conversation by conversation id
         $http.get("/chat/get_conversation/" + id).then(function(result) {
+            console.log(result);
             // find only the new cards which have been posted
             var updates = result.data.slice(conversation_length, result.data.length);
             if (conversation_length < result.data.length) {
@@ -183,6 +211,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 console.log($scope.cards[card_pos]);
                 if (card_pos >= 0) {
                     $scope.cards[card_pos].content = updated[0].content;
+                    $scope.cards[card_pos].updatedAt = updated[0].updatedAt;
                 }
             }
 
@@ -341,7 +370,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // UPDATE ==================================================================
     $scope.updateCard = function(card_id, card) {
-        console.log('update card');
+        console.log('update card: ' + card);
         card.content = Format.setMediaSize(card_id, card);
         setTimeout(function() {
             $scope.$apply(function() {
@@ -355,9 +384,18 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         // notify conversation_ctrl that the conversation has been updated
                         //$rootScope.$broadcast('CONV_CHECK', id);
                         //$rootScope.$broadcast('search');
+                        var card_pos = findWithAttr($scope.cards, '_id', data._id);
+                        console.log('card_pos: ' + card_pos);
+                        console.log($scope.cards[card_pos]);
+                        console.log('data.updatedAt: ' + data.updatedAt);
+                        if (card_pos >= 0) {
+                            //$scope.cards[card_pos].content = updated[0].content;
+                            $scope.cards[card_pos].updatedAt = data.updatedAt;
+                        }
 
 
                         // Update the Conversation updateAt time.
+                        console.log('update conv time: ' + id);
                         Conversations.updateTime(id)
                             .then(function(response) {
                                 // socket.io emit the card posted to the server
