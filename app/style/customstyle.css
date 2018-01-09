@@ -69,6 +69,8 @@
 
 input[type="checkbox"] {
     margin-right: 5px;
+    vertical-align: middle;
+    margin-top: -2px;
 }
 
 .ce pre,
@@ -279,12 +281,12 @@ div#user {
 
 span.glyphicon.glyphicon-option-vertical {
     margin-top: 2px;
- 
 }
 
 .header hr {
     margin-bottom: 0px;
 }
+
 
 
 /* EDIT MENU */
@@ -299,10 +301,12 @@ span.glyphicon.glyphicon-option-vertical {
 }
 
 
+
 /* Dropdown button on hover & focus */
 
 .dropbtn:hover,
 .dropbtn:focus {}
+
 
 
 /* The container <div> - needed to position the dropdown content */
@@ -311,6 +315,7 @@ span.glyphicon.glyphicon-option-vertical {
     position: relative;
     display: inline-block;
 }
+
 
 
 /* Dropdown Content (Hidden by Default) */
@@ -326,6 +331,7 @@ span.glyphicon.glyphicon-option-vertical {
 }
 
 
+
 /* Links inside the dropdown */
 
 .dropdown-content div {
@@ -337,11 +343,13 @@ span.glyphicon.glyphicon-option-vertical {
 }
 
 
+
 /* Change color of dropdown links on hover */
 
 .dropdown-content a:hover {
     background-color: #f1f1f1
 }
+
 
 
 /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */

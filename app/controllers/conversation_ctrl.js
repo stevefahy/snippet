@@ -1,4 +1,4 @@
-cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', function($scope, $rootScope, $location, $http, $window, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment) {
+cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', function($scope, $rootScope, $location, $http, $window, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket) {
 
     $scope.getFocus = Format.getFocus;
     $scope.contentChanged = Format.contentChanged;
@@ -12,6 +12,56 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.dropDownToggle = Edit.dropDownToggle;
 
     var conversation_length = 0;
+    $scope.isMember = false;
+
+    // Function called from core.js by dynamically added input type=checkbox.
+    // It rewrites the HTML to save the checkbox state.
+    checkBoxChanged = function(checkbox) {
+        if (checkbox.checked) {
+            checkbox.setAttribute("checked", "true");
+        } else {
+            checkbox.removeAttribute("checked");
+        }
+
+    };
+
+    $http.get("/api/user_data").then(function(result) {
+        if (result.data.user) {
+            console.log($scope.currentUser);
+            $scope.currentUser = result.data.user;
+        }
+        console.log($scope.currentUser);
+        laodConversation();
+    });
+
+    // Get the FCM details
+    $http.get("/api/fcm_data").then(function(result) {
+        fcm = result.data.fcm;
+    });
+
+    // Check the current users permissions for this conversation
+
+    checkPermission = function(conversation_id) {
+        console.log('checkPermission: ' + conversation_id);
+        console.log($scope.currentUser);
+        if ($scope.currentUser) {
+            console.log($scope.currentUser);
+            Conversations.find_conversation_id(conversation_id)
+                .then(function(res) {
+                    var user_pos = findWithAttr(res.data.participants, '_id', $scope.currentUser._id);
+                    console.log(user_pos);
+                    if (user_pos >= 0) {
+                        $scope.isMember = true;
+                    } else {
+                        $scope.isMember = false;
+                    }
+                });
+        } else {
+            return false;
+        }
+    };
+
+
 
     // Get the conversation by id
     getConversation = function(id, speed) {
@@ -44,38 +94,42 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Use the url / id to load the conversation
     var id = $routeParams.id;
-    if (id === undefined) {
-        // Use the username to load that users public conversation
-        if ($routeParams.username != undefined) {
-            username = $routeParams.username;
-            Conversations.find_user_public_conversation_id(username)
-                .then(function(res) {
-                    // check if this is a valid username
-                    if (res.data.error) {
-                        //console.log('error: ' + res.data.error);
-                    } else {
-                        // get the public conversation id for this username
-                        id = res.data._id;
-                        // Set the conversation id so that it can be retrieved by cardcreate_ctrl
-                        Conversations.setConversationId(id);
-                        getConversation(id, 500);
-                    }
-                });
+    laodConversation = function() {
+        if (id === undefined) {
+            // Use the username to load that users public conversation
+            if ($routeParams.username != undefined) {
+                username = $routeParams.username;
+                console.log(username);
+                Conversations.find_user_public_conversation_id(username)
+                    .then(function(res) {
+                        // check if this is a valid username
+                        if (res.data.error) {
+                            console.log('error: ' + res.data.error);
+                        } else {
+                            // get the public conversation id for this username
+                            id = res.data._id;
+                            console.log(id);
+                            // Set the conversation id so that it can be retrieved by cardcreate_ctrl
+                            Conversations.setConversationId(id);
+                            getConversation(id, 500);
+                            $scope.isMember = checkPermission(id);
+                            console.log($scope.isMember);
+                        }
+                    });
+            }
+        } else {
+            Conversations.setConversationId(id);
+            getConversation(id, 500);
+            $scope.isMember = checkPermission(id);
+            console.log($scope.isMember);
         }
-    } else {
-        Conversations.setConversationId(id);
-        getConversation(id, 500);
-    }
-
-    $http.get("/api/user_data").then(function(result) {
-        if (result.data.user) {
-            $scope.currentUser = result.data.user;
-        }
-    });
+    };
+    //console.log(id);
 
     // find the array index of an object value
     function findWithAttr(array, attr, value) {
         for (var i = 0; i < array.length; i += 1) {
+            console.log(array[i][attr] + ' : ' + value);
             if (array[i][attr] === value) {
                 return i;
             }
@@ -86,7 +140,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // update the conversation viewed number by conversation id if it is more than the stored number
     updateConversationViewed = function(id, number) {
         // if logged in
-        if ($scope.currentUser) {
+        if ($scope.isMember) {
             Conversations.find_conversation_id(id)
                 .then(function(res) {
                     var user_pos = findWithAttr(res.data.participants, '_id', $scope.currentUser._id);
@@ -114,7 +168,64 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     updateConversation(key);
                 });
             }
+            // update existing cards
+            //console.log('updated: ' + result.data);
+            //console.log('cards: ' + $scope.cards);
+
+            // Check for updated cards
+            var updated = findDifference(result.data, $scope.cards);
+            console.log(updated);
+            // If there is a difference between cards content update that card 
+            if (updated.length > 0) {
+                console.log($scope.cards);
+                var card_pos = findWithAttr($scope.cards, '_id', updated[0]._id);
+                console.log('card_pos: ' + card_pos);
+                console.log($scope.cards[card_pos]);
+                if (card_pos >= 0) {
+                    $scope.cards[card_pos].content = updated[0].content;
+                }
+            }
+
+
+            // Check for deleted cards
+            if ($scope.cards.length > result.data.length) {
+                var deleted = findDifference($scope.cards, result.data);
+                console.log(deleted);
+
+                if (deleted.length > 0) {
+                    var deleted_card_pos = findWithAttr($scope.cards, '_id', deleted[0]._id);
+                    //$scope.cards[deleted_card_pos].content = updated[0].content; 
+                    console.log(deleted_card_pos);
+                    if (deleted_card_pos >= 0) {
+                        $scope.cards.splice(deleted_card_pos, 1);
+                    }
+                }
+            }
+
+
         });
+    };
+
+    function comparer(otherArray) {
+        return function(current) {
+            return otherArray.filter(function(other) {
+                return other.content == current.content;
+                //return other.value == current.value && other.display == current.display
+            }).length == 0;
+        };
+    }
+
+    findDifference = function(new_cards, old_cards) {
+        console.log(new_cards);
+        var onlyInA = new_cards.filter(comparer(old_cards));
+        //var onlyInB = old_cards.filter(comparer(new_cards));
+
+        //console.log(onlyInA);
+        //console.log(onlyInB);
+        //return result = onlyInA.concat(onlyInB);
+        return onlyInA;
+
+        //console.log('result: ' + JSON.stringify(result));
     };
 
     // Scroll to the bottom of the list
@@ -163,7 +274,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Broadcast by socket service when a new card has been posted by another user to this user
     $scope.$on('NOTIFICATION', function(event, msg) {
-        //console.log('NOTIFICATION notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
+        console.log('NOTIFICATION notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
         // only update the conversation if the user is currently in that conversation
         if (id === msg.conversation_id) {
             getConversationUpdate(msg.conversation_id);
@@ -176,21 +287,127 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             .success(function(data) {
                 //$rootScope.$broadcast('search');
                 getConversation(id, 500);
+
+
+                // Update the Conversation updateAt time.
+                Conversations.updateTime(id)
+                    .then(function(response) {
+                        // socket.io emit the card posted to the server
+                        socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: response.data._id, participants: response.data.participants });
+                        // Send notifications
+                        // Set the FCM data for the request
+                        var data = {
+                            "to": "",
+                            "notification": {
+                                "title": "",
+                                "body": ""
+                            },
+                            "data": {
+                                "url": ""
+                            }
+                        };
+                        var headers = {
+                            'Authorization': 'key=' + fcm.firebaseserverkey,
+                            'Content-Type': 'application/json'
+                        };
+                        var options = {
+                            uri: 'https://fcm.googleapis.com/fcm/send',
+                            method: 'POST',
+                            headers: headers,
+                            json: data
+                        };
+                        for (var i in response.data.participants) {
+                            // dont emit to the user which sent the card
+                            if (response.data.participants[i]._id !== $scope.currentUser._id) {
+                                // Find the other user(s)
+                                findUser(response.data.participants[i]._id, function(result) {
+                                    // get the participants notification key
+                                    // get the message title and body
+                                    if (result.notification_key !== undefined) {
+                                        data.to = result.notification_key;
+                                        data.notification.title = $scope.card_create.user;
+                                        data.notification.body = sent_content;
+                                        // get the conversation id
+                                        data.data.url = response.data._id;
+                                        Users.send_notification(options);
+                                    }
+                                });
+                            }
+                        }
+                    });
+
             });
     };
 
     // UPDATE ==================================================================
-    $scope.updateCard = function(id, card) {
-        card.content = Format.setMediaSize(id, card);
+    $scope.updateCard = function(card_id, card) {
+        console.log('update card');
+        card.content = Format.setMediaSize(card_id, card);
         setTimeout(function() {
             $scope.$apply(function() {
                 card.content = replaceTags.replace(card.content);
                 card.content = replaceTags.removeDeleteId(card.content);
-                var pms = { 'id': id, 'card': card };
+                var pms = { 'id': card_id, 'card': card };
                 // call the create function from our service (returns a promise object)
                 Cards.update(pms)
                     .success(function(data) {
-                        $rootScope.$broadcast('search');
+                        console.log('updated: ' + data);
+                        // notify conversation_ctrl that the conversation has been updated
+                        //$rootScope.$broadcast('CONV_CHECK', id);
+                        //$rootScope.$broadcast('search');
+
+
+                        // Update the Conversation updateAt time.
+                        Conversations.updateTime(id)
+                            .then(function(response) {
+                                // socket.io emit the card posted to the server
+                                socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: response.data._id, participants: response.data.participants });
+                                // Send notifications
+                                // Set the FCM data for the request
+                                var data = {
+                                    "to": "",
+                                    "notification": {
+                                        "title": "",
+                                        "body": ""
+                                    },
+                                    "data": {
+                                        "url": ""
+                                    }
+                                };
+                                var headers = {
+                                    'Authorization': 'key=' + fcm.firebaseserverkey,
+                                    'Content-Type': 'application/json'
+                                };
+                                var options = {
+                                    uri: 'https://fcm.googleapis.com/fcm/send',
+                                    method: 'POST',
+                                    headers: headers,
+                                    json: data
+                                };
+                                for (var i in response.data.participants) {
+                                    // dont emit to the user which sent the card
+                                    if (response.data.participants[i]._id !== $scope.currentUser._id) {
+                                        // Find the other user(s)
+                                        findUser(response.data.participants[i]._id, function(result) {
+                                            // get the participants notification key
+                                            // get the message title and body
+                                            if (result.notification_key !== undefined) {
+                                                data.to = result.notification_key;
+                                                data.notification.title = $scope.card_create.user;
+                                                data.notification.body = sent_content;
+                                                // get the conversation id
+                                                data.data.url = response.data._id;
+                                                Users.send_notification(options);
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+
+
+
+
+
                     })
                     .error(function(error) {});
             });

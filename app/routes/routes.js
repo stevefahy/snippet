@@ -557,7 +557,9 @@ module.exports = function(app, passport) {
             newcard.save(function(err, card) {
                 if (err) {
                     res.send(err);
-                } else {}
+                } else {
+                    res.send(card);
+                }
             });
         });
     });
@@ -826,6 +828,7 @@ module.exports = function(app, passport) {
     });
 
     // get all cards for a conversation by conversation id
+    // does not need to be a member because public chats are available even if not logged in
     app.get('/chat/get_conversation/:id', function(req, res) {
         // TODO if no id exists then re-route
         Card.find({ 'conversationId': req.params.id }, function(err, cards) {
