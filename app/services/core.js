@@ -399,12 +399,13 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', f
             Android.showToast(toast);
         }
     };
-
+/*
     this.sendConvId = function(id) {
         if (ua === 'AndroidApp') {
             Android.conversationId(id);
         }
     };
+    */
 
     this.removePreTag = function(content) {
         var content_less_pre;
