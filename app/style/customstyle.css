@@ -150,6 +150,16 @@ h4 {
     font-weight: 600;
 }
 
+.h5 {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.h6 {
+    font-size: 14px;
+    font-weight: 600;
+}
+
 hr {
     margin-top: 0px;
     margin-bottom: 10px;
@@ -289,6 +299,8 @@ span.glyphicon.glyphicon-option-vertical {
 
 
 
+
+
 /* EDIT MENU */
 
 
@@ -302,10 +314,14 @@ span.glyphicon.glyphicon-option-vertical {
 
 
 
+
+
 /* Dropdown button on hover & focus */
 
 .dropbtn:hover,
 .dropbtn:focus {}
+
+
 
 
 
@@ -315,6 +331,8 @@ span.glyphicon.glyphicon-option-vertical {
     position: relative;
     display: inline-block;
 }
+
+
 
 
 
@@ -332,6 +350,8 @@ span.glyphicon.glyphicon-option-vertical {
 
 
 
+
+
 /* Links inside the dropdown */
 
 .dropdown-content div {
@@ -344,11 +364,15 @@ span.glyphicon.glyphicon-option-vertical {
 
 
 
+
+
 /* Change color of dropdown links on hover */
 
 .dropdown-content a:hover {
     background-color: #f1f1f1
 }
+
+
 
 
 

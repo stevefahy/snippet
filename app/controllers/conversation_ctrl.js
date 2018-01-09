@@ -183,6 +183,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     };
 
+    getConversationId = function(){
+        console.log('Conversations.getConversationId(): ' + Conversations.getConversationId());
+        return Conversations.getConversationId();
+    };
+
     // called by NOTIFICATION broadcast when another user has updated this conversation
     getConversationUpdate = function(id) {
         // get all cards for a conversation by conversation id
