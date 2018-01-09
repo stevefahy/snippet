@@ -185,7 +185,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     getConversationId = function(){
         console.log('Conversations.getConversationId(): ' + Conversations.getConversationId());
-        return Conversations.getConversationId();
+        //return Conversations.getConversationId();
+        Android.conversation_id(Conversations.getConversationId());
     };
 
     // called by NOTIFICATION broadcast when another user has updated this conversation
