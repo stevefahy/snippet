@@ -191,8 +191,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         if (ua == 'AndroidApp') {
             $scope.showAndroidToast('steve');
             //Android.showAndroidToast('steve');
-            //Conversations.getConversationId()
-            $scope.sendConvId('faz');
+            //
+            $scope.sendConvId(Conversations.getConversationId());
         }
         
         
