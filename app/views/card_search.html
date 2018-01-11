@@ -6,7 +6,7 @@
         <input id="search_input" class="form-control" type="text" ng-model="input" ng-show="showDiv">
         <button id="search_button" type="submit" class="btn btn-sm btn-warning" ng-show="showDiv" ng-click="searchCard(input)">Search</button>
         <a ng-if="currentUser" href ng-click="logOut()">Logout</a>
-        <a ng-if="!currentUser" href ng-click="logOut()">Login</a>
+        <a ng-if="!currentUser" href ng-click="logIn()">Login</a>
         <a href ng-click="changePath('/c/contacts')">Contacts</a>
         <a href ng-click="changePath('/chat/conversations')">Conversations</a>
     </form>

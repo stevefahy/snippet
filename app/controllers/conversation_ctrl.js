@@ -16,6 +16,82 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var conversation_length = 0;
     $scope.isMember = false;
 
+    // Detect soft keyboard on Android
+    var is_landscape = false;
+    var initial_height = window.innerHeight;
+    var initial_width = window.innerWidth;
+    var portrait_height;
+    var landscape_height;
+    //var footer_visible = true;
+    console.log('1 initial_height: ' + initial_height + ', initial_width: ' + initial_width);
+
+    // If the initial height is less than the screen height (status bar etc..)
+    // then adjust the initial width to take into account this difference
+    if (initial_height < screen.height) {
+        initial_width = initial_width - (screen.height - initial_height);
+    }
+
+    if (initial_height > initial_width) {
+        //portrait
+        // If the initial height is less than the screen height (status bar etc..)
+        // then adjust the initial width to take into account this difference
+        //if (initial_height < screen.height) {
+        //    initial_width = initial_width - (screen.height - initial_height);
+        //}
+        //console.log('2 initial_height: ' + initial_height + ', initial_width: ' + initial_width);
+        portrait_height = initial_height;
+        landscape_height = initial_width;
+    } else {
+        // landscape
+        // If the initial height is less than the screen height (status bar etc..)
+        // then adjust the initial width to take into account this difference
+        //if (initial_height < screen.height) {
+        //    initial_width = initial_width - (screen.height - initial_height);
+        //}
+        //console.log('2 initial_height: ' + initial_height + ', initial_width: ' + initial_width);
+
+        landscape_height = initial_height;
+        portrait_height = initial_width;
+    }
+
+    /* Android */
+    if (ua !== 'AndroidApp') {
+        window.addEventListener("resize", function() {
+
+            is_landscape = (screen.height < screen.width);
+
+            console.log(screen.height + ' : ' + screen.width + ', landscape_height: ' + landscape_height + ', portrait_height: ' + portrait_height);
+            console.log('window.innerHeight: ' + window.innerHeight + ',window.innerWidth: ' + window.innerWidth);
+            console.log('window.outerHeight: ' + window.outerHeight + ',window.outerWidth: ' + window.outerWidth);
+
+            if (is_landscape) {
+                if (window.innerHeight < landscape_height) {
+                    hideFooter();
+                } else {
+                    showFooter();
+                }
+            } else {
+                if (window.innerHeight < portrait_height) {
+                    hideFooter();
+                } else {
+                    showFooter();
+                }
+            }
+        }, false);
+    }
+
+    hideFooter = function() {
+        $('.footer').animate({ height: 0 }, 0);
+        //footer_visible = false;
+    };
+
+    showFooter = function() {
+        $('.footer').animate({ height: 50 }, 0);
+        //footer_visible = true;
+    };
+
+
+
     setFocus = function() {
         $timeout(function() {
             //var element = $window.document.getElementById('cecard_create');
@@ -35,7 +111,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // only check focus on web version
     if (ua !== 'AndroidApp') {
         $window.onfocus = function() {
+            console.log('focus');
             this.setFocus();
+        };
+        $window.onblur = function() {
+            console.log('blur');
         };
         $window.focus();
         setFocus();
@@ -185,20 +265,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     };
 
-    getConversationId = function(){
+    getConversationId = function() {
         console.log('Conversations.getConversationId(): ' + Conversations.getConversationId());
         //return Conversations.getConversationId();
         if (ua == 'AndroidApp') {
-            $scope.showAndroidToast('steve');
-            //Android.showAndroidToast('steve');
-            //
-             
             Android.conversationId(id);
-        
-            //$scope.sendConvId(Conversations.getConversationId());
         }
-        
-        
+
+
     };
 
     // called by NOTIFICATION broadcast when another user has updated this conversation

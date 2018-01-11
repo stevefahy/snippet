@@ -2,6 +2,15 @@ cardApp.controller("cardsearchCtrl", ['$scope', 'Cards', '$rootScope', '$locatio
 
     $scope.showDiv = false;
 
+    $http.get("/api/user_data").then(function(result) {
+        if (result.data.user) {
+            console.log($scope.currentUser);
+            $scope.currentUser = result.data.user;
+        }
+        console.log('cu: ' + $scope.currentUser);
+        //loadConversation();
+    });
+
     $scope.search_icon = function() {
         $scope.showDiv = !$scope.showDiv;
         $("#search_input").attr("visibility", "visible");
@@ -25,10 +34,11 @@ cardApp.controller("cardsearchCtrl", ['$scope', 'Cards', '$rootScope', '$locatio
     };
 
     $scope.logIn = function() {
+        console.log('logIn');
         // close socket.io connection and delete namespace
-       // socket.delete();
+        // socket.delete();
         //Cards.logout();
-        $scope.changePath('/api/login');
+        $scope.changePath('/api/logout');
     };
 
     $scope.searchCard = function() {
