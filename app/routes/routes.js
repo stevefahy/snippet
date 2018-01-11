@@ -104,11 +104,13 @@ module.exports = function(app, passport) {
     //
     // NOT LOGGED IN
     app.get('/login', function(req, res) {
+        console.log('/login');
         // load the single view file (angular will handle the page changes on the front-end)
         res.sendFile('login.html', { root: path.join(__dirname, '../views/') });
     });
     // LOGGED IN
     app.get('/', isLoggedIn, function(req, res) {
+        console.log('req.user: ' + req.user);
         if (req.user !== undefined) {
             // load the single view file (angular will handle the page changes on the front-end)
             res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
@@ -360,11 +362,14 @@ module.exports = function(app, passport) {
         // Find the current users details
         User.findById({ '_id': req.user._id }, function(error, user) {
             if (error) {
+                console.log('error');
                 res.json(error);
             } else if (user === null) {
                 // no user found
+                console.log('user not found');
                 res.json({ 'error': 'null' });
             } else {
+                console.log('found user');
                 // User found
                 // Set the FCM data for the request
                 var data = {
@@ -386,6 +391,7 @@ module.exports = function(app, passport) {
                 };
                 // First time. Create notification key
                 if (user.notification_key === undefined) {
+                    console.log('first time');
                     data.operation = "create";
                     request(options, function(err, response, body) {
                         if (err) {
@@ -407,6 +413,7 @@ module.exports = function(app, passport) {
                         }
                     });
                 } else {
+                    console.log('update');
                     // User notification key already created. Update tokens if necessary.
                     // Find the Android device id
                     var id_pos = findWithAttr(user.tokens, '_id', req.body.id);
