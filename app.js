@@ -117,7 +117,7 @@ if (addresses == '192.168.192.60') {
     // MongoDB
     var dburl = urls.remoteUrl;
     // Google Auth callBackURL
-    global.callbackURL = 'http://www.snipbee.com/auth/google/callback';
+    global.callbackURL = 'https://www.snipbee.com/auth/google/callback';
     global.mailUrl = 'http://www.snipbee.com';
 }
 // set up our express application
