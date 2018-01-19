@@ -17,12 +17,8 @@
                         </div>
 
                     </div>
-                    <!-- comment -->
                     <div class='ce' ng-attr-id="{{ 'ce' + card._id }}" 
-
                     ng-attr-contenteditable="{{card.user == currentUser._id}}"
-
-                    
                      ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id)" ng-paste="handlePaste($event)" ng-focus="getFocus(card.content); keyListen('ce'+card._id)" ng-model="card.content" ng-model-options="{ debounce: 1000 }">
                     </div>
                     <time am-time-ago="card.updatedAt" id="time"></time>

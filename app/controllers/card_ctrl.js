@@ -22,24 +22,11 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'Conversations', 'Users', 're
             loadUserData();
         }
     });
-
+    // If This is a username url then get the public cards for that user
     if (username != undefined) {
-        /*
-        Cards.search_user(username)
-            .success(function(data) {
-                // update card_ctrl $scope.cards
-                $rootScope.$broadcast('cards', data);
-            });
-            */
-        //Conversations.find_user_public_conversation($scope.currentUser._id)
         Conversations.find_user_public_conversation(username)
             .then(function(res) {
-                console.log(JSON.stringify(res));
-                console.log('public conv check: ' + res.data);
-                // $rootScope.$broadcast('cards', res.data);
                 $scope.cards = res.data;
-                conversation_length = $scope.cards.length;
-                //updateConversationViewed(id, conversation_length);
                 // Get the user name for the user id
                 // TODO dont repeat if user id already retreived
                 $scope.cards.map(function(key, array) {
@@ -55,10 +42,6 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'Conversations', 'Users', 're
                         })
                         .error(function(error) {});
                 });
-                // Scroll to the bootom of the list
-                //$timeout(function() {
-                //    scrollToBottom(1);
-               // }, speed);
             });
     }
 

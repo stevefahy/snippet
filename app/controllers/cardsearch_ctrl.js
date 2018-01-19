@@ -4,11 +4,8 @@ cardApp.controller("cardsearchCtrl", ['$scope', 'Cards', '$rootScope', '$locatio
 
     $http.get("/api/user_data").then(function(result) {
         if (result.data.user) {
-            console.log($scope.currentUser);
             $scope.currentUser = result.data.user;
         }
-        console.log('cu: ' + $scope.currentUser);
-        //loadConversation();
     });
 
     $scope.search_icon = function() {
@@ -34,10 +31,7 @@ cardApp.controller("cardsearchCtrl", ['$scope', 'Cards', '$rootScope', '$locatio
     };
 
     $scope.logIn = function() {
-        console.log('logIn');
         // close socket.io connection and delete namespace
-        // socket.delete();
-        //Cards.logout();
         $scope.changePath('/api/logout');
     };
 

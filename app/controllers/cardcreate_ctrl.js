@@ -95,7 +95,6 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
                 var sent_content = $scope.card_create.content;
                 sent_content = checkForImage(sent_content);
                 sent_content = stripHTML(sent_content);
-                console.log(sent_content);
                 $scope.card_create.content = '';
                 // notify conversation_ctrl that the conversation has been updated
                 $rootScope.$broadcast('CONV_UPDATED', response.data);

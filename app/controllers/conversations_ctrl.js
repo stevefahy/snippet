@@ -110,12 +110,12 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
         $location.path("/chat/conversation/" + conversation);
     };
 
-    // Continue chat
+    // Continue public chat
     $scope.chatPublic = function(admin, index) {
         // redirect to the chat
         // Find the username
         findUser(admin, function(result) {
-            $location.path("/"+result);
+            $location.path("/" + result);
         });
     };
 

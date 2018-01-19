@@ -347,7 +347,7 @@ module.exports = function(passport) {
                                 if (err) {
                                     return done(err);
                                 }
-                                
+
                                 return done(null, newUser);
                             });
                         }

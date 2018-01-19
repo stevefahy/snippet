@@ -104,13 +104,11 @@ module.exports = function(app, passport) {
     //
     // NOT LOGGED IN
     app.get('/login', function(req, res) {
-        console.log('/login');
         // load the single view file (angular will handle the page changes on the front-end)
         res.sendFile('login.html', { root: path.join(__dirname, '../views/') });
     });
     // LOGGED IN
     app.get('/', isLoggedIn, function(req, res) {
-        console.log('req.user: ' + req.user);
         if (req.user !== undefined) {
             // load the single view file (angular will handle the page changes on the front-end)
             res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
@@ -123,7 +121,6 @@ module.exports = function(app, passport) {
     app.get('/api/logout', function(req, res) {
         req.logout();
         req.logOut();
-
 
         req.session.destroy(function(err) {
             if (err) {
@@ -366,10 +363,8 @@ module.exports = function(app, passport) {
                 res.json(error);
             } else if (user === null) {
                 // no user found
-                console.log('user not found');
                 res.json({ 'error': 'null' });
             } else {
-                console.log('found user');
                 // User found
                 // Set the FCM data for the request
                 var data = {
@@ -391,7 +386,6 @@ module.exports = function(app, passport) {
                 };
                 // First time. Create notification key
                 if (user.notification_key === undefined) {
-                    console.log('first time');
                     data.operation = "create";
                     request(options, function(err, response, body) {
                         if (err) {
@@ -413,7 +407,6 @@ module.exports = function(app, passport) {
                         }
                     });
                 } else {
-                    console.log('update');
                     // User notification key already created. Update tokens if necessary.
                     // Find the Android device id
                     var id_pos = findWithAttr(user.tokens, '_id', req.body.id);
@@ -748,34 +741,19 @@ module.exports = function(app, passport) {
                 res.json(error);
             } else if (user === null) {
                 // no user found
-                console.log('no user found');
                 res.json({ 'error': 'null' });
             } else {
-                console.log('found user: ' + user._id);
-                //res.json({ 'success': user });
                 // Get the public conversation for this user id
                 Conversation.findOne({ 'participants._id': user._id, 'conversation_type': 'public' }, function(err, conversation) {
                     if (err) {
                         console.log('err: ' + err);
                         return done(err);
                     }
-                    console.log('conversation: ' + conversation);
-                    //res.json(conversation);
                     // Get and return cards for this conversation
                     Card.find({ 'conversationId': conversation._id }, function(err, cards) {
                         if (err) {
                             return done(err);
                         }
-                        //console.log('conversation public cards 1: ' + cards);
-                        //cards.map(function(key, array) {
-                        //  console.log('key: ' + JSON.stringify(key));
-                        //  key.test = 'user.google.name';
-                        // });
-                        //cards.forEach(function(card) {
-                            //card.test = "Enders Game";
-                        //});
-                        //cards.username = user.google.name;
-                        //console.log('conversation public cards 2: ' + cards.username);
                         res.json(cards);
                     });
 
@@ -785,7 +763,7 @@ module.exports = function(app, passport) {
         });
     });
 
-   // get user public conversation id by user name
+    // get user public conversation id by user name
     app.get('/chat/user_public_conversation_id/:username', function(req, res) {
         // Get the user id associated with this name
         User.findOne({ 'google.name': req.params.username }, function(error, user) {
@@ -794,42 +772,17 @@ module.exports = function(app, passport) {
                 res.json(error);
             } else if (user === null) {
                 // no user found
-                console.log('no user found');
                 res.json({ 'error': 'null' });
             } else {
-                console.log('found user: ' + user._id);
-                //res.json({ 'success': user });
                 // Get the public conversation for this user id
                 Conversation.findOne({ 'participants._id': user._id, 'conversation_type': 'public' }, function(err, conversation) {
                     if (err) {
                         console.log('err: ' + err);
                         //return done(err);
-                        res.json({'error':'not found'});
+                        res.json({ 'error': 'not found' });
                     }
-                    console.log('conversation: ' + conversation);
                     res.json(conversation);
-                    // Get and return cards for this conversation
-                    /*
-                    Card.find({ 'conversationId': conversation._id }, function(err, cards) {
-                        if (err) {
-                            return done(err);
-                        }
-                        //console.log('conversation public cards 1: ' + cards);
-                        //cards.map(function(key, array) {
-                        //  console.log('key: ' + JSON.stringify(key));
-                        //  key.test = 'user.google.name';
-                        // });
-                        //cards.forEach(function(card) {
-                            //card.test = "Enders Game";
-                        //});
-                        //cards.username = user.google.name;
-                        //console.log('conversation public cards 2: ' + cards.username);
-                        res.json(cards);
-                    });
-                    */
-
                 });
-
             }
         });
     });
@@ -841,7 +794,6 @@ module.exports = function(app, passport) {
         Card.find({ 'conversationId': req.params.id }, function(err, cards) {
             if (err) {
                 console.log('err: ' + err);
-                //return done(err);
             }
             res.json(cards);
         });
