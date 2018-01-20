@@ -421,6 +421,25 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         return content_less_pre;
     };
 
+
+    this.checkForImage = function(content) {
+        var res;
+        if (content.indexOf('<img') >= 0) {
+            var img_tag = content.substr(content.indexOf('<img'), content.indexOf('.jpg">') + 6);
+            res = "Posted a photo.";
+        } else {
+            res = content;
+        }
+        return res;
+    };
+
+    this.stripHTML = function(html) {
+        var tmp = document.createElement("DIV");
+        tmp.innerHTML = html;
+        return tmp.textContent || tmp.innerText || "";
+    };
+
+
     var focused_id;
     var focused_card;
     var focused_user;
@@ -496,6 +515,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             //$scope.$apply(function() {
             card.content = replaceTags.replace(card.content);
             card.content = replaceTags.removeDeleteId(card.content);
+
+            var sent_content = card.content;
+            sent_content = self.checkForImage(sent_content);
+            sent_content = self.stripHTML(sent_content);
+
             var pms = { 'id': card_id, 'card': card };
             // call the create function from our service (returns a promise object)
             Cards.update(pms)

@@ -35,7 +35,7 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
                 //
             });
     };
-
+    /*
     checkForImage = function(content) {
         var res;
         if (content.indexOf('<img') >= 0) {
@@ -52,6 +52,7 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
         tmp.innerHTML = html;
         return tmp.textContent || tmp.innerText || "";
     }
+    */
 
     var ua = navigator.userAgent;
     // only check focus on web version
@@ -93,8 +94,10 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
             .then(function(response) {
                 // reset the input box
                 var sent_content = $scope.card_create.content;
-                sent_content = checkForImage(sent_content);
-                sent_content = stripHTML(sent_content);
+                //sent_content = checkForImage(sent_content);
+                //sent_content = stripHTML(sent_content);
+                sent_content = Format.checkForImage(sent_content);
+                sent_content = Format.stripHTML(sent_content);
                 $scope.card_create.content = '';
                 // notify conversation_ctrl that the conversation has been updated
                 $rootScope.$broadcast('CONV_UPDATED', response.data);
