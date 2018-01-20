@@ -438,6 +438,13 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         return marky_found;
     };
 
+   checkUpdate = function() {
+        if (ua == 'AndroidApp') {
+            console.log('checkUpdate');
+            //Android.conversationId(id);
+        }
+    };
+
     this.getBlur = function(id, card) {
         console.log('blur: ' + id);
         var content = document.getElementById('ce' + id);
