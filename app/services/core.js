@@ -488,7 +488,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         return -1;
     };
 
-    updateCard = function(card_id, card) {
+    updateCard = function(card_id, card, currentUser) {
         //console.log('currentUser: ' + currentUser);
         console.log('updateCard!!: ' + card.content);
         card.content = self.setMediaSize(card_id, card);
