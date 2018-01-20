@@ -563,7 +563,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                             };
                             for (var i in response.data.participants) {
                                 // dont emit to the user which sent the card
-                                //console.log(currentUser._id);
+                                console.log(response.data.participants[i]._id + ' !== ' + currentUser._id);
                                 if (response.data.participants[i]._id !== currentUser._id) {
                                     //if (response.data.participants[i]._id !== card.user) {
                                     // Find the other user(s)
