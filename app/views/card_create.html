@@ -1,6 +1,6 @@
 <div ng-controller="cardcreateCtrl">
     <button id="create_submit" type="submit" class="btn btn-success" ng-click="createCard(card_create._id, card_create)">Share</button>
-    <div class='ce' ng-attr-id="{{ 'ce' + card_create._id }}" contenteditable="true" ng-change="contentChanged(card_create.content, 'ce'+card_create._id)" ng-keydown="checkKey($event,'ce'+card_create._id)" ng-paste="handlePaste($event)" ng-focus="getFocus(card_create.content); keyListen('ce'+card_create._id)" ng-model="card_create.content" ng-model-options="{ debounce: 1000 }">
+    <div class='ce' ng-attr-id="{{ 'ce' + card_create._id }}" contenteditable="true" ng-change="contentChanged(card_create.content, 'ce'+card_create._id)" ng-keydown="checkKey($event,'ce'+card_create._id)" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce'+card_create._id)" ng-model="card_create.content" ng-model-options="{ debounce: 1000 }">
     </div>
     <input id="upload-input" type="file" name="uploads[]" multiple="multiple">
     <button id="upload-trigger" class="btn btn-sm upload-btn" type="button" ng-click="uploadFile()">Upload File</button>

@@ -423,13 +423,18 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     var focused_id;
     var focused_card;
+    var focused_user;
 
-    this.getFocus = function(id, card) {
-        self.tag_count_previous = self.getTagCountPrevious(card.content);
-        console.log('foky');
-        focused_id = id;
-        focused_card = card;
-        return self.tag_count_previous;
+    this.getFocus = function(id, card, currentUser) {
+        if (id != undefined && card != undefined) {
+            console.log(id + ' : ' + card + ' : ' + currentUser);
+            self.tag_count_previous = self.getTagCountPrevious(card.content);
+            console.log('foky');
+            focused_id = id;
+            focused_card = card;
+            focused_user = currentUser;
+            return self.tag_count_previous;
+        }
     };
 
     findMarky = function(content) {
@@ -447,12 +452,13 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         if (ua == 'AndroidApp') {
             console.log('checkUpdate: ' + focused_id);
             if (focused_id != undefined) {
-                self.getBlur(focused_id, focused_card);
+                self.getBlur(focused_id, focused_card, focused_user);
             }
         }
     };
 
-    this.getBlur = function(id, card) {
+    this.getBlur = function(id, card, currentUser) {
+        console.log(currentUser);
         console.log('blur: ' + id);
         var content = document.getElementById('ce' + id);
         console.log('content: ' + content.innerHTML);
@@ -468,7 +474,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             console.log('update');
             //updateCard(card._id, card);
             //$rootScope.$broadcast('UPDATECARD', id, card);
-            updateCard(id, card);
+            updateCard(id, card, currentUser);
         }
     };
 
@@ -534,15 +540,16 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                             for (var i in response.data.participants) {
                                 // dont emit to the user which sent the card
                                 //console.log(currentUser._id);
-                                //if (response.data.participants[i]._id !== currentUser._id) {
-                                if (response.data.participants[i]._id !== card.user) {
+                                if (response.data.participants[i]._id !== currentUser._id) {
+                                    //if (response.data.participants[i]._id !== card.user) {
                                     // Find the other user(s)
                                     findUser(response.data.participants[i]._id, function(result) {
                                         // get the participants notification key
                                         // get the message title and body
                                         if (result.notification_key !== undefined) {
                                             data.to = result.notification_key;
-                                            data.notification.title = $scope.card_create.user;
+                                            //data.notification.title = $scope.card_create.user;
+                                            data.notification.title = currentUser.google.name;
                                             data.notification.body = sent_content;
                                             // get the conversation id
                                             data.data.url = response.data._id;
