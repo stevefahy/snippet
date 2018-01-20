@@ -572,6 +572,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                                         // get the message title and body
                                         if (result.notification_key !== undefined) {
                                             data.to = result.notification_key;
+                                            console.log('data.to: ' + data.to);
                                             //data.notification.title = $scope.card_create.user;
                                             data.notification.title = currentUser.google.name;
                                             data.notification.body = sent_content;
