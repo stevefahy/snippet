@@ -421,9 +421,14 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         return content_less_pre;
     };
 
-    this.getFocus = function(content) {
-        self.tag_count_previous = self.getTagCountPrevious(content);
+    var focused_id;
+    var focused_card;
+
+    this.getFocus = function(id, card) {
+        self.tag_count_previous = self.getTagCountPrevious(card.content);
         console.log('foky');
+        focused_id = id;
+        focused_card = card;
         return self.tag_count_previous;
     };
 
@@ -440,8 +445,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
    checkUpdate = function() {
         if (ua == 'AndroidApp') {
-            console.log('checkUpdate');
-            //Android.conversationId(id);
+            console.log('checkUpdate: ' + focused_id);
+            getBlur(focused_id, focused_card);
         }
     };
 
