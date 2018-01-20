@@ -432,7 +432,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         return self.tag_count_previous;
     };
 
-    findMarky = function(content){
+    findMarky = function(content) {
         var marky_found = false;
         for (var i = 0; i < secondkey_array.length; i++) {
             if (content.innerHTML.indexOf(initial_key + secondkey_array[i]) >= 0) {
@@ -443,10 +443,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         return marky_found;
     };
 
-   checkUpdate = function() {
+    checkUpdate = function() {
         if (ua == 'AndroidApp') {
             console.log('checkUpdate: ' + focused_id);
-            getBlur(focused_id, focused_card);
+            if (focused_id != undefined) {
+                self.getBlur(focused_id, focused_card);
+            }
         }
     };
 
