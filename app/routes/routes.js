@@ -344,12 +344,14 @@ module.exports = function(app, passport) {
     });
     // notify user
     app.post('/api/users/send_notification', function(req, res) {
+        console.log('/api/users/send_notification');
         var options = req.body;
         request(options, function(err, response, body) {
             if (err) {
+                console.log('err: ' + err);
                 throw err;
             } else {
-                //console.log(body);
+                console.log(body);
             }
         });
     });
