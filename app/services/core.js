@@ -50,7 +50,7 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
     });
 });
 
-cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', function($window, $rootScope, $timeout, $q, Users) {
+cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', function($window, $rootScope, $timeout, $q, Users, Cards, Conversations, replaceTags, socket) {
 
     var self = this;
     var tag_count_previous;
@@ -66,6 +66,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', f
     var MAX_HEIGHT = 1080;
     var IMAGES_URL = 'fileuploads/images/';
     var refreshedToken;
+    var marky_found = false;
 
     $window.androidToJS = this.androidToJS;
     $window.androidTokenRefresh = this.androidTokenRefresh;
@@ -297,6 +298,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', f
     };
 
     this.removeDeleteIds = function() {
+        console.log('removeDeleteIds');
         $('#cecard_create').html($('#cecard_create').html().replace(/<span id="delete">/g, ""));
         $('#cecard_create').html($('#cecard_create').html().replace(/<\/span>/g, ""));
         $('#cecard_create').html($('#cecard_create').html().replace(/\u200B/g, ""));
@@ -308,6 +310,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', f
             var new_image = "<img class='resize-drag' src='" + IMAGES_URL + data.file + "'><span id='delete'>&#x200b</span>";
             self.pasteHtmlAtCaret(new_image);
 
+            /*
             // remove zero width space above image if it exists 
             var clone = $('#cecard_create').clone();
             //clone.find('#delete').remove();
@@ -317,7 +320,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', f
             $window.document.getElementById("cecard_create").innerHTML = new_text;
 
             moveCaretInto('delete_image');
-
+            */
             scrollToBottom(1000);
         }
     };
@@ -420,7 +423,125 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', f
 
     this.getFocus = function(content) {
         self.tag_count_previous = self.getTagCountPrevious(content);
+        console.log('foky');
         return self.tag_count_previous;
+    };
+
+    findMarky = function(content){
+        var marky_found = false;
+        for (var i = 0; i < secondkey_array.length; i++) {
+            if (content.innerHTML.indexOf(initial_key + secondkey_array[i]) >= 0) {
+                console.log('found: ' + initial_key + secondkey_array[i]);
+                marky_found = true;
+            }
+        }
+        return marky_found;
+    };
+
+    this.getBlur = function(id, card) {
+        console.log('blur: ' + id);
+        var content = document.getElementById('ce' + id);
+        console.log('content: ' + content.innerHTML);
+        //console.log('length: ' + content.innerHTML.length);
+        console.log('original content: ' + card.original_content);
+
+        found_marky = findMarky(content);
+        console.log(content.innerHTML != card.original_content);
+        console.log(found_marky);
+        console.log(content.innerHTML != card.original_content && (found_marky == false));
+        if (content.innerHTML != card.original_content && (found_marky == false)) {
+            //marky_found = false;
+            console.log('update');
+            //updateCard(card._id, card);
+            //$rootScope.$broadcast('UPDATECARD', id, card);
+            updateCard(id, card);
+        }
+    };
+
+    // find the array index of an object value
+    this.findWithAttr = function(array, attr, value) {
+        for (var i = 0; i < array.length; i += 1) {
+            if (array[i][attr] === value) {
+                return i;
+            }
+        }
+        return -1;
+    };
+
+    updateCard = function(card_id, card) {
+        //console.log('currentUser: ' + currentUser);
+        console.log('updateCard!!: ' + card.content);
+        card.content = self.setMediaSize(card_id, card);
+        setTimeout(function() {
+            //$scope.$apply(function() {
+            card.content = replaceTags.replace(card.content);
+            card.content = replaceTags.removeDeleteId(card.content);
+            var pms = { 'id': card_id, 'card': card };
+            // call the create function from our service (returns a promise object)
+            Cards.update(pms)
+                .success(function(data) {
+                    console.log(data);
+                    $rootScope.$broadcast('UPDATECARD', data);
+                    /*
+                    var card_pos = self.findWithAttr($scope.cards, '_id', data._id);
+                    if (card_pos >= 0) {
+                        $scope.cards[card_pos].updatedAt = data.updatedAt;
+                        $scope.cards[card_pos].original_content = $scope.cards[card_pos].content;
+                    }
+                    */
+                    // Update the Conversation updateAt time.
+                    Conversations.updateTime(card.conversationId)
+                        .then(function(response) {
+                            console.log(response);
+                            // socket.io emit the card posted to the server
+                            socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: response.data._id, participants: response.data.participants });
+                            // Send notifications
+                            // Set the FCM data for the request
+                            var data = {
+                                "to": "",
+                                "notification": {
+                                    "title": "",
+                                    "body": ""
+                                },
+                                "data": {
+                                    "url": ""
+                                }
+                            };
+                            var headers = {
+                                'Authorization': 'key=' + fcm.firebaseserverkey,
+                                'Content-Type': 'application/json'
+                            };
+                            var options = {
+                                uri: 'https://fcm.googleapis.com/fcm/send',
+                                method: 'POST',
+                                headers: headers,
+                                json: data
+                            };
+                            for (var i in response.data.participants) {
+                                // dont emit to the user which sent the card
+                                //console.log(currentUser._id);
+                                //if (response.data.participants[i]._id !== currentUser._id) {
+                                if (response.data.participants[i]._id !== card.user) {
+                                    // Find the other user(s)
+                                    findUser(response.data.participants[i]._id, function(result) {
+                                        // get the participants notification key
+                                        // get the message title and body
+                                        if (result.notification_key !== undefined) {
+                                            data.to = result.notification_key;
+                                            data.notification.title = $scope.card_create.user;
+                                            data.notification.body = sent_content;
+                                            // get the conversation id
+                                            data.data.url = response.data._id;
+                                            Users.send_notification(options);
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                })
+                .error(function(error) {});
+            //});
+        }, 1000);
     };
 
     this.getTagCountPrevious = function(content) {

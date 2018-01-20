@@ -1,6 +1,7 @@
 cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', function($scope, $rootScope, $location, $http, $window, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket) {
 
     $scope.getFocus = Format.getFocus;
+    $scope.getBlur = Format.getBlur;
     $scope.contentChanged = Format.contentChanged;
     $scope.checkKey = Format.checkKey;
     $scope.handlePaste = Format.handlePaste;
@@ -66,12 +67,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     setFocus = function() {
+        console.log('set focus');
         $timeout(function() {
             loadConversation(function(result) {
                 $rootScope.$broadcast('CONV_CHECK');
             });
         });
     };
+
 
     var ua = navigator.userAgent;
     // only check focus on web version
@@ -136,6 +139,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             // Get the user name for the user id
             // TODO dont repeat if user id already retreived
             $scope.cards.map(function(key, array) {
+                // set the number of characters in the card
+                key.original_content = key.content;
                 Users.search_id(key.user)
                     .success(function(res) {
                         if (res.error === 'null') {
@@ -305,7 +310,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             .error(function(error) {});
         // Update the cards model
         $scope.cards.push(data);
-        // pudate the number of cards in this conversation
+        $scope.cards.map(function(key, array) {
+            // set the number of characters in the card
+            key.original_content = key.content;
+        });
+        // update the number of cards in this conversation
         conversation_length = $scope.cards.length;
         // update the conversation viewed number for this user in this conversation
         updateConversationViewed(data.conversationId, conversation_length);
@@ -379,7 +388,17 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     // UPDATE ==================================================================
-    $scope.updateCard = function(card_id, card) {
+    // Broadcast by Format updateCard service when a card has been updated.
+    $scope.$on('UPDATECARD', function(event, data) {
+        var card_pos = findWithAttr($scope.cards, '_id', data._id);
+        if (card_pos >= 0) {
+            $scope.cards[card_pos].updatedAt = data.updatedAt;
+            $scope.cards[card_pos].original_content = $scope.cards[card_pos].content;
+        }
+    });
+    /*
+    updateCard = function(card_id, card) {
+        console.log('updateCard!!!: ' + card.content);
         card.content = Format.setMediaSize(card_id, card);
         setTimeout(function() {
             $scope.$apply(function() {
@@ -389,9 +408,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 // call the create function from our service (returns a promise object)
                 Cards.update(pms)
                     .success(function(data) {
+                        console.log(data);
                         var card_pos = findWithAttr($scope.cards, '_id', data._id);
                         if (card_pos >= 0) {
                             $scope.cards[card_pos].updatedAt = data.updatedAt;
+                            $scope.cards[card_pos].original_content = $scope.cards[card_pos].content;
                         }
                         // Update the Conversation updateAt time.
                         Conversations.updateTime(id)
@@ -444,5 +465,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             });
         }, 1000);
     };
+    */
 
 }]);
