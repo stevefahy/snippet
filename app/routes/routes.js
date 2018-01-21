@@ -354,7 +354,8 @@ module.exports = function(app, passport) {
             } else {
                 console.log(response);
                 console.log(body);
-                process.exit(0);
+                //process.exit(0);
+                res.status(200).send('ok');
             }
         });
     });
