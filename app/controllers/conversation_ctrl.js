@@ -459,7 +459,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                             // get the message title and body
                                             if (result.notification_key !== undefined) {
                                                 data.to = result.notification_key;
-                                                data.notification.title = $scope.card_create.user;
+                                                data.notification.title = 'test';//$scope.card_create.user;
                                                 data.notification.body = sent_content;
                                                 // get the conversation id
                                                 data.data.url = response.data._id;
