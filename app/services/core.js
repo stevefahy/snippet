@@ -50,7 +50,7 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
     });
 });
 
-cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', function($window, $rootScope, $timeout, $q, Users, Cards, Conversations, replaceTags, socket) {
+cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', '$injector', function($window, $rootScope, $timeout, $q, Users, Cards, Conversations, replaceTags, socket, $injector) {
 
     var self = this;
     var tag_count_previous;
@@ -493,10 +493,13 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             console.log('update');
             //updateCard(card._id, card);
             //$rootScope.$broadcast('UPDATECARD', id, card);
-            updateCard(id, card, currentUser);
+
+            var Database = $injector.get('Database');
+            Database.updateCard(id, card, currentUser);
         }
     };
 
+    /*
     // find the array index of an object value
     this.findWithAttr = function(array, attr, value) {
         for (var i = 0; i < array.length; i += 1) {
@@ -526,69 +529,70 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 .success(function(data) {
                     console.log(data);
                     $rootScope.$broadcast('UPDATECARD', data);
-                    /*
-                    var card_pos = self.findWithAttr($scope.cards, '_id', data._id);
-                    if (card_pos >= 0) {
-                        $scope.cards[card_pos].updatedAt = data.updatedAt;
-                        $scope.cards[card_pos].original_content = $scope.cards[card_pos].content;
-                    }
-                    */
-                    // Update the Conversation updateAt time.
-                    Conversations.updateTime(card.conversationId)
-                        .then(function(response) {
-                            console.log(response);
-                            // socket.io emit the card posted to the server
-                            socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: response.data._id, participants: response.data.participants });
-                            // Send notifications
-                            // Set the FCM data for the request
-                            var data = {
-                                "to": "",
-                                "notification": {
-                                    "title": "",
-                                    "body": ""
-                                },
-                                "data": {
-                                    "url": ""
-                                }
-                            };
-                            var headers = {
-                                'Authorization': 'key=' + fcm.firebaseserverkey,
-                                'Content-Type': 'application/json'
-                            };
-                            var options = {
-                                uri: 'https://fcm.googleapis.com/fcm/send',
-                                method: 'POST',
-                                headers: headers,
-                                json: data
-                            };
-                            for (var i in response.data.participants) {
-                                // dont emit to the user which sent the card
-                                console.log(response.data.participants[i]._id + ' !== ' + currentUser._id);
-                                if (response.data.participants[i]._id !== currentUser._id) {
-                                    //if (response.data.participants[i]._id !== card.user) {
-                                    // Find the other user(s)
-                                    findUser(response.data.participants[i]._id, function(result) {
-                                        // get the participants notification key
-                                        // get the message title and body
-                                        if (result.notification_key !== undefined) {
-                                            data.to = result.notification_key;
-                                            console.log('data.to: ' + data.to);
-                                            //data.notification.title = $scope.card_create.user;
-                                            data.notification.title = currentUser.google.name;
-                                            data.notification.body = sent_content;
-                                            // get the conversation id
-                                            data.data.url = response.data._id;
-                                            Users.send_notification(options);
-                                        }
-                                    });
-                                }
-                            }
-                        });
-                })
-                .error(function(error) {});
-            //});
-        }, 1000);
-    };
+                    
+                   // var card_pos = self.findWithAttr($scope.cards, '_id', data._id);
+                  // if (card_pos >= 0) {
+                   //     $scope.cards[card_pos].updatedAt = data.updatedAt;
+                   //     $scope.cards[card_pos].original_content = $scope.cards[card_pos].content;
+                    //}
+                    
+    // Update the Conversation updateAt time.
+    Conversations.updateTime(card.conversationId)
+        .then(function(response) {
+            console.log(response);
+            // socket.io emit the card posted to the server
+            socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: response.data._id, participants: response.data.participants });
+            // Send notifications
+            // Set the FCM data for the request
+            var data = {
+                "to": "",
+                "notification": {
+                    "title": "",
+                    "body": ""
+                },
+                "data": {
+                    "url": ""
+                }
+            };
+            var headers = {
+                'Authorization': 'key=' + fcm.firebaseserverkey,
+                'Content-Type': 'application/json'
+            };
+            var options = {
+                uri: 'https://fcm.googleapis.com/fcm/send',
+                method: 'POST',
+                headers: headers,
+                json: data
+            };
+            for (var i in response.data.participants) {
+                // dont emit to the user which sent the card
+                console.log(response.data.participants[i]._id + ' !== ' + currentUser._id);
+                if (response.data.participants[i]._id !== currentUser._id) {
+                    //if (response.data.participants[i]._id !== card.user) {
+                    // Find the other user(s)
+                    findUser(response.data.participants[i]._id, function(result) {
+                        // get the participants notification key
+                        // get the message title and body
+                        if (result.notification_key !== undefined) {
+                            data.to = result.notification_key;
+                            console.log('data.to: ' + data.to);
+                            //data.notification.title = $scope.card_create.user;
+                            data.notification.title = currentUser.google.name;
+                            data.notification.body = sent_content;
+                            // get the conversation id
+                            data.data.url = response.data._id;
+                            Users.send_notification(options);
+                        }
+                    });
+                }
+            }
+        });
+})
+.error(function(error) {});
+//});
+}, 1000);
+};
+*/
 
     this.getTagCountPrevious = function(content) {
         var tag_count_previous_local;
@@ -1202,6 +1206,186 @@ cardApp.service('Edit', function() {
     };
 
 });
+
+cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', function($window, $rootScope, $timeout, $q, Users, Cards, Conversations, replaceTags, socket, Format) {
+
+    // find the array index of an object value
+    this.findWithAttr = function(array, attr, value) {
+        for (var i = 0; i < array.length; i += 1) {
+            if (array[i][attr] === value) {
+                return i;
+            }
+        }
+        return -1;
+    };
+
+    this.updateCard = function(card_id, card, currentUser) {
+        //console.log('currentUser: ' + currentUser);
+        console.log('updateCard!!: ' + card.content);
+        card.content = Format.setMediaSize(card_id, card);
+        setTimeout(function() {
+            //$scope.$apply(function() {
+            card.content = replaceTags.replace(card.content);
+            card.content = replaceTags.removeDeleteId(card.content);
+
+            var sent_content = card.content;
+            sent_content = Format.checkForImage(sent_content);
+            sent_content = Format.stripHTML(sent_content);
+
+            var pms = { 'id': card_id, 'card': card };
+            // call the create function from our service (returns a promise object)
+            Cards.update(pms)
+                .success(function(data) {
+                    console.log(data);
+                    $rootScope.$broadcast('UPDATECARD', data);
+                    /*
+                    var card_pos = self.findWithAttr($scope.cards, '_id', data._id);
+                    if (card_pos >= 0) {
+                        $scope.cards[card_pos].updatedAt = data.updatedAt;
+                        $scope.cards[card_pos].original_content = $scope.cards[card_pos].content;
+                    }
+                    */
+                    // Update the Conversation updateAt time.
+                    Conversations.updateTime(card.conversationId)
+                        .then(function(response) {
+                            console.log(response);
+                            // socket.io emit the card posted to the server
+                            socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: response.data._id, participants: response.data.participants });
+                            // Send notifications
+                            // Set the FCM data for the request
+                            var data = {
+                                "to": "",
+                                "notification": {
+                                    "title": "",
+                                    "body": ""
+                                },
+                                "data": {
+                                    "url": ""
+                                }
+                            };
+                            var headers = {
+                                'Authorization': 'key=' + fcm.firebaseserverkey,
+                                'Content-Type': 'application/json'
+                            };
+                            var options = {
+                                uri: 'https://fcm.googleapis.com/fcm/send',
+                                method: 'POST',
+                                headers: headers,
+                                json: data
+                            };
+                            for (var i in response.data.participants) {
+                                // dont emit to the user which sent the card
+                                console.log(response.data.participants[i]._id + ' !== ' + currentUser._id);
+                                if (response.data.participants[i]._id !== currentUser._id) {
+                                    //if (response.data.participants[i]._id !== card.user) {
+                                    // Find the other user(s)
+                                    findUser(response.data.participants[i]._id, function(result) {
+                                        // get the participants notification key
+                                        // get the message title and body
+                                        if (result.notification_key !== undefined) {
+                                            data.to = result.notification_key;
+                                            console.log('data.to: ' + data.to);
+                                            //data.notification.title = $scope.card_create.user;
+                                            data.notification.title = currentUser.google.name;
+                                            data.notification.body = sent_content;
+                                            // get the conversation id
+                                            data.data.url = response.data._id;
+                                            Users.send_notification(options);
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                })
+                .error(function(error) {});
+            //});
+        }, 1000);
+    };
+
+    var card_create = {
+        _id: 'card_create',
+        content: '',
+        //user: $scope.currentUser,
+        user: '',
+        user_name: ''
+    };
+
+    var current_conversation_id = Conversations.getConversationId();
+
+    this.createCard = function(id, card_create, fcm, currentUser) {
+
+        card_create.user = currentUser.google.name;
+
+        card_create.conversationId = current_conversation_id;
+        card_create.content = replaceTags.replace(card_create.content);
+        card_create.content = Format.setMediaSize(id, card_create);
+
+        card_create.content = Format.removeDeleteIds();
+
+        Cards.create(card_create)
+            .then(function(response) {
+                // reset the input box
+                var sent_content = card_create.content;
+                //sent_content = checkForImage(sent_content);
+                //sent_content = stripHTML(sent_content);
+                sent_content = Format.checkForImage(sent_content);
+                sent_content = Format.stripHTML(sent_content);
+
+                //card_create.content = '';
+
+                // notify conversation_ctrl and cardcreate_ctrl that the conversation has been updated
+                $rootScope.$broadcast('CONV_UPDATED', response.data);
+
+                // Update the Conversation updateAt time.
+                Conversations.updateTime(current_conversation_id)
+                    .then(function(response) {
+                        // socket.io emit the card posted to the server
+                        socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: response.data._id, participants: response.data.participants });
+                        // Send notifications
+                        // Set the FCM data for the request
+                        var data = {
+                            "to": "",
+                            "notification": {
+                                "title": "",
+                                "body": ""
+                            },
+                            "data": {
+                                "url": ""
+                            }
+                        };
+                        var headers = {
+                            'Authorization': 'key=' + fcm.firebaseserverkey,
+                            'Content-Type': 'application/json'
+                        };
+                        var options = {
+                            uri: 'https://fcm.googleapis.com/fcm/send',
+                            method: 'POST',
+                            headers: headers,
+                            json: data
+                        };
+                        for (var i in response.data.participants) {
+                            // dont emit to the user which sent the card
+                            if (response.data.participants[i]._id !== currentUser._id) {
+                                // Find the other user(s)
+                                findUser(response.data.participants[i]._id, function(result) {
+                                    // get the participants notification key
+                                    // get the message title and body
+                                    if (result.notification_key !== undefined) {
+                                        data.to = result.notification_key;
+                                        data.notification.title = currentUser.google.name;
+                                        data.notification.body = sent_content;
+                                        // get the conversation id
+                                        data.data.url = response.data._id;
+                                        Users.send_notification(options);
+                                    }
+                                });
+                            }
+                        }
+                    });
+            });
+    };
+
+}]);
 
 cardApp.directive("contenteditable", function() {
     return {

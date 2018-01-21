@@ -1,4 +1,4 @@
-cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$timeout', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'socket', 'Users', function($scope, $rootScope, $location, $http, $window, $timeout, Cards, replaceTags, Format, Edit, Conversations, socket, Users) {
+cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$timeout', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'socket', 'Users', 'Database', function($scope, $rootScope, $location, $http, $window, $timeout, Cards, replaceTags, Format, Edit, Conversations, socket, Users, Database) {
 
     $scope.getFocus = Format.getFocus;
     $scope.contentChanged = Format.contentChanged;
@@ -11,7 +11,7 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
 
     var fcm;
 
-    var current_conversation_id = Conversations.getConversationId();
+    //var current_conversation_id = Conversations.getConversationId();
 
     setFocus = function() {
         $timeout(function() {
@@ -63,13 +63,14 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
         $window.focus();
         setFocus();
     }
-
+    
     $scope.card_create = {
         _id: 'card_create',
         content: '',
-        user: $scope.currentUser,
+        //user: $scope.currentUser,
         user_name: ''
     };
+    
 
     // Get the current users details
     $http.get("/api/user_data").then(function(result) {
@@ -83,6 +84,18 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
     });
 
     // CREATE ==================================================================
+
+    $scope.createCard = function(id, card_create) {
+        Database.createCard(id, card_create, fcm, $scope.currentUser);
+    };
+
+    // Broadcast by Database service when a new card has been created
+    $scope.$on('CONV_UPDATED', function(event, data) {
+        $scope.card_create.content = '';
+        //updateConversation(data);
+    });
+
+    /*
     $scope.createCard = function(id, card_create) {
         $scope.card_create.conversationId = current_conversation_id;
         $scope.card_create.content = replaceTags.replace($scope.card_create.content);
@@ -149,4 +162,5 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
                     });
             });
     };
+    */
 }]);

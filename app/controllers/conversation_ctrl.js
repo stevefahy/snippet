@@ -115,18 +115,23 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Check the current users permissions for this conversation
     checkPermission = function(conversation_id) {
+        console.log('checkPermission: ' + $scope.currentUser);
         if ($scope.currentUser) {
             Conversations.find_conversation_id(conversation_id)
                 .then(function(res) {
                     var user_pos = findWithAttr(res.data.participants, '_id', $scope.currentUser._id);
                     if (user_pos >= 0) {
                         $scope.isMember = true;
+                        console.log($scope.isMember);
                     } else {
                         $scope.isMember = false;
+                        console.log($scope.isMember);
                     }
                 });
         } else {
+            console.log('false');
             return false;
+
         }
     };
 
