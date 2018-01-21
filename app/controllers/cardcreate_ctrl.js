@@ -125,6 +125,7 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
                         var options = {
                             uri: 'https://fcm.googleapis.com/fcm/send',
                             method: 'POST',
+                            timeout: 1500,
                             headers: headers,
                             json: data
                         };

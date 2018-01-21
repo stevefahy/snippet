@@ -346,7 +346,7 @@ module.exports = function(app, passport) {
     app.post('/api/users/send_notification', function(req, res) {
         console.log('/api/users/send_notification');
         var options = req.body;
-        request(options, {timeout: 1500}, function(err, response, body) {
+        request(options, function(err, response, body) {
             if (err) {
                 console.log('err: ' + err);
                 console.log('err code: ' + err.code);
