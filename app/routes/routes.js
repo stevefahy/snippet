@@ -351,6 +351,7 @@ module.exports = function(app, passport) {
                 console.log('err: ' + err);
                 throw err;
             } else {
+                console.log(response);
                 console.log(body);
             }
         });
