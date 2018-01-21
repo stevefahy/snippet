@@ -392,7 +392,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // UPDATE ==================================================================
     // Broadcast by Format updateCard service when a card has been updated.
-    /*
     $scope.$on('UPDATECARD', function(event, data) {
         var card_pos = findWithAttr($scope.cards, '_id', data._id);
         if (card_pos >= 0) {
@@ -400,8 +399,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             $scope.cards[card_pos].original_content = $scope.cards[card_pos].content;
         }
     });
-    */
+    
 
+    /*
     $scope.$on('UPDATECARD', function(event, id, card) {
 
         updateCard(id, card);
@@ -478,6 +478,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             });
         }, 1000);
     };
+    */
 
 
 }]);
