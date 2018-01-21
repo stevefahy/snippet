@@ -388,11 +388,14 @@ module.exports = function(app, passport) {
                 };
                 // First time. Create notification key
                 if (user.notification_key === undefined) {
+                    console.log('create key');
                     data.operation = "create";
                     request(options, function(err, response, body) {
                         if (err) {
+                            console.log('err: ' + err);
                             throw err;
                         } else {
+                            console.log('body.notification_key: ' + body.notification_key);
                             var notification_key = body.notification_key;
                             // Save to DB
                             var updateuser = new User(user);
@@ -411,6 +414,7 @@ module.exports = function(app, passport) {
                 } else {
                     // User notification key already created. Update tokens if necessary.
                     // Find the Android device id
+                    console.log('already');
                     var id_pos = findWithAttr(user.tokens, '_id', req.body.id);
                     var new_user = new User(user);
                     var token_array;

@@ -492,8 +492,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             //marky_found = false;
             console.log('update');
             //updateCard(card._id, card);
-            //$rootScope.$broadcast('UPDATECARD', id, card);
-            updateCard(id, card, currentUser);
+            $rootScope.$broadcast('UPDATECARD', id, card);
+            //updateCard(id, card, currentUser);
         }
     };
 

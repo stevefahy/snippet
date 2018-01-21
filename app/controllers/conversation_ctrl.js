@@ -389,6 +389,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // UPDATE ==================================================================
     // Broadcast by Format updateCard service when a card has been updated.
+    /*
     $scope.$on('UPDATECARD', function(event, data) {
         var card_pos = findWithAttr($scope.cards, '_id', data._id);
         if (card_pos >= 0) {
@@ -396,9 +397,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             $scope.cards[card_pos].original_content = $scope.cards[card_pos].content;
         }
     });
-    /*
+    */
+
+    $scope.$on('UPDATECARD', function(event, id, card) {
+
+        updateCard(id, card);
+    });
+
     updateCard = function(card_id, card) {
-        console.log('updateCard!!!: ' + card.content);
+        console.log('updateCard#: ' + card.content);
         card.content = Format.setMediaSize(card_id, card);
         setTimeout(function() {
             $scope.$apply(function() {
@@ -417,6 +424,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         // Update the Conversation updateAt time.
                         Conversations.updateTime(id)
                             .then(function(response) {
+                                console.log(response);
                                 // socket.io emit the card posted to the server
                                 socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: response.data._id, participants: response.data.participants });
                                 // Send notifications
@@ -446,6 +454,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                     if (response.data.participants[i]._id !== $scope.currentUser._id) {
                                         // Find the other user(s)
                                         findUser(response.data.participants[i]._id, function(result) {
+                                            console.log(result);
                                             // get the participants notification key
                                             // get the message title and body
                                             if (result.notification_key !== undefined) {
@@ -454,6 +463,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                                 data.notification.body = sent_content;
                                                 // get the conversation id
                                                 data.data.url = response.data._id;
+                                                console.log('send_notification');
                                                 Users.send_notification(options);
                                             }
                                         });
@@ -465,6 +475,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             });
         }, 1000);
     };
-    */
+
 
 }]);
