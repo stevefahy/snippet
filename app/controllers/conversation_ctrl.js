@@ -227,6 +227,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // called by NOTIFICATION broadcast when another user has updated this conversation
     getConversationUpdate = function(id) {
+        console.log('getConversationUpdate');
         // get all cards for a conversation by conversation id
         $http.get("/chat/get_conversation/" + id).then(function(result) {
             // find only the new cards which have been posted
@@ -327,6 +328,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Broadcast by socket service when a new card has been posted by another user to this user
     $scope.$on('NOTIFICATION', function(event, msg) {
+        console.log('id: ' + id);
         console.log('NOTIFICATION notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
         // only update the conversation if the user is currently in that conversation
         if (id === msg.conversation_id) {
