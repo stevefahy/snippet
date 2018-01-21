@@ -242,6 +242,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             var updated = findDifference(result.data, $scope.cards);
             // If there is a difference between cards content update that card 
             if (updated.length > 0) {
+                console.log('updated');
                 var card_pos = findWithAttr($scope.cards, '_id', updated[0]._id);
                 if (card_pos >= 0) {
                     $scope.cards[card_pos].content = updated[0].content;
@@ -326,7 +327,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Broadcast by socket service when a new card has been posted by another user to this user
     $scope.$on('NOTIFICATION', function(event, msg) {
-        //console.log('NOTIFICATION notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
+        console.log('NOTIFICATION notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
         // only update the conversation if the user is currently in that conversation
         if (id === msg.conversation_id) {
             getConversationUpdate(msg.conversation_id);
