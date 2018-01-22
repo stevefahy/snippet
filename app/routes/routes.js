@@ -349,10 +349,10 @@ module.exports = function(app, passport) {
         request(options, function(err, response, body) {
             if (err) {
                 console.log('err: ' + err);
-                console.log('err code: ' + err.code);
+                //console.log('err code: ' + err.code);
                 throw err;
             } else {
-                console.log(response);
+                //console.log(response);
                 console.log(body);
                 //process.exit(0);
                 res.status(200).send('ok');
