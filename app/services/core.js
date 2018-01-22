@@ -1310,13 +1310,16 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
         user_name: ''
     };
 
-    var current_conversation_id = Conversations.getConversationId();
+    
 
     this.createCard = function(id, card_create, fcm, currentUser) {
 
         card_create.user = currentUser.google.name;
 
+        var current_conversation_id = Conversations.getConversationId();
+        console.log('current_conversation_id: ' + current_conversation_id);
         card_create.conversationId = current_conversation_id;
+
         card_create.content = replaceTags.replace(card_create.content);
         card_create.content = Format.setMediaSize(id, card_create);
 
@@ -1324,16 +1327,16 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
 
         Cards.create(card_create)
             .then(function(response) {
-                // reset the input box
+                
                 var sent_content = card_create.content;
-                //sent_content = checkForImage(sent_content);
-                //sent_content = stripHTML(sent_content);
                 sent_content = Format.checkForImage(sent_content);
                 sent_content = Format.stripHTML(sent_content);
 
                 //card_create.content = '';
 
                 // notify conversation_ctrl and cardcreate_ctrl that the conversation has been updated
+                // reset the input box
+                console.log(response.data);
                 $rootScope.$broadcast('CONV_UPDATED', response.data);
 
                 // Update the Conversation updateAt time.
@@ -1374,6 +1377,64 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
                                         data.to = result.notification_key;
                                         data.notification.title = currentUser.google.name;
                                         data.notification.body = sent_content;
+                                        // get the conversation id
+                                        data.data.url = response.data._id;
+                                        Users.send_notification(options);
+                                    }
+                                });
+                            }
+                        }
+                    });
+            });
+    };
+
+    this.deleteCard = function(card_id, fcm, currentUser) {
+        Cards.delete(card_id)
+            .success(function(data) {
+                //getConversation(id, 500);
+
+                var id = Conversations.getConversationId();
+                //$rootScope.$broadcast('CONV_DELETED', id);
+                $rootScope.$broadcast('CONV_DELETED', card_id);
+                
+                // Update the Conversation updateAt time.
+                Conversations.updateTime(id)
+                    .then(function(response) {
+                        // socket.io emit the card posted to the server
+                        socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: response.data._id, participants: response.data.participants });
+                        // Send notifications
+                        // Set the FCM data for the request
+                        var data = {
+                            "to": "",
+                            "notification": {
+                                "title": "",
+                                "body": ""
+                            },
+                            "data": {
+                                "url": ""
+                            }
+                        };
+                        var headers = {
+                            'Authorization': 'key=' + fcm.firebaseserverkey,
+                            'Content-Type': 'application/json'
+                        };
+                        var options = {
+                            uri: 'https://fcm.googleapis.com/fcm/send',
+                            method: 'POST',
+                            headers: headers,
+                            json: data
+                        };
+                        for (var i in response.data.participants) {
+                            // dont emit to the user which sent the card
+                            if (response.data.participants[i]._id !== currentUser._id) {
+                                // Find the other user(s)
+                                findUser(response.data.participants[i]._id, function(result) {
+                                    // get the participants notification key
+                                    // get the message title and body
+                                    if (result.notification_key !== undefined) {
+                                        data.to = result.notification_key;
+                                        data.notification.title = currentUser.google.name;
+                                        data.notification.body = 'Post deleted.';//sent_content;
                                         // get the conversation id
                                         data.data.url = response.data._id;
                                         Users.send_notification(options);

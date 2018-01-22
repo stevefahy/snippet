@@ -1,4 +1,4 @@
-cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', function($scope, $rootScope, $location, $http, $window, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket) {
+cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', function($scope, $rootScope, $location, $http, $window, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database) {
 
     $scope.getFocus = Format.getFocus;
     $scope.getBlur = Format.getBlur;
@@ -140,6 +140,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         $http.get("/chat/get_conversation/" + id).then(function(result) {
             $scope.cards = result.data;
             conversation_length = $scope.cards.length;
+            console.log('conversation_length:' + conversation_length);
+            console.log('getConversation id: ' + id);
             updateConversationViewed(id, conversation_length);
             // Get the user name for the user id
             // TODO dont repeat if user id already retreived
@@ -207,6 +209,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // update the conversation viewed number by conversation id if it is more than the stored number
     updateConversationViewed = function(id, number) {
+        console.log('id; ' + id);
         // if logged in
         if ($scope.isMember) {
             Conversations.find_conversation_id(id)
@@ -226,6 +229,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     getConversationId = function() {
         if (ua == 'AndroidApp') {
+            var id = Conversations.getConversationId();
             Android.conversationId(id);
         }
     };
@@ -235,6 +239,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log('getConversationUpdate');
         // get all cards for a conversation by conversation id
         $http.get("/chat/get_conversation/" + id).then(function(result) {
+
+            // update the number of cards in this conversation
+            var conversation_length = $scope.cards.length;
+            console.log('currently: ' + conversation_length + ', updated: ' + result.data.length);
+
+
             // find only the new cards which have been posted
             var updates = result.data.slice(conversation_length, result.data.length);
             if (conversation_length < result.data.length) {
@@ -245,7 +255,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }
 
             // Check for updated cards
-            var updated = findDifference(result.data, $scope.cards);
+            var updated = findDifference(result.data, $scope.cards, 'updated');
             // If there is a difference between cards content update that card 
             if (updated.length > 0) {
                 console.log('updated');
@@ -258,9 +268,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
             // Check for deleted cards
             if ($scope.cards.length > result.data.length) {
-                var deleted = findDifference($scope.cards, result.data);
+                console.log('card deleted');
+                var deleted = findDifference($scope.cards, result.data, 'deleted');
+                //var deleted = findDifference(result.data, $scope.cards);
+                console.log('deleted: ' + deleted);
                 if (deleted.length > 0) {
                     var deleted_card_pos = findWithAttr($scope.cards, '_id', deleted[0]._id);
+                    console.log('deleted_card_pos: ' + deleted_card_pos);
                     if (deleted_card_pos >= 0) {
                         $scope.cards.splice(deleted_card_pos, 1);
                     }
@@ -278,8 +292,27 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         };
     }
 
-    findDifference = function(new_cards, old_cards) {
-        var onlyInA = new_cards.filter(comparer(old_cards));
+    function comparerDeleted(otherArray) {
+        return function(current) {
+            return otherArray.filter(function(other) {
+                return other._id == current._id;
+                //return other.value == current.value && other.display == current.display
+            }).length == 0;
+        };
+    }
+
+    findDifference = function(new_cards, old_cards, type) {
+        console.log(new_cards);
+        console.log(old_cards);
+        var onlyInA;
+        if (type == 'updated') {
+            onlyInA = new_cards.filter(comparer(old_cards));
+        } else if (type == 'deleted') {
+            onlyInA = new_cards.filter(comparerDeleted(old_cards));
+        }
+        //var onlyInB = old_cards.filter(comparer(new_cards));
+        console.log('onlyInA:' + onlyInA);
+        //console.log('onlyInB:' + onlyInB);
         return onlyInA;
     };
 
@@ -292,16 +325,42 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Broadcast by cardcreate_ctrl when a new card has been created
     $scope.$on('CONV_UPDATED', function(event, data) {
+        console.log('data: ' + JSON.stringify(data));
         updateConversation(data);
     });
 
     // Broadcast by cardcreate_ctrl when the window regains focus
     $scope.$on('CONV_CHECK', function() {
+        var id = Conversations.getConversationId();
         getConversationUpdate(id);
+    });
+
+    // Broadcast by Database.deleteCard when a card has been deleted.
+    $scope.$on('CONV_DELETED', function(event, card_id) {
+        console.log('delete: ' + card_id);
+
+        var deleted_card_pos = findWithAttr($scope.cards, '_id', card_id);
+        console.log('deleted_card_pos: ' + deleted_card_pos);
+        if (deleted_card_pos >= 0) {
+            $scope.cards.splice(deleted_card_pos, 1);
+        }
+        //getConversation(id, 500);
+    });
+
+    // Broadcast by socket service when a new card has been posted by another user to this user
+    $scope.$on('NOTIFICATION', function(event, msg) {
+        var id = Conversations.getConversationId();
+        console.log('id: ' + id);
+        console.log('NOTIFICATION notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
+        // only update the conversation if the user is currently in that conversation
+        if (id === msg.conversation_id) {
+            getConversationUpdate(msg.conversation_id);
+        }
     });
 
     // update the conversation with the new card data
     updateConversation = function(data) {
+        console.log('data: ' + JSON.stringify(data));
         // Get the user name for the user id
         // TODO dont repeat if user id already retreived
         Users.search_id(data.user)
@@ -324,6 +383,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         // update the number of cards in this conversation
         conversation_length = $scope.cards.length;
         // update the conversation viewed number for this user in this conversation
+        console.log('updateConversation');
         updateConversationViewed(data.conversationId, conversation_length);
         // scroll if necessary
         $timeout(function() {
@@ -331,17 +391,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }, 200);
     };
 
-    // Broadcast by socket service when a new card has been posted by another user to this user
-    $scope.$on('NOTIFICATION', function(event, msg) {
-        console.log('id: ' + id);
-        console.log('NOTIFICATION notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
-        // only update the conversation if the user is currently in that conversation
-        if (id === msg.conversation_id) {
-            getConversationUpdate(msg.conversation_id);
-        }
-    });
+
 
     // DELETE ==================================================================
+    $scope.deleteCard = function(card_id) {
+        Database.deleteCard(card_id, fcm, $scope.currentUser);
+    };
+
+    /*
     $scope.deleteCard = function(card_id) {
         Cards.delete(card_id)
             .success(function(data) {
@@ -394,6 +451,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     });
             });
     };
+    */
 
     // UPDATE ==================================================================
     // Broadcast by Format updateCard service when a card has been updated.
@@ -404,7 +462,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             $scope.cards[card_pos].original_content = $scope.cards[card_pos].content;
         }
     });
-    
+
 
     /*
     $scope.$on('UPDATECARD', function(event, id, card) {
