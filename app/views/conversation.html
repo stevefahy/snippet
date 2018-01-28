@@ -10,16 +10,12 @@
                             <div class="dropdown" ng-attr-id="{{ 'cem' + card._id }}">
                                 <div ng-click="dropDownToggle('cem'+card._id)" class="dropbtn"><span class="glyphicon glyphicon-option-vertical"></span></div>
                                 <div ng-attr-id="myDropdown{{ 'cem' + card._id }}" class="dropdown-content">
-                                    <div ng-click="updateCard(card._id, card)">Update</div>
-                                    <div ng-click="deleteCard(card._id)">Delete</div>
+                                    <div ng-click="deleteCard(card._id, card.conversationId)">Delete</div>
                                 </div>
                             </div>
                         </div>
-
                     </div>
-                    <div class='ce' ng-attr-id="{{ 'ce' + card._id }}" 
-                    ng-attr-contenteditable="{{card.user == currentUser._id}}"
-                     ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id)" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce'+card._id)" ng-blur="getBlur(card._id, card, currentUser)" ng-model="card.content" ng-model-options="{ debounce: 1000 }">
+                    <div class='ce' ng-attr-id="{{ 'ce' + card._id }}" ng-attr-contenteditable="{{card.user == currentUser._id}}" ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id)" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce'+card._id)" ng-blur="getBlur(card._id, card, currentUser)" ng-model="card.content" ng-model-options="{ debounce: 1000 }">
                     </div>
                     <time am-time-ago="card.updatedAt" id="time"></time>
                     <input id="upload-input" type="file" name="uploads[]" multiple="multiple">

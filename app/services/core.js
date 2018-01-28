@@ -67,6 +67,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     var IMAGES_URL = 'fileuploads/images/';
     var refreshedToken;
     var marky_found = false;
+    var focused_id;
+    var focused_card;
+    var focused_user;
 
     $window.androidToJS = this.androidToJS;
     $window.androidTokenRefresh = this.androidTokenRefresh;
@@ -83,11 +86,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         insertImage(data);
     };
 
-
     if (ua === 'AndroidApp') {
         Android.checkFCMToken();
     }
-
 
     androidTokenRefresh = function(data) {
         refreshedToken = JSON.parse(data);
@@ -298,7 +299,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.removeDeleteIds = function() {
-        console.log('removeDeleteIds');
         $('#cecard_create').html($('#cecard_create').html().replace(/<span id="delete">/g, ""));
         $('#cecard_create').html($('#cecard_create').html().replace(/<\/span>/g, ""));
         $('#cecard_create').html($('#cecard_create').html().replace(/\u200B/g, ""));
@@ -310,6 +310,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             var new_image = "<img class='resize-drag' src='" + IMAGES_URL + data.file + "'><span id='delete'>&#x200b</span>";
             self.pasteHtmlAtCaret(new_image);
 
+            // commented out because it causes an issue with onblur which is used to update card.
             /*
             // remove zero width space above image if it exists 
             var clone = $('#cecard_create').clone();
@@ -421,7 +422,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         return content_less_pre;
     };
 
-
     this.checkForImage = function(content) {
         var res;
         if (content.indexOf('<img') >= 0) {
@@ -439,16 +439,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         return tmp.textContent || tmp.innerText || "";
     };
 
-
-    var focused_id;
-    var focused_card;
-    var focused_user;
-
     this.getFocus = function(id, card, currentUser) {
         if (id != undefined && card != undefined) {
-            console.log(id + ' : ' + card + ' : ' + currentUser);
             self.tag_count_previous = self.getTagCountPrevious(card.content);
-            console.log('foky');
             focused_id = id;
             focused_card = card;
             focused_user = currentUser;
@@ -460,7 +453,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         var marky_found = false;
         for (var i = 0; i < secondkey_array.length; i++) {
             if (content.innerHTML.indexOf(initial_key + secondkey_array[i]) >= 0) {
-                console.log('found: ' + initial_key + secondkey_array[i]);
                 marky_found = true;
             }
         }
@@ -469,7 +461,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     checkUpdate = function() {
         if (ua == 'AndroidApp') {
-            console.log('checkUpdate: ' + focused_id);
             if (focused_id != undefined) {
                 self.getBlur(focused_id, focused_card, focused_user);
             }
@@ -477,122 +468,15 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.getBlur = function(id, card, currentUser) {
-        console.log(currentUser);
-        console.log('blur: ' + id);
         var content = document.getElementById('ce' + id);
-        console.log('content: ' + content.innerHTML);
-        //console.log('length: ' + content.innerHTML.length);
-        console.log('original content: ' + card.original_content);
-
         found_marky = findMarky(content);
-        console.log(content.innerHTML != card.original_content);
-        console.log(found_marky);
-        console.log(content.innerHTML != card.original_content && (found_marky == false));
         if (content.innerHTML != card.original_content && (found_marky == false)) {
-            //marky_found = false;
-            console.log('update');
-            //updateCard(card._id, card);
-            //$rootScope.$broadcast('UPDATECARD', id, card);
-
+            // Inject the Database Service
             var Database = $injector.get('Database');
+            // Update the card
             Database.updateCard(id, card, currentUser);
         }
     };
-
-    /*
-    // find the array index of an object value
-    this.findWithAttr = function(array, attr, value) {
-        for (var i = 0; i < array.length; i += 1) {
-            if (array[i][attr] === value) {
-                return i;
-            }
-        }
-        return -1;
-    };
-
-    updateCard = function(card_id, card, currentUser) {
-        //console.log('currentUser: ' + currentUser);
-        console.log('updateCard!!: ' + card.content);
-        card.content = self.setMediaSize(card_id, card);
-        setTimeout(function() {
-            //$scope.$apply(function() {
-            card.content = replaceTags.replace(card.content);
-            card.content = replaceTags.removeDeleteId(card.content);
-
-            var sent_content = card.content;
-            sent_content = self.checkForImage(sent_content);
-            sent_content = self.stripHTML(sent_content);
-
-            var pms = { 'id': card_id, 'card': card };
-            // call the create function from our service (returns a promise object)
-            Cards.update(pms)
-                .success(function(data) {
-                    console.log(data);
-                    $rootScope.$broadcast('UPDATECARD', data);
-                    
-                   // var card_pos = self.findWithAttr($scope.cards, '_id', data._id);
-                  // if (card_pos >= 0) {
-                   //     $scope.cards[card_pos].updatedAt = data.updatedAt;
-                   //     $scope.cards[card_pos].original_content = $scope.cards[card_pos].content;
-                    //}
-                    
-    // Update the Conversation updateAt time.
-    Conversations.updateTime(card.conversationId)
-        .then(function(response) {
-            console.log(response);
-            // socket.io emit the card posted to the server
-            socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: response.data._id, participants: response.data.participants });
-            // Send notifications
-            // Set the FCM data for the request
-            var data = {
-                "to": "",
-                "notification": {
-                    "title": "",
-                    "body": ""
-                },
-                "data": {
-                    "url": ""
-                }
-            };
-            var headers = {
-                'Authorization': 'key=' + fcm.firebaseserverkey,
-                'Content-Type': 'application/json'
-            };
-            var options = {
-                uri: 'https://fcm.googleapis.com/fcm/send',
-                method: 'POST',
-                headers: headers,
-                json: data
-            };
-            for (var i in response.data.participants) {
-                // dont emit to the user which sent the card
-                console.log(response.data.participants[i]._id + ' !== ' + currentUser._id);
-                if (response.data.participants[i]._id !== currentUser._id) {
-                    //if (response.data.participants[i]._id !== card.user) {
-                    // Find the other user(s)
-                    findUser(response.data.participants[i]._id, function(result) {
-                        // get the participants notification key
-                        // get the message title and body
-                        if (result.notification_key !== undefined) {
-                            data.to = result.notification_key;
-                            console.log('data.to: ' + data.to);
-                            //data.notification.title = $scope.card_create.user;
-                            data.notification.title = currentUser.google.name;
-                            data.notification.body = sent_content;
-                            // get the conversation id
-                            data.data.url = response.data._id;
-                            Users.send_notification(options);
-                        }
-                    });
-                }
-            }
-        });
-})
-.error(function(error) {});
-//});
-}, 1000);
-};
-*/
 
     this.getTagCountPrevious = function(content) {
         var tag_count_previous_local;
@@ -689,9 +573,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     // TODO remove delete id?
     function moveCaretAfter(id) {
-
         self.removeDeleteIds();
-
         var current_node = $("#" + id).get(0);
         $("<span id='delete'>&#x200b</span>").insertAfter(current_node);
         var range = document.createRange();
@@ -702,20 +584,16 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         var selection = window.getSelection();
         selection.removeAllRanges();
         selection.addRange(range);
-
         // Fix for Firefox which replaces the zero width space with a <br> tag
         if (ua.toLowerCase().indexOf('firefox') > -1) {
             $('#' + id).html($('#' + id).html().replace(/<br>/g, ""));
         }
-
         $('#' + id).removeAttr('id');
         return;
     }
 
     function moveCaretInto(id) {
-
         self.removeDeleteIds();
-
         $("#" + id).html('&#x200b');
         var current_node = $("#" + id).get(0);
         range = document.createRange();
@@ -725,7 +603,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         var selection = window.getSelection();
         selection.removeAllRanges();
         selection.addRange(range);
-
         // Fix for Firefox which replaces the zero width space with a <br> tag
         if (ua.toLowerCase().indexOf('firefox') > -1) {
             $('#' + id).html($('#' + id).html().replace(/<br>/g, ""));
@@ -1130,6 +1007,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
 
 cardApp.service('replaceTags', function() {
+
     var self = this;
 
     this.replace = function(str) {
@@ -1209,6 +1087,14 @@ cardApp.service('Edit', function() {
 
 cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', function($window, $rootScope, $timeout, $q, Users, Cards, Conversations, replaceTags, socket, Format) {
 
+    var card_create = {
+        _id: 'card_create',
+        content: '',
+        //user: $scope.currentUser,
+        user: '',
+        user_name: ''
+    };
+
     // find the array index of an object value
     this.findWithAttr = function(array, attr, value) {
         for (var i = 0; i < array.length; i += 1) {
@@ -1219,36 +1105,24 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
         return -1;
     };
 
+    // TODO Add updatedViewd for updated Card like createCard and deleteCard?
     this.updateCard = function(card_id, card, currentUser) {
-        //console.log('currentUser: ' + currentUser);
-        console.log('updateCard!!: ' + card.content);
+
         card.content = Format.setMediaSize(card_id, card);
         setTimeout(function() {
-            //$scope.$apply(function() {
             card.content = replaceTags.replace(card.content);
             card.content = replaceTags.removeDeleteId(card.content);
-
             var sent_content = card.content;
             sent_content = Format.checkForImage(sent_content);
             sent_content = Format.stripHTML(sent_content);
-
             var pms = { 'id': card_id, 'card': card };
             // call the create function from our service (returns a promise object)
             Cards.update(pms)
                 .success(function(data) {
-                    console.log(data);
-                    $rootScope.$broadcast('UPDATECARD', data);
-                    /*
-                    var card_pos = self.findWithAttr($scope.cards, '_id', data._id);
-                    if (card_pos >= 0) {
-                        $scope.cards[card_pos].updatedAt = data.updatedAt;
-                        $scope.cards[card_pos].original_content = $scope.cards[card_pos].content;
-                    }
-                    */
+                    $rootScope.$broadcast('CARD_UPDATED', data);
                     // Update the Conversation updateAt time.
                     Conversations.updateTime(card.conversationId)
                         .then(function(response) {
-                            console.log(response);
                             // socket.io emit the card posted to the server
                             socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: response.data._id, participants: response.data.participants });
                             // Send notifications
@@ -1275,16 +1149,15 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
                             };
                             for (var i in response.data.participants) {
                                 // dont emit to the user which sent the card
-                                console.log(response.data.participants[i]._id + ' !== ' + currentUser._id);
+                                //console.log(response.data.participants[i]._id + ' !== ' + currentUser._id);
                                 if (response.data.participants[i]._id !== currentUser._id) {
-                                    //if (response.data.participants[i]._id !== card.user) {
                                     // Find the other user(s)
                                     findUser(response.data.participants[i]._id, function(result) {
                                         // get the participants notification key
                                         // get the message title and body
                                         if (result.notification_key !== undefined) {
                                             data.to = result.notification_key;
-                                            console.log('data.to: ' + data.to);
+                                            //console.log('data.to: ' + data.to);
                                             //data.notification.title = $scope.card_create.user;
                                             data.notification.title = currentUser.google.name;
                                             data.notification.body = sent_content;
@@ -1298,53 +1171,32 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
                         });
                 })
                 .error(function(error) {});
-            //});
         }, 1000);
     };
-
-    var card_create = {
-        _id: 'card_create',
-        content: '',
-        //user: $scope.currentUser,
-        user: '',
-        user_name: ''
-    };
-
-    
 
     this.createCard = function(id, card_create, fcm, currentUser) {
 
         card_create.user = currentUser.google.name;
-
         var current_conversation_id = Conversations.getConversationId();
-        console.log('current_conversation_id: ' + current_conversation_id);
         card_create.conversationId = current_conversation_id;
-
         card_create.content = replaceTags.replace(card_create.content);
         card_create.content = Format.setMediaSize(id, card_create);
-
         card_create.content = Format.removeDeleteIds();
 
         Cards.create(card_create)
             .then(function(response) {
-                
                 var sent_content = card_create.content;
                 sent_content = Format.checkForImage(sent_content);
                 sent_content = Format.stripHTML(sent_content);
-
-                //card_create.content = '';
-
+                var card_id = response.data._id;
+                var card_response = response.data;
                 // notify conversation_ctrl and cardcreate_ctrl that the conversation has been updated
                 // reset the input box
-                console.log(response.data);
-                $rootScope.$broadcast('CONV_UPDATED', response.data);
-
+                $rootScope.$broadcast('CARD_CREATED', card_response);
+                var viewed_users = [];
                 // Update the Conversation updateAt time.
                 Conversations.updateTime(current_conversation_id)
                     .then(function(response) {
-                        console.log(response.data);
-                        // socket.io emit the card posted to the server
-                        socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: response.data._id, participants: response.data.participants });
                         // Send notifications
                         // Set the FCM data for the request
                         var data = {
@@ -1367,9 +1219,13 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
                             headers: headers,
                             json: data
                         };
+
+                        var participants_array = response.data.participants;
+
                         for (var i in response.data.participants) {
                             // dont emit to the user which sent the card
                             if (response.data.participants[i]._id !== currentUser._id) {
+                                viewed_users.push({ "_id": response.data.participants[i]._id });
                                 // Find the other user(s)
                                 findUser(response.data.participants[i]._id, function(result) {
                                     // get the participants notification key
@@ -1382,24 +1238,36 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
                                         data.data.url = response.data._id;
                                         Users.send_notification(options);
                                     }
+
                                 });
                             }
                         }
+
+                        var promises = [];
+                        for (var x = 0; x < viewed_users.length; x++) {
+                            promises.push(
+                                Conversations.updateViewed(current_conversation_id, viewed_users[x]._id, card_id)
+                                .then(function(res) {
+                                    //
+                                })
+                            );
+                        }
+                        // All Conversation participants unviewed arrays updated
+                        $q.all(promises).then(function() {
+                            // update other paticipants in the conversation via socket.
+                            socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: current_conversation_id, participants: viewed_users });
+                        });
                     });
             });
     };
 
-    this.deleteCard = function(card_id, fcm, currentUser) {
+    this.deleteCard = function(card_id, conversation_id, fcm, currentUser) {
         Cards.delete(card_id)
             .success(function(data) {
-                //getConversation(id, 500);
-
-                var id = Conversations.getConversationId();
-                //$rootScope.$broadcast('CONV_DELETED', id);
-                $rootScope.$broadcast('CONV_DELETED', card_id);
-                
-                // Update the Conversation updateAt time.
-                Conversations.updateTime(id)
+                // notify conversation_ctrl that the card has been deleted
+                $rootScope.$broadcast('CARD_DELETED', card_id);
+                // remove this Card from the unviewed array for all Conversation participants.
+                Conversations.removeViewed(conversation_id, currentUser, card_id)
                     .then(function(response) {
                         // socket.io emit the card posted to the server
                         socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: response.data._id, participants: response.data.participants });
@@ -1435,7 +1303,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
                                     if (result.notification_key !== undefined) {
                                         data.to = result.notification_key;
                                         data.notification.title = currentUser.google.name;
-                                        data.notification.body = 'Post deleted.';//sent_content;
+                                        data.notification.body = 'Post deleted.'; //sent_content;
                                         // get the conversation id
                                         data.data.url = response.data._id;
                                         Users.send_notification(options);
