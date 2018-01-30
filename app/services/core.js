@@ -119,7 +119,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     }, {
         charstring: 'zc',
         html: 'input',
-        attribute: 'type="checkbox" onclick="checkBoxChanged(this)" onmouseover="checkBoxMouseover(this)" onmouseout="checkBoxMouseout(this)" ng-disabled="{{card.user != currentUser._id}}"',
+        attribute: 'type="checkbox" onclick="checkBoxChanged(this)" onmouseover="checkBoxMouseover(this)" onmouseout="checkBoxMouseout(this)" ',
         span_start: '<span id="checkbox_edit" >',
         span_end: '</span>',
         close: false
