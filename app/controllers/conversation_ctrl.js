@@ -178,6 +178,33 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     };
 
+    setCheckBoxes = function() {
+        console.log('checker check');
+        // $(".ce").each(function(index) {
+        //$(this).removeAttr("contenteditable");
+        // console.log( $( '.ce' ).html() );
+        //});
+    };
+
+    $scope.test = function(id) {
+        console.log(id);
+
+
+        $timeout(function() {
+            //console.log($('ce'+id));
+            //$('input:checkbox')
+
+            var el = document.getElementById('ce' + id);
+            //console.log(el);
+            //console.log();
+            if ($(el).attr('contenteditable') == 'false') {
+                $(el).find('input[type=checkbox]').attr('disabled', 'disabled');
+            }
+        }, 0);
+
+
+    };
+
     // Scroll to the bottom of the list
     scrollToBottom = function(speed) {
         $('html, body').animate({
@@ -188,12 +215,74 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // Function called from core.js by dynamically added input type=checkbox.
     // It rewrites the HTML to save the checkbox state.
     checkBoxChanged = function(checkbox) {
+        console.log('checkBoxChanged: ' + checkbox);
         if (checkbox.checked) {
             checkbox.setAttribute("checked", "true");
         } else {
             checkbox.removeAttribute("checked");
         }
+        // Add id checkbox_span to the input so that it can have focus set.
+        //var input = $(document.activeElement).closest("input");
+        //$(checkbox).attr('id', 'checkbox_span');
+        //checkbox.setAttribute("id", "checkbox_input");
+        // Set focus on the checkbox_span.
+        var node = $(checkbox).closest('#checkbox_edit');
+        //   console.log($(element).closest("div").attr("id"));
+        //var node = document.getElementById('checkbox_span');
+        //var node = document.getElementById('checkbox_edit');
+        console.log(node);
+        //var node = $(checkbox).closest("#checkbox_span");
+        $(node).attr("id", "checkbox_current");
+        node = document.getElementById('checkbox_current');
+        //node = document.getElementById('checkbox_input');
+        //var node = $(checkbox);
+        console.log(node);
+        //node.focus();
 
+        var range = document.createRange();
+        //
+
+        //range.selectNodeContents(node);
+        range.setStartAfter(node);
+
+        //range.setStartBefore(node);
+        //range.setStart(node, 1); 
+        var sel = window.getSelection();
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+
+        // Remove the id checkbox_span
+        //$('#checkbox_span').removeAttr('id');
+        node.setAttribute('id', 'checkbox_edit');
+        //checkbox.removeAttribute("id");
+    };
+
+    checkBoxMouseover = function(checkbox) {
+        var card = $(checkbox).closest(".ce");
+        var initial_state = $(card).attr('contenteditable');
+        // Fix for Firefox
+        if (ua.toLowerCase().indexOf('firefox') > -1) {
+            console.log('over');
+            var span = $(checkbox).closest("#checkbox_edit");
+            console.log(initial_state);
+            if (initial_state == 'true') {
+                console.log('set');
+                $(span).attr('contenteditable', 'false');
+                //$(node).attr("id", "checkbox_current");
+                //span.setAttribute('contenteditable', 'false');
+            } else {
+                $(span).attr('contenteditable', 'true');
+            }
+        }
+    };
+
+    checkBoxMouseout = function(checkbox) {
+        // Fix for Firefox
+        if (ua.toLowerCase().indexOf('firefox') > -1) {
+            var span = $(checkbox).closest("#checkbox_edit");
+            $(span).attr('contenteditable', 'true');
+        }
     };
 
     //
@@ -206,6 +295,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             $scope.currentUser = result.data.user;
         }
         // Start watching onfocus and onblur, then load the conversation for the first time.
+        setCheckBoxes();
         watchFocus();
 
     });

@@ -71,6 +71,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     var focused_card;
     var focused_user;
 
+    var blur_called = false;
+
     $window.androidToJS = this.androidToJS;
     $window.androidTokenRefresh = this.androidTokenRefresh;
 
@@ -117,7 +119,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     }, {
         charstring: 'zc',
         html: 'input',
-        attribute: 'type="checkbox" onclick="checkBoxChanged(this)"',
+        attribute: 'type="checkbox" onclick="checkBoxChanged(this)" onmouseover="checkBoxMouseover(this)" onmouseout="checkBoxMouseout(this)" ng-disabled="{{card.user != currentUser._id}}"',
+        span_start: '<span id="checkbox_edit" >',
+        span_end: '</span>',
         close: false
     }, {
         charstring: 'z1',
@@ -167,6 +171,17 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         close: false
     }];
 
+
+
+
+
+    changeEditable = function(elem, boolean) {
+        console.log('change: ' + boolean);
+        //$(elem).attr('contenteditable', boolean);
+        //$('#checkbox_edit').attr('contenteditable', boolean);
+        //$("#checkbox_edit").prop("contenteditable", boolean);
+        $(elem).closest("span").attr('contenteditable', boolean);
+    };
     // Create secondkey_array from marky_array
     for (var i = 0; i < marky_array.length; i++) {
         secondkey_array.push(marky_array[i].charstring.charAt(1));
@@ -305,6 +320,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         return $('#cecard_create').html();
     };
 
+
+
     insertImage = function(data) {
         if (data.response === 'saved') {
             var new_image = "<img class='resize-drag' src='" + IMAGES_URL + data.file + "'><span id='delete'>&#x200b</span>";
@@ -441,6 +458,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     this.getFocus = function(id, card, currentUser) {
         if (id != undefined && card != undefined) {
+            console.log('focus: ' + card._id);
             self.tag_count_previous = self.getTagCountPrevious(card.content);
             focused_id = id;
             focused_card = card;
@@ -452,7 +470,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     findMarky = function(content) {
         var marky_found = false;
         for (var i = 0; i < secondkey_array.length; i++) {
-            if (content.innerHTML.indexOf(initial_key + secondkey_array[i]) >= 0) {
+            if (content.indexOf(initial_key + secondkey_array[i]) >= 0) {
                 marky_found = true;
             }
         }
@@ -468,14 +486,28 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.getBlur = function(id, card, currentUser) {
-        var content = document.getElementById('ce' + id);
-        found_marky = findMarky(content);
-        if (content.innerHTML != card.original_content && (found_marky == false)) {
-            // Inject the Database Service
-            var Database = $injector.get('Database');
-            // Update the card
-            Database.updateCard(id, card, currentUser);
-        }
+        // Add slight delay so that document.activeElement works
+
+        blur_called = true;
+        setTimeout(function() {
+            console.log('blur: ' + card._id);
+            var content = document.getElementById('ce' + id);
+            var active = $(document.activeElement).closest("div").attr('id');
+            console.log('active: ' + active);
+            if ('ce' + card._id != active && (active != 'hidden_input_container')) {
+                found_marky = findMarky(card.content);
+                console.log('found_marky: ' + found_marky);
+                if (card.content != card.original_content && (found_marky == false)) {
+                    console.log('update');
+                    // Inject the Database Service
+                    var Database = $injector.get('Database');
+                    // Update the card
+                    Database.updateCard(id, card, currentUser);
+                }
+            }
+            blur_called = false;
+        }, 0);
+
     };
 
     this.getTagCountPrevious = function(content) {
@@ -489,9 +521,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         return tag_count_previous_local;
     };
 
+    // TODO Check if this is still required.
     this.setMediaSize = function(id, card) {
-        var content = document.getElementById('ce' + id);
-        return content.innerHTML;
+        //var content = document.getElementById('ce' + id);
+        //return content.innerHTML;
+        return card.content;
     };
 
     // Currently not used
@@ -741,8 +775,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                         if (close_tag) {
                             marky_started_array.push(JSON.parse(JSON.stringify(mark_list_current[0])));
                         }
-                        var updateChars = currentChars.replace(char_watch, "<" + marky_array[ma].html + " " + marky_array[ma].attribute + " id='marky'>");
-
+                        var updateChars;
+                        if (marky_array[ma].span_start != undefined) {
+                            updateChars = currentChars.replace(char_watch, marky_array[ma].span_start + "<" + marky_array[ma].html + " " + marky_array[ma].attribute + " id='marky'>" + marky_array[ma].span_end);
+                        } else {
+                            updateChars = currentChars.replace(char_watch, "<" + marky_array[ma].html + " " + marky_array[ma].attribute + " id='marky'>");
+                        }
                         if (close_tag) {
                             updateChars += "</" + marky_array[ma].html + ">";
                         }
@@ -939,7 +977,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 start_key = false;
                 for (var i = 0; i < secondkey_array.length; i++) {
                     if (kc == secondkey_array[i]) {
+                        console.log('blur_called: ' + blur_called);
                         stopEditing(this.id);
+                        //}
                     }
                 }
             }
@@ -967,8 +1007,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         // Stop the default behavior for the ENTER key and insert <br><br> instead
         if ($event.keyCode == 13) {
             $event.preventDefault();
-            self.pasteHtmlAtCaret("<br><span id='focus'></span>");
-            moveCaretInto('focus');
+            self.pasteHtmlAtCaret("<br><span id='enter_focus'></span>");
+            moveCaretInto('enter_focus');
             return false;
         }
     };
@@ -1055,6 +1095,30 @@ cardApp.service('replaceTags', function() {
         }
     };
 
+    this.removeFocusIds = function(str) {
+        console.log('removeFocusIds: ' + str);
+
+        str = $("<div>" + str + "</div>");
+        $('span#focus', str).each(function(e) {
+            $(this).replaceWith($(this).html());
+        });
+        // check if any remain
+        if ($(str).find('span#focus').length > 0) {
+            str = str.html();
+            return self.removeFocusIds(str);
+        } else {
+            str = str.html();
+            return str;
+        }
+        /*
+        $('#cecard_create').html($('#cecard_create').html().replace(/<span id="delete">/g, ""));
+        $('#cecard_create').html($('#cecard_create').html().replace(/<\/span>/g, ""));
+        $('#cecard_create').html($('#cecard_create').html().replace(/\u200B/g, ""));
+        return $('#cecard_create').html();
+            */
+
+    };
+
 });
 
 cardApp.service('Edit', function() {
@@ -1112,6 +1176,9 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
         setTimeout(function() {
             card.content = replaceTags.replace(card.content);
             card.content = replaceTags.removeDeleteId(card.content);
+
+            card.content = replaceTags.removeFocusIds(card.content);
+            console.log(card.content);
             var sent_content = card.content;
             sent_content = Format.checkForImage(sent_content);
             sent_content = Format.stripHTML(sent_content);
