@@ -3,7 +3,6 @@ var cardApp = angular.module("cardApp", ['ngSanitize', 'ngRoute', 'angularMoment
 // Prefix for loading a snip id
 var prefix = '/s/';
 
-
 cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
     $routeProvider
         .when('/', {
@@ -70,8 +69,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     var focused_id;
     var focused_card;
     var focused_user;
-
-    var blur_called = false;
 
     $window.androidToJS = this.androidToJS;
     $window.androidTokenRefresh = this.androidTokenRefresh;
@@ -171,17 +168,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         close: false
     }];
 
-
-
-
-
-    changeEditable = function(elem, boolean) {
-        console.log('change: ' + boolean);
-        //$(elem).attr('contenteditable', boolean);
-        //$('#checkbox_edit').attr('contenteditable', boolean);
-        //$("#checkbox_edit").prop("contenteditable", boolean);
-        $(elem).closest("span").attr('contenteditable', boolean);
-    };
     // Create secondkey_array from marky_array
     for (var i = 0; i < marky_array.length; i++) {
         secondkey_array.push(marky_array[i].charstring.charAt(1));
@@ -320,8 +306,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         return $('#cecard_create').html();
     };
 
-
-
     insertImage = function(data) {
         if (data.response === 'saved') {
             var new_image = "<img class='resize-drag' src='" + IMAGES_URL + data.file + "'><span id='delete'>&#x200b</span>";
@@ -458,7 +442,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     this.getFocus = function(id, card, currentUser) {
         if (id != undefined && card != undefined) {
-            console.log('focus: ' + card._id);
             self.tag_count_previous = self.getTagCountPrevious(card.content);
             focused_id = id;
             focused_card = card;
@@ -485,9 +468,10 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         }
     };
 
+    // Called by Android onPause
+    // Update the card.
     this.getBlurAndroid = function(id, card, currentUser) {
         if (id != undefined && card != undefined && currentUser != undefined) {
-            console.log('android update');
             // Inject the Database Service
             var Database = $injector.get('Database');
             // Update the card
@@ -497,24 +481,23 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     this.getBlur = function(id, card, currentUser) {
         // Add slight delay so that document.activeElement works
-        blur_called = true;
         setTimeout(function() {
-            console.log('blur: ' + card._id);
-            var content = document.getElementById('ce' + id);
+            // Get the element currently in focus
             var active = $(document.activeElement).closest("div").attr('id');
-            console.log('active: ' + active);
+            // If the blurred card is not the current card or the hidden input.
             if ('ce' + card._id != active && (active != 'hidden_input_container')) {
+                // Check if there is a marky in progress
+                // zm launching image capture should not trigger an update. It causes error.
                 found_marky = findMarky(card.content);
-                console.log('found_marky: ' + found_marky);
+                // check the content has changed and not currently mid marky
                 if (card.content != card.original_content && (found_marky == false)) {
-                    console.log('update');
+                    // Update the card
                     // Inject the Database Service
                     var Database = $injector.get('Database');
                     // Update the card
                     Database.updateCard(id, card, currentUser);
                 }
             }
-            blur_called = false;
         }, 0);
 
     };
@@ -986,9 +969,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 start_key = false;
                 for (var i = 0; i < secondkey_array.length; i++) {
                     if (kc == secondkey_array[i]) {
-                        console.log('blur_called: ' + blur_called);
                         stopEditing(this.id);
-                        //}
                     }
                 }
             }
@@ -1105,8 +1086,6 @@ cardApp.service('replaceTags', function() {
     };
 
     this.removeFocusIds = function(str) {
-        console.log('removeFocusIds: ' + str);
-
         str = $("<div>" + str + "</div>");
         $('span#focus', str).each(function(e) {
             $(this).replaceWith($(this).html());
@@ -1119,13 +1098,6 @@ cardApp.service('replaceTags', function() {
             str = str.html();
             return str;
         }
-        /*
-        $('#cecard_create').html($('#cecard_create').html().replace(/<span id="delete">/g, ""));
-        $('#cecard_create').html($('#cecard_create').html().replace(/<\/span>/g, ""));
-        $('#cecard_create').html($('#cecard_create').html().replace(/\u200B/g, ""));
-        return $('#cecard_create').html();
-            */
-
     };
 
 });
@@ -1185,9 +1157,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
         setTimeout(function() {
             card.content = replaceTags.replace(card.content);
             card.content = replaceTags.removeDeleteId(card.content);
-
             card.content = replaceTags.removeFocusIds(card.content);
-            console.log(card.content);
             var sent_content = card.content;
             sent_content = Format.checkForImage(sent_content);
             sent_content = Format.stripHTML(sent_content);

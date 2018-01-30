@@ -87,6 +87,17 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         Database.deleteCard(card_id, conversation_id, fcm, $scope.currentUser);
     };
 
+    // Called as each card is loaded.
+    // Disable checkboxes if the contenteditable is set to false.
+    $scope.disableCheckboxes = function(id) {
+        $timeout(function() {
+            var el = document.getElementById('ce' + id);
+            if ($(el).attr('contenteditable') == 'false') {
+                $(el).find('input[type=checkbox]').attr('disabled', 'disabled');
+            }
+        }, 0);
+    };
+
     // TODO make this a service?
     // find the array index of an object value
     function findWithAttr(array, attr, value) {
@@ -178,25 +189,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     };
 
-
-
-    $scope.disableCheckboxes = function(id) {
-        console.log(id);
-        $timeout(function() {
-            //console.log($('ce'+id));
-            //$('input:checkbox')
-
-            var el = document.getElementById('ce' + id);
-            //console.log(el);
-            //console.log();
-            if ($(el).attr('contenteditable') == 'false') {
-                $(el).find('input[type=checkbox]').attr('disabled', 'disabled');
-            }
-        }, 0);
-
-
-    };
-
     // Scroll to the bottom of the list
     scrollToBottom = function(speed) {
         $('html, body').animate({
@@ -207,63 +199,44 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // Function called from core.js by dynamically added input type=checkbox.
     // It rewrites the HTML to save the checkbox state.
     checkBoxChanged = function(checkbox) {
-        console.log('checkBoxChanged: ' + checkbox);
         if (checkbox.checked) {
             checkbox.setAttribute("checked", "true");
         } else {
             checkbox.removeAttribute("checked");
         }
-        // Add id checkbox_span to the input so that it can have focus set.
-        //var input = $(document.activeElement).closest("input");
-        //$(checkbox).attr('id', 'checkbox_span');
-        //checkbox.setAttribute("id", "checkbox_input");
-        // Set focus on the checkbox_span.
+        // Firefox bug - when contenteditable = true a checkbox cannot be selected
+        // Fix - create a span around the checkbox with a contenteditable = false
+        // Get the span around the checkbox.
         var node = $(checkbox).closest('#checkbox_edit');
-        //   console.log($(element).closest("div").attr("id"));
-        //var node = document.getElementById('checkbox_span');
-        //var node = document.getElementById('checkbox_edit');
-        console.log(node);
-        //var node = $(checkbox).closest("#checkbox_span");
+        // Temporarily change the id
         $(node).attr("id", "checkbox_current");
+        // Get the node of the temp id.
         node = document.getElementById('checkbox_current');
-        //node = document.getElementById('checkbox_input');
-        //var node = $(checkbox);
-        console.log(node);
-        //node.focus();
-
+        // Set focus back to the card so that getBlur and getFocus function to update the card.
         var range = document.createRange();
-        //
-
-        //range.selectNodeContents(node);
         range.setStartAfter(node);
-
-        //range.setStartBefore(node);
-        //range.setStart(node, 1); 
         var sel = window.getSelection();
         range.collapse(true);
         sel.removeAllRanges();
         sel.addRange(range);
-
-        // Remove the id checkbox_span
-        //$('#checkbox_span').removeAttr('id');
+        // Reset the id
         node.setAttribute('id', 'checkbox_edit');
-        //checkbox.removeAttribute("id");
     };
 
     checkBoxMouseover = function(checkbox) {
+        // Fix for Firefox
+        // Get the initial contenteditable value for this card.
         var card = $(checkbox).closest(".ce");
         var initial_state = $(card).attr('contenteditable');
-        // Fix for Firefox
+        // If Firefox
         if (ua.toLowerCase().indexOf('firefox') > -1) {
-            console.log('over');
             var span = $(checkbox).closest("#checkbox_edit");
-            console.log(initial_state);
+            // If this is a editable card.
             if (initial_state == 'true') {
-                console.log('set');
+                // temp set editable to false so that it can be checked on Firefox.
                 $(span).attr('contenteditable', 'false');
-                //$(node).attr("id", "checkbox_current");
-                //span.setAttribute('contenteditable', 'false');
             } else {
+                // set editable to true so that it cannot be checked as this is not an editable card.
                 $(span).attr('contenteditable', 'true');
             }
         }
@@ -271,6 +244,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     checkBoxMouseout = function(checkbox) {
         // Fix for Firefox
+        // Reset the edit value to its default true
         if (ua.toLowerCase().indexOf('firefox') > -1) {
             var span = $(checkbox).closest("#checkbox_edit");
             $(span).attr('contenteditable', 'true');
@@ -329,8 +303,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $scope.isMember = result;
                 getConversation(id, 500);
             });
-
-
         }
     };
 
