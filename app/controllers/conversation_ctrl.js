@@ -124,8 +124,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         return onlyInA;
     };
 
-    // Web only
-    if (ua !== 'AndroidApp') {
+    // Android only
+    if (ua == 'AndroidApp') {
         window.addEventListener("resize", function() {
             is_landscape = (screen.height < screen.width);
             if (is_landscape) {
@@ -178,18 +178,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     };
 
-    setCheckBoxes = function() {
-        console.log('checker check');
-        // $(".ce").each(function(index) {
-        //$(this).removeAttr("contenteditable");
-        // console.log( $( '.ce' ).html() );
-        //});
-    };
 
-    $scope.test = function(id) {
+
+    $scope.disableCheckboxes = function(id) {
         console.log(id);
-
-
         $timeout(function() {
             //console.log($('ce'+id));
             //$('input:checkbox')
@@ -295,7 +287,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             $scope.currentUser = result.data.user;
         }
         // Start watching onfocus and onblur, then load the conversation for the first time.
-        setCheckBoxes();
         watchFocus();
 
     });

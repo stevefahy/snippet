@@ -2,7 +2,7 @@
     <div card-test></div>
     <div ng-controller="conversationCtrl">
         <div id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : false">
-            <div class=" resize-container" id="conversation_part" ng-init="test(card._id)">
+            <div class=" resize-container" id="conversation_part" ng-init="disableCheckboxes(card._id)">
                 <form class="form-horizontal">
                     <div id="user">
                         <div class="username">{{card.user_name}}</div>
