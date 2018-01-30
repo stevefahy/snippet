@@ -480,14 +480,23 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     checkUpdate = function() {
         if (ua == 'AndroidApp') {
             if (focused_id != undefined) {
-                self.getBlur(focused_id, focused_card, focused_user);
+                self.getBlurAndroid(focused_id, focused_card, focused_user);
             }
+        }
+    };
+
+    this.getBlurAndroid = function(id, card, currentUser) {
+        if (id != undefined && card != undefined && currentUser != undefined) {
+            console.log('android update');
+            // Inject the Database Service
+            var Database = $injector.get('Database');
+            // Update the card
+            Database.updateCard(id, card, currentUser);
         }
     };
 
     this.getBlur = function(id, card, currentUser) {
         // Add slight delay so that document.activeElement works
-
         blur_called = true;
         setTimeout(function() {
             console.log('blur: ' + card._id);
