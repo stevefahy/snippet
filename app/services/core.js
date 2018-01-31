@@ -1225,6 +1225,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
                                                 data.data.url = response.data._id;
                                                 console.log(data);
                                                 notify_users.push(data);
+                                                console.log(notify_users);
                                                 //Users.send_notification(options);
                                             }
                                         });
