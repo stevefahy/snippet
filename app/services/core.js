@@ -1236,6 +1236,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
 
                                 var promises = [];
                                 for (var x = 0; x < viewed_users.length; x++) {
+                                    console.log(viewed_users[x]);
                                     promises.push(
                                         Conversations.updateViewed(current_conversation_id, viewed_users[x]._id, card_id)
                                         .then(function(res) {
