@@ -1238,25 +1238,25 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
 
                                 }
 
-                                    console.log(notify_users);
+                                console.log(notify_users);
 
-                                    for (var y = 0; y < notify_users.length; y++) {
-                                        console.log(notify_users[y]);
-                                        data.to = notify_users[y];
-                                        //console.log('data.to: ' + data.to);
-                                        //data.notification.title = $scope.card_create.user;
-                                        data.notification.title = currentUser.google.name;
-                                        data.notification.body = sent_content;
-                                        // get the conversation id
-                                        data.data.url = response.data._id;
-                                        console.log(data);
-                                        promises.push(
-                                            Users.send_notification(data)
-                                            .then(function(res) {
-                                                //
-                                            })
-                                        );
-                                    }
+                                for (var y = 0; y < notify_users.length; y++) {
+                                    console.log(notify_users[y]);
+                                    data.to = notify_users[y];
+                                    //console.log('data.to: ' + data.to);
+                                    //data.notification.title = $scope.card_create.user;
+                                    data.notification.title = currentUser.google.name;
+                                    data.notification.body = sent_content;
+                                    // get the conversation id
+                                    data.data.url = response.data._id;
+                                    console.log(data);
+                                    promises.push(
+                                        Users.send_notification(data)
+                                        .then(function(res) {
+                                            //
+                                        })
+                                    );
+                                }
 
                                 //var promises = [];
                                 for (var x = 0; x < viewed_users.length; x++) {
