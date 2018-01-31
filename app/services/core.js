@@ -1217,7 +1217,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
                                             console.log(result);
                                             if (result.notification_key !== undefined) {
                                                 console.log('3');
-                                                /
+                                                
                                                 data.to = result.notification_key;
                                                 //console.log('data.to: ' + data.to);
                                                 //data.notification.title = $scope.card_create.user;
