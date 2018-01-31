@@ -1130,7 +1130,7 @@ cardApp.service('Edit', function() {
 
 });
 
-cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', function($window, $rootScope, $timeout, $q, Users, Cards, Conversations, replaceTags, socket, Format) {
+cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format) {
 
     var updateinprogress = false;
 
