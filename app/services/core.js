@@ -1202,6 +1202,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
                                     headers: headers,
                                     json: data
                                 };
+                                var promises = [];
                                 for (var i in response.data.participants) {
                                     // dont emit to the user which sent the card
                                     //console.log(response.data.participants[i]._id + ' !== ' + currentUser._id);
@@ -1227,15 +1228,34 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
                                                 console.log(data);
                                                 */
                                                 notify_users.push(result.notification_key);
-                                                
+
                                                 //Users.send_notification(options);
                                             }
                                         });
                                         console.log(notify_users);
+
+                                        for (var y = 0; y < notify_users.length; y++) {
+                                            console.log(notify_users[y]);
+                                            data.to = notify_users[y];
+                                            //console.log('data.to: ' + data.to);
+                                            //data.notification.title = $scope.card_create.user;
+                                            data.notification.title = currentUser.google.name;
+                                            data.notification.body = sent_content;
+                                            // get the conversation id
+                                            data.data.url = response.data._id;
+                                            console.log(data);
+                                            promises.push(
+                                                Users.send_notification(data)
+                                                .then(function(res) {
+                                                    //
+                                                })
+                                            );
+                                        }
+
                                     }
                                 }
 
-                                var promises = [];
+                                //var promises = [];
                                 for (var x = 0; x < viewed_users.length; x++) {
                                     console.log(viewed_users[x]);
                                     promises.push(
@@ -1247,26 +1267,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
 
 
                                 }
-                                /*
-                                console.log(notify_users);
-                                for (var y = 0; y < notify_users.length; y++) {
-                                    console.log(notify_users[y]);
-                                    data.to = notify_users[y];
-                                    //console.log('data.to: ' + data.to);
-                                    //data.notification.title = $scope.card_create.user;
-                                    data.notification.title = currentUser.google.name;
-                                    data.notification.body = sent_content;
-                                    // get the conversation id
-                                    data.data.url = response.data._id;
-                                    console.log(data);
-                                    promises.push(
-                                        Users.send_notification(data)
-                                            .then(function(res) {
-                                            //
-                                        })
-                                    );
-                                }
-                                */
+
                                 // All Conversation participants unviewed arrays updated
                                 $q.all(promises).then(function() {
                                     console.log('fin');
