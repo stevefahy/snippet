@@ -1242,6 +1242,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
 
 
                                 }
+                                console.log(notify_users);
                                 for (var y = 0; y < notify_users.length; y++) {
                                     console.log(notify_users[y]);
                                     promises.push(
