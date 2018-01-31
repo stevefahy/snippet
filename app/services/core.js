@@ -1169,6 +1169,8 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
                 sent_content = Format.checkForImage(sent_content);
                 sent_content = Format.stripHTML(sent_content);
                 var pms = { 'id': card_id, 'card': card };
+                                          var promises = [];
+                                var promises_notify = [];
                 // call the create function from our service (returns a promise object)
                 Cards.update(pms)
                     .success(function(data) {
@@ -1201,7 +1203,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
                                     headers: headers,
                                     json: data
                                 };
-                                var promises = [];
+      
                                 for (var i in response.data.participants) {
                                     // dont emit to the user which sent the card
                                     //console.log(response.data.participants[i]._id + ' !== ' + currentUser._id);
@@ -1218,7 +1220,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
                                                 // get the conversation id
                                                 data.data.url = response.data._id;
                                                 console.log(data);
-                                                promises.push(
+                                                promises_notify.push(
                                                     Users.send_notification(options)
                                                     .then(function(res) {
                                                         console.log(res);
@@ -1249,6 +1251,11 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
                                     // update other paticipants in the conversation via socket.
                                     socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: current_conversation_id, participants: viewed_users });
                                     updateinprogress = false;
+                                });
+
+                                                        // All Conversation participants unviewed arrays updated
+                                $q.all(promises_notify).then(function() {
+                                    console.log('fin notify');
                                 });
 
                             });
