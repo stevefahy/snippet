@@ -1142,6 +1142,14 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
         user_name: ''
     };
 
+    // Get the FCM details (Google firebase notifications).
+    $http.get("/api/fcm_data").then(function(result) {
+        fcm = result.data.fcm;
+        console.log(fcm);
+    });
+
+
+
     // find the array index of an object value
     this.findWithAttr = function(array, attr, value) {
         for (var i = 0; i < array.length; i += 1) {

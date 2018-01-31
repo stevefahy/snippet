@@ -265,10 +265,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     });
 
-    // Get the FCM details (Google firebase notifications).
-    $http.get("/api/fcm_data").then(function(result) {
-        fcm = result.data.fcm;
-    });
+
 
     // Find the conversation id.
     findConversationId = function(callback) {
