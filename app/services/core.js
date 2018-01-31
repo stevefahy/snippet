@@ -1217,7 +1217,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
                                             console.log(result);
                                             if (result.notification_key !== undefined) {
                                                 console.log('3');
-                                                /*
+                                                /
                                                 data.to = result.notification_key;
                                                 //console.log('data.to: ' + data.to);
                                                 //data.notification.title = $scope.card_create.user;
@@ -1226,8 +1226,15 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
                                                 // get the conversation id
                                                 data.data.url = response.data._id;
                                                 console.log(data);
-                                                */
-                                                notify_users.push(result.notification_key);
+
+                                                //notify_users.push(result.notification_key);
+
+                                                promises.push(
+                                                    Users.send_notification(data)
+                                                    .then(function(res) {
+                                                        //
+                                                    })
+                                                );
 
                                                 //Users.send_notification(options);
                                             }
@@ -1238,6 +1245,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
 
                                 }
 
+                                /*
                                 console.log(notify_users);
 
                                 for (var y = 0; y < notify_users.length; y++) {
@@ -1257,6 +1265,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
                                         })
                                     );
                                 }
+                                */
 
                                 //var promises = [];
                                 for (var x = 0; x < viewed_users.length; x++) {
