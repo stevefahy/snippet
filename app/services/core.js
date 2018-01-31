@@ -1258,10 +1258,14 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
                                     console.log(data);
                                     promises.push(
                                         Users.send_notification(data)
+                                            .then(function(res) {
+                                            //
+                                        })
                                     );
                                 }
                                 // All Conversation participants unviewed arrays updated
                                 $q.all(promises).then(function() {
+                                    console.log('fin');
                                     // update other paticipants in the conversation via socket.
                                     socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: current_conversation_id, participants: viewed_users });
                                     updateinprogress = false;
