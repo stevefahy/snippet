@@ -1182,7 +1182,16 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
                                 //socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: response.data._id, participants: response.data.participants });
                                 // Send notifications
                                 // Set the FCM data for the request
-                                var data;
+                                var data = {
+                                    "to": "",
+                                    "notification": {
+                                        "title": "",
+                                        "body": ""
+                                    },
+                                    "data": {
+                                        "url": ""
+                                    }
+                                };
                                 var headers = {
                                     'Authorization': 'key=' + fcm.firebaseserverkey,
                                     'Content-Type': 'application/json'
@@ -1194,16 +1203,6 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
                                     json: data
                                 };
                                 for (var i in response.data.participants) {
-                                    data = {
-                                    "to": "",
-                                    "notification": {
-                                        "title": "",
-                                        "body": ""
-                                    },
-                                    "data": {
-                                        "url": ""
-                                    }
-                                };
                                     // dont emit to the user which sent the card
                                     //console.log(response.data.participants[i]._id + ' !== ' + currentUser._id);
                                     if (response.data.participants[i]._id !== currentUser._id) {
@@ -1217,6 +1216,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
                                             console.log(result);
                                             if (result.notification_key !== undefined) {
                                                 console.log('3');
+                                                /*
                                                 data.to = result.notification_key;
                                                 //console.log('data.to: ' + data.to);
                                                 //data.notification.title = $scope.card_create.user;
@@ -1225,7 +1225,8 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
                                                 // get the conversation id
                                                 data.data.url = response.data._id;
                                                 console.log(data);
-                                                notify_users.push(data);
+                                                */
+                                                notify_users.push(result.notification_key);
                                                 console.log(notify_users);
                                                 //Users.send_notification(options);
                                             }
@@ -1247,8 +1248,16 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
                                 console.log(notify_users);
                                 for (var y = 0; y < notify_users.length; y++) {
                                     console.log(notify_users[y]);
+                                    data.to = notify_users[y];
+                                    //console.log('data.to: ' + data.to);
+                                    //data.notification.title = $scope.card_create.user;
+                                    data.notification.title = currentUser.google.name;
+                                    data.notification.body = sent_content;
+                                    // get the conversation id
+                                    data.data.url = response.data._id;
+                                    console.log(data);
                                     promises.push(
-                                        Users.send_notification(notify_users[y])
+                                        Users.send_notification(data)
                                     );
                                 }
                                 // All Conversation participants unviewed arrays updated
