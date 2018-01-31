@@ -1132,6 +1132,8 @@ cardApp.service('Edit', function() {
 
 cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', function($window, $rootScope, $timeout, $q, Users, Cards, Conversations, replaceTags, socket, Format) {
 
+    var updateinprogress = false;
+
     var card_create = {
         _id: 'card_create',
         content: '',
@@ -1150,74 +1152,116 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
         return -1;
     };
 
-    // TODO Add updatedViewd for updated Card like createCard and deleteCard?
+    // TODO Add updatedViewed for updated Card like createCard and deleteCard?
     this.updateCard = function(card_id, card, currentUser) {
+        console.log('updateinprogress: ' + updateinprogress);
+        if (!updateinprogress) {
 
-        card.content = Format.setMediaSize(card_id, card);
-        setTimeout(function() {
-            card.content = replaceTags.replace(card.content);
-            card.content = replaceTags.removeDeleteId(card.content);
-            card.content = replaceTags.removeFocusIds(card.content);
-            var sent_content = card.content;
-            sent_content = Format.checkForImage(sent_content);
-            sent_content = Format.stripHTML(sent_content);
-            var pms = { 'id': card_id, 'card': card };
-            // call the create function from our service (returns a promise object)
-            Cards.update(pms)
-                .success(function(data) {
-                    $rootScope.$broadcast('CARD_UPDATED', data);
-                    // Update the Conversation updateAt time.
-                    Conversations.updateTime(card.conversationId)
-                        .then(function(response) {
-                            // socket.io emit the card posted to the server
-                            socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: response.data._id, participants: response.data.participants });
-                            // Send notifications
-                            // Set the FCM data for the request
-                            var data = {
-                                "to": "",
-                                "notification": {
-                                    "title": "",
-                                    "body": ""
-                                },
-                                "data": {
-                                    "url": ""
+            updateinprogress = true;
+
+            setTimeout(function() {
+                var current_conversation_id = Conversations.getConversationId();
+                card.content = Format.setMediaSize(card_id, card);
+                card.content = replaceTags.replace(card.content);
+                card.content = replaceTags.removeDeleteId(card.content);
+                card.content = replaceTags.removeFocusIds(card.content);
+                var sent_content = card.content;
+                sent_content = Format.checkForImage(sent_content);
+                sent_content = Format.stripHTML(sent_content);
+                var pms = { 'id': card_id, 'card': card };
+                // call the create function from our service (returns a promise object)
+                Cards.update(pms)
+                    .success(function(data) {
+                        $rootScope.$broadcast('CARD_UPDATED', data);
+                        var viewed_users = [];
+                        var notify_users = [];
+                        // Update the Conversation updateAt time.
+                        Conversations.updateTime(card.conversationId)
+                            .then(function(response) {
+                                // socket.io emit the card posted to the server
+                                //socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: response.data._id, participants: response.data.participants });
+                                // Send notifications
+                                // Set the FCM data for the request
+                                var data = {
+                                    "to": "",
+                                    "notification": {
+                                        "title": "",
+                                        "body": ""
+                                    },
+                                    "data": {
+                                        "url": ""
+                                    }
+                                };
+                                var headers = {
+                                    'Authorization': 'key=' + fcm.firebaseserverkey,
+                                    'Content-Type': 'application/json'
+                                };
+                                var options = {
+                                    uri: 'https://fcm.googleapis.com/fcm/send',
+                                    method: 'POST',
+                                    headers: headers,
+                                    json: data
+                                };
+                                for (var i in response.data.participants) {
+                                    // dont emit to the user which sent the card
+                                    //console.log(response.data.participants[i]._id + ' !== ' + currentUser._id);
+                                    if (response.data.participants[i]._id !== currentUser._id) {
+                                        viewed_users.push({ "_id": response.data.participants[i]._id });
+                                        // Find the other user(s)
+                                        console.log('1');
+                                        findUser(response.data.participants[i]._id, function(result) {
+                                            // get the participants notification key
+                                            // get the message title and body
+                                            console.log('2');
+                                            console.log(result);
+                                            if (result.notification_key !== undefined) {
+                                                console.log('3');
+                                                data.to = result.notification_key;
+                                                //console.log('data.to: ' + data.to);
+                                                //data.notification.title = $scope.card_create.user;
+                                                data.notification.title = currentUser.google.name;
+                                                data.notification.body = sent_content;
+                                                // get the conversation id
+                                                data.data.url = response.data._id;
+                                                console.log(data);
+                                                notify_users.push(data);
+                                                //Users.send_notification(options);
+                                            }
+                                        });
+                                    }
                                 }
-                            };
-                            var headers = {
-                                'Authorization': 'key=' + fcm.firebaseserverkey,
-                                'Content-Type': 'application/json'
-                            };
-                            var options = {
-                                uri: 'https://fcm.googleapis.com/fcm/send',
-                                method: 'POST',
-                                headers: headers,
-                                json: data
-                            };
-                            for (var i in response.data.participants) {
-                                // dont emit to the user which sent the card
-                                //console.log(response.data.participants[i]._id + ' !== ' + currentUser._id);
-                                if (response.data.participants[i]._id !== currentUser._id) {
-                                    // Find the other user(s)
-                                    findUser(response.data.participants[i]._id, function(result) {
-                                        // get the participants notification key
-                                        // get the message title and body
-                                        if (result.notification_key !== undefined) {
-                                            data.to = result.notification_key;
-                                            //console.log('data.to: ' + data.to);
-                                            //data.notification.title = $scope.card_create.user;
-                                            data.notification.title = currentUser.google.name;
-                                            data.notification.body = sent_content;
-                                            // get the conversation id
-                                            data.data.url = response.data._id;
-                                            Users.send_notification(options);
-                                        }
-                                    });
+
+                                var promises = [];
+                                for (var x = 0; x < viewed_users.length; x++) {
+                                    promises.push(
+                                        Conversations.updateViewed(current_conversation_id, viewed_users[x]._id, card_id)
+                                        .then(function(res) {
+                                            //
+                                        })
+                                    );
+
+
                                 }
-                            }
-                        });
-                })
-                .error(function(error) {});
-        }, 1000);
+                                for (var y = 0; y < notify_users.length; y++) {
+                                    console.log(notify_users[y]);
+                                    promises.push(
+                                        Users.send_notification(notify_users[y])
+                                    );
+                                }
+                                // All Conversation participants unviewed arrays updated
+                                $q.all(promises).then(function() {
+                                    // update other paticipants in the conversation via socket.
+                                    socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: current_conversation_id, participants: viewed_users });
+                                    updateinprogress = false;
+                                });
+
+                            });
+                    })
+                    .error(function(error) {});
+            }, 0);
+
+        }
+
     };
 
     this.createCard = function(id, card_create, fcm, currentUser) {
@@ -1266,7 +1310,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
                             json: data
                         };
 
-                        var participants_array = response.data.participants;
+                        //var participants_array = response.data.participants;
 
                         for (var i in response.data.participants) {
                             // dont emit to the user which sent the card
@@ -1369,12 +1413,16 @@ cardApp.directive("contenteditable", function() {
         link: function(scope, element, attrs, ngModel) {
             function read() {
                 ngModel.$setViewValue(element.html());
+                //ngModel.$render();
             }
             ngModel.$render = function() {
                 element.html(ngModel.$viewValue || "");
             };
             element.bind("blur keyup change", function() {
-                scope.$apply(read);
+                // WARNING added - if (!scope.$$phase) { 31/01/18
+                if (!scope.$$phase) {
+                    scope.$apply(read);
+                }
             });
         }
     };
