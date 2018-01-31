@@ -1227,10 +1227,11 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
                                                 console.log(data);
                                                 */
                                                 notify_users.push(result.notification_key);
-                                                console.log(notify_users);
+                                                
                                                 //Users.send_notification(options);
                                             }
                                         });
+                                        console.log(notify_users);
                                     }
                                 }
 
@@ -1246,6 +1247,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
 
 
                                 }
+                                /*
                                 console.log(notify_users);
                                 for (var y = 0; y < notify_users.length; y++) {
                                     console.log(notify_users[y]);
@@ -1264,6 +1266,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
                                         })
                                     );
                                 }
+                                */
                                 // All Conversation participants unviewed arrays updated
                                 $q.all(promises).then(function() {
                                     console.log('fin');
