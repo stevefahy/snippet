@@ -1182,6 +1182,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
     // TODO Add updatedViewed for updated Card like createCard and deleteCard?
     this.updateCard = function(card_id, card, currentUser) {
         console.log('updateinprogress: ' + updateinprogress);
+        console.log(data);
         if (!updateinprogress) {
 
             updateinprogress = true;
@@ -1199,8 +1200,8 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 var promises = [];
                 // call the create function from our service (returns a promise object)
                 Cards.update(pms)
-                    .success(function(data) {
-                        $rootScope.$broadcast('CARD_UPDATED', data);
+                    .success(function(returned) {
+                        $rootScope.$broadcast('CARD_UPDATED', returned);
                         var viewed_users = [];
                         // Update the Conversation updateAt time.
                         Conversations.updateTime(card.conversationId)
@@ -1212,6 +1213,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
 
                                 for (var i in response.data.participants) {
+                                    console.log(data);
                                     // dont emit to the user which sent the card
                                     console.log(response.data.participants[i]._id + ' !== ' + currentUser._id);
                                     if (response.data.participants[i]._id !== currentUser._id) {
@@ -1226,6 +1228,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                                 data.notification.body = sent_content;
                                                 // get the conversation id
                                                 data.data.url = response.data._id;
+                                                console.log(options);
                                                 Users.send_notification(options)
                                                     .then(function(res) {
                                                         console.log(res);
