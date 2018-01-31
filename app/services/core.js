@@ -441,6 +441,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.getFocus = function(id, card, currentUser) {
+        console.log('getFocus: ' + card);
         if (id != undefined && card != undefined) {
             self.tag_count_previous = self.getTagCountPrevious(card.content);
             focused_id = id;
@@ -471,6 +472,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     // Called by Android onPause
     // Update the card.
     this.getBlurAndroid = function(id, card, currentUser) {
+        console.log(card);
         if (id != undefined && card != undefined && currentUser != undefined) {
             // Check if there is a marky in progress
             // zm launching image capture should not trigger an update. It causes error.
