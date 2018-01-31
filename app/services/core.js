@@ -1230,7 +1230,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
                                                 //notify_users.push(result.notification_key);
 
                                                 promises.push(
-                                                    Users.send_notification(data)
+                                                    Users.send_notification(options)
                                                     .then(function(res) {
                                                         //
                                                     })
