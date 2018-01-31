@@ -1205,7 +1205,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
 
                                 for (var i in response.data.participants) {
                                     // dont emit to the user which sent the card
-                                    //console.log(response.data.participants[i]._id + ' !== ' + currentUser._id);
+                                    console.log(response.data.participants[i]._id + ' !== ' + currentUser._id);
                                     if (response.data.participants[i]._id !== currentUser._id) {
                                         viewed_users.push({ "_id": response.data.participants[i]._id });
                                         // Find the other user(s)
