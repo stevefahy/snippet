@@ -472,10 +472,16 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     // Update the card.
     this.getBlurAndroid = function(id, card, currentUser) {
         if (id != undefined && card != undefined && currentUser != undefined) {
-            // Inject the Database Service
-            var Database = $injector.get('Database');
-            // Update the card
-            Database.updateCard(id, card, currentUser);
+            // Check if there is a marky in progress
+            // zm launching image capture should not trigger an update. It causes error.
+            found_marky = findMarky(card.content);
+            // check the content has changed and not currently mid marky
+            if (card.content != card.original_content && (found_marky == false)) {
+                // Inject the Database Service
+                var Database = $injector.get('Database');
+                // Update the card
+                Database.updateCard(id, card, currentUser);
+            }
         }
     };
 
