@@ -1142,13 +1142,32 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         user_name: ''
     };
 
+    var data = {
+        "to": "",
+        "notification": {
+            "title": "",
+            "body": ""
+        },
+        "data": {
+            "url": ""
+        }
+    };
+    var headers = {
+        'Authorization': "",
+        'Content-Type': 'application/json'
+    };
+    var options = {
+        uri: 'https://fcm.googleapis.com/fcm/send',
+        method: 'POST',
+        headers: headers,
+        json: data
+    };
+
     // Get the FCM details (Google firebase notifications).
     $http.get("/api/fcm_data").then(function(result) {
         fcm = result.data.fcm;
-        console.log(fcm);
+        headers.Authorization = 'key=' + fcm.firebaseserverkey;
     });
-
-
 
     // find the array index of an object value
     this.findWithAttr = function(array, attr, value) {
@@ -1190,26 +1209,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                 //socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: response.data._id, participants: response.data.participants });
                                 // Send notifications
                                 // Set the FCM data for the request
-                                var data = {
-                                    "to": "",
-                                    "notification": {
-                                        "title": "",
-                                        "body": ""
-                                    },
-                                    "data": {
-                                        "url": ""
-                                    }
-                                };
-                                var headers = {
-                                    'Authorization': 'key=' + fcm.firebaseserverkey,
-                                    'Content-Type': 'application/json'
-                                };
-                                var options = {
-                                    uri: 'https://fcm.googleapis.com/fcm/send',
-                                    method: 'POST',
-                                    headers: headers,
-                                    json: data
-                                };
+
 
                                 for (var i in response.data.participants) {
                                     // dont emit to the user which sent the card
@@ -1226,7 +1226,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                                 data.notification.body = sent_content;
                                                 // get the conversation id
                                                 data.data.url = response.data._id;
-                                                    Users.send_notification(options)
+                                                Users.send_notification(options)
                                                     .then(function(res) {
                                                         console.log(res);
                                                     });
