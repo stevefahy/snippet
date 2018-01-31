@@ -409,6 +409,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         $scope.cards[card_pos].content = updated[0].content;
                         $scope.cards[card_pos].updatedAt = updated[0].updatedAt;
                     }
+                    // Clear the cards unviewed arrary for this participant of this conversation.
+                    updateConversationViewed(data.conversationId);
                 }
 
                 // Check for deleted cards
