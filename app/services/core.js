@@ -1182,16 +1182,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
                                 //socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: response.data._id, participants: response.data.participants });
                                 // Send notifications
                                 // Set the FCM data for the request
-                                var data = {
-                                    "to": "",
-                                    "notification": {
-                                        "title": "",
-                                        "body": ""
-                                    },
-                                    "data": {
-                                        "url": ""
-                                    }
-                                };
+                                var data;
                                 var headers = {
                                     'Authorization': 'key=' + fcm.firebaseserverkey,
                                     'Content-Type': 'application/json'
@@ -1203,6 +1194,16 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
                                     json: data
                                 };
                                 for (var i in response.data.participants) {
+                                    data = {
+                                    "to": "",
+                                    "notification": {
+                                        "title": "",
+                                        "body": ""
+                                    },
+                                    "data": {
+                                        "url": ""
+                                    }
+                                };
                                     // dont emit to the user which sent the card
                                     //console.log(response.data.participants[i]._id + ' !== ' + currentUser._id);
                                     if (response.data.participants[i]._id !== currentUser._id) {
