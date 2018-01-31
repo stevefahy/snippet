@@ -1232,7 +1232,10 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
                                                 //Users.send_notification(options);
                                             }
                                         });
-                                        console.log(notify_users);
+
+                                    }
+
+                                                                            console.log(notify_users);
 
                                         for (var y = 0; y < notify_users.length; y++) {
                                             console.log(notify_users[y]);
@@ -1251,8 +1254,6 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', 'Users',
                                                 })
                                             );
                                         }
-
-                                    }
                                 }
 
                                 //var promises = [];
