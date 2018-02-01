@@ -78,7 +78,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         // TODO should this not have /upload then route_folder for both would just be / in upload_app route.js
         serverUrl = 'http://localhost:8060/upload';
     } else {
-        serverUrl = 'http://www.snipbee.com/upload';
+        serverUrl = 'https://www.snipbee.com/upload';
     }
 
     androidToJS = function(data) {
@@ -306,9 +306,20 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         return $('#cecard_create').html();
     };
 
+    imageLoaded = function() {
+        console.log(ua);
+        console.log('imageLoaded');
+        var temp = document.activeElement;
+        var new_image = document.getElementById('new_image');
+        $(new_image).removeAttr('onload id');
+        temp.blur();
+        temp.focus();
+    };
+
     insertImage = function(data) {
+        console.log(data.response);
         if (data.response === 'saved') {
-            var new_image = "<img class='resize-drag' src='" + IMAGES_URL + data.file + "'><span id='delete'>&#x200b</span>";
+            var new_image = "<img class='resize-drag' id='new_image' onload='imageLoaded()' src='" + IMAGES_URL + data.file + "'><span id='delete'>&#x200b</span>";
             self.pasteHtmlAtCaret(new_image);
 
             // commented out because it causes an issue with onblur which is used to update card.
@@ -328,6 +339,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     uploadImages = function(form) {
+        console.log('upload');
         $.ajax({
             url: serverUrl,
             type: 'POST',
@@ -335,6 +347,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             processData: false,
             contentType: false,
             success: function(data) {
+                console.log(data);
                 insertImage(data);
             },
             xhr: function() {
@@ -361,6 +374,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     prepareImage = function(files) {
+        console.log('prep');
         var promises = [];
         self.formData = new FormData();
         angular.forEach(files, function(file, key) {
@@ -387,20 +401,37 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     // UPLOAD ==================================================================
     this.uploadFile = function() {
+        console.log('uploadfile');
         if (ua === 'AndroidApp') {
             Android.choosePhoto();
         } else {
-            $('#upload-input').click();
-            $('.progress-bar').text('0%');
-            $('.progress-bar').width('0%');
-            // Unbind the on change event to prevent it from firing twice after first call
-            $('#upload-input').unbind();
+
+            // All browsers except MS Edge
+            if (ua.toLowerCase().indexOf('edge') == -1) {
+                $('#upload-input').click();
+
+                // Unbind the on change event to prevent it from firing twice after first call
+                $('#upload-input').unbind();
+            }
+
+            //$('.progress-bar').text('0%');
+            //$('.progress-bar').width('0%');
+
             $('#upload-input').on('change', function() {
+                console.log('change');
                 var files = $(this).get(0).files;
                 if (files.length > 0) {
                     prepareImage(files);
                 }
             });
+
+            // MS Edge only
+            if (ua.toLowerCase().indexOf('edge') > -1) {
+                $('#upload-input').click();
+                // Unbind the on change event to prevent it from firing twice after first call
+                $('#upload-input').unbind();
+            }
+
         }
     };
 
@@ -441,7 +472,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.getFocus = function(id, card, currentUser) {
-        console.log('getFocus: ' + card);
+        console.log('getFocus: ' + JSON.stringify(card.content));
         if (id != undefined && card != undefined) {
             self.tag_count_previous = self.getTagCountPrevious(card.content);
             focused_id = id;
@@ -488,6 +519,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.getBlur = function(id, card, currentUser) {
+        console.log('getBlur');
         // Add slight delay so that document.activeElement works
         setTimeout(function() {
             // Get the element currently in focus
@@ -846,15 +878,14 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                         $('#upload-trigger').trigger('click');
                     }
                     // Use timeout to fix bug on Galaxy S6 (Chrome, FF, Canary)
-
                     $timeout(function() {
                             self.selectText(elem, currentChars);
                         }, 0)
                         .then(
                             function() {
-                                return $timeout(function() {
-                                    self.pasteHtmlAtCaret('');
-                                }, 0);
+                                //return $timeout(function() {
+                                    self.pasteHtmlAtCaret('&#x200b');
+                                //}, 0);
                             }
                         );
                 }
@@ -884,6 +915,13 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     }
 
     this.contentChanged = function(content, elem) {
+        console.log('contentChanged');
+        //if(image_paste){
+        //console.log('contentChanged');
+        //var targetNode = document.getElementById(elem);
+        //targetNode.focus();
+        //image_paste = false;
+        //}
         if (!self.paste_in_progress) {
             if (within_pre == false) {
                 // MARKY
@@ -923,14 +961,77 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         }
         return;
     };
-
+    //var image_paste = false;
     this.pasteHtmlAtCaret = function(html) {
+        //console.log('pasteHtmlAtCaret: ' + this.pasteHtmlAtCaret.caller);
+        //html = 'STEVE';
+        console.log('html: ' + html);
         var sel, range;
         if (window.getSelection) {
             // IE9 and non-IE
             sel = window.getSelection();
+
+            /*
+            //this.getFocus = function(id, card, currentUser) {
+            if (type == 'image') {
+                //image_paste = true;
+                //console.log('image paste');
+                //console.log(sel);
+                var commonAncestor = sel.getRangeAt(0).commonAncestorContainer;
+                var card = $(commonAncestor).closest('.ce');
+                //$('#hidden_input').focus();
+
+                //console.log(card);
+                // var card = $(sel.anchornode).closest('.ce');
+                var card_id = $(card).attr("id");
+                console.log(card_id);
+                //var card_foc = document.getElementById(card_id);
+
+
+                // $timeout(function() {
+                //     card_foc.focus();
+                // }, 500);
+
+                // Select the node that will be observed for mutations
+                var targetNode = document.getElementById(card_id);
+
+                // Options for the observer (which mutations to observe)
+                var config = { childList: true, characterData: true, attributes: true, subtree: true };
+                // Callback function to execute when mutations are observed
+                var callback = function(mutationsList) {
+                    console.log('callback');
+                    mutationsList.forEach(function(mutation) {
+                        console.log(mutation.type);
+                        console.log(targetNode.innerHTML);
+                        document.activeElement.blur();
+                        //scope.$digest();
+
+
+                        targetNode.focus();
+
+
+
+                        //targetNode.blur();
+                        //console.log(paste_in_progress);
+                        //targetNode.focus();
+                        //self.getFocus(focused_id, focused_card, focused_user);
+                    
+
+
+                    });
+                };
+                // Create an observer instance linked to the callback function
+                var observer = new MutationObserver(callback);
+                // Start observing the target node for configured mutations
+                observer.observe(targetNode, config);
+                // Later, you can stop observing
+                //observer.disconnect();
+            }
+            */
+
             if (sel.getRangeAt && sel.rangeCount) {
                 range = sel.getRangeAt(0);
+                //console.log(range);
                 range.deleteContents();
                 var el = document.createElement("div");
                 el.innerHTML = html;
@@ -952,11 +1053,17 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     range.collapse(true);
                     sel.removeAllRanges();
                     sel.addRange(range);
+
+
+
+
                 }
+
             }
 
         } else if (document.selection && document.selection.type != "Control") {
             // IE < 9
+            console.log('ie');
             document.selection.createRange().pasteHTML(html);
         }
         return;
