@@ -694,12 +694,13 @@ module.exports = function(app, passport) {
 
     });
 
-    // Update the conversation unviewed array for this participant with this card id
+    // Update the conversation unviewed array for this participant with this card id.
+    // Only add the card if it doesnt already exist in the array (for Updates).
     app.put('/chat/conversation_viewed/:id/:user_id/:card_id', function(req, res) {
         Conversation.update({ _id: req.params.id, 'participants._id': req.params.user_id }, {
-                '$push': {
-                    'participants.$.unviewed': { '_id': req.params.card_id }
-                }
+                $addToSet: { 
+                    'participants.$.unviewed': { '_id': req.params.card_id } 
+                } 
             },
             function(err, conversation) {
                 if (err) {

@@ -84,7 +84,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // DELETE ==================================================================
     $scope.deleteCard = function(card_id, conversation_id) {
-        Database.deleteCard(card_id, conversation_id, fcm, $scope.currentUser);
+        Database.deleteCard(card_id, conversation_id, $scope.currentUser);
     };
 
     // Called as each card is loaded.

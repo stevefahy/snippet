@@ -26,7 +26,7 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
 
     // Create Card
     $scope.createCard = function(id, card_create) {
-        Database.createCard(id, card_create, fcm, $scope.currentUser);
+        Database.createCard(id, card_create, $scope.currentUser);
     };
 
     setFocus = function() {
