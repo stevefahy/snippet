@@ -1161,6 +1161,7 @@ cardApp.service('FormatHTML', ['$window', '$rootScope', '$timeout', '$q', '$http
    this.prepSentContent = function(content) {
         var temp_content = Format.checkForImage(content);
         temp_content = Format.stripHTML(temp_content);
+        temp_content = temp_content.substr(0,20) + '...';
         return temp_content;
     };
 
