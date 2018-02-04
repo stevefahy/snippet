@@ -135,6 +135,9 @@ cardApp.factory('Conversations', ['$http', function($http) {
         },
         getConversationById: function(id) {
             return $http.get('/chat/get_conversation/' + id);
+        },
+        getConversationLatestCard: function(id) {
+            return $http.get('/chat/get_conversation_latest_card/' + id);
         }
     };
 }]);

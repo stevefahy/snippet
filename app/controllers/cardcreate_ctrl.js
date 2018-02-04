@@ -1,6 +1,5 @@
 cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$timeout', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'socket', 'Users', 'Database', function($scope, $rootScope, $location, $http, $window, $timeout, Cards, replaceTags, Format, Edit, Conversations, socket, Users, Database) {
 
-    var fcm;
     var ua = navigator.userAgent;
 
     $scope.getFocus = Format.getFocus;
@@ -66,12 +65,6 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
     $http.get("/api/user_data").then(function(result) {
         $scope.currentUser = result.data.user;
         $scope.card_create.user = $scope.currentUser.google.name;
-    });
-
-    // Todo move to core.js?
-    // Get the FCM details
-    $http.get("/api/fcm_data").then(function(result) {
-        fcm = result.data.fcm;
     });
 
 }]);

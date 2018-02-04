@@ -1,12 +1,19 @@
 <div class="container-fluid">
     <div ng-controller="conversationsCtrl">
         <div ng-repeat="conversation in conversations | orderBy :'updatedAt' : true">
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                {{conversation.name}}
-                <span class="badge" id="conversations_badge" ng-if="conversation.new_messages > 0">{{conversation.new_messages}}</span>
-                <button ng-if="conversation.conversation_type == 'private'" type="button" class="btn btn-success btn-xs btn-adduser" ng-click="chat(conversation._id, $index)">chat</button>
-                <button ng-if="conversation.conversation_type == 'public'" type="button" class="btn btn-success btn-xs btn-adduser" ng-click="chatPublic(conversation.admin, $index)">chat</button>
-            </li>
+            <div id="conv_div" ng-click="(conversation.conversation_type == 'private') ? chat(conversation._id, $index) : chatPublic(conversation.admin, $index)">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <img id="conv_usr_img" src="/assets/images/profile.jpg">
+                    <div class="convs_name_span">
+                        <div id="convs_name">{{conversation.name}}</div>
+                        <div id="convs_msg">{{conversation.latest_card}}</div>
+                        <div class="convs_new">
+                            <div class="badge" id="conversations_badge" ng-if="conversation.new_messages > 0">{{conversation.new_messages}}</div>
+                            <time am-time-ago="conversation.updatedAt" id="time"></time>
+                        </div>
+                    </div>
+                </li>
+            </div>
         </div>
     </div>
 </div>

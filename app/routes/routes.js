@@ -168,10 +168,10 @@ module.exports = function(app, passport) {
         }
     });
     // Get the FCM data
-    app.get('/api/fcm_data', isLoggedIn, function(req, res) {
+    app.get('/api/fcm_data', function(req, res) {
         if (req.user === undefined) {
             // The user is not logged in
-            res.json({ 'username': 'forbidden' });
+            res.json({ 'fcm': 'forbidden' });
         } else {
             res.json({
                 fcm: fcm
@@ -698,9 +698,9 @@ module.exports = function(app, passport) {
     // Only add the card if it doesnt already exist in the array (for Updates).
     app.put('/chat/conversation_viewed/:id/:user_id/:card_id', function(req, res) {
         Conversation.update({ _id: req.params.id, 'participants._id': req.params.user_id }, {
-                $addToSet: { 
-                    'participants.$.unviewed': { '_id': req.params.card_id } 
-                } 
+                $addToSet: {
+                    'participants.$.unviewed': { '_id': req.params.card_id }
+                }
             },
             function(err, conversation) {
                 if (err) {
@@ -860,6 +860,16 @@ module.exports = function(app, passport) {
                 console.log('err: ' + err);
             }
             res.json(cards);
+        });
+    });
+
+    // get latest card for a conversation by conversation id
+    app.get('/chat/get_conversation_latest_card/:id', function(req, res) {
+        Card.findOne({ 'conversationId': req.params.id }).sort('-updatedAt').exec(function(err, card) {
+            if (err) {
+                console.log('err: ' + err);
+            }
+            res.json(card);
         });
     });
 };

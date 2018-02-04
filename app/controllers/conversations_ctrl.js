@@ -1,6 +1,8 @@
-cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$http', 'Invites', 'Email', 'Users', 'Conversations', '$q', function($scope, $rootScope, $location, $http, Invites, Email, Users, Conversations, $q) {
+cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$http', 'Invites', 'Email', 'Users', 'Conversations', '$q', 'FormatHTML', function($scope, $rootScope, $location, $http, Invites, Email, Users, Conversations, $q, FormatHTML) {
 
     var public_found = false;
+
+    $scope.temp_time = "today";
 
     // array of conversations
     $scope.conversations = [];
@@ -23,6 +25,17 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
                 var user_unviewed = res.data[conversation_pos].participants[user_pos].unviewed;
                 // Set the new_messages number.
                 $scope.conversations[conversation_pos].new_messages = user_unviewed.length;
+                // Get the latest card posted to this conversation
+                Conversations.getConversationLatestCard(msg.conversation_id)
+                    .then(function(res) {
+                        if (res.data != null) {
+                            $scope.conversations[conversation_pos].latest_card = FormatHTML.prepSentContent(res.data.content);
+                            $scope.conversations[conversation_pos].updatedAt = res.data.updatedAt;
+                        } else {
+                            $scope.conversations[conversation_pos].latest_card = ' ';
+                        }
+
+                    });
 
             });
     });
@@ -103,6 +116,15 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
                         var user_unviewed = key.participants[user_pos].unviewed;
                         // Set the new_messages number.
                         key.new_messages = user_unviewed.length;
+                        // Get the latest card posted to this conversation
+                        Conversations.getConversationLatestCard(key._id)
+                            .then(function(res) {
+                                if (res.data != null) {
+                                    key.latest_card = FormatHTML.prepSentContent(res.data.content);
+                                } else {
+                                    key.latest_card = ' ';
+                                }
+                            });
                         // If this is a two user conversation (not a group)
                         if (key.participants.length === 2) {
                             // Get the position of the current user

@@ -304,6 +304,7 @@ span.glyphicon.glyphicon-option-vertical {
 
 
 
+
 /* EDIT MENU */
 
 
@@ -316,10 +317,12 @@ span.glyphicon.glyphicon-option-vertical {
 }
 
 
+
 /* Dropdown button on hover & focus */
 
 .dropbtn:hover,
 .dropbtn:focus {}
+
 
 
 /* The container <div> - needed to position the dropdown content */
@@ -328,6 +331,7 @@ span.glyphicon.glyphicon-option-vertical {
     position: relative;
     display: inline-block;
 }
+
 
 
 /* Dropdown Content (Hidden by Default) */
@@ -343,6 +347,7 @@ span.glyphicon.glyphicon-option-vertical {
 }
 
 
+
 /* Links inside the dropdown */
 
 .dropdown-content div {
@@ -354,11 +359,13 @@ span.glyphicon.glyphicon-option-vertical {
 }
 
 
+
 /* Change color of dropdown links on hover */
 
 .dropdown-content a:hover {
     background-color: #f1f1f1
 }
+
 
 
 /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
@@ -462,6 +469,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center.ng-binding 
 }
 
 #time {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 11px;
     color: darkslategray;
     font-weight: 500;
@@ -471,4 +479,68 @@ li.list-group-item.d-flex.justify-content-between.align-items-center.ng-binding 
 
 body {
     background-color: snow;
+
+    word-wrap: normal;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arimo, Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+    font-size: 1.5rem;
+    line-height: 1.4em;
+    font-weight: 200;
+    color: #000000;
+}
+
+#conv_div {
+    cursor: pointer;
+}
+
+#conv_usr_img {
+    float: left;
+    width: 30px;
+    height: 30px;
+    background-color: #fafafa;
+    border-radius: 50%;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    cursor: pointer;
+    /* display: block; */
+    -webkit-box-flex: 0;
+    -webkit-flex: 0 0 auto;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    overflow: hidden;
+    position: relative;
+    margin-right: 15px;
+    border-radius: 1;
+    /* border-width: thick; */
+    border-color: tomato;
+    border: .5px solid #9E9E9E;
+    margin-top: 5px;
+}
+
+#convs_name {
+    color: darkslategrey;
+    font-weight: 600;
+}
+
+li.list-group-item.d-flex.justify-content-between.align-items-center {
+    border-color: #e6e6e6;
+    border-width: 1px;
+    border-width: ;
+    margin-bottom: -1px;
+}
+
+.convs_new {
+    /* width: 40%; */
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    /* left: auto; */
+    /* right: auto; */
+    float: right;
+    margin-top: -35px;
+    /* vertical-align: unset; */
+}
+
+.convs_name_span {
+    min-height: 40px;
 }

@@ -1156,7 +1156,17 @@ cardApp.service('Edit', function() {
 
 });
 
-cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format) {
+cardApp.service('FormatHTML', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format) {
+
+   this.prepSentContent = function(content) {
+        var temp_content = Format.checkForImage(content);
+        temp_content = Format.stripHTML(temp_content);
+        return temp_content;
+    };
+
+}]); 
+
+cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML) {
 
     var updateinprogress = false;
 
@@ -1191,8 +1201,10 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
     // Get the FCM details (Google firebase notifications).
     $http.get("/api/fcm_data").then(function(result) {
-        fcm = result.data.fcm;
-        headers.Authorization = 'key=' + fcm.firebaseserverkey;
+        if (result != result.data.fcm != 'forbidden') {
+            fcm = result.data.fcm;
+            headers.Authorization = 'key=' + fcm.firebaseserverkey;
+        }
     });
 
     // find the array index of an object value
@@ -1205,6 +1217,8 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         return -1;
     };
 
+ 
+
     // UPDATE CARD
     this.updateCard = function(card_id, card, currentUser) {
         if (!updateinprogress) {
@@ -1213,9 +1227,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
                 var promises = [];
 
-                var sent_content = card.content;
-                sent_content = Format.checkForImage(sent_content);
-                sent_content = Format.stripHTML(sent_content);
+                var sent_content = FormatHTML.prepSentContent(card.content);
 
                 var current_conversation_id = Conversations.getConversationId();
 
@@ -1225,7 +1237,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 card.content = replaceTags.removeFocusIds(card.content);
 
                 var pms = { 'id': card_id, 'card': card };
-                
+
                 // call the create function from our service (returns a promise object)
                 Cards.update(pms)
                     .success(function(returned) {
@@ -1287,9 +1299,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         card_create.user = currentUser.google.name;
         var promises = [];
 
-        var sent_content = card_create.content;
-        sent_content = Format.checkForImage(sent_content);
-        sent_content = Format.stripHTML(sent_content);
+        var sent_content = FormatHTML.prepSentContent(card_create.content);
 
         var current_conversation_id = Conversations.getConversationId();
         card_create.conversationId = current_conversation_id;
