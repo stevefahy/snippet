@@ -626,7 +626,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 .convs_container {
     display: grid;
     grid-gap: 0px;
-    grid-template-columns: max-content auto 60px;
+    grid-template-columns: max-content auto max-content;
     grid-auto-columns: min-content;
     grid-auto-columns: max-content;
     grid-auto-columns: auto;
