@@ -477,8 +477,21 @@ li.list-group-item.d-flex.justify-content-between.align-items-center.ng-binding 
     margin-left: 5px;
     margin-top: -1px;
     */
+    /*
     display: table;
     margin-top: 4px;
+    */
+
+        padding-top: 4px;
+    padding-left: 7px;
+    padding-right: 7px;
+    border-radius: 100px;
+}
+
+.badge {
+        /* background-color: limegreen; */
+    /* background-color: forestgreen; */
+    background-color: olivedrab;
 }
 
 
@@ -651,7 +664,6 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     grid-column: 3;
     grid-row: 1;
     margin-left: auto;
-    margin-right: auto;
 }
 
 .d {
