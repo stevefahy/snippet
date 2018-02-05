@@ -305,6 +305,10 @@ span.glyphicon.glyphicon-option-vertical {
 
 
 
+
+
+
+
 /* EDIT MENU */
 
 
@@ -318,10 +322,18 @@ span.glyphicon.glyphicon-option-vertical {
 
 
 
+
+
+
+
 /* Dropdown button on hover & focus */
 
 .dropbtn:hover,
 .dropbtn:focus {}
+
+
+
+
 
 
 
@@ -331,6 +343,10 @@ span.glyphicon.glyphicon-option-vertical {
     position: relative;
     display: inline-block;
 }
+
+
+
+
 
 
 
@@ -348,6 +364,10 @@ span.glyphicon.glyphicon-option-vertical {
 
 
 
+
+
+
+
 /* Links inside the dropdown */
 
 .dropdown-content div {
@@ -360,11 +380,19 @@ span.glyphicon.glyphicon-option-vertical {
 
 
 
+
+
+
+
 /* Change color of dropdown links on hover */
 
 .dropdown-content a:hover {
     background-color: #f1f1f1
 }
+
+
+
+
 
 
 
@@ -445,10 +473,33 @@ li.list-group-item.d-flex.justify-content-between.align-items-center.ng-binding 
 }
 
 #conversations_badge {
-    float: none;
+    /*float: none;
     margin-left: 5px;
     margin-top: -1px;
+    */
+    display: table;
+    margin-top: 4px;
 }
+
+
+/*
+
+    display: inline-block;
+
+    min-width: 22px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    background-color: #777;
+    border-radius: 18px;
+
+    padding-top: 4px;
+
+    */
 
 #conversation_part {
     margin-bottom: 6px;
@@ -464,12 +515,15 @@ li.list-group-item.d-flex.justify-content-between.align-items-center.ng-binding 
     border-width: 1px;
 }
 
+
+/*
 #conversation_container {
     max-width: 600px;
 }
+*/
 
 #time {
-    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 11px;
     color: darkslategray;
     font-weight: 500;
@@ -492,16 +546,19 @@ body {
     cursor: pointer;
 }
 
+
+
+
+/*
 #conv_usr_img {
     float: left;
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
     background-color: #fafafa;
     border-radius: 50%;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
     cursor: pointer;
-    /* display: block; */
     -webkit-box-flex: 0;
     -webkit-flex: 0 0 auto;
     -ms-flex: 0 0 auto;
@@ -510,10 +567,33 @@ body {
     position: relative;
     margin-right: 15px;
     border-radius: 1;
-    /* border-width: thick; */
     border-color: tomato;
     border: .5px solid #9E9E9E;
-    margin-top: 5px;
+    margin-top: 2px;
+}
+*/
+
+#conv_usr_img {
+
+    width: 40px;
+    height: 40px;
+
+    background-color: #fafafa;
+    border-radius: 50%;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    cursor: pointer;
+    -webkit-box-flex: 0;
+    -webkit-flex: 0 0 auto;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    overflow: hidden;
+    position: relative;
+    margin-right: 15px;
+    border-radius: 1;
+    border-color: tomato;
+    border: .5px solid #9E9E9E;
+    margin-top: 2px;
 }
 
 #convs_name {
@@ -541,6 +621,47 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     /* vertical-align: unset; */
 }
 
-.convs_name_span {
-    min-height: 40px;
+.convs_name_span {}
+
+.convs_container {
+    display: grid;
+    grid-gap: 0px;
+    grid-template-columns: max-content auto 60px;
+    grid-auto-columns: min-content;
+    grid-auto-columns: max-content;
+    grid-auto-columns: auto;
+    grid-auto-columns: fit-content(100%);
+
+    grid-auto-rows: min-content;
+    grid-auto-rows: max-content;
+    grid-auto-rows: auto;
+}
+
+.a {
+    grid-column: 1;
+    grid-row-end: span 2;
+}
+
+.b {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.c {
+    grid-column: 3;
+    grid-row: 1;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.d {
+    grid-column: 2;
+    grid-row: 2;
+}
+
+.e {
+    grid-column: 3;
+    grid-row: 2;
+    margin-left: auto;
+    margin-right: auto;
 }
