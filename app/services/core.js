@@ -1168,6 +1168,7 @@ cardApp.service('FormatHTML', ['$window', '$rootScope', '$timeout', '$q', '$http
     };
 
     this.prepSentContent = function(content, length) {
+        console.log(content + ' : ' + length);
         var string_count = length;
         var temp_content = Format.checkForImage(content);
 
@@ -1357,9 +1358,13 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         card_create.content = replaceTags.replace(card_create.content);
         card_create.content = Format.removeDeleteIds();
 
+        card_create.content = replaceTags.removeDeleteId(card_create.content);
+        card_create.content = replaceTags.removeFocusIds(card_create.content);
+
         var sent_content;
         var notification_title;
         var notification_body;
+        var card_content = card_create.content;
 
         Cards.create(card_create)
             .then(function(response) {
@@ -1373,18 +1378,20 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 // Update the Conversation updateAt time.
                 Conversations.updateTime(current_conversation_id)
                     .then(function(response) {
-
+                        console.log(sent_content_length);
                         // if a group, otherwise an individual conversation.
                         if (response.data.participants.length > 2) {
                             // Set the notification title to the conversation title
                             notification_title = '<b>' + response.data.conversation_name + '</b>';
-                            notification_body = currentUser.google.name + ' : ' + card_create.content;
+                            notification_body = currentUser.google.name + ' : ' + card_content;
                         } else {
                             // Set the notification title to the senders name
                             notification_title = '<b>' + currentUser.google.name + '</b>';
-                            notification_body = card_create.content;
+                            notification_body = card_content;
                         }
+                        console.log(notification_body);
                         sent_content = FormatHTML.prepSentContent(notification_body, sent_content_length);
+                        console.log(sent_content);
                         //var sent_content = FormatHTML.prepSentContent(card_create.content, sent_content_length);
                         // Send notifications
                         for (var i in response.data.participants) {
@@ -1396,6 +1403,8 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                 findUser(response.data.participants[i]._id, function(result) {
                                     // get the participants notification key
                                     // get the message title and body
+                                    console.log(notification_title);
+                                    console.log(sent_content);
                                     if (result.notification_key !== undefined) {
                                         data.to = result.notification_key;
                                         data.notification.title = notification_title;
