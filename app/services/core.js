@@ -1170,13 +1170,16 @@ cardApp.service('FormatHTML', ['$window', '$rootScope', '$timeout', '$q', '$http
     this.prepSentContent = function(content) {
         var string_count = 25;
         var temp_content = Format.checkForImage(content);
-        
+
         var regex_1 = temp_content.replace(/\u200b/gi, "");
         var regex_2 = regex_1.replace(/\s{2,}/gi, " ");
         var regex_3 = regex_2.replace(/<span>/gi, "");
         var regex_4 = regex_3.replace(/<\/span>/gi, "");
         var regex_5 = regex_4.replace(/<br>/gi, "");
-        temp_content = regex_5;
+        var regex_6 = regex_5.replace(/<h([1-7])>(.*?)<\/h[1-7]>/gi,"<b> $2 </b>");
+
+        temp_content = regex_6;
+        console.log(temp_content);
 
         var count = 0;
         var counting = true;
@@ -1186,7 +1189,7 @@ cardApp.service('FormatHTML', ['$window', '$rootScope', '$timeout', '$q', '$http
                 counting = false;
             }
             if (counting) {
-                console.log('count: ' + temp_content[i] + ' : ' + count);
+                //console.log('count: ' + temp_content[i] + ' : ' + count);
                 count++;
             }
             if (!counting && temp_content[i] == '>') {
@@ -1194,9 +1197,9 @@ cardApp.service('FormatHTML', ['$window', '$rootScope', '$timeout', '$q', '$http
             }
 
             if (count > string_count) {
-                console.log(temp_content + ', end at: ' + temp_content.substr(0, i+1));
-                console.log('end at: ' + this.fixhtml(temp_content.substr(0, i+1)));
-                temp_content = this.fixhtml(temp_content.substr(0, i+1));
+                //console.log(temp_content + ', end at: ' + temp_content.substr(0, i + 1));
+                //console.log('end at: ' + this.fixhtml(temp_content.substr(0, i + 1)));
+                temp_content = this.fixhtml(temp_content.substr(0, i + 1));
                 break;
             }
 
