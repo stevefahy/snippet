@@ -120,6 +120,8 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
                         Conversations.getConversationLatestCard(key._id)
                             .then(function(res) {
                                 if (res.data != null) {
+                                    console.log(res.data.content);
+                                    console.log(FormatHTML.prepSentContent(res.data.content));
                                     key.latest_card = FormatHTML.prepSentContent(res.data.content);
                                 } else {
                                     key.latest_card = ' ';

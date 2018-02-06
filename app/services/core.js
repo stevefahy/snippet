@@ -457,9 +457,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.stripHTML = function(html) {
+        /*
         var tmp = document.createElement("DIV");
         tmp.innerHTML = html;
         return tmp.textContent || tmp.innerText || "";
+        */
+        return html;
     };
 
     this.getFocus = function(id, card, currentUser) {
@@ -1158,14 +1161,51 @@ cardApp.service('Edit', function() {
 
 cardApp.service('FormatHTML', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format) {
 
-   this.prepSentContent = function(content) {
+    this.fixhtml = function(html) {
+        var div = document.createElement('div');
+        div.innerHTML = html;
+        return (div.innerHTML);
+    };
+
+    this.prepSentContent = function(content) {
+        var string_count = 25;
         var temp_content = Format.checkForImage(content);
-        temp_content = Format.stripHTML(temp_content);
-        temp_content = temp_content.substr(0,20) + '...';
+        
+        var regex_1 = temp_content.replace(/\u200b/gi, "");
+        var regex_2 = regex_1.replace(/\s{2,}/gi, " ");
+        var regex_3 = regex_2.replace(/<span>/gi, "");
+        var regex_4 = regex_3.replace(/<\/span>/gi, "");
+        var regex_5 = regex_4.replace(/<br>/gi, "");
+        temp_content = regex_5;
+
+        var count = 0;
+        var counting = true;
+        for (var i = 0; i <= temp_content.length; i++) {
+
+            if (counting && temp_content[i] == '<') {
+                counting = false;
+            }
+            if (counting) {
+                console.log('count: ' + temp_content[i] + ' : ' + count);
+                count++;
+            }
+            if (!counting && temp_content[i] == '>') {
+                counting = true;
+            }
+
+            if (count > string_count) {
+                console.log(temp_content + ', end at: ' + temp_content.substr(0, i+1));
+                console.log('end at: ' + this.fixhtml(temp_content.substr(0, i+1)));
+                temp_content = this.fixhtml(temp_content.substr(0, i+1));
+                break;
+            }
+
+        }
+
         return temp_content;
     };
 
-}]); 
+}]);
 
 cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML) {
 
@@ -1218,7 +1258,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         return -1;
     };
 
- 
+
 
     // UPDATE CARD
     this.updateCard = function(card_id, card, currentUser) {
