@@ -1176,7 +1176,7 @@ cardApp.service('FormatHTML', ['$window', '$rootScope', '$timeout', '$q', '$http
         var regex_3 = regex_2.replace(/<span>/gi, "");
         var regex_4 = regex_3.replace(/<\/span>/gi, "");
         var regex_5 = regex_4.replace(/<br>/gi, "");
-        var regex_6 = regex_5.replace(/<h([1-7])>(.*?)<\/h[1-7]>/gi,"<b> $2 </b>");
+        var regex_6 = regex_5.replace(/<h([1-7])>(.*?)<\/h[1-7]>/gi, "<b> $2 </b>");
 
         temp_content = regex_6;
         console.log(temp_content);
@@ -1204,7 +1204,9 @@ cardApp.service('FormatHTML', ['$window', '$rootScope', '$timeout', '$q', '$http
             }
 
         }
-
+        if (temp_content.length >= string_count) {
+            temp_content += '...';
+        }
         return temp_content;
     };
 
