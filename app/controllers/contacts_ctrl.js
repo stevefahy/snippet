@@ -67,6 +67,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
         new_participants.map(function(key, array) {
             $scope.chat_create.participants.push({ _id: key, viewed: 0 });
         });
+
         // Create conversation in DB.
         Conversations.create($scope.chat_create)
             .then(function(res) {

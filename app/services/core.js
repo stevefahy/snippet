@@ -1274,14 +1274,16 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
                 var promises = [];
 
-                var sent_content = FormatHTML.prepSentContent(card.content, sent_content_length);
-
-                var current_conversation_id = Conversations.getConversationId();
+                //var current_conversation_id = Conversations.getConversationId();
 
                 card.content = Format.setMediaSize(card_id, card);
                 card.content = replaceTags.replace(card.content);
                 card.content = replaceTags.removeDeleteId(card.content);
                 card.content = replaceTags.removeFocusIds(card.content);
+
+                // MOVE TO AFTER CLEAN UP FOR SEND AND UPDATE
+                // ALSO ADD USER IF GROUP and the username should be part of the content length
+                var sent_content = FormatHTML.prepSentContent(card.content, sent_content_length);
 
                 var pms = { 'id': card_id, 'card': card };
 
@@ -1321,7 +1323,8 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                 // Update the unviewed arrary for all participants.
                                 for (var x = 0; x < viewed_users.length; x++) {
                                     promises.push(
-                                        Conversations.updateViewed(current_conversation_id, viewed_users[x]._id, card_id)
+                                        //Conversations.updateViewed(current_conversation_id, viewed_users[x]._id, card_id)
+                                        Conversations.updateViewed(card.conversationId, viewed_users[x]._id, card_id)
                                         .then(function(res) {
                                             //console.log(res);
                                         })
@@ -1330,7 +1333,8 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                 // All Conversation participants unviewed arrays updated
                                 $q.all(promises).then(function() {
                                     // update other paticipants in the conversation via socket.
-                                    socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: current_conversation_id, participants: viewed_users });
+                                    //socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: current_conversation_id, participants: viewed_users });
+                                    socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: card.conversationId, participants: viewed_users });
                                     updateinprogress = false;
                                 });
                             });
@@ -1346,14 +1350,16 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         card_create.user = currentUser.google.name;
         var promises = [];
 
-        var sent_content = FormatHTML.prepSentContent(card_create.content, sent_content_length);
-
         var current_conversation_id = Conversations.getConversationId();
         card_create.conversationId = current_conversation_id;
 
         card_create.content = Format.setMediaSize(id, card_create);
         card_create.content = replaceTags.replace(card_create.content);
         card_create.content = Format.removeDeleteIds();
+
+        var sent_content;
+        var notification_title;
+        var notification_body;
 
         Cards.create(card_create)
             .then(function(response) {
@@ -1367,6 +1373,19 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 // Update the Conversation updateAt time.
                 Conversations.updateTime(current_conversation_id)
                     .then(function(response) {
+
+                        // if a group, otherwise an individual conversation.
+                        if (response.data.participants.length > 2) {
+                            // Set the notification title to the conversation title
+                            notification_title = '<b>' + response.data.conversation_name + '</b>';
+                            notification_body = currentUser.google.name + ' : ' + card_create.content;
+                        } else {
+                            // Set the notification title to the senders name
+                            notification_title = '<b>' + currentUser.google.name + '</b>';
+                            notification_body = card_create.content;
+                        }
+                        sent_content = FormatHTML.prepSentContent(notification_body, sent_content_length);
+                        //var sent_content = FormatHTML.prepSentContent(card_create.content, sent_content_length);
                         // Send notifications
                         for (var i in response.data.participants) {
                             // dont emit to the user which sent the card
@@ -1379,7 +1398,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                     // get the message title and body
                                     if (result.notification_key !== undefined) {
                                         data.to = result.notification_key;
-                                        data.notification.title = currentUser.google.name;
+                                        data.notification.title = notification_title;
                                         data.notification.body = sent_content;
                                         // get the conversation id
                                         data.data.url = response.data._id;
