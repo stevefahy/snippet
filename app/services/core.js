@@ -1167,8 +1167,8 @@ cardApp.service('FormatHTML', ['$window', '$rootScope', '$timeout', '$q', '$http
         return (div.innerHTML);
     };
 
-    this.prepSentContent = function(content) {
-        var string_count = 25;
+    this.prepSentContent = function(content, length) {
+        var string_count = length;
         var temp_content = Format.checkForImage(content);
 
         var regex_1 = temp_content.replace(/\u200b/gi, "");
@@ -1215,6 +1215,7 @@ cardApp.service('FormatHTML', ['$window', '$rootScope', '$timeout', '$q', '$http
 cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML) {
 
     var updateinprogress = false;
+    var sent_content_length = 30;
 
     var card_create = {
         _id: 'card_create',
@@ -1273,7 +1274,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
                 var promises = [];
 
-                var sent_content = FormatHTML.prepSentContent(card.content);
+                var sent_content = FormatHTML.prepSentContent(card.content, sent_content_length);
 
                 var current_conversation_id = Conversations.getConversationId();
 
@@ -1345,7 +1346,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         card_create.user = currentUser.google.name;
         var promises = [];
 
-        var sent_content = FormatHTML.prepSentContent(card_create.content);
+        var sent_content = FormatHTML.prepSentContent(card_create.content, sent_content_length);
 
         var current_conversation_id = Conversations.getConversationId();
         card_create.conversationId = current_conversation_id;

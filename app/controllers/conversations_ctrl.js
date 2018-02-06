@@ -1,6 +1,7 @@
 cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$http', 'Invites', 'Email', 'Users', 'Conversations', '$q', 'FormatHTML', function($scope, $rootScope, $location, $http, Invites, Email, Users, Conversations, $q, FormatHTML) {
 
     var public_found = false;
+    var sent_content_length = 23;
 
     $scope.temp_time = "today";
 
@@ -29,7 +30,7 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
                 Conversations.getConversationLatestCard(msg.conversation_id)
                     .then(function(res) {
                         if (res.data != null) {
-                            $scope.conversations[conversation_pos].latest_card = FormatHTML.prepSentContent(res.data.content);
+                            $scope.conversations[conversation_pos].latest_card = FormatHTML.prepSentContent(res.data.content, sent_content_length);
                             $scope.conversations[conversation_pos].updatedAt = res.data.updatedAt;
                         } else {
                             $scope.conversations[conversation_pos].latest_card = ' ';
@@ -121,8 +122,8 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
                             .then(function(res) {
                                 if (res.data != null) {
                                     console.log(res.data.content);
-                                    console.log(FormatHTML.prepSentContent(res.data.content));
-                                    key.latest_card = FormatHTML.prepSentContent(res.data.content);
+                                    console.log(FormatHTML.prepSentContent(res.data.content, sent_content_length));
+                                    key.latest_card = FormatHTML.prepSentContent(res.data.content, sent_content_length);
                                 } else {
                                     key.latest_card = ' ';
                                 }
