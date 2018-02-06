@@ -1382,11 +1382,11 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                         // if a group, otherwise an individual conversation.
                         if (response.data.participants.length > 2) {
                             // Set the notification title to the conversation title
-                            notification_title = '<b>' + response.data.conversation_name + '</b>';
-                            notification_body = currentUser.google.name + ' : ' + card_content;
+                            notification_title = response.data.conversation_name;
+                            notification_body = '<b>' + currentUser.google.name + '</b>' + ': ' + card_content;
                         } else {
                             // Set the notification title to the senders name
-                            notification_title = '<b>' + currentUser.google.name + '</b>';
+                            notification_title = currentUser.google.name;
                             notification_body = card_content;
                         }
                         console.log(notification_body);
