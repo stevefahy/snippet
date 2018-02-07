@@ -63,6 +63,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     // Image resize max width or height
     var MAX_WIDTH = 1080;
     var MAX_HEIGHT = 1080;
+    var JPEG_COMPRESSION = 0.9;
     var IMAGES_URL = 'fileuploads/images/';
     var refreshedToken;
     var marky_found = false;
@@ -265,8 +266,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             ctx.drawImage(img, 0, 0, width, height);
             ctx.restore();
 
-            // compress to 90% JPEG
-            var dataURL = canvas.toDataURL('image/jpeg', 0.9);
+            // compress JPEG
+            var dataURL = canvas.toDataURL('image/jpeg', JPEG_COMPRESSION);
             resolve(dataURL);
         });
     }
@@ -454,15 +455,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             res = content;
         }
         return res;
-    };
-
-    this.stripHTML = function(html) {
-        /*
-        var tmp = document.createElement("DIV");
-        tmp.innerHTML = html;
-        return tmp.textContent || tmp.innerText || "";
-        */
-        return html;
     };
 
     this.getFocus = function(id, card, currentUser) {
@@ -1168,20 +1160,21 @@ cardApp.service('FormatHTML', ['$window', '$rootScope', '$timeout', '$q', '$http
     };
 
     this.prepSentContent = function(content, length) {
-        console.log(content + ' : ' + length);
+
         var string_count = length;
         var temp_content = Format.checkForImage(content);
 
+        // Remove unwanted HTML
         var regex_1 = temp_content.replace(/\u200b/gi, "");
         var regex_2 = regex_1.replace(/\s{2,}/gi, " ");
         var regex_3 = regex_2.replace(/<span>/gi, "");
         var regex_4 = regex_3.replace(/<\/span>/gi, "");
-        var regex_5 = regex_4.replace(/<br>/gi, "");
+        var regex_5 = regex_4.replace(/<br>/gi, " ");
         var regex_6 = regex_5.replace(/<h([1-7])>(.*?)<\/h[1-7]>/gi, "<b> $2 </b>");
 
         temp_content = regex_6;
-        console.log(temp_content);
 
+        // Loop through the content to count the characters only and not the HTML
         var count = 0;
         var counting = true;
         for (var i = 0; i <= temp_content.length; i++) {
@@ -1190,20 +1183,16 @@ cardApp.service('FormatHTML', ['$window', '$rootScope', '$timeout', '$q', '$http
                 counting = false;
             }
             if (counting) {
-                //console.log('count: ' + temp_content[i] + ' : ' + count);
                 count++;
             }
             if (!counting && temp_content[i] == '>') {
                 counting = true;
             }
-
             if (count > string_count) {
-                //console.log(temp_content + ', end at: ' + temp_content.substr(0, i + 1));
-                //console.log('end at: ' + this.fixhtml(temp_content.substr(0, i + 1)));
+                // Fix any unclosed HTML tags
                 temp_content = this.fixhtml(temp_content.substr(0, i + 1));
                 break;
             }
-
         }
         if (temp_content.length >= string_count) {
             temp_content += '...';
@@ -1216,7 +1205,7 @@ cardApp.service('FormatHTML', ['$window', '$rootScope', '$timeout', '$q', '$http
 cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML) {
 
     var updateinprogress = false;
-    var sent_content_length = 30;
+    var sent_content_length = 28;
 
     var card_create = {
         _id: 'card_create',
@@ -1265,8 +1254,6 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         return -1;
     };
 
-
-
     // UPDATE CARD
     this.updateCard = function(card_id, card, currentUser) {
         if (!updateinprogress) {
@@ -1275,16 +1262,21 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
                 var promises = [];
 
-                //var current_conversation_id = Conversations.getConversationId();
-
                 card.content = Format.setMediaSize(card_id, card);
                 card.content = replaceTags.replace(card.content);
+                card.content = Format.removeDeleteIds();
+
                 card.content = replaceTags.removeDeleteId(card.content);
                 card.content = replaceTags.removeFocusIds(card.content);
 
                 // MOVE TO AFTER CLEAN UP FOR SEND AND UPDATE
                 // ALSO ADD USER IF GROUP and the username should be part of the content length
-                var sent_content = FormatHTML.prepSentContent(card.content, sent_content_length);
+                //var sent_content = FormatHTML.prepSentContent(card.content, sent_content_length);
+
+                var sent_content;
+                var notification_title;
+                var notification_body;
+                var card_content = card_create.content;
 
                 var pms = { 'id': card_id, 'card': card };
 
@@ -1378,21 +1370,26 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 // Update the Conversation updateAt time.
                 Conversations.updateTime(current_conversation_id)
                     .then(function(response) {
-                        console.log(sent_content_length);
-                        // if a group, otherwise an individual conversation.
+
+                        // Public conversation
+                        if (response.data.conversation_type == 'public') {
+                            // Get the conversation name and add to model.
+                            notification_title = response.data.conversation_name;
+                            notification_body = card_content;
+                        }
+                        // Group conversation. 
                         if (response.data.participants.length > 2) {
                             // Set the notification title to the conversation title
                             notification_title = response.data.conversation_name;
                             notification_body = '<b>' + currentUser.google.name + '</b>' + ': ' + card_content;
-                        } else {
+                        }
+                        // Two user conversation (not a group)
+                        if (response.data.participants.length == 2) {
                             // Set the notification title to the senders name
                             notification_title = currentUser.google.name;
                             notification_body = card_content;
                         }
-                        console.log(notification_body);
                         sent_content = FormatHTML.prepSentContent(notification_body, sent_content_length);
-                        console.log(sent_content);
-                        //var sent_content = FormatHTML.prepSentContent(card_create.content, sent_content_length);
                         // Send notifications
                         for (var i in response.data.participants) {
                             // dont emit to the user which sent the card
@@ -1401,10 +1398,8 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                 viewed_users.push({ "_id": response.data.participants[i]._id });
                                 // Find the other user(s)
                                 findUser(response.data.participants[i]._id, function(result) {
-                                    // get the participants notification key
-                                    // get the message title and body
-                                    console.log(notification_title);
-                                    console.log(sent_content);
+                                    // set the participants notification key
+                                    // set the message title and body
                                     if (result.notification_key !== undefined) {
                                         data.to = result.notification_key;
                                         data.notification.title = notification_title;

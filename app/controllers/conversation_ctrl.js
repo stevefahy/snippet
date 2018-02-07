@@ -45,7 +45,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Broadcast by cardcreate_ctrl and conversation_ctrl when the window regains focus
     $scope.$on('CONV_CHECK', function() {
-        console.log('CONV_CHECK');
         var id = Conversations.getConversationId();
         getConversationUpdate(id);
     });

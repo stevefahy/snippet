@@ -4,34 +4,16 @@
             <div id="conv_div" ng-click="(conversation.conversation_type == 'private') ? chat(conversation._id, $index) : chatPublic(conversation.admin, $index)">
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <div class="convs_container">
-                        <div class="a">
+                        <div class="convs_a">
                             <img id="conv_usr_img" src="/assets/images/profile.jpg">
                         </div>
-                        <div class="b" id="convs_name">{{conversation.name}}</div>
-                        <div class="d" id="convs_msg" ng-bind-html="conversation.latest_card"></div>
-                        <div class="c badge" id="conversations_badge" ng-if="conversation.new_messages > 0">{{conversation.new_messages}}</div>
-                        <div class="e"> <time am-time-ago="conversation.updatedAt" id="time"></time></div>
-                    </div>
-                    <!--
-                        <div class="row">
-                            <div class="col" id="convs_name_span">
-                                
-                                <div>2 bot</div>
-                               
-                                <div id="convs_name">{{conversation.name}}</div>
-                                <div id="convs_msg"></div>
-                            
-                            </div>
-                            <div class="col" id="convs_newx">
-                                
-                                <div>3 bot</div>
-                                
-                                
-                               
-                            
-                            </div>
+                        <div class="convs_b" id="convs_name">{{conversation.name}}</div>
+                        <div class="convs_d" id="convs_msg" ng-bind-html="conversation.latest_card"></div>
+                        <div class="convs_c badge" id="conversations_badge" ng-if="conversation.new_messages > 0">{{conversation.new_messages}}</div>
+                        <div class="convs_e">
+                            <time am-time-ago="conversation.updatedAt" id="time"></time>
                         </div>
-                    -->
+                    </div>
                 </li>
             </div>
         </div>
