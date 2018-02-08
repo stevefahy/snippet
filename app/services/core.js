@@ -1479,10 +1479,12 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 // remove this Card from the unviewed array for all Conversation participants.
                 Conversations.removeViewed(conversation_id, currentUser, card_id)
                     .then(function(response) {
-
+                        console.log(response.data);
                         var notification = self.setNotification(response.data, currentUser, card_content);
                         notification_title = notification.title;
                         notification_body = notification.body;
+                        console.log(notification_title);
+                        console.log(notification_body);
 
                         sent_content = FormatHTML.prepSentContent(notification_body, sent_content_length);
 
@@ -1494,6 +1496,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                 General.findUser(response.data.participants[i]._id, function(result) {
                                     // Get the participants notification key
                                     // set the message title and body
+                                    console.log(result);
                                     if (result.notification_key !== undefined) {
                                         data.to = result.notification_key;
                                         data.notification.title = notification_title;
