@@ -1,5 +1,8 @@
 cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http', 'Invites', 'Email', 'Users', 'Conversations', function($scope, $rootScope, $location, $http, Invites, Email, Users, Conversations) {
 
+    //The minimum number of characters a user must type before a search is performed.
+    var SEARCH_MIN = 3;
+
     $scope.contacts = [];
     $scope.search_results = [];
 
@@ -19,6 +22,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
     $scope.selection = [];
     // contacts checkboxes selected
     $scope.selected = [];
+
     // contact checkbox value changed
     $scope.checkBoxChange = function(checkbox, value) {
         var index = $scope.selected.indexOf(checkbox);
@@ -29,7 +33,6 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
         } else if (value === false && index >= 0) {
             $scope.selected.splice(index, 1);
         }
-
     };
 
     // Start a conversation
@@ -190,7 +193,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
                 });
             },
             // The minimum number of characters a user must type before a search is performed.
-            minLength: 3,
+            minLength: SEARCH_MIN,
         });
     });
 }]);

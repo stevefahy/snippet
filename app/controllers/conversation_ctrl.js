@@ -1,4 +1,4 @@
-cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', function($scope, $rootScope, $location, $http, $window, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database) {
+cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', function($scope, $rootScope, $location, $http, $window, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General) {
 
     $scope.getFocus = Format.getFocus;
     $scope.getBlur = Format.getBlur;
@@ -65,7 +65,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Broadcast by Database updateCard service when a card has been updated.
     $scope.$on('CARD_UPDATED', function(event, data) {
-        var card_pos = findWithAttr($scope.cards, '_id', data._id);
+        var card_pos = General.findWithAttr($scope.cards, '_id', data._id);
         if (card_pos >= 0) {
             $scope.cards[card_pos].updatedAt = data.updatedAt;
             $scope.cards[card_pos].original_content = $scope.cards[card_pos].content;
@@ -75,7 +75,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // Broadcast by Database deleteCard service when a card has been deleted.
     $scope.$on('CARD_DELETED', function(event, card_id) {
         // find the position of the deleted card within the cards array.
-        var deleted_card_pos = findWithAttr($scope.cards, '_id', card_id);
+        var deleted_card_pos = General.findWithAttr($scope.cards, '_id', card_id);
         // if the card is found then remove it.
         if (deleted_card_pos >= 0) {
             $scope.cards.splice(deleted_card_pos, 1);
@@ -97,17 +97,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }
         }, 0);
     };
-
-    // TODO make this a service?
-    // find the array index of an object value
-    function findWithAttr(array, attr, value) {
-        for (var i = 0; i < array.length; i += 1) {
-            if (array[i][attr] === value) {
-                return i;
-            }
-        }
-        return -1;
-    }
 
     function comparer(otherArray) {
         return function(current) {
@@ -262,10 +251,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
         // Start watching onfocus and onblur, then load the conversation for the first time.
         watchFocus();
-
     });
-
-
 
     // Find the conversation id.
     findConversationId = function(callback) {
@@ -321,7 +307,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             Conversations.find_conversation_id(conversation_id)
                 .then(function(res) {
                     // Find the current user in the conversation participants array.
-                    var user_pos = findWithAttr(res.data.participants, '_id', $scope.currentUser._id);
+                    var user_pos = General.findWithAttr(res.data.participants, '_id', $scope.currentUser._id);
                     if (user_pos >= 0) {
                         // user found in the participants array.
                         callback(true);
@@ -403,7 +389,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 // TODO Can there be more then one updated card?
                 if (updated.length > 0) {
                     // Find the card postion within the cards array.
-                    var card_pos = findWithAttr($scope.cards, '_id', updated[0]._id);
+                    var card_pos = General.findWithAttr($scope.cards, '_id', updated[0]._id);
                     // If the card is found then update it.
                     if (card_pos >= 0) {
                         $scope.cards[card_pos].content = updated[0].content;
@@ -420,7 +406,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     // If there are deleted cards.
                     if (deleted.length > 0) {
                         // Find the card postion within the cards array.
-                        var deleted_card_pos = findWithAttr($scope.cards, '_id', deleted[0]._id);
+                        var deleted_card_pos = General.findWithAttr($scope.cards, '_id', deleted[0]._id);
                         //If the card is found then delete it.
                         if (deleted_card_pos >= 0) {
                             $scope.cards.splice(deleted_card_pos, 1);

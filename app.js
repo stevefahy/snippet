@@ -106,8 +106,8 @@ for (var k in interfaces) {
         }
     }
 }
-// Dell XPS 13
-if (addresses == '192.168.192.60') {
+// Dell XPS 13 or other local networks
+if (addresses == '192.168.192.60' || addresses == '10.21.221.127') {
     // MongoDB
     var dburl = urls.localUrl;
     // Google Auth callBackURL

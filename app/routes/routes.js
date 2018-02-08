@@ -49,7 +49,6 @@ function isLoggedIn(req, res, next) {
     }
 }
 
-// TODO make service
 // find the array index of an object value
 function findWithAttr(array, attr, value) {
     for (var i = 0; i < array.length; i += 1) {

@@ -1202,7 +1202,36 @@ cardApp.service('FormatHTML', ['$window', '$rootScope', '$timeout', '$q', '$http
 
 }]);
 
-cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML) {
+cardApp.service('General', ['Users', function(Users) {
+
+    // Find User
+    this.findUser = function(id, callback) {
+        var user_found;
+        Users.search_id(id)
+            .success(function(res) {
+                user_found = res.success;
+                callback(user_found);
+            })
+            .error(function(error) {
+                //
+            });
+    };
+
+    // Find the array index of an object value
+    this.findWithAttr = function(array, attr, value) {
+        for (var i = 0; i < array.length; i += 1) {
+            if (array[i][attr] === value) {
+                return i;
+            }
+        }
+        return -1;
+    };
+
+}]);
+
+cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', 'General', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML, General) {
+
+    var self = this;
 
     var updateinprogress = false;
     var sent_content_length = 28;
@@ -1244,14 +1273,29 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         }
     });
 
-    // find the array index of an object value
-    this.findWithAttr = function(array, attr, value) {
-        for (var i = 0; i < array.length; i += 1) {
-            if (array[i][attr] === value) {
-                return i;
-            }
+    this.setNotification = function(data, currentUser, card_content) {
+        var notification_title;
+        var notification_body;
+        // Public conversation
+        if (data.conversation_type == 'public') {
+            // Get the conversation name and add to model.
+            notification_title = data.conversation_name;
+            notification_body = card_content;
         }
-        return -1;
+        // Group conversation. 
+        if (data.participants.length > 2) {
+            // Set the notification title to the conversation title
+            notification_title = data.conversation_name;
+            notification_body = '<b>' + currentUser.google.name + '</b>' + ': ' + card_content;
+        }
+        // Two user conversation (not a group)
+        if (data.participants.length == 2) {
+            // Set the notification title to the senders name
+            notification_title = currentUser.google.name;
+            notification_body = card_content;
+        }
+        var notification = { title: notification_title, body: notification_body };
+        return notification;
     };
 
     // UPDATE CARD
@@ -1261,22 +1305,16 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
             setTimeout(function() {
 
                 var promises = [];
-
                 card.content = Format.setMediaSize(card_id, card);
                 card.content = replaceTags.replace(card.content);
-                card.content = Format.removeDeleteIds();
-
+                //card.content = Format.removeDeleteIds(); // returns empty sring here
                 card.content = replaceTags.removeDeleteId(card.content);
                 card.content = replaceTags.removeFocusIds(card.content);
-
-                // MOVE TO AFTER CLEAN UP FOR SEND AND UPDATE
-                // ALSO ADD USER IF GROUP and the username should be part of the content length
-                //var sent_content = FormatHTML.prepSentContent(card.content, sent_content_length);
 
                 var sent_content;
                 var notification_title;
                 var notification_body;
-                var card_content = card_create.content;
+                var card_content = card.content;
 
                 var pms = { 'id': card_id, 'card': card };
 
@@ -1288,6 +1326,13 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                         // Update the Conversation updateAt time.
                         Conversations.updateTime(card.conversationId)
                             .then(function(response) {
+
+                                var notification = self.setNotification(response.data, currentUser, card_content);
+                                notification_title = notification.title;
+                                notification_body = notification.body;
+
+                                sent_content = FormatHTML.prepSentContent(notification_body, sent_content_length);
+
                                 // Send notifications
                                 for (var i in response.data.participants) {
                                     // dont emit to the user which sent the card
@@ -1295,12 +1340,12 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                         // Add this users id to the viewed_users array.
                                         viewed_users.push({ "_id": response.data.participants[i]._id });
                                         // Find the other user(s)
-                                        findUser(response.data.participants[i]._id, function(result) {
-                                            // get the participants notification key
-                                            // get the message title and body
+                                        General.findUser(response.data.participants[i]._id, function(result) {
+                                            // Get the participants notification key
+                                            // Set the message title and body
                                             if (result.notification_key !== undefined) {
                                                 data.to = result.notification_key;
-                                                data.notification.title = currentUser.google.name;
+                                                data.notification.title = notification_title;
                                                 data.notification.body = sent_content;
                                                 // get the conversation id
                                                 data.data.url = response.data._id;
@@ -1316,7 +1361,6 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                 // Update the unviewed arrary for all participants.
                                 for (var x = 0; x < viewed_users.length; x++) {
                                     promises.push(
-                                        //Conversations.updateViewed(current_conversation_id, viewed_users[x]._id, card_id)
                                         Conversations.updateViewed(card.conversationId, viewed_users[x]._id, card_id)
                                         .then(function(res) {
                                             //console.log(res);
@@ -1326,7 +1370,6 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                 // All Conversation participants unviewed arrays updated
                                 $q.all(promises).then(function() {
                                     // update other paticipants in the conversation via socket.
-                                    //socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: current_conversation_id, participants: viewed_users });
                                     socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: card.conversationId, participants: viewed_users });
                                     updateinprogress = false;
                                 });
@@ -1340,9 +1383,10 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
     // CREATE CARD
     this.createCard = function(id, card_create, currentUser) {
 
-        card_create.user = currentUser.google.name;
         var promises = [];
 
+        card_create.user = currentUser.google.name;
+        // Get the Conversation in which this card is being created.
         var current_conversation_id = Conversations.getConversationId();
         card_create.conversationId = current_conversation_id;
 
@@ -1371,25 +1415,12 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 Conversations.updateTime(current_conversation_id)
                     .then(function(response) {
 
-                        // Public conversation
-                        if (response.data.conversation_type == 'public') {
-                            // Get the conversation name and add to model.
-                            notification_title = response.data.conversation_name;
-                            notification_body = card_content;
-                        }
-                        // Group conversation. 
-                        if (response.data.participants.length > 2) {
-                            // Set the notification title to the conversation title
-                            notification_title = response.data.conversation_name;
-                            notification_body = '<b>' + currentUser.google.name + '</b>' + ': ' + card_content;
-                        }
-                        // Two user conversation (not a group)
-                        if (response.data.participants.length == 2) {
-                            // Set the notification title to the senders name
-                            notification_title = currentUser.google.name;
-                            notification_body = card_content;
-                        }
+                        var notification = self.setNotification(response.data, currentUser, card_content);
+                        notification_title = notification.title;
+                        notification_body = notification.body;
+
                         sent_content = FormatHTML.prepSentContent(notification_body, sent_content_length);
+
                         // Send notifications
                         for (var i in response.data.participants) {
                             // dont emit to the user which sent the card
@@ -1397,9 +1428,9 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                 // Add this users id to the viewed_users array.
                                 viewed_users.push({ "_id": response.data.participants[i]._id });
                                 // Find the other user(s)
-                                findUser(response.data.participants[i]._id, function(result) {
-                                    // set the participants notification key
-                                    // set the message title and body
+                                General.findUser(response.data.participants[i]._id, function(result) {
+                                    // Get the participants notification key
+                                    // Set the message title and body
                                     if (result.notification_key !== undefined) {
                                         data.to = result.notification_key;
                                         data.notification.title = notification_title;
@@ -1435,6 +1466,12 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
     // DELETE CARD
     this.deleteCard = function(card_id, conversation_id, currentUser) {
+
+        var sent_content;
+        var notification_title;
+        var notification_body;
+        var card_content = 'Post deleted.';
+
         Cards.delete(card_id)
             .success(function(data) {
                 // notify conversation_ctrl that the card has been deleted
@@ -1442,18 +1479,25 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 // remove this Card from the unviewed array for all Conversation participants.
                 Conversations.removeViewed(conversation_id, currentUser, card_id)
                     .then(function(response) {
+
+                        var notification = self.setNotification(response.data, currentUser, card_content);
+                        notification_title = notification.title;
+                        notification_body = notification.body;
+
+                        sent_content = FormatHTML.prepSentContent(notification_body, sent_content_length);
+
                         // Send notifications
                         for (var i in response.data.participants) {
                             // dont emit to the user which sent the card
                             if (response.data.participants[i]._id !== currentUser._id) {
                                 // Find the other user(s)
-                                findUser(response.data.participants[i]._id, function(result) {
-                                    // get the participants notification key
-                                    // get the message title and body
+                                General.findUser(response.data.participants[i]._id, function(result) {
+                                    // Get the participants notification key
+                                    // set the message title and body
                                     if (result.notification_key !== undefined) {
                                         data.to = result.notification_key;
-                                        data.notification.title = currentUser.google.name;
-                                        data.notification.body = 'Post deleted.'; //sent_content;
+                                        data.notification.title = notification_title;
+                                        data.notification.body = sent_content;
                                         // get the conversation id
                                         data.data.url = response.data._id;
                                         // Send the notification

@@ -38,19 +38,6 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
         });
     };
 
-    // Find User
-    findUser = function(id, callback) {
-        var user_found;
-        Users.search_id(id)
-            .success(function(res) {
-                user_found = res.success;
-                callback(user_found);
-            })
-            .error(function(error) {
-                //
-            });
-    };
-
     // only check focus on web version
     if (ua !== 'AndroidApp') {
         $window.onfocus = function() {
