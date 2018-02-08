@@ -2,6 +2,8 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
 
     var ua = navigator.userAgent;
 
+    var DEFAULT_TEXT = "<span class=\"disable_edit\" unselectable=\"on\" onselectstart=\"return false;\">Type a message</span>";
+
     $scope.getFocus = Format.getFocus;
     $scope.contentChanged = Format.contentChanged;
     $scope.checkKey = Format.checkKey;
@@ -11,9 +13,53 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
     $scope.uploadFile = Format.uploadFile;
     $scope.myFunction = Edit.myFunction;
 
+    $scope.input_text = DEFAULT_TEXT;
+
+    $scope.default = function() {
+        console.log('default');
+        if ($scope.card_create.content == DEFAULT_TEXT) {
+            $scope.card_create.content = '';
+        }
+    };
+
+
+    $timeout(function() {
+        var el = $window.document.getElementById('cecard_create');
+        el.onfocus = function() {
+            console.log('foc');
+            console.log($scope.card_create.content + ' == ' + DEFAULT_TEXT);
+            if ($scope.card_create.content == DEFAULT_TEXT) {
+
+                // Work around Chrome's little problem
+                window.setTimeout(function() {
+                    console.log('here');
+                    selection = window.getSelection();
+                    var sel = window.getSelection();
+                    range = document.createRange();
+                    range.setStart(el, 0);
+                    range.setEnd(el, 0);
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+
+
+                }, 100);
+
+            }
+
+
+        };
+    });
+    /*
+    el.focus();
+        var range = el.createTextRange();
+        range.collapse(true);
+        range.select();
+        */
+
+
     $scope.card_create = {
         _id: 'card_create',
-        content: '',
+        content: DEFAULT_TEXT, //'',
         //user: $scope.currentUser,
         user_name: ''
     };

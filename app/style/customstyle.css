@@ -40,6 +40,31 @@
     border-style: solid;
     border-color: #e6e6e6;
     border-width: 1px;
+
+    position: fixed;
+    bottom: 44px;
+}
+
+.default_text {
+
+    left: 30px;
+    position: fixed;
+    bottom: 80px;
+    /* background-color: red; */
+    /* width: 200px; */
+    /* height: 50px; */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.disable_edit {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    color: red;
 }
 
 #cet {
@@ -312,6 +337,7 @@ span.glyphicon.glyphicon-option-vertical {
 
 
 
+
 /* EDIT MENU */
 
 
@@ -322,6 +348,7 @@ span.glyphicon.glyphicon-option-vertical {
     border: none;
     cursor: pointer;
 }
+
 
 
 
@@ -346,12 +373,14 @@ span.glyphicon.glyphicon-option-vertical {
 
 
 
+
 /* The container <div> - needed to position the dropdown content */
 
 .dropdown {
     position: relative;
     display: inline-block;
 }
+
 
 
 
@@ -383,6 +412,7 @@ span.glyphicon.glyphicon-option-vertical {
 
 
 
+
 /* Links inside the dropdown */
 
 .dropdown-content div {
@@ -402,11 +432,13 @@ span.glyphicon.glyphicon-option-vertical {
 
 
 
+
 /* Change color of dropdown links on hover */
 
 .dropdown-content a:hover {
     background-color: #f1f1f1
 }
+
 
 
 
