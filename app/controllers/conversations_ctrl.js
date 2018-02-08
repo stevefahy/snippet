@@ -46,7 +46,6 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
                     // Get the latest card posted to this conversation
                     Conversations.getConversationLatestCard(msg.conversation_id)
                         .then(function(res) {
-                            console.log(res);
                             // If a card exists in the conversation
                             if (res.data != null) {
                                 // Format the latest card
