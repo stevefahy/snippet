@@ -1498,6 +1498,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                     // set the message title and body
                                     console.log(result);
                                     if (result.notification_key !== undefined) {
+                                        console.log('test');
                                         console.log(data);
                                         data.to = result.notification_key;
                                         console.log(data.notification.title);
