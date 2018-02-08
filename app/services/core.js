@@ -1473,7 +1473,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         var card_content = 'Post deleted.';
 
         Cards.delete(card_id)
-            .success(function(data) {
+            .success(function(response) {
                 // notify conversation_ctrl that the card has been deleted
                 $rootScope.$broadcast('CARD_DELETED', card_id);
                 // remove this Card from the unviewed array for all Conversation participants.
