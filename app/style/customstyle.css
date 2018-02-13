@@ -10,7 +10,7 @@
     width: 100%;
     word-wrap: break-word;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arimo, Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-    font-size: 1.5rem;
+    font-size: 0.95rem;
     line-height: 1.4em;
     font-weight: 200;
     color: #000000;
@@ -46,7 +46,6 @@
 }
 
 .default_text {
-
     left: 30px;
     position: fixed;
     bottom: 80px;
@@ -197,15 +196,6 @@ hr {
     width: 100%;
 }
 
-.glyphicon {
-    -webkit-text-stroke: 1px white;
-    margin-right: 5px;
-}
-
-span.glyphicon {
-    width: auto;
-}
-
 .header_text {
     font-kerning: 1pt;
     float: left;
@@ -249,18 +239,6 @@ span.glyphicon {
     border-bottom-color: #e6e6e6;
 }
 
-span.glyphicon.glyphicon-search {
-    margin-left: 15px;
-    margin-top: 7px;
-    font-size: 17px;
-}
-
-span.glyphicon.glyphicon-plus {
-    margin-left: 15px;
-    margin-top: 7px;
-    font-size: 17px;
-}
-
 form.form-horizontal.ng-pristine.ng-valid {
     display: inline;
 }
@@ -291,8 +269,8 @@ form.form-horizontal.ng-valid.ng-dirty.ng-valid-parse {
 
     word-wrap: normal;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arimo, Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-    font-size: 1.5rem;
-    line-height: 1.4em;
+    font-size: 0.95rem;
+    line-height: 1.6em;
     font-weight: 600;
     color: #000000;
 }
@@ -316,13 +294,17 @@ div#user {
     width: 100%;
 }
 
-span.glyphicon.glyphicon-option-vertical {
-    margin-top: 2px;
-}
-
 .header hr {
     margin-bottom: 0px;
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -359,10 +341,26 @@ span.glyphicon.glyphicon-option-vertical {
 
 
 
+
+
+
+
+
+
+
+
 /* Dropdown button on hover & focus */
 
 .dropbtn:hover,
 .dropbtn:focus {}
+
+
+
+
+
+
+
+
 
 
 
@@ -391,6 +389,14 @@ span.glyphicon.glyphicon-option-vertical {
 
 
 
+
+
+
+
+
+
+
+
 /* Dropdown Content (Hidden by Default) */
 
 .dropdown-content {
@@ -402,6 +408,22 @@ span.glyphicon.glyphicon-option-vertical {
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 1;
 }
+
+.material-icons {
+    font-size: 21px;
+}
+
+#mi-more_vert {
+    margin-top: 2px;
+}
+
+
+
+
+
+
+
+
 
 
 
@@ -433,11 +455,27 @@ span.glyphicon.glyphicon-option-vertical {
 
 
 
+
+
+
+
+
+
+
+
 /* Change color of dropdown links on hover */
 
 .dropdown-content a:hover {
     background-color: #f1f1f1
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -461,12 +499,17 @@ input#upload-input,
     left: -1000px;
 }
 
+
+
+
+/*
 #create_submit {
     bottom: 7px;
     z-index: 1001;
     position: fixed;
     right: 10px;
 }
+*/
 
 a.btn.btn-block.btn-social.btn-google {
     width: 200px;
@@ -486,8 +529,7 @@ button.btn.btn-block.btn-social.btn-google {
     margin-top: 100px;
 }
 
-.glyphicon-user {
-    font-size: 22px;
+#mi-account_circle {
     margin-right: 15px;
     margin-top: 13px;
 }
@@ -566,8 +608,8 @@ body {
 
     word-wrap: normal;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arimo, Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-    font-size: 1.5rem;
-    line-height: 1.4em;
+    font-size: 1rem;
+    line-height: 1em;
     font-weight: 200;
     color: #000000;
 }
@@ -595,7 +637,7 @@ body {
     margin-right: 15px;
     border-radius: 1;
     border-color: tomato;
-    border: .5px solid #9E9E9E;
+    border: .7px solid #9E9E9E;
     margin-top: 2px;
 }
 
@@ -623,6 +665,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 .convs_name_span {}
 
 .convs_container {
+    width: 100%;
     display: grid;
     grid-gap: 0px;
     grid-template-columns: max-content auto max-content;
@@ -661,4 +704,25 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     grid-column: 3;
     grid-row: 2;
     margin-left: auto;
+}
+
+
+
+.list-group-item {
+    padding: .7rem .9rem;
+}
+
+#mi-search {
+    margin-left: 15px;
+    margin-top: 7px;
+}
+
+#mi-add_circle_outline {}
+
+#mi-send {
+    bottom: 12px;
+    z-index: 1001;
+    position: fixed;
+    right: 15px;
+    cursor: pointer;
 }

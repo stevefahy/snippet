@@ -16,7 +16,6 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
     $scope.input_text = DEFAULT_TEXT;
 
     $scope.default = function() {
-        console.log('default');
         if ($scope.card_create.content == DEFAULT_TEXT) {
             $scope.card_create.content = '';
         }
@@ -26,13 +25,9 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
     $timeout(function() {
         var el = $window.document.getElementById('cecard_create');
         el.onfocus = function() {
-            console.log('foc');
-            console.log($scope.card_create.content + ' == ' + DEFAULT_TEXT);
+            //console.log($scope.card_create.content + ' == ' + DEFAULT_TEXT);
             if ($scope.card_create.content == DEFAULT_TEXT) {
-
-                // Work around Chrome's little problem
                 window.setTimeout(function() {
-                    console.log('here');
                     selection = window.getSelection();
                     var sel = window.getSelection();
                     range = document.createRange();
@@ -40,26 +35,14 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
                     range.setEnd(el, 0);
                     selection.removeAllRanges();
                     selection.addRange(range);
-
-
                 }, 100);
-
             }
-
-
         };
     });
-    /*
-    el.focus();
-        var range = el.createTextRange();
-        range.collapse(true);
-        range.select();
-        */
-
 
     $scope.card_create = {
         _id: 'card_create',
-        content: DEFAULT_TEXT, //'',
+        content: DEFAULT_TEXT,
         //user: $scope.currentUser,
         user_name: ''
     };

@@ -4,8 +4,11 @@ cardApp.controller("joinCtrl", ['$scope', 'Cards', 'Invites', '$rootScope', '$lo
 
     if (code !== undefined) {
         Invites.search_id(code)
-            .success(function(data) {
-                $scope.invites = data;
+            .then(function(result) {
+                $scope.invites = result.data;
+            })
+            .catch(function(error) {
+                console.log('error: ' + error);
             });
     }
 

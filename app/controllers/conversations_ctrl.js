@@ -1,14 +1,16 @@
 cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$http', 'Invites', 'Email', 'Users', 'Conversations', '$q', 'FormatHTML', 'General', function($scope, $rootScope, $location, $http, Invites, Email, Users, Conversations, $q, FormatHTML, General) {
 
-    var public_found = false;
-    var sent_content_length = 20;
+    this.$onInit = function() {
+        public_found = false;
+        sent_content_length = 20;
 
-    // array of conversations
-    $scope.conversations = [];
-    //
-    $scope.chat_create = {
-        conversation_name: '',
-        participants: []
+        // array of conversations
+        $scope.conversations = [];
+        //
+        $scope.chat_create = {
+            conversation_name: '',
+            participants: []
+        };
     };
 
     // Broadcast by socket service when a  card has been created, updated or deleted by another user to this user

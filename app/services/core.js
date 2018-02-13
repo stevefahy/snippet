@@ -262,10 +262,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     ctx.translate(-width, 0);
                     break;
             }
-
             ctx.drawImage(img, 0, 0, width, height);
             ctx.restore();
-
             // compress JPEG
             var dataURL = canvas.toDataURL('image/jpeg', JPEG_COMPRESSION);
             resolve(dataURL);
@@ -405,25 +403,20 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         if (ua === 'AndroidApp') {
             Android.choosePhoto();
         } else {
-
             // All browsers except MS Edge
             if (ua.toLowerCase().indexOf('edge') == -1) {
                 uploadClickListen();
             }
-
             $('#upload-input').on('change', function() {
-                console.log('change');
                 var files = $(this).get(0).files;
                 if (files.length > 0) {
                     prepareImage(files);
                 }
             });
-
             // MS Edge only
             if (ua.toLowerCase().indexOf('edge') > -1) {
                 uploadClickListen();
             }
-
         }
     };
 
@@ -1144,14 +1137,14 @@ cardApp.service('Edit', function() {
 
     // Close the dropdown menu if the user clicks outside of it
     window.onclick = function(event) {
-        if (!event.target.matches('.glyphicon-option-vertical')) {
+        if (!event.target.matches('.material-icons')) {
             closeDropdowns();
         }
     };
 
 });
 
-cardApp.service('FormatHTML', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format) {
+cardApp.service('FormatHTML', ['Format', function(Format) {
 
     this.fixhtml = function(html) {
         var div = document.createElement('div');
@@ -1160,10 +1153,8 @@ cardApp.service('FormatHTML', ['$window', '$rootScope', '$timeout', '$q', '$http
     };
 
     this.prepSentContent = function(content, length) {
-
         var string_count = length;
         var temp_content = Format.checkForImage(content);
-
         // Remove unwanted HTML
         var regex_1 = temp_content.replace(/\u200b/gi, "");
         var regex_2 = regex_1.replace(/\s{2,}/gi, " ");
@@ -1208,11 +1199,11 @@ cardApp.service('General', ['Users', function(Users) {
     this.findUser = function(id, callback) {
         var user_found;
         Users.search_id(id)
-            .success(function(res) {
-                user_found = res.success;
-                callback(user_found);
+            .then(function(handleSuccess) {
+                user_found = handleSuccess.data.success;
+                return callback(user_found);
             })
-            .error(function(error) {
+            .catch(function(handleError) {
                 //
             });
     };
@@ -1305,6 +1296,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
             setTimeout(function() {
 
                 var promises = [];
+
                 card.content = Format.setMediaSize(card_id, card);
                 card.content = replaceTags.replace(card.content);
                 //card.content = Format.removeDeleteIds(); // returns empty sring here
@@ -1320,8 +1312,8 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
                 // call the create function from our service (returns a promise object)
                 Cards.update(pms)
-                    .success(function(returned) {
-                        $rootScope.$broadcast('CARD_UPDATED', returned);
+                    .then(function(returned) {
+                        $rootScope.$broadcast('CARD_UPDATED', returned.data);
                         var viewed_users = [];
                         // Update the Conversation updateAt time.
                         Conversations.updateTime(card.conversationId)
@@ -1375,7 +1367,9 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                 });
                             });
                     })
-                    .error(function(error) {});
+                    .catch(function(error) {
+                        console.log('error: ' + error);
+                    });
             }, 0);
         }
     };
@@ -1473,7 +1467,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         var card_content = 'Post deleted.';
 
         Cards.delete(card_id)
-            .success(function(response) {
+            .then(function(response) {
                 // notify conversation_ctrl that the card has been deleted
                 $rootScope.$broadcast('CARD_DELETED', card_id);
                 // remove this Card from the unviewed array for all Conversation participants.
@@ -1510,6 +1504,9 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                         // socket.io emit the card posted to the server
                         socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: response.data._id, participants: response.data.participants });
                     });
+            })
+            .catch(function(error) {
+                console.log('error: ' + error);
             });
     };
 
