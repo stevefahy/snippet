@@ -629,7 +629,7 @@ module.exports = function(app, passport) {
             service: 'gmail',
             auth: {
                 user: 'snipbee@gmail.com',
-                pass: 'stevesnipbeepass'
+                pass: '157duk385cw'
             }
         });
         var mailOptions = {
