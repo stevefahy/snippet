@@ -640,8 +640,9 @@ module.exports = function(app, passport) {
         };
         transporter.sendMail(mailOptions, function(error, info) {
             if (error) {
-                //
+                console.log(error);
             } else {
+                console.log(info);
                 res.sendStatus(200);
             }
         });
