@@ -2,6 +2,16 @@
 <html ng-app="cardApp">
 
 <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114346969-1"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'UA-114346969-1');
+    </script>
     <script>
     var pathArray = location.href.split('/');
     var protocol = pathArray[0];
@@ -60,7 +70,7 @@
     <!-- load our main application -->
     <script src="/services/core.js"></script>
     <!-- load Controllers -->
-    <script src="/controllers/index_ctrl.js"></script>
+    <script src="/controllers/socket_ctrl.js"></script>
     <script src="/controllers/card_ctrl.js"></script>
     <script src="/controllers/cardsearch_ctrl.js"></script>
     <script src="/controllers/cardcreate_ctrl.js"></script>
@@ -75,23 +85,10 @@
 </head>
 
 <body>
-    <div class="header">
-        <div ng-controller="indexCtrl">
-            <div class="logo"><img src="/assets/images/bee_65.png"></div>
-            <div class="header_text"><span>S</span>nipb<span>ee</span></div>
-            <div class="user">
-                <a href="#">
-                    <i class="material-icons" id="mi-account_circle">account_circle</i>
-        </a>
-            </div>
-            <div class="username2">{{currentUser}}</div>
-        </div>
-    </div>
+    <!-- socket controller loaded once to make socket connection -->
+    <div class="socket" ng-include src="'/views/socket.html'"></div>
     <!-- Templates loaded into ng-view -->
-    <ng-view></ng-view>
-    <div class="footer">
-        <div ng-include src="'/views/card_search.html'"></div>
-    </div>
+    <ng-view class="main_view"></ng-view>
     <!-- Hidden input field which gains focus while text formatting is being prepared -->
     <div id="hidden_input_container">
         <input class="form-control" type="text" autocorrect="off" autocapitalize="none" id="hidden_input">

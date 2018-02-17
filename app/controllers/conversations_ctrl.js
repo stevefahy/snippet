@@ -154,6 +154,7 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
     // Get the current users details
     $http.get("/api/user_data").then(function(result) {
         if (result.data.user) {
+            $scope.currentUserName = result.data.user.google.name;
             $scope.currentUser = result.data.user;
             // Find the conversations for current user
             Conversations.find_user_conversations($scope.currentUser._id)

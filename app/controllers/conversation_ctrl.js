@@ -250,6 +250,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // Get the logged in user's data.
     $http.get("/api/user_data").then(function(result) {
         if (result.data.user) {
+            $scope.currentUserName = result.data.user.google.name;
             $scope.currentUser = result.data.user;
         }
         // Start watching onfocus and onblur, then load the conversation for the first time.

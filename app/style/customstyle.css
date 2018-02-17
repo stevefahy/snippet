@@ -41,8 +41,9 @@
     border-color: #e6e6e6;
     border-width: 1px;
 
-    position: fixed;
+    /*position: fixed;*/
     bottom: 44px;
+    /*display: none;*/
 }
 
 .default_text {
@@ -221,7 +222,7 @@ hr {
 
 .footer {
     bottom: 0;
-    position: fixed;
+    /*position: fixed;*/
     width: 100%;
     height: 50px;
     background-color: #FFFFFF;
@@ -230,7 +231,7 @@ hr {
 .header {
     z-index: 1000;
     top: 0;
-    position: fixed;
+    /*position: fixed;*/
     width: 100%;
     background-color: #FFFFFF;
     height: 50px;
@@ -258,8 +259,8 @@ form.form-horizontal.ng-valid.ng-dirty.ng-valid-parse {
 }
 
 .container-fluid {
-    padding-top: 56px;
-    padding-bottom: 60px;
+   /* padding-top: 56px;
+    padding-bottom: 60px;*/
     padding-right: 0px;
     padding-left: 0px;
 }
@@ -603,6 +604,12 @@ li.list-group-item.d-flex.justify-content-between.align-items-center.ng-binding 
 
 #conversation_part {}
 
+html, body {
+  width: 100%;
+  height: 100%;
+      /*overflow-y: hidden;*/
+}
+
 body {
     background-color: snow;
 
@@ -612,6 +619,10 @@ body {
     line-height: 1em;
     font-weight: 200;
     color: #000000;
+
+      display: flex;
+  margin: 0;
+  padding: 0;
 }
 
 #conv_div {
@@ -725,4 +736,26 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     position: fixed;
     right: 15px;
     cursor: pointer;
+}
+
+.container_cnv {
+    position: fixed;
+    width: 100%;
+    display: flex;
+    flex: auto;
+    flex-direction: column;
+    height: 100%;
+}
+.content_cnv {
+ width: 100%;
+    overflow-y: auto;
+    /* overflow: hidden; */
+    /* overflow-y: -webkit-paged-x; */
+    height: 100%;
+    position: ;
+    /* position: absolute; */
+ 
+}
+.header_container{
+    height: 50px;
 }
