@@ -1,8 +1,9 @@
-body {
-    overflow-x: hidden;
-    overflow-y: overlay;
+html, body {
+    width: 100%;
+    height: 100%;
+    /*overflow-y: overlay;*/
 }
-
+/*
 ::-webkit-scrollbar{
     width:50px;
 
@@ -29,4 +30,49 @@ body {
     margin-top: 50px;
     margin-bottom:50px;
 
+}
+
+::-webkit-scrollbar-thumb:window-inactive {
+	background: rgba(255,0,0,0.4); 
+}
+*/
+
+/* Let's get this party started */
+::-webkit-scrollbar {
+    width: 50px;
+}
+
+::-webkit-scrollbar * {
+      background:transparent; 
+    }
+ 
+/* Track */
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+        margin-top: 50px;
+    margin-bottom: 50px;
+    background: transparent url('../assets/images/bee_65.png');
+}
+
+
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: rgba(255,0,0,0.8); 
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}
+::-webkit-scrollbar-thumb:window-inactive {
+	background: rgba(255,0,0,0.4); 
+}
+
+::-webkit-scrollbar-track-piece:start {
+    background: transparent url('../assets/images/transparent.png') repeat-y !important;
+}
+
+::-webkit-scrollbar-track-piece:end {
+    background: transparent url('../assets/images/transparent.png') repeat-y !important;
 }
