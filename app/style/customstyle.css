@@ -753,12 +753,13 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 .content_cnv {
     /*width: 100%;*/
     width: 100vw;
-    overflow-y: overlay;
+    /*overflow-y: overlay;*/
     /* overflow: hidden; */
     /* overflow-y: -webkit-paged-x; */
     /*height: calc(100vh);*/
     /* position: absolute; */
     margin-bottom: 120px;
+       /* margin-top: 50px;*/
 }
 
 .header_container {
@@ -797,43 +798,50 @@ body {
 }
 
 
-
-
-/* Let's get this party started */
-
-::-webkit-scrollbar {
-    /*width:10px;*/
+.card_create_container {
+    position: fixed;
+    bottom: 50px;
+    width: 100%;
 }
 
 
 
-/* Track */
+
+::-webkit-scrollbar {
+    /*width:10px;
+    margin-top: 50px;
+    margin-bottom: 200px;
+    */
+}
+
+
+
+
 
 ::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
     -webkit-border-radius: 10px;
     border-radius: 10px;
+    
     background: transparent;
 }
 
 
 
-/* Handle */
+
 
 ::-webkit-scrollbar-thumb {
     -webkit-border-radius: 10px;
+    
     border-radius: 10px;
-    background: rgba(255, 0, 0, 0.8);
+    /*background: rgba(255, 0, 0, 0.8);*/
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+    
 }
 
 ::-webkit-scrollbar-thumb:window-inactive {
+    /*
     background: rgba(255, 0, 0, 0.4);
-}
-
-
-.card_create_container {
-    position: fixed;
-    bottom: 50px;
-    width: 100%;
+    */
 }
