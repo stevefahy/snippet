@@ -780,8 +780,8 @@ body {
 
 
 /* Let's get this party started */
-.content_cnv::-webkit-scrollbar {
-   
+::-webkit-scrollbar {
+   width:10px;
 }
  
 /* Track */
