@@ -1,36 +1,35 @@
-
 <div ng-controller="conversationCtrl">
     <div class="container_cnv">
         <div class="slide-animate header_container" ng-include="'/views/header.html'"></div>
-            <div class="content_cnv">
-                <div class="" id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : false">
-                    <div class=" resize-container" id="conversation_part" ng-init="disableCheckboxes(card._id)">
-                        <form class="form-horizontal">
-                            <div id="user">
-                                <div class="username">{{card.user_name}}</div>
-                                <div ng-if="card.user == currentUser._id" class="edit">
-                                    <div class="dropdown" ng-attr-id="{{ 'cem' + card._id }}">
-                                        <div ng-click="dropDownToggle('cem'+card._id)" class="dropbtn">
-                                            <i class="material-icons" id="mi-more_vert">more_vert</i>
-                                        </div>
-                                        <div ng-attr-id="myDropdown{{ 'cem' + card._id }}" class="dropdown-content">
-                                            <div ng-click="deleteCard(card._id, card.conversationId)">Delete</div>
-                                        </div>
+        <div class="content_cnv">
+            <div class="" id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : false">
+                <div class=" resize-container" id="conversation_part" ng-init="disableCheckboxes(card._id)">
+                    <form class="form-horizontal">
+                        <div id="user">
+                            <div class="username">{{card.user_name}}</div>
+                            <div ng-if="card.user == currentUser._id" class="edit">
+                                <div class="dropdown" ng-attr-id="{{ 'cem' + card._id }}">
+                                    <div ng-click="dropDownToggle('cem'+card._id)" class="dropbtn">
+                                        <i class="material-icons" id="mi-more_vert">more_vert</i>
+                                    </div>
+                                    <div ng-attr-id="myDropdown{{ 'cem' + card._id }}" class="dropdown-content">
+                                        <div ng-click="deleteCard(card._id, card.conversationId)">Delete</div>
                                     </div>
                                 </div>
                             </div>
-                            <div class='ce' ng-attr-id="{{ 'ce' + card._id }}" ng-attr-contenteditable="{{card.user == currentUser._id}}" ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id)" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce'+card._id)" ng-blur="getBlur(card._id, card, currentUser)" ng-model="card.content" ng-model-options="{ debounce: 1000 }">
-                            </div>
-                            <time am-time-ago="card.updatedAt" id="time"></time>
-                            <input id="upload-input" type="file" name="uploads[]" multiple="multiple">
-                            <button id="upload-trigger" class="btn btn-sm upload-btn" type="button" ng-click="uploadFile()">Upload File</button>
-                        </form>
-                    </div>
+                        </div>
+                        <div class='ce' ng-attr-id="{{ 'ce' + card._id }}" ng-attr-contenteditable="{{card.user == currentUser._id}}" ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id)" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce'+card._id)" ng-blur="getBlur(card._id, card, currentUser)" ng-model="card.content" ng-model-options="{ debounce: 1000 }">
+                        </div>
+                        <time am-time-ago="card.updatedAt" id="time"></time>
+                        <input id="upload-input" type="file" name="uploads[]" multiple="multiple">
+                        <button id="upload-trigger" class="btn btn-sm upload-btn" type="button" ng-click="uploadFile()">Upload File</button>
+                    </form>
                 </div>
-                <!--<div ng-if="isMember" ng-include src="'/views/card_create.html'"></div>-->
-                <div id="bottom"></div>
             </div>
-            <div ng-if="isMember" ng-include src="'/views/card_create.html'"></div>
-            <div ng-include src="'/views/card_search.html'"></div>
+            <div class="card_create_container" ng-if="isMember" ng-include src="'/views/card_create.html'"></div>
+            <div id="bottom"></div>
         </div>
+        <!--<div class="card_create_container" ng-if="isMember" ng-include src="'/views/card_create.html'"></div>-->
+        <div ng-include src="'/views/card_search.html'"></div>
+    </div>
 </div>
