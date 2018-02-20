@@ -587,9 +587,13 @@ li.list-group-item.d-flex.justify-content-between.align-items-center.ng-binding 
 #conversation_part {}
 
 html, body {
-  width: 100%;
+  /*width: 100%;
   height: 100%;
-      /*overflow-y: hidden;*/
+      overflow-y: hidden;*/
+}
+
+html {
+   /* overflow: hidden;*/
 }
 
 body {
@@ -721,7 +725,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 }
 
 .container_cnv {
-/*position: fixed;*/
+position: fixed;
     width: 100%;
     display: flex;
     flex: auto;
@@ -734,15 +738,17 @@ width: 100vw;
     overflow-y: overlay;
     /* overflow: hidden; */
     /* overflow-y: -webkit-paged-x; */
-    height: 100%;
+    height: calc(100vh);
     /* position: absolute; */
  
 }
 
 .header_container{
+    /*
 position: sticky;
 top:0;
     height: 50px;
+    */
 }
 
 
@@ -774,8 +780,8 @@ body {
 
 
 /* Let's get this party started */
-::-webkit-scrollbar {
-    width: 300px;
+.content_cnv::-webkit-scrollbar {
+   
 }
  
 /* Track */
@@ -783,6 +789,7 @@ body {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
     -webkit-border-radius: 10px;
     border-radius: 10px;
+    background: transparent;
 }
  
 /* Handle */

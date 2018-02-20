@@ -2,6 +2,7 @@
 <html ng-app="cardApp">
 
 <head>
+
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114346969-1"></script>
     <script>
@@ -25,8 +26,9 @@
     </script>
     <!-- META -->
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <!--<meta http-equiv="X-UA-Compatible" content="IE=edge">-->
+    <!--<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0">-->
+    <meta name="viewport" content="width=device-width, height=device-height initial-scale=1.0">
     <title>Snipbee</title>
     <!-- Load Fonts -->
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
@@ -82,6 +84,9 @@
     <script src="/services/services.js"></script>
     <!-- socket.io -->
     <script src="/socket.io/socket.io.js"></script>
+
+
+
 </head>
 
 <body>
@@ -94,5 +99,15 @@
         <input class="form-control" type="text" autocorrect="off" autocapitalize="none" id="hidden_input">
     </div>
 </body>
+
+
+        <script type="text/javascript">
+    window.onresize = function() {
+        //document.body.height = window.innerHeight;
+         //document.body.style.height = window.innerHeight + "px";
+        console.log(window.innerHeight);
+    };
+    window.onresize();
+    </script>
 
 </html>

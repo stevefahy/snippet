@@ -38,41 +38,45 @@ html, body {
 */
 
 /* Let's get this party started */
-::-webkit-scrollbar {
+.content_cnv::-webkit-scrollbar {
     width: 50px;
 }
 
-::-webkit-scrollbar * {
+.content_cnv::-webkit-scrollbar * {
       background:transparent; 
     }
  
 /* Track */
-::-webkit-scrollbar-track {
+.content_cnv::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
     -webkit-border-radius: 10px;
     border-radius: 10px;
-        margin-top: 50px;
-    margin-bottom: 50px;
+      /*  margin-top: 50px;
+    margin-bottom: 50px;*/
     background: transparent url('../assets/images/bee_65.png');
 }
 
 
  
 /* Handle */
-::-webkit-scrollbar-thumb {
+.content_cnv::-webkit-scrollbar-thumb {
     -webkit-border-radius: 10px;
     border-radius: 10px;
     background: rgba(255,0,0,0.8); 
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
 }
-::-webkit-scrollbar-thumb:window-inactive {
+.content_cnv::-webkit-scrollbar-thumb:window-inactive {
 	background: rgba(255,0,0,0.4); 
 }
 
-::-webkit-scrollbar-track-piece:start {
+.content_cnv::-webkit-scrollbar-track-piece:start {
     background: transparent url('../assets/images/transparent.png') repeat-y !important;
 }
 
-::-webkit-scrollbar-track-piece:end {
+.content_cnv::-webkit-scrollbar-track-piece:end {
     background: transparent url('../assets/images/transparent.png') repeat-y !important;
 }
+
+.content_cnv::-webkit-scrollbar * {
+      background:transparent; 
+    }
