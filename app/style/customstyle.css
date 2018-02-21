@@ -241,7 +241,7 @@ form.form-horizontal.ng-valid.ng-dirty.ng-valid-parse {
 }
 
 .container-fluid {
-    /* padding-top: 56px;
+   /* padding-top: 56px;
     padding-bottom: 60px;*/
     padding-right: 0px;
     padding-left: 0px;
@@ -303,8 +303,6 @@ div#user {
 
 
 
-
-
 /* EDIT MENU */
 
 
@@ -315,8 +313,6 @@ div#user {
     border: none;
     cursor: pointer;
 }
-
-
 
 
 
@@ -359,16 +355,12 @@ div#user {
 
 
 
-
-
 /* The container <div> - needed to position the dropdown content */
 
 .dropdown {
     position: relative;
     display: inline-block;
 }
-
-
 
 
 
@@ -426,8 +418,6 @@ div#user {
 
 
 
-
-
 /* Links inside the dropdown */
 
 .dropdown-content div {
@@ -437,8 +427,6 @@ div#user {
     text-decoration: none;
     display: block;
 }
-
-
 
 
 
@@ -482,8 +470,6 @@ div#user {
 
 
 
-
-
 /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
 
 .show {
@@ -495,8 +481,6 @@ input#upload-input,
     position: absolute;
     left: -1000px;
 }
-
-
 
 
 
@@ -602,15 +586,14 @@ li.list-group-item.d-flex.justify-content-between.align-items-center.ng-binding 
 
 #conversation_part {}
 
-html,
-body {
-    /*width: 100%;
+html, body {
+  /*width: 100%;
   height: 100%;
       overflow-y: hidden;*/
 }
 
 html {
-    /* overflow: hidden;*/
+   /* overflow: hidden;*/
 }
 
 body {
@@ -623,9 +606,9 @@ body {
     font-weight: 200;
     color: #000000;
 
-    display: flex;
-    margin: 0;
-    padding: 0;
+      display: flex;
+  margin: 0;
+  padding: 0;
 }
 
 #conv_div {
@@ -749,40 +732,37 @@ position: fixed;
     flex-direction: column;
     height: 100%;
 }
-
 .content_cnv {
-    /*width: 100%;*/
-    width: 100vw;
-overflow-y: overlay;
+/*width: 100%;*/
+width: 100vw;
+    overflow-y: overlay;
     /* overflow: hidden; */
     /* overflow-y: -webkit-paged-x; */
-    /*height: calc(100vh);*/
+    height: calc(100vh);
     /* position: absolute; */
-    margin-bottom: 120px;
-    margin-top: 50px;
+ 
 }
 
-.header_container {
-     z-index: 100000;
-    top: 0;
-    position: fixed;
-    width: 100%;
-
-
+.header_container{
+    /*
+position: sticky;
+top:0;
+    height: 50px;
+    */
 }
 
 
 
 body {
-    overflow-x: hidden;
-    overflow-y: scroll;
+    /*overflow-x: hidden;*/
+    /*overflow-y: overlay;*/
 }
 
 .header {
-    /*z-index: 1000;
+    z-index: 1000;
     top: 0;
-    position: fixed;*/
-    /*width: 100%;*/
+    /*position: fixed;*/
+/*width: 100%;*/
     background-color: #FFFFFF;
     height: 50px;
     border-bottom-style: solid;
@@ -792,58 +772,35 @@ body {
 
 .footer {
     bottom: 0;
-    position: fixed;
+    /*position: fixed;*/
     width: 100vw;
     height: 50px;
     background-color: #FFFFFF;
 }
 
 
-.card_create_container {
-    position: fixed;
-    bottom: 50px;
-    width: 100%;
-}
-
-
-
-
+/* Let's get this party started */
 ::-webkit-scrollbar {
-margin-top: 50px;
-    /*width:10px;
-    margin-top: 50px;
-    margin-bottom: 200px;
-    */
+   /*width:10px;*/
 }
-
-
-
-
-
+ 
+/* Track */
 ::-webkit-scrollbar-track {
-    
-    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
     -webkit-border-radius: 10px;
     border-radius: 10px;
-    
     background: transparent;
 }
-
-
-
-
-
+ 
+/* Handle */
 ::-webkit-scrollbar-thumb {
     -webkit-border-radius: 10px;
-    
     border-radius: 10px;
-    /*background: rgba(255, 0, 0, 0.8);*/
-    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
-    
+    background: rgba(255,0,0,0.8); 
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}
+::-webkit-scrollbar-thumb:window-inactive {
+    background: rgba(255,0,0,0.4); 
 }
 
-::-webkit-scrollbar-thumb:window-inactive {
-    /*
-    background: rgba(255, 0, 0, 0.4);
-    */
-}
+  -webkit-overflow-scrolling: touch;
