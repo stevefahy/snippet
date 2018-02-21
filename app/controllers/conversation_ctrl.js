@@ -15,6 +15,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
         $scope.isMember = false;
 
+        jQuery(document).ready(function() {
+            console.log('ready');
+            jQuery('.scrollbar-dynamic').scrollbar();
+        });
+
     };
 
     // Detect device user agent 
