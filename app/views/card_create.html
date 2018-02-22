@@ -1,6 +1,7 @@
 <div ng-controller="cardcreateCtrl">
 	<div class="card_create">
-    <i class="material-icons" id="mi-send" ng-click="createCard(card_create._id, card_create)">send</i>
+		<div class="reset_height">
+    <i class="material-icons" id="mi-send" ng-click="createCard(card_create._id, card_create)">send</i></div>
     <div class='ce' ng-attr-id="{{ 'ce' + card_create._id }}" contenteditable="true" ng-change="contentChanged(card_create.content, 'ce'+card_create._id)" ng-keydown="checkKey($event,'ce'+card_create._id); default();" ng-paste="handlePaste($event)" ng-focus="keyListen('ce'+card_create._id)" ng-model="card_create.content" ng-model-options="{ debounce: 1000 }">
     </div>
     <!--<div class="default_text">{{input_text}}</div>-->

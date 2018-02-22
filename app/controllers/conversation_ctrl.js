@@ -183,8 +183,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Scroll to the bottom of the list
     scrollToBottom = function(speed) {
-        $('html, body').animate({
-            scrollTop: $('#bottom').offset().top
+        var bottom = $('.content_cnv')[0].scrollHeight;
+        $('.content_cnv').animate({
+            scrollTop: bottom
         }, speed, function() {});
     };
 

@@ -1,4 +1,4 @@
-cardApp.controller("cardsearchCtrl", ['$scope', 'Cards', '$rootScope', '$location', '$http', 'socket', function($scope, Cards, $rootScope, $location, $http, socket) {
+cardApp.controller("footerCtrl", ['$scope', 'Cards', '$rootScope', '$location', '$http', 'socket', 'Database', function($scope, Cards, $rootScope, $location, $http, socket, Database) {
 
     this.$onInit = function() {
         $scope.showDiv = false;
