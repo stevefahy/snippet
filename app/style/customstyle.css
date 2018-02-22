@@ -740,6 +740,7 @@ width: 100vw;
     /* overflow-y: -webkit-paged-x; */
     height: calc(100vh);
     /* position: absolute; */
+    border-radius: 1px;
  
 }
 

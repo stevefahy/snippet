@@ -3,10 +3,10 @@
 
 <head>
     <title></title>
+    <meta name="viewport" content="width=device-width, height=device-height initial-scale=1.0">
     <!-- Angular -->
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
     <script type="text/javascript">
-
     function reload() {
         location.reload();
     }
@@ -116,26 +116,68 @@
         text-align: -webkit-right;
         font-size: 1.2em;
         font-family: "Helvetica";
-        color: #44E394;
+        color: #000000;
         background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAG0lEQVQIW2P88OHDfwY0wAgSFBAQYEQWp1AQAKUbE9XRpv7GAAAAAElFTkSuQmCC) repeat;
         /*padding: 2em;*/
+        margin: 0;
+        overflow: hidden;
+    }
+
+    .head {
+        height: 100px;
+        background-color: #ebe5e5;
+    }
+
+    .foot {
+        height: 100px;
+        background-color: #ebe5e5;
+    }
+
+    .ul {
+        height: calc(100% - 200px);
+    }
+
+    .container {
+        height: 100%;
+    }
+
+    .demo {
+        height: 100%;
+    }
+
+    .controller {
+        height: 100%;
     }
     </style>
 </head>
 
 <body>
-    <div data-ng-app='demo'>
-        <div data-ng-controller='MainController'>
-            <div class='ul' when-scrolled='more()'>
-                <div class="li" data-ng-repeat='item in items'>
-                    {{item}}
-                </li>
-            </ul>
-            <div data-ng-show='loading'>Loading</div>
+    <div class="demo" data-ng-app='demo'>
+        <div class="controller" data-ng-controller='MainController'>
+            <div class="container">
+                <div class="head">HEADER</div>
+                <div class='ul' when-scrolled='more()'>
+                    <div class="li" data-ng-repeat='item in items'>
+                        {{item}}
+                        </li>
+                        </ul>
+                        <div data-ng-show='loading'>Loading</div>
+                    </div>
+                </div>
+                <div class="foot">FOOTER
+                    <button type="button" onclick="reload()">reload</button>
+                </div>
+            </div>
         </div>
     </div>
-    <h1>INFINITE SCROLLING IN ANGULARJS</h1>
-    <button type="button" onclick="reload()">reload</button>
+    <script type="text/javascript">
+    window.onresize = function() {
+        document.body.height = window.innerHeight;
+        document.body.style.height = window.innerHeight + "px";
+        console.log(window.innerHeight);
+    };
+    window.onresize();
+    </script>
 </body>
 
 </html>
