@@ -21,7 +21,7 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
         }
     };
 
-
+/*
     $timeout(function() {
         var el = $window.document.getElementById('cecard_create');
         el.onfocus = function() {
@@ -39,6 +39,7 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
             }
         };
     });
+    */
 
     $scope.card_create = {
         _id: 'card_create',
