@@ -330,7 +330,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
             moveCaretInto('delete_image');
             */
-            scrollToBottom(1000);
+            //scrollToBottom(1000);
         }
     };
 
