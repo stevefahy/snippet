@@ -717,11 +717,11 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 #mi-add_circle_outline {}
 
 #mi-send {
-    bottom: -65px;
+    bottom: 10px;
     z-index: 1001;
     /* right: 100px; */
     cursor: pointer;
-    position: relative;
+    position: fixed;
     left: 300px;
 }
 
