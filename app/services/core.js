@@ -317,6 +317,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     insertImage = function(data) {
         if (data.response === 'saved') {
             var new_image = "<img class='resize-drag' id='new_image' onload='imageLoaded()' src='" + IMAGES_URL + data.file + "'><span id='delete'>&#x200b</span>";
+            
+
             self.pasteHtmlAtCaret(new_image);
             // commented out because it causes an issue with onblur which is used to update card.
             /*
