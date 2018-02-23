@@ -41,6 +41,7 @@ function getConversationId(id) {
 
 // route middleware to ensure user is logged in
 function isLoggedIn(req, res, next) {
+    console.log('req.isAuthenticated(): ' + req.isAuthenticated());
     if (req.isAuthenticated()) {
         return next();
     } else {
