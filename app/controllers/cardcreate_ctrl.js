@@ -2,7 +2,7 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
 
     var ua = navigator.userAgent;
 
-    var DEFAULT_TEXT = "<span class=\"disable_edit\" unselectable=\"on\" onselectstart=\"return false;\">Type a message</span>";
+    var INPUT_PROMPT = "Enter some text";
 
     $scope.getFocus = Format.getFocus;
     $scope.contentChanged = Format.contentChanged;
@@ -13,43 +13,41 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
     $scope.uploadFile = Format.uploadFile;
     $scope.myFunction = Edit.myFunction;
 
-    $scope.input_text = DEFAULT_TEXT;
 
-    $scope.default = function() {
-        if ($scope.card_create.content == DEFAULT_TEXT) {
-            $scope.card_create.content = '';
-        }
+    this.$onInit = function() {
+
     };
 
-/*
+    // Add the input prompt attribute
     $timeout(function() {
-        var el = $window.document.getElementById('cecard_create');
-        el.onfocus = function() {
-            //console.log($scope.card_create.content + ' == ' + DEFAULT_TEXT);
-            if ($scope.card_create.content == DEFAULT_TEXT) {
-                window.setTimeout(function() {
-                    selection = window.getSelection();
-                    var sel = window.getSelection();
-                    range = document.createRange();
-                    range.setStart(el, 0);
-                    range.setEnd(el, 0);
-                    selection.removeAllRanges();
-                    selection.addRange(range);
-                }, 100);
-            }
-        };
+        $('#cecard_create').attr('data-placeholder', INPUT_PROMPT);
     });
-    */
+
+    // Add the input prompt listener
+    (function($) {
+        $(document).on('change keydown keypress input', 'div[data-placeholder]', function() {
+            if (this.textContent) {
+                this.dataset.divPlaceholderContent = 'true';
+            } else {
+                delete(this.dataset.divPlaceholderContent);
+            }
+        });
+
+    })(jQuery);
+
 
     $scope.card_create = {
         _id: 'card_create',
-        content: DEFAULT_TEXT,
+        content: '',
         //user: $scope.currentUser,
         user_name: ''
     };
 
     // Broadcast by Database createCard service when a new card has been created
     $scope.$on('CARD_CREATED', function(event, data) {
+        // Reset the placholder for text input checking
+        $('#cecard_create').removeAttr("data-div-placeholder-content");
+        // Reset the model
         $scope.card_create.content = '';
     });
 
