@@ -28,7 +28,8 @@
 }
 
 #cecard_create {
-    min-height: 10px;
+   min-height: 10px;
+   /*min-height: 36px;*/
     margin-bottom: 6px;
     padding-left: 1.25em;
     padding-right: 1.25em;
@@ -304,6 +305,8 @@ div#user {
 
 
 
+
+
 /* EDIT MENU */
 
 
@@ -314,6 +317,8 @@ div#user {
     border: none;
     cursor: pointer;
 }
+
+
 
 
 
@@ -358,12 +363,16 @@ div#user {
 
 
 
+
+
 /* The container <div> - needed to position the dropdown content */
 
 .dropdown {
     position: relative;
     display: inline-block;
 }
+
+
 
 
 
@@ -423,6 +432,8 @@ div#user {
 
 
 
+
+
 /* Links inside the dropdown */
 
 .dropdown-content div {
@@ -432,6 +443,8 @@ div#user {
     text-decoration: none;
     display: block;
 }
+
+
 
 
 
@@ -477,6 +490,8 @@ div#user {
 
 
 
+
+
 /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
 
 .show {
@@ -488,6 +503,8 @@ input#upload-input,
     position: absolute;
     left: -1000px;
 }
+
+
 
 
 
@@ -712,7 +729,51 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     margin-left: auto;
 }
 
+.create_container {
+    width: 100%;
+    display: grid;
+    align-items: center;
+    grid-gap: 0px;
+    grid-template-columns: max-content auto max-content;
+    grid-auto-columns: min-content;
+    grid-auto-columns: max-content;
+    grid-auto-columns: auto;
+    grid-auto-columns: fit-content(100%);
 
+    grid-auto-rows: min-content;
+    grid-auto-rows: max-content;
+    grid-auto-rows: auto;
+}
+
+.create_a {
+    grid-column: 1;
+    grid-row: 1;
+    width: 85vw;
+}
+
+.create_b {
+    grid-column: 2;
+    grid-row: 1;
+    text-align: center;
+}
+
+.create_c {
+    grid-column: 3;
+    grid-row: 1;
+    /*text-align: center;*/
+    padding-left: 6px;
+}
+
+.create_d {
+    grid-column: 2;
+    grid-row: 2;
+}
+
+.create_e {
+    grid-column: 3;
+    grid-row: 2;
+    margin-left: auto;
+}
 
 .list-group-item {
     padding: .7rem .9rem;
@@ -726,12 +787,20 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 #mi-add_circle_outline {}
 
 #mi-send {
+    /*
     bottom: 10px;
     z-index: 1001;
-    /* right: 100px; */
     cursor: pointer;
     position: fixed;
     left: 300px;
+    */
+    font-size: 30px;
+    cursor: pointer;
+}
+
+#mi-photo_camera {
+    font-size: 30px;
+    cursor: pointer;
 }
 
 .container_cnv {
@@ -744,36 +813,25 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 }
 
 .content_cnv {
-    /*width: 100%;*/
     width: 100vw;
-    overflow-y: overlay;
-    /* overflow: hidden; */
-    /* overflow-y: -webkit-paged-x; */
-    height: calc(100vh);
-    /* position: absolute; */
+
+    /* works webview */
+    /*overflow-y: overlay;*/
+    /*height: calc(100vh);*/
+    overflow-y: scroll;
+    height: calc(100% - 100px);
+
     border-radius: 1px;
 }
 
-.header_container {
-    /*
-position: sticky;
-top:0;
-    height: 50px;
-    */
-}
+.header_container {}
 
 
-
-body {
-    /*overflow-x: hidden;*/
-    /*overflow-y: overlay;*/
-}
+body {}
 
 .header {
     z-index: 1000;
     top: 0;
-    /*position: fixed;*/
-    /*width: 100%;*/
     background-color: #FFFFFF;
     height: 50px;
     border-bottom-style: solid;
@@ -783,40 +841,11 @@ body {
 
 .footer {
     bottom: 0;
-    /*position: fixed;*/
     width: 100vw;
     height: 50px;
     background-color: #FFFFFF;
 }
 
-
-
-/*
-::-webkit-scrollbar {
-   width:10px;
-}
- 
-
-::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
-    -webkit-border-radius: 10px;
-    border-radius: 10px;
-    background: transparent;
-}
- 
-
-::-webkit-scrollbar-thumb {
-    -webkit-border-radius: 10px;
-    border-radius: 10px;
-    background: rgba(255,0,0,0.8); 
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
-}
-::-webkit-scrollbar-thumb:window-inactive {
-    background: rgba(255,0,0,0.4); 
-}
-
-  -webkit-overflow-scrolling: touch;
-  */
 
 .content_cnv::-webkit-scrollbar {
     /*width: 8px;
@@ -834,16 +863,112 @@ body {
 }
 
 
+
+
 /*div[data-placeholder]:not(:focus):not([data-div-placeholder-content]):before {*/
+
+
+/*
+[contentEditable=true]:not([data-div-placeholder-content]):before{
+content: attr(data-placeholder);
+
+
+    color: gray;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 6px;
+    width: 100%;
+    height: 100%;
+}
+*/
+
+
+
+
 div[data-placeholder]:not([data-div-placeholder-content]):before {
     content: attr(data-placeholder);
     float: left;
     margin-left: 2px;
     color: #b3b3b3;
+
+
+
 }
+
+/*
+div[data-placeholder]:not([data-div-placeholder-content]):empty:before {
+    content: attr(data-placeholder);
+}
+*/
+
+
+
+
 
 /*
 div#cecard_create.ng-empty{
        background-color: lightblue;
 }
 */
+
+
+/* The starting CSS styles for the enter animation */
+
+.fade.ng-enter {
+    transition: .5s linear all;
+    opacity: 0.5;
+    width: 5vw;
+}
+
+.fade.ng-enter.ng-enter-active {
+    opacity: 1;
+    width: 5vw;
+}
+
+.fade {
+    width: 5vw;
+    opacity: 1;
+}
+
+
+.box {
+    width: 0vw;
+    opacity: 1;
+    /*
+  margin: 20px auto;
+  background: #5FCF80;
+  width: 150px;
+  height: 150px;
+  */
+    -moz-transform: scale(0.9);
+    -ms-transform: scale(0.9);
+    -webkit-transform: scale(0.9);
+    transform: scale(0.9);
+    color: lightgrey;
+}
+
+.box #mi-send {}
+
+.circle #mi-send {}
+
+.circle {
+    width: 7vw;
+    opacity: 1;
+    color: darkgreen;
+    text-align: left;
+    padding-left: 2px;
+}
+
+.rotate {
+
+
+    /*
+  -webkit-transition: all 1s ease-in-out;
+    -moz-transition: all 1s ease-in-out;
+    -o-transition: all 1s ease-in-out;
+    transition: all 1s ease-in-out;
+    */
+    -webkit-transition: all .5s cubic-bezier(.4, 0, .2, 1);
+    transition: all .5s cubic-bezier(.4, 0, .2, 1);
+}

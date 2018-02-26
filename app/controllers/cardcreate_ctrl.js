@@ -13,6 +13,8 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
     $scope.uploadFile = Format.uploadFile;
     $scope.myFunction = Edit.myFunction;
 
+    $scope.input = false;
+
 
     this.$onInit = function() {
 
@@ -21,19 +23,47 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
     // Add the input prompt attribute
     $timeout(function() {
         $('#cecard_create').attr('data-placeholder', INPUT_PROMPT);
+        console.log(ua);
+        if (ua.toLowerCase().indexOf('firefox') > -1 || ua.toLowerCase().indexOf('edge') > -1) {
+
+
+            $('#cecard_create').on('focus', function() {
+                console.log('FOCUS');
+                var $this = $(this);
+                $this.html($this.html() + '<br>'); // firefox hack
+
+
+  
+            });
+
+
+            $('#cecard_create').on('blur', function() {
+                var $this = $(this);
+                $this.text($this.text().replace('<.*?>', ''));
+
+
+
+            });
+        }
     });
 
     // Add the input prompt listener
     (function($) {
         $(document).on('change keydown keypress input', 'div[data-placeholder]', function() {
             if (this.textContent) {
+                $scope.input = true;
                 this.dataset.divPlaceholderContent = 'true';
+
             } else {
+                $scope.input = false;
+//window.getSelection().removeAllRanges();
                 delete(this.dataset.divPlaceholderContent);
             }
         });
 
     })(jQuery);
+
+
 
 
     $scope.card_create = {
@@ -49,6 +79,8 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
         $('#cecard_create').removeAttr("data-div-placeholder-content");
         // Reset the model
         $scope.card_create.content = '';
+        //
+        $scope.input = false;
     });
 
     // Create Card

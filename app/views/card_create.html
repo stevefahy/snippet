@@ -1,10 +1,17 @@
 <div ng-controller="cardcreateCtrl">
-    <div class="card_create">
-        <div class="reset_height">
-            <i class="material-icons" id="mi-send" ng-click="createCard(card_create._id, card_create)">send</i></div>
-        <div class='ce' ng-attr-id="{{ 'ce' + card_create._id }}" contenteditable="true" ng-change="contentChanged(card_create.content, 'ce'+card_create._id)" ng-keydown="checkKey($event,'ce'+card_create._id); default();" ng-paste="handlePaste($event)" ng-focus="keyListen('ce'+card_create._id)" ng-model="card_create.content" ng-model-options="{ debounce: 1000 }">
+    <div class="create_container">
+        <!--<div class="card_create">-->
+        <div class="create_a">
+            <div class='ce' ng-attr-id="{{ 'ce' + card_create._id }}" contenteditable="true" ng-change="contentChanged(card_create.content, 'ce'+card_create._id)" ng-keydown="checkKey($event,'ce'+card_create._id); default();" ng-paste="handlePaste($event)" ng-focus="keyListen('ce'+card_create._id)" ng-model="card_create.content" ng-model-options="{ debounce: 1000 }"></div>
+        </div>
+        <div class="create_b">
+            <i class="material-icons" id="mi-photo_camera">photo_camera</i>
+        </div>
+        <div class="create_c box rotate" ng-class="{'box': !input, 'circle': input}">
+            <i class="material-icons" id="mi-send" ng-click="createCard(card_create._id, card_create)">send</i>
         </div>
         <input id="upload-input" type="file" name="uploads[]" multiple="multiple">
         <button id="upload-trigger" class="btn btn-sm upload-btn" type="button" ng-click="uploadFile()">Upload File</button>
     </div>
+    <!--</div>-->
 </div>
