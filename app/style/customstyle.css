@@ -748,7 +748,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 .create_a {
     grid-column: 1;
     grid-row: 1;
-    width: 85vw;
+    width: calc(100vw - 100px);
 }
 
 .create_b {
@@ -762,6 +762,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     grid-row: 1;
     /*text-align: center;*/
     padding-left: 6px;
+    widows: 50px
 }
 
 .create_d {
@@ -981,7 +982,7 @@ div#cecard_create.ng-empty{
 
 
 .circle {
-    width: 7vw;
+    width: 50px;
     opacity: 1;
     color: darkgreen;
     text-align: left;
