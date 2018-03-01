@@ -28,8 +28,8 @@
 }
 
 #cecard_create {
-   min-height: 10px;
-   /*min-height: 36px;*/
+    min-height: 10px;
+    /*min-height: 36px;*/
     margin-bottom: 6px;
     padding-left: 1.25em;
     padding-right: 1.25em;
@@ -307,6 +307,8 @@ div#user {
 
 
 
+
+
 /* EDIT MENU */
 
 
@@ -317,6 +319,8 @@ div#user {
     border: none;
     cursor: pointer;
 }
+
+
 
 
 
@@ -365,12 +369,16 @@ div#user {
 
 
 
+
+
 /* The container <div> - needed to position the dropdown content */
 
 .dropdown {
     position: relative;
     display: inline-block;
 }
+
+
 
 
 
@@ -434,6 +442,8 @@ div#user {
 
 
 
+
+
 /* Links inside the dropdown */
 
 .dropdown-content div {
@@ -443,6 +453,8 @@ div#user {
     text-decoration: none;
     display: block;
 }
+
+
 
 
 
@@ -492,6 +504,8 @@ div#user {
 
 
 
+
+
 /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
 
 .show {
@@ -503,6 +517,8 @@ input#upload-input,
     position: absolute;
     left: -1000px;
 }
+
+
 
 
 
@@ -748,7 +764,14 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 .create_a {
     grid-column: 1;
     grid-row: 1;
+    width: calc(100vw - 60px);
+}
+
+.create_a_input {
+    grid-column: 1;
+    grid-row: 1;
     width: calc(100vw - 100px);
+
 }
 
 .create_b {
@@ -760,9 +783,20 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 .create_c {
     grid-column: 3;
     grid-row: 1;
-    /*text-align: center;*/
     padding-left: 6px;
     widows: 50px
+}
+
+.create_c_no_input {
+    width: 0vw;
+}
+
+.create_c_input {
+    width: 50px;
+    opacity: 1;
+    color: darkgreen;
+    text-align: left;
+    padding-left: 2px;
 }
 
 .create_d {
@@ -774,6 +808,11 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     grid-column: 3;
     grid-row: 2;
     margin-left: auto;
+}
+
+.transition {
+    -webkit-transition: all .4s cubic-bezier(.4, 0, .2, 1);
+    transition: all .4s cubic-bezier(.4, 0, .2, 1);
 }
 
 .list-group-item {
@@ -789,7 +828,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 
 #mi-send {
 
-        color: white;
+    color: white;
     /* color: black; */
     /* outline: 1px solid darkgreen; */
     font-size: 24px;
@@ -810,7 +849,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 }
 
 #mi-photo_camera {
-color: white;
+    color: white;
     /* color: black; */
     /* outline: 1px solid darkgreen; */
     font-size: 24px;
@@ -891,6 +930,8 @@ body {}
 
 
 
+
+
 /*div[data-placeholder]:not(:focus):not([data-div-placeholder-content]):before {*/
 
 
@@ -909,27 +950,20 @@ content: attr(data-placeholder);
 }
 */
 
-
-
-
 div[data-placeholder]:not([data-div-placeholder-content]):before {
     content: attr(data-placeholder);
     float: left;
     margin-left: 2px;
     color: #b3b3b3;
-
-
-
 }
+
+
 
 /*
 div[data-placeholder]:not([data-div-placeholder-content]):empty:before {
     content: attr(data-placeholder);
 }
 */
-
-
-
 
 
 /*
@@ -939,65 +973,16 @@ div#cecard_create.ng-empty{
 */
 
 
-/* The starting CSS styles for the enter animation */
-
-.fade.ng-enter {
-    transition: .5s linear all;
-    opacity: 0.5;
-    width: 5vw;
-}
-
-.fade.ng-enter.ng-enter-active {
-    opacity: 1;
-    width: 5vw;
-}
-
-.fade {
-    width: 5vw;
-    opacity: 1;
-}
 
 
-.box {
-    width: 0vw;
-    opacity: 1;
-    /*
-  margin: 20px auto;
-  background: #5FCF80;
-  width: 150px;
-  height: 150px;
-  */
-    -moz-transform: scale(0.9);
-    -ms-transform: scale(0.9);
-    -webkit-transform: scale(0.9);
-    transform: scale(0.9);
-    color: lightgrey;
-}
+
+
+
+
 
 .box #mi-send {}
 
-.circle #mi-send {
-    }
+.circle #mi-send {}
 
 
 
-.circle {
-    width: 50px;
-    opacity: 1;
-    color: darkgreen;
-    text-align: left;
-    padding-left: 2px;
-}
-
-.rotate {
-
-
-    /*
-  -webkit-transition: all 1s ease-in-out;
-    -moz-transition: all 1s ease-in-out;
-    -o-transition: all 1s ease-in-out;
-    transition: all 1s ease-in-out;
-    */
-    -webkit-transition: all .5s cubic-bezier(.4, 0, .2, 1);
-    transition: all .5s cubic-bezier(.4, 0, .2, 1);
-}
