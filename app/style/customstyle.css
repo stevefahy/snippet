@@ -759,12 +759,19 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     grid-auto-rows: min-content;
     grid-auto-rows: max-content;
     grid-auto-rows: auto;
+
+    background-color: snow;
+    border-top-color: #d6d6d6;
+    border-top-style: solid;
+    border-top-width: 0.5px;
+    height: 60px;
 }
 
 .create_a {
     grid-column: 1;
     grid-row: 1;
     width: calc(100vw - 60px);
+    padding-top: 5px;
 }
 
 .create_a_input {
@@ -779,13 +786,15 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     grid-row: 1;
     text-align: center;
     padding-left: 4px;
+    padding-top: 3px;
 }
 
 .create_c {
     grid-column: 3;
     grid-row: 1;
     padding-left: 6px;
-    widows: 57px
+    widows: 57px;
+    padding-top: 3px;
 }
 
 .create_c_no_input {
