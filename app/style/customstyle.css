@@ -770,7 +770,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 .create_a_input {
     grid-column: 1;
     grid-row: 1;
-    width: calc(100vw - 120px);
+    width: calc(100vw - 115px);
 
 }
 
@@ -778,13 +778,14 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     grid-column: 2;
     grid-row: 1;
     text-align: center;
+    padding-left: 4px;
 }
 
 .create_c {
     grid-column: 3;
     grid-row: 1;
     padding-left: 6px;
-    widows: 50px
+    widows: 57px
 }
 
 .create_c_no_input {
