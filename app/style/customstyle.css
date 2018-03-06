@@ -28,7 +28,8 @@
 }
 
 #cecard_create {
-    min-height: 10px;
+    z-index: 1;
+    min-height: 40px;
     /*min-height: 36px;*/
     margin-bottom: 6px;
     padding-left: 1.25em;
@@ -309,6 +310,9 @@ div#user {
 
 
 
+
+
+
 /* EDIT MENU */
 
 
@@ -319,6 +323,9 @@ div#user {
     border: none;
     cursor: pointer;
 }
+
+
+
 
 
 
@@ -371,12 +378,18 @@ div#user {
 
 
 
+
+
+
 /* The container <div> - needed to position the dropdown content */
 
 .dropdown {
     position: relative;
     display: inline-block;
 }
+
+
+
 
 
 
@@ -444,6 +457,9 @@ div#user {
 
 
 
+
+
+
 /* Links inside the dropdown */
 
 .dropdown-content div {
@@ -453,6 +469,9 @@ div#user {
     text-decoration: none;
     display: block;
 }
+
+
+
 
 
 
@@ -506,6 +525,9 @@ div#user {
 
 
 
+
+
+
 /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
 
 .show {
@@ -517,6 +539,9 @@ input#upload-input,
     position: absolute;
     left: -1000px;
 }
+
+
+
 
 
 
@@ -764,7 +789,11 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     border-top-color: #d6d6d6;
     border-top-style: solid;
     border-top-width: 0.5px;
-    height: 60px;
+    /*height: 60px;*/
+    max-height: calc(50vh);
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-radius: 1px;
 }
 
 .create_a {
@@ -778,7 +807,6 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     grid-column: 1;
     grid-row: 1;
     width: calc(100vw - 115px);
-
 }
 
 .create_b {
@@ -787,7 +815,9 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     text-align: center;
     padding-left: 4px;
     padding-top: 3px;
+        align-self: flex-start;
 }
+
 
 .create_c {
     grid-column: 3;
@@ -795,6 +825,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     padding-left: 6px;
     widows: 57px;
     padding-top: 3px;
+        align-self: flex-start;
 }
 
 .create_c_no_input {
@@ -824,6 +855,13 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     -webkit-transition: all .4s cubic-bezier(.4, 0, .2, 1);
     transition: all .4s cubic-bezier(.4, 0, .2, 1);
 }
+
+.transition_2 {
+    -webkit-transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.4s;
+    transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.4s;
+}
+
+
 
 .list-group-item {
     padding: .7rem .9rem;
@@ -858,11 +896,10 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     cursor: pointer;
 }
 
-#mi-photo_camera {
+.mi-photo_camera {
     color: white;
     /* color: black; */
     /* outline: 1px solid darkgreen; */
-    font-size: 26px;
     /* margin-top: 10px; */
     /* margin-right: 5px; */
     display: inline-block;
@@ -870,11 +907,22 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     border-style: solid;
     /* box-shadow: 0px 0px 2px darkgreen; */
     /* padding: 2px 2px; */
-    background-color: darkgreen;
+    /*background-color: lightgrey;*/
     padding-left: 10px;
     padding-right: 10px;
     padding-top: 10px;
     padding-bottom: 10px;
+}
+
+.mi-photo_camera_unfocused {
+    background-color: lightgrey;
+    font-size: 24px;
+    cursor: default;
+}
+
+.mi-photo_camera_focused {
+    background-color: darkgreen;
+    font-size: 26px;
     cursor: pointer;
 }
 
@@ -942,6 +990,9 @@ body {}
 
 
 
+
+
+
 /*div[data-placeholder]:not(:focus):not([data-div-placeholder-content]):before {*/
 
 
@@ -960,12 +1011,49 @@ content: attr(data-placeholder);
 }
 */
 
+/*
 div[data-placeholder]:not([data-div-placeholder-content]):before {
     content: attr(data-placeholder);
     float: left;
     margin-left: 2px;
     color: #b3b3b3;
 }
+*/
+
+#placeholderDiv {
+/*z-index: -1; */
+    position: absolute;
+ /*
+    color: #a5a5a5;
+    bottom: 62px;
+    padding-left: 1.25em;
+    height: 35px;
+    */
+
+
+        min-height: 40px;
+    /*min-height: 36px;*/
+    margin-bottom: 6px;
+    padding-left: 1.25em;
+    padding-right: 1.25em;
+    padding-top: 9px;
+    padding-bottom: 9px;
+    /*background-color: #FFFFFF;*/
+    /*
+    -webkit-border-radius: 0px !important;
+    -moz-border-radius: 0px !important;
+    border-style: solid;
+    border-color: #e6e6e6;
+    border-width: 1px;
+    */
+
+    /*position: fixed;*/
+    /*bottom: 44px;*/
+        bottom: 52px;
+}
+
+
+
 
 
 
@@ -982,17 +1070,15 @@ div#cecard_create.ng-empty{
 }
 */
 
-
-
-
-
-
-
-
-
 .box #mi-send {}
 
 .circle #mi-send {}
-
-
-
+/*
+#caretposition {
+    position: absolute;
+    width: 50%;
+    height: 50px;
+    background-color: wheat;
+    top: 50px;
+}
+*/
