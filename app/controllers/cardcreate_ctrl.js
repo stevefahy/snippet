@@ -97,14 +97,18 @@ resetCSS = function(){
             //$(".create_c").removeClass("create_c_input").addClass("create_c_input_scroll");
         }
     };
+
     checkInput = function(elem) {
         var trim = $.trim($(elem).text());
+        // check for images
+        console.log($(elem).html());
+        console.log($(elem).html().indexOf('<img'));
         // check for whitespace at first position and remove
         if (trim.length == 1 && trim.charCodeAt(0) == '8203') {
             $(elem).html('');
         }
         // If there has been text inputed then hide the placeholder text.
-        if ($(elem).text().length > 0) {
+        if ($(elem).text().length > 0 && $(elem).html().indexOf('<img') < 0) {
             $('#placeholderDiv').hide();
             $scope.input = true;
         } else {
@@ -170,6 +174,7 @@ resetCSS = function(){
             if (element) {
                 element.focus();
                 $rootScope.$broadcast('CONV_CHECK');
+
             }
         });
     };

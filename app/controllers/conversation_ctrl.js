@@ -139,20 +139,42 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 }
             } else {
                 if (window.innerHeight < portrait_height) {
+
+
+
                     hideFooter();
+/*
+                    if (focused.id != 'cecard_create') {
+                        $('.create_container').animate({ height: 0 }, 0);
+                    }
+                    */
+
                 } else {
                     showFooter();
                 }
             }
         }, false);
     }
+    var restoreHeight = $('.content_cnv').height();
+    var footerHeight =  $('.footer').height();
 
     hideFooter = function() {
+        var fullWindowHeight = $('.container_cnv').height();
         $('.footer').animate({ height: 0 }, 0);
+        $('.create_container').animate({ height: 0 }, 0);
+        $('.content_cnv').animate({ height: fullWindowHeight }, 0);
+
+        var focused = document.activeElement;
+        document.getElementById(focused.id).scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
     };
 
     showFooter = function() {
-        $('.footer').animate({ height: 50 }, 0);
+        console.log('restore: ' + restoreHeight);
+        $('.footer').animate({ height: footerHeight }, 0);
+        $('.content_cnv').animate({ height: restoreHeight }, 0);
+        $('.create_container').animate({ height: footerHeight }, 0);
+
+
     };
 
     setFocus = function() {
