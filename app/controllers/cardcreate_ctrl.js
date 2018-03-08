@@ -11,138 +11,147 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
     $scope.keyListen = Format.keyListen;
     $scope.showAndroidToast = Format.showAndroidToast;
     $scope.uploadFile = Format.uploadFile;
-    //$scope.myFunction = Edit.myFunction;
     $scope.restoreSelection = Format.restoreSelection;
 
-    $scope.saveSelection = Format.saveSelection;
+    //$scope.saveSelection = Format.saveSelection;
     $scope.checkCursor = Format.checkCursor;
 
     $scope.input = false;
     var isFocused = false;
 
+
+
+
+/*
+    var style = document.createElement('style');
+    style.type = 'text/css';
+    style.innerHTML = '.create_c_input { width: 75px; }';
+    document.getElementsByTagName('head')[0].appendChild(style);
+    //document.getElementById('someElementId').className = 'create_c_input';
+    */
     // Add the input prompt attribute
     $timeout(function() {
 
+        console.log($('.create_container').innerWidth());
+        console.log($('.create_container').outerWidth());
+        console.log($('.create_container').outerWidth(true));
+        console.log($('.create_container')[0]['clientWidth']);
 
+        $('#placeholderDiv').html(INPUT_PROMPT);
         $('#cecard_create').on('focus', function() {
             $scope.focused = true;
-            //$timeout(function() {
             if (!$scope.$$phase) {
                 $scope.$apply();
             }
-            //});
-            //$scope.$apply();
-            if (ua.toLowerCase().indexOf('firefox') > -1 || ua.toLowerCase().indexOf('edge') > -1) {
-                //var $this = $(this);
-                //$this.html($this.html() + '<br>'); // firefox hack
-            }
-
-
-
         });
-
-
         $('#cecard_create').on('blur', function() {
-            //console.log('BLUR');
             $scope.focused = false;
-            /*
-            var last_focus = document.activeElement;
-            console.log(last_focus);
-            var caretPosEl = document.getElementById("caretposition");
-            caretPosEl.innerHTML = "Last focused: " + last_focus;
-            */
-
-            if (ua.toLowerCase().indexOf('firefox') > -1 || ua.toLowerCase().indexOf('edge') > -1) {
-                //var $this = $(this);
-                //$this.text($this.text().replace('<.*?>', ''));
-            }
         });
-
     });
+    // Hide the placeholder text when an image is created.
+    //imageLoaded = function(elem) {
+    //   console.log(elem);
 
-    checkInput = function() {
 
-    };
-
-    imageLoaded = function() {
-        console.log('imageLoaded');
-        //checkInput();
+    // $scope.input = true;
+    //  $('#placeholderDiv').hide();
+    // };
+    imagePosted = function() {
+        console.log('magePosted');
         $scope.input = true;
         $('#placeholderDiv').hide();
+
+
+        console.log($('.create_container').innerWidth());
+        console.log($('.create_container').outerWidth());
+        console.log($('.create_container').outerWidth(true));
+        console.log($('.create_container')[0]['clientWidth']);
+
+        console.log($('.create_a').width());
+
+        var scrollWidth = $('.create_container').outerWidth() - $('.create_container')[0]['clientWidth'];
+        // $('.create_a').width( $('.create_a').width() - scrollWidth );
+        //$('.create_container').width($('.create_container')[0]['clientWidth']);
+        //var minusscroll = document.body.clientWidth; // El. width minus scrollbar width
+        //var withscroll = document.body.scrollWidth;
+        //console.log('minusscroll: ' + minusscroll);
+        // console.log('withscroll: ' + withscroll);
+
+        //document.getElementById('scroll').clientWidth
+/*
+        if (ua !== 'AndroidApp') {
+            // add scoll class
+            $(".create_a").removeClass("create_a_input").addClass("create_a_input_scroll");
+            $(".create_a").removeClass("create_a").addClass("create_a_scroll");
+            //$(".create_c").removeClass("create_c_input").addClass("create_c_input_scroll");
+        }
+        */
+
     };
 
-    $(document).on('input keyup', '#cecard_create', function() {
-        var trim = $.trim($('#cecard_create').text());
-        console.log('trim : ' + trim);
-        // check for whitespace at first position
-        if (trim.length == 1 && trim.charCodeAt(0) == '8203') {
-            $('#cecard_create').html('');
+resetCSS = function(){
+            if (ua !== 'AndroidApp') {
+            // add scoll class
+            $(".create_a_scroll").removeClass("create_a_input_scroll").addClass("create_a_input");
+            $(".create_a_scroll").removeClass("create_a_scroll").addClass("create_a");
+            //$(".create_c").removeClass("create_c_input").addClass("create_c_input_scroll");
         }
-        //if ($.trim($('#cecard_create').text()).length > 0) {
-        if ($('#cecard_create').text().length > 0) {
+    };
+    checkInput = function(elem) {
+        var trim = $.trim($(elem).text());
+        // check for whitespace at first position and remove
+        if (trim.length == 1 && trim.charCodeAt(0) == '8203') {
+            $(elem).html('');
+        }
+        // If there has been text inputed then hide the placeholder text.
+        if ($(elem).text().length > 0) {
             $('#placeholderDiv').hide();
             $scope.input = true;
         } else {
             $('#placeholderDiv').show();
             $scope.input = false;
+            //resetCSS();
         }
+    };
+
+
+
+    $(document).on('input keyup', '#cecard_create', function() {
+        checkInput('#cecard_create');
+
     });
 
+    $(document).on('click', '#placeholderDiv', function() {
+        console.log('focus change');
+        $('#cecard_create').focus();
 
-    // Add the input prompt listener
-    (function($) {
-        $(document).on('change keydown keypress input', 'div[data-placeholder]', function() {
-            if (this.textContent) {
-                $scope.input = true;
-                //this.dataset.divPlaceholderContent = 'true';
-
-            } else {
-                $scope.input = false;
-                //window.getSelection().removeAllRanges();
-                //delete(this.dataset.divPlaceholderContent);
-            }
-        });
-
-    })(jQuery);
-
-
-
+    });
 
     $scope.card_create = {
         _id: 'card_create',
-        content: "",
-        //user: $scope.currentUser,
+        content: '',
         user_name: ''
     };
 
     // Broadcast by Database createCard service when a new card has been created
     $scope.$on('CARD_CREATED', function(event, data) {
-        // Reset the placholder for text input checking
-        $('#cecard_create').removeAttr("data-div-placeholder-content");
         // Reset the model
         $scope.card_create.content = '';
-        //
         $scope.input = false;
+        $('#cecard_create').focus();
+        //$scope.checkCursor();
+        checkInput('#cecard_create');
     });
 
+    // If cecard_create was the last focused element restore the caret position there and create image.
     $scope.media = function() {
-        console.log('isFocused: ' + isFocused);
-
         if (isFocused) {
-            console.log('media');
-            //$scope.restoreCaret('cecard_create');
-            //$scope.restoreSelection('cecard_create');
-            //console.log('savedSelection: ' + savedSelection);
-            // if (savedSelection) {
             $scope.restoreSelection(document.getElementById("cecard_create"));
-            // }
-
             $scope.uploadFile();
         }
     };
-
+    // Check that the cecard_create was the last focused element
     $scope.checkFocus = function() {
-        console.log('checkFocus');
         if ($scope.focused) {
             isFocused = true;
         } else {
@@ -168,11 +177,11 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
     // only check focus on web version
     if (ua !== 'AndroidApp') {
         $window.onfocus = function() {
-            //this.setFocus();
-
+            this.setFocus();
         };
         $window.focus();
         setFocus();
+
     }
 
     // TODO - Better way to get user details across controllers. service? middleware? app.use?

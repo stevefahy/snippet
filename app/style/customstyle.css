@@ -796,23 +796,41 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     border-radius: 1px;
 }
 
+
+
 .create_a {
     grid-column: 1;
     grid-row: 1;
-    width: calc(100vw - 60px);
+    /*width: calc(100vw - 60px);*/
+    width: calc(100vw - 75px);
     padding-top: 5px;
 }
 
 .create_a_input {
     grid-column: 1;
     grid-row: 1;
-    width: calc(100vw - 115px);
+   /*width: calc(100vw - 115px);*/
+   width: calc(100vw - 130px);
 }
+/*
+.create_a_scroll {
+    grid-column: 1;
+    grid-row: 1;
+    width: calc(100vw - 75px);
+    padding-top: 5px;
+}
+
+.create_a_input_scroll {
+    grid-column: 1;
+    grid-row: 1;
+    width: calc(100vw - 130px);
+}
+*/
 
 .create_b {
     grid-column: 2;
     grid-row: 1;
-    text-align: center;
+    text-align: left;
     padding-left: 4px;
     padding-top: 3px;
         align-self: flex-start;
@@ -823,7 +841,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     grid-column: 3;
     grid-row: 1;
     padding-left: 6px;
-    widows: 57px;
+    /*widows: 57px;*/
     padding-top: 3px;
         align-self: flex-start;
 }
@@ -833,12 +851,24 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 }
 
 .create_c_input {
-    width: 60px;
+    /*width: 60px;*/
+    width: 75px;
+    opacity: 1;
+    color: darkgreen;
+    /*text-align: center;*/
+    text-align: left;
+    padding-left: 2px;
+}
+
+/*
+.create_c_input_scroll {
+    width: 75px;
     opacity: 1;
     color: darkgreen;
     text-align: left;
     padding-left: 2px;
 }
+*/
 
 .create_d {
     grid-column: 2;
@@ -1036,7 +1066,7 @@ div[data-placeholder]:not([data-div-placeholder-content]):before {
     margin-bottom: 6px;
     padding-left: 1.25em;
     padding-right: 1.25em;
-    padding-top: 9px;
+    padding-top: 11px;
     padding-bottom: 9px;
     /*background-color: #FFFFFF;*/
     /*
@@ -1050,6 +1080,11 @@ div[data-placeholder]:not([data-div-placeholder-content]):before {
     /*position: fixed;*/
     /*bottom: 44px;*/
         bottom: 52px;
+          -webkit-user-select: none;  /* Chrome 49+ */
+  -moz-user-select: none;     /* Firefox 43+ */
+  -ms-user-select: none;      /* No support yet */
+  user-select: none;          /* Likely future */  
+  cursor: text;
 }
 
 

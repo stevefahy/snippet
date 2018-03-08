@@ -312,11 +312,13 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         $(new_image).removeAttr('onload id');
         active_el.blur();
         active_el.focus();
+
+
     };
 
     insertImage = function(data) {
         if (data.response === 'saved') {
-            var new_image = "<img class='resize-drag' id='new_image' onload='imageLoaded()' src='" + IMAGES_URL + data.file + "'><span id='delete'>&#x200b</span>";
+            var new_image = "<img class='resize-drag' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'><span id='delete'>&#x200b</span>";
 
 
             self.pasteHtmlAtCaret(new_image);
