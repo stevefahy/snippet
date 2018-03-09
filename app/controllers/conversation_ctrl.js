@@ -12,9 +12,75 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         $scope.uploadFile = Format.uploadFile;
         $scope.myFunction = Edit.myFunction;
         $scope.dropDownToggle = Edit.dropDownToggle;
+        $scope.pasteHtmlAtCaret = Format.pasteHtmlAtCaret;
 
         $scope.isMember = false;
 
+    };
+    /*
+        $( '.content_cnv' ).scroll(function() {
+      console.log('scroll: ' + $('#ce5aa19e764895cc2088879d0b').offset().top);
+    });
+    */
+
+
+    var getCaretPixelPos = function($node, offsety) {
+        offsety = offsety || 0;
+        var nodeTop = 0;
+        if ($node) {
+            console.log($node);
+            nodeTop = $node.offsetTop;
+            console.log(nodeTop);
+        }
+        var pos = { top: 0 };
+        if (document.selection) {
+            var range = document.selection.createRange();
+            pos.top = range.offsetTop + offsety - nodeTop + 'px';
+            console.log(pos.top);
+        } else if (window.getSelection) {
+            var sel = window.getSelection();
+            var range = sel.getRangeAt(0).cloneRange();
+            try {
+                range.setStart(range.startContainer, range.startOffset - 1);
+            } catch (e) {
+                // Range was not selected because offset was negative
+                // Ignore error: DOMException: Failed to execute 'setStart' on 'Range': The offset -1 is larger than or equal to the node's length
+            }
+            var rect = range.getBoundingClientRect();
+            if (range.endOffset == 0 || range.toString() === '') {
+                // first char of line
+                if (range.startContainer == $node) {
+                    // empty div
+                    if (range.endOffset == 0) {
+                        pos.top = offsetx + 'px';
+                        console.log(pos.top);
+                    } else {
+                        // firefox needs this
+                        var range2 = range.cloneRange();
+                        range2.setStart(range2.startContainer, 0);
+                        var rect2 = range2.getBoundingClientRect();
+                        pos.top = rect2.top + rect2.height + offsety - nodeTop + 'px';
+                        console.log(pos.top);
+                    }
+                } else {
+                    // not empty div
+                    if (range.startContainer.offsetTop) {
+                        // range was selected
+                        pos.top = range.startContainer.offsetTop + 'px';
+                        console.log(pos.top);
+                    } else {
+                        // range was not selected (probably because caret is at first char of line that already had text)
+                        pos.top = rect.top + offsety - nodeTop + 'px';
+                        console.log(pos.top);
+                    }
+                }
+            } else {
+                // not first char of line
+                pos.top = rect.top + offsety - nodeTop + 'px';
+                console.log(pos.top);
+            }
+        }
+        return pos;
     };
 
     // Detect device user agent 
@@ -128,35 +194,26 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     // Android only
-    if (ua == 'AndroidApp') {
-        window.addEventListener("resize", function() {
-            is_landscape = (screen.height < screen.width);
-            if (is_landscape) {
-                if (window.innerHeight < landscape_height) {
-                    hideFooter();
-                } else {
-                    showFooter();
-                }
+    //if (ua == 'AndroidApp') {
+    window.addEventListener("resize", function() {
+        is_landscape = (screen.height < screen.width);
+        if (is_landscape) {
+            if (window.innerHeight < landscape_height) {
+                hideFooter();
             } else {
-                if (window.innerHeight < portrait_height) {
-
-
-
-                    hideFooter();
-/*
-                    if (focused.id != 'cecard_create') {
-                        $('.create_container').animate({ height: 0 }, 0);
-                    }
-                    */
-
-                } else {
-                    showFooter();
-                }
+                showFooter();
             }
-        }, false);
-    }
+        } else {
+            if (window.innerHeight < portrait_height) {
+                hideFooter();
+            } else {
+                showFooter();
+            }
+        }
+    }, false);
+    //}
     var restoreHeight = $('.content_cnv').height();
-    var footerHeight =  $('.footer').height();
+    var footerHeight = $('.footer').height();
 
     hideFooter = function() {
         var fullWindowHeight = $('.container_cnv').height();
@@ -164,8 +221,35 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         $('.create_container').animate({ height: 0 }, 0);
         $('.content_cnv').animate({ height: fullWindowHeight }, 0);
 
-        var focused = document.activeElement;
-        document.getElementById(focused.id).scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
+        /*
+                var focused = document.activeElement;
+                //document.getElementById(focused.id).scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
+                var pos = getCaretPixelPos($('#' + focused.id)[0]);
+                console.log(focused.id + ', pos: ' + pos.top);
+                $('#' + focused.id).animate({
+                    scrollTop: 50
+                }, 1000);
+                */
+        $scope.pasteHtmlAtCaret("<span id='scroll_latest'></span>");
+        document.getElementById('scroll').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
+
+        $timeout(function() {
+            $("#scroll_latest").remove();
+        },1000);
+
+    };
+
+    $scope.scroll = function() {
+        console.log('scroll');
+
+        //var focused = document.activeElement;
+        //document.getElementById(focused.id).scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
+        //var pos = getCaretPixelPos($('#' + focused.id)[0]);
+        //console.log(focused.id + ', pos: ' + pos.top);
+        //console.log(focused.id);
+        $('.content_cnv').animate({
+            scrollTop: 45725.30206298828
+        }, 1000);
     };
 
     showFooter = function() {
