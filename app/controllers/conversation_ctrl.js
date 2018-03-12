@@ -174,6 +174,7 @@ create_container diplat grid to none and back
            // $('.create_container').css("display","none");
         }
         $('.footer').hide();
+        $('#placeholderDiv').css('bottom', '-1px');
 
         // enter is a pasteHTML. need to add scroll into view for android
         $scope.pasteHtmlAtCaret("<span class='scroll_latest' id='scroll_latest'></span>");
@@ -197,6 +198,9 @@ create_container diplat grid to none and back
         */
         $('.footer').show();
          $('.create_container').show();
+
+         $('#placeholderDiv').css('bottom', '49px');
+         //  49 -1
         // $('.create_container').css("display","grid");
 // force
 
