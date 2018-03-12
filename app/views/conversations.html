@@ -1,8 +1,7 @@
 <div ng-controller="conversationsCtrl">
     <div class="container_cnv">
-        <div class="slide-animate header_container" ng-include="'/views/header.html'"></div>
+        <div class="header_container" ng-include="'/views/header.html'"></div>
         <div class="content_cnv">
-            <!--<div class="container-fluid">-->
             <div ng-repeat="conversation in conversations | orderBy :'updatedAt' : true">
                 <div id="conv_div" ng-click="(conversation.conversation_type == 'private') ? chat(conversation._id, $index) : chatPublic(conversation.admin, $index)">
                     <li class="list-group-item d-flex justify-content-between align-items-center">

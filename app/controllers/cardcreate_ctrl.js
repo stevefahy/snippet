@@ -12,32 +12,22 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
     $scope.showAndroidToast = Format.showAndroidToast;
     $scope.uploadFile = Format.uploadFile;
     $scope.restoreSelection = Format.restoreSelection;
-
-    //$scope.saveSelection = Format.saveSelection;
     $scope.checkCursor = Format.checkCursor;
 
     $scope.input = false;
     var isFocused = false;
 
+    // TODO - Better way to get user details across controllers. service? middleware? app.use?
+    // Get the current users details
+    $http.get("/api/user_data").then(function(result) {
+        $scope.currentUser = result.data.user;
+        $scope.card_create.user = $scope.currentUser.google.name;
+    });
 
-
-
-    /*
-        var style = document.createElement('style');
-        style.type = 'text/css';
-        style.innerHTML = '.create_c_input { width: 75px; }';
-        document.getElementsByTagName('head')[0].appendChild(style);
-        //document.getElementById('someElementId').className = 'create_c_input';
-        */
-    // Add the input prompt attribute
     $timeout(function() {
-
-        console.log($('.create_container').innerWidth());
-        console.log($('.create_container').outerWidth());
-        console.log($('.create_container').outerWidth(true));
-        console.log($('.create_container')[0]['clientWidth']);
-
+        // Add the input prompt text
         $('#placeholderDiv').html(INPUT_PROMPT);
+        // listen for focus
         $('#cecard_create').on('focus', function() {
             $scope.focused = true;
             if (!$scope.$$phase) {
@@ -48,87 +38,15 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
             $scope.focused = false;
         });
     });
-    // Hide the placeholder text when an image is created.
-    //imageLoaded = function(elem) {
-    //   console.log(elem);
-
-
-    // $scope.input = true;
-    //  $('#placeholderDiv').hide();
-    // };
-    imagePosted = function() {
-        console.log('magePosted');
-        $scope.input = true;
-        $('#placeholderDiv').hide();
-
-
-        console.log($('.create_container').innerWidth());
-        console.log($('.create_container').outerWidth());
-        console.log($('.create_container').outerWidth(true));
-        console.log($('.create_container')[0]['clientWidth']);
-
-        console.log($('.create_a').width());
-
-        var scrollWidth = $('.create_container').outerWidth() - $('.create_container')[0]['clientWidth'];
-        // $('.create_a').width( $('.create_a').width() - scrollWidth );
-        //$('.create_container').width($('.create_container')[0]['clientWidth']);
-        //var minusscroll = document.body.clientWidth; // El. width minus scrollbar width
-        //var withscroll = document.body.scrollWidth;
-        //console.log('minusscroll: ' + minusscroll);
-        // console.log('withscroll: ' + withscroll);
-
-        //document.getElementById('scroll').clientWidth
-        /*
-                if (ua !== 'AndroidApp') {
-                    // add scoll class
-                    $(".create_a").removeClass("create_a_input").addClass("create_a_input_scroll");
-                    $(".create_a").removeClass("create_a").addClass("create_a_scroll");
-                    //$(".create_c").removeClass("create_c_input").addClass("create_c_input_scroll");
-                }
-                */
-
-    };
-
-    resetCSS = function() {
-        if (ua !== 'AndroidApp') {
-            // add scoll class
-            $(".create_a_scroll").removeClass("create_a_input_scroll").addClass("create_a_input");
-            $(".create_a_scroll").removeClass("create_a_scroll").addClass("create_a");
-            //$(".create_c").removeClass("create_c_input").addClass("create_c_input_scroll");
-        }
-    };
-
-    checkInput = function(elem) {
-        var trim = $.trim($(elem).text());
-        // check for images
-        console.log($(elem).html());
-        console.log($(elem).html().indexOf('<img'));
-        // check for whitespace at first position and remove
-        if (trim.length == 1 && trim.charCodeAt(0) == '8203') {
-            $(elem).html('');
-        }
-        // If there has been text inputed then hide the placeholder text.
-        if ($(elem).text().length > 0 && $(elem).html().indexOf('<img') < 0) {
-            $('#placeholderDiv').hide();
-            $scope.input = true;
-        } else {
-            $('#placeholderDiv').show();
-            $scope.input = false;
-            //resetCSS();
-        }
-    };
-
-
 
     $(document).on('input keyup', '#cecard_create', function() {
         checkInput('#cecard_create');
 
     });
 
+    // Refocus to the input area if the placeholder is focused.
     $(document).on('click', '#placeholderDiv', function() {
-        console.log('focus change');
         $('#cecard_create').focus();
-
     });
 
     $scope.card_create = {
@@ -170,6 +88,28 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
         Database.createCard(id, card_create, $scope.currentUser);
     };
 
+    // Hide the placeholder text when an image is created.
+    imagePosted = function() {
+        $scope.input = true;
+        $('#placeholderDiv').hide();
+    };
+
+    checkInput = function(elem) {
+        var trim = $.trim($(elem).text());
+        // check for whitespace at first position and remove
+        if (trim.length == 1 && trim.charCodeAt(0) == '8203') {
+            $(elem).html('');
+        }
+        // If there has been text or an image inputed then hide the placeholder text.
+        if ($(elem).text().length > 0 && $(elem).html().indexOf('<img') < 0) {
+            $('#placeholderDiv').hide();
+            $scope.input = true;
+        } else {
+            $('#placeholderDiv').show();
+            $scope.input = false;
+        }
+    };
+
     setFocus = function() {
         $timeout(function() {
             var element = $window.document.getElementById('cecard_create');
@@ -190,12 +130,5 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
         setFocus();
 
     }
-
-    // TODO - Better way to get user details across controllers. service? middleware? app.use?
-    // Get the current users details
-    $http.get("/api/user_data").then(function(result) {
-        $scope.currentUser = result.data.user;
-        $scope.card_create.user = $scope.currentUser.google.name;
-    });
 
 }]);

@@ -18,6 +18,16 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     };
 
+    // TODO - change to global?
+    $http.get("/api/user_data").then(function(result) {
+        if (result.data.user) {
+            $scope.currentUserName = result.data.user.google.name;
+            $scope.currentUser = result.data.user;
+        }
+        // Start watching onfocus and onblur, then load the conversation for the first time.
+        watchFocus();
+    });
+
     // Detect device user agent 
     var ua = navigator.userAgent;
     // Detect soft keyboard on Android
@@ -147,63 +157,28 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }
         }, false);
     }
-    var restoreHeight = $('.content_cnv').height();
-    var footerHeight = $('.footer').height();
-
-/*
-content_conv calc 100% -100x
-to calc 100%
-footer display none back to block? (none before)
-create_container diplat grid to none and back
-
-*/
 
     hideFooter = function() {
         var focused = document.activeElement;
-        /*var fullWindowHeight = $('.container_cnv').height();
-        var focused = document.activeElement;
-
-        $('.footer').animate({ height: 0 }, 0);
-        if (focused.id != 'cecard_create') {
-            $('.create_container').animate({ height: 0 }, 0);
-        }
-        $('.content_cnv').animate({ height: fullWindowHeight }, 0);
-        */
         if (focused.id != 'cecard_create') {
             $('.create_container').hide();
-           // $('.create_container').css("display","none");
         }
         $('.footer').hide();
         $('#placeholderDiv').css('bottom', '-1px');
-
-        // enter is a pasteHTML. need to add scroll into view for android
+        // TODO enter is a pasteHTML. need to add scroll into view for android
+        // Paste div so that scrollintoview works on Android
         $scope.pasteHtmlAtCaret("<span class='scroll_latest' id='scroll_latest'></span>");
         document.getElementById('scroll_latest').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
-
+        // remove scroll_latest after scrolling
         $timeout(function() {
             $(".scroll_latest").remove();
         }, 100);
-
-
     };
 
-
-
     showFooter = function() {
-        /*
-        console.log('restore: ' + restoreHeight);
-        $('.footer').animate({ height: footerHeight }, 0);
-        $('.content_cnv').animate({ height: restoreHeight }, 0);
-        $('.create_container').animate({ height: footerHeight }, 0);
-        */
         $('.footer').show();
-         $('.create_container').show();
-
-         $('#placeholderDiv').css('bottom', '49px');
-         //  49 -1
-        // $('.create_container').css("display","grid");
-// force
-
+        $('.create_container').show();
+        $('#placeholderDiv').css('bottom', '49px');
     };
 
     setFocus = function() {
@@ -219,7 +194,6 @@ create_container diplat grid to none and back
         // only check focus on web version
         if (ua !== 'AndroidApp') {
             $window.onfocus = function() {
-                //console.log('focus');
                 this.setFocus();
             };
             $window.onblur = function() {
@@ -295,20 +269,6 @@ create_container diplat grid to none and back
         }
     };
 
-    //
-    // Get initial data
-    //
-
-    // Get the logged in user's data.
-    $http.get("/api/user_data").then(function(result) {
-        if (result.data.user) {
-            $scope.currentUserName = result.data.user.google.name;
-            $scope.currentUser = result.data.user;
-        }
-        // Start watching onfocus and onblur, then load the conversation for the first time.
-        watchFocus();
-    });
-
     // Find the conversation id.
     findConversationId = function(callback) {
         // Use the id from $routeParams.id if it exists. 
@@ -331,7 +291,6 @@ create_container diplat grid to none and back
                                 $scope.isMember = result;
                                 getConversation(id, 500);
                             });
-
                         }
                     });
             }
@@ -391,7 +350,6 @@ create_container diplat grid to none and back
                     key.original_content = key.content;
                     // Get the user name for the user id
                     // TODO dont repeat if user id already retreived
-                    //key.user = 'fdgfg';
                     Users.search_id(key.user)
                         .then(function(res) {
                             if (res.data.error === 'null') {

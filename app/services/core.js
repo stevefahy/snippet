@@ -70,6 +70,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     var focused_id;
     var focused_card;
     var focused_user;
+    var savedSelection;
 
     $window.androidToJS = this.androidToJS;
     $window.androidTokenRefresh = this.androidTokenRefresh;
@@ -312,15 +313,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         $(new_image).removeAttr('onload id');
         active_el.blur();
         active_el.focus();
-
-
     };
 
     insertImage = function(data) {
         if (data.response === 'saved') {
             var new_image = "<img class='resize-drag' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'><span id='delete'>&#x200b</span>";
-
-
             self.pasteHtmlAtCaret(new_image);
             // commented out because it causes an issue with onblur which is used to update card.
             /*
@@ -331,7 +328,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             var new_text = old_text.replace(/\u200B/g, '');
             new_text += "<span id='delete_image'>&#x200b</span>";
             $window.document.getElementById("cecard_create").innerHTML = new_text;
-
             moveCaretInto('delete_image');
             */
             //scrollToBottom(1000);
@@ -537,8 +533,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     // TODO Check if this is still required.
     this.setMediaSize = function(id, card) {
-        //var content = document.getElementById('ce' + id);
-        //return content.innerHTML;
         return card.content;
     };
 
@@ -655,7 +649,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         if (ua.toLowerCase().indexOf('firefox') > -1) {
             $('#' + id).html($('#' + id).html().replace(/<br>/g, ""));
         }
-
         $('#' + id).removeAttr('id');
         return;
     }
@@ -865,17 +858,13 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                         }, 0)
                         .then(
                             function() {
-                                //return $timeout(function() {
                                 self.pasteHtmlAtCaret('&#x200b');
-                                //}, 0);
                             }
                         );
                 }
             }
         }
     };
-
-
 
     function getCharacterPrecedingCaret(containerEl) {
         var precedingChar = "",
@@ -899,13 +888,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     }
 
     this.contentChanged = function(content, elem) {
-
         if (!self.paste_in_progress) {
-
-
-
-
-
             if (within_pre == false) {
                 // MARKY
                 self.markyCheck(content, elem, false);
@@ -981,60 +964,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         }
         return;
     };
-    /*
-    this.restoreCaret = function(elem) {
-        console.log('restoreCaret: ' + elem);
-        $("#" + elem).focus();
-        var node = document.querySelector('#cecard_create');
-        //console.log(node);
-        //var node = $("#" + id).get(0);
-        //range = document.createRange();
-        //range.setStart(node.firstChild, 1);
-
-
-        node.focus();
-        var textNode;
-        if (node.firstChild) {
-            textNode = node.firstChild;
-        } else {
-            textNode = node;
-        }
-        var caret = caretpos;
-        var range = document.createRange();
-        console.log(range);
-        range.setStart(textNode, caret);
-        range.setEnd(textNode, caret);
-        var sel = window.getSelection();
-        sel.removeAllRanges();
-        sel.addRange(range);
-    };
-
-    function getCaretCharacterOffsetWithin(element) {
-        var caretOffset = 0;
-        var doc = element.ownerDocument || element.document;
-        var win = doc.defaultView || doc.parentWindow;
-        var sel;
-        if (typeof win.getSelection != "undefined") {
-            sel = win.getSelection();
-            if (sel.rangeCount > 0) {
-                var range = win.getSelection().getRangeAt(0);
-                var preCaretRange = range.cloneRange();
-                preCaretRange.selectNodeContents(element);
-                preCaretRange.setEnd(range.endContainer, range.endOffset);
-                caretOffset = preCaretRange.toString().length;
-            }
-        } else if ((sel = doc.selection) && sel.type != "Control") {
-            var textRange = sel.createRange();
-            var preCaretTextRange = doc.body.createTextRange();
-            preCaretTextRange.moveToElementText(element);
-            preCaretTextRange.setEndPoint("EndToEnd", textRange);
-            caretOffset = preCaretTextRange.text.length;
-        }
-        return caretOffset;
-    }
-    */
-    var savedSelection;
-    //var saveSelection, restoreSelection;
 
     saveSelection = function(containerEl) {
         var start;
@@ -1102,16 +1031,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             textRange.select();
         }
     };
-/*
-    this.showCaretPos = function(elem) {
-        savedSelection = saveSelection(document.getElementById(elem));
-        console.log('savedSelection: ' + savedSelection);
-
-    };
-    */
 
     this.keyListen = function(elem) {
-        //self.showCaretPos(elem);
         var getKeyCode = function() {
             var editableEl = document.getElementById(elem);
             // lowercase
@@ -1152,8 +1073,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     this.checkCursor = function($event, elem) {
         // Store current caret pos
-        console.log("checkCursor: " + elem);
-        //self.showCaretPos(elem);
         savedSelection = saveSelection(document.getElementById(elem));
     };
 
@@ -1165,7 +1084,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             moveCaretInto('enter_focus');
             return false;
         }
-
     };
 
     this.handlePaste = function($event) {
@@ -1296,40 +1214,11 @@ cardApp.service('Edit', function() {
 });
 
 cardApp.service('FormatHTML', ['Format', function(Format) {
-    /*
-        this.removeEmptyTags = function(html) {
-            //(<(?!\/)[^>]+>)+(<\/[^>]+>)+
-            var cleaned = /(<pre.*?>)(.*?)(<\/pre>)/ig;
-        };
-        */
-
-    /*
-        this.removeAllTags = function(content) {
-            console.log('before: ' + content);
-
-            // var txt = document.getElementById('myString').value;
-            var reg_empty = /(<([^>]+)>)/ig;
-            var empty_tags = content.match(reg_empty);
-            console.log(empty_tags);
-            // content.replace(rex , "");
-            for (var i in empty_tags) {
-                //empty_tags[i].replace();
-                content = content.replace(empty_tags[i], "");
-            }
-
-            console.log('after: ' + content);
-            return content;
-        };
-        */
-
 
     this.stripHtml = function(html) {
         var div = document.createElement("div");
         div.innerHTML = html;
-        //var text = div.textContent || div.innerText || "";
         var text = div.textContent || div.innerText || "";
-        console.log('text: ' + text);
-        console.log('text length: ' + text.length);
         return text;
     };
 
@@ -1356,7 +1245,6 @@ cardApp.service('FormatHTML', ['Format', function(Format) {
         var count = 0;
         var counting = true;
         for (var i = 0; i <= temp_content.length; i++) {
-
             if (counting && temp_content[i] == '<') {
                 counting = false;
             }
@@ -1486,7 +1374,6 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
                 card.content = Format.setMediaSize(card_id, card);
                 card.content = replaceTags.replace(card.content);
-                //card.content = Format.removeDeleteIds(); // returns empty sring here
                 card.content = replaceTags.removeDeleteId(card.content);
                 card.content = replaceTags.removeFocusIds(card.content);
 
@@ -1505,13 +1392,10 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                         // Update the Conversation updateAt time.
                         Conversations.updateTime(card.conversationId)
                             .then(function(response) {
-
                                 var notification = self.setNotification(response.data, currentUser, card_content);
                                 notification_title = notification.title;
                                 notification_body = notification.body;
-
                                 sent_content = FormatHTML.prepSentContent(notification_body, sent_content_length);
-
                                 // Send notifications
                                 for (var i in response.data.participants) {
                                     // dont emit to the user which sent the card
@@ -1563,18 +1447,14 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
     // CREATE CARD
     this.createCard = function(id, card_create, currentUser) {
-
         var promises = [];
-
         card_create.user = currentUser.google.name;
         // Get the Conversation in which this card is being created.
         var current_conversation_id = Conversations.getConversationId();
         card_create.conversationId = current_conversation_id;
-
         card_create.content = Format.setMediaSize(id, card_create);
         card_create.content = replaceTags.replace(card_create.content);
         card_create.content = Format.removeDeleteIds();
-
         card_create.content = replaceTags.removeDeleteId(card_create.content);
         card_create.content = replaceTags.removeFocusIds(card_create.content);
 
@@ -1585,7 +1465,6 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
         Cards.create(card_create)
             .then(function(response) {
-
                 var card_id = response.data._id;
                 var card_response = response.data;
                 // notify conversation_ctrl and cardcreate_ctrl that the conversation has been updated
@@ -1595,13 +1474,10 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 // Update the Conversation updateAt time.
                 Conversations.updateTime(current_conversation_id)
                     .then(function(response) {
-
                         var notification = self.setNotification(response.data, currentUser, card_content);
                         notification_title = notification.title;
                         notification_body = notification.body;
-
                         sent_content = FormatHTML.prepSentContent(notification_body, sent_content_length);
-
                         // Send notifications
                         for (var i in response.data.participants) {
                             // dont emit to the user which sent the card
@@ -1647,12 +1523,10 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
     // DELETE CARD
     this.deleteCard = function(card_id, conversation_id, currentUser) {
-
         var sent_content;
         var notification_title;
         var notification_body;
         var card_content = 'Post deleted.';
-
         Cards.delete(card_id)
             .then(function(response) {
                 // notify conversation_ctrl that the card has been deleted
@@ -1664,7 +1538,6 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                         notification_title = notification.title;
                         notification_body = notification.body;
                         sent_content = FormatHTML.prepSentContent(notification_body, sent_content_length);
-
                         // Send notifications
                         for (var i in response.data.participants) {
                             // dont emit to the user which sent the card
