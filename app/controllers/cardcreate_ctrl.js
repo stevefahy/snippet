@@ -22,13 +22,13 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
 
 
 
-/*
-    var style = document.createElement('style');
-    style.type = 'text/css';
-    style.innerHTML = '.create_c_input { width: 75px; }';
-    document.getElementsByTagName('head')[0].appendChild(style);
-    //document.getElementById('someElementId').className = 'create_c_input';
-    */
+    /*
+        var style = document.createElement('style');
+        style.type = 'text/css';
+        style.innerHTML = '.create_c_input { width: 75px; }';
+        document.getElementsByTagName('head')[0].appendChild(style);
+        //document.getElementById('someElementId').className = 'create_c_input';
+        */
     // Add the input prompt attribute
     $timeout(function() {
 
@@ -78,19 +78,19 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
         // console.log('withscroll: ' + withscroll);
 
         //document.getElementById('scroll').clientWidth
-/*
-        if (ua !== 'AndroidApp') {
-            // add scoll class
-            $(".create_a").removeClass("create_a_input").addClass("create_a_input_scroll");
-            $(".create_a").removeClass("create_a").addClass("create_a_scroll");
-            //$(".create_c").removeClass("create_c_input").addClass("create_c_input_scroll");
-        }
-        */
+        /*
+                if (ua !== 'AndroidApp') {
+                    // add scoll class
+                    $(".create_a").removeClass("create_a_input").addClass("create_a_input_scroll");
+                    $(".create_a").removeClass("create_a").addClass("create_a_scroll");
+                    //$(".create_c").removeClass("create_c_input").addClass("create_c_input_scroll");
+                }
+                */
 
     };
 
-resetCSS = function(){
-            if (ua !== 'AndroidApp') {
+    resetCSS = function() {
+        if (ua !== 'AndroidApp') {
             // add scoll class
             $(".create_a_scroll").removeClass("create_a_input_scroll").addClass("create_a_input");
             $(".create_a_scroll").removeClass("create_a_scroll").addClass("create_a");
@@ -142,7 +142,9 @@ resetCSS = function(){
         // Reset the model
         $scope.card_create.content = '';
         $scope.input = false;
-        $('#cecard_create').focus();
+        if (ua !== 'AndroidApp') {
+            $('#cecard_create').focus();
+        }
         //$scope.checkCursor();
         checkInput('#cecard_create');
     });

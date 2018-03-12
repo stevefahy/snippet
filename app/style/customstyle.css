@@ -972,7 +972,8 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     /*overflow-y: overlay;*/
     /*height: calc(100vh);*/
     overflow-y: scroll;
-    height: calc(100% - 100px);
+    /*height: calc(100% - 100px);*/
+    height: calc(100%);
 
     border-radius: 1px;
 }
