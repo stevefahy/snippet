@@ -59,11 +59,13 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
     $scope.$on('CARD_CREATED', function(event, data) {
         // Reset the model
         $scope.card_create.content = '';
+        $('#cecard_create').html('');
         $scope.input = false;
         if (ua !== 'AndroidApp') {
             $('#cecard_create').focus();
         }
         //$scope.checkCursor();
+        console.log('card created');
         checkInput('#cecard_create');
     });
 
@@ -90,8 +92,11 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
 
     // Hide the placeholder text when an image is created.
     imagePosted = function() {
-        $scope.input = true;
-        $('#placeholderDiv').hide();
+        var focused = document.activeElement;
+        if (focused.id == 'cecard_create') {
+            $scope.input = true;
+            $('#placeholderDiv').hide();
+        }
     };
 
     checkInput = function(elem) {
@@ -101,7 +106,7 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
             $(elem).html('');
         }
         // If there has been text or an image inputed then hide the placeholder text.
-        if ($(elem).text().length > 0 && $(elem).html().indexOf('<img') < 0) {
+        if ($(elem).text().length > 0 || $(elem).html().indexOf('<img') >= 0) {
             $('#placeholderDiv').hide();
             $scope.input = true;
         } else {
@@ -116,7 +121,6 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
             if (element) {
                 element.focus();
                 $rootScope.$broadcast('CONV_CHECK');
-
             }
         });
     };
@@ -124,7 +128,7 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
     // only check focus on web version
     if (ua !== 'AndroidApp') {
         $window.onfocus = function() {
-            this.setFocus();
+           // this.setFocus();
         };
         $window.focus();
         setFocus();

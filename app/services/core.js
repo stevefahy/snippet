@@ -316,8 +316,10 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     insertImage = function(data) {
+        console.log(data);
         if (data.response === 'saved') {
-            var new_image = "<img class='resize-drag' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'><span id='delete'>&#x200b</span>";
+            var new_image = "<img class='resize-drag' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'><span class='scroll_latest' id='delete'>&#x200b</span>";
+            console.log(new_image);
             self.pasteHtmlAtCaret(new_image);
             // commented out because it causes an issue with onblur which is used to update card.
             /*
@@ -403,6 +405,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         if (ua === 'AndroidApp') {
             Android.choosePhoto();
         } else {
+            console.log('uploadFile');
             // All browsers except MS Edge
             if (ua.toLowerCase().indexOf('edge') == -1) {
                 uploadClickListen();
@@ -410,8 +413,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             $('#upload-input').on('change', function() {
                 var files = $(this).get(0).files;
                 if (files.length > 0) {
+                    console.log('prep: ' + files);
                     prepareImage(files);
                 }
+                // reset the input value to null so that files of the same name can be uploaded.
+                 this.value = null;
             });
             // MS Edge only
             if (ua.toLowerCase().indexOf('edge') > -1) {
@@ -650,6 +656,17 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             $('#' + id).html($('#' + id).html().replace(/<br>/g, ""));
         }
         $('#' + id).removeAttr('id');
+        // Scroll the pasted HTML into view
+        var scroll_latest = document.querySelector('.scroll_enter_latest');
+        console.log(scroll_latest);
+        if (scroll_latest != null) {
+            scroll_latest.scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
+            // remove scroll_latest after scrolling
+            $timeout(function() {
+                // Remove all .scroll_latest classes
+                $('.scroll_enter_latest').removeClass('scroll_enter_latest');
+            }, 100);
+        }
         return;
     }
 
@@ -733,7 +750,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             if (marky_html_index !== -1) {
                 var marky_html = marky_array[marky_html_index].html;
                 if (marky_html != 'pre') {
-                    var new_tag = '<' + marky_html + ' id="focus">&#x200b</' + marky_html + '>';
+                    var new_tag = '<' + marky_html + ' class="scroll_latest" id="focus">&#x200b</' + marky_html + '>';
                     if (loop_count > 0) {
                         var pos = complete_tag.indexOf('&#x200b');
                         complete_tag = complete_tag.slice(0, pos) + new_tag + complete_tag.slice(pos + 7, complete_tag.length);
@@ -783,9 +800,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                         }
                         var updateChars;
                         if (marky_array[ma].span_start != undefined) {
-                            updateChars = currentChars.replace(char_watch, marky_array[ma].span_start + "<" + marky_array[ma].html + " " + marky_array[ma].attribute + " id='marky'>" + marky_array[ma].span_end);
+                            updateChars = currentChars.replace(char_watch, marky_array[ma].span_start + "<" + marky_array[ma].html + " " + marky_array[ma].attribute + " class='scroll_latest' id='marky'>" + marky_array[ma].span_end);
                         } else {
-                            updateChars = currentChars.replace(char_watch, "<" + marky_array[ma].html + " " + marky_array[ma].attribute + " id='marky'>");
+                            updateChars = currentChars.replace(char_watch, "<" + marky_array[ma].html + " " + marky_array[ma].attribute + " class='scroll_latest' id='marky'>");
                         }
                         if (close_tag) {
                             updateChars += "</" + marky_array[ma].html + ">";
@@ -929,7 +946,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.pasteHtmlAtCaret = function(html) {
-        var sel, range;
+        console.log(html);
+        var sel, range, scroll_latest;
         if (window.getSelection) {
             // IE9 and non-IE
             sel = window.getSelection();
@@ -957,10 +975,36 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     sel.removeAllRanges();
                     sel.addRange(range);
                 }
+                
+                $timeout(function() {
+                    // Scroll the pasted HTML into view
+                    scroll_latest = document.querySelector('.scroll_latest');
+                    console.log(scroll_latest);
+                    if (scroll_latest != null) {
+                        scroll_latest.scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
+                        // remove scroll_latest after scrolling
+                        $timeout(function() {
+                            // Remove all .scroll_latest classes
+                            $('.scroll_latest').removeClass('scroll_latest');
+                        }, 100);
+                    }
+                });
+                
+
             }
         } else if (document.selection && document.selection.type != "Control") {
             // IE < 9
             document.selection.createRange().pasteHTML(html);
+            // Scroll the pasted HTML into view
+            scroll_latest = document.querySelector('.scroll_latest');
+            if (scroll_latest != null) {
+                scroll_latest.scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
+                // remove scroll_latest after scrolling
+                $timeout(function() {
+                    // Remove all .scroll_latest classes
+                    $('.scroll_latest').removeClass('scroll_latest');
+                }, 100);
+            }
         }
         return;
     };
@@ -1080,7 +1124,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         // Stop the default behavior for the ENTER key and insert <br><br> instead
         if ($event.keyCode == 13) {
             $event.preventDefault();
-            self.pasteHtmlAtCaret("<br><span id='enter_focus'></span>");
+            self.pasteHtmlAtCaret("<br><span class='scroll_enter_latest' id='enter_focus'></span>");
             moveCaretInto('enter_focus');
             return false;
         }
