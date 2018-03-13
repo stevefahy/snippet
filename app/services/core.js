@@ -308,6 +308,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     // Added for update. Ensures focus is called after an image is inserted.
     imageLoaded = function() {
+        console.log('img loade');
         var active_el = document.activeElement;
         var new_image = document.getElementById('new_image');
         $(new_image).removeAttr('onload id');
@@ -480,6 +481,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     checkUpdate = function() {
         if (ua == 'AndroidApp') {
+            console.log(focused_id);
             if (focused_id != undefined) {
                 self.getBlurAndroid(focused_id, focused_card, focused_user);
             }
@@ -946,11 +948,13 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.pasteHtmlAtCaret = function(html) {
+
         console.log(html);
         var sel, range, scroll_latest;
         if (window.getSelection) {
             // IE9 and non-IE
             sel = window.getSelection();
+            console.log(sel);
             if (sel.getRangeAt && sel.rangeCount) {
                 range = sel.getRangeAt(0);
                 range.deleteContents();
@@ -1213,6 +1217,7 @@ cardApp.service('replaceTags', function() {
     };
 
     this.removeFocusIds = function(str) {
+        console.log('removefocids');
         str = $("<div>" + str + "</div>");
         $('span#focus', str).each(function(e) {
             $(this).replaceWith($(this).html());

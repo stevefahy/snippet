@@ -159,23 +159,29 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     }
 
     hideFooter = function() {
+        console.log('hide');
         var focused = document.activeElement;
         if (focused.id != 'cecard_create') {
             $('.create_container').hide();
         }
         $('.footer').hide();
         $('#placeholderDiv').css('bottom', '-1px');
-        // TODO enter is a pasteHTML. need to add scroll into view for android
-        // Paste div so that scrollintoview works on Android
-        $scope.pasteHtmlAtCaret("<span class='scroll_latest' id='scroll_latest'></span>");
-        document.getElementById('scroll_latest').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
-        // remove scroll_latest after scrolling
-        $timeout(function() {
-            $(".scroll_latest").remove();
-        }, 100);
+        if (focused.id == 'cecard_create') {
+            // TODO enter is a pasteHTML. need to add scroll into view for android
+            // Paste div so that scrollintoview works on Android
+            $scope.pasteHtmlAtCaret("<div class='scroll_latest_footer' id='scroll_latest_footer'></div>");
+            console.log(document.getElementById('scroll_latest_footer'));
+            document.getElementById('scroll_latest_footer').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
+            // remove scroll_latest after scrolling
+            $timeout(function() {
+                $(".scroll_latest_footer").remove();
+            }, 100);
+        }
     };
 
+
     showFooter = function() {
+        console.log('show');
         $('.footer').show();
         $('.create_container').show();
         $('#placeholderDiv').css('bottom', '49px');
@@ -183,6 +189,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     setFocus = function() {
         $timeout(function() {
+            console.log('conv');
             findConversationId(function(result) {
                 $rootScope.$broadcast('CONV_CHECK');
             });
@@ -199,6 +206,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             $window.onblur = function() {
                 //console.log('blur');
             };
+            console.log('win');
             $window.focus();
             setFocus();
         } else {

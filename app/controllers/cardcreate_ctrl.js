@@ -29,6 +29,7 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
         $('#placeholderDiv').html(INPUT_PROMPT);
         // listen for focus
         $('#cecard_create').on('focus', function() {
+            console.log('cecard_create focus');
             $scope.focused = true;
             if (!$scope.$$phase) {
                 $scope.$apply();
@@ -46,6 +47,7 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
 
     // Refocus to the input area if the placeholder is focused.
     $(document).on('click', '#placeholderDiv', function() {
+        console.log('refocus');
         $('#cecard_create').focus();
     });
 
@@ -62,6 +64,7 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
         $('#cecard_create').html('');
         $scope.input = false;
         if (ua !== 'AndroidApp') {
+            console.log('not android cecard focus');
             $('#cecard_create').focus();
         }
         //$scope.checkCursor();
@@ -119,6 +122,7 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
         $timeout(function() {
             var element = $window.document.getElementById('cecard_create');
             if (element) {
+                console.log('ce set foc');
                 element.focus();
                 $rootScope.$broadcast('CONV_CHECK');
             }
@@ -130,6 +134,7 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
         $window.onfocus = function() {
            // this.setFocus();
         };
+        console.log('window foc');
         $window.focus();
         setFocus();
 
