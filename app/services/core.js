@@ -659,6 +659,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             $('#' + id).html($('#' + id).html().replace(/<br>/g, ""));
         }
         $('#' + id).removeAttr('id');
+        /*
         // Scroll the pasted HTML into view
         var scroll_latest = document.querySelector('.scroll_enter_latest');
         console.log(scroll_latest);
@@ -669,7 +670,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 // Remove all .scroll_latest classes
                 $('.scroll_enter_latest').removeClass('scroll_enter_latest');
             }, 100);
-        }
+        }*/
         return;
     }
 
