@@ -498,6 +498,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             // check the content has changed and not currently mid marky
             if (card.content != card.original_content && (found_marky == false)) {
                 // Inject the Database Service
+                console.log('db');
                 var Database = $injector.get('Database');
                 // Update the card
                 Database.updateCard(id, card, currentUser);
