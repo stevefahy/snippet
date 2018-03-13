@@ -1130,7 +1130,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         // Stop the default behavior for the ENTER key and insert <br><br> instead
         if ($event.keyCode == 13) {
             $event.preventDefault();
-            self.pasteHtmlAtCaret("<br><span class='scroll_enter_latest' id='enter_focus'></span>");
+            //self.pasteHtmlAtCaret("<br><span class='scroll_enter_latest' id='enter_focus'></span>");
+            self.pasteHtmlAtCaret("<br><span id='enter_focus'></span>");
             moveCaretInto('enter_focus');
             return false;
         }
