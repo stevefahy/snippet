@@ -1081,6 +1081,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.keyListen = function(elem) {
+        console.log('focus change');
         var getKeyCode = function() {
             var editableEl = document.getElementById(elem);
             // lowercase
