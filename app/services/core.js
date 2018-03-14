@@ -957,7 +957,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         console.log(html);
         var sel, range, scroll_latest;
 
-        $timeout(function() {
+        
 
         if (window.getSelection) {
             // IE9 and non-IE
@@ -1022,7 +1022,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         }
         return;
 
-         });
+        
 
     };
 
