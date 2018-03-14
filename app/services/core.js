@@ -321,9 +321,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         if (data.response === 'saved') {
             var new_image = "<img class='resize-drag' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'><span class='scroll_latest' id='delete'>&#x200b</span>";
             console.log(new_image);
-            var active = document.activeElement;
-            console.log(active);
-            active.focus();
+            //var active = document.activeElement;
+            //console.log(active);
+            //active.focus();
 
             $timeout(function() {
                // console.log(savedImageSelection.container);
