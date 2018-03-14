@@ -1640,8 +1640,8 @@ cardApp.directive("contenteditable", function() {
             ngModel.$render = function() {
                 element.html(ngModel.$viewValue || "");
             };
-            //element.bind("blur keyup change", function() {
-            element.bind("keyup change", function() {
+            element.bind("blur keyup change", function() {
+            //element.bind("keyup change", function() {
                 // WARNING added - if (!scope.$$phase) { 31/01/18
                 if (!scope.$$phase) {
                     scope.$apply(read);
