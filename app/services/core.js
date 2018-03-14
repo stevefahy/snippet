@@ -664,7 +664,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             $('#' + id).html($('#' + id).html().replace(/<br>/g, ""));
         }
         $('#' + id).removeAttr('id');
-
+/*
         // Scroll the pasted HTML into view
         var scroll_latest = document.querySelector('.scroll_enter_latest');
         console.log(scroll_latest);
@@ -676,6 +676,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 $('.scroll_enter_latest').removeClass('scroll_enter_latest');
             }, 100);
         }
+        */
         return;
     }
 
@@ -897,7 +898,6 @@ if(word == 'zm'){
                                 self.pasteHtmlAtCaret('IMAGE');
                             }
                         );
-                        
                 }
             }
         }
@@ -970,11 +970,11 @@ if(word == 'zm'){
 
         //savedSelection = saveSelection(document.getElementById(elem));
         //console.log(savedSelection);
-        console.log(savedSelection.container);
+        console.log(savedImageSelection.container);
 
         this.restoreSelection(savedImageSelection.container);
         console.log(savedImageSelection);
-        this.pasteHtmlAtCaret(html);
+        //this.pasteHtmlAtCaret(html);
 
 
     };
@@ -1015,7 +1015,7 @@ if(word == 'zm'){
                     console.log(sel);
                     sel.addRange(range);
                 }
-
+/*
                 $timeout(function() {
                     // Scroll the pasted HTML into view
                     scroll_latest = document.querySelector('.scroll_latest');
@@ -1029,6 +1029,7 @@ if(word == 'zm'){
                         }, 100);
                     }
                 });
+                */
 
 
 
@@ -1677,7 +1678,7 @@ cardApp.directive("contenteditable", function() {
         require: "ngModel",
         link: function(scope, element, attrs, ngModel) {
             function read() {
-                //console.log(element.html());
+                console.log(element.html());
                 ngModel.$setViewValue(element.html());
             }
             ngModel.$render = function() {
