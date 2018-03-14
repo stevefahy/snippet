@@ -508,6 +508,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.getBlur = function(id, card, currentUser) {
+        /*
         console.log('getBlur');
         // Add slight delay so that document.activeElement works
         setTimeout(function() {
@@ -529,6 +530,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 }
             }
         }, 0);
+        */
 
     };
 
