@@ -40,6 +40,7 @@ cardApp.factory('Cards', ['$http', function($http) {
 cardApp.factory('Invites', ['$http', function($http) {
     return {
         create_invite: function(invite_input) {
+            //console.log(invitedata);
             return $http.post('api/invite', invite_input)
                 .then(function(response) {
                     return response;
@@ -94,14 +95,8 @@ cardApp.factory('Conversations', ['$http', function($http) {
                     return response;
                 });
         },
-        updateViewed: function(id, user_id, card_id) {
-            return $http.put('chat/conversation_viewed/' + id + '/' + user_id + '/' + card_id);
-        },
-        clearViewed: function(id, user_id) {
-            return $http.put('chat/conversation_viewed_clear/' + id + '/' + user_id);
-        },
-        removeViewed: function(conv_id, user_id, card_id) {
-            return $http.put('chat/conversation_viewed_remove/' + conv_id + '/' + user_id + '/' + card_id);
+        updateViewed: function(id, user_id, number) {
+            return $http.put('chat/conversation_viewed/' + id + '/' + user_id + '/' + number);
         },
         find_conversation_id: function(id) {
             return $http.get('chat/conversation_id/' + id);
@@ -132,9 +127,6 @@ cardApp.factory('Conversations', ['$http', function($http) {
         },
         updateTime: function(id) {
             return $http.put('chat/conversation_time/' + id);
-        },
-        getConversationById: function(id) {
-            return $http.get('/chat/get_conversation/' + id);
         }
     };
 }]);

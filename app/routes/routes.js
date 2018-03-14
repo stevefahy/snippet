@@ -6,9 +6,7 @@ var formidable = require('formidable');
 var fs = require('fs');
 var path = require('path');
 var mongoose = require('mongoose');
-var Schema = mongoose.Schema,
-    ObjectId = Schema.ObjectId;
-
+var Schema = mongoose.Schema;
 var nodemailer = require('nodemailer');
 var base64url = require('base64url');
 var request = require('request');
@@ -212,7 +210,6 @@ module.exports = function(app, passport) {
             state: stateString
         })(request, response);
     });
-
     // google callback
     app.get('/auth/google/callback',
         passport.authenticate('google', {
@@ -291,7 +288,6 @@ module.exports = function(app, passport) {
             res.json(user);
         }).limit(10);
     });
-
     // Get all contacts
     app.get('/api/contacts/', function(req, res) {
         getContacts(res);
@@ -313,7 +309,6 @@ module.exports = function(app, passport) {
             }
         });
     });
-
     // delete user contact by id
     app.post('/api/users/delete_contact/:id', function(req, res) {
         // get the position of this contact within the contacts array and delete it
@@ -327,7 +322,6 @@ module.exports = function(app, passport) {
             }
         });
     });
-
     // add user contact by id
     app.post('/api/users/add_contact/:id', function(req, res) {
         var id = req.params.id;
@@ -348,17 +342,14 @@ module.exports = function(app, passport) {
             });
         }
     });
-
     // notify user
     app.post('/api/users/send_notification', function(req, res) {
         var options = req.body;
         request(options, function(err, response, body) {
             if (err) {
-                console.log('err: ' + err);
-                //console.log('err code: ' + err.code);
                 throw err;
             } else {
-                res.status(200).send('ok');
+                //console.log(body);
             }
         });
     });
@@ -398,7 +389,6 @@ module.exports = function(app, passport) {
                     data.operation = "create";
                     request(options, function(err, response, body) {
                         if (err) {
-                            console.log('err: ' + err);
                             throw err;
                         } else {
                             var notification_key = body.notification_key;
@@ -505,7 +495,6 @@ module.exports = function(app, passport) {
             }
         });
     });
-
     // search for a card by id
     app.post('/api/cards/search_id/:snip', function(req, res) {
         var snip = req.params.snip;
@@ -516,13 +505,11 @@ module.exports = function(app, passport) {
             res.json(cards);
         });
     });
-
     // get all cards
     app.get('/api/cards/', function(req, res) {
         // use mongoose to get all cards in the database
         getCards(res);
     });
-
     // search all cards by string
     app.post('/api/cards/search/:input', function(req, res) {
         // use mongoose to search all cards in the database
@@ -536,9 +523,10 @@ module.exports = function(app, passport) {
                 res.json(results);
             });
     });
-
     // create card and send back the created card after creation
     app.post('/api/cards', function(req, res) {
+        //console.log('create: ' + req.io);
+        //req.io.emit('some_event',{ my: 'datax' });
         Card.create({
             conversationId: req.body.conversationId,
             content: req.body.content,
@@ -546,7 +534,6 @@ module.exports = function(app, passport) {
             done: false
         }, function(err, card) {
             if (err) {
-                console.log('err: ' + err);
                 res.send(err);
             }
             // return the created card
@@ -677,14 +664,12 @@ module.exports = function(app, passport) {
     app.put('/chat/conversation_time/:id', function(req, res) {
         Conversation.findById({ _id: req.params.id }, function(err, conversation) {
             if (err) {
-                console.log('err: ' + err);
                 res.send(err);
             }
             var new_conversation = new Conversation(conversation);
             new_conversation.updatedAt = new Date().toISOString();
             new_conversation.save(function(err, conversation) {
                 if (err) {
-                    console.log('err: ' + err);
                     res.send(err);
                 } else {
                     res.json(conversation);
@@ -694,68 +679,18 @@ module.exports = function(app, passport) {
 
     });
 
-    // Update the conversation unviewed array for this participant with this card id
-    app.put('/chat/conversation_viewed/:id/:user_id/:card_id', function(req, res) {
+    // Update a conversation viewed number by ocnversation id and user id
+    app.put('/chat/conversation_viewed/:id/:user_id/:number', function(req, res) {
         Conversation.update({ _id: req.params.id, 'participants._id': req.params.user_id }, {
-                '$push': {
-                    'participants.$.unviewed': { '_id': req.params.card_id }
+                '$set': {
+                    'participants.$.viewed': req.params.number
                 }
             },
             function(err, conversation) {
                 if (err) {
-                    console.log('err: ' + err);
                     res.send(err);
                 }
                 res.json(conversation);
-            });
-    });
-
-    // Remove a card id from from this users unviewed array
-    app.put('/chat/conversation_viewed_remove/:id/:user_id/:card_id', function(req, res) {
-        Conversation.findById({ _id: req.params.id }, function(err, conversation) {
-            if (err) {
-                console.log('err: ' + err);
-                return res.send(err);
-            }
-            // Convert the conversation model to JSON so that findWithAttr functions.
-            conversation_temp = conversation.toJSON();
-            // Find this Card Id within All participants unviwed arrays and remove it if found.
-            for (var prop in conversation_temp.participants) {
-                if (conversation_temp.participants.hasOwnProperty(prop)) {
-                    var user_pos = findWithAttr(conversation_temp.participants[prop].unviewed, '_id', req.params.card_id);
-                    if (user_pos >= 0) {
-                        conversation.participants[prop].unviewed.splice(user_pos, 1);
-                    }
-                }
-            }
-            // Update the Conversations updatedAt time.
-            conversation.updatedAt = new Date().toISOString();
-            // Save the updated Conversation to the DB.
-            var updated_conversation = new Conversation(conversation);
-            updated_conversation.save(function(err, conversation) {
-                if (err) {
-                    console.log('err: ' + err);
-                    res.send(err);
-                } else {
-                    res.send(conversation);
-                }
-            });
-        });
-    });
-
-    // clear a conversation unviewed array by conversation id and user id
-    app.put('/chat/conversation_viewed_clear/:id/:user_id/', function(req, res) {
-        Conversation.update({ _id: req.params.id, 'participants._id': req.params.user_id }, {
-                '$set': {
-                    'participants.$.unviewed': []
-                }
-            },
-            function(err, conversation) {
-                if (err) {
-                    console.log('err: ' + err);
-                    res.send(err);
-                }
-                return res.status(201).end("created");
             });
     });
 
@@ -821,7 +756,9 @@ module.exports = function(app, passport) {
                         }
                         res.json(cards);
                     });
+
                 });
+
             }
         });
     });
