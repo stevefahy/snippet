@@ -322,6 +322,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             var new_image = "<img class='resize-drag' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'><span class='scroll_latest' id='delete'>&#x200b</span>";
             console.log(new_image);
             self.pasteHtmlAtCaret(new_image);
+
+            //self.pasteImage(new_image);
             // commented out because it causes an issue with onblur which is used to update card.
             /*
             // remove zero width space above image if it exists 
@@ -418,7 +420,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     prepareImage(files);
                 }
                 // reset the input value to null so that files of the same name can be uploaded.
-                 this.value = null;
+                this.value = null;
             });
             // MS Edge only
             if (ua.toLowerCase().indexOf('edge') > -1) {
@@ -662,7 +664,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             $('#' + id).html($('#' + id).html().replace(/<br>/g, ""));
         }
         $('#' + id).removeAttr('id');
-        
+
         // Scroll the pasted HTML into view
         var scroll_latest = document.querySelector('.scroll_enter_latest');
         console.log(scroll_latest);
@@ -877,14 +879,25 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     }
                     // Use timeout to fix bug on Galaxy S6 (Chrome, FF, Canary)
                     // Timeout causing bug on Web MS Edge. Removed and changed paste from '' to '&#x200b'
+                    /*
+                            console.log('word: ' + word);
+if(word == 'zm'){
+        console.log('image upload fired zm');
+        savedImageSelection = this.saveSelection(document.getElementById(element));
+        console.log('saved');
+        console.log(savedImageSelection);
+        }
+        */
                     $timeout(function() {
                             self.selectText(elem, currentChars);
                         }, 0)
                         .then(
                             function() {
-                                self.pasteHtmlAtCaret('&#x200b');
+                                //self.pasteHtmlAtCaret('&#x200b');
+                                self.pasteHtmlAtCaret('IMAGE');
                             }
                         );
+                        
                 }
             }
         }
@@ -949,7 +962,21 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 selection.addRange(range);
             }
         }
+
         return;
+    };
+
+    this.pasteImage = function(html) {
+
+        //savedSelection = saveSelection(document.getElementById(elem));
+        //console.log(savedSelection);
+        console.log(savedSelection.container);
+
+        this.restoreSelection(savedImageSelection.container);
+        console.log(savedImageSelection);
+        this.pasteHtmlAtCaret(html);
+
+
     };
 
     this.pasteHtmlAtCaret = function(html) {
@@ -957,7 +984,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         console.log(html);
         var sel, range, scroll_latest;
 
-        
+
 
         if (window.getSelection) {
             // IE9 and non-IE
@@ -988,7 +1015,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     console.log(sel);
                     sel.addRange(range);
                 }
-                
+
                 $timeout(function() {
                     // Scroll the pasted HTML into view
                     scroll_latest = document.querySelector('.scroll_latest');
@@ -1002,7 +1029,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                         }, 100);
                     }
                 });
-             
+
 
 
             }
@@ -1022,11 +1049,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         }
         return;
 
-        
+
 
     };
 
-    saveSelection = function(containerEl) {
+    this.saveSelection = function(containerEl) {
+        console.log('saveSelection');
         var start;
         if (window.getSelection && document.createRange) {
             var range = window.getSelection().getRangeAt(0);
@@ -1035,6 +1063,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             preSelectionRange.setEnd(range.startContainer, range.startOffset);
             start = preSelectionRange.toString().length;
             return {
+                container: containerEl,
                 start: start,
                 end: start + range.toString().length
             };
@@ -1045,6 +1074,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             preSelectionTextRange.setEndPoint("EndToStart", selectedTextRange);
             start = preSelectionTextRange.text.length;
             return {
+                container: containerEl,
                 start: start,
                 end: start + selectedTextRange.text.length
             };
@@ -1053,6 +1083,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     this.restoreSelection = function(containerEl) {
         savedSel = savedSelection;
+        //containerEl = savedSel.container;
         console.log('restoreSelection: ' + savedSel);
         if (window.getSelection && document.createRange) {
             var charIndex = 0,
@@ -1096,8 +1127,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     this.keyListen = function(elem) {
         //console.log('focus change');
-        savedSelection = saveSelection(document.getElementById(elem));
-        console.log(savedSelection);
+        //savedSelection = saveSelection(document.getElementById(elem));
+        //console.log(savedSelection);
 
         var getKeyCode = function() {
             var editableEl = document.getElementById(elem);
@@ -1139,7 +1170,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     this.checkCursor = function($event, elem) {
         // Store current caret pos
-        savedSelection = saveSelection(document.getElementById(elem));
+        savedSelection = self.saveSelection(document.getElementById(elem));
         console.log('savedSelection: ' + savedSelection);
     };
 
@@ -1646,17 +1677,17 @@ cardApp.directive("contenteditable", function() {
         require: "ngModel",
         link: function(scope, element, attrs, ngModel) {
             function read() {
-                console.log(element.html());
+                //console.log(element.html());
                 ngModel.$setViewValue(element.html());
             }
             ngModel.$render = function() {
                 element.html(ngModel.$viewValue || "");
             };
             element.bind("blur keyup change", function(event) {
-            //element.bind("keyup change", function() {
+                //element.bind("keyup change", function() {
                 // WARNING added - if (!scope.$$phase) { 31/01/18
-                    console.log(event);
-                    console.log(event.target.innerHTML);
+                //console.log(event);
+                // console.log(event.target.innerHTML);
                 if (!scope.$$phase) {
                     scope.$apply(read);
                 }
