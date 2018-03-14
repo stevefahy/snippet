@@ -321,7 +321,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         if (data.response === 'saved') {
             var new_image = "<img class='resize-drag' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'><span class='scroll_latest' id='delete'>&#x200b</span>";
             console.log(new_image);
+            var active = document.activeElement;
+            console.log(active);
+            active.focus();
+            $timeout(function() {
             self.pasteHtmlAtCaret(new_image);
+        },2000);
 
             //self.pasteImage(new_image);
             // commented out because it causes an issue with onblur which is used to update card.
