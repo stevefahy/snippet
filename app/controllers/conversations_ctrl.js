@@ -6,7 +6,7 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
 
         // array of conversations
         $scope.conversations = [];
-
+        //
         $scope.chat_create = {
             conversation_name: '',
             participants: []

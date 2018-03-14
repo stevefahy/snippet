@@ -41,6 +41,7 @@ function getConversationId(id) {
 
 // route middleware to ensure user is logged in
 function isLoggedIn(req, res, next) {
+    console.log('req.isAuthenticated(): ' + req.isAuthenticated());
     if (req.isAuthenticated()) {
         return next();
     } else {
@@ -303,6 +304,8 @@ module.exports = function(app, passport) {
         var id = req.params.id;
         //console.log(id);
         User.findById({ '_id': id }, function(error, user) {
+            //console.log('error id: ' + error);
+            //console.log('user: ' + user);
             if (error) {
                 res.json(error);
             } else if (user === null) {
@@ -356,6 +359,7 @@ module.exports = function(app, passport) {
         request(options, function(err, response, body) {
             if (err) {
                 console.log('err: ' + err);
+                //console.log('err code: ' + err.code);
                 throw err;
             } else {
                 res.status(200).send('ok');

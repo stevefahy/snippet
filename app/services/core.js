@@ -70,7 +70,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     var focused_id;
     var focused_card;
     var focused_user;
-    var savedSelection;
 
     $window.androidToJS = this.androidToJS;
     $window.androidTokenRefresh = this.androidTokenRefresh;
@@ -308,7 +307,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     // Added for update. Ensures focus is called after an image is inserted.
     imageLoaded = function() {
-        console.log('img loade');
         var active_el = document.activeElement;
         var new_image = document.getElementById('new_image');
         $(new_image).removeAttr('onload id');
@@ -317,25 +315,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     insertImage = function(data) {
-        console.log(data);
         if (data.response === 'saved') {
-            var new_image = "<img class='resize-drag' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'><span class='scroll_latest' id='delete'>&#x200b</span>";
-            console.log(new_image);
-            var active = document.activeElement;
-            console.log(active);
-            active.focus();
+            var new_image = "<img class='resize-drag' id='new_image' onload='imageLoaded()' src='" + IMAGES_URL + data.file + "'><span id='delete'>&#x200b</span>";
 
-            $timeout(function() {
-               // console.log(savedImageSelection.container);
-               // self.restoreSelection(savedImageSelection.container);
-               // console.log(savedImageSelection);
-            }, 2000);
 
-            $timeout(function() {
-                self.pasteHtmlAtCaret(new_image);
-            }, 4000);
-
-            //self.pasteImage(new_image);
+            self.pasteHtmlAtCaret(new_image);
             // commented out because it causes an issue with onblur which is used to update card.
             /*
             // remove zero width space above image if it exists 
@@ -345,6 +329,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             var new_text = old_text.replace(/\u200B/g, '');
             new_text += "<span id='delete_image'>&#x200b</span>";
             $window.document.getElementById("cecard_create").innerHTML = new_text;
+
             moveCaretInto('delete_image');
             */
             //scrollToBottom(1000);
@@ -420,7 +405,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         if (ua === 'AndroidApp') {
             Android.choosePhoto();
         } else {
-            console.log('uploadFile');
             // All browsers except MS Edge
             if (ua.toLowerCase().indexOf('edge') == -1) {
                 uploadClickListen();
@@ -428,11 +412,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             $('#upload-input').on('change', function() {
                 var files = $(this).get(0).files;
                 if (files.length > 0) {
-                    console.log('prep: ' + files);
                     prepareImage(files);
                 }
-                // reset the input value to null so that files of the same name can be uploaded.
-                this.value = null;
             });
             // MS Edge only
             if (ua.toLowerCase().indexOf('edge') > -1) {
@@ -495,7 +476,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     checkUpdate = function() {
         if (ua == 'AndroidApp') {
-            console.log(focused_id);
             if (focused_id != undefined) {
                 self.getBlurAndroid(focused_id, focused_card, focused_user);
             }
@@ -505,14 +485,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     // Called by Android onPause
     // Update the card.
     this.getBlurAndroid = function(id, card, currentUser) {
-        console.log('getBlur Android');
         if (id != undefined && card != undefined && currentUser != undefined) {
             // Check if there is a marky in progress
             // zm launching image capture should not trigger an update. It causes error.
             found_marky = findMarky(card.content);
             // check the content has changed and not currently mid marky
             if (card.content != card.original_content && (found_marky == false)) {
-                console.log('getBlur Android update');
                 // Inject the Database Service
                 var Database = $injector.get('Database');
                 // Update the card
@@ -522,7 +500,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.getBlur = function(id, card, currentUser) {
-        console.log('getBlur');
         // Add slight delay so that document.activeElement works
         setTimeout(function() {
             // Get the element currently in focus
@@ -534,7 +511,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 found_marky = findMarky(card.content);
                 // check the content has changed and not currently mid marky
                 if (card.content != card.original_content && (found_marky == false)) {
-                    console.log('getBlur update');
                     // Update the card
                     // Inject the Database Service
                     var Database = $injector.get('Database');
@@ -559,6 +535,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     // TODO Check if this is still required.
     this.setMediaSize = function(id, card) {
+        //var content = document.getElementById('ce' + id);
+        //return content.innerHTML;
         return card.content;
     };
 
@@ -675,20 +653,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         if (ua.toLowerCase().indexOf('firefox') > -1) {
             $('#' + id).html($('#' + id).html().replace(/<br>/g, ""));
         }
+
         $('#' + id).removeAttr('id');
-        /*
-                // Scroll the pasted HTML into view
-                var scroll_latest = document.querySelector('.scroll_enter_latest');
-                console.log(scroll_latest);
-                if (scroll_latest != null) {
-                    scroll_latest.scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
-                    // remove scroll_latest after scrolling
-                    $timeout(function() {
-                        // Remove all .scroll_latest classes
-                        $('.scroll_enter_latest').removeClass('scroll_enter_latest');
-                    }, 100);
-                }
-                */
         return;
     }
 
@@ -772,7 +738,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             if (marky_html_index !== -1) {
                 var marky_html = marky_array[marky_html_index].html;
                 if (marky_html != 'pre') {
-                    var new_tag = '<' + marky_html + ' class="scroll_latest" id="focus">&#x200b</' + marky_html + '>';
+                    var new_tag = '<' + marky_html + ' id="focus">&#x200b</' + marky_html + '>';
                     if (loop_count > 0) {
                         var pos = complete_tag.indexOf('&#x200b');
                         complete_tag = complete_tag.slice(0, pos) + new_tag + complete_tag.slice(pos + 7, complete_tag.length);
@@ -822,9 +788,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                         }
                         var updateChars;
                         if (marky_array[ma].span_start != undefined) {
-                            updateChars = currentChars.replace(char_watch, marky_array[ma].span_start + "<" + marky_array[ma].html + " " + marky_array[ma].attribute + " class='scroll_latest' id='marky'>" + marky_array[ma].span_end);
+                            updateChars = currentChars.replace(char_watch, marky_array[ma].span_start + "<" + marky_array[ma].html + " " + marky_array[ma].attribute + " id='marky'>" + marky_array[ma].span_end);
                         } else {
-                            updateChars = currentChars.replace(char_watch, "<" + marky_array[ma].html + " " + marky_array[ma].attribute + " class='scroll_latest' id='marky'>");
+                            updateChars = currentChars.replace(char_watch, "<" + marky_array[ma].html + " " + marky_array[ma].attribute + " id='marky'>");
                         }
                         if (close_tag) {
                             updateChars += "</" + marky_array[ma].html + ">";
@@ -892,43 +858,22 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     }
                     // Use timeout to fix bug on Galaxy S6 (Chrome, FF, Canary)
                     // Timeout causing bug on Web MS Edge. Removed and changed paste from '' to '&#x200b'
-                    /*
-                            console.log('word: ' + word);
-if(word == 'zm'){
-        console.log('image upload fired zm');
-        savedImageSelection = this.saveSelection(document.getElementById(element));
-        console.log('saved');
-        console.log(savedImageSelection);
-        }
-        */
                     $timeout(function() {
                             self.selectText(elem, currentChars);
                         }, 0)
                         .then(
                             function() {
-                                //self.pasteHtmlAtCaret('&#x200b');
-                                self.pasteHtmlAtCaret('IMAGE');
+                                //return $timeout(function() {
+                                self.pasteHtmlAtCaret('&#x200b');
+                                //}, 0);
                             }
-                        ).then(
-function() {
-                            return $timeout(function() {
-                                 savedImageSelection = self.saveSelection(document.getElementById(elem));
-                                    console.log('saved');
-                                    console.log(savedImageSelection);
-                            }, 1000);
-                        }
-                            /*
-                                function() {
-                                    savedImageSelection = self.saveSelection(document.getElementById(elem));
-                                    console.log('saved');
-                                    console.log(savedImageSelection);
-                                }
-                                */
                         );
                 }
             }
         }
     };
+
+
 
     function getCharacterPrecedingCaret(containerEl) {
         var precedingChar = "",
@@ -952,7 +897,13 @@ function() {
     }
 
     this.contentChanged = function(content, elem) {
+
         if (!self.paste_in_progress) {
+
+
+
+
+
             if (within_pre == false) {
                 // MARKY
                 self.markyCheck(content, elem, false);
@@ -989,34 +940,14 @@ function() {
                 selection.addRange(range);
             }
         }
-
         return;
     };
 
-    this.pasteImage = function(html) {
-
-        //savedSelection = saveSelection(document.getElementById(elem));
-        //console.log(savedSelection);
-        console.log(savedImageSelection.container);
-
-        this.restoreSelection(savedImageSelection.container);
-        console.log(savedImageSelection);
-        //this.pasteHtmlAtCaret(html);
-
-
-    };
-
     this.pasteHtmlAtCaret = function(html) {
-
-        console.log(html);
-        var sel, range, scroll_latest;
-
-
-
+        var sel, range;
         if (window.getSelection) {
             // IE9 and non-IE
             sel = window.getSelection();
-            console.log(sel);
             if (sel.getRangeAt && sel.rangeCount) {
                 range = sel.getRangeAt(0);
                 range.deleteContents();
@@ -1039,50 +970,71 @@ function() {
                     }
                     range.collapse(true);
                     sel.removeAllRanges();
-                    console.log(sel);
                     sel.addRange(range);
                 }
-                /*
-                                $timeout(function() {
-                                    // Scroll the pasted HTML into view
-                                    scroll_latest = document.querySelector('.scroll_latest');
-                                    console.log(scroll_latest);
-                                    if (scroll_latest != null) {
-                                        scroll_latest.scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
-                                        // remove scroll_latest after scrolling
-                                        $timeout(function() {
-                                            // Remove all .scroll_latest classes
-                                            $('.scroll_latest').removeClass('scroll_latest');
-                                        }, 100);
-                                    }
-                                });
-                                */
-
-
-
             }
         } else if (document.selection && document.selection.type != "Control") {
             // IE < 9
             document.selection.createRange().pasteHTML(html);
-            // Scroll the pasted HTML into view
-            scroll_latest = document.querySelector('.scroll_latest');
-            if (scroll_latest != null) {
-                scroll_latest.scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
-                // remove scroll_latest after scrolling
-                $timeout(function() {
-                    // Remove all .scroll_latest classes
-                    $('.scroll_latest').removeClass('scroll_latest');
-                }, 100);
-            }
         }
         return;
+    };
+    /*
+    this.restoreCaret = function(elem) {
+        console.log('restoreCaret: ' + elem);
+        $("#" + elem).focus();
+        var node = document.querySelector('#cecard_create');
+        //console.log(node);
+        //var node = $("#" + id).get(0);
+        //range = document.createRange();
+        //range.setStart(node.firstChild, 1);
 
 
-
+        node.focus();
+        var textNode;
+        if (node.firstChild) {
+            textNode = node.firstChild;
+        } else {
+            textNode = node;
+        }
+        var caret = caretpos;
+        var range = document.createRange();
+        console.log(range);
+        range.setStart(textNode, caret);
+        range.setEnd(textNode, caret);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
     };
 
-    this.saveSelection = function(containerEl) {
-        console.log('saveSelection');
+    function getCaretCharacterOffsetWithin(element) {
+        var caretOffset = 0;
+        var doc = element.ownerDocument || element.document;
+        var win = doc.defaultView || doc.parentWindow;
+        var sel;
+        if (typeof win.getSelection != "undefined") {
+            sel = win.getSelection();
+            if (sel.rangeCount > 0) {
+                var range = win.getSelection().getRangeAt(0);
+                var preCaretRange = range.cloneRange();
+                preCaretRange.selectNodeContents(element);
+                preCaretRange.setEnd(range.endContainer, range.endOffset);
+                caretOffset = preCaretRange.toString().length;
+            }
+        } else if ((sel = doc.selection) && sel.type != "Control") {
+            var textRange = sel.createRange();
+            var preCaretTextRange = doc.body.createTextRange();
+            preCaretTextRange.moveToElementText(element);
+            preCaretTextRange.setEndPoint("EndToEnd", textRange);
+            caretOffset = preCaretTextRange.text.length;
+        }
+        return caretOffset;
+    }
+    */
+    var savedSelection;
+    //var saveSelection, restoreSelection;
+
+    saveSelection = function(containerEl) {
         var start;
         if (window.getSelection && document.createRange) {
             var range = window.getSelection().getRangeAt(0);
@@ -1091,7 +1043,6 @@ function() {
             preSelectionRange.setEnd(range.startContainer, range.startOffset);
             start = preSelectionRange.toString().length;
             return {
-                container: containerEl,
                 start: start,
                 end: start + range.toString().length
             };
@@ -1102,7 +1053,6 @@ function() {
             preSelectionTextRange.setEndPoint("EndToStart", selectedTextRange);
             start = preSelectionTextRange.text.length;
             return {
-                container: containerEl,
                 start: start,
                 end: start + selectedTextRange.text.length
             };
@@ -1111,8 +1061,6 @@ function() {
 
     this.restoreSelection = function(containerEl) {
         savedSel = savedSelection;
-        //containerEl = savedSel.container;
-        console.log('restoreSelection: ' + savedSel);
         if (window.getSelection && document.createRange) {
             var charIndex = 0,
                 range = document.createRange();
@@ -1152,12 +1100,16 @@ function() {
             textRange.select();
         }
     };
+/*
+    this.showCaretPos = function(elem) {
+        savedSelection = saveSelection(document.getElementById(elem));
+        console.log('savedSelection: ' + savedSelection);
+
+    };
+    */
 
     this.keyListen = function(elem) {
-        //console.log('focus change');
-        //savedSelection = saveSelection(document.getElementById(elem));
-        //console.log(savedSelection);
-
+        //self.showCaretPos(elem);
         var getKeyCode = function() {
             var editableEl = document.getElementById(elem);
             // lowercase
@@ -1198,19 +1150,20 @@ function() {
 
     this.checkCursor = function($event, elem) {
         // Store current caret pos
-        savedSelection = self.saveSelection(document.getElementById(elem));
-        console.log('savedSelection: ' + savedSelection);
+        console.log("checkCursor: " + elem);
+        //self.showCaretPos(elem);
+        savedSelection = saveSelection(document.getElementById(elem));
     };
 
     this.checkKey = function($event, elem) {
         // Stop the default behavior for the ENTER key and insert <br><br> instead
         if ($event.keyCode == 13) {
             $event.preventDefault();
-            self.pasteHtmlAtCaret("<br><span class='scroll_enter_latest' id='enter_focus'></span>");
-            //self.pasteHtmlAtCaret("<br><span id='enter_focus'></span>");
+            self.pasteHtmlAtCaret("<br><span id='enter_focus'></span>");
             moveCaretInto('enter_focus');
             return false;
         }
+
     };
 
     this.handlePaste = function($event) {
@@ -1296,7 +1249,6 @@ cardApp.service('replaceTags', function() {
     };
 
     this.removeFocusIds = function(str) {
-        console.log('removefocids');
         str = $("<div>" + str + "</div>");
         $('span#focus', str).each(function(e) {
             $(this).replaceWith($(this).html());
@@ -1342,11 +1294,40 @@ cardApp.service('Edit', function() {
 });
 
 cardApp.service('FormatHTML', ['Format', function(Format) {
+    /*
+        this.removeEmptyTags = function(html) {
+            //(<(?!\/)[^>]+>)+(<\/[^>]+>)+
+            var cleaned = /(<pre.*?>)(.*?)(<\/pre>)/ig;
+        };
+        */
+
+    /*
+        this.removeAllTags = function(content) {
+            console.log('before: ' + content);
+
+            // var txt = document.getElementById('myString').value;
+            var reg_empty = /(<([^>]+)>)/ig;
+            var empty_tags = content.match(reg_empty);
+            console.log(empty_tags);
+            // content.replace(rex , "");
+            for (var i in empty_tags) {
+                //empty_tags[i].replace();
+                content = content.replace(empty_tags[i], "");
+            }
+
+            console.log('after: ' + content);
+            return content;
+        };
+        */
+
 
     this.stripHtml = function(html) {
         var div = document.createElement("div");
         div.innerHTML = html;
+        //var text = div.textContent || div.innerText || "";
         var text = div.textContent || div.innerText || "";
+        console.log('text: ' + text);
+        console.log('text length: ' + text.length);
         return text;
     };
 
@@ -1373,6 +1354,7 @@ cardApp.service('FormatHTML', ['Format', function(Format) {
         var count = 0;
         var counting = true;
         for (var i = 0; i <= temp_content.length; i++) {
+
             if (counting && temp_content[i] == '<') {
                 counting = false;
             }
@@ -1502,8 +1484,9 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
                 card.content = Format.setMediaSize(card_id, card);
                 card.content = replaceTags.replace(card.content);
-                //card.content = replaceTags.removeDeleteId(card.content);
-                //card.content = replaceTags.removeFocusIds(card.content);
+                //card.content = Format.removeDeleteIds(); // returns empty sring here
+                card.content = replaceTags.removeDeleteId(card.content);
+                card.content = replaceTags.removeFocusIds(card.content);
 
                 var sent_content;
                 var notification_title;
@@ -1520,10 +1503,13 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                         // Update the Conversation updateAt time.
                         Conversations.updateTime(card.conversationId)
                             .then(function(response) {
+
                                 var notification = self.setNotification(response.data, currentUser, card_content);
                                 notification_title = notification.title;
                                 notification_body = notification.body;
+
                                 sent_content = FormatHTML.prepSentContent(notification_body, sent_content_length);
+
                                 // Send notifications
                                 for (var i in response.data.participants) {
                                     // dont emit to the user which sent the card
@@ -1575,14 +1561,18 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
     // CREATE CARD
     this.createCard = function(id, card_create, currentUser) {
+
         var promises = [];
+
         card_create.user = currentUser.google.name;
         // Get the Conversation in which this card is being created.
         var current_conversation_id = Conversations.getConversationId();
         card_create.conversationId = current_conversation_id;
+
         card_create.content = Format.setMediaSize(id, card_create);
         card_create.content = replaceTags.replace(card_create.content);
         card_create.content = Format.removeDeleteIds();
+
         card_create.content = replaceTags.removeDeleteId(card_create.content);
         card_create.content = replaceTags.removeFocusIds(card_create.content);
 
@@ -1593,6 +1583,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
         Cards.create(card_create)
             .then(function(response) {
+
                 var card_id = response.data._id;
                 var card_response = response.data;
                 // notify conversation_ctrl and cardcreate_ctrl that the conversation has been updated
@@ -1602,10 +1593,13 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 // Update the Conversation updateAt time.
                 Conversations.updateTime(current_conversation_id)
                     .then(function(response) {
+
                         var notification = self.setNotification(response.data, currentUser, card_content);
                         notification_title = notification.title;
                         notification_body = notification.body;
+
                         sent_content = FormatHTML.prepSentContent(notification_body, sent_content_length);
+
                         // Send notifications
                         for (var i in response.data.participants) {
                             // dont emit to the user which sent the card
@@ -1651,10 +1645,12 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
     // DELETE CARD
     this.deleteCard = function(card_id, conversation_id, currentUser) {
+
         var sent_content;
         var notification_title;
         var notification_body;
         var card_content = 'Post deleted.';
+
         Cards.delete(card_id)
             .then(function(response) {
                 // notify conversation_ctrl that the card has been deleted
@@ -1666,6 +1662,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                         notification_title = notification.title;
                         notification_body = notification.body;
                         sent_content = FormatHTML.prepSentContent(notification_body, sent_content_length);
+
                         // Send notifications
                         for (var i in response.data.participants) {
                             // dont emit to the user which sent the card
@@ -1705,17 +1702,13 @@ cardApp.directive("contenteditable", function() {
         require: "ngModel",
         link: function(scope, element, attrs, ngModel) {
             function read() {
-                console.log(element.html());
                 ngModel.$setViewValue(element.html());
             }
             ngModel.$render = function() {
                 element.html(ngModel.$viewValue || "");
             };
-            element.bind("blur keyup change", function(event) {
-                //element.bind("keyup change", function() {
+            element.bind("blur keyup change", function() {
                 // WARNING added - if (!scope.$$phase) { 31/01/18
-                //console.log(event);
-                // console.log(event.target.innerHTML);
                 if (!scope.$$phase) {
                     scope.$apply(read);
                 }

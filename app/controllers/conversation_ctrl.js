@@ -12,21 +12,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         $scope.uploadFile = Format.uploadFile;
         $scope.myFunction = Edit.myFunction;
         $scope.dropDownToggle = Edit.dropDownToggle;
-        $scope.pasteHtmlAtCaret = Format.pasteHtmlAtCaret;
 
         $scope.isMember = false;
 
     };
-
-    // TODO - change to global?
-    $http.get("/api/user_data").then(function(result) {
-        if (result.data.user) {
-            $scope.currentUserName = result.data.user.google.name;
-            $scope.currentUser = result.data.user;
-        }
-        // Start watching onfocus and onblur, then load the conversation for the first time.
-        watchFocus();
-    });
 
     // Detect device user agent 
     var ua = navigator.userAgent;
@@ -159,37 +148,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     }
 
     hideFooter = function() {
-        console.log('hide');
-        var focused = document.activeElement;
-        if (focused.id != 'cecard_create') {
-            $('.create_container').hide();
-        }
-        $('.footer').hide();
-        $('#placeholderDiv').css('bottom', '-1px');
-        if (focused.id == 'cecard_create') {
-            // TODO enter is a pasteHTML. need to add scroll into view for android
-            // Paste div so that scrollintoview works on Android
-            $scope.pasteHtmlAtCaret("<div class='scroll_latest_footer' id='scroll_latest_footer'></div>");
-            console.log(document.getElementById('scroll_latest_footer'));
-            document.getElementById('scroll_latest_footer').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
-            // remove scroll_latest after scrolling
-            $timeout(function() {
-                $(".scroll_latest_footer").remove();
-            }, 100);
-        }
+        $('.footer').animate({ height: 0 }, 0);
     };
 
-
     showFooter = function() {
-        console.log('show');
-        $('.footer').show();
-        $('.create_container').show();
-        $('#placeholderDiv').css('bottom', '49px');
+        $('.footer').animate({ height: 50 }, 0);
     };
 
     setFocus = function() {
         $timeout(function() {
-            console.log('conv');
             findConversationId(function(result) {
                 $rootScope.$broadcast('CONV_CHECK');
             });
@@ -201,12 +168,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         // only check focus on web version
         if (ua !== 'AndroidApp') {
             $window.onfocus = function() {
+                //console.log('focus');
                 this.setFocus();
             };
             $window.onblur = function() {
                 //console.log('blur');
             };
-            console.log('win');
             $window.focus();
             setFocus();
         } else {
@@ -277,6 +244,20 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     };
 
+    //
+    // Get initial data
+    //
+
+    // Get the logged in user's data.
+    $http.get("/api/user_data").then(function(result) {
+        if (result.data.user) {
+            $scope.currentUserName = result.data.user.google.name;
+            $scope.currentUser = result.data.user;
+        }
+        // Start watching onfocus and onblur, then load the conversation for the first time.
+        watchFocus();
+    });
+
     // Find the conversation id.
     findConversationId = function(callback) {
         // Use the id from $routeParams.id if it exists. 
@@ -299,6 +280,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                 $scope.isMember = result;
                                 getConversation(id, 500);
                             });
+
                         }
                     });
             }
@@ -358,6 +340,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     key.original_content = key.content;
                     // Get the user name for the user id
                     // TODO dont repeat if user id already retreived
+                    //key.user = 'fdgfg';
                     Users.search_id(key.user)
                         .then(function(res) {
                             if (res.data.error === 'null') {

@@ -4,7 +4,6 @@ cardApp.controller("footerCtrl", ['$scope', 'Cards', '$rootScope', '$location', 
         $scope.showDiv = false;
     };
 
-    // TODO - change to global?
     $http.get("/api/user_data").then(function(result) {
         if (result.data.user) {
             $scope.currentUser = result.data.user;
