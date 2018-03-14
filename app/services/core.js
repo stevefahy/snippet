@@ -1022,7 +1022,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         }
         return;
 
-         },0);
+         });
 
     };
 
