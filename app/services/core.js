@@ -659,7 +659,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             $('#' + id).html($('#' + id).html().replace(/<br>/g, ""));
         }
         $('#' + id).removeAttr('id');
-        /*
+        
         // Scroll the pasted HTML into view
         var scroll_latest = document.querySelector('.scroll_enter_latest');
         console.log(scroll_latest);
@@ -670,7 +670,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 // Remove all .scroll_latest classes
                 $('.scroll_enter_latest').removeClass('scroll_enter_latest');
             }, 100);
-        }*/
+        }
         return;
     }
 
@@ -1131,8 +1131,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         // Stop the default behavior for the ENTER key and insert <br><br> instead
         if ($event.keyCode == 13) {
             $event.preventDefault();
-            //self.pasteHtmlAtCaret("<br><span class='scroll_enter_latest' id='enter_focus'></span>");
-            self.pasteHtmlAtCaret("<br><span id='enter_focus'></span>");
+            self.pasteHtmlAtCaret("<br><span class='scroll_enter_latest' id='enter_focus'></span>");
+            //self.pasteHtmlAtCaret("<br><span id='enter_focus'></span>");
             moveCaretInto('enter_focus');
             return false;
         }
