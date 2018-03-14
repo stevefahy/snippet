@@ -982,6 +982,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     }
                     range.collapse(true);
                     sel.removeAllRanges();
+                    console.log(sel);
                     sel.addRange(range);
                 }
                 
