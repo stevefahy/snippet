@@ -1639,14 +1639,16 @@ cardApp.directive("contenteditable", function() {
         require: "ngModel",
         link: function(scope, element, attrs, ngModel) {
             function read() {
+                console.log(element.html());
                 ngModel.$setViewValue(element.html());
             }
             ngModel.$render = function() {
                 element.html(ngModel.$viewValue || "");
             };
-            element.bind("blur keyup change", function() {
+            element.bind("blur keyup change", function(event) {
             //element.bind("keyup change", function() {
                 // WARNING added - if (!scope.$$phase) { 31/01/18
+                    console.log(event);
                 if (!scope.$$phase) {
                     scope.$apply(read);
                 }
