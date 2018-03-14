@@ -326,9 +326,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             //active.focus();
 
             $timeout(function() {
-               // console.log(savedImageSelection.container);
-               self.restoreSelection(savedImageSelection.container);
-               // console.log(savedImageSelection);
+                // console.log(savedImageSelection.container);
+                self.restoreSelection(savedImageSelection.container);
+                // console.log(savedImageSelection);
             }, 2000);
 
             $timeout(function() {
@@ -416,11 +416,32 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         $('#upload-input').unbind();
     };
 
-    this.uploadFile = function() {
+    this.saveCard = function(id, card, currentUser) {
+        //var active = document.activeElement;
+        //var id = active.id;
+        //var card = active.innerHTML;
+        // check the content has changed and not currently mid marky
+        console.log(card.content + ' != ' + card.original_content);
+        if (card.content != card.original_content) {
+            console.log('save card');
+            // Update the card
+            // Inject the Database Service
+            var Database = $injector.get('Database');
+            // Update the card
+            Database.updateCard(id, card, currentUser);
+        }
+    };
+
+    this.uploadFile = function(id, card, currentUser) {
+        console.log(id);
         if (ua === 'AndroidApp') {
+            // save first
+            self.saveCard(id,card,currentUser);
+
             Android.choosePhoto();
         } else {
             console.log('uploadFile');
+            self.saveCard(id, card, currentUser);
             // All browsers except MS Edge
             if (ua.toLowerCase().indexOf('edge') == -1) {
                 uploadClickListen();
@@ -887,8 +908,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     // TODO Fix so that the actual script which is passed is called     
                     //console.log(marky_array[ma].script);
                     //this.uploadFileAndroid('file');
+                    console.log('elem: ' + elem);
                     if (marky_array[ma].script === 'getImage') {
-                        $('#upload-trigger').trigger('click');
+                        $('#upload-trigger'+elem).trigger('click');
                     }
                     // Use timeout to fix bug on Galaxy S6 (Chrome, FF, Canary)
                     // Timeout causing bug on Web MS Edge. Removed and changed paste from '' to '&#x200b'
@@ -910,13 +932,13 @@ if(word == 'zm'){
                                 self.pasteHtmlAtCaret('IMAGE');
                             }
                         ).then(
-function() {
-                            return $timeout(function() {
-                                 savedImageSelection = self.saveSelection(document.getElementById(elem));
+                            function() {
+                                return $timeout(function() {
+                                    savedImageSelection = self.saveSelection(document.getElementById(elem));
                                     console.log('saved');
                                     console.log(savedImageSelection);
-                            }, 1000);
-                        }
+                                }, 1000);
+                            }
                             /*
                                 function() {
                                     savedImageSelection = self.saveSelection(document.getElementById(elem));
