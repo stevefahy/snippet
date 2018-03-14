@@ -1045,6 +1045,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     this.restoreSelection = function(containerEl) {
         savedSel = savedSelection;
+        console.log('restoreSelection: ' + savedSel);
         if (window.getSelection && document.createRange) {
             var charIndex = 0,
                 range = document.createRange();
@@ -1128,6 +1129,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     this.checkCursor = function($event, elem) {
         // Store current caret pos
         savedSelection = saveSelection(document.getElementById(elem));
+        console.log('savedSelection: ' + savedSelection);
     };
 
     this.checkKey = function($event, elem) {
