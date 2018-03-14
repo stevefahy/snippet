@@ -1,7 +1,5 @@
 cardApp.controller("cardCtrl", ['$scope', 'Cards', 'Conversations', 'Users', 'replaceTags', '$rootScope', '$http', 'Format', 'Edit', '$window', '$routeParams', '$location', 'socket', function($scope, Cards, Conversations, Users, replaceTags, $rootScope, $http, Format, Edit, $window, $routeParams, $location, socket) {
 
-    // TODO - Still needed?
-
     $scope.getFocus = Format.getFocus;
     $scope.contentChanged = Format.contentChanged;
     $scope.checkKey = Format.checkKey;
@@ -33,42 +31,34 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'Conversations', 'Users', 're
                 // TODO dont repeat if user id already retreived
                 $scope.cards.map(function(key, array) {
                     Users.search_id(key.user)
-                        .then(function(res) {
+                        .success(function(res) {
                             if (res.error === 'null') {
                                 // user cannot be found
                             }
-                            if (res.data.success) {
+                            if (res.success) {
                                 // Set the user_name to the retrieved name
-                                key.user_name = res.data.success.google.name;
+                                key.user_name = res.success.google.name;
                             }
                         })
-                        .catch(function(error) {
-                            console.log('error: ' + error);
-                        });
+                        .error(function(error) {});
                 });
             });
     }
 
     if (snip !== undefined) {
         Cards.search_id(snip)
-            .then(function(res) {
+            .success(function(data) {
                 // update card_ctrl $scope.cards
-                $rootScope.$broadcast('cards', res.data);
-            })
-            .catch(function(error) {
-                console.log('error: ' + error);
+                $rootScope.$broadcast('cards', data);
             });
     }
 
     loadUserData = function() {
         if (snip === undefined && username === undefined) {
             Cards.search_user($scope.currentUser)
-                .then(function(data) {
+                .success(function(data) {
                     // update card_ctrl $scope.cards
                     $rootScope.$broadcast('cards', data);
-                })
-                .catch(function(error) {
-                    console.log('error: ' + error);
                 });
         }
     };
@@ -92,11 +82,8 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'Conversations', 'Users', 're
     // DELETE ==================================================================
     $scope.deleteCard = function(id) {
         Cards.delete(id)
-            .then(function(res) {
+            .success(function(data) {
                 $rootScope.$broadcast('search');
-            })
-            .catch(function(error) {
-                console.log('error: ' + error);
             });
     };
 
@@ -110,12 +97,10 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'Conversations', 'Users', 're
                 var pms = { 'id': id, 'card': card };
                 // call the create function from our service (returns a promise object)
                 Cards.update(pms)
-                    .then(function(data) {
+                    .success(function(data) {
                         $rootScope.$broadcast('search');
                     })
-                    .catch(function(error) {
-                        console.log('error: ' + error);
-                    });
+                    .error(function(error) {});
             });
         }, 1000);
     };

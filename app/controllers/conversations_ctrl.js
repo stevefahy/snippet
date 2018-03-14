@@ -1,16 +1,14 @@
 cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$http', 'Invites', 'Email', 'Users', 'Conversations', '$q', 'FormatHTML', 'General', function($scope, $rootScope, $location, $http, Invites, Email, Users, Conversations, $q, FormatHTML, General) {
 
-    this.$onInit = function() {
-        public_found = false;
-        sent_content_length = 20;
+    var public_found = false;
+    var sent_content_length = 20;
 
-        // array of conversations
-        $scope.conversations = [];
-        //
-        $scope.chat_create = {
-            conversation_name: '',
-            participants: []
-        };
+    // array of conversations
+    $scope.conversations = [];
+    //
+    $scope.chat_create = {
+        conversation_name: '',
+        participants: []
     };
 
     // Broadcast by socket service when a  card has been created, updated or deleted by another user to this user
@@ -154,7 +152,6 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
     // Get the current users details
     $http.get("/api/user_data").then(function(result) {
         if (result.data.user) {
-            $scope.currentUserName = result.data.user.google.name;
             $scope.currentUser = result.data.user;
             // Find the conversations for current user
             Conversations.find_user_conversations($scope.currentUser._id)

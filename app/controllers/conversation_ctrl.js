@@ -1,21 +1,17 @@
 cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', function($scope, $rootScope, $location, $http, $window, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General) {
 
-    this.$onInit = function() {
+    $scope.getFocus = Format.getFocus;
+    $scope.getBlur = Format.getBlur;
+    $scope.contentChanged = Format.contentChanged;
+    $scope.checkKey = Format.checkKey;
+    $scope.handlePaste = Format.handlePaste;
+    $scope.keyListen = Format.keyListen;
+    $scope.showAndroidToast = Format.showAndroidToast;
+    $scope.uploadFile = Format.uploadFile;
+    $scope.myFunction = Edit.myFunction;
+    $scope.dropDownToggle = Edit.dropDownToggle;
 
-        $scope.getFocus = Format.getFocus;
-        $scope.getBlur = Format.getBlur;
-        $scope.contentChanged = Format.contentChanged;
-        $scope.checkKey = Format.checkKey;
-        $scope.handlePaste = Format.handlePaste;
-        $scope.keyListen = Format.keyListen;
-        $scope.showAndroidToast = Format.showAndroidToast;
-        $scope.uploadFile = Format.uploadFile;
-        $scope.myFunction = Edit.myFunction;
-        $scope.dropDownToggle = Edit.dropDownToggle;
-
-        $scope.isMember = false;
-
-    };
+    $scope.isMember = false;
 
     // Detect device user agent 
     var ua = navigator.userAgent;
@@ -36,6 +32,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     if (initial_height < screen.height) {
         initial_width = initial_width - (screen.height - initial_height);
     }
+
     if (initial_height > initial_width) {
         //portrait
         portrait_height = initial_height;
@@ -183,9 +180,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Scroll to the bottom of the list
     scrollToBottom = function(speed) {
-        var bottom = $('.content_cnv')[0].scrollHeight;
-        $('.content_cnv').animate({
-            scrollTop: bottom
+        $('html, body').animate({
+            scrollTop: $('#bottom').offset().top
         }, speed, function() {});
     };
 
@@ -251,7 +247,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // Get the logged in user's data.
     $http.get("/api/user_data").then(function(result) {
         if (result.data.user) {
-            $scope.currentUserName = result.data.user.google.name;
             $scope.currentUser = result.data.user;
         }
         // Start watching onfocus and onblur, then load the conversation for the first time.
@@ -340,20 +335,17 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     key.original_content = key.content;
                     // Get the user name for the user id
                     // TODO dont repeat if user id already retreived
-                    //key.user = 'fdgfg';
                     Users.search_id(key.user)
-                        .then(function(res) {
-                            if (res.data.error === 'null') {
+                        .success(function(res) {
+                            if (res.error === 'null') {
                                 // user cannot be found
                             }
-                            if (res.data.success) {
+                            if (res.success) {
                                 // Set the user_name to the retrieved name
-                                key.user_name = res.data.success.google.name;
+                                key.user_name = res.success.google.name;
                             }
                         })
-                        .catch(function(error) {
-                            console.log('error: ' + error);
-                        });
+                        .error(function(error) {});
                 });
                 // Scroll to the bottom of the list
                 $timeout(function() {
@@ -380,6 +372,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             .then(function(result) {
                 // get the number of cards in the existing conversation
                 var conversation_length = $scope.cards.length;
+
                 // Check for new cards.
                 // find only the new cards which have been posted
                 var updates = result.data.slice(conversation_length, result.data.length);
@@ -389,6 +382,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         updateConversation(key);
                     });
                 }
+
                 // Check for updated cards
                 var updated = findDifference(result.data, $scope.cards, 'updated');
                 // If there is a difference between cards content update that card 
@@ -427,18 +421,16 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         // Get the user name for the user id
         // TODO dont repeat if user id already retreived
         Users.search_id(data.user)
-            .then(function(res) {
+            .success(function(res) {
                 if (res.error === 'null') {
                     // user cannot be found
                 }
-                if (res.data.success) {
+                if (res.success) {
                     // Set the user_name to the retrieved name
-                    data.user_name = res.data.success.google.name;
+                    data.user_name = res.success.google.name;
                 }
             })
-            .catch(function(error) {
-                console.log('error: ' + error);
-            });
+            .error(function(error) {});
         // Update the cards model
         $scope.cards.push(data);
         // Map relevant data to the loaded cards.

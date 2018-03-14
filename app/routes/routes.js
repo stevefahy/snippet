@@ -41,7 +41,6 @@ function getConversationId(id) {
 
 // route middleware to ensure user is logged in
 function isLoggedIn(req, res, next) {
-    console.log('req.isAuthenticated(): ' + req.isAuthenticated());
     if (req.isAuthenticated()) {
         return next();
     } else {
@@ -302,17 +301,13 @@ module.exports = function(app, passport) {
     // search for user by id
     app.post('/api/users/search_id/:id', function(req, res) {
         var id = req.params.id;
-        //console.log(id);
         User.findById({ '_id': id }, function(error, user) {
-            //console.log('error id: ' + error);
-            //console.log('user: ' + user);
             if (error) {
                 res.json(error);
             } else if (user === null) {
                 // no user found
                 res.json({ 'error': 'null' });
             } else {
-                //console.log(user);
                 res.json({ 'success': user });
             }
         });
@@ -630,7 +625,7 @@ module.exports = function(app, passport) {
             service: 'gmail',
             auth: {
                 user: 'snipbee@gmail.com',
-                pass: '157duk385cw'
+                pass: 'stevesnipbeepass'
             }
         });
         var mailOptions = {
@@ -641,10 +636,9 @@ module.exports = function(app, passport) {
         };
         transporter.sendMail(mailOptions, function(error, info) {
             if (error) {
-                console.log(error);
+                //
             } else {
-                console.log(info);
-                res.sendStatus(200);
+                res.send(200);
             }
         });
 
@@ -774,9 +768,8 @@ module.exports = function(app, passport) {
 
     // get all conversations for current user
     app.get('/chat/conversation', function(req, res) {
-        Conversation.find({ 'participants._id': req.user._id }, function(err, conversations) {
+        Conversation.find({ 'participants': req.user._id }, function(err, conversations) {
             if (err) {
-                console.log('err: ' + err);
                 return res.send(err);
             }
             res.send(conversations);

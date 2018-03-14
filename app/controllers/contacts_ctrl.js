@@ -130,18 +130,13 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
         var result = $scope.currentUser.contacts.map(function(key, array) {
             // Search for each user in the contacts list by id
             Users.search_id(key)
-                .then(function(res) {
+                .success(function(res) {
                     if (res.error === 'null') {
                         // remove this contact as the user cannot be found
                         Users.delete_contact(key)
-                            .then(function(data) {
-                                //
-                            })
-                            .catch(function(error) {
-                                console.log('error: ' + error);
-                            });
+                            .success(function(data) {});
                     }
-                    if (res.data.success) {
+                    if (res.success) {
                         // Check if individual conversation already created with this contact
                         // Get all coversations containing current user.
                         $http.get("/chat/conversation").then(function(result) {
@@ -150,21 +145,19 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
                                 // Groups of three or more are loaded in conversations.html
                                 if (key.participants.length === 2) {
                                     // Check that current user is a participant of this conversation
-                                    if (key.participants.indexOf(res.data.success._id) >= 0) {
+                                    if (key.participants.indexOf(res.success._id) >= 0) {
                                         // set conversation_exists and conversation_id for the contacts
-                                        res.data.success.conversation_exists = true;
-                                        res.data.success.conversation_id = key._id;
+                                        res.success.conversation_exists = true;
+                                        res.success.conversation_id = key._id;
                                     }
                                 }
                             });
                         });
                         // add the user as a contact
-                        $scope.contacts.push(res.data.success);
+                        $scope.contacts.push(res.success);
                     }
                 })
-                .catch(function(error) {
-                    console.log('error: ' + error);
-                });
+                .error(function(error) {});
         });
     };
 

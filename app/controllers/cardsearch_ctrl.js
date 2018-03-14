@@ -1,8 +1,6 @@
-cardApp.controller("footerCtrl", ['$scope', 'Cards', '$rootScope', '$location', '$http', 'socket', 'Database', function($scope, Cards, $rootScope, $location, $http, socket, Database) {
+cardApp.controller("cardsearchCtrl", ['$scope', 'Cards', '$rootScope', '$location', '$http', 'socket', function($scope, Cards, $rootScope, $location, $http, socket) {
 
-    this.$onInit = function() {
-        $scope.showDiv = false;
-    };
+    $scope.showDiv = false;
 
     $http.get("/api/user_data").then(function(result) {
         if (result.data.user) {
@@ -37,18 +35,16 @@ cardApp.controller("footerCtrl", ['$scope', 'Cards', '$rootScope', '$location', 
         $scope.changePath('/api/logout');
     };
 
-    $scope.searchCard = function(input) {
-        //$location.path('/');
+    $scope.searchCard = function() {
+        console.log('search');
+        $location.path('/');
         // validate the formData to make sure that something is there
         if ($scope.input !== undefined) {
             // call the create function from our service (returns a promise object)
             Cards.search($scope.input)
-                .then(function(res) {
+                .success(function(data) {
                     // update card_ctrl $scope.cards
-                    $rootScope.$broadcast('cards', res.data);
-                })
-                .catch(function(error) {
-                    console.log('error: ' + error);
+                    $rootScope.$broadcast('cards', data);
                 });
         }
     };
