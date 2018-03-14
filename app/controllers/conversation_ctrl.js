@@ -14,6 +14,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         $scope.dropDownToggle = Edit.dropDownToggle;
         $scope.pasteHtmlAtCaret = Format.pasteHtmlAtCaret;
 
+        $scope.checkCursor = Format.checkCursor;
+
         $scope.isMember = false;
 
     };

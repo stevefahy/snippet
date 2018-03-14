@@ -327,7 +327,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
             $timeout(function() {
                // console.log(savedImageSelection.container);
-               // self.restoreSelection(savedImageSelection.container);
+               self.restoreSelection(savedImageSelection.container);
                // console.log(savedImageSelection);
             }, 2000);
 
@@ -1199,7 +1199,7 @@ function() {
     this.checkCursor = function($event, elem) {
         // Store current caret pos
         savedSelection = self.saveSelection(document.getElementById(elem));
-        console.log('savedSelection: ' + savedSelection);
+        console.log(savedSelection);
     };
 
     this.checkKey = function($event, elem) {
