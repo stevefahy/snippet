@@ -1,4 +1,8 @@
-cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$timeout', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'socket', 'Users', function($scope, $rootScope, $location, $http, $window, $timeout, Cards, replaceTags, Format, Edit, Conversations, socket, Users) {
+cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$timeout', 'Cards', 'replaceTags', 'Format', 'FormatHTML', 'Edit', 'Conversations', 'socket', 'Users', 'Database', function($scope, $rootScope, $location, $http, $window, $timeout, Cards, replaceTags, Format, FormatHTML, Edit, Conversations, socket, Users, Database) {
+
+    var ua = navigator.userAgent;
+
+    var INPUT_PROMPT = "Enter some text";
 
     $scope.getFocus = Format.getFocus;
     $scope.contentChanged = Format.contentChanged;
@@ -7,143 +11,133 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
     $scope.keyListen = Format.keyListen;
     $scope.showAndroidToast = Format.showAndroidToast;
     $scope.uploadFile = Format.uploadFile;
-    $scope.myFunction = Edit.myFunction;
+    $scope.restoreSelection = Format.restoreSelection;
+    $scope.checkCursor = Format.checkCursor;
 
-    var fcm;
+    $scope.input = false;
+    var isFocused = false;
 
-    var current_conversation_id = Conversations.getConversationId();
-
-    setFocus = function() {
-        $timeout(function() {
-            var element = $window.document.getElementById('cecard_create');
-            if (element) {
-                element.focus();
-                $rootScope.$broadcast('CONV_CHECK');
-            }
-        });
-    };
-
-    // Find User
-    findUser = function(id, callback) {
-        var user_found;
-        Users.search_id(id)
-            .success(function(res) {
-                user_found = res.success;
-                callback(user_found);
-            })
-            .error(function(error) {
-                //
-            });
-    };
-
-    checkForImage = function(content) {
-        var res;
-        if (content.indexOf('<img') >= 0) {
-            var img_tag = content.substr(content.indexOf('<img'), content.indexOf('.jpg">') + 6);
-            res = "Posted a photo.";
-        } else {
-            res = content;
-        }
-        return res;
-    };
-
-    function stripHTML(html) {
-        var tmp = document.createElement("DIV");
-        tmp.innerHTML = html;
-        return tmp.textContent || tmp.innerText || "";
-    }
-
-    var ua = navigator.userAgent;
-    // only check focus on web version
-    if (ua !== 'AndroidApp') {
-        $window.onfocus = function() {
-            this.setFocus();
-        };
-        $window.focus();
-        setFocus();
-    }
-
-    $scope.card_create = {
-        _id: 'card_create',
-        content: '',
-        user: $scope.currentUser,
-        user_name: ''
-    };
-
+    // TODO - Better way to get user details across controllers. service? middleware? app.use?
     // Get the current users details
     $http.get("/api/user_data").then(function(result) {
         $scope.currentUser = result.data.user;
         $scope.card_create.user = $scope.currentUser.google.name;
     });
 
-    // Get the FCM details
-    $http.get("/api/fcm_data").then(function(result) {
-        fcm = result.data.fcm;
+    $timeout(function() {
+        // Add the input prompt text
+        $('#placeholderDiv').html(INPUT_PROMPT);
+        // listen for focus
+        $('#cecard_create').on('focus', function() {
+            console.log('cecard_create focus');
+            $scope.focused = true;
+            if (!$scope.$$phase) {
+                $scope.$apply();
+            }
+        });
+        $('#cecard_create').on('blur', function() {
+            $scope.focused = false;
+        });
     });
 
-    // CREATE ==================================================================
-    $scope.createCard = function(id, card_create) {
-        $scope.card_create.conversationId = current_conversation_id;
-        $scope.card_create.content = replaceTags.replace($scope.card_create.content);
-        $scope.card_create.content = Format.setMediaSize(id, card_create);
+    $(document).on('input keyup', '#cecard_create', function() {
+        checkInput('#cecard_create');
 
-        $scope.card_create.content = Format.removeDeleteIds();
+    });
 
-        Cards.create($scope.card_create)
-            .then(function(response) {
-                // reset the input box
-                var sent_content = $scope.card_create.content;
-                sent_content = checkForImage(sent_content);
-                sent_content = stripHTML(sent_content);
-                $scope.card_create.content = '';
-                // notify conversation_ctrl that the conversation has been updated
-                $rootScope.$broadcast('CONV_UPDATED', response.data);
-                // Update the Conversation updateAt time.
-                Conversations.updateTime(current_conversation_id)
-                    .then(function(response) {
-                        // socket.io emit the card posted to the server
-                        socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: response.data._id, participants: response.data.participants });
-                        // Send notifications
-                        // Set the FCM data for the request
-                        var data = {
-                            "to": "",
-                            "notification": {
-                                "title": "",
-                                "body": ""
-                            },
-                            "data": {
-                                "url": ""
-                            }
-                        };
-                        var headers = {
-                            'Authorization': 'key=' + fcm.firebaseserverkey,
-                            'Content-Type': 'application/json'
-                        };
-                        var options = {
-                            uri: 'https://fcm.googleapis.com/fcm/send',
-                            method: 'POST',
-                            headers: headers,
-                            json: data
-                        };
-                        for (var i in response.data.participants) {
-                            // dont emit to the user which sent the card
-                            if (response.data.participants[i]._id !== $scope.currentUser._id) {
-                                // Find the other user(s)
-                                findUser(response.data.participants[i]._id, function(result) {
-                                    // get the participants notification key
-                                    // get the message title and body
-                                    if (result.notification_key !== undefined) {
-                                        data.to = result.notification_key;
-                                        data.notification.title = $scope.card_create.user;
-                                        data.notification.body = sent_content;
-                                        // get the conversation id
-                                        data.data.url = response.data._id;
-                                        Users.send_notification(options);
-                                    }
-                                });
-                            }
-                        }
-                    });
-            });
+    // Refocus to the input area if the placeholder is focused.
+    $(document).on('click', '#placeholderDiv', function() {
+        console.log('refocus');
+        $('#cecard_create').focus();
+    });
+
+    $scope.card_create = {
+        _id: 'card_create',
+        content: '',
+        user_name: ''
     };
+
+    // Broadcast by Database createCard service when a new card has been created
+    $scope.$on('CARD_CREATED', function(event, data) {
+        // Reset the model
+        $scope.card_create.content = '';
+        $('#cecard_create').html('');
+        $scope.input = false;
+        if (ua !== 'AndroidApp') {
+            console.log('not android cecard focus');
+            $('#cecard_create').focus();
+        }
+        //$scope.checkCursor();
+        console.log('card created');
+        checkInput('#cecard_create');
+    });
+
+    // If cecard_create was the last focused element restore the caret position there and create image.
+    $scope.media = function() {
+        if (isFocused) {
+            $scope.restoreSelection(document.getElementById("cecard_create"));
+            $scope.uploadFile();
+        }
+    };
+    // Check that the cecard_create was the last focused element
+    $scope.checkFocus = function() {
+        if ($scope.focused) {
+            isFocused = true;
+        } else {
+            isFocused = false;
+        }
+    };
+
+    // Create Card
+    $scope.createCard = function(id, card_create) {
+        Database.createCard(id, card_create, $scope.currentUser);
+    };
+
+    // Hide the placeholder text when an image is created.
+    imagePosted = function() {
+        var focused = document.activeElement;
+        if (focused.id == 'cecard_create') {
+            $scope.input = true;
+            $('#placeholderDiv').hide();
+        }
+    };
+
+    checkInput = function(elem) {
+        var trim = $.trim($(elem).text());
+        // check for whitespace at first position and remove
+        if (trim.length == 1 && trim.charCodeAt(0) == '8203') {
+            $(elem).html('');
+        }
+        // If there has been text or an image inputed then hide the placeholder text.
+        if ($(elem).text().length > 0 || $(elem).html().indexOf('<img') >= 0) {
+            $('#placeholderDiv').hide();
+            $scope.input = true;
+        } else {
+            $('#placeholderDiv').show();
+            $scope.input = false;
+        }
+    };
+
+    setFocus = function() {
+        $timeout(function() {
+            var element = $window.document.getElementById('cecard_create');
+            if (element) {
+                console.log('ce set foc');
+                element.focus();
+                $rootScope.$broadcast('CONV_CHECK');
+            }
+        });
+    };
+
+    // only check focus on web version
+    if (ua !== 'AndroidApp') {
+        $window.onfocus = function() {
+           // this.setFocus();
+        };
+        console.log('window foc');
+        $window.focus();
+        setFocus();
+
+    }
+
 }]);

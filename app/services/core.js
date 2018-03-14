@@ -1,8 +1,7 @@
-var cardApp = angular.module("cardApp", ['ngSanitize', 'ngRoute', 'angularMoment']);
+var cardApp = angular.module("cardApp", ['ngSanitize', 'ngRoute', 'angularMoment', 'ngAnimate']);
 
 // Prefix for loading a snip id
 var prefix = '/s/';
-
 
 cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
     $routeProvider
@@ -50,7 +49,7 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
     });
 });
 
-cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', function($window, $rootScope, $timeout, $q, Users) {
+cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', '$injector', function($window, $rootScope, $timeout, $q, Users, Cards, Conversations, replaceTags, socket, $injector) {
 
     var self = this;
     var tag_count_previous;
@@ -64,8 +63,14 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', f
     // Image resize max width or height
     var MAX_WIDTH = 1080;
     var MAX_HEIGHT = 1080;
+    var JPEG_COMPRESSION = 0.9;
     var IMAGES_URL = 'fileuploads/images/';
     var refreshedToken;
+    var marky_found = false;
+    var focused_id;
+    var focused_card;
+    var focused_user;
+    var savedSelection;
 
     $window.androidToJS = this.androidToJS;
     $window.androidTokenRefresh = this.androidTokenRefresh;
@@ -75,18 +80,16 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', f
         // TODO should this not have /upload then route_folder for both would just be / in upload_app route.js
         serverUrl = 'http://localhost:8060/upload';
     } else {
-        serverUrl = 'http://www.snipbee.com/upload';
+        serverUrl = 'https://www.snipbee.com/upload';
     }
 
     androidToJS = function(data) {
         insertImage(data);
     };
 
-
     if (ua === 'AndroidApp') {
         Android.checkFCMToken();
     }
-
 
     androidTokenRefresh = function(data) {
         refreshedToken = JSON.parse(data);
@@ -115,7 +118,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', f
     }, {
         charstring: 'zc',
         html: 'input',
-        attribute: 'type="checkbox" onclick="checkBoxChanged(this)"',
+        attribute: 'type="checkbox" onclick="checkBoxChanged(this)" onmouseover="checkBoxMouseover(this)" onmouseout="checkBoxMouseout(this)" ',
+        span_start: '<span id="checkbox_edit" >',
+        span_end: '</span>',
         close: false
     }, {
         charstring: 'z1',
@@ -258,12 +263,10 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', f
                     ctx.translate(-width, 0);
                     break;
             }
-
             ctx.drawImage(img, 0, 0, width, height);
             ctx.restore();
-
-            // compress to 90% JPEG
-            var dataURL = canvas.toDataURL('image/jpeg', 0.9);
+            // compress JPEG
+            var dataURL = canvas.toDataURL('image/jpeg', JPEG_COMPRESSION);
             resolve(dataURL);
         });
     }
@@ -303,11 +306,38 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', f
         return $('#cecard_create').html();
     };
 
-    insertImage = function(data) {
-        if (data.response === 'saved') {
-            var new_image = "<img class='resize-drag' src='" + IMAGES_URL + data.file + "'><span id='delete'>&#x200b</span>";
-            self.pasteHtmlAtCaret(new_image);
+    // Added for update. Ensures focus is called after an image is inserted.
+    imageLoaded = function() {
+        console.log('img loade');
+        var active_el = document.activeElement;
+        var new_image = document.getElementById('new_image');
+        $(new_image).removeAttr('onload id');
+        active_el.blur();
+        active_el.focus();
+    };
 
+    insertImage = function(data) {
+        console.log(data);
+        if (data.response === 'saved') {
+            var new_image = "<img class='resize-drag' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'><span class='scroll_latest' id='delete'>&#x200b</span>";
+            console.log(new_image);
+            var active = document.activeElement;
+            console.log(active);
+            active.focus();
+
+            $timeout(function() {
+               // console.log(savedImageSelection.container);
+               // self.restoreSelection(savedImageSelection.container);
+               // console.log(savedImageSelection);
+            }, 2000);
+
+            $timeout(function() {
+                self.pasteHtmlAtCaret(new_image);
+            }, 4000);
+
+            //self.pasteImage(new_image);
+            // commented out because it causes an issue with onblur which is used to update card.
+            /*
             // remove zero width space above image if it exists 
             var clone = $('#cecard_create').clone();
             //clone.find('#delete').remove();
@@ -315,10 +345,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', f
             var new_text = old_text.replace(/\u200B/g, '');
             new_text += "<span id='delete_image'>&#x200b</span>";
             $window.document.getElementById("cecard_create").innerHTML = new_text;
-
             moveCaretInto('delete_image');
-
-            scrollToBottom(1000);
+            */
+            //scrollToBottom(1000);
         }
     };
 
@@ -381,21 +410,36 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', f
     };
 
     // UPLOAD ==================================================================
+    uploadClickListen = function() {
+        $('#upload-input').click();
+        // Unbind the on change event to prevent it from firing twice after first call
+        $('#upload-input').unbind();
+    };
+
     this.uploadFile = function() {
         if (ua === 'AndroidApp') {
             Android.choosePhoto();
         } else {
-            $('#upload-input').click();
-            $('.progress-bar').text('0%');
-            $('.progress-bar').width('0%');
-            // Unbind the on change event to prevent it from firing twice after first call
-            $('#upload-input').unbind();
+            console.log('uploadFile');
+            // All browsers except MS Edge
+            if (ua.toLowerCase().indexOf('edge') == -1) {
+                uploadClickListen();
+            }
             $('#upload-input').on('change', function() {
                 var files = $(this).get(0).files;
                 if (files.length > 0) {
+                    console.log('prep: ' + files);
                     prepareImage(files);
                 }
+                // reset the input value to null so that files of the same name can be uploaded.
+                this.value = null;
             });
+            // MS Edge only
+            if (ua.toLowerCase().indexOf('edge') > -1) {
+                $timeout(function() {
+                    uploadClickListen();
+                });
+            }
         }
     };
 
@@ -418,9 +462,88 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', f
         return content_less_pre;
     };
 
-    this.getFocus = function(content) {
-        self.tag_count_previous = self.getTagCountPrevious(content);
-        return self.tag_count_previous;
+    this.checkForImage = function(content) {
+        var res;
+        if (content.indexOf('<img') >= 0) {
+            var img_tag = content.substr(content.indexOf('<img'), content.indexOf('.jpg">') + 6);
+            res = "Posted a photo.";
+        } else {
+            res = content;
+        }
+        return res;
+    };
+
+    this.getFocus = function(id, card, currentUser) {
+        if (id != undefined && card != undefined) {
+            self.tag_count_previous = self.getTagCountPrevious(card.content);
+            focused_id = id;
+            focused_card = card;
+            focused_user = currentUser;
+            return self.tag_count_previous;
+        }
+    };
+
+    findMarky = function(content) {
+        var marky_found = false;
+        for (var i = 0; i < secondkey_array.length; i++) {
+            if (content.indexOf(initial_key + secondkey_array[i]) >= 0) {
+                marky_found = true;
+            }
+        }
+        return marky_found;
+    };
+
+    checkUpdate = function() {
+        if (ua == 'AndroidApp') {
+            console.log(focused_id);
+            if (focused_id != undefined) {
+                self.getBlurAndroid(focused_id, focused_card, focused_user);
+            }
+        }
+    };
+
+    // Called by Android onPause
+    // Update the card.
+    this.getBlurAndroid = function(id, card, currentUser) {
+        console.log('getBlur Android');
+        if (id != undefined && card != undefined && currentUser != undefined) {
+            // Check if there is a marky in progress
+            // zm launching image capture should not trigger an update. It causes error.
+            found_marky = findMarky(card.content);
+            // check the content has changed and not currently mid marky
+            if (card.content != card.original_content && (found_marky == false)) {
+                console.log('getBlur Android update');
+                // Inject the Database Service
+                var Database = $injector.get('Database');
+                // Update the card
+                Database.updateCard(id, card, currentUser);
+            }
+        }
+    };
+
+    this.getBlur = function(id, card, currentUser) {
+        console.log('getBlur');
+        // Add slight delay so that document.activeElement works
+        setTimeout(function() {
+            // Get the element currently in focus
+            var active = $(document.activeElement).closest("div").attr('id');
+            // If the blurred card is not the current card or the hidden input.
+            if ('ce' + card._id != active && (active != 'hidden_input_container')) {
+                // Check if there is a marky in progress
+                // zm launching image capture should not trigger an update. It causes error.
+                found_marky = findMarky(card.content);
+                // check the content has changed and not currently mid marky
+                if (card.content != card.original_content && (found_marky == false)) {
+                    console.log('getBlur update');
+                    // Update the card
+                    // Inject the Database Service
+                    var Database = $injector.get('Database');
+                    // Update the card
+                    Database.updateCard(id, card, currentUser);
+                }
+            }
+        }, 0);
+
     };
 
     this.getTagCountPrevious = function(content) {
@@ -434,9 +557,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', f
         return tag_count_previous_local;
     };
 
+    // TODO Check if this is still required.
     this.setMediaSize = function(id, card) {
-        var content = document.getElementById('ce' + id);
-        return content.innerHTML;
+        return card.content;
     };
 
     // Currently not used
@@ -518,9 +641,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', f
 
     // TODO remove delete id?
     function moveCaretAfter(id) {
-
         self.removeDeleteIds();
-
         var current_node = $("#" + id).get(0);
         $("<span id='delete'>&#x200b</span>").insertAfter(current_node);
         var range = document.createRange();
@@ -531,20 +652,16 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', f
         var selection = window.getSelection();
         selection.removeAllRanges();
         selection.addRange(range);
-
         // Fix for Firefox which replaces the zero width space with a <br> tag
         if (ua.toLowerCase().indexOf('firefox') > -1) {
             $('#' + id).html($('#' + id).html().replace(/<br>/g, ""));
         }
-
         $('#' + id).removeAttr('id');
         return;
     }
 
     function moveCaretInto(id) {
-
         self.removeDeleteIds();
-
         $("#" + id).html('&#x200b');
         var current_node = $("#" + id).get(0);
         range = document.createRange();
@@ -554,13 +671,24 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', f
         var selection = window.getSelection();
         selection.removeAllRanges();
         selection.addRange(range);
-
         // Fix for Firefox which replaces the zero width space with a <br> tag
         if (ua.toLowerCase().indexOf('firefox') > -1) {
             $('#' + id).html($('#' + id).html().replace(/<br>/g, ""));
         }
-
         $('#' + id).removeAttr('id');
+        /*
+                // Scroll the pasted HTML into view
+                var scroll_latest = document.querySelector('.scroll_enter_latest');
+                console.log(scroll_latest);
+                if (scroll_latest != null) {
+                    scroll_latest.scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
+                    // remove scroll_latest after scrolling
+                    $timeout(function() {
+                        // Remove all .scroll_latest classes
+                        $('.scroll_enter_latest').removeClass('scroll_enter_latest');
+                    }, 100);
+                }
+                */
         return;
     }
 
@@ -598,7 +726,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', f
                     updateChars.id = 'marky';
                 }
             }
-
         }
         moveCaretInto('marky');
     }
@@ -645,7 +772,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', f
             if (marky_html_index !== -1) {
                 var marky_html = marky_array[marky_html_index].html;
                 if (marky_html != 'pre') {
-                    var new_tag = '<' + marky_html + ' id="focus">&#x200b</' + marky_html + '>';
+                    var new_tag = '<' + marky_html + ' class="scroll_latest" id="focus">&#x200b</' + marky_html + '>';
                     if (loop_count > 0) {
                         var pos = complete_tag.indexOf('&#x200b');
                         complete_tag = complete_tag.slice(0, pos) + new_tag + complete_tag.slice(pos + 7, complete_tag.length);
@@ -693,8 +820,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', f
                         if (close_tag) {
                             marky_started_array.push(JSON.parse(JSON.stringify(mark_list_current[0])));
                         }
-                        var updateChars = currentChars.replace(char_watch, "<" + marky_array[ma].html + " " + marky_array[ma].attribute + " id='marky'>");
-
+                        var updateChars;
+                        if (marky_array[ma].span_start != undefined) {
+                            updateChars = currentChars.replace(char_watch, marky_array[ma].span_start + "<" + marky_array[ma].html + " " + marky_array[ma].attribute + " class='scroll_latest' id='marky'>" + marky_array[ma].span_end);
+                        } else {
+                            updateChars = currentChars.replace(char_watch, "<" + marky_array[ma].html + " " + marky_array[ma].attribute + " class='scroll_latest' id='marky'>");
+                        }
                         if (close_tag) {
                             updateChars += "</" + marky_array[ma].html + ">";
                         }
@@ -760,16 +891,39 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', f
                         $('#upload-trigger').trigger('click');
                     }
                     // Use timeout to fix bug on Galaxy S6 (Chrome, FF, Canary)
-
+                    // Timeout causing bug on Web MS Edge. Removed and changed paste from '' to '&#x200b'
+                    /*
+                            console.log('word: ' + word);
+if(word == 'zm'){
+        console.log('image upload fired zm');
+        savedImageSelection = this.saveSelection(document.getElementById(element));
+        console.log('saved');
+        console.log(savedImageSelection);
+        }
+        */
                     $timeout(function() {
                             self.selectText(elem, currentChars);
                         }, 0)
                         .then(
                             function() {
-                                return $timeout(function() {
-                                    self.pasteHtmlAtCaret('');
-                                }, 0);
+                                //self.pasteHtmlAtCaret('&#x200b');
+                                self.pasteHtmlAtCaret('IMAGE');
                             }
+                        ).then(
+function() {
+                            return $timeout(function() {
+                                 savedImageSelection = self.saveSelection(document.getElementById(elem));
+                                    console.log('saved');
+                                    console.log(savedImageSelection);
+                            }, 1000);
+                        }
+                            /*
+                                function() {
+                                    savedImageSelection = self.saveSelection(document.getElementById(elem));
+                                    console.log('saved');
+                                    console.log(savedImageSelection);
+                                }
+                                */
                         );
                 }
             }
@@ -835,14 +989,34 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', f
                 selection.addRange(range);
             }
         }
+
         return;
     };
 
+    this.pasteImage = function(html) {
+
+        //savedSelection = saveSelection(document.getElementById(elem));
+        //console.log(savedSelection);
+        console.log(savedImageSelection.container);
+
+        this.restoreSelection(savedImageSelection.container);
+        console.log(savedImageSelection);
+        //this.pasteHtmlAtCaret(html);
+
+
+    };
+
     this.pasteHtmlAtCaret = function(html) {
-        var sel, range;
+
+        console.log(html);
+        var sel, range, scroll_latest;
+
+
+
         if (window.getSelection) {
             // IE9 and non-IE
             sel = window.getSelection();
+            console.log(sel);
             if (sel.getRangeAt && sel.rangeCount) {
                 range = sel.getRangeAt(0);
                 range.deleteContents();
@@ -865,18 +1039,125 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', f
                     }
                     range.collapse(true);
                     sel.removeAllRanges();
+                    console.log(sel);
                     sel.addRange(range);
                 }
-            }
+                /*
+                                $timeout(function() {
+                                    // Scroll the pasted HTML into view
+                                    scroll_latest = document.querySelector('.scroll_latest');
+                                    console.log(scroll_latest);
+                                    if (scroll_latest != null) {
+                                        scroll_latest.scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
+                                        // remove scroll_latest after scrolling
+                                        $timeout(function() {
+                                            // Remove all .scroll_latest classes
+                                            $('.scroll_latest').removeClass('scroll_latest');
+                                        }, 100);
+                                    }
+                                });
+                                */
 
+
+
+            }
         } else if (document.selection && document.selection.type != "Control") {
             // IE < 9
             document.selection.createRange().pasteHTML(html);
+            // Scroll the pasted HTML into view
+            scroll_latest = document.querySelector('.scroll_latest');
+            if (scroll_latest != null) {
+                scroll_latest.scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
+                // remove scroll_latest after scrolling
+                $timeout(function() {
+                    // Remove all .scroll_latest classes
+                    $('.scroll_latest').removeClass('scroll_latest');
+                }, 100);
+            }
         }
         return;
+
+
+
+    };
+
+    this.saveSelection = function(containerEl) {
+        console.log('saveSelection');
+        var start;
+        if (window.getSelection && document.createRange) {
+            var range = window.getSelection().getRangeAt(0);
+            var preSelectionRange = range.cloneRange();
+            preSelectionRange.selectNodeContents(containerEl);
+            preSelectionRange.setEnd(range.startContainer, range.startOffset);
+            start = preSelectionRange.toString().length;
+            return {
+                container: containerEl,
+                start: start,
+                end: start + range.toString().length
+            };
+        } else if (document.selection && document.body.createTextRange) {
+            var selectedTextRange = document.selection.createRange();
+            var preSelectionTextRange = document.body.createTextRange();
+            preSelectionTextRange.moveToElementText(containerEl);
+            preSelectionTextRange.setEndPoint("EndToStart", selectedTextRange);
+            start = preSelectionTextRange.text.length;
+            return {
+                container: containerEl,
+                start: start,
+                end: start + selectedTextRange.text.length
+            };
+        }
+    };
+
+    this.restoreSelection = function(containerEl) {
+        savedSel = savedSelection;
+        //containerEl = savedSel.container;
+        console.log('restoreSelection: ' + savedSel);
+        if (window.getSelection && document.createRange) {
+            var charIndex = 0,
+                range = document.createRange();
+            range.setStart(containerEl, 0);
+            range.collapse(true);
+            var nodeStack = [containerEl],
+                node, foundStart = false,
+                stop = false;
+            while (!stop && (node = nodeStack.pop())) {
+                if (node.nodeType == 3) {
+                    var nextCharIndex = charIndex + node.length;
+                    if (!foundStart && savedSel.start >= charIndex && savedSel.start <= nextCharIndex) {
+                        range.setStart(node, savedSel.start - charIndex);
+                        foundStart = true;
+                    }
+                    if (foundStart && savedSel.end >= charIndex && savedSel.end <= nextCharIndex) {
+                        range.setEnd(node, savedSel.end - charIndex);
+                        stop = true;
+                    }
+                    charIndex = nextCharIndex;
+                } else {
+                    var i = node.childNodes.length;
+                    while (i--) {
+                        nodeStack.push(node.childNodes[i]);
+                    }
+                }
+            }
+            var sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+        } else if (document.selection && document.body.createTextRange) {
+            var textRange = document.body.createTextRange();
+            textRange.moveToElementText(containerEl);
+            textRange.collapse(true);
+            textRange.moveEnd("character", savedSel.end);
+            textRange.moveStart("character", savedSel.start);
+            textRange.select();
+        }
     };
 
     this.keyListen = function(elem) {
+        //console.log('focus change');
+        //savedSelection = saveSelection(document.getElementById(elem));
+        //console.log(savedSelection);
+
         var getKeyCode = function() {
             var editableEl = document.getElementById(elem);
             // lowercase
@@ -915,12 +1196,19 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', f
         $('#hidden_input').focus();
     }
 
+    this.checkCursor = function($event, elem) {
+        // Store current caret pos
+        savedSelection = self.saveSelection(document.getElementById(elem));
+        console.log('savedSelection: ' + savedSelection);
+    };
+
     this.checkKey = function($event, elem) {
         // Stop the default behavior for the ENTER key and insert <br><br> instead
         if ($event.keyCode == 13) {
             $event.preventDefault();
-            self.pasteHtmlAtCaret("<br><span id='focus'></span>");
-            moveCaretInto('focus');
+            self.pasteHtmlAtCaret("<br><span class='scroll_enter_latest' id='enter_focus'></span>");
+            //self.pasteHtmlAtCaret("<br><span id='enter_focus'></span>");
+            moveCaretInto('enter_focus');
             return false;
         }
     };
@@ -959,6 +1247,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', f
 
 
 cardApp.service('replaceTags', function() {
+
     var self = this;
 
     this.replace = function(str) {
@@ -1006,6 +1295,22 @@ cardApp.service('replaceTags', function() {
         }
     };
 
+    this.removeFocusIds = function(str) {
+        console.log('removefocids');
+        str = $("<div>" + str + "</div>");
+        $('span#focus', str).each(function(e) {
+            $(this).replaceWith($(this).html());
+        });
+        // check if any remain
+        if ($(str).find('span#focus').length > 0) {
+            str = str.html();
+            return self.removeFocusIds(str);
+        } else {
+            str = str.html();
+            return str;
+        }
+    };
+
 });
 
 cardApp.service('Edit', function() {
@@ -1029,25 +1334,391 @@ cardApp.service('Edit', function() {
 
     // Close the dropdown menu if the user clicks outside of it
     window.onclick = function(event) {
-        if (!event.target.matches('.glyphicon-option-vertical')) {
+        if (!event.target.matches('.material-icons')) {
             closeDropdowns();
         }
     };
 
 });
 
+cardApp.service('FormatHTML', ['Format', function(Format) {
+
+    this.stripHtml = function(html) {
+        var div = document.createElement("div");
+        div.innerHTML = html;
+        var text = div.textContent || div.innerText || "";
+        return text;
+    };
+
+    this.fixhtml = function(html) {
+        var div = document.createElement('div');
+        div.innerHTML = html;
+        return (div.innerHTML);
+    };
+
+    this.prepSentContent = function(content, length) {
+        var string_count = length;
+        var temp_content = Format.checkForImage(content);
+        // Remove unwanted HTML
+        var regex_1 = temp_content.replace(/\u200b/gi, "");
+        var regex_2 = regex_1.replace(/\s{2,}/gi, " ");
+        var regex_3 = regex_2.replace(/<span>/gi, "");
+        var regex_4 = regex_3.replace(/<\/span>/gi, "");
+        var regex_5 = regex_4.replace(/<br>/gi, " ");
+        var regex_6 = regex_5.replace(/<h([1-7])>(.*?)<\/h[1-7]>/gi, "<b> $2 </b>");
+
+        temp_content = regex_6;
+
+        // Loop through the content to count the characters only and not the HTML
+        var count = 0;
+        var counting = true;
+        for (var i = 0; i <= temp_content.length; i++) {
+            if (counting && temp_content[i] == '<') {
+                counting = false;
+            }
+            if (counting) {
+                count++;
+            }
+            if (!counting && temp_content[i] == '>') {
+                counting = true;
+            }
+            if (count > string_count) {
+                // Fix any unclosed HTML tags
+                temp_content = this.fixhtml(temp_content.substr(0, i + 1));
+                break;
+            }
+        }
+        if (temp_content.length >= string_count) {
+            temp_content += '...';
+        }
+        return temp_content;
+    };
+
+}]);
+
+cardApp.service('General', ['Users', function(Users) {
+
+    // Find User
+    this.findUser = function(id, callback) {
+        var user_found;
+        Users.search_id(id)
+            .then(function(handleSuccess) {
+                user_found = handleSuccess.data.success;
+                return callback(user_found);
+            })
+            .catch(function(handleError) {
+                //
+            });
+    };
+
+    // Find the array index of an object value
+    this.findWithAttr = function(array, attr, value) {
+        for (var i = 0; i < array.length; i += 1) {
+            if (array[i][attr] === value) {
+                return i;
+            }
+        }
+        return -1;
+    };
+
+}]);
+
+cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', 'General', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML, General) {
+
+    var self = this;
+
+    var updateinprogress = false;
+    var sent_content_length = 28;
+
+    var card_create = {
+        _id: 'card_create',
+        content: '',
+        user: '',
+        user_name: ''
+    };
+
+    //Set the FCM data for the Notification request
+    var data = {
+        "to": "",
+        "notification": {
+            "title": "",
+            "body": ""
+        },
+        "data": {
+            "url": ""
+        }
+    };
+    var headers = {
+        'Authorization': "",
+        'Content-Type': 'application/json'
+    };
+    var options = {
+        uri: 'https://fcm.googleapis.com/fcm/send',
+        method: 'POST',
+        headers: headers,
+        json: data
+    };
+
+    // Get the FCM details (Google firebase notifications).
+    $http.get("/api/fcm_data").then(function(result) {
+        if (result != result.data.fcm != 'forbidden') {
+            fcm = result.data.fcm;
+            headers.Authorization = 'key=' + fcm.firebaseserverkey;
+        }
+    });
+
+    this.setNotification = function(data, currentUser, card_content) {
+        var notification_title;
+        var notification_body;
+        // Public conversation
+        if (data.conversation_type == 'public') {
+            // Get the conversation name and add to model.
+            notification_title = data.conversation_name;
+            notification_body = card_content;
+        }
+        // Group conversation. 
+        if (data.participants.length > 2) {
+            // Set the notification title to the conversation title
+            notification_title = data.conversation_name;
+            notification_body = '<b>' + currentUser.google.name + '</b>' + ': ' + card_content;
+        }
+        // Two user conversation (not a group)
+        if (data.participants.length == 2) {
+            // Set the notification title to the senders name
+            notification_title = currentUser.google.name;
+            notification_body = card_content;
+        }
+        var notification = { title: notification_title, body: notification_body };
+        return notification;
+    };
+
+    // UPDATE CARD
+    this.updateCard = function(card_id, card, currentUser) {
+        if (!updateinprogress) {
+            updateinprogress = true;
+            setTimeout(function() {
+
+                var promises = [];
+
+                card.content = Format.setMediaSize(card_id, card);
+                card.content = replaceTags.replace(card.content);
+                //card.content = replaceTags.removeDeleteId(card.content);
+                //card.content = replaceTags.removeFocusIds(card.content);
+
+                var sent_content;
+                var notification_title;
+                var notification_body;
+                var card_content = card.content;
+
+                var pms = { 'id': card_id, 'card': card };
+
+                // call the create function from our service (returns a promise object)
+                Cards.update(pms)
+                    .then(function(returned) {
+                        $rootScope.$broadcast('CARD_UPDATED', returned.data);
+                        var viewed_users = [];
+                        // Update the Conversation updateAt time.
+                        Conversations.updateTime(card.conversationId)
+                            .then(function(response) {
+                                var notification = self.setNotification(response.data, currentUser, card_content);
+                                notification_title = notification.title;
+                                notification_body = notification.body;
+                                sent_content = FormatHTML.prepSentContent(notification_body, sent_content_length);
+                                // Send notifications
+                                for (var i in response.data.participants) {
+                                    // dont emit to the user which sent the card
+                                    if (response.data.participants[i]._id !== currentUser._id) {
+                                        // Add this users id to the viewed_users array.
+                                        viewed_users.push({ "_id": response.data.participants[i]._id });
+                                        // Find the other user(s)
+                                        General.findUser(response.data.participants[i]._id, function(result) {
+                                            // Get the participants notification key
+                                            // Set the message title and body
+                                            if (result.notification_key !== undefined) {
+                                                data.to = result.notification_key;
+                                                data.notification.title = notification_title;
+                                                data.notification.body = sent_content;
+                                                // get the conversation id
+                                                data.data.url = response.data._id;
+                                                // Send the notification
+                                                Users.send_notification(options)
+                                                    .then(function(res) {
+                                                        //console.log(res);
+                                                    });
+                                            }
+                                        });
+                                    }
+                                }
+                                // Update the unviewed arrary for all participants.
+                                for (var x = 0; x < viewed_users.length; x++) {
+                                    promises.push(
+                                        Conversations.updateViewed(card.conversationId, viewed_users[x]._id, card_id)
+                                        .then(function(res) {
+                                            //console.log(res);
+                                        })
+                                    );
+                                }
+                                // All Conversation participants unviewed arrays updated
+                                $q.all(promises).then(function() {
+                                    // update other paticipants in the conversation via socket.
+                                    socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: card.conversationId, participants: viewed_users });
+                                    updateinprogress = false;
+                                });
+                            });
+                    })
+                    .catch(function(error) {
+                        console.log('error: ' + error);
+                    });
+            }, 0);
+        }
+    };
+
+    // CREATE CARD
+    this.createCard = function(id, card_create, currentUser) {
+        var promises = [];
+        card_create.user = currentUser.google.name;
+        // Get the Conversation in which this card is being created.
+        var current_conversation_id = Conversations.getConversationId();
+        card_create.conversationId = current_conversation_id;
+        card_create.content = Format.setMediaSize(id, card_create);
+        card_create.content = replaceTags.replace(card_create.content);
+        card_create.content = Format.removeDeleteIds();
+        card_create.content = replaceTags.removeDeleteId(card_create.content);
+        card_create.content = replaceTags.removeFocusIds(card_create.content);
+
+        var sent_content;
+        var notification_title;
+        var notification_body;
+        var card_content = card_create.content;
+
+        Cards.create(card_create)
+            .then(function(response) {
+                var card_id = response.data._id;
+                var card_response = response.data;
+                // notify conversation_ctrl and cardcreate_ctrl that the conversation has been updated
+                // reset the input box
+                $rootScope.$broadcast('CARD_CREATED', card_response);
+                var viewed_users = [];
+                // Update the Conversation updateAt time.
+                Conversations.updateTime(current_conversation_id)
+                    .then(function(response) {
+                        var notification = self.setNotification(response.data, currentUser, card_content);
+                        notification_title = notification.title;
+                        notification_body = notification.body;
+                        sent_content = FormatHTML.prepSentContent(notification_body, sent_content_length);
+                        // Send notifications
+                        for (var i in response.data.participants) {
+                            // dont emit to the user which sent the card
+                            if (response.data.participants[i]._id !== currentUser._id) {
+                                // Add this users id to the viewed_users array.
+                                viewed_users.push({ "_id": response.data.participants[i]._id });
+                                // Find the other user(s)
+                                General.findUser(response.data.participants[i]._id, function(result) {
+                                    // Get the participants notification key
+                                    // Set the message title and body
+                                    if (result.notification_key !== undefined) {
+                                        data.to = result.notification_key;
+                                        data.notification.title = notification_title;
+                                        data.notification.body = sent_content;
+                                        // get the conversation id
+                                        data.data.url = response.data._id;
+                                        // Send the notification
+                                        Users.send_notification(options)
+                                            .then(function(res) {
+                                                //console.log(res);
+                                            });
+                                    }
+                                });
+                            }
+                        }
+                        // Update the unviewed arrary for all participants.
+                        for (var x = 0; x < viewed_users.length; x++) {
+                            promises.push(
+                                Conversations.updateViewed(current_conversation_id, viewed_users[x]._id, card_id)
+                                .then(function(res) {
+                                    //
+                                })
+                            );
+                        }
+                        // All Conversation participants unviewed arrays updated
+                        $q.all(promises).then(function() {
+                            // update other paticipants in the conversation via socket.
+                            socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: current_conversation_id, participants: viewed_users });
+                        });
+                    });
+            });
+    };
+
+    // DELETE CARD
+    this.deleteCard = function(card_id, conversation_id, currentUser) {
+        var sent_content;
+        var notification_title;
+        var notification_body;
+        var card_content = 'Post deleted.';
+        Cards.delete(card_id)
+            .then(function(response) {
+                // notify conversation_ctrl that the card has been deleted
+                $rootScope.$broadcast('CARD_DELETED', card_id);
+                // remove this Card from the unviewed array for all Conversation participants.
+                Conversations.removeViewed(conversation_id, currentUser, card_id)
+                    .then(function(response) {
+                        var notification = self.setNotification(response.data, currentUser, card_content);
+                        notification_title = notification.title;
+                        notification_body = notification.body;
+                        sent_content = FormatHTML.prepSentContent(notification_body, sent_content_length);
+                        // Send notifications
+                        for (var i in response.data.participants) {
+                            // dont emit to the user which sent the card
+                            if (response.data.participants[i]._id !== currentUser._id) {
+                                // Find the other user(s)
+                                General.findUser(response.data.participants[i]._id, function(result) {
+                                    // Get the participants notification key
+                                    // set the message title and body
+                                    if (result.notification_key !== undefined) {
+                                        data.to = result.notification_key;
+                                        data.notification.title = notification_title;
+                                        data.notification.body = sent_content;
+                                        // get the conversation id
+                                        data.data.url = response.data._id;
+                                        // Send the notification
+                                        Users.send_notification(options)
+                                            .then(function(res) {
+                                                //console.log(res);
+                                            });
+                                    }
+                                });
+                            }
+                        }
+                        // socket.io emit the card posted to the server
+                        socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: response.data._id, participants: response.data.participants });
+                    });
+            })
+            .catch(function(error) {
+                console.log('error: ' + error);
+            });
+    };
+
+}]);
+
 cardApp.directive("contenteditable", function() {
     return {
         require: "ngModel",
         link: function(scope, element, attrs, ngModel) {
             function read() {
+                console.log(element.html());
                 ngModel.$setViewValue(element.html());
             }
             ngModel.$render = function() {
                 element.html(ngModel.$viewValue || "");
             };
-            element.bind("blur keyup change", function() {
-                scope.$apply(read);
+            element.bind("blur keyup change", function(event) {
+                //element.bind("keyup change", function() {
+                // WARNING added - if (!scope.$$phase) { 31/01/18
+                //console.log(event);
+                // console.log(event.target.innerHTML);
+                if (!scope.$$phase) {
+                    scope.$apply(read);
+                }
             });
         }
     };

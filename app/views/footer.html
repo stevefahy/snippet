@@ -1,0 +1,17 @@
+<div class="footer">
+    <div ng-controller="footerCtrl">
+        <hr id="footer">
+        <i class="material-icons" id="mi-search" ng-click="search_icon()">search</i>
+        <a href="/c/create_card">
+            <i class="material-icons" id="mi-add_circle_outline">add_circle_outline</i>
+        </a>
+        <form class="form-horizontal">
+            <input id="search_input" class="form-control" type="text" ng-model="input" ng-show="showDiv">
+            <button id="search_button" type="submit" class="btn btn-sm btn-warning" ng-show="showDiv" ng-click="searchCard()">Search</button>
+            <a ng-if="currentUser" href ng-click="logOut()">Logout</a>
+            <a ng-if="!currentUser" href ng-click="logIn()">Login</a>
+            <a href ng-click="changePath('/c/contacts')">Contacts</a>
+            <a href ng-click="changePath('/chat/conversations')">Conversations</a>
+        </form>
+    </div>
+</div>

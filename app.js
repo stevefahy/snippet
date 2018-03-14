@@ -37,7 +37,6 @@ io.on('connection', function(socket) {
     console.log('SERVER CONNECTION: ' + socket.id + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     // namespace sent by client
     var ns;
-
     socket.on('create_ns', function(ns) {
         console.log('create ns: ' + ns);
         // create unique namespace requested by client
@@ -81,10 +80,8 @@ io.on('connection', function(socket) {
                 console.log('SERVER NS DELETE: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
                 delete io.nsps['/' + nspn];
                 socket.disconnect('unauthorized');
-
                 socket.removeAllListeners('connection');
             });
-
         });
     });
 
@@ -106,8 +103,9 @@ for (var k in interfaces) {
         }
     }
 }
-// Dell XPS 13
-if (addresses == '192.168.192.60') {
+// Dell XPS 13 or other local networks
+console.log(addresses);
+if (addresses == '192.168.192.60' || addresses == '10.21.221.127' || addresses == '10.61.137.245' || addresses == '192.168.43.199') {
     // MongoDB
     var dburl = urls.localUrl;
     // Google Auth callBackURL
