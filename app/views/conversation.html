@@ -26,7 +26,7 @@
                         ng-blur="getBlur(card._id, card, currentUser)"
                         ng-keyup="checkCursor($event,'ce'+card_create._id)" ng-click="checkCursor($event,'ce'+card_create._id)" ng-model="card.content" ng-model-options="{ debounce: 1000 }"></div>-->
                         <div class='ce' ng-attr-id="{{ 'ce' + card._id }}" contenteditable="true" ng-change="contentChanged(card.content, 'ce'+card._id)"  
-                        ng-blur="getBlur(card._id, card, currentUser)"
+                        
                         ng-model="card.content" ng-model-options="{ debounce: 1000 }"></div>
                         <time am-time-ago="card.updatedAt" id="time"></time>
                         <input id="upload-input" type="file" name="uploads[]" multiple="multiple">
