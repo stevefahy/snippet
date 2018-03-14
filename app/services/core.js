@@ -1656,7 +1656,7 @@ cardApp.directive("contenteditable", function() {
             //element.bind("keyup change", function() {
                 // WARNING added - if (!scope.$$phase) { 31/01/18
                     console.log(event);
-                    console.log(event.innerHTML);
+                    console.log(event.target.innerHTML);
                 if (!scope.$$phase) {
                     scope.$apply(read);
                 }
