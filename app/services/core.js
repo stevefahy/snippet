@@ -508,7 +508,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.getBlur = function(id, card, currentUser) {
-        /*
         console.log('getBlur');
         // Add slight delay so that document.activeElement works
         setTimeout(function() {
@@ -530,7 +529,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 }
             }
         }, 0);
-        */
 
     };
 
@@ -1642,7 +1640,8 @@ cardApp.directive("contenteditable", function() {
             ngModel.$render = function() {
                 element.html(ngModel.$viewValue || "");
             };
-            element.bind("blur keyup change", function() {
+            //element.bind("blur keyup change", function() {
+            element.bind("keyup change", function() {
                 // WARNING added - if (!scope.$$phase) { 31/01/18
                 if (!scope.$$phase) {
                     scope.$apply(read);
