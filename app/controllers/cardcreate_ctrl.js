@@ -1,8 +1,7 @@
 cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$timeout', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'socket', 'Users', 'Database', function($scope, $rootScope, $location, $http, $window, $timeout, Cards, replaceTags, Format, Edit, Conversations, socket, Users, Database) {
 
+    var fcm;
     var ua = navigator.userAgent;
-
-    var DEFAULT_TEXT = "<span class=\"disable_edit\" unselectable=\"on\" onselectstart=\"return false;\">Type a message</span>";
 
     $scope.getFocus = Format.getFocus;
     $scope.contentChanged = Format.contentChanged;
@@ -13,53 +12,9 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
     $scope.uploadFile = Format.uploadFile;
     $scope.myFunction = Edit.myFunction;
 
-    $scope.input_text = DEFAULT_TEXT;
-
-    $scope.default = function() {
-        console.log('default');
-        if ($scope.card_create.content == DEFAULT_TEXT) {
-            $scope.card_create.content = '';
-        }
-    };
-
-
-    $timeout(function() {
-        var el = $window.document.getElementById('cecard_create');
-        el.onfocus = function() {
-            console.log('foc');
-            console.log($scope.card_create.content + ' == ' + DEFAULT_TEXT);
-            if ($scope.card_create.content == DEFAULT_TEXT) {
-
-                // Work around Chrome's little problem
-                window.setTimeout(function() {
-                    console.log('here');
-                    selection = window.getSelection();
-                    var sel = window.getSelection();
-                    range = document.createRange();
-                    range.setStart(el, 0);
-                    range.setEnd(el, 0);
-                    selection.removeAllRanges();
-                    selection.addRange(range);
-
-
-                }, 100);
-
-            }
-
-
-        };
-    });
-    /*
-    el.focus();
-        var range = el.createTextRange();
-        range.collapse(true);
-        range.select();
-        */
-
-
     $scope.card_create = {
         _id: 'card_create',
-        content: DEFAULT_TEXT, //'',
+        content: '',
         //user: $scope.currentUser,
         user_name: ''
     };
@@ -71,7 +26,7 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
 
     // Create Card
     $scope.createCard = function(id, card_create) {
-        Database.createCard(id, card_create, $scope.currentUser);
+        Database.createCard(id, card_create, fcm, $scope.currentUser);
     };
 
     setFocus = function() {
@@ -82,6 +37,19 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
                 $rootScope.$broadcast('CONV_CHECK');
             }
         });
+    };
+
+    // Find User
+    findUser = function(id, callback) {
+        var user_found;
+        Users.search_id(id)
+            .success(function(res) {
+                user_found = res.success;
+                callback(user_found);
+            })
+            .error(function(error) {
+                //
+            });
     };
 
     // only check focus on web version
@@ -98,6 +66,12 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
     $http.get("/api/user_data").then(function(result) {
         $scope.currentUser = result.data.user;
         $scope.card_create.user = $scope.currentUser.google.name;
+    });
+
+    // Todo move to core.js?
+    // Get the FCM details
+    $http.get("/api/fcm_data").then(function(result) {
+        fcm = result.data.fcm;
     });
 
 }]);

@@ -8,7 +8,7 @@
 #cet {
     display: inline-block;
     width: 100%;
-    word-wrap: break-word;
+    word-wrap: normal;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arimo, Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
     font-size: 1.5rem;
     line-height: 1.4em;
@@ -40,31 +40,6 @@
     border-style: solid;
     border-color: #e6e6e6;
     border-width: 1px;
-
-    position: fixed;
-    bottom: 44px;
-}
-
-.default_text {
-
-    left: 30px;
-    position: fixed;
-    bottom: 80px;
-    /* background-color: red; */
-    /* width: 200px; */
-    /* height: 50px; */
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-
-.disable_edit {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    color: red;
 }
 
 #cet {
@@ -329,15 +304,6 @@ span.glyphicon.glyphicon-option-vertical {
 
 
 
-
-
-
-
-
-
-
-
-
 /* EDIT MENU */
 
 
@@ -350,28 +316,10 @@ span.glyphicon.glyphicon-option-vertical {
 }
 
 
-
-
-
-
-
-
-
-
-
 /* Dropdown button on hover & focus */
 
 .dropbtn:hover,
 .dropbtn:focus {}
-
-
-
-
-
-
-
-
-
 
 
 /* The container <div> - needed to position the dropdown content */
@@ -380,15 +328,6 @@ span.glyphicon.glyphicon-option-vertical {
     position: relative;
     display: inline-block;
 }
-
-
-
-
-
-
-
-
-
 
 
 /* Dropdown Content (Hidden by Default) */
@@ -404,15 +343,6 @@ span.glyphicon.glyphicon-option-vertical {
 }
 
 
-
-
-
-
-
-
-
-
-
 /* Links inside the dropdown */
 
 .dropdown-content div {
@@ -424,29 +354,11 @@ span.glyphicon.glyphicon-option-vertical {
 }
 
 
-
-
-
-
-
-
-
-
-
 /* Change color of dropdown links on hover */
 
 .dropdown-content a:hover {
     background-color: #f1f1f1
 }
-
-
-
-
-
-
-
-
-
 
 
 /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
@@ -526,16 +438,9 @@ li.list-group-item.d-flex.justify-content-between.align-items-center.ng-binding 
 }
 
 #conversations_badge {
-    padding-top: 4px;
-    padding-left: 7px;
-    padding-right: 7px;
-    border-radius: 100px;
-}
-
-.badge {
-    /* background-color: limegreen; */
-    /* background-color: forestgreen; */
-    background-color: olivedrab;
+    float: none;
+    margin-left: 5px;
+    margin-top: -1px;
 }
 
 #conversation_part {
@@ -552,8 +457,11 @@ li.list-group-item.d-flex.justify-content-between.align-items-center.ng-binding 
     border-width: 1px;
 }
 
+#conversation_container {
+    max-width: 600px;
+}
+
 #time {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 11px;
     color: darkslategray;
     font-weight: 500;
@@ -563,102 +471,4 @@ li.list-group-item.d-flex.justify-content-between.align-items-center.ng-binding 
 
 body {
     background-color: snow;
-
-    word-wrap: normal;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arimo, Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-    font-size: 1.5rem;
-    line-height: 1.4em;
-    font-weight: 200;
-    color: #000000;
-}
-
-#conv_div {
-    cursor: pointer;
-}
-
-#conv_usr_img {
-
-    width: 40px;
-    height: 40px;
-
-    background-color: #fafafa;
-    border-radius: 50%;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    cursor: pointer;
-    -webkit-box-flex: 0;
-    -webkit-flex: 0 0 auto;
-    -ms-flex: 0 0 auto;
-    flex: 0 0 auto;
-    overflow: hidden;
-    position: relative;
-    margin-right: 15px;
-    border-radius: 1;
-    border-color: tomato;
-    border: .5px solid #9E9E9E;
-    margin-top: 2px;
-}
-
-#convs_name {
-    color: darkslategrey;
-    font-weight: 600;
-}
-
-li.list-group-item.d-flex.justify-content-between.align-items-center {
-    border-color: #e6e6e6;
-    border-width: 1px;
-    border-width: ;
-    margin-bottom: -1px;
-}
-
-.convs_new {
-    display: flex;
-    flex-flow: column;
-    justify-content: center;
-    align-items: center;
-    float: right;
-    margin-top: -35px;
-}
-
-.convs_name_span {}
-
-.convs_container {
-    display: grid;
-    grid-gap: 0px;
-    grid-template-columns: max-content auto max-content;
-    grid-auto-columns: min-content;
-    grid-auto-columns: max-content;
-    grid-auto-columns: auto;
-    grid-auto-columns: fit-content(100%);
-
-    grid-auto-rows: min-content;
-    grid-auto-rows: max-content;
-    grid-auto-rows: auto;
-}
-
-.convs_a {
-    grid-column: 1;
-    grid-row-end: span 2;
-}
-
-.convs_b {
-    grid-column: 2;
-    grid-row: 1;
-}
-
-.convs_c {
-    grid-column: 3;
-    grid-row: 1;
-    margin-left: auto;
-}
-
-.convs_d {
-    grid-column: 2;
-    grid-row: 2;
-}
-
-.convs_e {
-    grid-column: 3;
-    grid-row: 2;
-    margin-left: auto;
 }

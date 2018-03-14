@@ -6,7 +6,7 @@
   "author": "Stephen Fahy",
   "dependencies": {
     "angular-moment": "^1.1.0",
-    "angular-sanitize": "1.5.11",
+    "angular-sanitize": "*",
     "base64url": "*",
     "bcrypt-nodejs": "latest",
     "body-parser": "*",
