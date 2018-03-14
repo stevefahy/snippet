@@ -1,4 +1,4 @@
-var cardApp = angular.module("cardApp", ['ngSanitize', 'ngRoute', 'angularMoment', 'ngAnimate']);
+var cardApp = angular.module("cardApp", ['ngSanitize', 'ngRoute', 'angularMoment']);
 
 // Prefix for loading a snip id
 var prefix = '/s/';
@@ -317,7 +317,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     insertImage = function(data) {
         if (data.response === 'saved') {
             var new_image = "<img class='resize-drag' id='new_image' onload='imageLoaded()' src='" + IMAGES_URL + data.file + "'><span id='delete'>&#x200b</span>";
-
+            
 
             self.pasteHtmlAtCaret(new_image);
             // commented out because it causes an issue with onblur which is used to update card.
@@ -417,9 +417,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             });
             // MS Edge only
             if (ua.toLowerCase().indexOf('edge') > -1) {
-                $timeout(function() {
-                    uploadClickListen();
-                });
+                uploadClickListen();
             }
         }
     };
@@ -873,8 +871,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         }
     };
 
-
-
     function getCharacterPrecedingCaret(containerEl) {
         var precedingChar = "",
             sel, range, precedingRange;
@@ -897,13 +893,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     }
 
     this.contentChanged = function(content, elem) {
-
         if (!self.paste_in_progress) {
-
-
-
-
-
             if (within_pre == false) {
                 // MARKY
                 self.markyCheck(content, elem, false);
@@ -979,137 +969,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         }
         return;
     };
-    /*
-    this.restoreCaret = function(elem) {
-        console.log('restoreCaret: ' + elem);
-        $("#" + elem).focus();
-        var node = document.querySelector('#cecard_create');
-        //console.log(node);
-        //var node = $("#" + id).get(0);
-        //range = document.createRange();
-        //range.setStart(node.firstChild, 1);
-
-
-        node.focus();
-        var textNode;
-        if (node.firstChild) {
-            textNode = node.firstChild;
-        } else {
-            textNode = node;
-        }
-        var caret = caretpos;
-        var range = document.createRange();
-        console.log(range);
-        range.setStart(textNode, caret);
-        range.setEnd(textNode, caret);
-        var sel = window.getSelection();
-        sel.removeAllRanges();
-        sel.addRange(range);
-    };
-
-    function getCaretCharacterOffsetWithin(element) {
-        var caretOffset = 0;
-        var doc = element.ownerDocument || element.document;
-        var win = doc.defaultView || doc.parentWindow;
-        var sel;
-        if (typeof win.getSelection != "undefined") {
-            sel = win.getSelection();
-            if (sel.rangeCount > 0) {
-                var range = win.getSelection().getRangeAt(0);
-                var preCaretRange = range.cloneRange();
-                preCaretRange.selectNodeContents(element);
-                preCaretRange.setEnd(range.endContainer, range.endOffset);
-                caretOffset = preCaretRange.toString().length;
-            }
-        } else if ((sel = doc.selection) && sel.type != "Control") {
-            var textRange = sel.createRange();
-            var preCaretTextRange = doc.body.createTextRange();
-            preCaretTextRange.moveToElementText(element);
-            preCaretTextRange.setEndPoint("EndToEnd", textRange);
-            caretOffset = preCaretTextRange.text.length;
-        }
-        return caretOffset;
-    }
-    */
-    var savedSelection;
-    //var saveSelection, restoreSelection;
-
-    saveSelection = function(containerEl) {
-        var start;
-        if (window.getSelection && document.createRange) {
-            var range = window.getSelection().getRangeAt(0);
-            var preSelectionRange = range.cloneRange();
-            preSelectionRange.selectNodeContents(containerEl);
-            preSelectionRange.setEnd(range.startContainer, range.startOffset);
-            start = preSelectionRange.toString().length;
-            return {
-                start: start,
-                end: start + range.toString().length
-            };
-        } else if (document.selection && document.body.createTextRange) {
-            var selectedTextRange = document.selection.createRange();
-            var preSelectionTextRange = document.body.createTextRange();
-            preSelectionTextRange.moveToElementText(containerEl);
-            preSelectionTextRange.setEndPoint("EndToStart", selectedTextRange);
-            start = preSelectionTextRange.text.length;
-            return {
-                start: start,
-                end: start + selectedTextRange.text.length
-            };
-        }
-    };
-
-    this.restoreSelection = function(containerEl) {
-        savedSel = savedSelection;
-        if (window.getSelection && document.createRange) {
-            var charIndex = 0,
-                range = document.createRange();
-            range.setStart(containerEl, 0);
-            range.collapse(true);
-            var nodeStack = [containerEl],
-                node, foundStart = false,
-                stop = false;
-            while (!stop && (node = nodeStack.pop())) {
-                if (node.nodeType == 3) {
-                    var nextCharIndex = charIndex + node.length;
-                    if (!foundStart && savedSel.start >= charIndex && savedSel.start <= nextCharIndex) {
-                        range.setStart(node, savedSel.start - charIndex);
-                        foundStart = true;
-                    }
-                    if (foundStart && savedSel.end >= charIndex && savedSel.end <= nextCharIndex) {
-                        range.setEnd(node, savedSel.end - charIndex);
-                        stop = true;
-                    }
-                    charIndex = nextCharIndex;
-                } else {
-                    var i = node.childNodes.length;
-                    while (i--) {
-                        nodeStack.push(node.childNodes[i]);
-                    }
-                }
-            }
-            var sel = window.getSelection();
-            sel.removeAllRanges();
-            sel.addRange(range);
-        } else if (document.selection && document.body.createTextRange) {
-            var textRange = document.body.createTextRange();
-            textRange.moveToElementText(containerEl);
-            textRange.collapse(true);
-            textRange.moveEnd("character", savedSel.end);
-            textRange.moveStart("character", savedSel.start);
-            textRange.select();
-        }
-    };
-/*
-    this.showCaretPos = function(elem) {
-        savedSelection = saveSelection(document.getElementById(elem));
-        console.log('savedSelection: ' + savedSelection);
-
-    };
-    */
 
     this.keyListen = function(elem) {
-        //self.showCaretPos(elem);
         var getKeyCode = function() {
             var editableEl = document.getElementById(elem);
             // lowercase
@@ -1148,13 +1009,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         $('#hidden_input').focus();
     }
 
-    this.checkCursor = function($event, elem) {
-        // Store current caret pos
-        console.log("checkCursor: " + elem);
-        //self.showCaretPos(elem);
-        savedSelection = saveSelection(document.getElementById(elem));
-    };
-
     this.checkKey = function($event, elem) {
         // Stop the default behavior for the ENTER key and insert <br><br> instead
         if ($event.keyCode == 13) {
@@ -1163,7 +1017,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             moveCaretInto('enter_focus');
             return false;
         }
-
     };
 
     this.handlePaste = function($event) {
@@ -1294,42 +1147,6 @@ cardApp.service('Edit', function() {
 });
 
 cardApp.service('FormatHTML', ['Format', function(Format) {
-    /*
-        this.removeEmptyTags = function(html) {
-            //(<(?!\/)[^>]+>)+(<\/[^>]+>)+
-            var cleaned = /(<pre.*?>)(.*?)(<\/pre>)/ig;
-        };
-        */
-
-    /*
-        this.removeAllTags = function(content) {
-            console.log('before: ' + content);
-
-            // var txt = document.getElementById('myString').value;
-            var reg_empty = /(<([^>]+)>)/ig;
-            var empty_tags = content.match(reg_empty);
-            console.log(empty_tags);
-            // content.replace(rex , "");
-            for (var i in empty_tags) {
-                //empty_tags[i].replace();
-                content = content.replace(empty_tags[i], "");
-            }
-
-            console.log('after: ' + content);
-            return content;
-        };
-        */
-
-
-    this.stripHtml = function(html) {
-        var div = document.createElement("div");
-        div.innerHTML = html;
-        //var text = div.textContent || div.innerText || "";
-        var text = div.textContent || div.innerText || "";
-        console.log('text: ' + text);
-        console.log('text length: ' + text.length);
-        return text;
-    };
 
     this.fixhtml = function(html) {
         var div = document.createElement('div');
