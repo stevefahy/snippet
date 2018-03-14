@@ -324,9 +324,16 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             var active = document.activeElement;
             console.log(active);
             active.focus();
+
             $timeout(function() {
-            self.pasteHtmlAtCaret(new_image);
-        },2000);
+               // console.log(savedImageSelection.container);
+               // self.restoreSelection(savedImageSelection.container);
+               // console.log(savedImageSelection);
+            }, 2000);
+
+            $timeout(function() {
+                self.pasteHtmlAtCaret(new_image);
+            }, 4000);
 
             //self.pasteImage(new_image);
             // commented out because it causes an issue with onblur which is used to update card.
@@ -669,19 +676,19 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             $('#' + id).html($('#' + id).html().replace(/<br>/g, ""));
         }
         $('#' + id).removeAttr('id');
-/*
-        // Scroll the pasted HTML into view
-        var scroll_latest = document.querySelector('.scroll_enter_latest');
-        console.log(scroll_latest);
-        if (scroll_latest != null) {
-            scroll_latest.scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
-            // remove scroll_latest after scrolling
-            $timeout(function() {
-                // Remove all .scroll_latest classes
-                $('.scroll_enter_latest').removeClass('scroll_enter_latest');
-            }, 100);
-        }
-        */
+        /*
+                // Scroll the pasted HTML into view
+                var scroll_latest = document.querySelector('.scroll_enter_latest');
+                console.log(scroll_latest);
+                if (scroll_latest != null) {
+                    scroll_latest.scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
+                    // remove scroll_latest after scrolling
+                    $timeout(function() {
+                        // Remove all .scroll_latest classes
+                        $('.scroll_enter_latest').removeClass('scroll_enter_latest');
+                    }, 100);
+                }
+                */
         return;
     }
 
@@ -902,6 +909,21 @@ if(word == 'zm'){
                                 //self.pasteHtmlAtCaret('&#x200b');
                                 self.pasteHtmlAtCaret('IMAGE');
                             }
+                        ).then(
+function() {
+                            return $timeout(function() {
+                                 savedImageSelection = self.saveSelection(document.getElementById(elem));
+                                    console.log('saved');
+                                    console.log(savedImageSelection);
+                            }, 1000);
+                        }
+                            /*
+                                function() {
+                                    savedImageSelection = self.saveSelection(document.getElementById(elem));
+                                    console.log('saved');
+                                    console.log(savedImageSelection);
+                                }
+                                */
                         );
                 }
             }
@@ -1020,21 +1042,21 @@ if(word == 'zm'){
                     console.log(sel);
                     sel.addRange(range);
                 }
-/*
-                $timeout(function() {
-                    // Scroll the pasted HTML into view
-                    scroll_latest = document.querySelector('.scroll_latest');
-                    console.log(scroll_latest);
-                    if (scroll_latest != null) {
-                        scroll_latest.scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
-                        // remove scroll_latest after scrolling
-                        $timeout(function() {
-                            // Remove all .scroll_latest classes
-                            $('.scroll_latest').removeClass('scroll_latest');
-                        }, 100);
-                    }
-                });
-                */
+                /*
+                                $timeout(function() {
+                                    // Scroll the pasted HTML into view
+                                    scroll_latest = document.querySelector('.scroll_latest');
+                                    console.log(scroll_latest);
+                                    if (scroll_latest != null) {
+                                        scroll_latest.scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
+                                        // remove scroll_latest after scrolling
+                                        $timeout(function() {
+                                            // Remove all .scroll_latest classes
+                                            $('.scroll_latest').removeClass('scroll_latest');
+                                        }, 100);
+                                    }
+                                });
+                                */
 
 
 
