@@ -491,14 +491,15 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     // Called by Android onPause
     // Update the card.
     this.getBlurAndroid = function(id, card, currentUser) {
+        console.log('getBlur Android');
         if (id != undefined && card != undefined && currentUser != undefined) {
             // Check if there is a marky in progress
             // zm launching image capture should not trigger an update. It causes error.
             found_marky = findMarky(card.content);
             // check the content has changed and not currently mid marky
             if (card.content != card.original_content && (found_marky == false)) {
+                console.log('getBlur Android update');
                 // Inject the Database Service
-                console.log('db');
                 var Database = $injector.get('Database');
                 // Update the card
                 Database.updateCard(id, card, currentUser);
@@ -507,6 +508,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.getBlur = function(id, card, currentUser) {
+        console.log('getBlur');
         // Add slight delay so that document.activeElement works
         setTimeout(function() {
             // Get the element currently in focus
@@ -518,6 +520,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 found_marky = findMarky(card.content);
                 // check the content has changed and not currently mid marky
                 if (card.content != card.original_content && (found_marky == false)) {
+                    console.log('getBlur update');
                     // Update the card
                     // Inject the Database Service
                     var Database = $injector.get('Database');
