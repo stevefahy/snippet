@@ -1022,8 +1022,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         }
         return;
 
-         }, 100);
-        
+         },0);
+
     };
 
     saveSelection = function(containerEl) {
