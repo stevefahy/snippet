@@ -149,12 +149,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     hideFooter();
                 } else {
                     showFooter();
+                    //hideFooter();
                 }
             } else {
                 if (window.innerHeight < portrait_height) {
                     hideFooter();
                 } else {
                     showFooter();
+                    //hideFooter();
                 }
             }
         }, false);
@@ -168,7 +170,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
         $('.footer').hide();
         $('#placeholderDiv').css('bottom', '-1px');
-        if (focused.id == 'cecard_create') {
+        //if (focused.id == 'cecard_create') {
             // TODO enter is a pasteHTML. need to add scroll into view for android
             // Paste div so that scrollintoview works on Android
             $scope.pasteHtmlAtCaret("<div class='scroll_latest_footer' id='scroll_latest_footer'></div>");
@@ -176,9 +178,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             document.getElementById('scroll_latest_footer').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
             // remove scroll_latest after scrolling
             $timeout(function() {
-                $(".scroll_latest_footer").remove();
+                //$(".scroll_latest_footer").remove();
             }, 100);
-        }
+        //}
     };
 
 
