@@ -328,13 +328,13 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             $timeout(function() {
                 // console.log(savedImageSelection.container);
                 //self.restoreSelection(savedImageSelection.container);
-                self.restoreSelection(savedSelection.container);
+//self.restoreSelection(savedSelection.container);
                 // console.log(savedImageSelection);
-            }, 2000);
+            }, 500);
 
             $timeout(function() {
                 self.pasteHtmlAtCaret(new_image);
-            }, 4000);
+            }, 0);
 
             //self.pasteImage(new_image);
             // commented out because it causes an issue with onblur which is used to update card.
@@ -925,14 +925,14 @@ if(word == 'zm'){
         */
                     $timeout(function() {
                             self.selectText(elem, currentChars);
-                        }, 1000)
+                        },0)
                         .then(
                             function() {
                                 return $timeout(function() {
-                                //self.pasteHtmlAtCaret('&#x200b');
-                                self.pasteHtmlAtCaret('&#x200b&#x200b');
+                                self.pasteHtmlAtCaret('&#x200b');
+                                //self.pasteHtmlAtCaret('&#x200b&#x200b');
                                 //self.pasteHtmlAtCaret('IMAGE');
-                                }, 1000);
+                                }, 0);
                             }
                         ).then(
                             function() {
@@ -940,7 +940,7 @@ if(word == 'zm'){
                                     //savedImageSelection = self.saveSelection(document.getElementById(elem));
                                     //console.log('saved');
                                     //console.log(savedImageSelection);
-                                }, 1000);
+                                }, 0);
                             }
                             /*
                                 function() {
@@ -1082,7 +1082,7 @@ if(word == 'zm'){
                 var id = $(sel.anchorNode).closest(".ce").attr('id');
                 console.log(id);
 
-                $('#'+id).trigger('click');
+//$('#'+id).trigger('click');
                 //var card = $(div).closest(".ce");
                 //console.log(card.id);
                 //$(document.activeElement).closest("div").attr('id');
