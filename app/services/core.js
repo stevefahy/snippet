@@ -327,7 +327,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
             $timeout(function() {
                 // console.log(savedImageSelection.container);
-                self.restoreSelection(savedImageSelection.container);
+                //self.restoreSelection(savedImageSelection.container);
+                self.restoreSelection(savedSelection.container);
                 // console.log(savedImageSelection);
             }, 2000);
 
@@ -421,7 +422,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         //var id = active.id;
         //var card = active.innerHTML;
         // check the content has changed and not currently mid marky
-        console.log(card.content + ' != ' + card.original_content);
+        //console.log(card.content + ' != ' + card.original_content);
         if (card.content != card.original_content) {
             console.log('save card');
             // Update the card
@@ -908,7 +909,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     // TODO Fix so that the actual script which is passed is called     
                     //console.log(marky_array[ma].script);
                     //this.uploadFileAndroid('file');
-                    console.log('elem: ' + elem);
                     if (marky_array[ma].script === 'getImage') {
                         $('#upload-trigger'+elem).trigger('click');
                     }
@@ -925,18 +925,21 @@ if(word == 'zm'){
         */
                     $timeout(function() {
                             self.selectText(elem, currentChars);
-                        }, 0)
+                        }, 1000)
                         .then(
                             function() {
+                                return $timeout(function() {
                                 //self.pasteHtmlAtCaret('&#x200b');
-                                self.pasteHtmlAtCaret('IMAGE');
+                                self.pasteHtmlAtCaret('&#x200b&#x200b');
+                                //self.pasteHtmlAtCaret('IMAGE');
+                                }, 1000);
                             }
                         ).then(
                             function() {
                                 return $timeout(function() {
-                                    savedImageSelection = self.saveSelection(document.getElementById(elem));
-                                    console.log('saved');
-                                    console.log(savedImageSelection);
+                                    //savedImageSelection = self.saveSelection(document.getElementById(elem));
+                                    //console.log('saved');
+                                    //console.log(savedImageSelection);
                                 }, 1000);
                             }
                             /*
@@ -1030,7 +1033,7 @@ if(word == 'zm'){
 
     this.pasteHtmlAtCaret = function(html) {
 
-        console.log(html);
+        //console.log(html);
         var sel, range, scroll_latest;
 
 
@@ -1038,7 +1041,7 @@ if(word == 'zm'){
         if (window.getSelection) {
             // IE9 and non-IE
             sel = window.getSelection();
-            console.log(sel);
+            //console.log(sel);
             if (sel.getRangeAt && sel.rangeCount) {
                 range = sel.getRangeAt(0);
                 range.deleteContents();
@@ -1061,9 +1064,12 @@ if(word == 'zm'){
                     }
                     range.collapse(true);
                     sel.removeAllRanges();
-                    console.log(sel);
+                    //console.log(sel);
                     sel.addRange(range);
                 }
+                //var active = document.activeElement;
+                //document.getElementById(active.id).focus();
+                //savedSelection = self.saveSelection(document.getElementById(active.id));
                 /*
                                 $timeout(function() {
                                     // Scroll the pasted HTML into view
@@ -1727,7 +1733,7 @@ cardApp.directive("contenteditable", function() {
         require: "ngModel",
         link: function(scope, element, attrs, ngModel) {
             function read() {
-                console.log(element.html());
+                //console.log(element.html());
                 ngModel.$setViewValue(element.html());
             }
             ngModel.$render = function() {
