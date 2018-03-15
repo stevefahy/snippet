@@ -1051,7 +1051,7 @@ if(word == 'zm'){
         if (window.getSelection) {
             // IE9 and non-IE
             sel = window.getSelection();
-            //console.log(sel);
+            console.log(sel);
             if (sel.getRangeAt && sel.rangeCount) {
                 range = sel.getRangeAt(0);
                 range.deleteContents();
