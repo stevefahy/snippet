@@ -1077,7 +1077,7 @@ if(word == 'zm'){
                     //console.log(sel);
                     sel.addRange(range);
                 }
-                console.log('pasteHtmlAtCaret');
+                console.log('after pasteHtmlAtCaret: ' + html);
                 console.log(sel.anchorNode);
                 var id = $(sel.anchorNode).closest(".ce").attr('id');
                 console.log(id);
@@ -1162,7 +1162,8 @@ if(word == 'zm'){
     this.restoreSelection = function(containerEl) {
         savedSel = savedSelection;
         //containerEl = savedSel.container;
-        console.log('restoreSelection: ' + savedSel);
+        console.log('restoreSelection');
+        console.log(savedSel);
         if (window.getSelection && document.createRange) {
             var charIndex = 0,
                 range = document.createRange();
