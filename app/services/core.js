@@ -437,7 +437,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         console.log(id);
         if (ua === 'AndroidApp') {
             // save first
-            //self.saveCard(id,card,currentUser);
+            self.saveCard(id,card,currentUser);
 
             Android.choosePhoto();
         } else {
