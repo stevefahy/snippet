@@ -991,6 +991,7 @@ if(word == 'zm'){
     };
 
     this.selectText = function(element, word) {
+        console.log('selectText');
         var doc = document;
         var current_node;
         var node_pos = self.findNodeNumber(doc.getElementById(element), word);
@@ -1067,6 +1068,7 @@ if(word == 'zm'){
                     //console.log(sel);
                     sel.addRange(range);
                 }
+                console.log('pasteHtmlAtCaret');
                 //var active = document.activeElement;
                 //document.getElementById(active.id).focus();
                 //savedSelection = self.saveSelection(document.getElementById(active.id));
