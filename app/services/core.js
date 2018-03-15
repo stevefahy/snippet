@@ -437,12 +437,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         console.log(id);
         if (ua === 'AndroidApp') {
             // save first
-            self.saveCard(id,card,currentUser);
+            //self.saveCard(id,card,currentUser);
 
             Android.choosePhoto();
         } else {
             console.log('uploadFile');
-            self.saveCard(id, card, currentUser);
+            //self.saveCard(id, card, currentUser);
             // All browsers except MS Edge
             if (ua.toLowerCase().indexOf('edge') == -1) {
                 uploadClickListen();
