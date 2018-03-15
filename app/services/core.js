@@ -309,7 +309,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     // Added for update. Ensures focus is called after an image is inserted.
     imageLoaded = function() {
         console.log('img loaded');
-        scrollLatest();
+        scrollLatest('scroll_image_latest');
         var active_el = document.activeElement;
         var new_image = document.getElementById('new_image');
         $(new_image).removeAttr('onload id');
@@ -319,7 +319,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     insertImage = function(data) {
         if (data.response === 'saved') {
-            var new_image = "<img class='resize-drag' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'><span class='scroll_latest' id='delete'>&#x200b</span>";
+            var new_image = "<img class='resize-drag' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'><span class='scroll_image_latest' id='delete'>&#x200b</span>";
             //$timeout(function() {
             self.pasteHtmlAtCaret(new_image);
             //}, 0);
@@ -992,18 +992,18 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             //this.pasteHtmlAtCaret(html);
         };
         */
-    scrollLatest = function() {
-        console.log('scrollLatest()');
+    scrollLatest = function(clas) {
+        console.log('scrollLatest(): ' + clas);
         $timeout(function() {
             // Scroll the pasted HTML into view
-            scroll_latest = document.querySelector('.scroll_latest');
+            scroll_latest = document.querySelector('.' + clas);
             console.log(scroll_latest);
             if (scroll_latest != null) {
                 scroll_latest.scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
                 // remove scroll_latest after scrolling
                 $timeout(function() {
                     // Remove all .scroll_latest classes
-                    $('.scroll_latest').removeClass('scroll_latest');
+                    $('.' + clas).removeClass(clas);
                 }, 100);
             }
         });
@@ -1048,7 +1048,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 //document.getElementById(active.id).blur();
                 //document.getElementById(active.id).focus();
                 //savedSelection = self.saveSelection(document.getElementById(active.id));
-                scrollLatest();
+                scrollLatest('scroll_latest');
 
 
 
