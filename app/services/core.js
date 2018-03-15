@@ -1016,9 +1016,13 @@ if(word == 'zm'){
             }
         }
         //sel.focus();
-                //var active = document.activeElement;
+                var active = document.activeElement;
+                //savedSelection = self.saveSelection(document.getElementById(active.id));
                 //document.getElementById(active.id).blur();
                 //document.getElementById(active.id).focus();
+                //console.log(element);
+                //$('#'+element).trigger('click');
+                //doc.getElementById(element).trigger('click');
 
 
         return;
@@ -1074,8 +1078,17 @@ if(word == 'zm'){
                     sel.addRange(range);
                 }
                 console.log('pasteHtmlAtCaret');
+                console.log(sel.anchorNode);
+                var id = $(sel.anchorNode).closest(".ce").attr('id');
+                console.log(id);
+
+                $('#'+id).trigger('click');
+                //var card = $(div).closest(".ce");
+                //console.log(card.id);
+                //$(document.activeElement).closest("div").attr('id');
                 //sel.focus();
                 //var active = document.activeElement;
+                //console.log(active);
                 //document.getElementById(active.id).blur();
                 //document.getElementById(active.id).focus();
                 //savedSelection = self.saveSelection(document.getElementById(active.id));
