@@ -21,10 +21,13 @@
                         <!--
                         <div class='ce' ng-attr-id="{{ 'ce' + card._id }}" ng-attr-contenteditable="{{card.user == currentUser._id}}" ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id)" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce'+card._id)" ng-blur="getBlur(card._id, card, currentUser)" ng-model="card.content" ng-model-options="{ debounce: 1000 }">
                         </div>-->
-                        
+                        <div class='ce' ng-attr-id="{{ 'ce' + card._id }}" contenteditable="true" ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id);" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce'+card._id);" ng-blur="getBlur(card._id, card, currentUser)" ng-model="card.content" ng-model-options="{ debounce: 1000 }"></div>
+                        <!--
+                            WORKS
                         <div class='ce' ng-attr-id="{{ 'ce' + card._id }}" contenteditable="true" ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id); default();" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce'+card._id); checkCursor($event,'ce'+card._id)" 
                         ng-blur="getBlur(card._id, card, currentUser)"
                         ng-keyup="checkCursor($event,'ce'+card._id)" ng-click="checkCursor($event,'ce'+card._id)" ng-model="card.content" ng-model-options="{ debounce: 1000 }"></div>
+                    -->
                         <!--
                         <div class='ce' ng-attr-id="{{ 'ce' + card._id }}" contenteditable="true" ng-change="contentChanged(card.content, 'ce'+card._id)"  
                         
