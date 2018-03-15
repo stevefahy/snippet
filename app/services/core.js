@@ -320,7 +320,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         if (data.response === 'saved') {
             var new_image = "<img class='resize-drag' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'><span class='scroll_latest' id='delete'>&#x200b</span>";
             //$timeout(function() {
-                self.pasteHtmlAtCaret(new_image);
+            self.pasteHtmlAtCaret(new_image);
             //}, 0);
 
             //self.pasteImage(new_image);
@@ -678,7 +678,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             $('#' + id).html($('#' + id).html().replace(/<br>/g, ""));
         }
         $('#' + id).removeAttr('id');
-        /*
+        
                 // Scroll the pasted HTML into view
                 var scroll_latest = document.querySelector('.scroll_enter_latest');
                 console.log(scroll_latest);
@@ -690,7 +690,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                         $('.scroll_enter_latest').removeClass('scroll_enter_latest');
                     }, 100);
                 }
-                */
+                
         return;
     }
 
@@ -981,16 +981,16 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
         return;
     };
-/*
-    this.pasteImage = function(html) {
-        //savedSelection = saveSelection(document.getElementById(elem));
-        //console.log(savedSelection);
-        console.log(savedImageSelection.container);
-        this.restoreSelection(savedImageSelection.container);
-        console.log(savedImageSelection);
-        //this.pasteHtmlAtCaret(html);
-    };
-    */
+    /*
+        this.pasteImage = function(html) {
+            //savedSelection = saveSelection(document.getElementById(elem));
+            //console.log(savedSelection);
+            console.log(savedImageSelection.container);
+            this.restoreSelection(savedImageSelection.container);
+            console.log(savedImageSelection);
+            //this.pasteHtmlAtCaret(html);
+        };
+        */
 
     this.pasteHtmlAtCaret = function(html) {
         var sel, range, scroll_latest;
@@ -1031,21 +1031,21 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 //document.getElementById(active.id).blur();
                 //document.getElementById(active.id).focus();
                 //savedSelection = self.saveSelection(document.getElementById(active.id));
-                /*
-                                $timeout(function() {
-                                    // Scroll the pasted HTML into view
-                                    scroll_latest = document.querySelector('.scroll_latest');
-                                    console.log(scroll_latest);
-                                    if (scroll_latest != null) {
-                                        scroll_latest.scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
-                                        // remove scroll_latest after scrolling
-                                        $timeout(function() {
-                                            // Remove all .scroll_latest classes
-                                            $('.scroll_latest').removeClass('scroll_latest');
-                                        }, 100);
-                                    }
-                                });
-                                */
+
+                $timeout(function() {
+                    // Scroll the pasted HTML into view
+                    scroll_latest = document.querySelector('.scroll_latest');
+                    console.log(scroll_latest);
+                    if (scroll_latest != null) {
+                        scroll_latest.scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
+                        // remove scroll_latest after scrolling
+                        $timeout(function() {
+                            // Remove all .scroll_latest classes
+                            $('.scroll_latest').removeClass('scroll_latest');
+                        }, 100);
+                    }
+                });
+
 
 
 
