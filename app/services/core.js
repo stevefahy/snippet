@@ -317,24 +317,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     insertImage = function(data) {
-        console.log(data);
         if (data.response === 'saved') {
             var new_image = "<img class='resize-drag' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'><span class='scroll_latest' id='delete'>&#x200b</span>";
-            console.log(new_image);
-            //var active = document.activeElement;
-            //console.log(active);
-            //active.focus();
-
-            $timeout(function() {
-                // console.log(savedImageSelection.container);
-                //self.restoreSelection(savedImageSelection.container);
-//self.restoreSelection(savedSelection.container);
-                // console.log(savedImageSelection);
-            }, 500);
-
-            $timeout(function() {
+            //$timeout(function() {
                 self.pasteHtmlAtCaret(new_image);
-            }, 0);
+            //}, 0);
 
             //self.pasteImage(new_image);
             // commented out because it causes an issue with onblur which is used to update card.
@@ -418,14 +405,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.saveCard = function(id, card, currentUser) {
-        //var active = document.activeElement;
-        //var id = active.id;
-        //var card = active.innerHTML;
-        // check the content has changed and not currently mid marky
-        //console.log(card.content + ' != ' + card.original_content);
+        // check the content has changed.
         if (card.content != card.original_content) {
-            console.log('save card');
-            // Update the card
             // Inject the Database Service
             var Database = $injector.get('Database');
             // Update the card
@@ -436,9 +417,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     this.uploadFile = function(id, card, currentUser) {
         console.log(id);
         if (ua === 'AndroidApp') {
-            // save first
-            self.saveCard(id,card,currentUser);
-
+            // save first (Android bug)
+            self.saveCard(id, card, currentUser);
             Android.choosePhoto();
         } else {
             console.log('uploadFile');
@@ -910,45 +890,19 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     //console.log(marky_array[ma].script);
                     //this.uploadFileAndroid('file');
                     if (marky_array[ma].script === 'getImage') {
-                        $('#upload-trigger'+elem).trigger('click');
+                        $('#upload-trigger' + elem).trigger('click');
                     }
                     // Use timeout to fix bug on Galaxy S6 (Chrome, FF, Canary)
                     // Timeout causing bug on Web MS Edge. Removed and changed paste from '' to '&#x200b'
-                    /*
-                            console.log('word: ' + word);
-if(word == 'zm'){
-        console.log('image upload fired zm');
-        savedImageSelection = this.saveSelection(document.getElementById(element));
-        console.log('saved');
-        console.log(savedImageSelection);
-        }
-        */
                     $timeout(function() {
                             self.selectText(elem, currentChars);
-                        },0)
+                        }, 0)
                         .then(
                             function() {
-                                return $timeout(function() {
+                                //return $timeout(function() {
                                 self.pasteHtmlAtCaret('&#x200b');
-                                //self.pasteHtmlAtCaret('&#x200b&#x200b');
-                                //self.pasteHtmlAtCaret('IMAGE');
-                                }, 0);
+                                //}, 0);
                             }
-                        ).then(
-                            function() {
-                                return $timeout(function() {
-                                    //savedImageSelection = self.saveSelection(document.getElementById(elem));
-                                    //console.log('saved');
-                                    //console.log(savedImageSelection);
-                                }, 0);
-                            }
-                            /*
-                                function() {
-                                    savedImageSelection = self.saveSelection(document.getElementById(elem));
-                                    console.log('saved');
-                                    console.log(savedImageSelection);
-                                }
-                                */
                         );
                 }
             }
@@ -1016,42 +970,33 @@ if(word == 'zm'){
             }
         }
         //sel.focus();
-                var active = document.activeElement;
-                //savedSelection = self.saveSelection(document.getElementById(active.id));
-                //document.getElementById(active.id).blur();
-                //document.getElementById(active.id).focus();
-                //console.log(element);
-                //$('#'+element).trigger('click');
-                //doc.getElementById(element).trigger('click');
+        var active = document.activeElement;
+        //savedSelection = self.saveSelection(document.getElementById(active.id));
+        //document.getElementById(active.id).blur();
+        //document.getElementById(active.id).focus();
+        //console.log(element);
+        //$('#'+element).trigger('click');
+        //doc.getElementById(element).trigger('click');
 
 
         return;
     };
-
+/*
     this.pasteImage = function(html) {
-
         //savedSelection = saveSelection(document.getElementById(elem));
         //console.log(savedSelection);
         console.log(savedImageSelection.container);
-
         this.restoreSelection(savedImageSelection.container);
         console.log(savedImageSelection);
         //this.pasteHtmlAtCaret(html);
-
-
     };
+    */
 
     this.pasteHtmlAtCaret = function(html) {
-
-        //console.log(html);
         var sel, range, scroll_latest;
-
-
-
         if (window.getSelection) {
             // IE9 and non-IE
             sel = window.getSelection();
-            console.log(sel);
             if (sel.getRangeAt && sel.rangeCount) {
                 range = sel.getRangeAt(0);
                 range.deleteContents();
@@ -1074,15 +1019,9 @@ if(word == 'zm'){
                     }
                     range.collapse(true);
                     sel.removeAllRanges();
-                    //console.log(sel);
                     sel.addRange(range);
                 }
-                console.log('after pasteHtmlAtCaret: ' + html);
-                console.log(sel.anchorNode);
-                var id = $(sel.anchorNode).closest(".ce").attr('id');
-                console.log(id);
-
-//$('#'+id).trigger('click');
+                //$('#'+id).trigger('click');
                 //var card = $(div).closest(".ce");
                 //console.log(card.id);
                 //$(document.activeElement).closest("div").attr('id');
