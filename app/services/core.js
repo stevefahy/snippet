@@ -1015,6 +1015,11 @@ if(word == 'zm'){
                 selection.addRange(range);
             }
         }
+        //sel.focus();
+                //var active = document.activeElement;
+                //document.getElementById(active.id).blur();
+                //document.getElementById(active.id).focus();
+
 
         return;
     };
@@ -1069,7 +1074,9 @@ if(word == 'zm'){
                     sel.addRange(range);
                 }
                 console.log('pasteHtmlAtCaret');
+                //sel.focus();
                 //var active = document.activeElement;
+                //document.getElementById(active.id).blur();
                 //document.getElementById(active.id).focus();
                 //savedSelection = self.saveSelection(document.getElementById(active.id));
                 /*
@@ -1744,7 +1751,7 @@ cardApp.directive("contenteditable", function() {
             element.bind("blur keyup change", function(event) {
                 //element.bind("keyup change", function() {
                 // WARNING added - if (!scope.$$phase) { 31/01/18
-                //console.log(event);
+                console.log(event);
                 // console.log(event.target.innerHTML);
                 if (!scope.$$phase) {
                     scope.$apply(read);
