@@ -59,6 +59,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         portrait_height = initial_width;
     }
 
+    // Add custom class for Android scrollbar
+    if (ua == 'AndroidApp') {
+        $('.content_cnv').addClass('content_cnv_android');
+    }
+
     // Broadcast by cardcreate_ctrl and conversation_ctrl when the window regains focus
     $scope.$on('CONV_CHECK', function() {
         var id = Conversations.getConversationId();

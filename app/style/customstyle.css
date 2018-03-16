@@ -371,7 +371,7 @@ div#user {
 }
 
 input#upload-input,
-#upload-trigger {
+.upload-trigger {
     position: absolute;
     left: -1000px;
 }
@@ -694,7 +694,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 
 .content_cnv {
     width: 100vw;
-    overflow-y: scroll;
+    overflow-y: auto;
     height: calc(100%);
     border-radius: 1px;
 }
@@ -716,12 +716,16 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     background-color: #FFFFFF;
 }
 
-.content_cnv::-webkit-scrollbar {}
-
-.content_cnv::-webkit-scrollbar-thumb {
-    background-color: #b0fccd;
-    border-radius: 10px;
+.content_cnv_android::-webkit-scrollbar {
+    width: 0px;
 }
+
+
+.content_cnv_android::-webkit-scrollbar-thumb {
+    /*background-color: #b0fccd;
+    border-radius: 10px;*/
+}
+
 
 .reset_height {
     height: 0px;

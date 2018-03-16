@@ -411,9 +411,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.uploadFile = function(id, card, currentUser) {
+        console.log('uploadFile');
         if (ua === 'AndroidApp') {
-            // save the card first (Android bug)
-            self.saveCard(id, card, currentUser);
+            if (document.activeElement.id != 'cecard_create') {
+                // save the card first (Android bug)
+                self.saveCard(id, card, currentUser);
+            }
             Android.choosePhoto();
         } else {
             // All browsers except MS Edge
@@ -875,6 +878,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     // Not HTML but SCRIPT 
                     // TODO Fix so that the actual script which is passed is called     
                     if (marky_array[ma].script === 'getImage') {
+                        console.log('getImage');
                         $('#upload-trigger' + elem).trigger('click');
                     }
                     // Use timeout to fix bug on Galaxy S6 (Chrome, FF, Canary)
