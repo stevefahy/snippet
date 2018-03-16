@@ -231,7 +231,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             $('.content_cnv').animate({
                 scrollTop: bottom
             }, speed, function() {});
-        }, 100);
+        }, 200);
     };
 
     // Function called from core.js by dynamically added input type=checkbox.
