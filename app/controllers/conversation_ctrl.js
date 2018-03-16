@@ -176,15 +176,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         //if (focused.id == 'cecard_create') {
             // TODO enter is a pasteHTML. need to add scroll into view for android
             // Paste div so that scrollintoview works on Android
-            $scope.pasteHtmlAtCaret("<span class='scroll_latest_footer' id='scroll_latest_footer'></span>");
+            $scope.pasteHtmlAtCaret("<div class='scroll_latest_footer' id='scroll_latest_footer'></div>");
             console.log(document.getElementById('scroll_latest_footer'));
             $timeout(function() {
             document.getElementById('scroll_latest_footer').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
-            }, 500);
+            }, 200);
             // remove scroll_latest after scrolling
             $timeout(function() {
                 $(".scroll_latest_footer").remove();
-            }, 700);
+            }, 300);
         //}
     };
 
