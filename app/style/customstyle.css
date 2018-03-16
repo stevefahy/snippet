@@ -753,3 +753,7 @@ span#scroll_latest_footer {
     display: block;
     width: 0px; 
 }
+span#scroll_image_latest {
+    display: block;
+    width: 0px; 
+}

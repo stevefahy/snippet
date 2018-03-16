@@ -960,15 +960,18 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     scrollLatest = function(clas) {
         $timeout(function() {
+            console.log('scroll: ' + clas);
             // Scroll the pasted HTML into view
             scroll_latest = document.querySelector('.' + clas);
+            console.log(scroll_latest);
             if (scroll_latest != null) {
                 scroll_latest.scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
+                //document.querySelector('.scroll_image_latest').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
                 // remove scroll class after scrolling
                 $timeout(function() {
                     // Remove all scroll classes of the name 'clas'.
                     $('.' + clas).removeClass(clas);
-                }, 100);
+                }, 400);
             }
         });
     };
@@ -1002,7 +1005,10 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     sel.removeAllRanges();
                     sel.addRange(range);
                 }
+                console.log(html + ' : ' + html.indexOf('scroll_image_latest'));
+                if(html.indexOf('scroll_image_latest') < 0){
                 scrollLatest('scroll_latest');
+        }
             }
         } else if (document.selection && document.selection.type != "Control") {
             // IE < 9
