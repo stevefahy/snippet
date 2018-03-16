@@ -154,14 +154,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     hideFooter();
                 } else {
                     showFooter();
-                    //hideFooter();
                 }
             } else {
                 if (window.innerHeight < portrait_height) {
                     hideFooter();
                 } else {
                     showFooter();
-                    //hideFooter();
                 }
             }
         }, false);
@@ -182,11 +180,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             console.log(document.getElementById('scroll_latest_footer'));
             $timeout(function() {
             document.getElementById('scroll_latest_footer').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
-            }, 200);
+            }, 500);
             // remove scroll_latest after scrolling
             $timeout(function() {
                 $(".scroll_latest_footer").remove();
-            }, 500);
+            }, 700);
         //}
     };
 
