@@ -308,7 +308,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     // Added for update. Ensures focus is called after an image is inserted.
     imageLoaded = function() {
-        console.log('img loaded');
+        // Scroll the image into view.
         scrollLatest('scroll_image_latest');
         var active_el = document.activeElement;
         var new_image = document.getElementById('new_image');
@@ -320,11 +320,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     insertImage = function(data) {
         if (data.response === 'saved') {
             var new_image = "<img class='resize-drag' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'><span class='scroll_image_latest' id='delete'>&#x200b</span>";
-            //$timeout(function() {
             self.pasteHtmlAtCaret(new_image);
-            //}, 0);
-
-            //self.pasteImage(new_image);
             // commented out because it causes an issue with onblur which is used to update card.
             /*
             // remove zero width space above image if it exists 
@@ -336,7 +332,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             $window.document.getElementById("cecard_create").innerHTML = new_text;
             moveCaretInto('delete_image');
             */
-            //scrollToBottom(1000);
         }
     };
 
@@ -416,14 +411,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.uploadFile = function(id, card, currentUser) {
-        console.log(id);
         if (ua === 'AndroidApp') {
-            // save first (Android bug)
+            // save the card first (Android bug)
             self.saveCard(id, card, currentUser);
             Android.choosePhoto();
         } else {
-            console.log('uploadFile');
-            //self.saveCard(id, card, currentUser);
             // All browsers except MS Edge
             if (ua.toLowerCase().indexOf('edge') == -1) {
                 uploadClickListen();
@@ -431,7 +423,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             $('#upload-input').on('change', function() {
                 var files = $(this).get(0).files;
                 if (files.length > 0) {
-                    console.log('prep: ' + files);
                     prepareImage(files);
                 }
                 // reset the input value to null so that files of the same name can be uploaded.
@@ -498,7 +489,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     checkUpdate = function() {
         if (ua == 'AndroidApp') {
-            console.log(focused_id);
             if (focused_id != undefined) {
                 self.getBlurAndroid(focused_id, focused_card, focused_user);
             }
@@ -508,14 +498,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     // Called by Android onPause
     // Update the card.
     this.getBlurAndroid = function(id, card, currentUser) {
-        console.log('getBlur Android');
         if (id != undefined && card != undefined && currentUser != undefined) {
             // Check if there is a marky in progress
             // zm launching image capture should not trigger an update. It causes error.
             found_marky = findMarky(card.content);
             // check the content has changed and not currently mid marky
             if (card.content != card.original_content && (found_marky == false)) {
-                console.log('getBlur Android update');
                 // Inject the Database Service
                 var Database = $injector.get('Database');
                 // Update the card
@@ -525,7 +513,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.getBlur = function(id, card, currentUser) {
-        console.log('getBlur');
         // Add slight delay so that document.activeElement works
         setTimeout(function() {
             // Get the element currently in focus
@@ -537,8 +524,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 found_marky = findMarky(card.content);
                 // check the content has changed and not currently mid marky
                 if (card.content != card.original_content && (found_marky == false)) {
-                    console.log('getBlur update');
-                    // Update the card
                     // Inject the Database Service
                     var Database = $injector.get('Database');
                     // Update the card
@@ -546,7 +531,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 }
             }
         }, 0);
-
     };
 
     this.getTagCountPrevious = function(content) {
@@ -679,8 +663,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             $('#' + id).html($('#' + id).html().replace(/<br>/g, ""));
         }
         $('#' + id).removeAttr('id');
-
         // Scroll the pasted HTML into view
+        scrollLatest('scroll_enter_latest');
+        /*
         var scroll_latest = document.querySelector('.scroll_enter_latest');
         console.log(scroll_latest);
         if (scroll_latest != null) {
@@ -691,7 +676,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 $('.scroll_enter_latest').removeClass('scroll_enter_latest');
             }, 100);
         }
-
+        */
         return;
     }
 
@@ -742,6 +727,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     function include(arr, obj) {
         return (arr.indexOf(obj) != -1);
     }
+
     // Check if an Array of Objects includes a value
     function arrayObjectIndexOf(myArray, searchTerm, property) {
         for (var i = 0, len = myArray.length; i < len; i++) {
@@ -888,8 +874,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 } else if (marky_array[ma].script !== '' && marky_array[ma].script !== undefined) {
                     // Not HTML but SCRIPT 
                     // TODO Fix so that the actual script which is passed is called     
-                    //console.log(marky_array[ma].script);
-                    //this.uploadFileAndroid('file');
                     if (marky_array[ma].script === 'getImage') {
                         $('#upload-trigger' + elem).trigger('click');
                     }
@@ -900,9 +884,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                         }, 0)
                         .then(
                             function() {
-                                //return $timeout(function() {
                                 self.pasteHtmlAtCaret('&#x200b');
-                                //}, 0);
                             }
                         );
                 }
@@ -946,7 +928,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.selectText = function(element, word) {
-        console.log('selectText');
         var doc = document;
         var current_node;
         var node_pos = self.findNodeNumber(doc.getElementById(element), word);
@@ -970,39 +951,18 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 selection.addRange(range);
             }
         }
-        //sel.focus();
-        var active = document.activeElement;
-        //savedSelection = self.saveSelection(document.getElementById(active.id));
-        //document.getElementById(active.id).blur();
-        //document.getElementById(active.id).focus();
-        //console.log(element);
-        //$('#'+element).trigger('click');
-        //doc.getElementById(element).trigger('click');
-
-
         return;
     };
-    /*
-        this.pasteImage = function(html) {
-            //savedSelection = saveSelection(document.getElementById(elem));
-            //console.log(savedSelection);
-            console.log(savedImageSelection.container);
-            this.restoreSelection(savedImageSelection.container);
-            console.log(savedImageSelection);
-            //this.pasteHtmlAtCaret(html);
-        };
-        */
+
     scrollLatest = function(clas) {
-        console.log('scrollLatest(): ' + clas);
         $timeout(function() {
             // Scroll the pasted HTML into view
             scroll_latest = document.querySelector('.' + clas);
-            console.log(scroll_latest);
             if (scroll_latest != null) {
                 scroll_latest.scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
-                // remove scroll_latest after scrolling
+                // remove scroll class after scrolling
                 $timeout(function() {
-                    // Remove all .scroll_latest classes
+                    // Remove all scroll classes of the name 'clas'.
                     $('.' + clas).removeClass(clas);
                 }, 100);
             }
@@ -1038,45 +998,18 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     sel.removeAllRanges();
                     sel.addRange(range);
                 }
-                //$('#'+id).trigger('click');
-                //var card = $(div).closest(".ce");
-                //console.log(card.id);
-                //$(document.activeElement).closest("div").attr('id');
-                //sel.focus();
-                //var active = document.activeElement;
-                //console.log(active);
-                //document.getElementById(active.id).blur();
-                //document.getElementById(active.id).focus();
-                //savedSelection = self.saveSelection(document.getElementById(active.id));
                 scrollLatest('scroll_latest');
-
-
-
-
-
             }
         } else if (document.selection && document.selection.type != "Control") {
             // IE < 9
             document.selection.createRange().pasteHTML(html);
             // Scroll the pasted HTML into view
-            scroll_latest = document.querySelector('.scroll_latest');
-            if (scroll_latest != null) {
-                scroll_latest.scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
-                // remove scroll_latest after scrolling
-                $timeout(function() {
-                    // Remove all .scroll_latest classes
-                    $('.scroll_latest').removeClass('scroll_latest');
-                }, 100);
-            }
+            scrollLatest('scroll_latest');
         }
         return;
-
-
-
     };
 
     this.saveSelection = function(containerEl) {
-        console.log('saveSelection');
         var start;
         if (window.getSelection && document.createRange) {
             var range = window.getSelection().getRangeAt(0);
@@ -1105,9 +1038,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     this.restoreSelection = function(containerEl) {
         savedSel = savedSelection;
-        //containerEl = savedSel.container;
-        console.log('restoreSelection');
-        console.log(savedSel);
         if (window.getSelection && document.createRange) {
             var charIndex = 0,
                 range = document.createRange();
@@ -1149,10 +1079,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.keyListen = function(elem) {
-        //console.log('focus change');
-        //savedSelection = saveSelection(document.getElementById(elem));
-        //console.log(savedSelection);
-
         var getKeyCode = function() {
             var editableEl = document.getElementById(elem);
             // lowercase
@@ -1194,7 +1120,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     this.checkCursor = function($event, elem) {
         // Store current caret pos
         savedSelection = self.saveSelection(document.getElementById(elem));
-        console.log(savedSelection);
     };
 
     this.checkKey = function($event, elem) {
@@ -1202,7 +1127,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         if ($event.keyCode == 13) {
             $event.preventDefault();
             self.pasteHtmlAtCaret("<br><span class='scroll_enter_latest' id='enter_focus'></span>");
-            //self.pasteHtmlAtCaret("<br><span id='enter_focus'></span>");
             moveCaretInto('enter_focus');
             return false;
         }
@@ -1291,7 +1215,6 @@ cardApp.service('replaceTags', function() {
     };
 
     this.removeFocusIds = function(str) {
-        console.log('removefocids');
         str = $("<div>" + str + "</div>");
         $('span#focus', str).each(function(e) {
             $(this).replaceWith($(this).html());
@@ -1700,17 +1623,13 @@ cardApp.directive("contenteditable", function() {
         require: "ngModel",
         link: function(scope, element, attrs, ngModel) {
             function read() {
-                //console.log(element.html());
                 ngModel.$setViewValue(element.html());
             }
             ngModel.$render = function() {
                 element.html(ngModel.$viewValue || "");
             };
             element.bind("blur keyup change", function(event) {
-                //element.bind("keyup change", function() {
                 // WARNING added - if (!scope.$$phase) { 31/01/18
-                console.log(event);
-                // console.log(event.target.innerHTML);
                 if (!scope.$$phase) {
                     scope.$apply(read);
                 }
