@@ -176,7 +176,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         //if (focused.id == 'cecard_create') {
         // TODO enter is a pasteHTML. need to add scroll into view for android
         // Paste div so that scrollintoview works on Android
-        $scope.pasteHtmlAtCaret("<div class='scroll_latest_footer' id='scroll_latest_footer'></div>");
+        $scope.pasteHtmlAtCaret("<span class='scroll_latest_footer' id='scroll_latest_footer'></span>");
         console.log(document.getElementById('scroll_latest_footer'));
         $timeout(function() {
             document.getElementById('scroll_latest_footer').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
