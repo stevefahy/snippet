@@ -717,13 +717,12 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 }
 
 .content_cnv_android::-webkit-scrollbar {
-    width: 0px;
 }
 
 
 .content_cnv_android::-webkit-scrollbar-thumb {
-    /*background-color: #b0fccd;
-    border-radius: 10px;*/
+    background-color: #b0fccd;
+    border-radius: 10px;
 }
 
 
