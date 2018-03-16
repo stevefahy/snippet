@@ -174,17 +174,17 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         $('.footer').hide();
         $('#placeholderDiv').css('bottom', '-1px');
         //if (focused.id == 'cecard_create') {
-            // TODO enter is a pasteHTML. need to add scroll into view for android
-            // Paste div so that scrollintoview works on Android
-            $scope.pasteHtmlAtCaret("<div class='scroll_latest_footer' id='scroll_latest_footer'></div>");
-            console.log(document.getElementById('scroll_latest_footer'));
-            $timeout(function() {
+        // TODO enter is a pasteHTML. need to add scroll into view for android
+        // Paste div so that scrollintoview works on Android
+        $scope.pasteHtmlAtCaret("<div class='scroll_latest_footer' id='scroll_latest_footer'></div>");
+        console.log(document.getElementById('scroll_latest_footer'));
+        $timeout(function() {
             document.getElementById('scroll_latest_footer').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
-            }, 200);
-            // remove scroll_latest after scrolling
-            $timeout(function() {
-                $(".scroll_latest_footer").remove();
-            }, 300);
+        }, 200);
+        // remove scroll_latest after scrolling
+        $timeout(function() {
+            $(".scroll_latest_footer").remove();
+        }, 300);
         //}
     };
 
@@ -225,10 +225,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Scroll to the bottom of the list
     scrollToBottom = function(speed) {
-        var bottom = $('.content_cnv')[0].scrollHeight;
-        $('.content_cnv').animate({
-            scrollTop: bottom
-        }, speed, function() {});
+        $timeout(function() {
+            var bottom = $('.content_cnv')[0].scrollHeight;
+            console.log(bottom);
+            $('.content_cnv').animate({
+                scrollTop: bottom
+            }, speed, function() {});
+        }, 100);
     };
 
     // Function called from core.js by dynamically added input type=checkbox.
