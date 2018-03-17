@@ -407,7 +407,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             // Inject the Database Service
             var Database = $injector.get('Database');
             // Update the card
-            Database.updateCard(id, card, currentUser);
+            Database.saveCard(id, card, currentUser);
         }
     };
 
@@ -1421,6 +1421,32 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         }
         var notification = { title: notification_title, body: notification_body };
         return notification;
+    };
+
+    // SAVE CARD (Android image bug. Temporarily save the updated card but do not send notificstion.)
+    this.saveCard = function(card_id, card, currentUser) {
+        if (!updateinprogress) {
+            updateinprogress = true;
+            setTimeout(function() {
+
+                card.content = Format.setMediaSize(card_id, card);
+                card.content = replaceTags.replace(card.content);
+                card.content = replaceTags.removeDeleteId(card.content);
+                card.content = replaceTags.removeFocusIds(card.content);
+
+                var pms = { 'id': card_id, 'card': card };
+
+                // call the update function from our service (returns a promise object)
+                Cards.update(pms)
+                    .then(function(returned) {
+                        $rootScope.$broadcast('CARD_UPDATED', returned.data);
+                        updateinprogress = false;
+                    })
+                    .catch(function(error) {
+                        console.log('error: ' + error);
+                    });
+            }, 0);
+        }
     };
 
     // UPDATE CARD
