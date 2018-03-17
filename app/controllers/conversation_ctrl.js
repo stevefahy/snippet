@@ -173,19 +173,33 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
         $('.footer').hide();
         $('#placeholderDiv').css('bottom', '-1px');
-        //if (focused.id == 'cecard_create') {
-        // TODO enter is a pasteHTML. need to add scroll into view for android
-        // Paste div so that scrollintoview works on Android
+        if (focused.id != 'cecard_create') {
+            // TODO enter is a pasteHTML. need to add scroll into view for android
+            // Paste div so that scrollintoview works on Android
+            $scope.pasteHtmlAtCaret("<span class='scroll_latest_footer' id='scroll_latest_footer'></span>");
+            console.log(document.getElementById('scroll_latest_footer'));
+            $timeout(function() {
+                //document.getElementById('scroll_latest_footer').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
+                $('.content_cnv').animate({
+                    scrollTop: document.getElementById('scroll_latest_footer').offsetTop - window.innerHeight + 35
+                }, 100);
+
+            }, 200);
+            // remove scroll_latest after scrolling
+            $timeout(function() {
+                $(".scroll_latest_footer").remove();
+            }, 300);
+        } else {
         $scope.pasteHtmlAtCaret("<span class='scroll_latest_footer' id='scroll_latest_footer'></span>");
-        console.log(document.getElementById('scroll_latest_footer'));
-        $timeout(function() {
-            document.getElementById('scroll_latest_footer').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
-        }, 200);
-        // remove scroll_latest after scrolling
-        $timeout(function() {
-            $(".scroll_latest_footer").remove();
-        }, 300);
-        //}
+            console.log(document.getElementById('scroll_latest_footer'));
+            $timeout(function() {
+                document.getElementById('scroll_latest_footer').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
+            }, 200);
+            // remove scroll_latest after scrolling
+            $timeout(function() {
+                $(".scroll_latest_footer").remove();
+            }, 300);
+        }
     };
 
 

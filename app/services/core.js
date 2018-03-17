@@ -400,7 +400,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         $('#upload-input').unbind();
     };
 
-    this.saveCard = function(id, card, currentUser) {
+     this.saveCard = function(id, card, currentUser) {
+        console.log('saveCard');
         // check the content has changed.
         if (card.content != card.original_content) {
             // Inject the Database Service
@@ -412,8 +413,10 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     this.uploadFile = function(id, card, currentUser) {
         console.log('uploadFile');
+console.log('id: ' + id + ', ' + card + ', ' + currentUser);
         if (ua === 'AndroidApp') {
-            if (document.activeElement.id != 'cecard_create') {
+            console.log(document.activeElement.id);
+            if (document.activeElement.id != 'cecard_create' && id != undefined && id != 'card_create') {
                 // save the card first (Android bug)
                 self.saveCard(id, card, currentUser);
             }

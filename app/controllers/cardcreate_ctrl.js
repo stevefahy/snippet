@@ -21,6 +21,7 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
     // Get the current users details
     $http.get("/api/user_data").then(function(result) {
         $scope.currentUser = result.data.user;
+console.log($scope.currentUser);
         $scope.card_create.user = $scope.currentUser.google.name;
     });
 
@@ -90,6 +91,8 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
 
     // Create Card
     $scope.createCard = function(id, card_create) {
+console.log($scope.currentUser);
+console.log(card_create);
         Database.createCard(id, card_create, $scope.currentUser);
     };
 
