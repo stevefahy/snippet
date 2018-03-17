@@ -1431,8 +1431,6 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
                 card.content = Format.setMediaSize(card_id, card);
                 card.content = replaceTags.replace(card.content);
-                //card.content = replaceTags.removeDeleteId(card.content);
-                //card.content = replaceTags.removeFocusIds(card.content);
 
                 var pms = { 'id': card_id, 'card': card };
                 console.log('id: ' + card_id);
@@ -1461,8 +1459,9 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
                 card.content = Format.setMediaSize(card_id, card);
                 card.content = replaceTags.replace(card.content);
-                //card.content = replaceTags.removeDeleteId(card.content);
-                //card.content = replaceTags.removeFocusIds(card.content);
+                // DANGER These had been removed for android image save bug
+                card.content = replaceTags.removeDeleteId(card.content);
+                card.content = replaceTags.removeFocusIds(card.content);
 
                 var sent_content;
                 var notification_title;
