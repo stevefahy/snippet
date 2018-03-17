@@ -407,7 +407,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             // Inject the Database Service
             var Database = $injector.get('Database');
             // Update the card
-            Database.saveCard(id, card, currentUser);
+            Database.saveTempCard(id, card, currentUser);
         }
     };
 
@@ -1424,7 +1424,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
     };
 
     // SAVE CARD (Android image bug. Temporarily save the updated card but do not send notificstion.)
-    this.saveCard = function(card_id, card, currentUser) {
+    this.saveTempCard = function(card_id, card, currentUser) {
         if (!updateinprogress) {
             updateinprogress = true;
             setTimeout(function() {
