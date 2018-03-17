@@ -504,12 +504,14 @@ console.log('id: ' + id + ', ' + card + ', ' + currentUser);
     // Called by Android onPause
     // Update the card.
     this.getBlurAndroid = function(id, card, currentUser) {
+        console.log('getBlurAndroid');
         if (id != undefined && card != undefined && currentUser != undefined) {
             // Check if there is a marky in progress
             // zm launching image capture should not trigger an update. It causes error.
             found_marky = findMarky(card.content);
             // check the content has changed and not currently mid marky
             if (card.content != card.original_content && (found_marky == false)) {
+                console.log('updateCard sent');
                 // Inject the Database Service
                 var Database = $injector.get('Database');
                 // Update the card
@@ -519,6 +521,7 @@ console.log('id: ' + id + ', ' + card + ', ' + currentUser);
     };
 
     this.getBlur = function(id, card, currentUser) {
+        console.log('getBlur');
         // Add slight delay so that document.activeElement works
         setTimeout(function() {
             // Get the element currently in focus
@@ -533,6 +536,7 @@ console.log('id: ' + id + ', ' + card + ', ' + currentUser);
                     // Inject the Database Service
                     var Database = $injector.get('Database');
                     // Update the card
+                    console.log('updateCard sent');
                     Database.updateCard(id, card, currentUser);
                 }
             }
@@ -1451,6 +1455,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
     // UPDATE CARD
     this.updateCard = function(card_id, card, currentUser) {
+        console.log('updateCard');
         if (!updateinprogress) {
             updateinprogress = true;
             setTimeout(function() {
