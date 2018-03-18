@@ -308,13 +308,13 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     // Added for update. Ensures focus is called after an image is inserted.
     imageLoaded = function() {
- 
+
         var active_el = document.activeElement;
         var new_image = document.getElementById('new_image');
         $(new_image).removeAttr('onload id');
         active_el.blur();
         active_el.focus();
-       // Scroll the image into view.
+        // Scroll the image into view.
         scrollLatest('scroll_image_latest');
     };
 
@@ -401,7 +401,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         $('#upload-input').unbind();
     };
 
-     this.saveCard = function(id, card, currentUser) {
+    this.saveCard = function(id, card, currentUser) {
         console.log('saveCard');
         // check the content has changed.
         if (card.content != card.original_content) {
@@ -414,7 +414,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     this.uploadFile = function(id, card, currentUser) {
         console.log('uploadFile');
-console.log('id: ' + id + ', ' + card + ', ' + currentUser);
+        console.log('id: ' + id + ', ' + card + ', ' + currentUser);
         if (ua === 'AndroidApp') {
             console.log(document.activeElement.id);
             if (document.activeElement.id != 'cecard_create' && id != undefined && id != 'card_create') {
@@ -969,38 +969,55 @@ console.log('id: ' + id + ', ' + card + ', ' + currentUser);
     scrollLatest = function(clas) {
         $timeout(function() {
             console.log('scroll: ' + clas);
-console.log(document.activeElement.id);
+            console.log(document.activeElement.id);
             // Scroll the pasted HTML into view
-            scroll_latest = document.querySelector('.' + clas);
+            var scroll_latest = document.querySelector('.' + clas);
             console.log(scroll_latest);
             if (scroll_latest != null) {
-var scroll_div;
-//var scroll_id = $(scroll_latest).attr("id","scroll_latest");
-if(document.activeElement.id == 'cecard_create'){
-scroll_div = '.create_container';
-} else {
-scroll_div = '.content_cnv';
-}
+                var scroll_div;
+                //var scroll_id = $(scroll_latest).attr("id","scroll_latest");
+                if (document.activeElement.id == 'cecard_create') {
+                    scroll_div = '.create_container';
+                } else {
+                    scroll_div = '.content_cnv';
+                }
+                var foot_height;
+                var create_height;
+                if ($('.footer').is(':visible')) {
+                    foot_height = $('.footer').outerHeight();
+                } else {
+                    foot_height = 0;
+                }
+                if ($('.create_container').is(':visible')) {
+                    create_height = $('.create_container').outerHeight();
+                } else {
+                    create_height = 0;
+                }
 
-           $timeout(function() {
-                //document.getElementById('scroll_latest_footer').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
-console.log('animate');                
-$(scroll_div).animate({
-                    scrollTop: scroll_latest.offsetTop - window.innerHeight + 50
-                }, 100);
+                var text_height = $('.' + clas).outerHeight();
+                //var header_height = $('.header').outerHeight();
+                //console.log(foot_height + ' : ' + header_height);
 
-            }, 200);
+
+                $timeout(function() {
+                    //document.getElementById('scroll_latest_footer').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
+                    console.log('animate');
+                    $(scroll_div).animate({
+                        scrollTop: scroll_latest.offsetTop - window.innerHeight + foot_height + create_height + text_height
+                    }, 100);
+
+                }, 200);
 
                 //scroll_latest.scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
                 //document.querySelector('.scroll_image_latest').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
                 // remove scroll class after scrolling
                 $timeout(function() {
-//if(clas != 'scroll_enter_latst'){
+                    //if(clas != 'scroll_enter_latst'){
                     // Remove all scroll classes of the name 'clas'.
-//$('.' + clas).removeAttr('id');
+                    //$('.' + clas).removeAttr('id');
                     $('.' + clas).removeClass(clas);
 
-//}
+                    //}
                 }, 400);
             }
         });
@@ -1036,9 +1053,9 @@ $(scroll_div).animate({
                     sel.addRange(range);
                 }
                 console.log(html + ' : ' + html.indexOf('scroll_image_latest'));
-                if(html.indexOf('scroll_image_latest') < 0){
-                scrollLatest('scroll_latest');
-        }
+                if (html.indexOf('scroll_image_latest') < 0) {
+                    scrollLatest('scroll_latest');
+                }
             }
         } else if (document.selection && document.selection.type != "Control") {
             // IE < 9

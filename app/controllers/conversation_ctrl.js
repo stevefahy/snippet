@@ -173,38 +173,98 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
         $('.footer').hide();
         $('#placeholderDiv').css('bottom', '-1px');
-        if (focused.id != 'cecard_create') {
-            // TODO enter is a pasteHTML. need to add scroll into view for android
-            // Paste div so that scrollintoview works on Android
-            $scope.pasteHtmlAtCaret("<span class='scroll_latest_footer' id='scroll_latest_footer'></span>");
-            console.log(document.getElementById('scroll_latest_footer'));
-            $timeout(function() {
-                //document.getElementById('scroll_latest_footer').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
-                $('.content_cnv').animate({
-                    scrollTop: document.getElementById('scroll_latest_footer').offsetTop - window.innerHeight + 35
-                }, 100);
 
-            }, 200);
-            // remove scroll_latest after scrolling
-            $timeout(function() {
-                $(".scroll_latest_footer").remove();
-            }, 300);
-        } else {
+
+
+
         $scope.pasteHtmlAtCaret("<span class='scroll_latest_footer' id='scroll_latest_footer'></span>");
-console.log('new footer');
-            console.log(document.getElementById('scroll_latest_footer'));
-            $timeout(function() {
-                //document.getElementById('scroll_latest_footer').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
-                $('.create_container').animate({
-                    scrollTop: document.getElementById('scroll_latest_footer').offsetTop - window.innerHeight + 35
-                }, 100);
 
-            }, 200);
-            // remove scroll_latest after scrolling
-            $timeout(function() {
-                $(".scroll_latest_footer").remove();
-            }, 300);
-        }
+        $timeout(function() {
+            var scroll_latest = document.querySelector('.scroll_latest_footer');
+            var scroll_div;
+            //var scroll_id = $(scroll_latest).attr("id","scroll_latest");
+            if (document.activeElement.id == 'cecard_create') {
+                scroll_div = '.create_container';
+            } else {
+                scroll_div = '.content_cnv';
+            }
+
+            var foot_height;
+            var create_height;
+            if ($('.footer').is(':visible')) {
+                foot_height = $('.footer').outerHeight();
+            } else {
+                foot_height = 0;
+            }
+            if ($('.create_container').is(':visible')) {
+                create_height = $('.create_container').outerHeight();
+            } else {
+                create_height = 0;
+            }
+
+            var text_height = $('.scroll_latest_footer').outerHeight();
+        }, 100);
+
+        //var header_height = $('.header').outerHeight();
+        //console.log(foot_height + ' : ' + header_height);
+
+
+        $timeout(function() {
+            //document.getElementById('scroll_latest_footer').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
+            console.log('animate');
+            $(scroll_div).animate({
+                scrollTop: scroll_latest.offsetTop - window.innerHeight + foot_height + create_height + text_height
+            }, 100);
+
+        }, 200);
+
+        //scroll_latest.scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
+        //document.querySelector('.scroll_image_latest').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
+        // remove scroll class after scrolling
+        $timeout(function() {
+            //if(clas != 'scroll_enter_latst'){
+            // Remove all scroll classes of the name 'clas'.
+            //$('.' + clas).removeAttr('id');
+            $('.scroll_latest_footer').removeClass('scroll_latest_footer');
+
+            //}
+        }, 400);
+
+
+        /*
+                if (focused.id != 'cecard_create') {
+                    // TODO enter is a pasteHTML. need to add scroll into view for android
+                    // Paste div so that scrollintoview works on Android
+                    $scope.pasteHtmlAtCaret("<span class='scroll_latest_footer' id='scroll_latest_footer'></span>");
+                    console.log(document.getElementById('scroll_latest_footer'));
+                    $timeout(function() {
+                        //document.getElementById('scroll_latest_footer').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
+                        $('.content_cnv').animate({
+                            scrollTop: document.getElementById('scroll_latest_footer').offsetTop - window.innerHeight + 35
+                        }, 100);
+
+                    }, 200);
+                    // remove scroll_latest after scrolling
+                    $timeout(function() {
+                        $(".scroll_latest_footer").remove();
+                    }, 300);
+                } else {
+                    $scope.pasteHtmlAtCaret("<span class='scroll_latest_footer' id='scroll_latest_footer'></span>");
+                    console.log('new footer');
+                    console.log(document.getElementById('scroll_latest_footer'));
+                    $timeout(function() {
+                        //document.getElementById('scroll_latest_footer').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
+                        $('.create_container').animate({
+                            scrollTop: document.getElementById('scroll_latest_footer').offsetTop - window.innerHeight + 35
+                        }, 100);
+
+                    }, 200);
+                    // remove scroll_latest after scrolling
+                    $timeout(function() {
+                        $(".scroll_latest_footer").remove();
+                    }, 300);
+                }
+                */
     };
 
 
