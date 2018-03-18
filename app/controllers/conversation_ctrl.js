@@ -191,9 +191,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }, 300);
         } else {
         $scope.pasteHtmlAtCaret("<span class='scroll_latest_footer' id='scroll_latest_footer'></span>");
+console.log('new footer');
             console.log(document.getElementById('scroll_latest_footer'));
             $timeout(function() {
-                document.getElementById('scroll_latest_footer').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
+                //document.getElementById('scroll_latest_footer').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
+                $('.create_container').animate({
+                    scrollTop: document.getElementById('scroll_latest_footer').offsetTop - window.innerHeight + 35
+                }, 100);
+
             }, 200);
             // remove scroll_latest after scrolling
             $timeout(function() {
