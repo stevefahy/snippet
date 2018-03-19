@@ -13,9 +13,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         $scope.myFunction = Edit.myFunction;
         $scope.dropDownToggle = Edit.dropDownToggle;
         $scope.pasteHtmlAtCaret = Format.pasteHtmlAtCaret;
-
         $scope.checkCursor = Format.checkCursor;
-
         $scope.isMember = false;
 
     };
@@ -166,7 +164,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     }
 
     hideFooter = function() {
-        console.log('hide');
         var focused = document.activeElement;
         if (focused.id != 'cecard_create') {
             $('.create_container').hide();
@@ -176,24 +173,37 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
 
 
+
+        $scope.pasteHtmlAtCaret("<span class='scroll_latest_footer' id='scroll_latest_footer'></span>");
+
+        $timeout(function() {
+            scroll_latest = document.querySelector('.scroll_latest_footer');
+            $timeout(function() {
+                if (document.querySelector('.' + clas) != undefined) {
+                    scrollIntoViewIfNeeded(scroll_latest, { duration: 300, offset: { bottom: 30 } });
+                }
+            }, 200);
+            // remove scroll class after scrolling
+            $timeout(function() {
+                //$('.' + clas).removeClass(clas);
+                $(".scroll_latest_footer").remove();
+            }, 400);
+        });
+
+        /*
         var scroll_div;
         var scroll_latest;
         var foot_height;
         var create_height;
         var text_height;
         $scope.pasteHtmlAtCaret("<span class='scroll_latest_footer' id='scroll_latest_footer'></span>");
-
         $timeout(function() {
             scroll_latest = document.querySelector('.scroll_latest_footer');
-
-            //var scroll_id = $(scroll_latest).attr("id","scroll_latest");
             if (document.activeElement.id == 'cecard_create') {
                 scroll_div = '.create_container';
             } else {
                 scroll_div = '.content_cnv';
             }
-
-
             if ($('.footer').is(':visible')) {
                 foot_height = $('.footer').outerHeight();
             } else {
@@ -204,81 +214,24 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             } else {
                 create_height = 0;
             }
-
             text_height = $('.scroll_latest_footer').outerHeight();
         }, 100);
 
-        //var header_height = $('.header').outerHeight();
-        //console.log(foot_height + ' : ' + header_height);
-
-
         $timeout(function() {
-            //document.getElementById('scroll_latest_footer').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
-            console.log('animate');
             $(scroll_div).animate({
                 scrollTop: scroll_latest.offsetTop - window.innerHeight + foot_height + create_height + text_height
             }, 100);
-
         }, 200);
 
-        //scroll_latest.scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
-        //document.querySelector('.scroll_image_latest').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
-        // remove scroll class after scrolling
-        /*
+        // remove scroll_latest after scrolling
         $timeout(function() {
-            //if(clas != 'scroll_enter_latst'){
-            // Remove all scroll classes of the name 'clas'.
-            //$('.' + clas).removeAttr('id');
-            $('.scroll_latest_footer').removeClass('scroll_latest_footer');
-
-            //}
+            $(".scroll_latest_footer").remove();
         }, 400);
         */
-                          // remove scroll_latest after scrolling
-                    $timeout(function() {
-                        $(".scroll_latest_footer").remove();
-                    }, 400);
 
-
-        /*
-                if (focused.id != 'cecard_create') {
-                    // TODO enter is a pasteHTML. need to add scroll into view for android
-                    // Paste div so that scrollintoview works on Android
-                    $scope.pasteHtmlAtCaret("<span class='scroll_latest_footer' id='scroll_latest_footer'></span>");
-                    console.log(document.getElementById('scroll_latest_footer'));
-                    $timeout(function() {
-                        //document.getElementById('scroll_latest_footer').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
-                        $('.content_cnv').animate({
-                            scrollTop: document.getElementById('scroll_latest_footer').offsetTop - window.innerHeight + 35
-                        }, 100);
-
-                    }, 200);
-                    // remove scroll_latest after scrolling
-                    $timeout(function() {
-                        $(".scroll_latest_footer").remove();
-                    }, 300);
-                } else {
-                    $scope.pasteHtmlAtCaret("<span class='scroll_latest_footer' id='scroll_latest_footer'></span>");
-                    console.log('new footer');
-                    console.log(document.getElementById('scroll_latest_footer'));
-                    $timeout(function() {
-                        //document.getElementById('scroll_latest_footer').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
-                        $('.create_container').animate({
-                            scrollTop: document.getElementById('scroll_latest_footer').offsetTop - window.innerHeight + 35
-                        }, 100);
-
-                    }, 200);
-                    // remove scroll_latest after scrolling
-                    $timeout(function() {
-                        $(".scroll_latest_footer").remove();
-                    }, 300);
-                }
-                */
     };
 
-
     showFooter = function() {
-        console.log('show');
         $('.footer').show();
         $('.create_container').show();
         $('#placeholderDiv').css('bottom', '49px');
@@ -286,7 +239,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     setFocus = function() {
         $timeout(function() {
-            console.log('conv');
             findConversationId(function(result) {
                 $rootScope.$broadcast('CONV_CHECK');
             });
@@ -303,7 +255,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             $window.onblur = function() {
                 //console.log('blur');
             };
-            console.log('win');
             $window.focus();
             setFocus();
         } else {
@@ -315,13 +266,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     scrollToBottom = function(speed) {
         $timeout(function() {
             var bottom = $('.content_cnv')[0].scrollHeight;
-            console.log(bottom);
             $('.content_cnv').animate({
                 scrollTop: bottom
             }, speed, function() {});
         }, 200);
     };
 
+    // TODO - ake service (also in card_create.js)
     // Function called from core.js by dynamically added input type=checkbox.
     // It rewrites the HTML to save the checkbox state.
     checkBoxChanged = function(checkbox) {

@@ -298,6 +298,7 @@ div#user {
 
 
 
+
 /* EDIT MENU */
 
 
@@ -311,10 +312,12 @@ div#user {
 
 
 
+
 /* Dropdown button on hover & focus */
 
 .dropbtn:hover,
 .dropbtn:focus {}
+
 
 
 /* The container <div> - needed to position the dropdown content */
@@ -323,6 +326,7 @@ div#user {
     position: relative;
     display: inline-block;
 }
+
 
 
 /* Dropdown Content (Hidden by Default) */
@@ -346,6 +350,7 @@ div#user {
 }
 
 
+
 /* Links inside the dropdown */
 
 .dropdown-content div {
@@ -357,11 +362,13 @@ div#user {
 }
 
 
+
 /* Change color of dropdown links on hover */
 
 .dropdown-content a:hover {
     background-color: #f1f1f1
 }
+
 
 
 /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
@@ -716,15 +723,13 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     background-color: #FFFFFF;
 }
 
-.content_cnv_android::-webkit-scrollbar {
-}
+.content_cnv_android::-webkit-scrollbar {}
 
 
 .content_cnv_android::-webkit-scrollbar-thumb {
     background-color: #b0fccd;
     border-radius: 10px;
 }
-
 
 .reset_height {
     height: 0px;
@@ -749,11 +754,13 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     /* Likely future */
     cursor: text;
 }
+
 span#scroll_latest_footer {
     display: inline-block;
-    width: 0px; 
+    width: 0px;
 }
+
 span#scroll_image_latest {
     display: inline-block;
-    width: 0px; 
+    width: 0px;
 }

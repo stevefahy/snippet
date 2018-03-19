@@ -21,7 +21,6 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
     // Get the current users details
     $http.get("/api/user_data").then(function(result) {
         $scope.currentUser = result.data.user;
-console.log($scope.currentUser);
         $scope.card_create.user = $scope.currentUser.google.name;
     });
 
@@ -30,7 +29,6 @@ console.log($scope.currentUser);
         $('#placeholderDiv').html(INPUT_PROMPT);
         // listen for focus
         $('#cecard_create').on('focus', function() {
-            console.log('cecard_create focus');
             $scope.focused = true;
             if (!$scope.$$phase) {
                 $scope.$apply();
@@ -43,12 +41,10 @@ console.log($scope.currentUser);
 
     $(document).on('input keyup', '#cecard_create', function() {
         checkInput('#cecard_create');
-
     });
 
     // Refocus to the input area if the placeholder is focused.
     $(document).on('click', '#placeholderDiv', function() {
-        console.log('refocus');
         $('#cecard_create').focus();
     });
 
@@ -65,11 +61,8 @@ console.log($scope.currentUser);
         $('#cecard_create').html('');
         $scope.input = false;
         if (ua !== 'AndroidApp') {
-            console.log('not android cecard focus');
             $('#cecard_create').focus();
         }
-        //$scope.checkCursor();
-        console.log('card created');
         checkInput('#cecard_create');
     });
 
@@ -91,8 +84,6 @@ console.log($scope.currentUser);
 
     // Create Card
     $scope.createCard = function(id, card_create) {
-console.log($scope.currentUser);
-console.log(card_create);
         Database.createCard(id, card_create, $scope.currentUser);
     };
 
@@ -125,7 +116,6 @@ console.log(card_create);
         $timeout(function() {
             var element = $window.document.getElementById('cecard_create');
             if (element) {
-                console.log('ce set foc');
                 element.focus();
                 $rootScope.$broadcast('CONV_CHECK');
             }
@@ -135,12 +125,10 @@ console.log(card_create);
     // only check focus on web version
     if (ua !== 'AndroidApp') {
         $window.onfocus = function() {
-           // this.setFocus();
+            // this.setFocus();
         };
-        console.log('window foc');
         $window.focus();
         setFocus();
-
     }
 
 }]);
