@@ -308,7 +308,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     // Added for update. Ensures focus is called after an image is inserted.
     imageLoaded = function() {
-
         var active_el = document.activeElement;
         var new_image = document.getElementById('new_image');
         $(new_image).removeAttr('onload id');
@@ -401,8 +400,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         $('#upload-input').unbind();
     };
 
+    // Save the card while a image is being taken (Android bug)
     this.saveCard = function(id, card, currentUser) {
-        console.log('saveCard');
         // check the content has changed.
         if (card.content != card.original_content) {
             // Inject the Database Service
@@ -413,10 +412,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.uploadFile = function(id, card, currentUser) {
-        console.log('uploadFile');
-        console.log('id: ' + id + ', ' + card + ', ' + currentUser);
         if (ua === 'AndroidApp') {
-            console.log(document.activeElement.id);
             if (document.activeElement.id != 'cecard_create' && id != undefined && id != 'card_create') {
                 // save the card first (Android bug)
                 self.saveCard(id, card, currentUser);
@@ -505,14 +501,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     // Called by Android onPause
     // Update the card.
     this.getBlurAndroid = function(id, card, currentUser) {
-        console.log('getBlurAndroid');
         if (id != undefined && card != undefined && currentUser != undefined) {
             // Check if there is a marky in progress
             // zm launching image capture should not trigger an update. It causes error.
             found_marky = findMarky(card.content);
             // check the content has changed and not currently mid marky
             if (card.content != card.original_content && (found_marky == false)) {
-                console.log('updateCard sent');
                 // Inject the Database Service
                 var Database = $injector.get('Database');
                 // Update the card
@@ -522,7 +516,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.getBlur = function(id, card, currentUser) {
-        console.log('getBlur');
         // Add slight delay so that document.activeElement works
         setTimeout(function() {
             // Get the element currently in focus
@@ -537,7 +530,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     // Inject the Database Service
                     var Database = $injector.get('Database');
                     // Update the card
-                    console.log('updateCard sent');
                     Database.updateCard(id, card, currentUser);
                 }
             }
@@ -659,6 +651,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     }
 
     function moveCaretInto(id) {
+        // Causing bug in cecreate_card when enter is pressed following data is deleted.
         //self.removeDeleteIds();
         $("#" + id).html('&#x200b');
         var current_node = $("#" + id).get(0);
@@ -673,23 +666,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         if (ua.toLowerCase().indexOf('firefox') > -1) {
             $('#' + id).html($('#' + id).html().replace(/<br>/g, ""));
         }
-
-
         $('#' + id).removeAttr('id');
         // Scroll the pasted HTML into view
         scrollLatest('scroll_enter_latest');
-        /*
-        var scroll_latest = document.querySelector('.scroll_enter_latest');
-        console.log(scroll_latest);
-        if (scroll_latest != null) {
-            scroll_latest.scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
-            // remove scroll_latest after scrolling
-            $timeout(function() {
-                // Remove all .scroll_latest classes
-                $('.scroll_enter_latest').removeClass('scroll_enter_latest');
-            }, 100);
-        }
-        */
         return;
     }
 
@@ -888,7 +867,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     // Not HTML but SCRIPT 
                     // TODO Fix so that the actual script which is passed is called     
                     if (marky_array[ma].script === 'getImage') {
-                        console.log('getImage');
                         $('#upload-trigger' + elem).trigger('click');
                     }
                     // Use timeout to fix bug on Galaxy S6 (Chrome, FF, Canary)
@@ -970,26 +948,23 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     scrollLatest = function(clas) {
         var scroll_latest = document.querySelector('.' + clas);
-
-
+        var foot_height;
+        var create_height;
+        var text_height;
+        var scroll_div;
         if (ua === 'AndroidApp') {
-
             $timeout(function() {
-                console.log('scroll: ' + clas);
-                console.log(document.activeElement.id);
                 // Scroll the pasted HTML into view
-                scroll_latest = document.querySelector('.' + clas);
-                console.log(scroll_latest);
+                //scroll_latest = document.querySelector('.' + clas);
                 if (scroll_latest != null) {
-                    var scroll_div;
-                    //var scroll_id = $(scroll_latest).attr("id","scroll_latest");
+                    //var scroll_div;
                     if (document.activeElement.id == 'cecard_create') {
                         scroll_div = '.create_container';
                     } else {
                         scroll_div = '.content_cnv';
                     }
-                    var foot_height;
-                    var create_height;
+                    //var foot_height;
+                    //var create_height;
                     if ($('.footer').is(':visible')) {
                         foot_height = $('.footer').outerHeight();
                     } else {
@@ -1000,67 +975,29 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     } else {
                         create_height = 0;
                     }
-
-                    var text_height = $('.' + clas).outerHeight();
-                    //var header_height = $('.header').outerHeight();
-                    //console.log(foot_height + ' : ' + header_height);
-
-
+                    text_height = $('.' + clas).outerHeight();
                     $timeout(function() {
-                        //document.getElementById('scroll_latest_footer').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
-                        console.log('animate');
                         $(scroll_div).animate({
                             scrollTop: scroll_latest.offsetTop - window.innerHeight + foot_height + create_height + text_height
                         }, 100);
 
                     }, 200);
-
-                    //scroll_latest.scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
-                    //document.querySelector('.scroll_image_latest').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
                     // remove scroll class after scrolling
                     $timeout(function() {
-                        //if(clas != 'scroll_enter_latst'){
-                        // Remove all scroll classes of the name 'clas'.
-                        //$('.' + clas).removeAttr('id');
                         $('.' + clas).removeClass(clas);
-
-                        //}
                     }, 400);
                 }
             });
         } else {
             $timeout(function() {
-                console.log('scroll: ' + clas);
-                console.log('web scroll');
-                //scroll_latest = document.querySelector('.' + clas);
-                console.log(scroll_latest);
-                //$(node.attr('id', 'marky'));
-                //$('.'+clas).attr('id','enter_focus');
-                scroll_latest = $('.' + clas);
-                //console.log(document.getElementsByClassName(clas)[0]);
                 $timeout(function() {
-                    // document.getElementById('scroll_latest_footer').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
-                    //document.getElementsByClassName(clas)[0].scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
-                    //document.getElementById('enter_focus').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
-                    //scroll_latest.scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
-                    console.log(document.querySelector('.' + clas));
                     if (document.querySelector('.' + clas) != undefined) {
-                        //document.querySelector('.'+clas).scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
-                        //document.querySelector('.' + clas).scrollIntoViewIfNeeded();
-                        scrollIntoViewIfNeeded(document.querySelector('.' + clas));
+                        scrollIntoViewIfNeeded(scroll_latest, { duration: 300, offset: { bottom: 30 } });
                     }
-                    //works
-                    //document.querySelector('.scroll_enter_latest').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
                 }, 200);
-
                 // remove scroll class after scrolling
                 $timeout(function() {
-                    //if(clas != 'scroll_enter_latst'){
-                    // Remove all scroll classes of the name 'clas'.
-                    //$('.' + clas).removeAttr('id');
                     $('.' + clas).removeClass(clas);
-
-                    //}
                 }, 400);
             });
         }
@@ -1095,7 +1032,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     sel.removeAllRanges();
                     sel.addRange(range);
                 }
-                console.log(html + ' : ' + html.indexOf('scroll_image_latest'));
                 if (html.indexOf('scroll_image_latest') < 0) {
                     scrollLatest('scroll_latest');
                 }
@@ -1103,8 +1039,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         } else if (document.selection && document.selection.type != "Control") {
             // IE < 9
             document.selection.createRange().pasteHTML(html);
-            // Scroll the pasted HTML into view
-            scrollLatest('scroll_latest');
+            if (html.indexOf('scroll_image_latest') < 0) {
+                scrollLatest('scroll_latest');
+            }
         }
         return;
     };
@@ -1520,14 +1457,11 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 card.content = replaceTags.replace(card.content);
 
                 var pms = { 'id': card_id, 'card': card };
-                console.log('id: ' + card_id);
-                console.log('card: ' + card);
                 // call the update function from our service (returns a promise object)
                 Cards.update(pms)
                     .then(function(returned) {
                         $rootScope.$broadcast('CARD_UPDATED', returned.data);
                         updateinprogress = false;
-                        console.log(returned.data);
                     })
                     .catch(function(error) {
                         console.log('error: ' + error);
@@ -1538,7 +1472,6 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
     // UPDATE CARD
     this.updateCard = function(card_id, card, currentUser) {
-        console.log('updateCard');
         if (!updateinprogress) {
             updateinprogress = true;
             setTimeout(function() {
