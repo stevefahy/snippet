@@ -659,7 +659,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     }
 
     function moveCaretInto(id) {
-        self.removeDeleteIds();
+        //self.removeDeleteIds();
         $("#" + id).html('&#x200b');
         var current_node = $("#" + id).get(0);
         range = document.createRange();
@@ -673,6 +673,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         if (ua.toLowerCase().indexOf('firefox') > -1) {
             $('#' + id).html($('#' + id).html().replace(/<br>/g, ""));
         }
+
+
         $('#' + id).removeAttr('id');
         // Scroll the pasted HTML into view
         scrollLatest('scroll_enter_latest');
@@ -967,49 +969,90 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     scrollLatest = function(clas) {
-        $timeout(function() {
-            console.log('scroll: ' + clas);
-            console.log(document.activeElement.id);
-            // Scroll the pasted HTML into view
-            var scroll_latest = document.querySelector('.' + clas);
-            console.log(scroll_latest);
-            if (scroll_latest != null) {
-                var scroll_div;
-                //var scroll_id = $(scroll_latest).attr("id","scroll_latest");
-                if (document.activeElement.id == 'cecard_create') {
-                    scroll_div = '.create_container';
-                } else {
-                    scroll_div = '.content_cnv';
-                }
-                var foot_height;
-                var create_height;
-                if ($('.footer').is(':visible')) {
-                    foot_height = $('.footer').outerHeight();
-                } else {
-                    foot_height = 0;
-                }
-                if ($('.create_container').is(':visible')) {
-                    create_height = $('.create_container').outerHeight();
-                } else {
-                    create_height = 0;
-                }
-
-                var text_height = $('.' + clas).outerHeight();
-                //var header_height = $('.header').outerHeight();
-                //console.log(foot_height + ' : ' + header_height);
+        var scroll_latest = document.querySelector('.' + clas);
 
 
+        if (ua === 'AndroidApp') {
+
+            $timeout(function() {
+                console.log('scroll: ' + clas);
+                console.log(document.activeElement.id);
+                // Scroll the pasted HTML into view
+                scroll_latest = document.querySelector('.' + clas);
+                console.log(scroll_latest);
+                if (scroll_latest != null) {
+                    var scroll_div;
+                    //var scroll_id = $(scroll_latest).attr("id","scroll_latest");
+                    if (document.activeElement.id == 'cecard_create') {
+                        scroll_div = '.create_container';
+                    } else {
+                        scroll_div = '.content_cnv';
+                    }
+                    var foot_height;
+                    var create_height;
+                    if ($('.footer').is(':visible')) {
+                        foot_height = $('.footer').outerHeight();
+                    } else {
+                        foot_height = 0;
+                    }
+                    if ($('.create_container').is(':visible')) {
+                        create_height = $('.create_container').outerHeight();
+                    } else {
+                        create_height = 0;
+                    }
+
+                    var text_height = $('.' + clas).outerHeight();
+                    //var header_height = $('.header').outerHeight();
+                    //console.log(foot_height + ' : ' + header_height);
+
+
+                    $timeout(function() {
+                        //document.getElementById('scroll_latest_footer').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
+                        console.log('animate');
+                        $(scroll_div).animate({
+                            scrollTop: scroll_latest.offsetTop - window.innerHeight + foot_height + create_height + text_height
+                        }, 100);
+
+                    }, 200);
+
+                    //scroll_latest.scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
+                    //document.querySelector('.scroll_image_latest').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
+                    // remove scroll class after scrolling
+                    $timeout(function() {
+                        //if(clas != 'scroll_enter_latst'){
+                        // Remove all scroll classes of the name 'clas'.
+                        //$('.' + clas).removeAttr('id');
+                        $('.' + clas).removeClass(clas);
+
+                        //}
+                    }, 400);
+                }
+            });
+        } else {
+            $timeout(function() {
+                console.log('scroll: ' + clas);
+                console.log('web scroll');
+                //scroll_latest = document.querySelector('.' + clas);
+                console.log(scroll_latest);
+                //$(node.attr('id', 'marky'));
+                //$('.'+clas).attr('id','enter_focus');
+                scroll_latest = $('.' + clas);
+                //console.log(document.getElementsByClassName(clas)[0]);
                 $timeout(function() {
-                    //document.getElementById('scroll_latest_footer').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
-                    console.log('animate');
-                    $(scroll_div).animate({
-                        scrollTop: scroll_latest.offsetTop - window.innerHeight + foot_height + create_height + text_height
-                    }, 100);
-
+                    // document.getElementById('scroll_latest_footer').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
+                    //document.getElementsByClassName(clas)[0].scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
+                    //document.getElementById('enter_focus').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
+                    //scroll_latest.scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
+                    console.log(document.querySelector('.' + clas));
+                    if (document.querySelector('.' + clas) != undefined) {
+                        //document.querySelector('.'+clas).scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
+                        //document.querySelector('.' + clas).scrollIntoViewIfNeeded();
+                        scrollIntoViewIfNeeded(document.querySelector('.' + clas));
+                    }
+                    //works
+                    //document.querySelector('.scroll_enter_latest').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
                 }, 200);
 
-                //scroll_latest.scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
-                //document.querySelector('.scroll_image_latest').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
                 // remove scroll class after scrolling
                 $timeout(function() {
                     //if(clas != 'scroll_enter_latst'){
@@ -1019,8 +1062,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
                     //}
                 }, 400);
-            }
-        });
+            });
+        }
     };
 
     this.pasteHtmlAtCaret = function(html) {

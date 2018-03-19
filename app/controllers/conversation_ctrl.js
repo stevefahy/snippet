@@ -176,12 +176,16 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
 
 
-
+        var scroll_div;
+        var scroll_latest;
+        var foot_height;
+        var create_height;
+        var text_height;
         $scope.pasteHtmlAtCaret("<span class='scroll_latest_footer' id='scroll_latest_footer'></span>");
 
         $timeout(function() {
-            var scroll_latest = document.querySelector('.scroll_latest_footer');
-            var scroll_div;
+            scroll_latest = document.querySelector('.scroll_latest_footer');
+
             //var scroll_id = $(scroll_latest).attr("id","scroll_latest");
             if (document.activeElement.id == 'cecard_create') {
                 scroll_div = '.create_container';
@@ -189,8 +193,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 scroll_div = '.content_cnv';
             }
 
-            var foot_height;
-            var create_height;
+
             if ($('.footer').is(':visible')) {
                 foot_height = $('.footer').outerHeight();
             } else {
@@ -202,7 +205,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 create_height = 0;
             }
 
-            var text_height = $('.scroll_latest_footer').outerHeight();
+            text_height = $('.scroll_latest_footer').outerHeight();
         }, 100);
 
         //var header_height = $('.header').outerHeight();
