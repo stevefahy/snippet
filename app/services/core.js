@@ -946,25 +946,35 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         return;
     };
 
+    // Scroll the HTML into view
     scrollLatest = function(clas) {
         var scroll_latest = document.querySelector('.' + clas);
+        /*
         var foot_height;
         var create_height;
         var text_height;
         var scroll_div;
+        */
         if (ua === 'AndroidApp') {
             $timeout(function() {
-                // Scroll the pasted HTML into view
-                //scroll_latest = document.querySelector('.' + clas);
+                $timeout(function() {
+                    if (document.querySelector('.' + clas) != undefined) {
+                        scrollIntoViewIfNeeded(scroll_latest, { duration: 300, offset: { bottom: 30 } });
+                    }
+                }, 200);
+                // remove scroll class after scrolling
+                $timeout(function() {
+                    $('.' + clas).removeClass(clas);
+                }, 400);
+            });
+            /*
+            $timeout(function() {
                 if (scroll_latest != null) {
-                    //var scroll_div;
                     if (document.activeElement.id == 'cecard_create') {
                         scroll_div = '.create_container';
                     } else {
                         scroll_div = '.content_cnv';
                     }
-                    //var foot_height;
-                    //var create_height;
                     if ($('.footer').is(':visible')) {
                         foot_height = $('.footer').outerHeight();
                     } else {
@@ -988,6 +998,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     }, 400);
                 }
             });
+            */
         } else {
             $timeout(function() {
                 $timeout(function() {
