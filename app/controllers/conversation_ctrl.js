@@ -224,6 +224,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         //scroll_latest.scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
         //document.querySelector('.scroll_image_latest').scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" });
         // remove scroll class after scrolling
+        /*
         $timeout(function() {
             //if(clas != 'scroll_enter_latst'){
             // Remove all scroll classes of the name 'clas'.
@@ -232,6 +233,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
             //}
         }, 400);
+        */
+                          // remove scroll_latest after scrolling
+                    $timeout(function() {
+                        $(".scroll_latest_footer").remove();
+                    }, 400);
 
 
         /*
