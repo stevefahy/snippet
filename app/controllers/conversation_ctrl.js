@@ -171,7 +171,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         $('.footer').hide();
         $('#placeholderDiv').css('bottom', '-1px');
 
-
         $scope.pasteHtmlAtCaret("<span class='scroll_latest_footer' id='scroll_latest_footer'></span>");
 
         Format.scrollLatest('scroll_latest_footer');

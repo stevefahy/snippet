@@ -301,7 +301,6 @@ module.exports = function(app, passport) {
     // search for user by id
     app.post('/api/users/search_id/:id', function(req, res) {
         var id = req.params.id;
-        //console.log(id);
         User.findById({ '_id': id }, function(error, user) {
             if (error) {
                 res.json(error);
@@ -309,7 +308,6 @@ module.exports = function(app, passport) {
                 // no user found
                 res.json({ 'error': 'null' });
             } else {
-                //console.log(user);
                 res.json({ 'success': user });
             }
         });
@@ -639,7 +637,7 @@ module.exports = function(app, passport) {
             if (error) {
                 console.log(error);
             } else {
-                console.log(info);
+                //console.log(info);
                 res.sendStatus(200);
             }
         });
