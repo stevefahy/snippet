@@ -314,7 +314,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         active_el.blur();
         active_el.focus();
         // Scroll the image into view.
-        scrollLatest('scroll_image_latest');
+        self.scrollLatest('scroll_image_latest');
     };
 
     insertImage = function(data) {
@@ -668,7 +668,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         }
         $('#' + id).removeAttr('id');
         // Scroll the pasted HTML into view
-        scrollLatest('scroll_enter_latest');
+        self.scrollLatest('scroll_enter_latest');
         return;
     }
 
@@ -947,27 +947,32 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     // Scroll the HTML into view
-    scrollLatest = function(clas) {
+    this.scrollLatest = function(clas) {
         var scroll_latest = document.querySelector('.' + clas);
-        /*
-        var foot_height;
-        var create_height;
-        var text_height;
-        var scroll_div;
-        */
-        if (ua === 'AndroidApp') {
+
+        //if (ua === 'AndroidApp') {
+        $timeout(function() {
             $timeout(function() {
-                $timeout(function() {
-                    if (document.querySelector('.' + clas) != undefined) {
-                        scrollIntoViewIfNeeded(scroll_latest, { duration: 300, offset: { bottom: 30 } });
-                    }
-                }, 200);
-                // remove scroll class after scrolling
-                $timeout(function() {
+                if (document.querySelector('.' + clas) != undefined) {
+                    scrollIntoViewIfNeeded(scroll_latest, { duration: 200, offset: { bottom: 30 } });
+                }
+            }, 200);
+
+            $timeout(function() {
+                if (clas == 'scroll_latest_footer') {
+                    // remove scroll div after scrolling
+                    $('.' + clas).remove();
+                } else {
+                    // remove scroll class after scrolling
                     $('.' + clas).removeClass(clas);
-                }, 400);
-            });
-            /*
+                }
+            }, 400);
+        });
+        /*
+            var foot_height;
+            var create_height;
+            var text_height;
+            var scroll_div;
             $timeout(function() {
                 if (scroll_latest != null) {
                     if (document.activeElement.id == 'cecard_create') {
@@ -998,7 +1003,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     }, 400);
                 }
             });
-            */
+            
         } else {
             $timeout(function() {
                 $timeout(function() {
@@ -1012,6 +1017,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 }, 400);
             });
         }
+        */
     };
 
     this.pasteHtmlAtCaret = function(html) {
@@ -1044,14 +1050,14 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     sel.addRange(range);
                 }
                 if (html.indexOf('scroll_image_latest') < 0) {
-                    scrollLatest('scroll_latest');
+                    self.scrollLatest('scroll_latest');
                 }
             }
         } else if (document.selection && document.selection.type != "Control") {
             // IE < 9
             document.selection.createRange().pasteHTML(html);
             if (html.indexOf('scroll_image_latest') < 0) {
-                scrollLatest('scroll_latest');
+                self.scrollLatest('scroll_latest');
             }
         }
         return;

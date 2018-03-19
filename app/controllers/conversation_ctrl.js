@@ -172,10 +172,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         $('#placeholderDiv').css('bottom', '-1px');
 
 
-
-
         $scope.pasteHtmlAtCaret("<span class='scroll_latest_footer' id='scroll_latest_footer'></span>");
 
+        Format.scrollLatest('scroll_latest_footer');
+
+        /*
         $timeout(function() {
             scroll_latest = document.querySelector('.scroll_latest_footer');
             $timeout(function() {
@@ -190,6 +191,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $(".scroll_latest_footer").remove();
             }, 400);
         });
+        */
 
         /*
         var scroll_div;
