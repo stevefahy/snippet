@@ -179,9 +179,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         $timeout(function() {
             scroll_latest = document.querySelector('.scroll_latest_footer');
             $timeout(function() {
-                if (document.querySelector('.' + clas) != undefined) {
+                console.log(scroll_latest);
+                //if (document.querySelector('.' + clas) != undefined) {
                     scrollIntoViewIfNeeded(scroll_latest, { duration: 300, offset: { bottom: 30 } });
-                }
+                //}
             }, 200);
             // remove scroll class after scrolling
             $timeout(function() {
