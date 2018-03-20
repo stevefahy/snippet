@@ -560,8 +560,14 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 
 .create_container {
     width: 100%;
-    display: grid;
+
+    /*display: grid;*/
+    display: flex;
+
     align-items: center;
+
+    -webkit-column-gap: 0px;
+
     grid-gap: 0px;
     grid-template-columns: max-content auto max-content;
     grid-auto-columns: min-content;
@@ -634,6 +640,29 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     margin-left: auto;
 }
 
+.mi_send_no_input{
+        color: white;
+    font-size: 26px;
+    display: inline-block;
+    border-radius: 100px;
+    border-style: solid;
+    background-color: darkgreen;
+    padding-left: 12px;
+    padding-right: 8px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    cursor: pointer;
+    margin-left: 15px;
+}
+
+.mi_send_input{
+
+    margin-left: 0px;
+    
+}
+
+
+
 .transition {
     -webkit-transition: all .4s cubic-bezier(.4, 0, .2, 1);
     transition: all .4s cubic-bezier(.4, 0, .2, 1);
@@ -656,7 +685,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 #mi-send {
     color: white;
     font-size: 26px;
-    display: inline-block;
+    /*display: inline-block;*/
     border-radius: 100px;
     border-style: solid;
     background-color: darkgreen;
