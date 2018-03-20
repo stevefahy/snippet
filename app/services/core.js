@@ -959,12 +959,15 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             }, 200);
 
             $timeout(function() {
+                console.log(clas);
                 if (clas == 'scroll_latest_footer') {
                     // remove scroll div after scrolling
                     $('.' + clas).remove();
+                    console.log('remove span');
                 } else {
                     // remove scroll class after scrolling
                     $('.' + clas).removeClass(clas);
+                    console.log('remove class');
                 }
             }, 400);
         });
