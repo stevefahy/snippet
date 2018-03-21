@@ -818,6 +818,7 @@ span#scroll_image_latest {
 
 .convs_row {
     width: 100%;
+    padding-left: 15px;
     /*
     display: -webkit-box;
     display: -ms-flexbox;
@@ -832,6 +833,8 @@ span#scroll_image_latest {
 .convs_col_image {
     flex: 1;
     max-width: 40px;
+    padding-left: 0px;
+    padding-right: 0px;
     /*
     flex: 0 0 10%;
     max-width: 10%;
@@ -842,6 +845,7 @@ span#scroll_image_latest {
 
 .convs_col_msg {
     flex: 1;
+    max-width: 100%;
     /*
     flex: 0 0 70%;
     max-width: 70%;
