@@ -863,6 +863,7 @@ span#scroll_image_latest {
 .convs_col_detail {
     flex: 1;
     text-align: right;
+    height:100%;
     /*
     text-align: right;
     flex: 0 0 20%;
