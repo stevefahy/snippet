@@ -5,6 +5,26 @@
             <div ng-repeat="conversation in conversations | orderBy :'updatedAt' : true">
                 <div id="conv_div" ng-click="(conversation.conversation_type == 'private') ? chat(conversation._id, $index) : chatPublic(conversation.admin, $index)">
                     <li class="list-group-item d-flex justify-content-between align-items-center">
+
+                        <div class="container convs_container_1">
+                            <div class="row convs_row">
+
+                                <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5  convs_col_image"><img id="conv_usr_img" src="/assets/images/profile.jpg"></div>
+
+                                <div class="col-lg-2 col-md-2 col-sm-3 col-xs-2 convs_col_msg">
+                                    <div class="convs_cell_name" id="convs_name">{{conversation.name}}</div>
+                                    <div class="convs_cell_msg" id="convs_msg" ng-bind-html="conversation.latest_card"></div>
+                                </div>
+
+                                <div class="col-lg-2 col-md-2 col-sm-3 col-xs-2 convs_col_detail">
+                                    <div class="badge_container">
+                                    <div class="convs_c badge" id="conversations_badge" ng-if="conversation.new_messages > 0">{{conversation.new_messages}}</div>
+                                </div>
+                                    <div class="short-div"><time am-time-ago="conversation.updatedAt" id="time"></time></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--
                         <div class="convs_container">
                             <div class="convs_a">
                                 <img id="conv_usr_img" src="/assets/images/profile.jpg">
@@ -16,6 +36,7 @@
                                 <time am-time-ago="conversation.updatedAt" id="time"></time>
                             </div>
                         </div>
+                    -->
                     </li>
                 </div>
             </div>

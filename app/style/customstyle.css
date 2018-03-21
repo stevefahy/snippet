@@ -517,6 +517,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     margin-top: -35px;
 }
 
+/*
 .convs_container {
     width: 100%;
     display: grid;
@@ -557,7 +558,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     grid-row: 2;
     margin-left: auto;
 }
-
+*/
 .create_container {
     width: 100%;
 
@@ -787,6 +788,7 @@ display: flex;
     user-select: none;
     /* Likely future */
     cursor: text;
+    left: 0px;
 }
 
 span#scroll_latest_footer {
@@ -797,4 +799,45 @@ span#scroll_latest_footer {
 span#scroll_image_latest {
     display: inline-block;
     width: 0px;
+}
+
+.convs_container_1{
+    max-width: 100%;
+    padding-right: 0;
+    padding-left: 0;
+}
+.convs_row{
+        max-width: 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+     margin-right: 0px; 
+     margin-left: 0px; 
+}
+.convs_col_image{
+     flex: 0 0 10%;
+    max-width: 10%;
+    padding-right: 0px;
+    padding-left: 0px;
+}
+.convs_col_msg{
+    flex: 0 0 70%;
+    max-width: 70%;
+}
+.convs_cell_name{
+    height: 50%;
+}
+.convs_cell_msg{
+    height: 50%;
+}
+.convs_col_detail{
+    text-align: right;
+        flex: 0 0 20%;
+    max-width: 20%;
+    padding: 0;
+}
+.badge_container{
+    height: 50%;
 }
