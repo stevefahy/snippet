@@ -588,6 +588,8 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 }
 
 .create_a {
+display: flex;
+
     grid-column: 1;
     grid-row: 1;
     width: calc(100vw - 75px);
@@ -595,6 +597,8 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 }
 
 .create_a_input {
+display: flex;
+
     grid-column: 1;
     grid-row: 1;
     width: calc(100vw - 130px);
@@ -765,6 +769,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 }
 
 #placeholderDiv {
+    z-index: 100;
     position: absolute;
     min-height: 40px;
     margin-bottom: 6px;
