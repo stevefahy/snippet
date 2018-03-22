@@ -300,6 +300,7 @@ div#user {
 
 
 
+
 /* EDIT MENU */
 
 
@@ -315,10 +316,12 @@ div#user {
 
 
 
+
 /* Dropdown button on hover & focus */
 
 .dropbtn:hover,
 .dropbtn:focus {}
+
 
 
 
@@ -329,6 +332,7 @@ div#user {
     position: relative;
     display: inline-block;
 }
+
 
 
 
@@ -356,6 +360,7 @@ div#user {
 
 
 
+
 /* Links inside the dropdown */
 
 .dropdown-content div {
@@ -369,11 +374,13 @@ div#user {
 
 
 
+
 /* Change color of dropdown links on hover */
 
 .dropdown-content a:hover {
     background-color: #f1f1f1
 }
+
 
 
 
@@ -446,12 +453,6 @@ li.list-group-item.d-flex.justify-content-between.align-items-center.ng-binding 
     float: right;
 }
 
-#conversations_badge {
-    padding-top: 4px;
-    padding-left: 7px;
-    padding-right: 7px;
-    border-radius: 100px;
-}
 
 .badge {
     background-color: olivedrab;
@@ -497,7 +498,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center.ng-binding 
     overflow: hidden;
     position: relative;
     margin-right: 15px;
-    border-radius: 1;
+    /*border-radius: 1;*/
     border-color: tomato;
     border: .7px solid #9E9E9E;
     margin-top: 2px;
@@ -515,6 +516,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     margin-bottom: -1px;
 }
 
+/*
 .convs_new {
     display: flex;
     flex-flow: column;
@@ -523,6 +525,8 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     float: right;
     margin-top: -35px;
 }
+*/
+
 
 
 /*
@@ -567,6 +571,81 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     margin-left: auto;
 }
 */
+
+#conversations_badge {
+    padding-top: 4px;
+    padding-left: 7px;
+    padding-right: 7px;
+    padding-bottom: 4px;
+    border-radius: 100px;
+    margin-right: auto;
+    color: white;
+}
+
+
+.convs_container {
+    width: 100%;
+    display: flex;
+    grid-gap: 0px;
+    grid-template-columns: max-content auto max-content;
+    grid-auto-columns: min-content;
+    grid-auto-columns: max-content;
+    grid-auto-columns: auto;
+    grid-auto-columns: fit-content(100%);
+    grid-auto-rows: min-content;
+    grid-auto-rows: max-content;
+    grid-auto-rows: auto;
+}
+
+.convs_col_1{
+    flex: 1;
+        margin-bottom: auto;
+    margin-top: auto;
+}
+.convs_col{
+    /* flex: 0 0 25%; */
+    /* align-items: flex-end; */
+    /* display: flex; */
+    /* flex: 1; */
+    margin-right: auto;
+    text-align: right;
+    /* justify-content: baseline; */
+    /* margin: 0; */
+    align-self: flex-end;
+    /* margin-top: auto; */
+    /* margin-bottom: auto; */
+}
+.convs_a {
+    grid-column: 1;
+    grid-row-end: span 2;
+}
+
+.convs_b {
+    grid-column: 2;
+    grid-row: 1;
+        padding-bottom: 3px;
+            margin-top: -1px;
+}
+
+.convs_c {
+    grid-column: 3;
+    grid-row: 1;
+    margin-left: auto;
+}
+
+.convs_d {
+    grid-column: 2;
+    grid-row: 2;
+        margin-bottom: -3px;
+}
+
+.convs_e {
+    grid-column: 3;
+    grid-row: 2;
+    margin-left: auto;
+}
+
+
 
 .create_container {
     width: 100%;
@@ -809,25 +888,21 @@ span#scroll_image_latest {
     width: 0px;
 }
 
+/*
 .convs_container_1 {
     display: flex;
     max-width: 100%;
     padding-right: 0;
     padding-left: 0;
+    height: 40px;
+    vertical-align: middle;
 }
 
 .convs_row {
+    align-items: center;
+    height: 100%;
     width: 100%;
     padding-left: 15px;
-    /*
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-    margin-right: 0px;
-    margin-left: 0px;
-    */
 }
 
 .convs_col_image {
@@ -835,25 +910,16 @@ span#scroll_image_latest {
     max-width: 40px;
     padding-left: 0px;
     padding-right: 0px;
-    /*
-    flex: 0 0 10%;
-    max-width: 10%;
-    padding-right: 0px;
-    padding-left: 0px;
-    */
 }
 
 .convs_col_msg {
     flex: 1;
     max-width: 100%;
-    /*
-    flex: 0 0 70%;
-    max-width: 70%;
-    */
 }
 
 .convs_cell_name {
     height: 50%;
+    padding-bottom: 5px;
 }
 
 .convs_cell_msg {
@@ -863,15 +929,12 @@ span#scroll_image_latest {
 .convs_col_detail {
     flex: 1;
     text-align: right;
-    height:100%;
-    /*
-    text-align: right;
-    flex: 0 0 20%;
-    max-width: 20%;
-    padding: 0;
-    */
+    align-items: center;
+    padding-right: 0px;
 }
 
 .badge_container {
     height: 50%;
+    display: inline-block;
 }
+*/
