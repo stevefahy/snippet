@@ -5,11 +5,9 @@
             <div id="placeholderDiv"></div>
         </div>
         <div class="create_b">
-            <!-- material icon &#xE412; 'photo_camera' -->
             <i class="material-icons mi-photo_camera mi-photo_camera_unfocused  transition_2" ng-class="{ 'mi-photo_camera_focused': focused}" ng-mouseover="checkFocus()" ng-click="media()">&#xE412;</i>
         </div>
         <div class="create_c create_c_no_input transition" ng-class="{ 'create_c_input': input}">
-            <!-- material icon &#xE163; 'send' -->
             <i class="material-icons  mi_send_no_input" ng-class="{ 'mi_send_input': input}" id="" ng-click="createCard(card_create._id, card_create)">&#xE163;</i>
         </div>
         <input id="upload-input" type="file" name="uploads[]" multiple="multiple">

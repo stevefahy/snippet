@@ -170,67 +170,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
         $('.footer').hide();
         $('#placeholderDiv').css('bottom', '-1px');
-
+        // Paste div that will be scrolled into view if necessary and the deleted.
         $scope.pasteHtmlAtCaret("<span class='scroll_latest_footer' id='scroll_latest_footer'></span>");
-
+        // Scroll into view if necessary
         Format.scrollLatest('scroll_latest_footer');
-
-        /*
-        $timeout(function() {
-            scroll_latest = document.querySelector('.scroll_latest_footer');
-            $timeout(function() {
-                console.log(scroll_latest);
-                //if (document.querySelector('.' + clas) != undefined) {
-                    scrollIntoViewIfNeeded(scroll_latest, { duration: 300, offset: { bottom: 30 } });
-                //}
-            }, 200);
-            // remove scroll class after scrolling
-            $timeout(function() {
-                //$('.' + clas).removeClass(clas);
-                $(".scroll_latest_footer").remove();
-            }, 400);
-        });
-        */
-
-        /*
-        var scroll_div;
-        var scroll_latest;
-        var foot_height;
-        var create_height;
-        var text_height;
-        $scope.pasteHtmlAtCaret("<span class='scroll_latest_footer' id='scroll_latest_footer'></span>");
-        $timeout(function() {
-            scroll_latest = document.querySelector('.scroll_latest_footer');
-            if (document.activeElement.id == 'cecard_create') {
-                scroll_div = '.create_container';
-            } else {
-                scroll_div = '.content_cnv';
-            }
-            if ($('.footer').is(':visible')) {
-                foot_height = $('.footer').outerHeight();
-            } else {
-                foot_height = 0;
-            }
-            if ($('.create_container').is(':visible')) {
-                create_height = $('.create_container').outerHeight();
-            } else {
-                create_height = 0;
-            }
-            text_height = $('.scroll_latest_footer').outerHeight();
-        }, 100);
-
-        $timeout(function() {
-            $(scroll_div).animate({
-                scrollTop: scroll_latest.offsetTop - window.innerHeight + foot_height + create_height + text_height
-            }, 100);
-        }, 200);
-
-        // remove scroll_latest after scrolling
-        $timeout(function() {
-            $(".scroll_latest_footer").remove();
-        }, 400);
-        */
-
     };
 
     showFooter = function() {

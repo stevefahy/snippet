@@ -618,6 +618,7 @@ module.exports = function(app, passport) {
     // 
     // EMAIL
     //
+    // TODO - email and password to safe config file.
     // send email invite
     app.post('/api/post_email', function(req, res) {
         var transporter = nodemailer.createTransport({

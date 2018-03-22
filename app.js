@@ -104,7 +104,7 @@ for (var k in interfaces) {
     }
 }
 // Dell XPS 13 or other local networks
-console.log(addresses);
+// console.log(addresses);
 if (addresses == '192.168.192.60' || addresses == '10.21.221.127' || addresses == '10.61.137.245' || addresses == '10.32.139.207' || addresses == '192.168.43.199') {
     // MongoDB
     var dburl = urls.localUrl;

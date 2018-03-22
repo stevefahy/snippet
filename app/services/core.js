@@ -950,8 +950,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     this.scrollLatest = function(clas) {
         var scroll_latest = document.querySelector('.' + clas);
 
-        //if (ua === 'AndroidApp') {
         $timeout(function() {
+
             $timeout(function() {
                 if (document.querySelector('.' + clas) != undefined) {
                     scrollIntoViewIfNeeded(scroll_latest, { duration: 200, offset: { bottom: 30 } });
@@ -959,68 +959,16 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             }, 200);
 
             $timeout(function() {
-                console.log(clas);
                 if (clas == 'scroll_latest_footer') {
                     // remove scroll div after scrolling
                     $('.' + clas).remove();
-                    console.log('remove span');
                 } else {
                     // remove scroll class after scrolling
                     $('.' + clas).removeClass(clas);
-                    console.log('remove class');
                 }
             }, 400);
-        });
-        /*
-            var foot_height;
-            var create_height;
-            var text_height;
-            var scroll_div;
-            $timeout(function() {
-                if (scroll_latest != null) {
-                    if (document.activeElement.id == 'cecard_create') {
-                        scroll_div = '.create_container';
-                    } else {
-                        scroll_div = '.content_cnv';
-                    }
-                    if ($('.footer').is(':visible')) {
-                        foot_height = $('.footer').outerHeight();
-                    } else {
-                        foot_height = 0;
-                    }
-                    if ($('.create_container').is(':visible')) {
-                        create_height = $('.create_container').outerHeight();
-                    } else {
-                        create_height = 0;
-                    }
-                    text_height = $('.' + clas).outerHeight();
-                    $timeout(function() {
-                        $(scroll_div).animate({
-                            scrollTop: scroll_latest.offsetTop - window.innerHeight + foot_height + create_height + text_height
-                        }, 100);
 
-                    }, 200);
-                    // remove scroll class after scrolling
-                    $timeout(function() {
-                        $('.' + clas).removeClass(clas);
-                    }, 400);
-                }
-            });
-            
-        } else {
-            $timeout(function() {
-                $timeout(function() {
-                    if (document.querySelector('.' + clas) != undefined) {
-                        scrollIntoViewIfNeeded(scroll_latest, { duration: 300, offset: { bottom: 30 } });
-                    }
-                }, 200);
-                // remove scroll class after scrolling
-                $timeout(function() {
-                    $('.' + clas).removeClass(clas);
-                }, 400);
-            });
-        }
-        */
+        });
     };
 
     this.pasteHtmlAtCaret = function(html) {
