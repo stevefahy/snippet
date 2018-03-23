@@ -39,16 +39,6 @@ function getConversationId(id) {
     return query;
 }
 
-// route middleware to ensure user is logged in
-function isLoggedIn(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next();
-    } else {
-        // causing infinite loop
-        res.redirect('/login');
-    }
-}
-
 // find the array index of an object value
 function findWithAttr(array, attr, value) {
     for (var i = 0; i < array.length; i += 1) {
@@ -89,12 +79,21 @@ function isMember(req, res, next) {
                 return next();
             } else {
                 // otherwise redirect to login
-                res.redirect('/login');
+                res.redirect('/api/login');
             }
         });
     } else {
         // causing infinite loop
-        res.redirect('/login');
+        res.redirect('api/login');
+    }
+}
+
+// route middleware to ensure user is logged in
+function isLoggedIn(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
+    } else {
+        res.redirect('/api/login');
     }
 }
 
@@ -104,18 +103,13 @@ module.exports = function(app, passport) {
     //----------------------------------------------------------------------
     //
     // NOT LOGGED IN
-    app.get('/login', function(req, res) {
+    app.get('/api/login', function(req, res) {
         // load the single view file (angular will handle the page changes on the front-end)
-        res.sendFile('login.html', { root: path.join(__dirname, '../views/') });
+         res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
     });
     // LOGGED IN
     app.get('/', isLoggedIn, function(req, res) {
-        if (req.user !== undefined) {
-            // load the single view file (angular will handle the page changes on the front-end)
-            res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
-        } else {
-            res.sendFile('login.html', { root: path.join(__dirname, '../views/') });
-        }
+        res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
     });
 
     // LOGOUT
@@ -127,7 +121,7 @@ module.exports = function(app, passport) {
             if (err) {
                 console.log('err: ' + err);
             }
-            res.sendFile('login.html', { root: path.join(__dirname, '../views/') });
+            res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
         });
     });
 

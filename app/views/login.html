@@ -1,42 +1,11 @@
-<!doctype html>
-<html>
-
-<head>
-    <!-- META -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>Snipbee</title>
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <!-- Bootstrap theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-    <!-- Load Fonts -->
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Montserrat+Alternates:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Fira+Sans+Extra+Condensed:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,300">
-    <link href='https://fonts.googleapis.com/css?family=Arimo:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
-    <link href="https://fonts.googleapis.com/css?family=Amatic+SC|Anton|Architects+Daughter|Baloo+Bhaijaan|Boogaloo|Carter+One|Caveat+Brush|Cherry+Swash:700|Condiment|Courgette|Damion|Dancing+Script|Kaushan+Script|Lobster|Lobster+Two|Merienda+One|Niconne|Oleo+Script+Swash+Caps|Oregano|Pacifico|Permanent+Marker|Reenie+Beanie|Righteous|Sedgwick+Ave|Sedgwick+Ave+Display|Wendy+One" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Oleo+Script:400,700" rel="stylesheet">
-    <!-- Custom Styles -->
-    <link rel="stylesheet" href="/style/customstyle.css">
-    <link rel="stylesheet" href="/style/bootstrap-social.css">
-</head>
-
-<body>
-    <div class="header">
-        <div class="logo"><img src="/assets/images/bee_64.png"></div>
-        <div class="header_text">Snipbee</div>
-        <hr>
-    </div>
-    <div class="container text-center login-body">
-        <div class="social-buttons">
-            <a href="/auth/google/" class="btn btn-block btn-social btn-google">
+<div ng-controller="loginCtrl">
+    <div class="container_login">
+        <div class="slide-animate header_container" ng-include="'/views/header.html'"></div>
+        <div class="container text-center login-body">
+            <div class="social-buttons">
+                <a href="/auth/google/" class="btn btn-block btn-social btn-google">
     <span class="fa fa-google"></span> Sign in with Google </a>
+            </div>
         </div>
     </div>
-</body>
-
-</html>
+</div>
