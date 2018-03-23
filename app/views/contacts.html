@@ -1,35 +1,40 @@
 <div ng-controller="contactsCtrl">
-    <br>
-    <br>
-    <br> Contacts
-    <br>
-    <input id="invite_email" class="form-control" type="text" ng-model="invite_input">
-    <button id="invite_button" type="submit" class="btn btn-sm btn-warning" ng-click="inviteUser(invite_input)">Invite</button>
-    <br> repeat
-    <ul class="list-group">
-        <form>
-            <div ng-repeat="contact in contacts">
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    {{contact.google.name}}
-                    <button type="button" class="btn btn-success btn-xs btn-adduser" ng-if="contact.conversation_exists" ng-click="chat(contact.conversation_id, $index)">chat</button>
-                    <button type="button" class="btn btn-success btn-xs btn-adduser" ng-if="!contact.conversation_exists" ng-click="startChat([contact._id])">start chat</button>
-                    <input id="contacts_cb" type="checkbox" ng-model="selection[$index]['value']" ng-change="checkBoxChange(contact._id, selection[$index]['value'])">
-                </li>
-            </div>
-        </form>
-    </ul>
-    <input type="text" value="enter group" ng-if="selected.length > 1" ng-model="chat_create.conversation_name" />
-    <br ng-if="selected.length > 1">
-    <input type="submit" value="Save" ng-if="selected.length > 1" ng-click="selectedUsers()" />
-    <br ng-if="selected.length > 1">
-    <label>Find a user: </label>
-    <input id="search-query">
-    <ul class="list-group">
-        <div ng-repeat="search_result in search_results">
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                {{search_result.google.name}}
-                <button type="button" class="btn btn-success btn-xs btn-adduser" ng-click="addUser(search_result._id, $index)" ng-if="!search_result.is_contact">add contact</button>
-            </li>
+    <div class="container_cnv">
+        <div class="header_container" ng-include="'/views/header.html'"></div>
+        <div class="content_cnv">
+            <br>
+            <input id="invite_email" class="form-control" type="text" ng-model="invite_input">
+            <button id="invite_button" type="submit" class="btn btn-sm btn-warning" ng-click="inviteUser(invite_input)">Invite</button>
+            <br> 
+            <br>
+            <ul class="list-group">
+                <form>
+                    <div ng-repeat="contact in contacts">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{contact.google.name}}
+                            <button type="button" class="btn btn-success btn-xs btn-adduser" ng-if="contact.conversation_exists" ng-click="chat(contact.conversation_id, $index)">chat</button>
+                            <button type="button" class="btn btn-success btn-xs btn-adduser" ng-if="!contact.conversation_exists" ng-click="startChat([contact._id])">start chat</button>
+                            <input id="contacts_cb" type="checkbox" ng-model="selection[$index]['value']" ng-change="checkBoxChange(contact._id, selection[$index]['value'])">
+                        </li>
+                    </div>
+                </form>
+            </ul>
+            <br>
+            <input type="text" value="enter group" ng-if="selected.length > 1" ng-model="chat_create.conversation_name" />
+            <br ng-if="selected.length > 1">
+            <input type="submit" value="Save" ng-if="selected.length > 1" ng-click="selectedUsers()" />
+            <br ng-if="selected.length > 1">
+            <label>Find a user: </label>
+            <input id="search-query">
+            <ul class="list-group">
+                <div ng-repeat="search_result in search_results">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{search_result.google.name}}
+                        <button type="button" class="btn btn-success btn-xs btn-adduser" ng-click="addUser(search_result._id, $index)" ng-if="!search_result.is_contact">add contact</button>
+                    </li>
+                </div>
+            </ul>
         </div>
-    </ul>
+        <div ng-include src="'/views/footer.html'"></div>
+    </div>
 </div>

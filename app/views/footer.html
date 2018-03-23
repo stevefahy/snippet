@@ -1,17 +1,30 @@
-<div class="footer">
-    <div ng-controller="footerCtrl">
-        <hr id="footer">
-        <i class="material-icons" id="mi-search" ng-click="search_icon()">&#xE8B6;</i>
-        <a href="/c/create_card">
-            <i class="material-icons" id="mi-add_circle_outline">&#xE148;</i>
-        </a>
-        <form class="form-horizontal">
-            <input id="search_input" class="form-control" type="text" ng-model="input" ng-show="showDiv">
-            <button id="search_button" type="submit" class="btn btn-sm btn-warning" ng-show="showDiv" ng-click="searchCard()">Search</button>
-            <a ng-if="currentUser" href ng-click="logOut()">Logout</a>
-            <a ng-if="!currentUser" href ng-click="logIn()">Login</a>
-            <a href ng-click="changePath('/c/contacts')">Contacts</a>
-            <a href ng-click="changePath('/chat/conversations')">Conversations</a>
-        </form>
+<div ng-controller="footerCtrl">
+    <div class="footer">
+        <div class="footer_home">
+            <i class="material-icons footer-mi" id="mi-home">&#xE88A;</i>
+        </div>
+
+        <div class="footer_group">
+
+        <div class="footer_search">
+            <i class="material-icons footer-mi" id="mi-search" ng-click="search_icon()">&#xE8B6;</i>
+            <form class="form-horizontal">
+                <input id="search_input" class="form-control" type="text" ng-model="input" ng-show="showDiv">
+                <button id="search_button" type="submit" class="btn btn-sm btn-warning" ng-show="showDiv" ng-click="searchCard()">Search</button>
+            </form>
+        </div>
+        <div class="footer_contacts">
+            <a href ng-click="changePath('/c/contacts')"><i class="material-icons footer-mi" id="mi-people">&#xE7FC;</i></a>
+        </div>
+        <div class="footer_chat">
+            <a href ng-click="changePath('/chat/conversations')"><i class="material-icons footer-mi" id="mi-chat">&#xE0CB;</i></a>
+        </div>
+
+    </div>
+
+        <div class="footer_login">
+            <a ng-if="currentUser" href ng-click="logOut()"><i class="material-icons footer-mi" id="mi-logout">&#xE899;</i></a>
+            <a ng-if="!currentUser" href ng-click="logIn()"><i class="material-icons footer-mi" id="mi-logout">&#xE898;</i></a>
+        </div>
     </div>
 </div>

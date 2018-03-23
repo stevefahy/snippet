@@ -8,9 +8,6 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
         .when('/', {
             templateUrl: '/views/conversations.html'
         })
-        .when("/c/create_card", {
-            templateUrl: '/views/card_create.html'
-        })
         .when("/s/:snip", {
             templateUrl: '/views/card.html'
         })

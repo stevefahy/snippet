@@ -210,6 +210,7 @@ hr {
 }
 
 
+
 /* HEADER */
 
 .header {
@@ -244,7 +245,6 @@ hr {
     /* float: left; */
     margin-left: 5px;
     margin-top: 3px;
-      
 }
 
 .logo img {
@@ -267,18 +267,93 @@ hr {
     font-size: 16px;
     font-weight: 500;
     /* vertical-align: middle; */
-
-        margin-left: auto;
+    margin-left: auto;
 }
 
 .header hr {
     margin-bottom: 0px;
 }
 
-.convs_list{
-            padding-left: 1.25em;
+
+/* FOOTER */
+
+.footer {
+    /*
+    display: flex;
+    bottom: 0;
+    width: 100vw;
+    height: 60px;
+    background-color: #FFFFFF;
+    border-top-style: solid;
+    border-top-width: 1px;
+    border-top-color: #e6e6e6;
+    padding-left: 1.25em;
+    padding-right: 1.25em;
+    align-items: center;
+    */
+  display: flex;
+    /* flex-direction: column; */
+    flex-wrap: wrap;
+    width: 200px;
+    height: 200px;
+    bottom: 0;
+    width: 100vw;
+    height: 60px;
+    background-color: #FFFFFF;
+    border-top-style: solid;
+    border-top-width: 1px;
+    border-top-color: #e6e6e6;
+    padding-left: 1.25em;
+    padding-right: 1.25em;
+    align-items: center;
+    /* justify-content: center; */
+}
+
+.footer_group{
+    display: flex;
+    flex-direction: row;
+    /* flex: 1; */
+    /* margin-left: 5%; */
+    width: 200px;
+    -webkit-box-decoration-break: center;
+    justify-content: center;
+    /* padding-right: 5px; */
+}
+
+#mi-home {
+     
+}
+
+#mi-search {
+ 
+}
+
+.footer_login {
+    margin-left: auto;
+}
+
+#mi-people{
+
+}
+
+.footer-mi{
+   color: #808080;
+   font-size: 30px !important;
+}
+
+.material-icons.md-36 { font-size: 36px; }
+
+/*
+hr#footer {
+    margin-bottom: 6px;
+}
+*/
+
+.convs_list {
+    padding-left: 1.25em;
     padding-right: 1.25em;
 }
+
 form.form-horizontal.ng-pristine.ng-valid {
     display: inline;
 }
@@ -289,9 +364,7 @@ input#search_input {
     height: 28px;
 }
 
-hr#footer {
-    margin-bottom: 6px;
-}
+
 
 form.form-horizontal.ng-valid.ng-dirty.ng-valid-parse {
     display: initial;
@@ -336,6 +409,7 @@ div#user {
 
 
 
+
 /* EDIT MENU */
 
 
@@ -350,10 +424,12 @@ div#user {
 
 
 
+
 /* Dropdown button on hover & focus */
 
 .dropbtn:hover,
 .dropbtn:focus {}
+
 
 
 
@@ -364,6 +440,7 @@ div#user {
     position: relative;
     display: inline-block;
 }
+
 
 
 
@@ -391,6 +468,7 @@ div#user {
 
 
 
+
 /* Links inside the dropdown */
 
 .dropdown-content div {
@@ -404,11 +482,13 @@ div#user {
 
 
 
+
 /* Change color of dropdown links on hover */
 
 .dropdown-content a:hover {
     background-color: #f1f1f1
 }
+
 
 
 
@@ -702,16 +782,13 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     -webkit-transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.4s;
     transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.4s;
 }
+
+
 /*
 .list-group-item {
     padding: .7rem .9rem;
 }
 */
-
-#mi-search {
-    margin-left: 15px;
-    margin-top: 7px;
-}
 
 #mi-send {
     color: white;
@@ -765,12 +842,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     border-radius: 1px;
 }
 
-.footer {
-    bottom: 0;
-    width: 100vw;
-    height: 60px;
-    background-color: #FFFFFF;
-}
+
 
 .content_cnv_android::-webkit-scrollbar {}
 
@@ -793,7 +865,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     padding-right: 1.25em;
     padding-top: 11px;
     padding-bottom: 9px;
-    bottom: 49px;
+    bottom: 59px;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;

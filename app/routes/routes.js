@@ -133,10 +133,6 @@ module.exports = function(app, passport) {
     app.get('/s/:snip', function(req, res) {
         res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
     });
-    // CREATE CARD
-    app.get('/c/create_card', isLoggedIn, function(req, res) {
-        res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
-    });
     // CONTACTS
     app.get('/c/contacts', isLoggedIn, function(req, res) {
         res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
