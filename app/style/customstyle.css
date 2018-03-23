@@ -759,9 +759,18 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 }
 
 .content_cnv {
+    /*
     width: 100vw;
     overflow-y: auto;
     height: calc(100%);
+    border-radius: 1px;
+    */
+    width: 100vw;
+    overflow-y: overlay;
+    /* overflow: hidden; */
+    /* overflow-y: -webkit-paged-x; */
+    height: calc(100vh);
+    /* position: absolute; */
     border-radius: 1px;
 }
 
