@@ -84,7 +84,7 @@ function isMember(req, res, next) {
         });
     } else {
         // causing infinite loop
-        res.redirect('api/login');
+        res.redirect('/api/login');
     }
 }
 
