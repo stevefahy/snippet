@@ -318,6 +318,7 @@ hr {
     -webkit-box-decoration-break: center;
     justify-content: center;
     /* padding-right: 5px; */
+        margin: 0px 5%;
 }
 
 #mi-home {
@@ -328,6 +329,9 @@ hr {
  
 }
 
+.footer_search, .footer_contacts, .footer_chat{
+    margin: 0 7%;
+}
 .footer_login {
     margin-left: auto;
 }
