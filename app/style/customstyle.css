@@ -214,18 +214,19 @@ hr {
 /* HEADER */
 
 .header {
-    display: flex;
+display: flex;
     /* justify-content: space-evenly; */
     /* z-index: 1000; */
     top: 0;
     background-color: #FFFFFF;
     height: 60px;
-    border-bottom-style: solid;
-    border-bottom-width: 1px;
-    border-bottom-color: #e6e6e6;
+    /* border-bottom-style: solid; */
+    /* border-bottom-width: 1px; */
+    /* border-bottom-color: #e6e6e6; */
     padding-left: 1.25em;
     padding-right: 1.25em;
     align-items: center;
+    /* border: 0px; */
 }
 
 .header_text {
@@ -274,6 +275,20 @@ hr {
     margin-bottom: 0px;
 }
 
+.header_bottom{
+top: 0px;
+    position: absolute;
+    width: 100%;
+    z-index: 0;
+    height: 60px;
+    left: 0px;
+    /* background-color: aqua; */
+    /* box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 2px; */
+    box-shadow: rgba(0, 0, 0, 0.14) 0px 4px 5px 0px,;
+    /* background-color: white; */
+    /* border: 0px; */
+    box-shadow: rgba(0, 0, 0, 0.14) 0px 4px 5px 0px, rgba(0, 0, 0, 0.12) 0px 1px 10px 0px, rgba(0, 0, 0, 0.2) 0px 2px 4px -1px;
+}
 
 /* FOOTER */
 
