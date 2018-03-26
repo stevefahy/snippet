@@ -179,7 +179,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     showFooter = function() {
         $('.footer').show();
         $('.create_container').show();
-        $('#placeholderDiv').css('bottom', '49px');
+        $('#placeholderDiv').css('bottom', '59px');
     };
 
     setFocus = function() {
