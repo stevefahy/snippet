@@ -64,6 +64,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Broadcast by cardcreate_ctrl and conversation_ctrl when the window regains focus
     $scope.$on('CONV_CHECK', function() {
+        console.log('CONV_CHECK');
         var id = Conversations.getConversationId();
         getConversationUpdate(id);
     });
@@ -182,10 +183,25 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         $('#placeholderDiv').css('bottom', '59px');
     };
 
+    /*
+                                checkPermission(id, function(result) {
+                                    $scope.isMember = result;
+                                    getConversation(id, 500);
+                                });
+                                */
     setFocus = function() {
         $timeout(function() {
+            console.log('c');
             findConversationId(function(result) {
-                $rootScope.$broadcast('CONV_CHECK');
+                console.log('here');
+                //$rootScope.$broadcast('CONV_CHECK');
+
+                var id = Conversations.getConversationId(id);
+                Conversations.find_conversation_id(id)
+                    .then(function(res) {
+                        console.log(res.data);
+                        $scope.conversation_name = res.data.conversation_name;
+                    });
             });
         });
     };
@@ -275,6 +291,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Find the conversation id.
     findConversationId = function(callback) {
+        //findConversationId = function(callback) {
         // Use the id from $routeParams.id if it exists. 
         // The conversation may have been loaded by username.
         if (id === undefined) {
@@ -294,6 +311,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             checkPermission(id, function(result) {
                                 $scope.isMember = result;
                                 getConversation(id, 500);
+                                console.log(Conversations.getConversationId());
+                                callback(Conversations.getConversationId());
                             });
                         }
                     });
@@ -304,8 +323,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             checkPermission(id, function(result) {
                 $scope.isMember = result;
                 getConversation(id, 500);
+                console.log(Conversations.getConversationId());
+                callback(Conversations.getConversationId());
             });
         }
+
+
+        //return Conversations.getConversationId();
+        //callback(Conversations.getConversationId());
     };
 
     // Called by Android to get the conversation id.
