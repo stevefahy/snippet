@@ -105,7 +105,7 @@ module.exports = function(app, passport) {
     // NOT LOGGED IN
     app.get('/api/login', function(req, res) {
         // load the single view file (angular will handle the page changes on the front-end)
-         res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
+        res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
     });
     // LOGGED IN
     app.get('/', isLoggedIn, function(req, res) {
@@ -143,6 +143,10 @@ module.exports = function(app, passport) {
     });
     // CONVERSATIONS
     app.get('/chat/conversations', isLoggedIn, function(req, res) {
+        res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
+    });
+    // USER SETTING
+    app.get('/api/user_setting', isLoggedIn, function(req, res) {
         res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
     });
     // Route to check passort authentication
@@ -203,6 +207,8 @@ module.exports = function(app, passport) {
     });
 
     // google callback
+    // TODO check for for first login
+    // log in via join page already goes to user settings/
     app.get('/auth/google/callback',
         passport.authenticate('google', {
             failureRedirect: '/login'
@@ -262,10 +268,33 @@ module.exports = function(app, passport) {
                         });
                     }
                 });
+                res.redirect('/api/user_setting');
+            } else {
+                // redirect to the newly created users home page (/:USERNAME)
+                //res.redirect('/' + req.user.google.name);
+                // Check if this is first log in
+                // if so got to settings of not go to home /
+                console.log(req.user);
+                if (req.user.first_login == true) {
+                    req.user.first_login = false;
+
+                    // Save the new contact to the to the inviter array of contacts
+                    var updateuser = new User(req.user);
+                    updateuser.save(function(err, user) {
+                        if (err) {
+                            res.send(err);
+                        } else {
+                            console.log(user);
+                        }
+                    });
+
+                    res.redirect('/api/user_setting');
+                } else {
+                    res.redirect('/');
+                }
             }
-            // redirect to the newly created users home page (/:USERNAME)
-            //res.redirect('/' + req.user.google.name);
-            res.redirect('/');
+
+
         });
     //
     // CONTACTS

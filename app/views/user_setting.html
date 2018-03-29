@@ -1,0 +1,40 @@
+<div ng-controller="usersettingCtrl">
+    <div class="container_cnv">
+        <div class="header_container" ng-include="'/views/header.html'"></div>
+        <div class="content_cnv">
+            
+            <div class="user_setting_image">
+            	<div>Edit Profile</div>
+            	<!--style=" visibility: hidden;"-->
+            	<div class="preview" ><img  class="cropped_image" ng-src="{{myCroppedImage}}" /></div>
+            	<div class="original">
+                <img ng-if="avatar!='default'" alt="" class="user_settings_avatar" ng-src="{{avatar}}" />
+                <i ng-if="avatar=='default'" class="material-icons" id="mi-account_circle_settings">&#xE853;</i>
+                <div>
+                </div>
+                    <!--<input type="file" id="upload-input-settings" />-->
+                     <input type="file" id="fileInput" />
+                </div>
+<!--
+                <button ng-attr-id="{{ 'upload-triggerce' }}" class="btn btn-sm  " type="button" ng-click="uploadFile()">Upload File</button>-->
+
+                <div class="cropArea">
+                    <img-crop image="myImage" result-image="myCroppedImage" result-image-format="image/jpeg" result-image-size="150" change-on-fly="true"></img-crop>
+                </div>
+            </div>
+            <input id="name" type="text" ng-model="user_name" />
+            <button id="" class="btn btn-sm upload-btn " type="button " ng-click="saveFile()">Save</button>
+
+            <!--
+            	<input id="upload-input" type="file" name="uploads[]" multiple="multiple">
+                        <button ng-attr-id="{{ 'upload-triggerce' + card._id }}" class="btn btn-sm upload-btn upload-trigger" type="button" ng-click="uploadFile(card._id, card, currentUser)">Upload File</button>
+                    -->
+
+            
+            <div>Cropped Image:</div>
+            <div ></div>
+            <a ng-href="/"> home </a>
+        </div>
+        <div ng-include src="'/views/footer.html'"></div>
+    </div>
+</div>

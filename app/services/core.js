@@ -1,4 +1,4 @@
-var cardApp = angular.module("cardApp", ['ngSanitize', 'ngRoute', 'angularMoment', 'ngAnimate']);
+var cardApp = angular.module("cardApp", ['ngSanitize', 'ngRoute', 'angularMoment', 'ngAnimate', 'ngImgCrop']);
 
 // Prefix for loading a snip id
 var prefix = '/s/';
@@ -28,6 +28,9 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
         })
         .when("/api/join/:code", {
             templateUrl: '/views/join.html'
+        })
+        .when("/api/user_setting", {
+            templateUrl: '/views/user_setting.html'
         })
         .when("/api/logout", {
             templateUrl: '/views/login.html'
@@ -332,7 +335,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         }
     };
 
-    uploadImages = function(form) {
+    self.uploadImages = function(form, callback) {
         $.ajax({
             url: serverUrl,
             type: 'POST',
@@ -340,7 +343,17 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             processData: false,
             contentType: false,
             success: function(data) {
-                insertImage(data);
+                //insertImage(data);
+                console.log(data);
+                //return data;
+                console.log(callback);
+                // callback returned
+                // insert or callback?
+                if (callback) {
+                    callback(data);
+                } else {
+                    insertImage(data);
+                }
             },
             xhr: function() {
                 // create an XMLHttpRequest
@@ -365,10 +378,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         });
     };
 
-    prepareImage = function(files) {
+    this.prepareImage = function(files, callback) {
+        console.log(files);
         var promises = [];
         self.formData = new FormData();
         angular.forEach(files, function(file, key) {
+            console.log(file);
             promises.push(
                 createImageElement().then(function(img) {
                     return loadFileReader(img, file);
@@ -386,7 +401,36 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
         $q.all(promises).then(function(formData) {
             // Image processing of ALL images complete. Upload form
-            uploadImages(self.formData);
+            self.uploadImages(self.formData, callback);
+            //return  promises;
+            //return promises;
+
+        });
+    };
+
+
+    this.prepareAvatar = function(files) {
+        var promises = [];
+        self.formData = new FormData();
+        angular.forEach(files, function(file, key) {
+            promises.push(
+                createImageElement().then(function(img) {
+                    //return loadFileReader(img, file);
+                    //}).then(function(img) {
+                    return loadExifReader(img, file);
+                }).then(function(obj) {
+                    return resizeImage(obj.image, obj.exif);
+                }).then(function(dataurl) {
+                    return dataURItoBlob(dataurl);
+                }).then(function(blob) {
+                    self.formData.append('uploads[]', blob, file.name);
+                })
+            );
+        });
+
+        $q.all(promises).then(function(formData) {
+            // Image processing of ALL images complete. Upload form
+            self.uploadImages(self.formData);
         });
     };
 
@@ -423,7 +467,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             $('#upload-input').on('change', function() {
                 var files = $(this).get(0).files;
                 if (files.length > 0) {
-                    prepareImage(files);
+                    self.prepareImage(files);
                 }
                 // reset the input value to null so that files of the same name can be uploaded.
                 this.value = null;

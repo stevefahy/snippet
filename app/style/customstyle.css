@@ -298,6 +298,14 @@ hr {
     color: gray;
 }
 
+#mi-account_circle_settings {
+ 
+    margin-top: -15px;
+    line-height: 180px;
+    font-size: 180px;
+    color: gray;
+}
+
 
 /* HEADER CONV */
 
@@ -411,13 +419,98 @@ hr {
     font-size: 36px;
 }
 
-
-
 /*
 hr#footer {
     margin-bottom: 6px;
 }
 */
+
+/* USER SETTINGS */
+
+.user_settings_avatar {
+    width: 150px;
+    height: 150px;
+    /* background-color: #fafafa; */
+    border-radius: 50%;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    cursor: pointer;
+    -webkit-box-flex: 0;
+    -webkit-flex: 0 0 auto;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    overflow: hidden;
+    position: relative;
+    /* margin-right: 15px; */
+    /* border-color: tomato; */
+    border: .7px solid #9E9E9E;
+    /* margin-top: 2px; */
+}
+
+.heading_avatar {
+    width: 50px;
+    height: 50px;
+    /* background-color: #fafafa; */
+    border-radius: 50%;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    cursor: pointer;
+    -webkit-box-flex: 0;
+    -webkit-flex: 0 0 auto;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    overflow: hidden;
+    position: relative;
+    /* margin-right: 15px; */
+    /* border-color: tomato; */
+    border: .7px solid #9E9E9E;
+    /* margin-top: 2px; */
+}
+
+.user_setting_image{
+    text-align: center;
+}
+
+/* IMAGE CROP */
+
+.cropArea {
+  /*background: #E4E4E4;*/
+  overflow: hidden;
+  width:100%;
+  height:200px;
+}
+
+.cropped_image{
+    border-radius: 50%;
+}
+
+.preview{
+    z-index: 1;
+    position: relative;
+    /* text-align: center; */
+    /* left: calc(50vw - 75px); */
+    float: left;
+    /* overflow: visible; */
+    /* position: relative; */
+    /* top: 10px; */
+    width: 100%;
+    /*visibility: hidden;*/
+
+}
+
+.original{
+    z-index: 1;
+    position: relative;
+    /* text-align: center; */
+    /* left: calc(50vw - 75px); */
+    float: left;
+    /* overflow: visible; */
+    /* position: relative; */
+    /* top: 10px; */
+    width: 100%;
+        top: -150px;
+    margin-bottom: -150px;
+}
 
 .convs_list {
     padding-left: 1.25em;
@@ -584,7 +677,7 @@ div#user {
 }
 
 input#upload-input,
-.upload-trigger {
+.upload-trigger,  #upload-input-settings {
     position: absolute;
     left: -1000px;
 }

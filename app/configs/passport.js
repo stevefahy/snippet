@@ -334,9 +334,18 @@ module.exports = function(passport) {
                             //
                             // NEW USER
                             //
+                            console.log(profile._json.image.url);
+                            console.log(profile._json.image.isDefault);
                             var newUser = new User();
                             newUser._id = new mongoose.Types.ObjectId();
                             //newUser.contacts = ''; Empty
+                            newUser.first_login = true;
+                            newUser.user_name = profile.displayName;
+                            if (!profile._json.image.isDefault) {
+                                newUser.avatar = (profile.photos[0].value || '');
+                            } else {
+                                newUser.avatar = 'default';
+                            }
                             newUser.google.id = profile.id;
                             newUser.google.token = token;
                             newUser.google.name = profile.displayName;
@@ -396,9 +405,18 @@ module.exports = function(passport) {
                                 //
                                 // NEW USER
                                 //
+                                console.log(profile._json.image.url);
+                                console.log(profile._json.image.isDefault);
                                 var newUser = new User();
                                 newUser._id = new mongoose.Types.ObjectId();
                                 //newUser.contacts = ''; Empty
+                                newUser.first_login = true;
+                                newUser.user_name = profile.displayName;
+                                if (!profile._json.image.isDefault) {
+                                    newUser.avatar = (profile.photos[0].value || '');
+                                } else {
+                                    newUser.avatar = 'default';
+                                }
                                 newUser.google.id = profile.id;
                                 newUser.google.token = token;
                                 newUser.google.name = profile.displayName;
