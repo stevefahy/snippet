@@ -257,6 +257,7 @@ hr {
 
 
 .user {
+    z-index: 2000;
     float: right;
 }
 
