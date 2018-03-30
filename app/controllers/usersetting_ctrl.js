@@ -1,103 +1,126 @@
 cardApp.controller("usersettingCtrl", ['$scope', 'Format', 'Invites', '$rootScope', '$location', '$http', '$window', '$routeParams', function($scope, Format, Invites, $rootScope, $location, $http, $window, $routeParams) {
 
-    //$('.preview').hide();
-        this.$onInit = function() {
- 
-    };
 
-      $scope.$on('$viewContentLoaded', function(){
-    //Here your view content is fully loaded !!
-
-  });
-    
-
-    $scope.prepareImage = Format.prepareImage;
-
-    $http.get("/api/user_data").then(function(result) {
-
-        if (result.data.user) {
-            console.log(result.data.user);
-            $scope.currentUser = result.data.user.google.name;
-            $scope.user_name = result.data.user.user_name;
-            //if(result.data.user.avatar != 'default'){
-            $scope.avatar = result.data.user.avatar;
-            console.log($scope.avatar);
-            if($scope.avatar == undefined){
-                $scope.avatar = 'default';
-            }
-
-            //$('.preview').hide();
-             $('.preview').css('left', '-1000px');
-            // $('.preview').css('background-color', 'grey');
-            //} else {
-            //    $scope.avatar = "/assets/images/default_photo.jpg";
-            //} 
-        }
-    });
-
+    var ua = navigator.userAgent;
 
     $scope.myImage = '';
     $scope.myImageName = '';
     $scope.myCroppedImage = '';
 
-    //$scope.
+    $window.androidToJS = this.androidToJS;
+    $scope.prepareImage = Format.prepareImage;
 
-    var handleFileSelect = function(evt) {
-        //$('.preview').css('visibilty', 'visible');
-        //$('.preview').removeAttr( "style" );
-        $('.original').hide();
-         $('.preview').css('left', '0px');
-        var file = evt.currentTarget.files[0];
-        console.log(file.name);
-        $scope.myImageName = file.name;
+    $scope.setting_change = true;
+
+    $http.get("/api/user_data").then(function(result) {
+        if (result.data.user) {
+            //console.log(result.data.user);
+            $scope.currentUser = result.data.user.google.name;
+            // If user name set
+            if (result.data.user.user_name != undefined) {
+                $scope.user_name = result.data.user.user_name;
+            } else {
+                $scope.user_name = result.data.user.google.name;
+            }
+             $scope.login_name = result.data.user.google.name;
+             $scope.login_email = result.data.user.google.email;
+            $scope.avatar = result.data.user.avatar;
+            if ($scope.avatar == undefined) {
+                $scope.avatar = 'default';
+            }
+            // Hide the preview avatar
+            $('.preview').css('left', '-1000px');
+            // $('.cropArea').hide();
+             $('.crop_container').css('height', '0px');
+            console.log('here');
+           
+
+        }
+    });
+
+    $scope.saveChanges = function() {
+        urltoFile($scope.myCroppedImage, $scope.myImageName, 'image/jpeg')
+            .then(function(file) {
+                Format.prepareImage([file], function(result) {
+                    //console.log(result);
+                });
+            });
+    };
+
+    $scope.triggerClick = function(){
+        console.log('click');
+        //angular.element(document.querySelector('#fileInput')).on('click'
+            $('#fileInput').trigger('click');
+
+    };
+
+    function urltoFile(url, filename, mimeType) {
+        return (fetch(url)
+            .then(function(res) { return res.arrayBuffer(); })
+            .then(function(buf) { return new File([buf], filename, { type: mimeType }); })
+        );
+    }
+
+    function loadImage(img, callback) {
+        src = 'fileuploads/images/' + img;
+        var file = src;
+        var xhr = new XMLHttpRequest();
+        xhr.onload = function(e) {
+            callback(this.response);
+        };
+        xhr.open('GET', file, true);
+        xhr.responseType = 'blob';
+        xhr.send();
+    }
+
+    androidToJS = function(data) {
+        var file = data.file;
+        $scope.myImageName = data.file;
         var reader = new FileReader();
         reader.onload = function(evt) {
             $scope.$apply(function($scope) {
                 $scope.myImage = evt.target.result;
             });
+            $('.original').hide();
+            $('.preview').css('left', '0px');
+            //$('.cropArea').css('position', 'relative');
+            //$('.cropArea').css('left', '-100px');
+            //$('.cropArea').show();
+             $('.crop_container').css('height', '200px');
+            
+        };
+
+        loadImage(file, function(result) {
+            reader.readAsDataURL(result);
+        });
+
+    };
+
+    var handleFileClick = function(evt) {
+        if (ua === 'AndroidApp') {
+            Android.choosePhoto();
+        }
+    };
+
+    var handleFileSelect = function(evt) {
+        $('.original').hide();
+        $('.preview').css('left', '0px');
+        var file = evt.currentTarget.files[0];
+        $scope.myImageName = file.name;
+        var reader = new FileReader();
+        reader.onload = function(evt) {
+            $scope.$apply(function($scope) {
+                $scope.myImage = evt.target.result;
+                console.log('loaded');
+               
+            });
+             $('.user_details').css('top', '0px');
+             $('.crop_container').css('height', '200px');
         };
         reader.readAsDataURL(file);
     };
+
     angular.element(document.querySelector('#fileInput')).on('change', handleFileSelect);
-
-
-    $scope.saveFile = function() {
-        console.log('save');
-
-        //console.log(document.getElementById('fileInput').value);
-        //Format.prepareAvatar($scope.myImage);
-
-        //return a promise that resolves with a File instance
-        function urltoFile(url, filename, mimeType) {
-            return (fetch(url)
-                .then(function(res) { return res.arrayBuffer(); })
-                .then(function(buf) { return new File([buf], filename, { type: mimeType }); })
-            );
-        }
-
-        //Usage example:
-        urltoFile($scope.myCroppedImage, $scope.myImageName, 'image/jpeg')
-            .then(function(file) {
-                console.log(file);
-                Format.prepareImage([file], function(result) {
-                    console.log(result);
-                });
-                //function(result) {
-                //.then(function(res) {
-                //return res.arrayBuffer(); 
-                // console.log(res);
-                //});
-            });
-    };
-    /*
-                $('#upload-input').on('change', function() {
-                    var files = $(this).get(0).files;
-                    if (files.length > 0) {
-                        prepareImage(files);
-                    }
-                    // reset the input value to null so that files of the same name can be uploaded.
-                    this.value = null;
-                });
-                */
+    angular.element(document.querySelector('#fileInput')).on('click', handleFileClick);
 
 }]);

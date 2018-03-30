@@ -1,0 +1,18 @@
+<div ng-controller="headerCtrl">
+    <div class="header">
+        <div class="header_back"><a href ng-click="changePath('/chat/conversations')"><i class="material-icons header-mi">&#xE5C4;</i></a></div>
+        <div class="user">
+            <i class="material-icons" id="mi-account_circle">&#xE853;</i>
+        </div>
+        <div class="header_conv_name">EDIT PROFILE</div>
+        <div ng-if="setting_change" class="header_decide">
+            <div class="header_accept">
+                <a href="" ng-click="saveChanges()"><i class="material-icons" id="mi-done">&#xE876;</i></a>
+            </div>
+            <div class="header_cancel">
+                <a href="" ng-click="cancelChanges()"><i class="material-icons" id="mi-clear">&#xE14C;</i></a>
+            </div>
+        </div>
+    </div>
+    <div class="header_bottom"></div>
+</div>

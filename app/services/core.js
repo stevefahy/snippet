@@ -84,6 +84,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     }
 
     androidToJS = function(data) {
+        console.log('core android to js');
         insertImage(data);
     };
 
@@ -409,31 +410,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
 
-    this.prepareAvatar = function(files) {
-        var promises = [];
-        self.formData = new FormData();
-        angular.forEach(files, function(file, key) {
-            promises.push(
-                createImageElement().then(function(img) {
-                    //return loadFileReader(img, file);
-                    //}).then(function(img) {
-                    return loadExifReader(img, file);
-                }).then(function(obj) {
-                    return resizeImage(obj.image, obj.exif);
-                }).then(function(dataurl) {
-                    return dataURItoBlob(dataurl);
-                }).then(function(blob) {
-                    self.formData.append('uploads[]', blob, file.name);
-                })
-            );
-        });
-
-        $q.all(promises).then(function(formData) {
-            // Image processing of ALL images complete. Upload form
-            self.uploadImages(self.formData);
-        });
-    };
-
     // UPLOAD ==================================================================
     uploadClickListen = function() {
         $('#upload-input').click();
@@ -451,6 +427,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             Database.saveTempCard(id, card, currentUser);
         }
     };
+    /*
+        this.androidChoosePhoto = function(){
+             Android.choosePhoto();
+         };
+         */
 
     this.uploadFile = function(id, card, currentUser) {
         if (ua === 'AndroidApp') {
