@@ -15,9 +15,13 @@
                     </div>
                 </div>
             </div>
-            <div class="crop_container">
-                <div class="cropArea">
-                    <img-crop image="myImage" result-image="myCroppedImage" result-image-format="image/jpeg" result-image-size="125" change-on-fly="true"></img-crop>
+            <!--
+            	  <div class="create_c create_c_no_input transition" ng-class="{ 'create_c_input': input}">
+            	  -->
+            <!--<div class="crop_container transition_3" ng-class="{ 'crop_container_visible': crop_container_visible}">-->
+            	<div class="crop_container">
+                <div class="cropArea transition_3" ng-class="{ cropArea_visible: 'crop_container_visible'}">
+                    <img-crop class="imgcrop "  image="myImage" result-image="myCroppedImage" result-image-format="image/jpeg" result-image-size="125" change-on-fly="true" on-load-done="imgcropLoaded();"></img-crop>
                 </div>
             </div>
             <div class="user_details">

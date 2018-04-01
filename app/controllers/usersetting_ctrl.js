@@ -1,4 +1,4 @@
-cardApp.controller("usersettingCtrl", ['$scope', 'Format', 'Invites', '$rootScope', '$location', '$http', '$window', '$routeParams', function($scope, Format, Invites, $rootScope, $location, $http, $window, $routeParams) {
+cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites', '$rootScope', '$location', '$http', '$window', '$routeParams', function($scope, $timeout, Format, Invites, $rootScope, $location, $http, $window, $routeParams) {
 
 
     var ua = navigator.userAgent;
@@ -12,6 +12,108 @@ cardApp.controller("usersettingCtrl", ['$scope', 'Format', 'Invites', '$rootScop
 
     $scope.setting_change = true;
 
+    $scope.crop_container_visible = false;
+
+    //$('.imgcrop').css('display', 'none'); 
+
+    $('.imgcrop').animate({
+        opacity: 0
+    }, 100, function() {
+        // Animation complete.
+    });
+
+    $scope.imgcropLoaded = function() {
+        console.log('img loaed');
+        //$('.imgcrop').css('height', '200px');
+        //$('.imgcrop').addClass("transition_3");
+        //$('.imgcrop').css('height', '200px');
+        //$('.imgcrop').css('height', '100px');
+
+        /*
+         $( "#book" ).animate({
+    opacity: 0.25,
+    left: "+=50",
+    height: "toggle"
+  }, 5000, function() {
+    // Animation complete.
+  });
+  */
+
+        // $('.imgcrop').animate({height: 0}, "1");
+        // $('.imgcrop').animate({height: 200}, "1000");
+
+
+        $timeout(function() {
+
+
+            $('.user_details').animate({
+                opacity: 0
+            }, 100, function() {
+                // Animation complete.
+                $('.user_details').animate({
+                    opacity: 1,
+                    left: 0
+                }, 0, function() {
+                    // Animation complete.
+                    $('.user_details').animate({
+                        //opacity: 1,
+                    }, 1000, function() {
+                        // Animation complete.
+                    });
+                });
+            });
+
+
+            $('.crop_container').animate({
+                height: 0
+            }, 100, function() {
+                // Animation complete.
+                $('.crop_container').animate({
+                    height: 0
+                }, 0, function() {
+                    // Animation complete.
+                    $('.crop_container').animate({
+                        height: 200,
+                    }, 1000, function() {
+                        // Animation complete.
+                    });
+                });
+            });
+
+
+
+            $('.imgcrop').animate({
+                opacity: 0,
+            }, 100, function() {
+                // Animation complete.
+                $('.imgcrop').animate({
+                    opacity: 1,
+                    height: 0
+                }, 1, function() {
+                    // Animation complete.
+                    $('.imgcrop').animate({
+
+
+                        height: 200
+                    }, 1000, function() {
+                        // Animation complete.
+                    });
+                });
+
+            });
+        }, 100);
+
+
+
+
+
+
+
+
+        //$('.imgcrop').animate({height: 200}, "1000");
+
+    };
+
     $http.get("/api/user_data").then(function(result) {
         if (result.data.user) {
             //console.log(result.data.user);
@@ -22,8 +124,8 @@ cardApp.controller("usersettingCtrl", ['$scope', 'Format', 'Invites', '$rootScop
             } else {
                 $scope.user_name = result.data.user.google.name;
             }
-             $scope.login_name = result.data.user.google.name;
-             $scope.login_email = result.data.user.google.email;
+            $scope.login_name = result.data.user.google.name;
+            $scope.login_email = result.data.user.google.email;
             $scope.avatar = result.data.user.avatar;
             if ($scope.avatar == undefined) {
                 $scope.avatar = 'default';
@@ -31,10 +133,10 @@ cardApp.controller("usersettingCtrl", ['$scope', 'Format', 'Invites', '$rootScop
             // Hide the preview avatar
             $('.preview').css('left', '-1000px');
             // $('.cropArea').hide();
-             $('.crop_container').css('height', '0px');
-              $('.crop_container').css('left', '-1000px');
+            //$('.crop_container').css('height', '0px');
+            //  $('.crop_container').css('left', '-1000px');
             console.log('here');
-           
+
 
         }
     });
@@ -48,10 +150,10 @@ cardApp.controller("usersettingCtrl", ['$scope', 'Format', 'Invites', '$rootScop
             });
     };
 
-    $scope.triggerClick = function(){
+    $scope.triggerClick = function() {
         console.log('click');
         //angular.element(document.querySelector('#fileInput')).on('click'
-            $('#fileInput').trigger('click');
+        $('#fileInput').trigger('click');
 
     };
 
@@ -87,11 +189,12 @@ cardApp.controller("usersettingCtrl", ['$scope', 'Format', 'Invites', '$rootScop
             //$('.cropArea').css('position', 'relative');
             //$('.cropArea').css('left', '-100px');
             //$('.cropArea').show();
-                $('.user_details').css('top', '-15px');
-             $('.crop_container').css('height', '200px');
-             $('.crop_container').css('left', '0px');
+            $scope.crop_container_visible = true;
+            $('.user_details').css('top', '-15px');
+            $('.crop_container').css('height', '200px');
+            $('.crop_container').css('left', '0px');
 
-            
+
         };
 
         loadImage(file, function(result) {
@@ -107,8 +210,14 @@ cardApp.controller("usersettingCtrl", ['$scope', 'Format', 'Invites', '$rootScop
     };
 
     var handleFileSelect = function(evt) {
+
+
+
         $('.original').hide();
         $('.preview').css('left', '0px');
+
+        $('.user_details').css('left', '-1000px');
+
         var file = evt.currentTarget.files[0];
         $scope.myImageName = file.name;
         var reader = new FileReader();
@@ -116,11 +225,13 @@ cardApp.controller("usersettingCtrl", ['$scope', 'Format', 'Invites', '$rootScop
             $scope.$apply(function($scope) {
                 $scope.myImage = evt.target.result;
                 console.log('loaded');
-               
+                $scope.crop_container_visible = true;
+                $('.user_details').css('top', '-20px');
             });
-             $('.user_details').css('top', '-20px');
-             $('.crop_container').css('height', '200px');
-              $('.crop_container').css('left', '0px');
+
+
+            //$('.crop_container').css('height', '200px');
+            // $('.crop_container').css('left', '0px');
         };
         reader.readAsDataURL(file);
     };
