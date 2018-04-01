@@ -86,7 +86,7 @@ cardApp.controller("usersettingCtrl", ['$scope', 'Format', 'Invites', '$rootScop
             //$('.cropArea').css('position', 'relative');
             //$('.cropArea').css('left', '-100px');
             //$('.cropArea').show();
-                $('.user_details').css('top', '-40px');
+                $('.user_details').css('top', '-15px');
              $('.crop_container').css('height', '200px');
             
         };
@@ -115,7 +115,7 @@ cardApp.controller("usersettingCtrl", ['$scope', 'Format', 'Invites', '$rootScop
                 console.log('loaded');
                
             });
-             $('.user_details').css('top', '-40px');
+             $('.user_details').css('top', '-20px');
              $('.crop_container').css('height', '200px');
         };
         reader.readAsDataURL(file);

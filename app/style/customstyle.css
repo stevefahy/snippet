@@ -373,7 +373,7 @@ font-weight: 900;
 
 .crop_container{
     position: relative;
-     top: -40px; 
+     top: -30px; 
     /* height: 0px; */
     width: 100%;
     display: flex;
@@ -392,7 +392,7 @@ font-weight: 900;
     flex-direction: column;
     /* flex-flow: row; */
     /* align-items: center; */
-    padding-bottom: 10px;
+        padding-top: 10px;
     /* width: 100%; */
 }
 
@@ -1210,6 +1210,8 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 .content_cnv {
     width: 100vw;
     overflow-y: auto;
+    /* DANGER added x 01/04/18 */
+    overflow-x: hidden;
     height: calc(100%);
     border-radius: 1px;
 }
