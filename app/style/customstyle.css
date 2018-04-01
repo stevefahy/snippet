@@ -613,10 +613,18 @@ height: 125px;
     top: -30px;
 }
 
-.cropped_image {
-    border-radius: 50%;
+img-crop canvas {
+    border-style: solid;
+    border-width: 1.5px;
+    border-color: grey;
+}
 
-   /* margin-left: 20px;*/
+.cropped_image {
+ border-radius: 50%;
+    border-style: solid;
+    border-width: 1.5px;
+    border-color: grey;
+    /* margin-left: 20px; */
 }
 
 .img-crop{
