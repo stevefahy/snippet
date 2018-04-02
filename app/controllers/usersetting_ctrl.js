@@ -53,6 +53,11 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
 
     hideFooter = function() {
         var focused = document.activeElement;
+console.log(focused);
+console.log(focused.id);
+
+$('#'+focused.id).addClass("scroll_latest");
+console.log(focused);
         /*
         if (focused.id != 'cecard_create') {
             $('.create_container').hide();
@@ -62,9 +67,9 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
         $('#placeholderDiv').css('bottom', '-1px');
         */
         // Paste div that will be scrolled into view if necessary and the deleted.
-        $scope.pasteHtmlAtCaret("<span class='scroll_latest_footer' id='scroll_latest_footer'></span>");
+        //$scope.pasteHtmlAtCaret("<span class='scroll_latest_footer' id='scroll_latest_footer'></span>");
         // Scroll into view if necessary
-        Format.scrollLatest('scroll_latest_footer');
+        Format.scrollLatest('scroll_latest');
     };
 
     showFooter = function() {
