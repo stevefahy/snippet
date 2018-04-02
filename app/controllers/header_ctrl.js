@@ -4,17 +4,28 @@ cardApp.controller("headerCtrl", ['$scope', 'Cards', '$rootScope', '$location', 
 
     };
 
+    $scope.$on('PROFILE_CHANGE', function(event, data) {
+        console.log('avatar: ' + data);
+
+        $scope.$apply(function($scope) {
+            //$scope.myImage = evt.target.result;
+            $scope.avatar = data.avatar;
+            $scope.user_name = data.user_name;
+        });
+    });
+
     $http.get("/api/user_data").then(function(result) {
         if (result.data.user) {
-            console.log(result.data);
-            $scope.currentUserName = result.data.user.google.name;
-            //if (result.data.user.avatar != 'default') {
+            if (result.data.user.user_name == undefined) {
+                $scope.currentUserName = result.data.user.google.name;
+            } else {
+                $scope.currentUserName = result.data.user.user_name;
+            }
             $scope.avatar = result.data.user.avatar;
             if ($scope.avatar == undefined) {
                 $scope.avatar = 'default';
             }
         } else {
-            //$scope.avatar = "/assets/images/default_photo.jpg";
             $scope.avatar = "default";
         }
     });

@@ -345,6 +345,58 @@ module.exports = function(app, passport) {
             }
         });
     });
+    /*
+     // update a card by id
+        app.put('/api/cards/:card_id', function(req, res) {
+            Card.findById({ _id: req.params.card_id }, function(err, card) {
+                if (err) {
+                    res.send(err);
+                }
+                var toupdate = req.body.card;
+                if (card.length < req.body.card.length) {
+                    card.push({ content: '', user: '' });
+                }
+                card.content = toupdate.content;
+                card.user = toupdate.user;
+                var newcard = new Card(card);
+                newcard.save(function(err, card) {
+                    if (err) {
+                        res.send(err);
+                    } else {
+                        res.send(card);
+                    }
+                });
+            });
+        });
+        */
+    // Update User profile
+    app.put('/api/users/update_user/:user_id', function(req, res) {
+console.log(req.params.user_id);
+        User.findById({ _id: req.params.user_id }, function(err, user) {
+            if (err) {
+                res.send(err);
+            }
+            console.log(user);
+            var toupdate = req.body.user;
+            console.log(toupdate);
+
+            user.avatar = toupdate.avatar;
+            user.user_name = toupdate.user_name;
+
+            //user = toupdate;
+
+            var updateuser = new User(user);
+            updateuser.save(function(err, user) {
+                if (err) {
+                    res.send(err);
+                } else {
+                    res.json(user);
+                }
+            });
+            
+
+        });
+    });
 
     // add user contact by id
     app.post('/api/users/add_contact/:id', function(req, res) {

@@ -59,7 +59,12 @@ cardApp.factory('Email', ['$http', function($http) {
         }
     };
 }]);
-
+/*
+        update: function(pms) {
+            var theurl = 'api/cards/' + pms.id;
+            return $http.put(theurl, pms);
+        },
+        */
 cardApp.factory('Users', ['$http', function($http) {
     return {
         search_id: function(id) {
@@ -67,6 +72,16 @@ cardApp.factory('Users', ['$http', function($http) {
         },
         add_contact: function(id) {
             return $http.post('api/users/add_contact/' + id);
+        },
+        update_user: function(user) {
+            console.log( user);
+            console.log(user.id);
+            var theurl = 'api/users/update_user/' + user.id;
+            return $http.put(theurl, user);
+            //return $http.put('api/users/update_contact/' + data);
+
+                    // var theurl = 'api/cards/' + pms.id;
+            //return $http.put(theurl, pms);
         },
         delete_contact: function(id) {
             return $http.post('api/users/delete_contact/' + id);
