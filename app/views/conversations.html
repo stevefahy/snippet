@@ -7,7 +7,17 @@
                     <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
                         <div class="convs_container">
                             <div class="convs_a">
-                                <img id="conv_usr_img" src="/assets/images/profile.jpg">
+                                <!--
+                                <img id="conv_usr_img" src="/assets/images/profile.jpg">-->
+
+                                <img ng-if="conversation.avatar!='default'" alt="" ng-src="{{conversation.avatar}}" class="convs_avatar"/>
+
+                                <img ng-if="conversation.avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="convs_avatar"/>
+
+                                <!--
+                                <i ng-if="conversation.avatar=='default'" class="material-icons" id="mi-account_circle_convs">&#xE853;</i>
+                            -->
+
                             </div>
                             <div class="convs_col_a">
                                 <div class="convs_b" id="convs_name">{{conversation.name}}</div>

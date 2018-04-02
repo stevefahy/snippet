@@ -124,12 +124,16 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
                 if (key.conversation_type == 'public') {
                     // Get the conversation name and add to model.
                     key.name = key.conversation_name;
+                    // Temp
+                    key.avatar = 'default';
                     notification_body = card_content;
                 }
                 // Group conversation. 
                 if (key.participants.length > 2) {
                     // Get the conversation name and add to model.
                     key.name = key.conversation_name;
+                    // Temp
+                    key.avatar = 'default';
                     notification_body = sender_name + ': ' + card_content;
                 }
                 // Two user conversation (not a group)
@@ -143,7 +147,29 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
                     // Find the other user
                     General.findUser(key.participants[participant_pos]._id, function(result) {
                         // set their name as the name of the conversation
-                        key.name = result.google.name;
+                        // key.name = result.google.name;
+                        console.log(result);
+
+
+                        if (result) {
+                            if (result.user_name == undefined) {
+                                key.name = result.google.name;
+                                //$scope.currentUserName = result.data.user.google.name;
+                            } else {
+                                key.name = result.user_name;
+                                //$scope.currentUserName = result.data.user.user_name;
+                            }
+                            //$scope.avatar = result.data.user.avatar;
+                            var avatar = result.avatar;
+                            if (avatar == undefined) {
+                                avatar = 'default';
+                            }
+                        } else {
+                            avatar = "default";
+                        }
+                        key.avatar = avatar;
+
+
                     });
                     notification_body = card_content;
                 }
@@ -157,6 +183,8 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
             if (key.conversation_type == 'public') {
                 // Get the conversation name and add to model.
                 key.name = key.conversation_name;
+                // Temp
+                key.avatar = 'default';
             }
             callback(key);
         }
