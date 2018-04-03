@@ -74,13 +74,13 @@ cardApp.factory('Users', ['$http', function($http) {
             return $http.post('api/users/add_contact/' + id);
         },
         update_user: function(user) {
-            console.log( user);
+            console.log(user);
             console.log(user.id);
             var theurl = 'api/users/update_user/' + user.id;
             return $http.put(theurl, user);
             //return $http.put('api/users/update_contact/' + data);
 
-                    // var theurl = 'api/cards/' + pms.id;
+            // var theurl = 'api/cards/' + pms.id;
             //return $http.put(theurl, pms);
         },
         delete_contact: function(id) {
@@ -156,6 +156,19 @@ cardApp.factory('Conversations', ['$http', function($http) {
         }
     };
 }]);
+
+cardApp.factory('Profile', function($rootScope, $window) {
+    var property;
+    return {
+        getProfile: function() {
+            return property;
+        },
+        setProfile: function(value) {
+            property = value;
+        },
+    };
+});
+
 
 cardApp.factory('socket', function($rootScope, $window) {
 

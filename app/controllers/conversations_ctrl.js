@@ -98,8 +98,6 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
     };
 
     formatLatestCard = function(data, key, callback) {
-        console.log(data);
-        console.log(key);
         if (data != null) {
             var card_content;
             var sent_content;
@@ -148,9 +146,6 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
                     General.findUser(key.participants[participant_pos]._id, function(result) {
                         // set their name as the name of the conversation
                         // key.name = result.google.name;
-                        console.log(result);
-
-
                         if (result) {
                             if (result.user_name == undefined) {
                                 key.name = result.google.name;
@@ -168,7 +163,6 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
                             avatar = "default";
                         }
                         key.avatar = avatar;
-
 
                     });
                     notification_body = card_content;
@@ -194,22 +188,35 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
     // Get the current users details
     $http.get("/api/user_data").then(function(result) {
         if (result.data.user) {
-            $scope.currentUserName = result.data.user.google.name;
+            //$scope.currentUserName = result.data.user.google.name;
             $scope.currentUser = result.data.user;
+
+            var profile = {};
+            if (result.data.user.user_name == undefined) {
+                profile.user_name = result.data.user.google.name;
+            } else {
+                profile.user_name = result.data.user.user_name;
+            }
+            if (result.data.user.avatar == undefined) {
+                profile.avatar = 'default';
+            } else {
+                profile.avatar = result.data.user.avatar;
+            }
+
+            //console.log('PROFILE_CHANGE');
+           //$rootScope.$broadcast('PROFILE_CHANGE', profile);
+
             // Find the conversations for current user
             Conversations.find_user_conversations($scope.currentUser._id)
                 .then(function(res) {
-                    console.log(res.data);
                     var conversations_raw = res.data;
                     conversations_raw.map(function(key, array) {
                         if (key.conversation_type === 'public') {
                             public_found = true;
                         }
                         // Get the latest card posted to this conversation
-                        console.log(key._id);
                         Conversations.getConversationLatestCard(key._id)
                             .then(function(res) {
-                                console.log(res);
                                 if (res.data != null) {
                                     formatLatestCard(res.data, key, function(result) {
                                         // Add this conversation to the conversations model
@@ -227,7 +234,6 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
                                 }
                             });
                     });
-                    console.log(public_found);
                     if (public_found == false) {
                         // create the initial public conversation for this user
                         createPublicConversation();

@@ -74,6 +74,7 @@
     <!-- load Controllers -->
     <script src="/controllers/login_ctrl.js"></script>
     <script src="/controllers/socket_ctrl.js"></script>
+    <script src="/controllers/profile_ctrl.js"></script>
     <script src="/controllers/card_ctrl.js"></script>
     <script src="/controllers/footer_ctrl.js"></script>
     <script src="/controllers/header_ctrl.js"></script>
@@ -92,6 +93,8 @@
 <body>
     <!-- socket controller loaded once to make socket connection -->
     <div class="socket" ng-include src="'/views/socket.html'"></div>
+    <!-- User Profile -->
+    <div class="profile" ng-include src="'/views/profile.html'"></div>
     <!-- Templates loaded into ng-view -->
     <ng-view class="main_view"></ng-view>
     <!-- Hidden input field which gains focus while text formatting is being prepared -->

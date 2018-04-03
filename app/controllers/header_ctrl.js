@@ -1,8 +1,24 @@
-cardApp.controller("headerCtrl", ['$scope', 'Cards', '$rootScope', '$location', '$http', 'socket', 'Database', function($scope, Cards, $rootScope, $location, $http, socket, Database) {
+cardApp.controller("headerCtrl", ['Profile', '$scope', 'Cards', '$rootScope', '$location', '$http', 'socket', 'Database', function(Profile, $scope, Cards, $rootScope, $location, $http, socket, Database) {
 
     this.$onInit = function() {
+        console.log('header init');
+        //console.log(Profile.getProfile());
+        //if(Profile.getProfile() == undefined){
+        //Profile.setProfile();
+        //}
+        var user = Profile.getProfile();
+        console.log(user);
+        $scope.avatar = user.avatar;
+        $scope.conversation_name = user.user_name;
 
     };
+
+    $scope.$on('PROFILE_SET', function(event, data) {
+        var user = Profile.getProfile();
+        console.log(user);
+        $scope.avatar = user.avatar;
+        $scope.conversation_name = user.user_name;
+    });
 
     $scope.$on('PROFILE_CHANGE', function(event, data) {
         console.log('avatar: ' + data.avatar + ' : ' + data.user_name);
@@ -24,23 +40,33 @@ cardApp.controller("headerCtrl", ['$scope', 'Cards', '$rootScope', '$location', 
     });
 
     $http.get("/api/user_data").then(function(result) {
+        /*
+                if (result.data.user) {
+                    if (result.data.user.user_name == undefined) {
+                        $scope.currentUserName = result.data.user.google.name;
+                    } else {
+                        $scope.currentUserName = result.data.user.user_name;
+                    }
+                    $scope.avatar = result.data.user.avatar;
+                    if ($scope.avatar == undefined) {
+                        $scope.avatar = 'default';
+                    }
+                } else {
+                    $scope.avatar = "default";
+                }
 
-        if (result.data.user) {
-            console.log(result.data);
-
-            if (result.data.user.user_name == undefined) {
-                $scope.currentUserName = result.data.user.google.name;
-            } else {
-                $scope.currentUserName = result.data.user.user_name;
-            }
-            $scope.avatar = result.data.user.avatar;
-            if ($scope.avatar == undefined) {
-                $scope.avatar = 'default';
-            }
-        } else {
-            $scope.avatar = "default";
-        }
-
+                var profile = {};
+                if (result.data.user.user_name == undefined) {
+                    profile.user_name = result.data.user.google.name;
+                } else {
+                    profile.user_name = result.data.user.user_name;
+                }
+                if (result.data.user.avatar == undefined) {
+                    profile.avatar = 'default';
+                } else {
+                    profile.avatar = result.data.user.avatar;
+                }
+        */
     });
 
     $scope.changePath = function(path) {

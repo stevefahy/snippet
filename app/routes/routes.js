@@ -274,6 +274,7 @@ module.exports = function(app, passport) {
                 //res.redirect('/' + req.user.google.name);
                 // Check if this is first log in
                 // if so got to settings of not go to home /
+                console.log('google autheniticated');
                 console.log(req.user);
                 if (req.user.first_login == true) {
                     req.user.first_login = false;

@@ -64,7 +64,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Broadcast by cardcreate_ctrl and conversation_ctrl when the window regains focus
     $scope.$on('CONV_CHECK', function() {
-        console.log('CONV_CHECK');
         var id = Conversations.getConversationId();
         getConversationUpdate(id);
     });
@@ -184,33 +183,27 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     checkConvType = function(key, callback) {
-        console.log('checkConvType');
         var conv_details = {};
         // get the index position of the current user within the participants array
         var user_pos = General.findWithAttr(key.participants, '_id', $scope.currentUser._id);
         // Public conversation
         if (key.conversation_type == 'public') {
-            console.log('public');
             // Get the conversation name and add to model.
             conv_details.name = key.conversation_name;
             // Temp
             conv_details.avatar = 'default';
-                          console.log(conv_details);
                 callback(conv_details);
         }
         // Group conversation. 
         if (key.participants.length > 2) {
-            console.log('group');
             // Get the conversation name and add to model.
             conv_details.name = key.conversation_name;
             // Temp
             conv_details.avatar = 'default';
-                          console.log(conv_details);
                 callback(conv_details);
         }
         // Two user conversation (not a group)
         if (key.participants.length == 2) {
-            console.log('two');
             // Get the position of the current user
             if (user_pos === 0) {
                 participant_pos = 1;
@@ -221,7 +214,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             General.findUser(key.participants[participant_pos]._id, function(result) {
                 // set their name as the name of the conversation
                 // key.name = result.google.name;
-                console.log(result);
                 var avatar;
                 if (result) {
                     if (result.user_name == undefined) {
@@ -240,7 +232,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     avatar = "default";
                 }
                 conv_details.avatar = avatar;
-                              console.log(conv_details);
                 callback(conv_details);
             });
         }
@@ -249,17 +240,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     setFocus = function() {
         $timeout(function() {
-            console.log('c');
             findConversationId(function(result) {
-                console.log('here');
                 //$rootScope.$broadcast('CONV_CHECK');
 
                 var id = Conversations.getConversationId(id);
                 Conversations.find_conversation_id(id)
                     .then(function(res) {
-                        console.log(res.data);
                         checkConvType(res.data, function(result) {
-                            console.log(result);
                             //$scope.conversation_name = result.name;
                             //$scope.avatar = result.avatar;
 
@@ -381,7 +368,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             checkPermission(id, function(result) {
                                 $scope.isMember = result;
                                 getConversation(id, 500);
-                                console.log(Conversations.getConversationId());
                                 callback(Conversations.getConversationId());
                             });
                         }
@@ -393,7 +379,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             checkPermission(id, function(result) {
                 $scope.isMember = result;
                 getConversation(id, 500);
-                console.log(Conversations.getConversationId());
                 callback(Conversations.getConversationId());
             });
         }

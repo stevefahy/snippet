@@ -50,7 +50,7 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
 });
 
 
-
+/*
 cardApp.run([
   '$rootScope',
   function($rootScope) {
@@ -65,6 +65,7 @@ cardApp.run([
     });
   }
 ]);
+*/
 
 cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', '$injector', function($window, $rootScope, $timeout, $q, Users, Cards, Conversations, replaceTags, socket, $injector) {
 
@@ -1366,7 +1367,6 @@ cardApp.service('General', ['Users', function(Users) {
         Users.search_id(id)
             .then(function(handleSuccess) {
                 user_found = handleSuccess.data.success;
-                console.log(user_found);
                 return callback(user_found);
             })
             .catch(function(handleError) {
