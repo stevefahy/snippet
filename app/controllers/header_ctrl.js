@@ -5,17 +5,29 @@ cardApp.controller("headerCtrl", ['$scope', 'Cards', '$rootScope', '$location', 
     };
 
     $scope.$on('PROFILE_CHANGE', function(event, data) {
-        console.log('avatar: ' + data);
-
-        $scope.$apply(function($scope) {
-            //$scope.myImage = evt.target.result;
+        console.log('avatar: ' + data.avatar + ' : ' + data.user_name);
+        if ($scope.avatar != data.avatar) {
             $scope.avatar = data.avatar;
-            $scope.user_name = data.user_name;
-        });
+        }
+        if ($scope.conversation_name != data.user_name) {
+            $scope.conversation_name = data.user_name;
+        }
+        /*
+        if (!$scope.$$phase) {
+            $scope.$apply(function($scope) {
+                //$scope.myImage = evt.target.result;
+                $scope.avatar = data.avatar;
+                $scope.user_name = data.user_name;
+            });
+        }
+        */
     });
 
     $http.get("/api/user_data").then(function(result) {
+
         if (result.data.user) {
+            console.log(result.data);
+
             if (result.data.user.user_name == undefined) {
                 $scope.currentUserName = result.data.user.google.name;
             } else {
@@ -28,6 +40,7 @@ cardApp.controller("headerCtrl", ['$scope', 'Cards', '$rootScope', '$location', 
         } else {
             $scope.avatar = "default";
         }
+
     });
 
     $scope.changePath = function(path) {

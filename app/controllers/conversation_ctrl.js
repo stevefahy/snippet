@@ -183,12 +183,70 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         $('#placeholderDiv').css('bottom', '59px');
     };
 
-    /*
-                                checkPermission(id, function(result) {
-                                    $scope.isMember = result;
-                                    getConversation(id, 500);
-                                });
-                                */
+    checkConvType = function(key, callback) {
+        console.log('checkConvType');
+        var conv_details = {};
+        // get the index position of the current user within the participants array
+        var user_pos = General.findWithAttr(key.participants, '_id', $scope.currentUser._id);
+        // Public conversation
+        if (key.conversation_type == 'public') {
+            console.log('public');
+            // Get the conversation name and add to model.
+            conv_details.name = key.conversation_name;
+            // Temp
+            conv_details.avatar = 'default';
+                          console.log(conv_details);
+                callback(conv_details);
+        }
+        // Group conversation. 
+        if (key.participants.length > 2) {
+            console.log('group');
+            // Get the conversation name and add to model.
+            conv_details.name = key.conversation_name;
+            // Temp
+            conv_details.avatar = 'default';
+                          console.log(conv_details);
+                callback(conv_details);
+        }
+        // Two user conversation (not a group)
+        if (key.participants.length == 2) {
+            console.log('two');
+            // Get the position of the current user
+            if (user_pos === 0) {
+                participant_pos = 1;
+            } else {
+                participant_pos = 0;
+            }
+            // Find the other user
+            General.findUser(key.participants[participant_pos]._id, function(result) {
+                // set their name as the name of the conversation
+                // key.name = result.google.name;
+                console.log(result);
+                var avatar;
+                if (result) {
+                    if (result.user_name == undefined) {
+                        conv_details.name = result.google.name;
+                        //$scope.currentUserName = result.data.user.google.name;
+                    } else {
+                        conv_details.name = result.user_name;
+                        //$scope.currentUserName = result.data.user.user_name;
+                    }
+                    //$scope.avatar = result.data.user.avatar;
+                    avatar = result.avatar;
+                    if (avatar == undefined) {
+                        avatar = 'default';
+                    }
+                } else {
+                    avatar = "default";
+                }
+                conv_details.avatar = avatar;
+                              console.log(conv_details);
+                callback(conv_details);
+            });
+        }
+
+    };
+
     setFocus = function() {
         $timeout(function() {
             console.log('c');
@@ -200,7 +258,19 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 Conversations.find_conversation_id(id)
                     .then(function(res) {
                         console.log(res.data);
-                        $scope.conversation_name = res.data.conversation_name;
+                        checkConvType(res.data, function(result) {
+                            console.log(result);
+                            //$scope.conversation_name = result.name;
+                            //$scope.avatar = result.avatar;
+
+                            var profile = {};
+                            profile.avatar = result.avatar;
+                            profile.user_name = result.name;
+
+                            $rootScope.$broadcast('PROFILE_CHANGE', profile);
+
+                        });
+                        //$scope.conversation_name = res.data.conversation_name;
                     });
             });
         });
