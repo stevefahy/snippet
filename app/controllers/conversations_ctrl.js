@@ -140,7 +140,8 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
                     console.log(key);
                     //key.avatar = 'default';
                     // Get the conversation avatar and add to model.
-                key.avatar = key.conversation_avatar + '?' + (new Date()).getTime();
+                //key.avatar = key.conversation_avatar + '?' + (new Date()).getTime();
+                key.avatar = key.conversation_avatar;
                     notification_body = card_content;
                 }
                 // Group conversation. 
@@ -195,7 +196,8 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
                 // Get the conversation name and add to model.
                 key.name = key.conversation_name;
                 // Get the conversation avatar and add to model.
-                key.avatar = key.conversation_avatar + '?' + (new Date()).getTime();
+                key.avatar = key.conversation_avatar;
+                //key.avatar = key.conversation_avatar + '?' + (new Date()).getTime();
             }
             callback(key);
         }

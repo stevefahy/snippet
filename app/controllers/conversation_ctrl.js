@@ -192,7 +192,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             //conv_details.name = key.conversation_name;
             keys.name = key.conversation_name;
             // Get the conversation avatar and add to model.
-                key.avatar = key.conversation_avatar + '?' + (new Date()).getTime();
+                //key.avatar = key.conversation_avatar + '?' + (new Date()).getTime();
+                key.avatar = key.conversation_avatar;
                 //callback(conv_details);
         }
         // Group conversation. 

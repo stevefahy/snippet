@@ -85,7 +85,7 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
 
 
     $scope.myImage = '';
-    $scope.myImageName = '';
+    var myImageName = '';
     $scope.myCroppedImage = '';
 
     var mySavedImage = '';
@@ -240,7 +240,7 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
             }
             $scope.login_name = result.data.user.google.name;
             $scope.login_email = result.data.user.google.email;
-            $scope.avatar = result.data.user.avatar  + '?' + (new Date()).getTime();
+            $scope.avatar = result.data.user.avatar;
             if ($scope.avatar == undefined) {
                 $scope.avatar = 'default';
             }
@@ -255,6 +255,24 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
 
         }
     });
+
+    // TODO - make service
+    getDate = function() {
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1; //January is 0!
+
+        var yyyy = today.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd;
+        }
+        if (mm < 10) {
+            mm = '0' + mm;
+        }
+        //var today = dd + '/' + mm + '/' + yyyy;
+        var date = yyyy + mm + dd;
+        return date;
+    };
 
     // TOD) - only save changes if change made.
     // Update Public conv avatar for this user
@@ -271,7 +289,8 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
             mySavedImage = $scope.myCroppedImage;
             saved = true;
             console.log('save new image');
-            urltoFile($scope.myCroppedImage, $scope.myImageName, 'image/jpeg')
+            myImageName = 'img_' + getDate() + '_' + (new Date()).getTime();
+            urltoFile($scope.myCroppedImage, myImageName, 'image/jpeg')
                 .then(function(file) {
                     console.log('file');
                     console.log(file);
@@ -302,7 +321,7 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
             profile.user_name = $scope.user_name;
             profile.avatar = $scope.avatar;
             $rootScope.$broadcast('PROFILE_CHANGE', profile);
-            $scope.currentFullUser.avatar = $scope.avatar + '?' + (new Date()).getTime();
+            $scope.currentFullUser.avatar = $scope.avatar;
             $scope.currentFullUser.user_name = $scope.user_name;
             saveProfile(profile);
         }
@@ -400,19 +419,19 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
         console.log('urltoFile');
         console.log(url + ' : ' + filename + ' : ' + mimeType);
         return (fetch(url)
-            .then(function(res) { 
+            .then(function(res) {
                 console.log(res);
-                return res.arrayBuffer(); 
+                return res.arrayBuffer();
             })
-            .then(function(buf) { 
+            .then(function(buf) {
                 console.log(buf);
                 //return new File([buf], filename, { type: mimeType }); 
 
-                
-                var blob = new Blob([buf],{type : mimeType});
+
+                var blob = new Blob([buf], { type: mimeType });
                 blob.name = filename;
                 return blob;
-                
+
             })
         );
     }
@@ -431,7 +450,7 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
 
     androidToJS = function(data) {
         var file = data.file;
-        $scope.myImageName = data.file;
+        myImageName = data.file;
         var reader = new FileReader();
         reader.onload = function(evt) {
             $scope.$apply(function($scope) {
@@ -479,7 +498,7 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
         }
 
         var file = evt.currentTarget.files[0];
-        $scope.myImageName = file.name;
+        myImageName = file.name;
         var reader = new FileReader();
         reader.onload = function(evt) {
             $scope.$apply(function($scope) {

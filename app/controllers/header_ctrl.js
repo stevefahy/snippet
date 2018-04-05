@@ -9,13 +9,15 @@ cardApp.controller("headerCtrl", ['Profile', '$scope', 'Cards', '$rootScope', '$
         if ($location.path().indexOf('/chat/conversation/') < 0) {
             user = Profile.getProfile();
             console.log(user);
-            $scope.avatar = user.avatar  + '?' + (new Date()).getTime();
+            //$scope.avatar = user.avatar  + '?' + (new Date()).getTime();
+            $scope.avatar = user.avatar;
             $scope.conversation_name = user.user_name;
         } else {
             // Conversation 
             user = Profile.getConvProfile();
             console.log(user);
-            $scope.avatar = user.avatar  + '?' + (new Date()).getTime();
+            //$scope.avatar = user.avatar  + '?' + (new Date()).getTime();
+            $scope.avatar = user.avatar;
             $scope.conversation_name = user.user_name;
         }
     }
@@ -59,7 +61,8 @@ cardApp.controller("headerCtrl", ['Profile', '$scope', 'Cards', '$rootScope', '$
         if (!$scope.$$phase) {
             $scope.$apply(function($scope) {
                 //$scope.myImage = evt.target.result;
-                $scope.avatar = data.avatar + '?' + (new Date()).getTime();
+                //$scope.avatar = data.avatar + '?' + (new Date()).getTime();
+                $scope.avatar = data.avatar;
                 $scope.user_name = data.user_name;
             });
         }
