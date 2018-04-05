@@ -189,10 +189,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         // Public conversation
         if (key.conversation_type == 'public') {
             // Get the conversation name and add to model.
-            conv_details.name = key.conversation_name;
-            // Temp
-            conv_details.avatar = 'default';
-                callback(conv_details);
+            //conv_details.name = key.conversation_name;
+            keys.name = key.conversation_name;
+            // Get the conversation avatar and add to model.
+                key.avatar = key.conversation_avatar + '?' + (new Date()).getTime();
+                //callback(conv_details);
         }
         // Group conversation. 
         if (key.participants.length > 2) {
@@ -200,7 +201,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             conv_details.name = key.conversation_name;
             // Temp
             conv_details.avatar = 'default';
-                callback(conv_details);
+               // callback(conv_details);
         }
         // Two user conversation (not a group)
         if (key.participants.length == 2) {
@@ -217,10 +218,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 var avatar;
                 if (result) {
                     if (result.user_name == undefined) {
-                        conv_details.name = result.google.name;
+                        //conv_details.name = result.google.name;
+                         keys.name = result.google.name;
                         //$scope.currentUserName = result.data.user.google.name;
                     } else {
-                        conv_details.name = result.user_name;
+                        //conv_details.name = result.user_name;
+                        key.name = result.user_name;
                         //$scope.currentUserName = result.data.user.user_name;
                     }
                     //$scope.avatar = result.data.user.avatar;
@@ -231,8 +234,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 } else {
                     avatar = "default";
                 }
-                conv_details.avatar = avatar;
-                callback(conv_details);
+                //conv_details.avatar = avatar;
+                key.avatar = avatar;
+               // callback(conv_details);
             });
         }
 
@@ -246,16 +250,17 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 var id = Conversations.getConversationId(id);
                 Conversations.find_conversation_id(id)
                     .then(function(res) {
+                        console.log(res);
                         checkConvType(res.data, function(result) {
                             //$scope.conversation_name = result.name;
                             //$scope.avatar = result.avatar;
-
+/*
                             var profile = {};
                             profile.avatar = result.avatar;
                             profile.user_name = result.name;
 
                             $rootScope.$broadcast('PROFILE_CHANGE', profile);
-
+*/
                         });
                         //$scope.conversation_name = res.data.conversation_name;
                     });

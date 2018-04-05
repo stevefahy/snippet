@@ -1,4 +1,4 @@
-cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$http', 'Invites', 'Email', 'Users', 'Conversations', '$q', 'FormatHTML', 'General', function($scope, $rootScope, $location, $http, Invites, Email, Users, Conversations, $q, FormatHTML, General) {
+cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$http', 'Invites', 'Email', 'Users', 'Conversations', '$q', 'FormatHTML', 'General', 'Profile', function($scope, $rootScope, $location, $http, Invites, Email, Users, Conversations, $q, FormatHTML, General, Profile) {
 
     this.$onInit = function() {
         public_found = false;
@@ -7,6 +7,7 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
         // array of conversations
         $scope.conversations = [];
 
+// Still needed?
         $scope.chat_create = {
             conversation_name: '',
             participants: []
@@ -65,19 +66,30 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
     });
 
     // Continue chat
-    $scope.chat = function(conversation, index) {
+    $scope.chat = function(conversation_id, conversation, index) {
+        console.log(conversation);
+        // TODO - Set profile change here not within conversation!
+        var profile_obj = {};
+        profile_obj.user_name = conversation.name;
+        profile_obj.avatar = conversation.avatar;
+        Profile.setConvProfile(profile_obj);
         // redirect to the chat
-        $location.path("/chat/conversation/" + conversation);
+        $location.path("/chat/conversation/" + conversation_id);
     };
 
     // Continue public conversation
-    $scope.chatPublic = function(admin, index) {
+    $scope.chatPublic = function(admin, conversation, index) {
+        console.log(conversation);
+             var profile_obj = {};
+        profile_obj.user_name = conversation.name;
+        profile_obj.avatar = conversation.avatar;
+        Profile.setConvProfile(profile_obj);
         // Find the username then redirect to the conversation.
         General.findUser(admin, function(result) {
             $location.path("/" + result.google.name);
         });
     };
-
+/*
     createPublicConversation = function() {
         // reset the participants array.
         $scope.chat_create.participants = [];
@@ -96,6 +108,7 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
                 $scope.conversations.push(res.data);
             });
     };
+    */
 
     formatLatestCard = function(data, key, callback) {
         if (data != null) {
@@ -123,7 +136,11 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
                     // Get the conversation name and add to model.
                     key.name = key.conversation_name;
                     // Temp
-                    key.avatar = 'default';
+                    console.log('PUBLIC');
+                    console.log(key);
+                    //key.avatar = 'default';
+                    // Get the conversation avatar and add to model.
+                key.avatar = key.conversation_avatar + '?' + (new Date()).getTime();
                     notification_body = card_content;
                 }
                 // Group conversation. 
@@ -177,8 +194,8 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
             if (key.conversation_type == 'public') {
                 // Get the conversation name and add to model.
                 key.name = key.conversation_name;
-                // Temp
-                key.avatar = 'default';
+                // Get the conversation avatar and add to model.
+                key.avatar = key.conversation_avatar + '?' + (new Date()).getTime();
             }
             callback(key);
         }
@@ -209,6 +226,7 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
             // Find the conversations for current user
             Conversations.find_user_conversations($scope.currentUser._id)
                 .then(function(res) {
+                    console.log(res);
                     var conversations_raw = res.data;
                     conversations_raw.map(function(key, array) {
                         if (key.conversation_type === 'public') {
@@ -224,6 +242,7 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
                                     });
                                 } else {
                                     key.latest_card = ' ';
+                                    console.log(key);
                                     if (key.conversation_type === 'public') {
                                         formatLatestCard(res.data, key, function(result) {
                                             // Add this conversation to the conversations model
@@ -236,7 +255,7 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
                     });
                     if (public_found == false) {
                         // create the initial public conversation for this user
-                        createPublicConversation();
+                        //createPublicConversation();
                     }
                 });
         }

@@ -60,6 +60,61 @@ function createTokenArray(arr) {
     return token_array;
 }
 
+function createPublicConversation(user_id) {
+    console.log('createPublicConversation');
+    /*
+    var chat_create = {
+        conversation_name: '',
+        participants: []
+    };
+    */
+    // reset the participants array.
+    var participants = [];
+    // set the conversation type
+    //chat_create.conversation_type = 'public';
+    // set the conversation name
+    //chat_create.conversation_name = 'Public';
+    // set the creating user as admin
+    //chat_create.admin = user_id;
+    // Add current user as a participant
+    participants.push({ _id: user_id, unviewed: [] });
+    // Create conversation in DB.
+    /*
+    Conversations.create($scope.chat_create)
+        .then(function(res) {
+            //res.data.name = res.data.conversation_name;
+            //$scope.conversations.push(res.data);
+        });
+        */
+
+    /*
+            conversation_name: String,
+    conversation_avatar: String,
+    conversation_type: { type: String, enum: ['public', 'private'] },
+    admin: [{ "type": Schema.Types.ObjectId, "ref": "User" }],
+    participants: [{ _id: Schema.Types.ObjectId, unviewed: [{ _id: Schema.Types.ObjectId }] }],
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now }
+    */
+
+    Conversation.create({
+        conversation_name: 'Public',
+        conversation_type: 'public',
+        conversation_avatar: 'default',
+        admin: user_id,
+        participants: participants,
+        done: false
+    }, function(err, conversation) {
+        if (err) {
+            console.log('error: ' + err);
+            res.send(err);
+        }
+        // return the created conversation
+        //res.send(conversation);
+        console.log(conversation);
+    });
+}
+
 // route middleware to ensure user is logged in and a member of the conversation
 function isMember(req, res, next) {
     // must be logged in to be a member
@@ -289,6 +344,10 @@ module.exports = function(app, passport) {
                         }
                     });
 
+                    // Create Public conversation for this user
+                    // Any time profile changes update Public conv profile also.
+                    createPublicConversation(req.user._id);
+
                     res.redirect('/api/user_setting');
                 } else {
                     res.redirect('/');
@@ -372,7 +431,7 @@ module.exports = function(app, passport) {
         */
     // Update User profile
     app.put('/api/users/update_user/:user_id', function(req, res) {
-console.log(req.params.user_id);
+        console.log(req.params.user_id);
         User.findById({ _id: req.params.user_id }, function(err, user) {
             if (err) {
                 res.send(err);
@@ -394,7 +453,7 @@ console.log(req.params.user_id);
                     res.json(user);
                 }
             });
-            
+
 
         });
     });
@@ -816,6 +875,73 @@ console.log(req.params.user_id);
         });
     });
 
+/*
+    // update a card by id
+    app.put('/api/cards/:card_id', function(req, res) {
+        Card.findById({ _id: req.params.card_id }, function(err, card) {
+            if (err) {
+                res.send(err);
+            }
+            var toupdate = req.body.card;
+            if (card.length < req.body.card.length) {
+                card.push({ content: '', user: '' });
+            }
+            card.content = toupdate.content;
+            card.user = toupdate.user;
+            var newcard = new Card(card);
+            newcard.save(function(err, card) {
+                if (err) {
+                    res.send(err);
+                } else {
+                    res.send(card);
+                }
+            });
+        });
+    });
+    */
+
+    // Update the conversation avatar.
+    app.put('/chat/conversation_avatar/:id', function(req, res) {
+        Conversation.findById({ _id: req.params.id }, function(err, conversation) {
+            if (err) {
+                console.log('err: ' + err);
+                return res.send(err);
+            }
+            /*
+            // Convert the conversation model to JSON so that findWithAttr functions.
+            conversation_temp = conversation.toJSON();
+            // Find this Card Id within All participants unviwed arrays and remove it if found.
+            for (var prop in conversation_temp.participants) {
+                if (conversation_temp.participants.hasOwnProperty(prop)) {
+                    var user_pos = findWithAttr(conversation_temp.participants[prop].unviewed, '_id', req.params.card_id);
+                    if (user_pos >= 0) {
+                        conversation.participants[prop].unviewed.splice(user_pos, 1);
+                    }
+                }
+            }
+            */
+            console.log('avatar');
+            console.log(conversation);
+            console.log(req.body.avatar);
+            conversation.conversation_avatar = req.body.avatar;
+            // Update the Conversations updatedAt time.
+            //console.log(req.params.avatar.avatar);
+            //console.log(req.params.avatar);
+            //var toupdate = req.body.avatar;
+            //conversation.conversation_avatar = req.params.avatar.avatar;
+            // Save the updated Conversation to the DB.
+            var updated_conversation = new Conversation(conversation);
+            updated_conversation.save(function(err, conversation) {
+                if (err) {
+                    console.log('err: ' + err);
+                    res.send(err);
+                } else {
+                    res.json(conversation);
+                }
+            });
+        });
+    });
+
     // clear a conversation unviewed array by conversation id and user id
     app.put('/chat/conversation_viewed_clear/:id/:user_id/', function(req, res) {
         Conversation.update({ _id: req.params.id, 'participants._id': req.params.user_id }, {
@@ -899,6 +1025,49 @@ console.log(req.params.user_id);
             }
         });
     });
+
+
+    // Get the public conversation for a user by user id.
+    app.get('/chat/user_public_conversation_by_id/:id', function(req, res) {
+        Conversation.findOne({ 'admin': req.params.id, 'conversation_type': 'public' }, function(err, conversation) {
+            if (err) {
+                console.log('err: ' + err);
+                //return done(err);
+                res.json({ 'error': 'not found' });
+            }
+            res.json(conversation);
+        });
+    });
+
+    // DELETE ?
+    //update
+    //'chat/conversation/' + pms.id;
+    // update a conversation by id
+    /*
+    app.put('/chat/conversation/:conv_id', function(req, res) {
+        Conversation.findById({ _id: req.params.conv_id }, function(err, card) {
+            if (err) {
+                res.send(err);
+            }
+            var toupdate = req.body.conversation;
+            if (card.length < req.body.card.length) {
+                card.push({ content: '', user: '' });
+            }
+            card.content = toupdate.content;
+            card.user = toupdate.user;
+            var newcard = new Card(card);
+            newcard.save(function(err, card) {
+                if (err) {
+                    res.send(err);
+                } else {
+                    res.send(card);
+                }
+            });
+        });
+    });
+    */
+
+
 
     // get user public conversation id by user name
     app.get('/chat/user_public_conversation_id/:username', function(req, res) {

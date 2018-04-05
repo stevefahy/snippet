@@ -20,7 +20,7 @@ cardApp.controller("profileCtrl", ['$http', '$rootScope', 'Profile', function($h
                 profile.avatar = result.data.user.avatar;
             }
             Profile.setProfile(profile);
-            //$rootScope.$broadcast('PROFILE_SET');
+            $rootScope.$broadcast('PROFILE_SET');
         }
     });
 

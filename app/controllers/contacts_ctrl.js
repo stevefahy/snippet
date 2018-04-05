@@ -1,4 +1,4 @@
-cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http', 'Invites', 'Email', 'Users', 'Conversations', function($scope, $rootScope, $location, $http, Invites, Email, Users, Conversations) {
+cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http', 'Invites', 'Email', 'Users', 'Conversations', 'Profile', function($scope, $rootScope, $location, $http, Invites, Email, Users, Conversations, Profile) {
 
     //The minimum number of characters a user must type before a search is performed.
     var SEARCH_MIN = 3;
@@ -48,13 +48,24 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
     });
 
     // Continue a conversation by conversation id
-    $scope.chat = function(conversation, index) {
-        $location.path("/chat/conversation/" + conversation);
+    $scope.chat = function(conversation_id, contact, index) {
+                console.log(contact);
+               var profile_obj = {};
+        profile_obj.user_name = contact.user_name;
+        profile_obj.avatar = contact.avatar;
+        Profile.setConvProfile(profile_obj);
+        $location.path("/chat/conversation/" + conversation_id);
     };
 
     // Start a conversation
     // TODO - make sure two users cannot create a chat simultanously
-    $scope.startChat = function(new_participants) {
+    // TODO - make sure only one chat created with aother single user.
+    $scope.startChat = function(new_participants, contact) {
+        console.log(contact);
+               var profile_obj = {};
+        profile_obj.user_name = contact.user_name;
+        profile_obj.avatar = contact.avatar;
+        Profile.setConvProfile(profile_obj);
         // reset the participants array.
         $scope.chat_create.participants = [];
         //
@@ -148,6 +159,8 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
                             result.data.map(function(key, array) {
                                 // check that this is a two person chat.
                                 // Groups of three or more are loaded in conversations.html
+                                console.log(key.participants);
+                                console.log(res.data.success._id);
                                 if (key.participants.length === 2) {
                                     // Check that current user is a participant of this conversation
                                     if (key.participants.indexOf(res.data.success._id) >= 0) {
@@ -161,6 +174,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
                         // add the user as a contact
                         $scope.contacts.push(res.data.success);
                     }
+                    console.log($scope.contacts);
                 })
                 .catch(function(error) {
                     console.log('error: ' + error);

@@ -118,6 +118,17 @@ cardApp.factory('Conversations', ['$http', function($http) {
         removeViewed: function(conv_id, user_id, card_id) {
             return $http.put('chat/conversation_viewed_remove/' + conv_id + '/' + user_id + '/' + card_id);
         },
+        /*
+                update: function(pms) {
+            var theurl = 'api/cards/' + pms.id;
+            return $http.put(theurl, pms);
+        },
+        */
+        updateAvatar: function(obj) {
+            var theurl = 'chat/conversation_avatar/' + obj.id;
+            return $http.put(theurl, obj);
+            //return $http.put('chat/conversation_avatar/' + conv_id + '/' + avatar);
+        },
         find_conversation_id: function(id) {
             return $http.get('chat/conversation_id/' + id);
         },
@@ -135,6 +146,13 @@ cardApp.factory('Conversations', ['$http', function($http) {
         },
         find_user_public_conversation_id: function(username) {
             return $http.get('chat/user_public_conversation_id/' + username)
+                .then(function(response) {
+                    return response;
+                });
+        },
+        find_user_public_conversation_by_id: function(id) {
+            console.log(id);
+            return $http.get('chat/user_public_conversation_by_id/' + id)
                 .then(function(response) {
                     return response;
                 });
@@ -159,12 +177,19 @@ cardApp.factory('Conversations', ['$http', function($http) {
 
 cardApp.factory('Profile', function($rootScope, $window) {
     var property;
+    var conversation;
     return {
         getProfile: function() {
             return property;
         },
         setProfile: function(value) {
             property = value;
+        },
+        getConvProfile: function() {
+            return conversation;
+        },
+        setConvProfile: function(value) {
+            conversation = value;
         },
     };
 });
