@@ -3,7 +3,7 @@
         <div class="header_back"><a href ng-click="changePath('/chat/conversations')"><i class="material-icons header-mi">&#xE5C4;</i></a></div>
         <div class="user">
             <img ng-if="avatar!='default'" alt="" class="heading_avatar" ng-src="{{avatar}}" />
-            <i ng-if="avatar=='default'" class="material-icons" id="mi-account_circle">&#xE853;</i>
+            <img ng-if="avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="convs_avatar" />
         </div>
         <div class="header_conv_name">EDIT PROFILE</div>
         <div ng-if="setting_change" class="header_decide">

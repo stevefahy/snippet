@@ -14,16 +14,6 @@ var base64url = require('base64url');
 var request = require('request');
 var fcm = require('../configs/fcm');
 
-function getCards(res) {
-    Card.find(function(err, cards) {
-        // if there is an error retrieving, send the error. nothing after res.send(err) will execute
-        if (err) {
-            return res.send(err);
-        }
-        res.json(cards);
-    });
-}
-
 function getContacts(res) {
     User.find(function(err, users) {
         // if there is an error retrieving, send the error. nothing after res.send(err) will execute
@@ -60,48 +50,18 @@ function createTokenArray(arr) {
     return token_array;
 }
 
-function createPublicConversation(user_id) {
-    console.log('createPublicConversation');
-    /*
-    var chat_create = {
-        conversation_name: '',
-        participants: []
-    };
-    */
+// Public conversation created when user first logs in.
+function createPublicConversation(user, callback) {
     // reset the participants array.
     var participants = [];
-    // set the conversation type
-    //chat_create.conversation_type = 'public';
-    // set the conversation name
-    //chat_create.conversation_name = 'Public';
-    // set the creating user as admin
-    //chat_create.admin = user_id;
     // Add current user as a participant
-    participants.push({ _id: user_id, unviewed: [] });
+    participants.push({ _id: user._id, unviewed: [] });
     // Create conversation in DB.
-    /*
-    Conversations.create($scope.chat_create)
-        .then(function(res) {
-            //res.data.name = res.data.conversation_name;
-            //$scope.conversations.push(res.data);
-        });
-        */
-
-    /*
-            conversation_name: String,
-    conversation_avatar: String,
-    conversation_type: { type: String, enum: ['public', 'private'] },
-    admin: [{ "type": Schema.Types.ObjectId, "ref": "User" }],
-    participants: [{ _id: Schema.Types.ObjectId, unviewed: [{ _id: Schema.Types.ObjectId }] }],
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now }
-    */
-
     Conversation.create({
         conversation_name: 'Public',
         conversation_type: 'public',
-        conversation_avatar: 'default',
-        admin: user_id,
+        conversation_avatar: user.avatar,
+        admin: user._id,
         participants: participants,
         done: false
     }, function(err, conversation) {
@@ -110,8 +70,7 @@ function createPublicConversation(user_id) {
             res.send(err);
         }
         // return the created conversation
-        //res.send(conversation);
-        console.log(conversation);
+        callback(conversation);
     });
 }
 
@@ -166,7 +125,6 @@ module.exports = function(app, passport) {
     app.get('/', isLoggedIn, function(req, res) {
         res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
     });
-
     // LOGOUT
     app.get('/api/logout', function(req, res) {
         req.logout();
@@ -262,7 +220,6 @@ module.exports = function(app, passport) {
     });
 
     // google callback
-    // TODO check for for first login
     // log in via join page already goes to user settings/
     app.get('/auth/google/callback',
         passport.authenticate('google', {
@@ -323,14 +280,11 @@ module.exports = function(app, passport) {
                         });
                     }
                 });
+                // First time logging in. Redirect to the User Settings screen.
                 res.redirect('/api/user_setting');
             } else {
-                // redirect to the newly created users home page (/:USERNAME)
-                //res.redirect('/' + req.user.google.name);
                 // Check if this is first log in
                 // if so got to settings of not go to home /
-                console.log('google autheniticated');
-                console.log(req.user);
                 if (req.user.first_login == true) {
                     req.user.first_login = false;
 
@@ -340,21 +294,19 @@ module.exports = function(app, passport) {
                         if (err) {
                             res.send(err);
                         } else {
-                            console.log(user);
+                            //console.log(user);
                         }
                     });
 
                     // Create Public conversation for this user
                     // Any time profile changes update Public conv profile also.
-                    createPublicConversation(req.user._id);
-
-                    res.redirect('/api/user_setting');
+                    createPublicConversation(req.user, function(result) {
+                        res.redirect('/api/user_setting');
+                    });
                 } else {
                     res.redirect('/');
                 }
             }
-
-
         });
     //
     // CONTACTS
@@ -405,46 +357,16 @@ module.exports = function(app, passport) {
             }
         });
     });
-    /*
-     // update a card by id
-        app.put('/api/cards/:card_id', function(req, res) {
-            Card.findById({ _id: req.params.card_id }, function(err, card) {
-                if (err) {
-                    res.send(err);
-                }
-                var toupdate = req.body.card;
-                if (card.length < req.body.card.length) {
-                    card.push({ content: '', user: '' });
-                }
-                card.content = toupdate.content;
-                card.user = toupdate.user;
-                var newcard = new Card(card);
-                newcard.save(function(err, card) {
-                    if (err) {
-                        res.send(err);
-                    } else {
-                        res.send(card);
-                    }
-                });
-            });
-        });
-        */
+
     // Update User profile
     app.put('/api/users/update_user/:user_id', function(req, res) {
-        console.log(req.params.user_id);
         User.findById({ _id: req.params.user_id }, function(err, user) {
             if (err) {
                 res.send(err);
             }
-            console.log(user);
             var toupdate = req.body.user;
-            console.log(toupdate);
-
             user.avatar = toupdate.avatar;
             user.user_name = toupdate.user_name;
-
-            //user = toupdate;
-
             var updateuser = new User(user);
             updateuser.save(function(err, user) {
                 if (err) {
@@ -453,8 +375,6 @@ module.exports = function(app, passport) {
                     res.json(user);
                 }
             });
-
-
         });
     });
 
@@ -646,12 +566,6 @@ module.exports = function(app, passport) {
         });
     });
 
-    // get all cards
-    app.get('/api/cards/', function(req, res) {
-        // use mongoose to get all cards in the database
-        getCards(res);
-    });
-
     // search all cards by string
     app.post('/api/cards/search/:input', function(req, res) {
         // use mongoose to search all cards in the database
@@ -706,7 +620,7 @@ module.exports = function(app, passport) {
         });
     });
 
-    // delete a card
+    // delete a card by id.
     app.delete('/api/cards/:card_id', function(req, res) {
         Card.remove({
             _id: req.params.card_id
@@ -875,31 +789,6 @@ module.exports = function(app, passport) {
         });
     });
 
-/*
-    // update a card by id
-    app.put('/api/cards/:card_id', function(req, res) {
-        Card.findById({ _id: req.params.card_id }, function(err, card) {
-            if (err) {
-                res.send(err);
-            }
-            var toupdate = req.body.card;
-            if (card.length < req.body.card.length) {
-                card.push({ content: '', user: '' });
-            }
-            card.content = toupdate.content;
-            card.user = toupdate.user;
-            var newcard = new Card(card);
-            newcard.save(function(err, card) {
-                if (err) {
-                    res.send(err);
-                } else {
-                    res.send(card);
-                }
-            });
-        });
-    });
-    */
-
     // Update the conversation avatar.
     app.put('/chat/conversation_avatar/:id', function(req, res) {
         Conversation.findById({ _id: req.params.id }, function(err, conversation) {
@@ -907,28 +796,7 @@ module.exports = function(app, passport) {
                 console.log('err: ' + err);
                 return res.send(err);
             }
-            /*
-            // Convert the conversation model to JSON so that findWithAttr functions.
-            conversation_temp = conversation.toJSON();
-            // Find this Card Id within All participants unviwed arrays and remove it if found.
-            for (var prop in conversation_temp.participants) {
-                if (conversation_temp.participants.hasOwnProperty(prop)) {
-                    var user_pos = findWithAttr(conversation_temp.participants[prop].unviewed, '_id', req.params.card_id);
-                    if (user_pos >= 0) {
-                        conversation.participants[prop].unviewed.splice(user_pos, 1);
-                    }
-                }
-            }
-            */
-            console.log('avatar');
-            console.log(conversation);
-            console.log(req.body.avatar);
             conversation.conversation_avatar = req.body.avatar;
-            // Update the Conversations updatedAt time.
-            //console.log(req.params.avatar.avatar);
-            //console.log(req.params.avatar);
-            //var toupdate = req.body.avatar;
-            //conversation.conversation_avatar = req.params.avatar.avatar;
             // Save the updated Conversation to the DB.
             var updated_conversation = new Conversation(conversation);
             updated_conversation.save(function(err, conversation) {
@@ -958,13 +826,6 @@ module.exports = function(app, passport) {
             });
     });
 
-    // get all conversations for this user
-    // TODO - web route?
-    // TODO - check all these use are used and without redundancy
-    app.get('/chat/conversations', function(req, res) {
-        res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
-    });
-
     // get all conversations for current user
     app.get('/chat/conversation', function(req, res) {
         Conversation.find({ 'participants._id': req.user._id }, function(err, conversations) {
@@ -987,7 +848,6 @@ module.exports = function(app, passport) {
     });
 
     // get all conversations by user id
-    // TODO check redundant?
     app.get('/chat/user_conversations/:id', function(req, res) {
         Conversation.find({ 'participants._id': req.params.id }, function(err, conversations) {
             if (err) {
@@ -1026,48 +886,15 @@ module.exports = function(app, passport) {
         });
     });
 
-
     // Get the public conversation for a user by user id.
     app.get('/chat/user_public_conversation_by_id/:id', function(req, res) {
         Conversation.findOne({ 'admin': req.params.id, 'conversation_type': 'public' }, function(err, conversation) {
             if (err) {
-                console.log('err: ' + err);
-                //return done(err);
                 res.json({ 'error': 'not found' });
             }
             res.json(conversation);
         });
     });
-
-    // DELETE ?
-    //update
-    //'chat/conversation/' + pms.id;
-    // update a conversation by id
-    /*
-    app.put('/chat/conversation/:conv_id', function(req, res) {
-        Conversation.findById({ _id: req.params.conv_id }, function(err, card) {
-            if (err) {
-                res.send(err);
-            }
-            var toupdate = req.body.conversation;
-            if (card.length < req.body.card.length) {
-                card.push({ content: '', user: '' });
-            }
-            card.content = toupdate.content;
-            card.user = toupdate.user;
-            var newcard = new Card(card);
-            newcard.save(function(err, card) {
-                if (err) {
-                    res.send(err);
-                } else {
-                    res.send(card);
-                }
-            });
-        });
-    });
-    */
-
-
 
     // get user public conversation id by user name
     app.get('/chat/user_public_conversation_id/:username', function(req, res) {
@@ -1084,7 +911,6 @@ module.exports = function(app, passport) {
                 Conversation.findOne({ 'participants._id': user._id, 'conversation_type': 'public' }, function(err, conversation) {
                     if (err) {
                         console.log('err: ' + err);
-                        //return done(err);
                         res.json({ 'error': 'not found' });
                     }
                     res.json(conversation);

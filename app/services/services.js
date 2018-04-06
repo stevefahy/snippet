@@ -9,9 +9,6 @@ cardApp.factory('Cards', ['$http', function($http) {
         create_card: function() {
             return $http.get("/create_card");
         },
-        get: function() {
-            return $http.get('api/cards');
-        },
         create: function(carddata) {
             return $http.post('api/cards', carddata)
                 .then(function(response) {
@@ -59,12 +56,7 @@ cardApp.factory('Email', ['$http', function($http) {
         }
     };
 }]);
-/*
-        update: function(pms) {
-            var theurl = 'api/cards/' + pms.id;
-            return $http.put(theurl, pms);
-        },
-        */
+
 cardApp.factory('Users', ['$http', function($http) {
     return {
         search_id: function(id) {
@@ -74,14 +66,8 @@ cardApp.factory('Users', ['$http', function($http) {
             return $http.post('api/users/add_contact/' + id);
         },
         update_user: function(user) {
-            console.log(user);
-            console.log(user.id);
             var theurl = 'api/users/update_user/' + user.id;
             return $http.put(theurl, user);
-            //return $http.put('api/users/update_contact/' + data);
-
-            // var theurl = 'api/cards/' + pms.id;
-            //return $http.put(theurl, pms);
         },
         delete_contact: function(id) {
             return $http.post('api/users/delete_contact/' + id);
@@ -118,16 +104,9 @@ cardApp.factory('Conversations', ['$http', function($http) {
         removeViewed: function(conv_id, user_id, card_id) {
             return $http.put('chat/conversation_viewed_remove/' + conv_id + '/' + user_id + '/' + card_id);
         },
-        /*
-                update: function(pms) {
-            var theurl = 'api/cards/' + pms.id;
-            return $http.put(theurl, pms);
-        },
-        */
         updateAvatar: function(obj) {
             var theurl = 'chat/conversation_avatar/' + obj.id;
             return $http.put(theurl, obj);
-            //return $http.put('chat/conversation_avatar/' + conv_id + '/' + avatar);
         },
         find_conversation_id: function(id) {
             return $http.get('chat/conversation_id/' + id);
@@ -151,7 +130,6 @@ cardApp.factory('Conversations', ['$http', function($http) {
                 });
         },
         find_user_public_conversation_by_id: function(id) {
-            console.log(id);
             return $http.get('chat/user_public_conversation_by_id/' + id)
                 .then(function(response) {
                     return response;
@@ -176,15 +154,17 @@ cardApp.factory('Conversations', ['$http', function($http) {
 }]);
 
 cardApp.factory('Profile', function($rootScope, $window) {
-    var property;
+    var user;
     var conversation;
     return {
+        // User profile.
         getProfile: function() {
-            return property;
+            return user;
         },
         setProfile: function(value) {
-            property = value;
+            user = value;
         },
+        // Conversation profile.
         getConvProfile: function() {
             return conversation;
         },

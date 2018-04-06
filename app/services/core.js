@@ -49,7 +49,6 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
     });
 });
 
-
 /*
 cardApp.run([
   '$rootScope',
@@ -60,7 +59,6 @@ cardApp.run([
       // current is an object that is the route where we are currently
       var currentPath = current.originalPath;
       var nextPath = next.originalPath;
-
       console.log('Starting to leave %s to go to %s', currentPath, nextPath);
     });
   }
@@ -362,11 +360,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             processData: false,
             contentType: false,
             success: function(data) {
-                //insertImage(data);
-                console.log(data);
-                //return data;
-                console.log(callback);
-                // callback returned
                 // insert or callback?
                 if (callback) {
                     callback(data);
@@ -398,11 +391,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.prepareImage = function(files, callback) {
-        console.log(files);
         var promises = [];
         self.formData = new FormData();
         angular.forEach(files, function(file, key) {
-            console.log(file);
             promises.push(
                 createImageElement().then(function(img) {
                     return loadFileReader(img, file);
@@ -421,12 +412,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         $q.all(promises).then(function(formData) {
             // Image processing of ALL images complete. Upload form
             self.uploadImages(self.formData, callback);
-            //return  promises;
-            //return promises;
-
         });
     };
-
 
     // UPLOAD ==================================================================
     uploadClickListen = function() {
@@ -445,11 +432,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             Database.saveTempCard(id, card, currentUser);
         }
     };
-    /*
-        this.androidChoosePhoto = function(){
-             Android.choosePhoto();
-         };
-         */
 
     this.uploadFile = function(id, card, currentUser) {
         if (ua === 'AndroidApp') {
@@ -989,15 +971,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     // Scroll the HTML into view
     this.scrollLatest = function(clas) {
         var scroll_latest = document.querySelector('.' + clas);
-
         $timeout(function() {
-
             $timeout(function() {
                 if (document.querySelector('.' + clas) != undefined) {
                     scrollIntoViewIfNeeded(scroll_latest, { duration: 200, offset: { bottom: 30 } });
                 }
             }, 200);
-
             $timeout(function() {
                 if (clas == 'scroll_latest_footer') {
                     // remove scroll div after scrolling

@@ -289,7 +289,7 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
             mySavedImage = $scope.myCroppedImage;
             saved = true;
             console.log('save new image');
-            myImageName = 'img_' + getDate() + '_' + (new Date()).getTime();
+            myImageName = 'img_' + getDate() + '_' + (new Date()).getTime() + '.jpg';
             urltoFile($scope.myCroppedImage, myImageName, 'image/jpeg')
                 .then(function(file) {
                     console.log('file');

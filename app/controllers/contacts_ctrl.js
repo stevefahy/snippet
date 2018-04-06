@@ -1,4 +1,7 @@
-cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http', 'Invites', 'Email', 'Users', 'Conversations', 'Profile', function($scope, $rootScope, $location, $http, Invites, Email, Users, Conversations, Profile) {
+cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http', 'Invites', 'Email', 'Users', 'Conversations', 'Profile', 'General', function($scope, $rootScope, $location, $http, Invites, Email, Users, Conversations, Profile, General) {
+
+    // TODO - make sure two users cant create a 2 person conv with each other at the same time.
+    // Add users to each others contacts when conv created?
 
     //The minimum number of characters a user must type before a search is performed.
     var SEARCH_MIN = 3;
@@ -36,8 +39,8 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
     };
 
     // Start a conversation
-    $scope.selectedUsers = function() {
-        $scope.startChat($scope.selected);
+    $scope.selectedUsers = function(contact) {
+        $scope.startChat($scope.selected, contact);
     };
 
     // Get the current users details
@@ -49,8 +52,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
 
     // Continue a conversation by conversation id
     $scope.chat = function(conversation_id, contact, index) {
-                console.log(contact);
-               var profile_obj = {};
+        var profile_obj = {};
         profile_obj.user_name = contact.user_name;
         profile_obj.avatar = contact.avatar;
         Profile.setConvProfile(profile_obj);
@@ -61,8 +63,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
     // TODO - make sure two users cannot create a chat simultanously
     // TODO - make sure only one chat created with aother single user.
     $scope.startChat = function(new_participants, contact) {
-        console.log(contact);
-               var profile_obj = {};
+        var profile_obj = {};
         profile_obj.user_name = contact.user_name;
         profile_obj.avatar = contact.avatar;
         Profile.setConvProfile(profile_obj);
@@ -159,11 +160,10 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
                             result.data.map(function(key, array) {
                                 // check that this is a two person chat.
                                 // Groups of three or more are loaded in conversations.html
-                                console.log(key.participants);
-                                console.log(res.data.success._id);
                                 if (key.participants.length === 2) {
                                     // Check that current user is a participant of this conversation
-                                    if (key.participants.indexOf(res.data.success._id) >= 0) {
+                                    //var conversation_pos = General.findWithAttr(res.data, '_id', msg.conversation_id);
+                                    if (General.findWithAttr(key.participants, '_id', res.data.success._id) >= 0) {
                                         // set conversation_exists and conversation_id for the contacts
                                         res.data.success.conversation_exists = true;
                                         res.data.success.conversation_id = key._id;
@@ -174,7 +174,6 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
                         // add the user as a contact
                         $scope.contacts.push(res.data.success);
                     }
-                    console.log($scope.contacts);
                 })
                 .catch(function(error) {
                     console.log('error: ' + error);

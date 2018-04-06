@@ -15,14 +15,9 @@
                     </div>
                 </div>
             </div>
-            <!--
-            	  <div class="create_c create_c_no_input transition" ng-class="{ 'create_c_input': input}">
-            	  -->
-            <!--<div class="crop_container transition_3" ng-class="{ 'crop_container_visible': crop_container_visible}">-->
-            	<div class="crop_container">
-                <!--<div class="cropArea transition_3" ng-class="{ cropArea_visible: 'crop_container_visible'}">-->
-                	<div class="cropArea">
-                    <img-crop class="imgcrop "  image="myImage" result-image="myCroppedImage" result-image-format="image/jpeg" result-image-size="125" change-on-fly="true" on-load-done="imgcropLoaded();"></img-crop>
+            <div class="crop_container">
+                <div class="cropArea">
+                    <img-crop class="imgcrop " image="myImage" result-image="myCroppedImage" result-image-format="image/jpeg" result-image-size="125" change-on-fly="true" on-load-done="imgcropLoaded();"></img-crop>
                 </div>
             </div>
             <div class="user_details">
@@ -38,24 +33,12 @@
                     </div>
                     <div class="user_details_container">
                         <div class="user_name login_detail">User Name</div>
-                        <!--<div class="ce_username user_name" contenteditable="true" ng-model="user_name">{{user_name}}</div>-->
-                        <input class="ce_username user_name" id="profile_username" maxlength="20"  type="text" ng-model="user_name" />
+                        <input class="ce_username user_name" id="profile_username" maxlength="20" type="text" ng-model="user_name" />
                     </div>
                 </div>
                 <div class="right"></div>
-        
+            </div>
         </div>
-
-           <!-- <button id="" class="btn btn-sm upload-btn " type="button " ng-click="saveFile()">Save</button>-->
-
- 
-
-            
-        <!--
-            	<input id="upload-input" type="file" name="uploads[]" multiple="multiple">
-                        <button ng-attr-id="{{ 'upload-triggerce' + card._id }}" class="btn btn-sm upload-btn upload-trigger" type="button" ng-click="uploadFile(card._id, card, currentUser)">Upload File</button>
-                    -->
+        <div ng-include src="'/views/footer.html'"></div>
     </div>
-    <div ng-include src="'/views/footer.html'"></div>
-</div>
 </div>

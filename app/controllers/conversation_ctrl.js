@@ -18,16 +18,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     };
 
-    // TODO - change to global?
-    $http.get("/api/user_data").then(function(result) {
-        if (result.data.user) {
-            $scope.currentUserName = result.data.user.google.name;
-            $scope.currentUser = result.data.user;
-        }
-        // Start watching onfocus and onblur, then load the conversation for the first time.
-        watchFocus();
-    });
-
     // Detect device user agent 
     var ua = navigator.userAgent;
     // Detect soft keyboard on Android
@@ -99,6 +89,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         if (deleted_card_pos >= 0) {
             $scope.cards.splice(deleted_card_pos, 1);
         }
+    });
+
+    // TODO - change to global?
+    $http.get("/api/user_data").then(function(result) {
+        if (result.data.user) {
+            $scope.currentUser = result.data.user;
+        }
+        // Start watching onfocus and onblur, then load the conversation for the first time.
+        watchFocus();
     });
 
     // DELETE ==================================================================
@@ -182,90 +181,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         $('#placeholderDiv').css('bottom', '59px');
     };
 
-    checkConvType = function(key, callback) {
-        var conv_details = {};
-        // get the index position of the current user within the participants array
-        var user_pos = General.findWithAttr(key.participants, '_id', $scope.currentUser._id);
-        // Public conversation
-        if (key.conversation_type == 'public') {
-            // Get the conversation name and add to model.
-            //conv_details.name = key.conversation_name;
-            keys.name = key.conversation_name;
-            // Get the conversation avatar and add to model.
-                //key.avatar = key.conversation_avatar + '?' + (new Date()).getTime();
-                key.avatar = key.conversation_avatar;
-                //callback(conv_details);
-        }
-        // Group conversation. 
-        if (key.participants.length > 2) {
-            // Get the conversation name and add to model.
-            conv_details.name = key.conversation_name;
-            // Temp
-            conv_details.avatar = 'default';
-               // callback(conv_details);
-        }
-        // Two user conversation (not a group)
-        if (key.participants.length == 2) {
-            // Get the position of the current user
-            if (user_pos === 0) {
-                participant_pos = 1;
-            } else {
-                participant_pos = 0;
-            }
-            // Find the other user
-            General.findUser(key.participants[participant_pos]._id, function(result) {
-                // set their name as the name of the conversation
-                // key.name = result.google.name;
-                var avatar;
-                if (result) {
-                    if (result.user_name == undefined) {
-                        //conv_details.name = result.google.name;
-                         keys.name = result.google.name;
-                        //$scope.currentUserName = result.data.user.google.name;
-                    } else {
-                        //conv_details.name = result.user_name;
-                        key.name = result.user_name;
-                        //$scope.currentUserName = result.data.user.user_name;
-                    }
-                    //$scope.avatar = result.data.user.avatar;
-                    avatar = result.avatar;
-                    if (avatar == undefined) {
-                        avatar = 'default';
-                    }
-                } else {
-                    avatar = "default";
-                }
-                //conv_details.avatar = avatar;
-                key.avatar = avatar;
-               // callback(conv_details);
-            });
-        }
-
-    };
-
     setFocus = function() {
         $timeout(function() {
-            findConversationId(function(result) {
-                //$rootScope.$broadcast('CONV_CHECK');
-
-                var id = Conversations.getConversationId(id);
-                Conversations.find_conversation_id(id)
-                    .then(function(res) {
-                        console.log(res);
-                        checkConvType(res.data, function(result) {
-                            //$scope.conversation_name = result.name;
-                            //$scope.avatar = result.avatar;
-/*
-                            var profile = {};
-                            profile.avatar = result.avatar;
-                            profile.user_name = result.name;
-
-                            $rootScope.$broadcast('PROFILE_CHANGE', profile);
-*/
-                        });
-                        //$scope.conversation_name = res.data.conversation_name;
-                    });
-            });
+            findConversationId();
         });
     };
 
@@ -296,7 +214,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }, 200);
     };
 
-    // TODO - ake service (also in card_create.js)
+    // TODO - make service (also in card_create.js)
     // Function called from core.js by dynamically added input type=checkbox.
     // It rewrites the HTML to save the checkbox state.
     checkBoxChanged = function(checkbox) {
@@ -353,8 +271,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     // Find the conversation id.
-    findConversationId = function(callback) {
-        //findConversationId = function(callback) {
+    findConversationId = function() {
         // Use the id from $routeParams.id if it exists. 
         // The conversation may have been loaded by username.
         if (id === undefined) {
@@ -374,7 +291,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             checkPermission(id, function(result) {
                                 $scope.isMember = result;
                                 getConversation(id, 500);
-                                callback(Conversations.getConversationId());
                             });
                         }
                     });
@@ -385,13 +301,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             checkPermission(id, function(result) {
                 $scope.isMember = result;
                 getConversation(id, 500);
-                callback(Conversations.getConversationId());
             });
         }
-
-
-        //return Conversations.getConversationId();
-        //callback(Conversations.getConversationId());
     };
 
     // Called by Android to get the conversation id.
@@ -447,7 +358,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             }
                             if (res.data.success) {
                                 // Set the user_name to the retrieved name
-                                key.user_name = res.data.success.google.name;
+                                key.user_name = res.data.success.user_name;
                             }
                         })
                         .catch(function(error) {
@@ -503,7 +414,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     // Clear the cards unviewed arrary for this participant of this conversation.
                     updateConversationViewed(id);
                 }
-
                 // Check for deleted cards
                 if ($scope.cards.length > result.data.length) {
                     var deleted = findDifference($scope.cards, result.data, 'deleted');
@@ -532,7 +442,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 }
                 if (res.data.success) {
                     // Set the user_name to the retrieved name
-                    data.user_name = res.data.success.google.name;
+                    data.user_name = res.data.success.user_name;
                 }
             })
             .catch(function(error) {

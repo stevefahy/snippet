@@ -1,6 +1,7 @@
 cardApp.controller("cardCtrl", ['$scope', 'Cards', 'Conversations', 'Users', 'replaceTags', '$rootScope', '$http', 'Format', 'Edit', '$window', '$routeParams', '$location', 'socket', function($scope, Cards, Conversations, Users, replaceTags, $rootScope, $http, Format, Edit, $window, $routeParams, $location, socket) {
 
     // TODO - Still needed?
+    // Legacy for use with /s/:snip to display individual card.
 
     $scope.getFocus = Format.getFocus;
     $scope.contentChanged = Format.contentChanged;

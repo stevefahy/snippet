@@ -1,17 +1,9 @@
 cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$http', 'Invites', 'Email', 'Users', 'Conversations', '$q', 'FormatHTML', 'General', 'Profile', function($scope, $rootScope, $location, $http, Invites, Email, Users, Conversations, $q, FormatHTML, General, Profile) {
 
     this.$onInit = function() {
-        public_found = false;
         sent_content_length = 20;
-
         // array of conversations
         $scope.conversations = [];
-
-// Still needed?
-        $scope.chat_create = {
-            conversation_name: '',
-            participants: []
-        };
     };
 
     // Broadcast by socket service when a  card has been created, updated or deleted by another user to this user
@@ -57,7 +49,6 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
                                 });
                             } else {
                                 // Remove the conversation from the local model.
-                                //$scope.conversations.splice(local_conversation_pos,1);
                                 $scope.conversations[local_conversation_pos].latest_card = ' ';
                             }
                         });
@@ -67,8 +58,7 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
 
     // Continue chat
     $scope.chat = function(conversation_id, conversation, index) {
-        console.log(conversation);
-        // TODO - Set profile change here not within conversation!
+        // Set profile change for the conversation.
         var profile_obj = {};
         profile_obj.user_name = conversation.name;
         profile_obj.avatar = conversation.avatar;
@@ -79,8 +69,8 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
 
     // Continue public conversation
     $scope.chatPublic = function(admin, conversation, index) {
-        console.log(conversation);
-             var profile_obj = {};
+        // Set profile change for the conversation.
+        var profile_obj = {};
         profile_obj.user_name = conversation.name;
         profile_obj.avatar = conversation.avatar;
         Profile.setConvProfile(profile_obj);
@@ -89,26 +79,6 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
             $location.path("/" + result.google.name);
         });
     };
-/*
-    createPublicConversation = function() {
-        // reset the participants array.
-        $scope.chat_create.participants = [];
-        // set the conversation type
-        $scope.chat_create.conversation_type = 'public';
-        // set the conversation name
-        $scope.chat_create.conversation_name = 'Public';
-        // set the creating user as admin
-        $scope.chat_create.admin = $scope.currentUser._id;
-        // Add current user as a participant
-        $scope.chat_create.participants.push({ _id: $scope.currentUser._id, viewed: 0 });
-        // Create conversation in DB.
-        Conversations.create($scope.chat_create)
-            .then(function(res) {
-                res.data.name = res.data.conversation_name;
-                $scope.conversations.push(res.data);
-            });
-    };
-    */
 
     formatLatestCard = function(data, key, callback) {
         if (data != null) {
@@ -130,18 +100,12 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
                 // Set the card content.
                 card_content = data.content;
                 // set the name of the user who sent the card
-                sender_name = result.google.name;
+                sender_name = result.user_name;
                 // Public conversation
                 if (key.conversation_type == 'public') {
                     // Get the conversation name and add to model.
                     key.name = key.conversation_name;
-                    // Temp
-                    console.log('PUBLIC');
-                    console.log(key);
-                    //key.avatar = 'default';
-                    // Get the conversation avatar and add to model.
-                //key.avatar = key.conversation_avatar + '?' + (new Date()).getTime();
-                key.avatar = key.conversation_avatar;
+                    key.avatar = key.conversation_avatar;
                     notification_body = card_content;
                 }
                 // Group conversation. 
@@ -162,23 +126,11 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
                     }
                     // Find the other user
                     General.findUser(key.participants[participant_pos]._id, function(result) {
-                        // set their name as the name of the conversation
-                        // key.name = result.google.name;
+                        var avatar = "default";
+                        // set the other user name as the name of the conversation.
                         if (result) {
-                            if (result.user_name == undefined) {
-                                key.name = result.google.name;
-                                //$scope.currentUserName = result.data.user.google.name;
-                            } else {
-                                key.name = result.user_name;
-                                //$scope.currentUserName = result.data.user.user_name;
-                            }
-                            //$scope.avatar = result.data.user.avatar;
-                            var avatar = result.avatar;
-                            if (avatar == undefined) {
-                                avatar = 'default';
-                            }
-                        } else {
-                            avatar = "default";
+                            key.name = result.user_name;
+                            avatar = result.avatar;
                         }
                         key.avatar = avatar;
 
@@ -190,14 +142,13 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
                 callback(key);
             });
         } else {
-            // empty conversation. Only empty public converations are listed.
+            // Empty conversation. Only empty public converations are listed.
             // Public conversation
             if (key.conversation_type == 'public') {
                 // Get the conversation name and add to model.
                 key.name = key.conversation_name;
                 // Get the conversation avatar and add to model.
                 key.avatar = key.conversation_avatar;
-                //key.avatar = key.conversation_avatar + '?' + (new Date()).getTime();
             }
             callback(key);
         }
@@ -207,33 +158,18 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
     // Get the current users details
     $http.get("/api/user_data").then(function(result) {
         if (result.data.user) {
-            //$scope.currentUserName = result.data.user.google.name;
             $scope.currentUser = result.data.user;
-
             var profile = {};
-            if (result.data.user.user_name == undefined) {
-                profile.user_name = result.data.user.google.name;
-            } else {
-                profile.user_name = result.data.user.user_name;
-            }
-            if (result.data.user.avatar == undefined) {
-                profile.avatar = 'default';
-            } else {
+            profile.avatar = 'default';
+            profile.user_name = result.data.user.user_name;
+            if (result.data.user.avatar != undefined) {
                 profile.avatar = result.data.user.avatar;
             }
-
-            //console.log('PROFILE_CHANGE');
-           //$rootScope.$broadcast('PROFILE_CHANGE', profile);
-
             // Find the conversations for current user
             Conversations.find_user_conversations($scope.currentUser._id)
                 .then(function(res) {
-                    console.log(res);
                     var conversations_raw = res.data;
                     conversations_raw.map(function(key, array) {
-                        if (key.conversation_type === 'public') {
-                            public_found = true;
-                        }
                         // Get the latest card posted to this conversation
                         Conversations.getConversationLatestCard(key._id)
                             .then(function(res) {
@@ -243,22 +179,17 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
                                         $scope.conversations.push(result);
                                     });
                                 } else {
+                                    // Only empty publc conversations are displayed.
                                     key.latest_card = ' ';
-                                    console.log(key);
                                     if (key.conversation_type === 'public') {
                                         formatLatestCard(res.data, key, function(result) {
                                             // Add this conversation to the conversations model
                                             $scope.conversations.push(result);
                                         });
                                     }
-
                                 }
                             });
                     });
-                    if (public_found == false) {
-                        // create the initial public conversation for this user
-                        //createPublicConversation();
-                    }
                 });
         }
     });

@@ -334,8 +334,6 @@ module.exports = function(passport) {
                             //
                             // NEW USER
                             //
-                            console.log(profile._json.image.url);
-                            console.log(profile._json.image.isDefault);
                             var newUser = new User();
                             newUser._id = new mongoose.Types.ObjectId();
                             //newUser.contacts = ''; Empty
@@ -405,8 +403,6 @@ module.exports = function(passport) {
                                 //
                                 // NEW USER
                                 //
-                                console.log(profile._json.image.url);
-                                console.log(profile._json.image.isDefault);
                                 var newUser = new User();
                                 newUser._id = new mongoose.Types.ObjectId();
                                 //newUser.contacts = ''; Empty
