@@ -347,6 +347,10 @@ hr {
     z-index: 2000;
 }
 
+.header_import {
+    z-index: 2000;
+}
+
 #mi-search_contacts {
     color: green;
     font-size: 30px !important;
@@ -1191,29 +1195,86 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     border-radius: 1px;
 }
 
-.content_cnv_search {
+.content_conv_anim_off {
+    /*margin-left: calc(100vw * -1);*/
+    margin-left: calc(100vw);
+    /*height: calc(0%);*/ 
+}
+
+.content_conv_search {
+    /* display: none; */
+    position: absolute;
     width: 100vw;
     overflow-y: auto;
-    /* DANGER added x 01/04/18 */
     overflow-x: hidden;
-    height: calc(0%);
+    height: calc(100% - 130px);
     border-radius: 1px;
+    top: 70px;
+}
+
+.content_conv_search_anim_on {
+     display: block; 
+    position: absolute;
+    width: 100vw;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: calc(100% - 130px);
+    border-radius: 1px;
+    /* margin-top: 70px; */
+    /* margin-bottom: 500px; */
+    top: 70px;
 }
 
 .content_conv_search_anim_off {
+     display: none; 
+    position: absolute;
     width: 100vw;
     overflow-y: auto;
-    /* DANGER added x 01/04/18 */
     overflow-x: hidden;
-    height: calc(100%);
+    height: calc(100% - 130px);
     border-radius: 1px;
+    /* margin-top: 70px; */
+    /* margin-bottom: 500px; */
+    top: 70px;
 }
 
-.content_conv_anim_off {
-    /*margin-left: calc(100vw * -1);*/
-    /*margin-left: calc(100vw);*/
-    height: calc(0%);
+.content_conv_import {
+    /* display: none; */
+    position: absolute;
+    width: 100vw;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: calc(100% - 130px);
+    border-radius: 1px;
+    top: 70px;
 }
+
+.content_conv_import_anim_on {
+     display: block; 
+    position: absolute;
+    width: 100vw;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: calc(100% - 130px);
+    border-radius: 1px;
+    /* margin-top: 70px; */
+    /* margin-bottom: 500px; */
+    top: 70px;
+}
+
+.content_conv_import_anim_off {
+     display: none; 
+    position: absolute;
+    width: 100vw;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: calc(100% - 130px);
+    border-radius: 1px;
+    /* margin-top: 70px; */
+    /* margin-bottom: 500px; */
+    top: 70px;
+}
+
 
 .content_cnv_android::-webkit-scrollbar {}
 

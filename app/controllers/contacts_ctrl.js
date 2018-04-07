@@ -1,4 +1,4 @@
-cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http', 'Invites', 'Email', 'Users', 'Conversations', 'Profile', 'General', function($scope, $rootScope, $location, $http, Invites, Email, Users, Conversations, Profile, General) {
+cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http', '$timeout', 'Invites', 'Email', 'Users', 'Conversations', 'Profile', 'General', function($scope, $rootScope, $location, $http, $timeout, Invites, Email, Users, Conversations, Profile, General) {
 
     // TODO - make sure two users cant create a 2 person conv with each other at the same time.
     // Add users to each others contacts when conv created?
@@ -26,16 +26,17 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
     // contacts checkboxes selected
     $scope.selected = [];
 
-    $scope.hide = false;
+    $scope.search = false;
+    $scope.import = false;
 
 
     var cont = {
-        avatar:"fileuploads/images/img_20180406_1523047577836.jpg",
+        avatar: "fileuploads/images/img_20180406_1523047577836.jpg",
         contacts: [],
         conversation_exists: false,
         conversation_id: "5ac7dd028ad5360dac25a04e",
         first_login: false,
-        google: {email: "stevefahydev@gmail.com", name: "steve fahy", token: "ya29.Gl2VBSoutMCefwvDi9B0u_YPltbB1Qm5_ayvEoMoTA0Tt…tzQd4zRe-y6b-1qZ-_3Qa157PkXAfOj1_qJ-W3eg-W5bSdsIY", id: "116918311836530879886"},
+        google: { email: "stevefahydev@gmail.com", name: "steve fahy", token: "ya29.Gl2VBSoutMCefwvDi9B0u_YPltbB1Qm5_ayvEoMoTA0Tt…tzQd4zRe-y6b-1qZ-_3Qa157PkXAfOj1_qJ-W3eg-W5bSdsIY", id: "116918311836530879886" },
         tokens: [],
         user_name: "Test User",
         __v: 0,
@@ -43,11 +44,45 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
     };
 
 
-    $scope.contactSearch = function(){
-        console.log('hide');
+    $scope.contactSearch = function() {
+        console.log('search');
         //bool = !bool;
+        $scope.search = true;
+        //if (!$scope.import) {
         $scope.hide = !$scope.hide;
+        //}
+        $scope.import = false;
+        //
+        if (!$scope.hide) {
+            $timeout(function() {
+                console.log('contacts');
+                //$('.content_conv_import_anim_on').css('display', 'none');
+                $scope.search = false;
+                $scope.import = false;
+            }, 500);
+        }
+
     };
+
+    $scope.contactImport = function() {
+        console.log('import');
+        //bool = !bool;
+        $scope.import = true;
+        //if (!$scope.search) {
+        $scope.hide = !$scope.hide;
+        //}
+        $scope.search = false;
+        //
+        if (!$scope.hide) {
+            $timeout(function() {
+                console.log('contacts');
+                //$('.content_conv_import_anim_on').css('display', 'none');
+                $scope.search = false;
+                $scope.import = false;
+            }, 500);
+        }
+    };
+
 
     // contact checkbox value changed
     $scope.checkBoxChange = function(checkbox, value) {
@@ -164,7 +199,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
         $scope.contacts = [];
 
         var test_num = 500;
-        for(var i =0; i< test_num; i++){
+        for (var i = 0; i < test_num; i++) {
             cont.$$hashKey = i;
             $scope.contacts.push(cont);
         }

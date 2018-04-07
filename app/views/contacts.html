@@ -1,11 +1,68 @@
 <div ng-controller="contactsCtrl">
     <div class="container_cnv">
         <div class="header_container" ng-include="'/views/header_contacts.html'"></div>
-
-        <div class="content_cnv_search transition_4" ng-class="{ 'content_conv_search_anim_off': hide}">
+        <div class="content_conv_import transition_4" ng-class="{ 'content_conv_import_anim_on': import, 'content_conv_import_anim_off': !import}">
+            IMPORT
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test
+            <br> test last.
+        </div>
+        <div class="content_conv_search transition_4" ng-class="{ 'content_conv_search_anim_on': search,
+        'content_conv_search_anim_off': !search}">
             SEARCH
         </div>
-
         <div class="content_cnv transition_4" ng-class="{ 'content_conv_anim_off': hide}">
             <div ng-repeat="contact in contacts | orderBy :'updatedAt' : true track by $index">
                 <!--
@@ -45,31 +102,28 @@
                 </div>
             </ul>
         -->
-        <div ng-repeat="search_result in search_results">
-
-            <div id="conv_div" ng-click="(contact.conversation_exists) ? chat(contact.conversation_id, contact, $index) : startChat([contact._id], contact, $index)">
-                <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
-                    <div class="convs_container">
-                        <div class="convs_a">
-                            <img ng-if="search_result.avatar!='default'" alt="" ng-src="{{search_result.avatar}}" class="convs_avatar" />
-                            <img ng-if="search_result.avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="convs_avatar" />
-                        </div>
-                        <div class="convs_col_a">
-                            <div class="convs_b" id="convs_name">{{search_result.user_name}}</div>
-                            <div class="convs_d" id="convs_msg" ng-bind-html="search_result.latest_card"></div>
-                        </div>
-                        <div class="convs_col_b">
-                            <div class="convs_c badge" id="conversations_badge" ng-if="search_result.new_messages > 0">{{search_result.new_messages}}</div>
-                            <div class="convs_e">
-                                <time am-time-ago="search_result.updatedAt" id="time"></time>
+            <div ng-repeat="search_result in search_results">
+                <div id="conv_div" ng-click="(contact.conversation_exists) ? chat(contact.conversation_id, contact, $index) : startChat([contact._id], contact, $index)">
+                    <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
+                        <div class="convs_container">
+                            <div class="convs_a">
+                                <img ng-if="search_result.avatar!='default'" alt="" ng-src="{{search_result.avatar}}" class="convs_avatar" />
+                                <img ng-if="search_result.avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="convs_avatar" />
+                            </div>
+                            <div class="convs_col_a">
+                                <div class="convs_b" id="convs_name">{{search_result.user_name}}</div>
+                                <div class="convs_d" id="convs_msg" ng-bind-html="search_result.latest_card"></div>
+                            </div>
+                            <div class="convs_col_b">
+                                <div class="convs_c badge" id="conversations_badge" ng-if="search_result.new_messages > 0">{{search_result.new_messages}}</div>
+                                <div class="convs_e">
+                                    <time am-time-ago="search_result.updatedAt" id="time"></time>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </li>
+                    </li>
+                </div>
             </div>
-
-        </div>
-
         </div>
         <!--
         <div class="content_cnv">
