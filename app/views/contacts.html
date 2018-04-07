@@ -1,8 +1,13 @@
 <div ng-controller="contactsCtrl">
     <div class="container_cnv">
         <div class="header_container" ng-include="'/views/header_contacts.html'"></div>
+
+        <div class="content_cnv_search transition_4" ng-class="{ 'content_conv_search_anim_off': hide}">
+            SEARCH
+        </div>
+
         <div class="content_cnv transition_4" ng-class="{ 'content_conv_anim_off': hide}">
-            <div ng-repeat="contact in contacts | orderBy :'updatedAt' : true">
+            <div ng-repeat="contact in contacts | orderBy :'updatedAt' : true track by $index">
                 <!--
                     <button type="button" class="btn btn-success btn-xs btn-adduser" ng-if="contact.conversation_exists" ng-click="chat(contact.conversation_id, contact, $index)">chat</button>
                             <button type="button" class="btn btn-success btn-xs btn-adduser" ng-if="!contact.conversation_exists" ng-click="startChat([contact._id], contact, $index)">start chat</button>

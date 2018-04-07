@@ -28,6 +28,21 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
 
     $scope.hide = false;
 
+
+    var cont = {
+        avatar:"fileuploads/images/img_20180406_1523047577836.jpg",
+        contacts: [],
+        conversation_exists: false,
+        conversation_id: "5ac7dd028ad5360dac25a04e",
+        first_login: false,
+        google: {email: "stevefahydev@gmail.com", name: "steve fahy", token: "ya29.Gl2VBSoutMCefwvDi9B0u_YPltbB1Qm5_ayvEoMoTA0Tt…tzQd4zRe-y6b-1qZ-_3Qa157PkXAfOj1_qJ-W3eg-W5bSdsIY", id: "116918311836530879886"},
+        tokens: [],
+        user_name: "Test User",
+        __v: 0,
+        _id: "5ac750022b6e3a438c2ec835"
+    };
+
+
     $scope.contactSearch = function(){
         console.log('hide');
         //bool = !bool;
@@ -147,6 +162,13 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
     loadUserContacts = function() {
         // reset the contacts model
         $scope.contacts = [];
+
+        var test_num = 500;
+        for(var i =0; i< test_num; i++){
+            cont.$$hashKey = i;
+            $scope.contacts.push(cont);
+        }
+        /*
         var result = $scope.currentUser.contacts.map(function(key, array) {
             // Search for each user in the contacts list by id
             Users.search_id(key)
@@ -187,6 +209,8 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
                     console.log('error: ' + error);
                 });
         });
+        */
+        console.log(($scope.contacts));
     };
 
     // send email invite to the recipient with the invite code.
