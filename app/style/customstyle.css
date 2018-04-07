@@ -227,6 +227,8 @@ hr {
 
 
 
+
+
 /* HEADER */
 
 .header {
@@ -295,6 +297,8 @@ hr {
 
 
 
+
+
 /* HEADER SETTINGS */
 
 .header_decide {
@@ -316,6 +320,34 @@ hr {
 }
 
 #mi-done {
+    color: green;
+    font-size: 30px !important;
+    font-weight: 900;
+}
+
+#mi-group_add {
+    color: green;
+    font-size: 30px !important;
+    font-weight: 900;
+}
+
+#mi-person_add {
+    color: green;
+    font-size: 30px !important;
+    font-weight: 900;
+}
+
+#mi-import_contacts {
+    color: green;
+    font-size: 30px !important;
+    font-weight: 900;
+}
+
+.header_search {
+    z-index: 2000;
+}
+
+#mi-search_contacts {
     color: green;
     font-size: 30px !important;
     font-weight: 900;
@@ -384,6 +416,8 @@ hr {
 
 
 
+
+
 /* HEADER CONV */
 
 .header_conv_name {
@@ -404,6 +438,8 @@ hr {
     padding-right: 5px;
     z-index: 2000;
 }
+
+
 
 
 
@@ -475,6 +511,8 @@ hr {
 .material-icons.md-36 {
     font-size: 36px;
 }
+
+
 
 
 
@@ -559,6 +597,8 @@ hr {
     margin-left: auto;
     left: 90px;
 }
+
+
 
 
 
@@ -708,6 +748,8 @@ div#user {
 
 
 
+
+
 /* EDIT MENU */
 
 
@@ -723,10 +765,14 @@ div#user {
 
 
 
+
+
 /* Dropdown button on hover & focus */
 
 .dropbtn:hover,
 .dropbtn:focus {}
+
+
 
 
 
@@ -737,6 +783,8 @@ div#user {
     position: relative;
     display: inline-block;
 }
+
+
 
 
 
@@ -764,6 +812,8 @@ div#user {
 
 
 
+
+
 /* Links inside the dropdown */
 
 .dropdown-content div {
@@ -777,11 +827,15 @@ div#user {
 
 
 
+
+
 /* Change color of dropdown links on hover */
 
 .dropdown-content a:hover {
     background-color: #f1f1f1
 }
+
+
 
 
 
@@ -1078,6 +1132,11 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     transition: all 2s cubic-bezier(.4, 0, .2, 1);
 }
 
+.transition_4 {
+    -webkit-transition: all .7s cubic-bezier(.4, 0, .2, 1);
+    transition: all .7s cubic-bezier(.4, 0, .2, 1);
+}
+
 #mi-send {
     color: white;
     font-size: 26px;
@@ -1130,6 +1189,11 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     overflow-x: hidden;
     height: calc(100%);
     border-radius: 1px;
+}
+
+.content_conv_anim_off {
+    /*margin-left: calc(100vw * -1);*/
+    margin-left: calc(100vw);
 }
 
 .content_cnv_android::-webkit-scrollbar {}

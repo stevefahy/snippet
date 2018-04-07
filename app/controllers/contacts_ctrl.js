@@ -26,6 +26,14 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
     // contacts checkboxes selected
     $scope.selected = [];
 
+    $scope.hide = false;
+
+    $scope.contactSearch = function(){
+        console.log('hide');
+        //bool = !bool;
+        $scope.hide = !$scope.hide;
+    };
+
     // contact checkbox value changed
     $scope.checkBoxChange = function(checkbox, value) {
         var index = $scope.selected.indexOf(checkbox);

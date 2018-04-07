@@ -1,5 +1,19 @@
 cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites', '$rootScope', '$location', '$http', '$window', '$routeParams', 'Users', 'Profile', 'Conversations', function($scope, $timeout, Format, Invites, $rootScope, $location, $http, $window, $routeParams, Users, Profile, Conversations) {
 
+    $scope.myImage = '';
+    $scope.myCroppedImage = '';
+    var myImageName = '';
+    var mySavedImage = '';
+    var saved_user_name = '';
+    $window.androidToJS = this.androidToJS;
+    $scope.prepareImage = Format.prepareImage;
+    $scope.setting_change = true;
+
+    $('.imgcrop').animate({
+        opacity: 0
+    }, 100, function() {
+        // Animation complete.
+    });
 
     // TODO  - MAke this a service?
     // Detect device user agent 
@@ -53,64 +67,36 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
 
     hideFooter = function() {
         var focused = document.activeElement;
-        console.log(focused);
-        console.log(focused.id);
-
         $('#' + focused.id).addClass("scroll_latest");
-        console.log(focused);
-        /*
-        if (focused.id != 'cecard_create') {
-            $('.create_container').hide();
-        }*/
         $('.footer').hide();
-        /*
-        $('#placeholderDiv').css('bottom', '-1px');
-        */
-        // Paste div that will be scrolled into view if necessary and the deleted.
-        //$scope.pasteHtmlAtCaret("<span class='scroll_latest_footer' id='scroll_latest_footer'></span>");
         // Scroll into view if necessary
         Format.scrollLatest('scroll_latest');
     };
 
     showFooter = function() {
         $('.footer').show();
-        /*
-        $('.create_container').show();
-        $('#placeholderDiv').css('bottom', '59px');
-        */
     };
 
-
-
-
-
-    $scope.myImage = '';
-    var myImageName = '';
-    $scope.myCroppedImage = '';
-
-    var mySavedImage = '';
-    var saved_user_name = '';
-
-    $window.androidToJS = this.androidToJS;
-    $scope.prepareImage = Format.prepareImage;
-
-    $scope.setting_change = true;
-
-    $scope.crop_container_visible = false;
-
-
-
-    //$('.imgcrop').css('display', 'none'); 
-
-    $('.imgcrop').animate({
-        opacity: 0
-    }, 100, function() {
-        // Animation complete.
+    // TODO - make service?
+    $http.get("/api/user_data").then(function(result) {
+        if (result.data.user) {
+            $scope.currentFullUser = result.data.user;
+            $scope.user_name = result.data.user.user_name;
+            $scope.login_name = result.data.user.google.name;
+            $scope.login_email = result.data.user.google.email;
+            $scope.avatar = result.data.user.avatar;
+            if ($scope.avatar == undefined) {
+                $scope.avatar = 'default';
+            }
+            // Hide the preview avatar
+            $('.preview').css('left', '-1000px');
+            saved_user_name = $scope.user_name;
+        }
     });
 
+    /*
     resetAnimation = function() {
         $('.user_details').animate({
-            //left:0,
             opacity: 0,
             left: -1000
         }, 100, function() {
@@ -124,30 +110,65 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
         });
 
         $('.imgcrop').animate({
-
             opacity: 0,
             height: 0
         }, 1000, function() {
             // Animation complete.
         });
     };
+    */
+
+   // Trigger the file input.
+    $scope.triggerClick = function() {
+        $('#fileInput').trigger('click');
+    };
+
+    // Update Public conv avatar for this user
+    $scope.saveChanges = function() {
+        var saved = false;
+        var profile = {};
+        // If the user has changed the avatar.
+        if ($scope.myImage != '' && mySavedImage != $scope.myCroppedImage) {
+            mySavedImage = $scope.myCroppedImage;
+            saved = true;
+            myImageName = 'img_' + getDate() + '_' + (new Date()).getTime() + '.jpg';
+            urltoFile($scope.myCroppedImage, myImageName, 'image/jpeg')
+                .then(function(file) {
+                    Format.prepareImage([file], function(result) {
+                        profile.avatar = 'fileuploads/images/' + result.file;
+                        profile.user_name = $scope.user_name;
+                        $scope.avatar = profile.avatar;
+                        // Change the current header.
+                        $rootScope.$broadcast('PROFILE_CHANGE', profile);
+                        // Set the changes in the model.
+                        $scope.currentFullUser.avatar = 'fileuploads/images/' + result.file;
+                        $scope.currentFullUser.user_name = $scope.user_name;
+                        // Save the updated profile avatar and text.
+                        saveProfile(profile);
+                    });
+                });
+        }
+        // If the user has only updated the user name.
+        if ($scope.user_name != saved_user_name && saved != true) {
+            saved_user_name = $scope.user_name;
+            save_changes = true;
+            profile.user_name = $scope.user_name;
+            profile.avatar = $scope.avatar;
+            // Change the current header.
+            $rootScope.$broadcast('PROFILE_CHANGE', profile);
+            // Set the changes in the model.
+            $scope.currentFullUser.avatar = $scope.avatar;
+            $scope.currentFullUser.user_name = $scope.user_name;
+            // Save the updated profile avatar and username.
+            saveProfile(profile);
+        }
+    };
 
     $scope.imgcropLoaded = function() {
-        console.log('img loaed');
-
-
-
-        console.log($('.crop_container').height());
-
         if ($('.crop_container').height() == 0) {
-
             $('.crop_container').css('height', '200px');
             $('.crop_container').css('left', '0px');
-
             $timeout(function() {
-
-
-
                 $('.user_details').animate({
                     opacity: 0
                 }, 100, function() {
@@ -171,9 +192,6 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
                         });
                     });
                 });
-
-
-
                 $('.crop_container').animate({
                     height: 0
                 }, 100, function() {
@@ -189,9 +207,6 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
                         });
                     });
                 });
-
-
-
                 $('.imgcrop').animate({
                     opacity: 0,
                 }, 100, function() {
@@ -202,66 +217,21 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
                     }, 1, function() {
                         // Animation complete.
                         $('.imgcrop').animate({
-
-
                             height: 200
                         }, 1000, function() {
                             // Animation complete.
                         });
                     });
-
                 });
-
             }, 100);
-
         }
-
-
-
-
-
-
-
-
-        //$('.imgcrop').animate({height: 200}, "1000");
-
     };
-
-    $http.get("/api/user_data").then(function(result) {
-        if (result.data.user) {
-            //console.log(result.data.user);
-            $scope.currentFullUser = result.data.user;
-            $scope.currentUser = result.data.user.google.name;
-            // If user name set
-            if (result.data.user.user_name != undefined) {
-                $scope.user_name = result.data.user.user_name;
-            } else {
-                $scope.user_name = result.data.user.google.name;
-            }
-            $scope.login_name = result.data.user.google.name;
-            $scope.login_email = result.data.user.google.email;
-            $scope.avatar = result.data.user.avatar;
-            if ($scope.avatar == undefined) {
-                $scope.avatar = 'default';
-            }
-            // Hide the preview avatar
-            $('.preview').css('left', '-1000px');
-            // $('.cropArea').hide();
-            //$('.crop_container').css('height', '0px');
-            //  $('.crop_container').css('left', '-1000px');
-            //console.log('here');
-            saved_user_name = $scope.user_name;
-
-
-        }
-    });
 
     // TODO - make service
     getDate = function() {
         var today = new Date();
         var dd = today.getDate();
-        var mm = today.getMonth() + 1; //January is 0!
-
+        var mm = today.getMonth() + 1;
         var yyyy = today.getFullYear();
         if (dd < 10) {
             dd = '0' + dd;
@@ -269,90 +239,29 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
         if (mm < 10) {
             mm = '0' + mm;
         }
-        //var today = dd + '/' + mm + '/' + yyyy;
         var date = yyyy + mm + dd;
         return date;
     };
 
-    // TOD) - only save changes if change made.
-    // Update Public conv avatar for this user
-    $scope.saveChanges = function() {
-        var saved = false;
-        console.log('saved: ' + saved);
-        var profile = {};
-        //profile.avatar = $scope.avatar;
-        //profile.user_name = $scope.user_name;
-        //console.log('$scope.myCroppedImage: ' + $scope.myCroppedImage);
-        //console.log('$scope.myImage: ' + $scope.myImage);
-        //console.log('mySavedImage: ' + mySavedImage);
-        if ($scope.myImage != '' && mySavedImage != $scope.myCroppedImage) {
-            mySavedImage = $scope.myCroppedImage;
-            saved = true;
-            console.log('save new image');
-            myImageName = 'img_' + getDate() + '_' + (new Date()).getTime() + '.jpg';
-            urltoFile($scope.myCroppedImage, myImageName, 'image/jpeg')
-                .then(function(file) {
-                    console.log('file');
-                    console.log(file);
-                    Format.prepareImage([file], function(result) {
-                        console.log(result);
-                        console.log('name?');
-                        console.log(result.file);
-                        //$scope.avatar = result.file;
-                        //changeAvatar();
-                        //var av = 'fileuploads/images/' + result.file;
-                        profile.avatar = 'fileuploads/images/' + result.file;
-                        profile.user_name = $scope.user_name;
-                        $scope.avatar = profile.avatar;
-                        $rootScope.$broadcast('PROFILE_CHANGE', profile);
-                        $scope.currentFullUser.avatar = 'fileuploads/images/' + result.file;
-                        $scope.currentFullUser.user_name = $scope.user_name;
-                        //console.log($scope.currentFullUser);
-                        saveProfile(profile);
-
-                    });
-                });
-        }
-
-        if ($scope.user_name != saved_user_name && saved != true) {
-            saved_user_name = $scope.user_name;
-            save_changes = true;
-            console.log('new name: ' + $scope.user_name);
-            profile.user_name = $scope.user_name;
-            profile.avatar = $scope.avatar;
-            $rootScope.$broadcast('PROFILE_CHANGE', profile);
-            $scope.currentFullUser.avatar = $scope.avatar;
-            $scope.currentFullUser.user_name = $scope.user_name;
-            saveProfile(profile);
-        }
-
-        //if(save_changes == true){
-        //   $rootScope.$broadcast('PROFILE_CHANGE', profile);
-        //}
-    };
-
     saveProfile = function(profile) {
         var pms = { 'id': $scope.currentFullUser._id, 'user': $scope.currentFullUser };
-        // call the create function from our service (returns a promise object)
+        // Update this users details.
         Users.update_user(pms)
             .then(function(data) {
-                console.log(data);
+                // Update the Profile service.
                 Profile.setProfile(profile);
-                //$rootScope.$broadcast('search');
             })
             .catch(function(error) {
                 console.log('error: ' + error);
             });
-
+        // Find this users public conversation by id.
         Conversations.find_user_public_conversation_by_id($scope.currentFullUser._id)
             .then(function(result) {
-                console.log(result.data);
-                //var avatar_obj = {};
-                //avatar_obj.avatar = profile.avatar;
+                // Update the avatar for the public conversation.
                 var obj = { 'id': result.data._id, 'avatar': profile.avatar };
                 Conversations.updateAvatar(obj)
                     .then(function(result) {
-                        console.log(result);
+                        //console.log(result);
                     })
                     .catch(function(error) {
                         console.log('error: ' + error);
@@ -361,81 +270,23 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
             .catch(function(error) {
                 console.log('error: ' + error);
             });
-
-
-        // Conversations.removeViewed(conversation_id, currentUser, card_id)
-        //updateAvatar: function(conv_id, avatar) {
-
     };
 
-
-
-    /*
-    if($scope.myCroppedImage != ''){
-    urltoFile($scope.myCroppedImage, $scope.myImageName, 'image/jpeg')
-        .then(function(file) {
-            Format.prepareImage([file], function(result) {
-                console.log(result);
-                //$scope.avatar = result.file;
-                //changeAvatar();
-                var av = 'fileuploads/images/' + result.file;
-                var profile = {};
-                profile.avatar = av;
-                profile.user_name = $scope.user_name;
-
-                $rootScope.$broadcast('PROFILE_CHANGE', profile);
-
-                //user.contacts = current_contacts;
-                $scope.currentFullUser.avatar = av;
-                $scope.currentFullUser.user_name = $scope.user_name;
-                console.log($scope.currentFullUser);
-
-
-                var pms = { 'id': $scope.currentFullUser._id, 'user': $scope.currentFullUser };
-                // call the create function from our service (returns a promise object)
-                Users.update_user(pms)
-                    .then(function(data) {
-                        console.log(data);
-                        //$rootScope.$broadcast('search');
-                    })
-                    .catch(function(error) {
-                        console.log('error: ' + error);
-                    });
-
-            });
-        });
-    }
-    */
-
-
-    $scope.triggerClick = function() {
-        console.log('click');
-        //angular.element(document.querySelector('#fileInput')).on('click'
-        $('#fileInput').trigger('click');
-
-    };
-
+    // Transform the cropped image to a blob.
     function urltoFile(url, filename, mimeType) {
-        console.log('urltoFile');
-        console.log(url + ' : ' + filename + ' : ' + mimeType);
         return (fetch(url)
             .then(function(res) {
-                console.log(res);
                 return res.arrayBuffer();
             })
             .then(function(buf) {
-                console.log(buf);
-                //return new File([buf], filename, { type: mimeType }); 
-
-
                 var blob = new Blob([buf], { type: mimeType });
                 blob.name = filename;
                 return blob;
-
             })
         );
     }
 
+    // Load image returned from Android.
     function loadImage(img, callback) {
         src = 'fileuploads/images/' + img;
         var file = src;
@@ -448,6 +299,7 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
         xhr.send();
     }
 
+    // Image returned from Android.
     androidToJS = function(data) {
         var file = data.file;
         myImageName = data.file;
@@ -458,64 +310,44 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
             });
             $('.original').hide();
             $('.preview').css('left', '0px');
-            //$('.cropArea').css('position', 'relative');
-            //$('.cropArea').css('left', '-100px');
-            //$('.cropArea').show();
-            $scope.crop_container_visible = true;
             $('.user_details').css('top', '-15px');
-            //$('.crop_container').css('height', '200px');
-            //$('.crop_container').css('left', '0px');
-
-
         };
-
         loadImage(file, function(result) {
             reader.readAsDataURL(result);
         });
-
     };
 
+    // Android
     var handleFileClick = function(evt) {
         if (ua === 'AndroidApp') {
             Android.choosePhoto();
-            console.log($('.crop_container').height());
             if ($('.crop_container').height() == 0) {
                 $('.user_details').css('left', '-1000px');
                 $('.crop_container').css('height', '0px');
             }
-            //resetAnimation();
         }
     };
 
+    // Web
     var handleFileSelect = function(evt) {
-
-        //resetAnimation();
         if ($('.crop_container').height() == 0) {
             $('.original').hide();
             $('.preview').css('left', '0px');
-
             $('.user_details').css('left', '-1000px');
         }
-
         var file = evt.currentTarget.files[0];
         myImageName = file.name;
         var reader = new FileReader();
         reader.onload = function(evt) {
             $scope.$apply(function($scope) {
                 $scope.myImage = evt.target.result;
-                console.log('loaded');
-                $scope.crop_container_visible = true;
                 $('.user_details').css('top', '-20px');
             });
-
-
-            //$('.crop_container').css('height', '200px');
-            // $('.crop_container').css('left', '0px');
         };
         reader.readAsDataURL(file);
     };
-
+    // Web
     angular.element(document.querySelector('#fileInput')).on('change', handleFileSelect);
+    // Android
     angular.element(document.querySelector('#fileInput')).on('click', handleFileClick);
-
 }]);

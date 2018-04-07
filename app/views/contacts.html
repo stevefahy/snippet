@@ -1,6 +1,72 @@
 <div ng-controller="contactsCtrl">
     <div class="container_cnv">
-        <div class="header_container" ng-include="'/views/header.html'"></div>
+        <div class="header_container" ng-include="'/views/header_contacts.html'"></div>
+        <div class="content_cnv transition_4" ng-class="{ 'content_conv_anim_off': hide}">
+            <div ng-repeat="contact in contacts | orderBy :'updatedAt' : true">
+                <!--
+                    <button type="button" class="btn btn-success btn-xs btn-adduser" ng-if="contact.conversation_exists" ng-click="chat(contact.conversation_id, contact, $index)">chat</button>
+                            <button type="button" class="btn btn-success btn-xs btn-adduser" ng-if="!contact.conversation_exists" ng-click="startChat([contact._id], contact, $index)">start chat</button>
+                        -->
+                <div id="conv_div" ng-click="(contact.conversation_exists) ? chat(contact.conversation_id, contact, $index) : startChat([contact._id], contact, $index)">
+                    <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
+                        <div class="convs_container">
+                            <div class="convs_a">
+                                <img ng-if="contact.avatar!='default'" alt="" ng-src="{{contact.avatar}}" class="convs_avatar" />
+                                <img ng-if="contact.avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="convs_avatar" />
+                            </div>
+                            <div class="convs_col_a">
+                                <div class="convs_b" id="convs_name">{{contact.user_name}}</div>
+                                <div class="convs_d" id="convs_msg" ng-bind-html="contact.latest_card"></div>
+                            </div>
+                            <div class="convs_col_b">
+                                <div class="convs_c badge" id="conversations_badge" ng-if="contact.new_messages > 0">{{contact.new_messages}}</div>
+                                <div class="convs_e">
+                                    <time am-time-ago="contact.updatedAt" id="time"></time>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </div>
+            </div>
+            <label>Find a user: </label>
+            <input id="search-query">
+            <!--
+            <ul class="list-group">
+                <div ng-repeat="search_result in search_results">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{search_result.user_name}}
+                        <button type="button" class="btn btn-success btn-xs btn-adduser" ng-click="addUser(search_result._id, $index)" ng-if="!search_result.is_contact">add contact</button>
+                    </li>
+                </div>
+            </ul>
+        -->
+        <div ng-repeat="search_result in search_results">
+
+            <div id="conv_div" ng-click="(contact.conversation_exists) ? chat(contact.conversation_id, contact, $index) : startChat([contact._id], contact, $index)">
+                <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
+                    <div class="convs_container">
+                        <div class="convs_a">
+                            <img ng-if="search_result.avatar!='default'" alt="" ng-src="{{search_result.avatar}}" class="convs_avatar" />
+                            <img ng-if="search_result.avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="convs_avatar" />
+                        </div>
+                        <div class="convs_col_a">
+                            <div class="convs_b" id="convs_name">{{search_result.user_name}}</div>
+                            <div class="convs_d" id="convs_msg" ng-bind-html="search_result.latest_card"></div>
+                        </div>
+                        <div class="convs_col_b">
+                            <div class="convs_c badge" id="conversations_badge" ng-if="search_result.new_messages > 0">{{search_result.new_messages}}</div>
+                            <div class="convs_e">
+                                <time am-time-ago="search_result.updatedAt" id="time"></time>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </div>
+
+        </div>
+
+        </div>
+        <!--
         <div class="content_cnv">
             <br>
             <input id="invite_email" class="form-control" type="text" ng-model="invite_input">
@@ -35,6 +101,7 @@
                 </div>
             </ul>
         </div>
+    -->
         <div ng-include src="'/views/footer.html'"></div>
     </div>
 </div>
