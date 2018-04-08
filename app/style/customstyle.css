@@ -1195,14 +1195,16 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     border-radius: 1px;
 }
 
-.content_conv_anim_off {
-    /*margin-left: calc(100vw * -1);*/
-    margin-left: calc(100vw);
-    /*height: calc(0%);*/ 
+.content_conv_100 {
+    margin-left: calc(100vw * -1);
+}
+
+.content_conv_200 {
+    margin-left: calc(200vw * -1);
 }
 
 .content_conv_search {
-    /* display: none; */
+
     position: absolute;
     width: 100vw;
     overflow-y: auto;
@@ -1212,30 +1214,12 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     top: 70px;
 }
 
-.content_conv_search_anim_on {
-     display: block; 
-    position: absolute;
-    width: 100vw;
-    overflow-y: auto;
-    overflow-x: hidden;
-    height: calc(100% - 130px);
-    border-radius: 1px;
-    /* margin-top: 70px; */
-    /* margin-bottom: 500px; */
-    top: 70px;
+.content_conv_search_100 {
+    margin-left: calc(100vw);
 }
 
-.content_conv_search_anim_off {
-     display: none; 
-    position: absolute;
-    width: 100vw;
-    overflow-y: auto;
-    overflow-x: hidden;
-    height: calc(100% - 130px);
-    border-radius: 1px;
-    /* margin-top: 70px; */
-    /* margin-bottom: 500px; */
-    top: 70px;
+.content_conv_search_200 {
+    margin-left: calc(200vw);
 }
 
 .content_conv_import {
@@ -1249,30 +1233,12 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     top: 70px;
 }
 
-.content_conv_import_anim_on {
-     display: block; 
-    position: absolute;
-    width: 100vw;
-    overflow-y: auto;
-    overflow-x: hidden;
-    height: calc(100% - 130px);
-    border-radius: 1px;
-    /* margin-top: 70px; */
-    /* margin-bottom: 500px; */
-    top: 70px;
+.content_conv_import_100 {
+    margin-left: calc(100vw);
 }
 
-.content_conv_import_anim_off {
-     display: none; 
-    position: absolute;
-    width: 100vw;
-    overflow-y: auto;
-    overflow-x: hidden;
-    height: calc(100% - 130px);
-    border-radius: 1px;
-    /* margin-top: 70px; */
-    /* margin-bottom: 500px; */
-    top: 70px;
+.content_conv_import_200 {
+    margin-left: calc(100vw * -1);
 }
 
 

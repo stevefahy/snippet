@@ -26,8 +26,9 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
     // contacts checkboxes selected
     $scope.selected = [];
 
-    $scope.search = false;
-    $scope.import = false;
+    $scope.search_sel = false;
+    $scope.import_sel = false;
+    $scope.contacts_sel = true;
 
 
     var cont = {
@@ -45,43 +46,23 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
 
 
     $scope.contactSearch = function() {
-        console.log('search');
-        //bool = !bool;
-        $scope.search = true;
-        //if (!$scope.import) {
-        $scope.hide = !$scope.hide;
-        //}
-        $scope.import = false;
-        //
-        if (!$scope.hide) {
-            $timeout(function() {
-                console.log('contacts');
-                //$('.content_conv_import_anim_on').css('display', 'none');
-                $scope.search = false;
-                $scope.import = false;
-            }, 500);
-        }
-
+        $scope.search_sel = true;
+        $scope.import_sel = false;
+        $scope.contacts_sel = false;
     };
 
     $scope.contactImport = function() {
-        console.log('import');
-        //bool = !bool;
-        $scope.import = true;
-        //if (!$scope.search) {
-        $scope.hide = !$scope.hide;
-        //}
-        $scope.search = false;
-        //
-        if (!$scope.hide) {
-            $timeout(function() {
-                console.log('contacts');
-                //$('.content_conv_import_anim_on').css('display', 'none');
-                $scope.search = false;
-                $scope.import = false;
-            }, 500);
-        }
+        $scope.search_sel = false;
+        $scope.import_sel = true;
+        $scope.contacts_sel = false;
     };
+
+    $scope.contactContacts = function() {
+        $scope.search_sel = false;
+        $scope.import_sel = false;
+        $scope.contacts_sel = true;
+    };
+
 
 
     // contact checkbox value changed
@@ -195,15 +176,18 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
 
     // load this users contacts
     loadUserContacts = function() {
+        console.log('loadUserContacts');
         // reset the contacts model
         $scope.contacts = [];
 
+        /*
         var test_num = 500;
         for (var i = 0; i < test_num; i++) {
             cont.$$hashKey = i;
             $scope.contacts.push(cont);
         }
-        /*
+        */
+        
         var result = $scope.currentUser.contacts.map(function(key, array) {
             // Search for each user in the contacts list by id
             Users.search_id(key)
@@ -244,7 +228,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
                     console.log('error: ' + error);
                 });
         });
-        */
+        
         console.log(($scope.contacts));
     };
 

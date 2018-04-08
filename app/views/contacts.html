@@ -1,7 +1,8 @@
 <div ng-controller="contactsCtrl">
     <div class="container_cnv">
         <div class="header_container" ng-include="'/views/header_contacts.html'"></div>
-        <div class="content_conv_import transition_4" ng-class="{ 'content_conv_import_anim_on': import, 'content_conv_import_anim_off': !import}">
+        <!-- IMPORT -->
+        <div class="content_conv_import transition_4" ng-class="{ 'content_conv_import_100': contacts_sel, 'content_conv_import_200': search_sel}">
             IMPORT
             <br> test
             <br> test
@@ -59,12 +60,15 @@
             <br> test
             <br> test last.
         </div>
-        <div class="content_conv_search transition_4" ng-class="{ 'content_conv_search_anim_on': search,
-        'content_conv_search_anim_off': !search}">
+        <!-- SEARCH -->
+        <div class="content_conv_search transition_4" ng-class="{ 'content_conv_search_100': import_sel,
+        'content_conv_search_200': contacts_sel}">
             SEARCH
         </div>
-        <div class="content_cnv transition_4" ng-class="{ 'content_conv_anim_off': hide}">
-            <div ng-repeat="contact in contacts | orderBy :'updatedAt' : true track by $index">
+        <!-- CONTACTS -->
+        <div class="content_cnv transition_4" ng-class="{ 'content_conv_100': import_sel,
+        'content_conv_200': search_sel}">
+            <div ng-repeat="contact in contacts">
                 <!--
                     <button type="button" class="btn btn-success btn-xs btn-adduser" ng-if="contact.conversation_exists" ng-click="chat(contact.conversation_id, contact, $index)">chat</button>
                             <button type="button" class="btn btn-success btn-xs btn-adduser" ng-if="!contact.conversation_exists" ng-click="startChat([contact._id], contact, $index)">start chat</button>
