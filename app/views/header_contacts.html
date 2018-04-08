@@ -20,15 +20,22 @@
                 <a href="" ng-click="contactImport()"><i class="material-icons" id="mi-import_contacts">&#xE0E0;</i></a>
             </div>
         -->
-            <div class="header_search">
-                <a href="" ng-click="contactContacts()">CONTACTS</a>
-                <a href="" ng-click="contactImport()">IMPORT</a>
-                <a href="" ng-click="contactSearch()">SEARCH</a>
-                <!--
-                <a href="" ng-click="contactSearch()"><i class="material-icons" id="mi-search_contacts">&#xE8B6;</i></a>-->
+        <div class="header_contacts_container">
+            <div class="header_contacts hcc">
+                <a href="" ng-click="contactContacts()"><!--<i class="material-icons" id="mi-contacts">&#xE0BA;</i>-->
+                    <i class="material-icons mi-people_contacts transition_5" ng-class="{ 'mi-people_contacts_n': !contacts_sel}" id="mi-people_contacts" >&#xE7FB;</i>
+                </a>
             </div>
+            <div class="header_import hcc">
+                <a href="" ng-click="contactImport()"><i class="material-icons mi-import_contacts transition_5" ng-class="{ 'mi-import_contacts_n': !import_sel}" id="mi-import_contacts">&#xE0E0;</i></a>
+            </div>
+            <div class="header_search hcc">
+                <a href="" ng-click="contactSearch()"><i class="material-icons mi-search_contacts transition_5" ng-class="{ 'mi-search_contacts_n': !search_sel}" id="mi-search_contacts">&#xE8B6;</i></a>
+            </div>
+            <!--
+                <a href="" ng-click="contactSearch()"><i class="material-icons" id="mi-search_contacts">&#xE8B6;</i></a>-->
         </div>
-         
     </div>
-    <div class="header_bottom"></div>
+</div>
+<div class="header_bottom"></div>
 </div>

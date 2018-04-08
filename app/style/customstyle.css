@@ -229,6 +229,7 @@ hr {
 
 
 
+
 /* HEADER */
 
 .header {
@@ -299,6 +300,7 @@ hr {
 
 
 
+
 /* HEADER SETTINGS */
 
 .header_decide {
@@ -337,21 +339,37 @@ hr {
     font-weight: 900;
 }
 
-#mi-import_contacts {
+.mi-import_contacts {
     color: green;
     font-size: 30px !important;
     font-weight: 900;
 }
 
-.header_search {
-    z-index: 2000;
+.mi-import_contacts_n {
+    color: lightgrey;
 }
 
-.header_import {
-    z-index: 2000;
+.mi-people_contacts {
+    color: green;
+    font-size: 30px !important;
+    font-weight: 900;
 }
 
-#mi-search_contacts {
+.mi-people_contacts_n {
+    color: lightgrey;
+}
+
+.mi-search_contacts {
+    color: green;
+    font-size: 30px !important;
+    font-weight: 900;
+}
+
+.mi-search_contacts_n {
+    color: lightgrey;
+}
+
+#mi-contacts {
     color: green;
     font-size: 30px !important;
     font-weight: 900;
@@ -416,12 +434,6 @@ hr {
 
 
 
-
-
-
-
-
-
 /* HEADER CONV */
 
 .header_conv_name {
@@ -444,6 +456,30 @@ hr {
 }
 
 
+
+/* HEADER CONTACTS */
+
+.header_contacts_container {
+    z-index: 2000;
+    display: flex;
+    flex-direction: row;
+    margin-left: auto;
+    min-width: 90px;
+    width: 50%;
+    max-width: 200px;
+}
+
+.hcc {}
+
+.header_contacts {
+    flex: 1;
+}
+
+.header_import {
+    flex: 1;
+}
+
+.header_search {}
 
 
 
@@ -515,6 +551,7 @@ hr {
 .material-icons.md-36 {
     font-size: 36px;
 }
+
 
 
 
@@ -601,6 +638,7 @@ hr {
     margin-left: auto;
     left: 90px;
 }
+
 
 
 
@@ -754,6 +792,7 @@ div#user {
 
 
 
+
 /* EDIT MENU */
 
 
@@ -771,10 +810,12 @@ div#user {
 
 
 
+
 /* Dropdown button on hover & focus */
 
 .dropbtn:hover,
 .dropbtn:focus {}
+
 
 
 
@@ -787,6 +828,7 @@ div#user {
     position: relative;
     display: inline-block;
 }
+
 
 
 
@@ -818,6 +860,7 @@ div#user {
 
 
 
+
 /* Links inside the dropdown */
 
 .dropdown-content div {
@@ -833,11 +876,13 @@ div#user {
 
 
 
+
 /* Change color of dropdown links on hover */
 
 .dropdown-content a:hover {
     background-color: #f1f1f1
 }
+
 
 
 
@@ -988,7 +1033,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 .convs_col_b {
     margin-right: auto;
     text-align: right;
-    align-self: flex-end;
+    align-self: center;
 }
 
 .convs_a {
@@ -1137,8 +1182,13 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 }
 
 .transition_4 {
-    -webkit-transition: all .4s cubic-bezier(.4, 0, .2, 1);
-    transition: all .4s cubic-bezier(.4, 0, .2, 1);
+    -webkit-transition: all .3s cubic-bezier(.4, 0, .2, 1);
+    transition: all .3s cubic-bezier(.4, 0, .2, 1);
+}
+
+.transition_5 {
+    -webkit-transition: all .5s cubic-bezier(.4, 0, .2, 1);
+    transition: all .5s cubic-bezier(.4, 0, .2, 1);
 }
 
 #mi-send {
@@ -1286,4 +1336,12 @@ span#scroll_image_latest {
     position: fixed;
     width: 100%;
     height: 100%;
+}
+
+
+/* CONTACTS */
+
+#mi-add_circle_outline {
+    color: green;
+    font-size: 30px !important;
 }

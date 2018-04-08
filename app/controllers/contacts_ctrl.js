@@ -91,6 +91,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
 
     // Continue a conversation by conversation id
     $scope.chat = function(conversation_id, contact, index) {
+        console.log('Chat');
         var profile_obj = {};
         profile_obj.user_name = contact.user_name;
         profile_obj.avatar = contact.avatar;
@@ -102,6 +103,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
     // TODO - make sure two users cannot create a chat simultanously
     // TODO - make sure only one chat created with aother single user.
     $scope.startChat = function(new_participants, contact) {
+        console.log('startChat');
         var profile_obj = {};
         profile_obj.user_name = contact.user_name;
         profile_obj.avatar = contact.avatar;
@@ -130,8 +132,34 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
             });
     };
 
+    $scope.checkChat = function(user, index) {
+        console.log('checkchat');
+        console.log(user);
+        console.log(user.conversation_exists);
+        console.log(user.conversation_id);
+
+        if (user.conversation_exists) {
+            $scope.chat(user.conversation_id, user, index);
+        }
+
+        // res.conversation_exists = true;
+        //res.conversation_id = key._id;
+        /*
+        if (General.findWithAttr(key.participants, '_id', res.data.success._id) >= 0) {
+            // set conversation_exists and conversation_id for the contacts
+            res.data.success.conversation_exists = true;
+            res.data.success.conversation_id = key._id;
+        }
+        */
+
+    };
+
     // add a user to the current users contact list
-    $scope.addUser = function(id, index) {
+    $scope.addUser = function(id, index, event) {
+
+        event.stopPropagation();
+        console.log('addUser');
+        
         Users.add_contact(id)
             .then(function(res) {
                 // Update the currentUser model
@@ -141,17 +169,22 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
                 // re-load the user contacts
                 loadUserContacts();
             });
+            
     };
 
     // check whether the search result is already a contact
     $scope.checkIfContact = function(result) {
+        console.log('check result id: ' + result);
+        console.log($scope.contacts);
         // if the result is the current user
         if (result === $scope.currentUser._id) {
+            console.log('currentUser');
             return true;
         }
         // loop through the current users contact list
         for (var i = 0; i < $scope.contacts.length; i++) {
             // Check whether already a contact
+            console.log($scope.contacts[i]._id + ' ==? ' + result);
             if ($scope.contacts[i]._id === result) {
                 // already a contact
                 return true;
@@ -187,7 +220,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
             $scope.contacts.push(cont);
         }
         */
-        
+
         var result = $scope.currentUser.contacts.map(function(key, array) {
             // Search for each user in the contacts list by id
             Users.search_id(key)
@@ -228,7 +261,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
                     console.log('error: ' + error);
                 });
         });
-        
+
         console.log(($scope.contacts));
     };
 
@@ -252,13 +285,40 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
                         // Map response values to field label and value
                         response($.map(data, function(res) {
                             // check if this user is already a contact
-                            var isConttact = $scope.checkIfContact(res._id);
-                            if ($scope.checkIfContact(res._id)) {
-                                res.is_contact = true;
+                            //var isConttact = $scope.checkIfContact(res._id);
+                            // Do not list current user
+                            if (res._id != $scope.currentUser._id) {
+
+
+                                if ($scope.checkIfContact(res._id)) {
+                                    res.is_contact = true;
+                                }
+                                //
+                                // Check if individual conversation already created with this contact
+                                // Get all coversations containing current user.
+                                $http.get("/chat/conversation").then(function(result) {
+                                    result.data.map(function(key, array) {
+                                        // check that this is a two person chat.
+                                        // Groups of three or more are loaded in conversations.html
+                                        if (key.participants.length === 2) {
+                                            // Check that current user is a participant of this conversation
+                                            //var conversation_pos = General.findWithAttr(res.data, '_id', msg.conversation_id);
+                                            if (General.findWithAttr(key.participants, '_id', res._id) >= 0) {
+                                                // set conversation_exists and conversation_id for the contacts
+                                                res.conversation_exists = true;
+                                                res.conversation_id = key._id;
+                                            }
+                                        }
+                                    });
+                                });
+                                //
+                                // populate search_results array with found users
+                                //console.log(res);
+
+                                $scope.search_results.push(res);
+                                $scope.$apply();
                             }
-                            // populate search_results array with found users
-                            $scope.search_results.push(res);
-                            $scope.$apply();
+
                         }));
                     }
                 });
