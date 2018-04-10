@@ -31,6 +31,8 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
     $scope.contacts_sel = true;
 
 
+
+
     var cont = {
         avatar: "fileuploads/images/img_20180406_1523047577836.jpg",
         contacts: [],
@@ -68,7 +70,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
         $scope.group_selected = true;
         console.log('selectGroup');
         // $('#add_goup_button').css('cursor', 'auto');
-        $('.contact_div').css('cursor', 'auto');
+        //$('.contact_div').css('cursor', 'auto');
         //$('#search-query-group').css('display', 'block');
     };
 
@@ -104,6 +106,27 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
             $scope.startChat([contact._id], contact, $index);
         }
     };
+
+    $scope.doSelect = function(contact, $index) {
+        console.log('doSelect: ' + contact._id);
+        //$scope.selected.push(contact._id);
+
+        //contact.item_selected = true;
+        contact.item_selected = !contact.item_selected;
+        //var index = $scope.selected.indexOf(contact._id);
+
+        var index = General.findWithAttr($scope.selected, '_id', contact._id);
+        console.log(index);
+        if (contact.item_selected && index < 0) {
+            // selected. Add to the selected array if not already there.
+            $scope.selected.push(contact);
+            // deselected. Remove from the selected array if already there.
+        } else if (!contact.item_selected && index >= 0) {
+            $scope.selected.splice(index, 1);
+        }
+        console.log($scope.selected);
+    };
+
     // Continue a conversation by conversation id
     $scope.chat = function(conversation_id, contact, index) {
         console.log('Chat');

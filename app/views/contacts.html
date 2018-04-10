@@ -63,43 +63,92 @@
         <!-- CONTACTS -->
         <div class="content_cnv_top transition_4" ng-class="{ 'content_conv_100': import_sel,
         'content_conv_200': search_sel}">
+            <!---->
+            <!-- CONTACTS GROUP -->
+            <!---->
             <div class="contact_div" ng-click="group_selected || selectGroup()">
-                <div id="add_goup_button" >
-                <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
-                    <div class="convs_container contacts_search_container">
-                        <div class="convs_a">
-                            <i class="material-icons convs_avatar" id="mi-group_add">&#xE7F0;</i>
+                <div id="add_goup_button">
+                    <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
+                        <div class="convs_container contacts_search_container">
+                            <div class="convs_a">
+                                <i class="material-icons convs_avatar" id="mi-group_add">&#xE7F0;</i>
+                            </div>
+                            <div class="contacts_search_header transition_4" id="group_name" ng-class="{'contacts_search_header_off': group_selected}">NEW GROUP</div>
+                            <!--<div class="contacts_search_header" id="group_name">GROUP NAME</div>-->
+                            <div class="contacts_search_input transition_4" ng-class="{'contacts_search_input_on': group_selected}">
+                                <!-- <input id="contacts_cb" type="checkbox" ng-model="selection[$index]['value']" ng-change="checkBoxChange(contact._id, selection[$index]['value'])">-->
+                                <input placeholder=" Type name..." id="search-query-group" class="contacts_search_group transition_4" ng-class="{'contacts_search_group_on': group_selected}">
+                            </div>
                         </div>
-                        <div class="contacts_search_header transition_4" id="group_name" ng-class="{'contacts_search_header_off': group_selected}">NEW GROUP</div>
-                        <!--<div class="contacts_search_header" id="group_name">GROUP NAME</div>-->
-                        <div class="contacts_search_input transition_4" ng-class="{'contacts_search_input_on': group_selected}">
-                            <!-- <input id="contacts_cb" type="checkbox" ng-model="selection[$index]['value']" ng-change="checkBoxChange(contact._id, selection[$index]['value'])">-->
-                            <input placeholder=" Type name..." id="search-query-group" class="contacts_search_group transition_4" ng-class="{'contacts_search_group_on': group_selected}">
+                    </li>
+                </div>
+            </div>
+            <!---->
+            <!-- SELECTED CONTACTS -->
+            <!---->
+            <div class="contact_div contact_div_selected_members transition_4" ng-class="{'contact_div_selected_members_selected': group_selected}">
+                <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
+                    <div class="convs_container contacts_selected_container">
+                        <div class="convs_a_selected">
+                            <!--
+                            <div class="contact_selected">
+                                <img alt="" ng-src="/assets/images/default_avatar.jpg" class="convs_avatar_selected" />
+                                <div class="done_contacts_added">
+                                    <i class="material-icons" id="mi-clear_contacts_bg">&#xE14C;</i>
+                                    <i class="material-icons" id="mi-clear_contacts">&#xE14C;</i>
+                                </div>
+                                <div class="contact_selected_name">Lets try a long name</div>
+                            </div>
+                            <div class="contact_selected">
+                                <img alt="" ng-src="/assets/images/default_avatar.jpg" class="convs_avatar_selected" />
+                                <div class="done_contacts_added">
+                                    <i class="material-icons" id="mi-clear_contacts_bg">&#xE14C;</i>
+                                    <i class="material-icons" id="mi-clear_contacts">&#xE14C;</i>
+                                </div>
+                                <div class="contact_selected_name">Lets try a long name</div>
+                            </div>
+                        -->
+                            <!---->
+                            <!-- REPEAT SELECTED -->
+                            <!---->
+                            <div ng-repeat="select in selected">
+                                <div class="contact_selected">
+                                    <!--<img alt="" ng-src="/assets/images/default_avatar.jpg" class="convs_avatar_selected" />-->
+                                    <img ng-if="select.avatar!='default'" alt="" ng-src="{{select.avatar}}" class="convs_avatar_selected" />
+                                    <img ng-if="select.avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="convs_avatar_selected" />
+                                    <div class="done_contacts_added">
+                                        <i class="material-icons" id="mi-clear_contacts_bg">&#xE14C;</i>
+                                        <i class="material-icons" id="mi-clear_contacts">&#xE14C;</i>
+                                    </div>
+                                    <div class="contact_selected_name">{{select.user_name}}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </li>
             </div>
-            </div>
+            <!---->
+            <!-- SCROLLABLE CONTACTS -->
+            <!---->
             <div class="content_cnv_scroll">
                 <div ng-repeat="contact in contacts | orderBy:'user_name'">
-                    <div  class="contact_div" ng-click="group_selected || doChat(contact, $index)">
+                    <div class="contact_div" ng-click="group_selected ? doSelect(contact, $index) : doChat(contact, $index)">
                         <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
                             <div class="convs_container">
                                 <div class="convs_a">
-
                                     <img ng-if="contact.avatar!='default'" alt="" ng-src="{{contact.avatar}}" class="convs_avatar" />
                                     <img ng-if="contact.avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="convs_avatar" />
-                                     <div class="done_contacts">
+                                    <div class="done_contacts transition_4" ng-class="{'done_contacts_selected': contact.item_selected}">
                                         <i class="material-icons" id="mi-done_contacts_bg">&#xE876;</i>
                                         <i class="material-icons" id="mi-done_contacts">&#xE876;</i>
-                                 </div>
+                                    </div>
                                 </div>
                                 <div class="convs_col_a">
                                     <div class="convs_b" id="convs_name">{{contact.user_name}}</div>
                                     <div class="convs_d" id="convs_msg" ng-bind-html="contact.latest_card"></div>
                                 </div>
                                 <div class="convs_col_b">
-                                    <input id="contacts_cb" type="checkbox" ng-model="selection[$index]['value']" ng-change="checkBoxChange(contact._id, selection[$index]['value'])">
+                                    <!--<input id="contacts_cb" type="checkbox" ng-model="selection[$index]['value']" ng-change="checkBoxChange(contact._id, selection[$index]['value'])">-->
                                     <!--<input type="checkbox" name="">-->
                                 </div>
                             </div>

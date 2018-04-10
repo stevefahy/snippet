@@ -230,6 +230,7 @@ hr {
 
 
 
+
 /* HEADER */
 
 .header {
@@ -289,6 +290,7 @@ hr {
     box-shadow: rgba(0, 0, 0, 0.14) 0px 4px 5px 0px, ;
     box-shadow: rgba(0, 0, 0, 0.14) 0px 4px 5px 0px, rgba(0, 0, 0, 0.12) 0px 1px 10px 0px, rgba(0, 0, 0, 0.2) 0px 2px 4px -1px;
 }
+
 
 
 
@@ -434,6 +436,7 @@ hr {
 
 
 
+
 /* HEADER CONV */
 
 .header_conv_name {
@@ -454,6 +457,7 @@ hr {
     padding-right: 5px;
     z-index: 2000;
 }
+
 
 
 
@@ -480,6 +484,7 @@ hr {
 }
 
 .header_search {}
+
 
 
 
@@ -551,6 +556,7 @@ hr {
 .material-icons.md-36 {
     font-size: 36px;
 }
+
 
 
 
@@ -638,6 +644,7 @@ hr {
     margin-left: auto;
     left: 90px;
 }
+
 
 
 
@@ -793,6 +800,7 @@ div#user {
 
 
 
+
 /* EDIT MENU */
 
 
@@ -803,6 +811,7 @@ div#user {
     border: none;
     cursor: pointer;
 }
+
 
 
 
@@ -822,12 +831,14 @@ div#user {
 
 
 
+
 /* The container <div> - needed to position the dropdown content */
 
 .dropdown {
     position: relative;
     display: inline-block;
 }
+
 
 
 
@@ -861,6 +872,7 @@ div#user {
 
 
 
+
 /* Links inside the dropdown */
 
 .dropdown-content div {
@@ -877,11 +889,13 @@ div#user {
 
 
 
+
 /* Change color of dropdown links on hover */
 
 .dropdown-content a:hover {
     background-color: #f1f1f1
 }
+
 
 
 
@@ -1246,20 +1260,21 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 }
 
 .content_cnv_top {
-width: 100vw;
+    width: 100vw;
     overflow-y: hidden;
     overflow-x: hidden;
     height: calc(100%);
     border-radius: 1px;
 }
-.content_cnv_scroll{ 
+
+.content_cnv_scroll {
     /* height: 100%; */
     width: 100vw;
     overflow-y: auto;
     overflow-x: hidden;
-        height: calc(100% - 76px);
+    height: calc(100% - 76px);
     border-radius: 1px;
-    }
+}
 
 .content_conv_100 {
     /*margin-left: calc(100vw * -1);*/
@@ -1267,8 +1282,8 @@ width: 100vw;
 }
 
 .content_conv_200 {
-   /* margin-left: calc(200vw * -1);*/
-   margin-left: -200vw;
+    /* margin-left: calc(200vw * -1);*/
+    margin-left: -200vw;
 }
 
 .content_conv_search {
@@ -1361,6 +1376,7 @@ span#scroll_image_latest {
 }
 
 
+
 /* CONTACTS */
 
 #mi-add_circle_outline {
@@ -1368,7 +1384,7 @@ span#scroll_image_latest {
     font-size: 30px !important;
 }
 
-#mi-group_add{
+#mi-group_add {
     color: #FFFFFF;
     font-size: 40px !important;
     font-weight: 900;
@@ -1379,14 +1395,12 @@ span#scroll_image_latest {
     padding-top: 8px;
     padding-left: 8px;
     /* margin-bottom: auto; */
-        margin-top: 6px;
+    margin-top: 6px;
 }
 
-.contacts_search_container{
+.contacts_search_container {}
 
-}
-
-.contacts_search_header{
+.contacts_search_header {
     position: relative;
     margin-right: 10px;
     color: #000000;
@@ -1394,60 +1408,75 @@ span#scroll_image_latest {
     font-weight: 500;
 }
 
-.contacts_search_header_off{
-    
-}
+.contacts_search_header_off {}
 
-.contacts_search_container{
+.contacts_search_container {
     align-items: center;
 }
 
 .contacts_search_input {
-    
+
     flex: 1;
 }
 
 .contacts_search_input_on {
-    
+
     flex: 1;
 }
 
-#search-query{
-       max-width: 200px;
+#search-query {
+    max-width: 200px;
     width: 100%;
 }
 
-.conv_div_add_group{
-
-}
+.conv_div_add_group {}
 
 #add_goup_button {
-   /* cursor: pointer;*/
+    /* cursor: pointer;*/
 }
 
-.contact_div{
+.contact_div {
     cursor: pointer;
 }
 
 .contacts_search_group {
-     width:0px;
-         border-style: solid;
+    width: 0px;
+    border-style: solid;
     border-color: #ffffff;
-
 }
 
 .contacts_search_group_on {
-     width:200px;
-         border-color: lightgray;
+    width: 200px;
+    border-color: lightgray;
 }
 
-.done_contacts{
-    /* display: none; */
+.done_contacts {
+   
     position: relative;
     /* margin-top: -22px; */
     /* left: 20px; */
     left: 42px;
     top: -27px;
+     margin-left: -50px; 
+     opacity: 0;
+    /* margin-top: 36px; */
+}
+
+.done_contacts_selected {
+    /* width: auto; */
+    margin-left: 0px;
+    /* width: auto; */
+    /* background-color: rgba(255,255,255,1); */
+    opacity: 1;
+}
+
+.done_contacts_added {
+    /* display: none; */
+    position: relative;
+    /* margin-top: -22px; */
+    left: 20px;
+    left: 28px;
+    top: -24px;
     /* margin-left: 43px; */
     /* margin-top: 36px; */
 }
@@ -1482,5 +1511,111 @@ span#scroll_image_latest {
     top: 2px;
 }
 
+#mi-clear_contacts {
+    position: relative;
+    color: white;
+    font-size: 14px !important;
+    font-weight: 900;
+    border-radius: 50%;
+    background-color: brown;
+    z-index: 10000000;
+    padding: 4px;
+    margin-left: -30px;
+    top: 0px;
+}
 
 
+#mi-clear_contacts_bg {
+    position: relative;
+    color: green;
+    font-size: 18px !important;
+    font-weight: 900;
+    border-radius: 50%;
+    background-color: white;
+    z-index: 10000000;
+    padding: 4px;
+    /* margin-left: -43px; */
+    /* z-index: -1; */
+    left: -2px;
+    top: 2px;
+}
+
+.convs_avatar_selected {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    cursor: pointer;
+    -webkit-box-flex: 0;
+    -webkit-flex: 0 0 auto;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    overflow: hidden;
+    position: relative;
+    margin-right: 15px;
+    border: 1px solid #9E9E9E;
+}
+
+.convs_a_selected {
+    display: flex;
+}
+
+.contacts_selected_container {
+    height: 50px;
+}
+
+.contact_selected_name {
+   flex: none;
+    /* clear: both; */
+    position: relative;
+    bottom: 27px;
+    font-size: 12px;
+    /* overflow-x: hidden; */
+    /* overflow-y: hidden; */
+    /* overflow: hidden; */
+    /* text-overflow: clip; */
+    /* height: 10px; */
+    /* width: 48px; */
+    word-wrap: ;
+    /* word-break: break-word; */
+    /* word-wrap: break-word; */
+    /* border: 1px solid blue; */
+    /* width: 70px; */
+    /* height: 71px; */
+    /* overflow: hidden; */
+    /* white-space: nowrap; */
+    /* text-overflow: clip; */
+    /* height: 210px; */
+    /* overflow: hidden; */
+    /* width: 100%; */
+    /* word-wrap: break-word; */
+    /* width: 58px; */
+    /* overflow: hidden; */
+    /* height: 22px; */
+    /* line-height: 100; */
+    white-space: nowrap;
+    width: 55px;
+    overflow: hidden;
+    /* text-overflow: clip; */
+    /* border: 1px solid #000000; */
+}
+
+.contact_selected {
+    display: flex;
+    flex-direction: column;
+    /*width: 70px;*/
+    padding-right: 10px;
+}
+
+.contact_div_selected_members{
+        overflow-y: hidden;
+     overflow-x: auto; 
+     height: 0px;
+     cursor: auto;
+}
+
+
+.contact_div_selected_members_selected{
+     height:75px;
+}
