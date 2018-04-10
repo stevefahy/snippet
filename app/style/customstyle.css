@@ -1619,3 +1619,28 @@ span#scroll_image_latest {
 .contact_div_selected_members_selected{
      height:75px;
 }
+
+.contact_select{
+   position: relative;
+}
+
+.contact_select.ng-move,
+.contact_select.ng-enter,
+.contact_select.ng-leave {
+  -webkit-transition:all linear 0.5s;
+  transition:all linear 0.5s;
+}
+
+.contact_select.ng-leave.ng-leave-active,
+.contact_select.ng-move,
+.contact_select.ng-enter {
+    left: -100px;
+  opacity:0;
+}
+
+.contact_select.ng-leave,
+.contact_select.ng-move.ng-move-active,
+.contact_select.ng-enter.ng-enter-active {
+    left: 0px;
+  opacity:1;
+}
