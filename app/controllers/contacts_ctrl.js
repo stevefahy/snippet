@@ -63,7 +63,14 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
         $scope.contacts_sel = true;
     };
 
-
+    $scope.group_selected = false;
+    $scope.selectGroup = function() {
+        $scope.group_selected = true;
+        console.log('selectGroup');
+        // $('#add_goup_button').css('cursor', 'auto');
+        $('.contact_div').css('cursor', 'auto');
+        //$('#search-query-group').css('display', 'block');
+    };
 
     // contact checkbox value changed
     $scope.checkBoxChange = function(checkbox, value) {
@@ -75,6 +82,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
         } else if (value === false && index >= 0) {
             $scope.selected.splice(index, 1);
         }
+        console.log($scope.selected);
     };
 
     // Start a conversation
@@ -89,6 +97,13 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
         loadUserContacts();
     });
 
+    $scope.doChat = function(contact, $index) {
+        if (contact.conversation_exists) {
+            $scope.chat(contact.conversation_id, contact, $index);
+        } else {
+            $scope.startChat([contact._id], contact, $index);
+        }
+    };
     // Continue a conversation by conversation id
     $scope.chat = function(conversation_id, contact, index) {
         console.log('Chat');
@@ -159,7 +174,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
 
         event.stopPropagation();
         console.log('addUser');
-        
+
         Users.add_contact(id)
             .then(function(res) {
                 // Update the currentUser model
@@ -169,7 +184,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
                 // re-load the user contacts
                 loadUserContacts();
             });
-            
+
     };
 
     // check whether the search result is already a contact

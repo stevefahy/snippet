@@ -36,81 +36,22 @@
                     </div>
                 </li>
             </div>
-            <!--
-            <ul class="list-group">
-                <div ng-repeat="search_result in search_results">
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        {{search_result.user_name}}
-                        <button type="button" class="btn btn-success btn-xs btn-adduser" ng-click="addUser(search_result._id, $index)" ng-if="!search_result.is_contact">add contact</button>
-                    </li>
-                </div>
-            </ul>
-        -->
-            <div ng-repeat="search_result in search_results">
-                <div id="conv_div" ng-click="checkChat(search_result, $index)">
-                    <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
-                        <div class="convs_container">
-                            <div class="convs_a">
-                                <img ng-if="search_result.avatar!='default'" alt="" ng-src="{{search_result.avatar}}" class="convs_avatar" />
-                                <img ng-if="search_result.avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="convs_avatar" />
-                            </div>
-                            <div class="convs_col_a">
-                                <div class="convs_b" id="convs_name">{{search_result.user_name}}</div>
-                                <div class="convs_d" id="convs_msg" ng-bind-html="search_result.latest_card"></div>
-                            </div>
-                            <div class="convs_col_b">
-                                <div ng-if="!search_result.is_contact" ng-click="addUser(search_result._id, $index, $event)">
-                                    <i class="material-icons" id="mi-add_circle_outline">&#xE148;</i>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                </div>
-            </div>
-        </div>
-        <!-- CONTACTS -->
-        <div class="content_cnv_top transition_4" ng-class="{ 'content_conv_100': import_sel,
-        'content_conv_200': search_sel}">
-            <div id="conv_div_add_group">
-                <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
-                    <div class="convs_container contacts_search_container">
-                        <div class="convs_a">
-                            <!--
-                                <img ng-if="conversation.avatar!='default'" alt="" ng-src="{{conversation.avatar}}" class="convs_avatar" />
-                                <img ng-if="conversation.avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="convs_avatar" />
--->
-                            <i class="material-icons convs_avatar" id="mi-group_add">&#xE7F0;</i>
-                        </div>
-                        <div class="contacts_search_header">GROUP NAME</div>
-                        <div class="contacts_search_input">
-                            <input id="search-querya">
-                        </div>
-                    </div>
-                </li>
-            </div>
-            <!-- <div class="content_cnv transition_4" ng-class="{ 'content_conv_100': import_sel,
-        'content_conv_200': search_sel}"> -->
             <div class="content_cnv_scroll">
-                <div ng-repeat="contact in contacts | orderBy:'user_name'">
-                    <!--
-                    <button type="button" class="btn btn-success btn-xs btn-adduser" ng-if="contact.conversation_exists" ng-click="chat(contact.conversation_id, contact, $index)">chat</button>
-                            <button type="button" class="btn btn-success btn-xs btn-adduser" ng-if="!contact.conversation_exists" ng-click="startChat([contact._id], contact, $index)">start chat</button>
-                        -->
-                    <div id="conv_div" ng-click="(contact.conversation_exists) ? chat(contact.conversation_id, contact, $index) : startChat([contact._id], contact, $index)">
+                <div ng-repeat="search_result in search_results">
+                    <div id="conv_div" ng-click="checkChat(search_result, $index)">
                         <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
                             <div class="convs_container">
                                 <div class="convs_a">
-                                    <img ng-if="contact.avatar!='default'" alt="" ng-src="{{contact.avatar}}" class="convs_avatar" />
-                                    <img ng-if="contact.avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="convs_avatar" />
+                                    <img ng-if="search_result.avatar!='default'" alt="" ng-src="{{search_result.avatar}}" class="convs_avatar" />
+                                    <img ng-if="search_result.avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="convs_avatar" />
                                 </div>
                                 <div class="convs_col_a">
-                                    <div class="convs_b" id="convs_name">{{contact.user_name}}</div>
-                                    <div class="convs_d" id="convs_msg" ng-bind-html="contact.latest_card"></div>
+                                    <div class="convs_b" id="convs_name">{{search_result.user_name}}</div>
+                                    <div class="convs_d" id="convs_msg" ng-bind-html="search_result.latest_card"></div>
                                 </div>
                                 <div class="convs_col_b">
-                                    <div class="convs_c badge" id="conversations_badge" ng-if="contact.new_messages > 0">{{contact.new_messages}}</div>
-                                    <div class="convs_e">
-                                        <time am-time-ago="contact.updatedAt" id="time"></time>
+                                    <div ng-if="!search_result.is_contact" ng-click="addUser(search_result._id, $index, $event)">
+                                        <i class="material-icons" id="mi-add_circle_outline">&#xE148;</i>
                                     </div>
                                 </div>
                             </div>
@@ -118,42 +59,55 @@
                     </div>
                 </div>
             </div>
-            <!--
-        <div class="content_cnv">
-            <br>
-            <input id="invite_email" class="form-control" type="text" ng-model="invite_input">
-            <button id="invite_button" type="submit" class="btn btn-sm btn-warning" ng-click="inviteUser(invite_input)">Invite</button>
-            <br>
-            <br>
-            <ul class="list-group">
-                <form>
-                    <div ng-repeat="contact in contacts">
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            {{contact.google.name}}
-                            <button type="button" class="btn btn-success btn-xs btn-adduser" ng-if="contact.conversation_exists" ng-click="chat(contact.conversation_id, contact, $index)">chat</button>
-                            <button type="button" class="btn btn-success btn-xs btn-adduser" ng-if="!contact.conversation_exists" ng-click="startChat([contact._id], contact, $index)">start chat</button>
-                            <input id="contacts_cb" type="checkbox" ng-model="selection[$index]['value']" ng-change="checkBoxChange(contact._id, selection[$index]['value'])">
+        </div>
+        <!-- CONTACTS -->
+        <div class="content_cnv_top transition_4" ng-class="{ 'content_conv_100': import_sel,
+        'content_conv_200': search_sel}">
+            <div class="contact_div" ng-click="group_selected || selectGroup()">
+                <div id="add_goup_button" >
+                <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
+                    <div class="convs_container contacts_search_container">
+                        <div class="convs_a">
+                            <i class="material-icons convs_avatar" id="mi-group_add">&#xE7F0;</i>
+                        </div>
+                        <div class="contacts_search_header transition_4" id="group_name" ng-class="{'contacts_search_header_off': group_selected}">NEW GROUP</div>
+                        <!--<div class="contacts_search_header" id="group_name">GROUP NAME</div>-->
+                        <div class="contacts_search_input transition_4" ng-class="{'contacts_search_input_on': group_selected}">
+                            <!-- <input id="contacts_cb" type="checkbox" ng-model="selection[$index]['value']" ng-change="checkBoxChange(contact._id, selection[$index]['value'])">-->
+                            <input placeholder=" Type name..." id="search-query-group" class="contacts_search_group transition_4" ng-class="{'contacts_search_group_on': group_selected}">
+                        </div>
+                    </div>
+                </li>
+            </div>
+            </div>
+            <div class="content_cnv_scroll">
+                <div ng-repeat="contact in contacts | orderBy:'user_name'">
+                    <div  class="contact_div" ng-click="group_selected || doChat(contact, $index)">
+                        <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
+                            <div class="convs_container">
+                                <div class="convs_a">
+
+                                    <img ng-if="contact.avatar!='default'" alt="" ng-src="{{contact.avatar}}" class="convs_avatar" />
+                                    <img ng-if="contact.avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="convs_avatar" />
+                                     <div class="done_contacts">
+                                        <i class="material-icons" id="mi-done_contacts_bg">&#xE876;</i>
+                                        <i class="material-icons" id="mi-done_contacts">&#xE876;</i>
+                                 </div>
+                                </div>
+                                <div class="convs_col_a">
+                                    <div class="convs_b" id="convs_name">{{contact.user_name}}</div>
+                                    <div class="convs_d" id="convs_msg" ng-bind-html="contact.latest_card"></div>
+                                </div>
+                                <div class="convs_col_b">
+                                    <input id="contacts_cb" type="checkbox" ng-model="selection[$index]['value']" ng-change="checkBoxChange(contact._id, selection[$index]['value'])">
+                                    <!--<input type="checkbox" name="">-->
+                                </div>
+                            </div>
                         </li>
                     </div>
-                </form>
-            </ul>
-            <br>
-            <input type="text" value="enter group" ng-if="selected.length > 1" ng-model="chat_create.conversation_name" />
-            <br ng-if="selected.length > 1">
-            <input type="submit" value="Save" ng-if="selected.length > 1" ng-click="selectedUsers(contact)" />
-            <br ng-if="selected.length > 1">
-            <label>Find a user: </label>
-            <input id="search-query">
-            <ul class="list-group">
-                <div ng-repeat="search_result in search_results">
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        {{search_result.user_name}}
-                        <button type="button" class="btn btn-success btn-xs btn-adduser" ng-click="addUser(search_result._id, $index)" ng-if="!search_result.is_contact">add contact</button>
-                    </li>
                 </div>
-            </ul>
+            </div>
         </div>
-    -->
-            <div ng-include src="'/views/footer.html'"></div>
-        </div>
+        <div ng-include src="'/views/footer.html'"></div>
     </div>
+</div>
