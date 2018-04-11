@@ -1205,6 +1205,12 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     transition: all .5s cubic-bezier(.4, 0, .2, 1);
 }
 
+
+.transition_6 {
+    -webkit-transition: all .3s cubic-bezier(.4, 0, .2, 1);
+    transition: all .3s cubic-bezier(.4, 0, .2, 1);
+}
+
 #mi-send {
     color: white;
     font-size: 26px;
@@ -1602,8 +1608,8 @@ span#scroll_image_latest {
 }
 
 .contact_selected {
-    display: flex;
-    flex-direction: column;
+    /*display: flex;
+    flex-direction: column;*/
     /*width: 70px;*/
     padding-right: 10px;
 }
@@ -1622,25 +1628,90 @@ span#scroll_image_latest {
 
 .contact_select{
    position: relative;
+   left:0px;
+   /*opacity: 1;*/
+       z-index: 1;
 }
+.contact_select.ng-enter{
+    left: -200px;
+}
+.contact_select.ng-enter-active{
+    left: 0px;
+}
+/*
+.contact_select.ng-leave-active {
+left: -200px;
+    }
+    */
 
 .contact_select.ng-move,
 .contact_select.ng-enter,
 .contact_select.ng-leave {
-  -webkit-transition:all linear 0.5s;
-  transition:all linear 0.5s;
+  -webkit-transition:all linear .3s;
+  transition:all linear .3s;
 }
+/*
+.contact_select.ng-enter,
+.contact_select.ng-leave.ng-leave-active{
+top:65px;
+}
+
+.contact_select.ng-leave,
+.contact_select.ng-enter.ng-enter-active {
+top:0px;
+}
+
+.contact_select.ng-leave,
+.contact_select.ng-enter.ng-remove-active {
+
+
+}
+*/
+/*
+.contact_select_reorder-add-active {
+    background-color: #000000;
+    left: -65px;
+}
+
+.contact_select_reorder-remove-active {
+    background-color: red;
+    left:0px;
+}
+*/
+/*
+.contact_select.ng-leave {
+  transition:5s linear all;
+  opacity: 0;
+}
+*/
+
+.contact_select_reorder{
+       
+      left: -65px; 
+}
+
+/*
+.contact_select.ng-leave.ng-leave-active {
+opacity:0;
+}
+*/
+
+
+/*
 
 .contact_select.ng-leave.ng-leave-active,
 .contact_select.ng-move,
 .contact_select.ng-enter {
-    left: -100px;
-  opacity:0;
+    left: -65px;
+
 }
 
 .contact_select.ng-leave,
 .contact_select.ng-move.ng-move-active,
 .contact_select.ng-enter.ng-enter-active {
     left: 0px;
-  opacity:1;
 }
+*/
+
+
+

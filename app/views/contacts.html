@@ -90,30 +90,11 @@
                 <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
                     <div class="convs_container contacts_selected_container">
                         <div class="convs_a_selected">
-                            <!--
-                            <div class="contact_selected">
-                                <img alt="" ng-src="/assets/images/default_avatar.jpg" class="convs_avatar_selected" />
-                                <div class="done_contacts_added">
-                                    <i class="material-icons" id="mi-clear_contacts_bg">&#xE14C;</i>
-                                    <i class="material-icons" id="mi-clear_contacts">&#xE14C;</i>
-                                </div>
-                                <div class="contact_selected_name">Lets try a long name</div>
-                            </div>
-                            <div class="contact_selected">
-                                <img alt="" ng-src="/assets/images/default_avatar.jpg" class="convs_avatar_selected" />
-                                <div class="done_contacts_added">
-                                    <i class="material-icons" id="mi-clear_contacts_bg">&#xE14C;</i>
-                                    <i class="material-icons" id="mi-clear_contacts">&#xE14C;</i>
-                                </div>
-                                <div class="contact_selected_name">Lets try a long name</div>
-                            </div>
-                        -->
                             <!---->
                             <!-- REPEAT SELECTED -->
                             <!---->
-                            <div class="contact_select" ng-repeat="select in selected">
+                            <div class="contact_select transition_6" ng-class="{'contact_select_reorder': select.item_reorder}" ng-repeat="select in selected track by select._id" ng-attr-id="{{ 'select_' + select._id }}">
                                 <div class="contact_selected">
-                                    <!--<img alt="" ng-src="/assets/images/default_avatar.jpg" class="convs_avatar_selected" />-->
                                     <img ng-if="select.avatar!='default'" alt="" ng-src="{{select.avatar}}" class="convs_avatar_selected" />
                                     <img ng-if="select.avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="convs_avatar_selected" />
                                     <div class="done_contacts_added">

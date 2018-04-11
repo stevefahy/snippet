@@ -120,10 +120,80 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
         if (contact.item_selected && index < 0) {
             // selected. Add to the selected array if not already there.
             $scope.selected.push(contact);
+            $('#select_' + contact._id).css('left', '-65px');
+            console.log($('#select_' + contact._id).css("left"));
             // deselected. Remove from the selected array if already there.
         } else if (!contact.item_selected && index >= 0) {
-            $scope.selected.splice(index, 1);
+
+
+            var id_0 = $($scope.selected[index])[0]._id;
+            //var id_1 = $($scope.selected[index + 1])[0]._id;
+            /* console.log($('#select_'+ id).css("left"));
+             console.log($('#select_'+ id).css("width"));*/
+            $('#select_' + id_0).css("margin-left", "-65px");
+            $('#select_' + id_0).css("opacity", "0");
+            $('#select_' + id_0).css("z-index", "0");
+            //$('#select_' + id_0).css("margin-left", "-65px");
+            /*$( "<div id='test'>Test</div>" ).insertAfter( $('#select_'+ id) );*/
+
+            $timeout(function() {
+                //$scope.selected.splice(index, 1);
+                // $('#select_' + id).css("margin-left", "-65px");
+                // $('#select_' + id).css("opacity", "0");
+                $('#select_' + id_0).removeClass("transition_6");
+                // $('#select_' + id_1).removeClass("transition_6");
+            }, 200);
+
+            $timeout(function() {
+                //$scope.selected.splice(index, 1);
+                // $('#select_' + id).removeAttr("style");
+                // $('#select_' + id).css("margin-left", "0px");
+                $scope.selected.splice(index, 1);
+                $('#select_' + id_0).addClass("transition_6");
+                // $('#select_' + id_1).addClass("transition_6");
+            }, 201);
+
+            $timeout(function() {
+                // $('#select_' + id).removeClass("transition_6");
+                //$('#select_' + id).removeAttr("style");
+                //$('#select_' + id).css("margin-left", "0px");
+                //$scope.selected.splice(index, 1);
+
+                //$('#select_' + id).css("opacity", "1");
+                //$('#select_' + id).css("margin-left", "-65px");
+            }, 1500);
+
+            $timeout(function() {
+                // $('#select_' + id).removeClass("transition_6");
+                //$('#select_' + id).removeAttr("style");
+                //$('#select_' + id).css("margin-left", "0px");
+                //$scope.selected.splice(index, 1);
+
+                // $('#select_' + id).css("opacity", "1");
+                //$('#select_' + id).css("margin-left", "-65px");
+            }, 3000);
+
+
+
+            /*
+                        var id = $($scope.selected[index])[0]._id;
+                        $($scope.selected[index])[0].item_reorder = true;
+                        console.log(id);
+                            console.log($('#select_'+ id).css("left"));
+
+                                     $timeout(function() {
+            $($scope.selected[index])[0].item_reorder = false;
+                         },333);
+            */
+            /*
+            $('#select_' + id).css('margin-left', '-65px');
+
+             $timeout(function() {
+$('#select_' + id).removeAttr( "style" );
+             },6000);
+             */
         }
+
         console.log($scope.selected);
     };
 
@@ -191,6 +261,8 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
         */
 
     };
+
+
 
     // add a user to the current users contact list
     $scope.addUser = function(id, index, event) {
