@@ -67,7 +67,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
 
     $scope.group_selected = false;
     $scope.selectGroup = function() {
-        $scope.group_selected = true;
+        $scope.group_selected = !$scope.group_selected;
         console.log('selectGroup');
         // $('#add_goup_button').css('cursor', 'auto');
         //$('.contact_div').css('cursor', 'auto');
@@ -131,7 +131,8 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
             /* console.log($('#select_'+ id).css("left"));
              console.log($('#select_'+ id).css("width"));*/
             $('#select_' + id_0).css("margin-left", "-65px");
-            $('#select_' + id_0).css("opacity", "0");
+            //$('#select_' + id_0).css("opacity", "0");
+            $('#select_' + id_0 + ' .contact_selected_name').css("opacity", "0");
             $('#select_' + id_0).css("z-index", "0");
             //$('#select_' + id_0).css("margin-left", "-65px");
             /*$( "<div id='test'>Test</div>" ).insertAfter( $('#select_'+ id) );*/
@@ -142,7 +143,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
                 // $('#select_' + id).css("opacity", "0");
                 $('#select_' + id_0).removeClass("transition_6");
                 // $('#select_' + id_1).removeClass("transition_6");
-            }, 200);
+            }, 300);
 
             $timeout(function() {
                 //$scope.selected.splice(index, 1);
@@ -151,47 +152,9 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
                 $scope.selected.splice(index, 1);
                 $('#select_' + id_0).addClass("transition_6");
                 // $('#select_' + id_1).addClass("transition_6");
-            }, 201);
+            }, 301);
 
-            $timeout(function() {
-                // $('#select_' + id).removeClass("transition_6");
-                //$('#select_' + id).removeAttr("style");
-                //$('#select_' + id).css("margin-left", "0px");
-                //$scope.selected.splice(index, 1);
-
-                //$('#select_' + id).css("opacity", "1");
-                //$('#select_' + id).css("margin-left", "-65px");
-            }, 1500);
-
-            $timeout(function() {
-                // $('#select_' + id).removeClass("transition_6");
-                //$('#select_' + id).removeAttr("style");
-                //$('#select_' + id).css("margin-left", "0px");
-                //$scope.selected.splice(index, 1);
-
-                // $('#select_' + id).css("opacity", "1");
-                //$('#select_' + id).css("margin-left", "-65px");
-            }, 3000);
-
-
-
-            /*
-                        var id = $($scope.selected[index])[0]._id;
-                        $($scope.selected[index])[0].item_reorder = true;
-                        console.log(id);
-                            console.log($('#select_'+ id).css("left"));
-
-                                     $timeout(function() {
-            $($scope.selected[index])[0].item_reorder = false;
-                         },333);
-            */
-            /*
-            $('#select_' + id).css('margin-left', '-65px');
-
-             $timeout(function() {
-$('#select_' + id).removeAttr( "style" );
-             },6000);
-             */
+            
         }
 
         console.log($scope.selected);
