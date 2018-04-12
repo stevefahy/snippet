@@ -128,7 +128,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
             $scope.selected.push(contact);
             $('#select_' + contact._id).css('left', '-65px');
             console.log($('#select_' + contact._id).css("left"));
-        }, 300);
+        }, 100);
             // deselected. Remove from the selected array if already there.
         } else if (!contact.item_selected && index >= 0) {
 
