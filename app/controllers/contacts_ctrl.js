@@ -109,7 +109,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
         }
     };
 
-    
+
 
     $scope.doSelect = function(contact, $index) {
         // reverse item_selected boolean for this contact.
@@ -125,7 +125,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
                 // Add contact to the selected array.
                 $scope.selected.push(contact);
             }, 100);
-        // If the contact is deselected and is already in the $scope.selected array.
+            // If the contact is deselected and is already in the $scope.selected array.
         } else if (!contact.item_selected && index >= 0) {
             // Get the contacts id.
             var id_0 = $($scope.selected[index])[0]._id;
@@ -133,6 +133,8 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
             $('#select_' + id_0).addClass('contact_select_remove');
             // Wait for the contact to animate off screen before removing from $scope.selected.
             $timeout(function() {
+                // Get the index position of this contact with the $scope.selected array.
+                var index = General.findWithAttr($scope.selected, '_id', contact._id);
                 // Remove contact from $scope.selected.
                 $scope.selected.splice(index, 1);
                 // If there are no items in $scope.selected then close the div which contains the selected contacts.
