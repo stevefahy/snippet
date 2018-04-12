@@ -107,6 +107,8 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
         }
     };
 
+    $scope.show_selected_drawer = false;
+
     $scope.doSelect = function(contact, $index) {
         console.log('doSelect: ' + contact._id);
         //$scope.selected.push(contact._id);
@@ -118,10 +120,15 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
         var index = General.findWithAttr($scope.selected, '_id', contact._id);
         console.log(index);
         if (contact.item_selected && index < 0) {
+
+            $scope.show_selected_drawer = true;
+
+            $timeout(function() {
             // selected. Add to the selected array if not already there.
             $scope.selected.push(contact);
             $('#select_' + contact._id).css('left', '-65px');
             console.log($('#select_' + contact._id).css("left"));
+        }, 300);
             // deselected. Remove from the selected array if already there.
         } else if (!contact.item_selected && index >= 0) {
 
@@ -152,12 +159,17 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
                 $scope.selected.splice(index, 1);
                 $('#select_' + id_0).addClass("transition_6");
                 // $('#select_' + id_1).addClass("transition_6");
+                console.log($scope.selected);
+console.log($scope.selected.length);
+            if($scope.selected == 0 ){
+                console.log('falsy');
+                $scope.show_selected_drawer = false;
+            }
             }, 301);
 
-            
         }
 
-        console.log($scope.selected);
+        
     };
 
     // Continue a conversation by conversation id
