@@ -30,6 +30,8 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
     $scope.import_sel = false;
     $scope.contacts_sel = true;
 
+    $scope.show_selected_drawer = false;
+
 
 
 
@@ -107,69 +109,38 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
         }
     };
 
-    $scope.show_selected_drawer = false;
+    
 
     $scope.doSelect = function(contact, $index) {
-        console.log('doSelect: ' + contact._id);
-        //$scope.selected.push(contact._id);
-
-        //contact.item_selected = true;
+        // reverse item_selected boolean for this contact.
         contact.item_selected = !contact.item_selected;
-        //var index = $scope.selected.indexOf(contact._id);
-
+        // Get the index position of this contact with the $scope.selected array.
         var index = General.findWithAttr($scope.selected, '_id', contact._id);
-        console.log(index);
+        // If the contact is selected and is not already in the $scope.selected array.
         if (contact.item_selected && index < 0) {
-
+            // Open the div which contains the selected contacts.
             $scope.show_selected_drawer = true;
-
+            // Wait for selected contacts div animation before adding selected contacts. (For animation performance reason).
             $timeout(function() {
-            // selected. Add to the selected array if not already there.
-            $scope.selected.push(contact);
-            $('#select_' + contact._id).css('left', '-65px');
-            console.log($('#select_' + contact._id).css("left"));
-        }, 100);
-            // deselected. Remove from the selected array if already there.
+                // Add contact to the selected array.
+                $scope.selected.push(contact);
+            }, 100);
+        // If the contact is deselected and is already in the $scope.selected array.
         } else if (!contact.item_selected && index >= 0) {
-
-
+            // Get the contacts id.
             var id_0 = $($scope.selected[index])[0]._id;
-            //var id_1 = $($scope.selected[index + 1])[0]._id;
-            /* console.log($('#select_'+ id).css("left"));
-             console.log($('#select_'+ id).css("width"));*/
-            $('#select_' + id_0).css("margin-left", "-65px");
-            //$('#select_' + id_0).css("opacity", "0");
-            $('#select_' + id_0 + ' .contact_selected_name').css("opacity", "0");
-            $('#select_' + id_0).css("z-index", "0");
-            //$('#select_' + id_0).css("margin-left", "-65px");
-            /*$( "<div id='test'>Test</div>" ).insertAfter( $('#select_'+ id) );*/
-
+            // Add the class for remving the contact.
+            $('#select_' + id_0).addClass('contact_select_remove');
+            // Wait for the contact to animate off screen before removing from $scope.selected.
             $timeout(function() {
-                //$scope.selected.splice(index, 1);
-                // $('#select_' + id).css("margin-left", "-65px");
-                // $('#select_' + id).css("opacity", "0");
-                $('#select_' + id_0).removeClass("transition_6");
-                // $('#select_' + id_1).removeClass("transition_6");
-            }, 300);
-
-            $timeout(function() {
-                //$scope.selected.splice(index, 1);
-                // $('#select_' + id).removeAttr("style");
-                // $('#select_' + id).css("margin-left", "0px");
+                // Remove contact from $scope.selected.
                 $scope.selected.splice(index, 1);
-                $('#select_' + id_0).addClass("transition_6");
-                // $('#select_' + id_1).addClass("transition_6");
-                console.log($scope.selected);
-console.log($scope.selected.length);
-            if($scope.selected == 0 ){
-                console.log('falsy');
-                $scope.show_selected_drawer = false;
-            }
+                // If there are no items in $scope.selected then close the div which contains the selected contacts.
+                if ($scope.selected == 0) {
+                    $scope.show_selected_drawer = false;
+                }
             }, 301);
-
         }
-
-        
     };
 
     // Continue a conversation by conversation id
