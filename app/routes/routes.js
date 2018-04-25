@@ -348,7 +348,7 @@ module.exports = function(app, passport) {
                     } else if (state.redirect != undefined) {
                         if (state.redirect == 'contacts/import') {
                             console.log('callback import');
-                            //res.redirect('/c/contacts/import');
+                            res.redirect('/c/contacts/import');
                         }
                     }
                 } else {
