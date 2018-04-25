@@ -3,26 +3,108 @@
         <div class="header_container" ng-include="'/views/header_contacts.html'"></div>
         <!-- IMPORT -->
         <div class="content_conv_import transition_4" ng-class="{ 'content_conv_import_100': contacts_sel, 'content_conv_import_200': search_sel}">
-            <div id="">
+            <div class="invite_div" ng-class="{ 'invite_div_off': invite_selected}" ng-click="invite_selected || selectInvite()">
+                <div id="add_goup_button">
+                    <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
+                        <div class="convs_container contacts_search_container">
+                            <div class="convs_a">
+                                <img ng-if="avatar!='default'" alt="" class="convs_avatar" ng-src="{{avatar}}" />
+                                <i ng-if="avatar=='default'" class="material-icons convs_avatar mi-person_add" id="" ng-class="{'mi-person_add_grey': invite_selected}">&#xE7FE;</i>
+                            </div>
+                            <div class="convs_col_a transition_100" ng-class="{'convs_col_a_on': invite_selected}">
+                                <div class="contacts_search_header transition_4" id="group_namex" ng-class="{'contacts_search_header_top_on': invite_selected}">INVITE CONTACT</div>
+                            </div>
+                            <div class="convs_col_b transition_500" ng-class="{'convs_col_b_on': invite_selected}">
+                                <div class="contacts_search_input transition_4" ng-class="{'contacts_search_input_on': invite_selected}">
+                                    <form name="myForm">
+                                        <input type="email" name="input" placeholder=" Type email..." id="email_addr" class="contacts_search_group transition_4" ng-class="{'contacts_search_group_on': invite_selected}" ng-model="invite_input" onclick="inputClicked(event)" ng-pattern="/^[\w-]+(\.[\w-]+)*@([a-z0-9-]+(\.[a-z0-9-]+)*?\.[a-z]{2,6}|(\d{1,3}\.){3}\d{1,3})(:\d{4})?$/" noncapitalize required>
+                                    </form>
+                                </div>
+                                <div class="valid_email">
+                                    <div class="email_feedback transition_500" ng-class="{'email_feedback_sent': invite_sent}">
+                                        Invite sent!
+                                    </div>
+                                    <!--
+                                <div role="alert">
+      <span class="error" ng-show="myForm.input.$error.required">
+        Required!</span>
+      <span class="error" ng-show="myForm.input.$error.email">
+        Not valid email!</span>
+    </div>
+-->
+                                    <div class="header_decide">
+                                        <div class="header_accept">
+                                            <a href="" ng-click="!myForm.input.$valid || inviteUser(invite_input)"><i class="material-icons mi-done_group" ng-class="{'mi-done_group_on': myForm.input.$valid}" id="">&#xE876;</i></a>
+                                        </div>
+                                        <div class="header_cancel">
+                                            <a href="" ng-click="cancelInvite($event)"><i class="material-icons" id="mi-clear">&#xE14C;</i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </div>
+            </div>
+            <div class="invite_div" ng-class="{ 'invite_div_off': invite_selected}" id="import_contacts" ng-click=" importContacts()">
                 <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
                     <div class="convs_container contacts_search_container">
-                        <div class="contacts_search_header">INVITE USER</div>
-                        <div class="contacts_search_input">
-                            <input id="search-queryinv">
+                        <div class="convs_a">
+                            <img ng-if="avatar!='default'" alt="" class="convs_avatar" ng-src="{{avatar}}" />
+                            <i ng-if="avatar=='default'" class="material-icons convs_avatar mi-import_contacts" id="" ng-class="{'mi-import_contacts_grey': group_selected}">&#xE0E0;</i>
+                        </div>
+                        <div class="convs_col_a transition_100" ng-class="{'convs_col_a_on': group_selected}">
+                            <div class="contacts_search_header transition_4" id="group_namex" ng-class="{'contacts_search_header_top_on': group_selected}">IMPORT CONTACTS</div>
+                        </div>
+                        <div class="convs_col_b transition_500" ng-class="{'convs_col_b_on': group_selected}">
+                            <div class="contacts_search_input transition_4" ng-class="{'contacts_search_input_on': group_selected}">
+                                <input placeholder=" Type name..." id="group_name" class="contacts_search_group transition_4" ng-class="{'contacts_search_group_on': group_selected}" data-ng-model="chat_create.conversation_name" maxlength="20" onclick="inputClicked(event)">
+                            </div>
+                            <div class="header_decide">
+                                <div class="header_accept">
+                                    <a href="" ng-click="!valid_group || selectedUsers($event,contact)"><i class="material-icons mi-done_group" ng-class="{'mi-done_group_on': valid_group}" id="">&#xE876;</i></a>
+                                </div>
+                                <div class="header_cancel">
+                                    <a href="" ng-click="cancelGroup($event)"><i class="material-icons" id="mi-clear">&#xE14C;</i></a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </li>
             </div>
-            <div id="">
-                <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
-                    <div class="convs_container contacts_search_container">
-                        <div class="contacts_search_header">IMPORT USERS</div>
-                        <div class="contacts_search_input">
-                            <input id="search-queryimp">
-                        </div>
+
+
+            <!---->
+            <!-- SCROLLABLE IMPORTED CONTACTS -->
+            <!---->
+            <div class="content_cnv_scroll" ng-class="{'content_cnv_scroll_group': show_selected_drawer}">
+                <div ng-repeat="contact in user_contacts | orderBy:'user_name'">
+                    <div class="contact_div" ng-click="group_selected ? doSelect(contact) : doChat(contact)">
+                        <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
+                            <div class="convs_container">
+                                <div class="convs_a">
+                                    <img ng-if="contact.avatar!='default'" alt="" ng-src="{{contact.avatar}}" on-error-src="/assets/images/default_avatar.jpg" class="convs_avatar" />
+                                    <img ng-if="contact.avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="convs_avatar" />
+                                    <div class="done_contacts " ng-class="{'done_contacts_selected': contact.item_selected}">
+                                        <i class="material-icons" id="mi-done_contacts_bg">&#xE876;</i>
+                                        <i class="material-icons" id="mi-done_contacts">&#xE876;</i>
+                                    </div>
+                                </div>
+                                <div class="convs_col_a">
+                                    <div class="convs_b" id="convs_name">{{contact.name != '' ? contact.name : contact.email }}</div>
+                                    <div class="convs_d" id="convs_msg" ng-bind-html="contact.latest_card"></div>
+                                </div>
+                                <div class="convs_col_b">
+                                    <!--<input id="contacts_cb" type="checkbox" ng-model="selection[$index]['value']" ng-change="checkBoxChange(contact._id, selection[$index]['value'])">-->
+                                    <!--<input type="checkbox" name="">-->
+                                </div>
+                            </div>
+                        </li>
                     </div>
-                </li>
+                </div>
             </div>
+
+
         </div>
         <!-- SEARCH -->
         <div class="content_conv_search transition_4" ng-class="{ 'content_conv_search_100': import_sel, 'content_conv_search_200': contacts_sel}">
@@ -31,14 +113,14 @@
                     <div class="convs_container contacts_search_container">
                         <div class="contacts_search_header">SEARCH USERS</div>
                         <div class="contacts_search_input">
-                            <input id="search-query">
+                            <input placeholder=" Type name..." id="search-query">
                         </div>
                     </div>
                 </li>
             </div>
             <div class="content_cnv_scroll">
                 <div ng-repeat="search_result in search_results">
-                    <div id="conv_div" ng-click="checkChat(search_result, $index)">
+                    <div class="contacts_result_container" ng-class="{ 'contacts_result_container_on': search_result.is_contact}" ng-click="!search_result.is_contact || doChat(search_result)">
                         <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
                             <div class="convs_container">
                                 <div class="convs_a">
@@ -50,7 +132,7 @@
                                     <div class="convs_d" id="convs_msg" ng-bind-html="search_result.latest_card"></div>
                                 </div>
                                 <div class="convs_col_b">
-                                    <div ng-if="!search_result.is_contact" ng-click="addUser(search_result._id, $index, $event)">
+                                    <div class="search_add_user" ng-if="!search_result.is_contact" ng-click="addUser(search_result._id, $index, $event)">
                                         <i class="material-icons" id="mi-add_circle_outline">&#xE148;</i>
                                     </div>
                                 </div>
@@ -66,31 +148,71 @@
             <!---->
             <!-- CONTACTS GROUP -->
             <!---->
-            <div class="contact_div" ng-click=" selectGroup()">
+            <div class="contact_div" ng-class="{ 'contact_div_off': group_selected}" ng-click="group_selected || selectGroup()">
                 <div id="add_goup_button">
                     <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
                         <div class="convs_container contacts_search_container">
                             <div class="convs_a">
-                                <i class="material-icons convs_avatar mi-group_add" id="" ng-class="{'mi-group_add_grey': group_selected}">&#xE7F0;</i>
-
-                                <!--<i class="material-icons convs_avatar" id="mi-group_add_2" ng-class="{'done_camera_selected': group_selected}">&#xE7FB;</i>-->
-
-    
-
-                                <div class="done_camera transition_4" ng-class="{'done_camera_selected': group_selected}">
-                                        <i class="material-icons" id="mi-done_camera_bg">&#xE439;</i>
-                                       <i class="material-icons" id="mi-done_camera">&#xE439;</i>
-                                    </div>
+                                <img ng-if="avatar!='default'" alt="" class="convs_avatar" ng-src="{{avatar}}" />
+                                <i ng-if="avatar=='default'" class="material-icons convs_avatar mi-group_add" id="" ng-class="{'mi-group_add_grey': group_selected}">&#xE7F0;</i>
+                                <div class="done_camera " ng-class="{'done_camera_selected': group_selected}">
+                                    <i class="material-icons" id="mi-done_camera_bg">&#xE439;</i>
+                                    <i class="material-icons" id="mi-done_camera" ng-click="!group_selected || conversationImage($event)">&#xE439;</i>
+                                </div>
                             </div>
-                            <div class="convs_col_a">
-                            <div class="contacts_search_header transition_4" id="group_name" ng-class="{'contacts_search_header_top_on': group_selected}">NEW GROUP</div>
-                            <div class="contacts_search_header_off transition_4" id="group_name" ng-class="{'contacts_search_header_on': group_selected}">details</div>
-                        </div>
-                            <div class="contacts_search_input transition_4" ng-class="{'contacts_search_input_on': group_selected}">
-                                <input placeholder=" Type name..." id="search-query-group" class="contacts_search_group transition_4" ng-class="{'contacts_search_group_on': group_selected}">
+                            <div class="convs_col_a transition_100" ng-class="{'convs_col_a_on': group_selected}">
+                                <div class="contacts_search_header transition_4" id="group_namex" ng-class="{'contacts_search_header_top_on': group_selected}">NEW GROUP</div>
+                            </div>
+                            <div class="convs_col_b transition_500" ng-class="{'convs_col_b_on': group_selected}">
+                                <div class="contacts_search_input transition_4" ng-class="{'contacts_search_input_on': group_selected}">
+                                    <input placeholder=" Type name..." id="group_name" class="contacts_search_group transition_4" ng-class="{'contacts_search_group_on': group_selected}" data-ng-model="chat_create.conversation_name" maxlength="20" onclick="inputClicked(event)">
+                                </div>
+                                <div class="header_decide">
+                                    <div class="header_accept">
+                                        <a href="" ng-click="!valid_group || selectedUsers($event,contact)"><i class="material-icons mi-done_group" ng-class="{'mi-done_group_on': valid_group}" id="">&#xE876;</i></a>
+                                    </div>
+                                    <div class="header_cancel">
+                                        <a href="" ng-click="cancelGroup($event)"><i class="material-icons" id="mi-clear">&#xE14C;</i></a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </li>
+                </div>
+            </div>
+            <!---->
+            <!-- CONVERSATION PROFILE IMAGE -->
+            <!---->
+            <div class="contact_div contact_div_image transition_500" ng-class="{'contact_div_image_show': show_image}">
+                <div class="image_container">
+                    <!-- IMAGE -->
+                    <div class="user_setting_image">
+                        <div class="preview"><img class="cropped_image" ng-src="{{myCroppedImage}}" /></div>
+                        <div class="original">
+                            <!--<img ng-if="conversation.avatar!='default'" alt="" ng-src="{{conversation.avatar}}" class="convs_avatar" />-->
+                            <img ng-if="avatar=='default'" alt="" ng-src="/assets/images/people.png" class="user_settings_avatar" />
+                            <input type="file" id="fileInput" />
+                        </div>
+                        <div class="avatar_choose">
+                            <div class="choose_icon">
+                                <a hfref ng-click="triggerClick()"><i class="material-icons" id="mi-add-a-photo">&#xE439;</i></a>
+                            </div>
+                            <div ng-if="setting_change" class="header_decide">
+                                <div class="header_accept">
+                                    <a href="" ng-click="saveChanges()"><i class="material-icons" id="mi-done">&#xE876;</i></a>
+                                </div>
+                                <div class="header_cancel">
+                                    <a href="" ng-click="cancelChanges()"><i class="material-icons" id="mi-clear">&#xE14C;</i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="crop_container">
+                        <div class="cropArea">
+                            <img-crop class="imgcrop " image="myImage" result-image="myCroppedImage" result-image-format="image/jpeg" result-image-size="125" change-on-fly="true" on-load-done="imgcropLoaded();"></img-crop>
+                        </div>
+                    </div>
+                    <!-- IMAGE -->
                 </div>
             </div>
             <!---->
@@ -103,13 +225,13 @@
                             <!---->
                             <!-- REPEAT SELECTED -->
                             <!---->
-                            <div class="contact_select transition_6"  ng-repeat="select in selected" ng-attr-id="{{ 'select_' + select._id }}">
+                            <div class="contact_select transition_6" ng-repeat="select in selected" ng-attr-id="{{ 'select_' + select._id }}">
                                 <div class="contact_selected">
                                     <img ng-if="select.avatar!='default'" alt="" ng-src="{{select.avatar}}" class="convs_avatar_selected" />
                                     <img ng-if="select.avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="convs_avatar_selected" />
                                     <div class="done_contacts_added">
                                         <i class="material-icons" id="mi-clear_contacts_bg">&#xE14C;</i>
-                                        <i class="material-icons" id="mi-clear_contacts">&#xE14C;</i>
+                                        <i class="material-icons" id="mi-clear_contacts" ng-click="doSelect(select)">&#xE14C;</i>
                                     </div>
                                     <div class="contact_selected_name">{{select.user_name}}</div>
                                 </div>
@@ -121,9 +243,9 @@
             <!---->
             <!-- SCROLLABLE CONTACTS -->
             <!---->
-            <div class="content_cnv_scroll">
+            <div class="content_cnv_scroll" ng-class="{'content_cnv_scroll_group': show_selected_drawer}">
                 <div ng-repeat="contact in contacts | orderBy:'user_name'">
-                    <div class="contact_div" ng-click="group_selected ? doSelect(contact, $index) : doChat(contact, $index)">
+                    <div class="contact_div" ng-click="group_selected ? doSelect(contact) : doChat(contact)">
                         <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
                             <div class="convs_container">
                                 <div class="convs_a">

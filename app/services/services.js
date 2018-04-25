@@ -57,6 +57,18 @@ cardApp.factory('Email', ['$http', function($http) {
     };
 }]);
 
+
+cardApp.factory('Contacts', ['$http', function($http) {
+    return {
+        getContacts: function() {
+            return $http.get("api/user_contacts/");
+        },
+        getPermissions: function() {
+            return $http.get("api/user_permission/");
+        }
+    };
+}]);
+
 cardApp.factory('Users', ['$http', function($http) {
     return {
         search_id: function(id) {

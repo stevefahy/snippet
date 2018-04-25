@@ -15,8 +15,27 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
             templateUrl: '/views/conversation.html'
         })
         .when("/c/contacts", {
-            templateUrl: '/views/contacts.html'
+            templateUrl: '/views/contacts.html',
+            reloadOnSearch:false
         })
+        
+        .when("/c/contacts/import", {
+            templateUrl: '/views/contacts.html',
+            menuItem: 'import',
+            reloadOnSearch:false
+        })
+        /*
+        .when("/c/contacts/search", {
+            templateUrl: '/views/contacts.html',
+            menuItem: 'search',
+            reloadOnSearch:false
+        })
+        .when("/c/contacts/contacts", {
+            templateUrl: '/views/contacts.html',
+            menuItem: 'contacts',
+            reloadOnSearch:false
+        })
+        */
         .when("/chat/conversations", {
             templateUrl: '/views/conversations.html'
         })
@@ -64,6 +83,23 @@ cardApp.run([
   }
 ]);
 */
+/*
+cardApp.run(['$route', '$rootScope', '$location', function ($route, $rootScope, $location) {
+    var original = $location.path;
+    $location.path = function (path, reload) {
+        if (reload === false) {
+            console.log('FALSE');
+            var lastRoute = $route.current;
+            var un = $rootScope.$on('$locationChangeSuccess', function () {
+                $route.current = lastRoute;
+                un();
+            });
+        }
+        return original.apply($location, [path]);
+    };
+}]);
+*/
+
 
 cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', '$injector', function($window, $rootScope, $timeout, $q, Users, Cards, Conversations, replaceTags, socket, $injector) {
 
@@ -1682,6 +1718,18 @@ cardApp.directive("contenteditable", function() {
                     scope.$apply(read);
                 }
             });
+        }
+    };
+});
+
+cardApp.directive('onErrorSrc', function() {
+    return {
+        link: function(scope, element, attrs) {
+          element.bind('error', function() {
+            if (attrs.src != attrs.onErrorSrc) {
+              attrs.$set('src', attrs.onErrorSrc);
+            }
+          });
         }
     };
 });

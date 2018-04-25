@@ -14,6 +14,9 @@ var base64url = require('base64url');
 var request = require('request');
 var fcm = require('../configs/fcm');
 
+// load the auth variables
+var configAuth = require('../configs/auth'); // use this one for testing
+
 function getContacts(res) {
     User.find(function(err, users) {
         // if there is an error retrieving, send the error. nothing after res.send(err) will execute
@@ -150,6 +153,21 @@ module.exports = function(app, passport) {
     app.get('/c/contacts', isLoggedIn, function(req, res) {
         res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
     });
+
+    // CONTACTS - IMPORT
+    app.get('/c/contacts/import', isLoggedIn, function(req, res) {
+        res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
+    });
+    /*
+    // CONTACTS - IMPORT
+    app.get('/c/contacts/search', isLoggedIn, function(req, res) {
+        res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
+    });
+    // CONTACTS - IMPORT
+    app.get('/c/contacts/contacts', isLoggedIn, function(req, res) {
+        res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
+    });
+    */
     // CONVERSATION
     app.get('/chat/conversation/:id', isMember, function(req, res) {
         res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
@@ -196,6 +214,8 @@ module.exports = function(app, passport) {
     // send to google to do the authentication
     app.get('/auth/google',
         passport.authenticate('google', {
+            //scope: ['profile', 'email', 'https://www.google.com/m8/feeds/'],
+            //scope: ['profile', 'email', 'https://www.googleapis.com/auth/contacts.readonly'],
             scope: ['profile', 'email'],
             prompt: "select_account"
         }),
@@ -203,12 +223,32 @@ module.exports = function(app, passport) {
             //
         });
 
+
+    app.get('/auth/google_contacts', function(request, response) {
+        var stateString = base64url('{ "redirect" : "contacts/import" }');
+        passport.authenticate('google', {
+            //scope: ['profile', 'email', 'https://www.google.com/m8/feeds/'],
+            scope: ['profile', 'email', 'https://www.googleapis.com/auth/contacts.readonly'],
+            //scope: ['https://www.googleapis.com/auth/contacts.readonly'],
+            //prompt: "select_account",
+
+            state: stateString,
+            loginHint: 'stevefahy@gmail.com',
+
+            authorizationParams: {
+                access_type: 'offline',
+                approval_prompt: 'force'
+            }
+        })(request, response);
+    });
+
+
     // Login from /api/join route
     // send to google to do the authentication. Pass the invite id to google within state.
     app.get("/auth/google/join/:code", function(request, response) {
         var invite_code = request.params.code;
         // encode the invite code to base 64 before sending
-        stateString = base64url('{ "invite_id" : "' + invite_code + '" }');
+        var stateString = base64url('{ "invite_id" : "' + invite_code + '" }');
         // athenticate with google
         passport.authenticate("google", {
             scope: [
@@ -221,93 +261,246 @@ module.exports = function(app, passport) {
 
     // google callback
     // log in via join page already goes to user settings/
-    app.get('/auth/google/callback',
-        passport.authenticate('google', {
-            failureRedirect: '/login'
-        }),
-        function(req, res) {
-            // If this is a callback from an invite link then there will be a state variable
-            if (req.query.state) {
-                // Invite accepted
-                // Add this user to the inviter's list of contacts
-                // Send the newly logged in user to the relevant group if stated
-                // delete or set invite to accepted
-                //
-                // decode the invite code
-                var invite_code = JSON.parse(base64url.decode(req.query.state));
-                // Find the invite using the decoded invite code
-                Invite.findById({ _id: invite_code.invite_id }, function(err, invite) {
-                    if (err) {
-                        res.send(err);
-                    }
-                    // ADD NEW INVITED USER TO INVITER CONTACTS
-                    var sender = invite.sender_id;
-                    // Find the inviter User
-                    User.findById({ _id: sender }, function(err, user) {
-                        if (err) {
-                            res.send(err);
-                        }
-                        // get the inviter contact array
-                        var current_contacts = user.contacts;
-                        // check if this contact already exist, if not add it
-                        if (current_contacts.indexOf(req.user._id) < 0) {
-                            // add the invited User id to the inviter array of contacts
-                            current_contacts.push(req.user._id);
-                            user.contacts = current_contacts;
-                            // Save the new contact to the to the inviter array of contacts
-                            var updateuser = new User(user);
-                            updateuser.save(function(err, user) {
+    app.get('/auth/google/callback', function(req, res, next) {
+
+        passport.authenticate('google', function(err, user, info) {
+
+            if (err) {
+                console.log(err);
+                res.redirect('/login');
+            }
+
+            // cancelled permission
+            if (!user) {
+                console.log('!user');
+                console.log(req.user);
+                if (req.user) {
+                    user = req.user;
+                } else {
+                    res.redirect('/login');
+                }
+            }
+
+            req.logIn(user, function(err) {
+                if (err) {
+                    console.log(err);
+                    res.redirect('/login');
+                }
+
+                // If this is a callback from an invite link then there will be a state variable
+                if (req.query.state) {
+                    // Invite accepted
+                    // Add this user to the inviter's list of contacts
+                    // Send the newly logged in user to the relevant group if stated
+                    // delete or set invite to accepted
+                    //
+                    // decode the invite code
+                    var state = JSON.parse(base64url.decode(req.query.state));
+                    if (state.invite_id != undefined) {
+                        var invite_code = state;
+                        // Find the invite using the decoded invite code
+                        Invite.findById({ _id: invite_code.invite_id }, function(err, invite) {
+                            if (err) {
+                                res.send(err);
+                            }
+                            // ADD NEW INVITED USER TO INVITER CONTACTS
+                            var sender = invite.sender_id;
+                            // Find the inviter User
+                            User.findById({ _id: sender }, function(err, user) {
                                 if (err) {
                                     res.send(err);
-                                } else {}
+                                }
+                                // get the inviter contact array
+                                var current_contacts = user.contacts;
+                                // check if this contact already exist, if not add it
+                                if (current_contacts.indexOf(req.user._id) < 0) {
+                                    // add the invited User id to the inviter array of contacts
+                                    current_contacts.push(req.user._id);
+                                    user.contacts = current_contacts;
+                                    // Save the new contact to the to the inviter array of contacts
+                                    var updateuser = new User(user);
+                                    updateuser.save(function(err, user) {
+                                        if (err) {
+                                            res.send(err);
+                                        } else {}
+                                    });
+                                }
                             });
+                            // ADD INVITER USER TO NEW INVITED USER CONTACTS
+                            // get the invited contact array
+                            var current_contacts = req.user.contacts;
+                            // check if this contact already exist, if not add it
+                            if (current_contacts.indexOf(sender) < 0) {
+                                // add the inviter User id to the invited array of contacts
+                                current_contacts.push(sender);
+                                req.user.contacts = current_contacts;
+                                // Save the new contact to the to the invited array of contacts
+                                var updateuser = new User(req.user);
+                                updateuser.save(function(err, user) {
+                                    if (err) {
+                                        res.send(err);
+                                    } else {}
+                                });
+                            }
+                        });
+                        // First time logging in. Redirect to the User Settings screen.
+                        res.redirect('/api/user_setting');
+                    } else if (state.redirect != undefined) {
+                        if (state.redirect == 'contacts/import') {
+                            console.log('callback import');
+                            //res.redirect('/c/contacts/import');
                         }
-                    });
-                    // ADD INVITER USER TO NEW INVITED USER CONTACTS
-                    // get the invited contact array
-                    var current_contacts = req.user.contacts;
-                    // check if this contact already exist, if not add it
-                    if (current_contacts.indexOf(sender) < 0) {
-                        // add the inviter User id to the invited array of contacts
-                        current_contacts.push(sender);
-                        req.user.contacts = current_contacts;
-                        // Save the new contact to the to the invited array of contacts
+                    }
+                } else {
+                    // Check if this is first log in
+                    // if so got to settings of not go to home /
+                    if (req.user.first_login == true) {
+                        req.user.first_login = false;
+
+                        // Save the new contact to the to the inviter array of contacts
                         var updateuser = new User(req.user);
                         updateuser.save(function(err, user) {
                             if (err) {
                                 res.send(err);
-                            } else {}
+                            } else {
+                                //console.log(user);
+                            }
                         });
+
+                        // Create Public conversation for this user
+                        // Any time profile changes update Public conv profile also.
+                        createPublicConversation(req.user, function(result) {
+                            res.redirect('/api/user_setting');
+                        });
+                    } else {
+                        res.redirect('/');
                     }
-                });
-                // First time logging in. Redirect to the User Settings screen.
-                res.redirect('/api/user_setting');
-            } else {
-                // Check if this is first log in
-                // if so got to settings of not go to home /
-                if (req.user.first_login == true) {
-                    req.user.first_login = false;
-
-                    // Save the new contact to the to the inviter array of contacts
-                    var updateuser = new User(req.user);
-                    updateuser.save(function(err, user) {
-                        if (err) {
-                            res.send(err);
-                        } else {
-                            //console.log(user);
-                        }
-                    });
-
-                    // Create Public conversation for this user
-                    // Any time profile changes update Public conv profile also.
-                    createPublicConversation(req.user, function(result) {
-                        res.redirect('/api/user_setting');
-                    });
-                } else {
-                    res.redirect('/');
                 }
-            }
-        });
+            });
+        })(req, res, next);
+    });
+
+    /*
+        // google callback
+        // log in via join page already goes to user settings/
+        app.get('/auth/google/callback',
+            passport.authenticate('google', {
+                //failureRedirect: '/login'
+
+            }),
+            function(req, res) {
+                console.log('google callback');
+                console.log(req.query.state);
+                // If this is a callback from an invite link then there will be a state variable
+                if (req.query.state) {
+                    // Invite accepted
+                    // Add this user to the inviter's list of contacts
+                    // Send the newly logged in user to the relevant group if stated
+                    // delete or set invite to accepted
+                    //
+                    // decode the invite code
+                    var state = JSON.parse(base64url.decode(req.query.state));
+                    console.log(state);
+                    if (state.invite_id != undefined) {
+                        //var invite_code = JSON.parse(base64url.decode(req.query.state));
+                        //}
+                        var invite_code = state;
+                        // Find the invite using the decoded invite code
+                        Invite.findById({ _id: invite_code.invite_id }, function(err, invite) {
+                            if (err) {
+                                res.send(err);
+                            }
+                            // ADD NEW INVITED USER TO INVITER CONTACTS
+                            var sender = invite.sender_id;
+                            // Find the inviter User
+                            User.findById({ _id: sender }, function(err, user) {
+                                if (err) {
+                                    res.send(err);
+                                }
+                                // get the inviter contact array
+                                var current_contacts = user.contacts;
+                                // check if this contact already exist, if not add it
+                                if (current_contacts.indexOf(req.user._id) < 0) {
+                                    // add the invited User id to the inviter array of contacts
+                                    current_contacts.push(req.user._id);
+                                    user.contacts = current_contacts;
+                                    // Save the new contact to the to the inviter array of contacts
+                                    var updateuser = new User(user);
+                                    updateuser.save(function(err, user) {
+                                        if (err) {
+                                            res.send(err);
+                                        } else {}
+                                    });
+                                }
+                            });
+                            // ADD INVITER USER TO NEW INVITED USER CONTACTS
+                            // get the invited contact array
+                            var current_contacts = req.user.contacts;
+                            // check if this contact already exist, if not add it
+                            if (current_contacts.indexOf(sender) < 0) {
+                                // add the inviter User id to the invited array of contacts
+                                current_contacts.push(sender);
+                                req.user.contacts = current_contacts;
+                                // Save the new contact to the to the invited array of contacts
+                                var updateuser = new User(req.user);
+                                updateuser.save(function(err, user) {
+                                    if (err) {
+                                        res.send(err);
+                                    } else {}
+                                });
+                            }
+                        });
+                        // First time logging in. Redirect to the User Settings screen.
+                        res.redirect('/api/user_setting');
+                    } else if (state.redirect != undefined) {
+                        console.log('redirect: ' + state);
+                        if (state.redirect == 'contacts/import') {
+                            res.redirect('/c/contacts');
+                        }
+                    }
+                } else {
+                    // Check if this is first log in
+                    // if so got to settings of not go to home /
+                    if (req.user.first_login == true) {
+                        req.user.first_login = false;
+
+                        // Save the new contact to the to the inviter array of contacts
+                        var updateuser = new User(req.user);
+                        updateuser.save(function(err, user) {
+                            if (err) {
+                                res.send(err);
+                            } else {
+                                //console.log(user);
+                            }
+                        });
+
+                        // Create Public conversation for this user
+                        // Any time profile changes update Public conv profile also.
+                        createPublicConversation(req.user, function(result) {
+                            res.redirect('/api/user_setting');
+                        });
+                    } else {
+                        res.redirect('/');
+                    }
+                }
+            });
+    */
+
+    // Login from /api/join route
+    // send to google to do the authentication. Pass the invite id to google within state.
+    app.get("/auth/google/join/:code", function(request, response) {
+        var invite_code = request.params.code;
+        // encode the invite code to base 64 before sending
+        var stateString = base64url('{ "invite_id" : "' + invite_code + '" }');
+        // athenticate with google
+        passport.authenticate("google", {
+            scope: [
+                "profile",
+                "email"
+            ],
+            state: stateString
+        })(request, response);
+    });
     //
     // CONTACTS
     //
@@ -325,6 +518,77 @@ module.exports = function(app, passport) {
     // Get all contacts
     app.get('/api/contacts/', function(req, res) {
         getContacts(res);
+    });
+    //
+    // CHECK OATH PERMISSION
+    //
+    app.get('/api/user_permission/', function(req, res) {
+        if (req.user.google) {
+            request.get({
+                url: 'https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=' + req.user.google.token
+            }, function(err, response, body) {
+                res.json(body);
+            });
+        }
+    });
+    //
+    // USER CONTACTS
+    //
+    // Get all user contacts from social login
+    app.get('/api/user_contacts/', function(req, res) {
+        console.log(req.user);
+        //?max-results=999999&alt=json&oauth_token=' + token;
+        request.get({
+            url: 'https://www.google.com/m8/feeds/contacts/default/full/?alt=json&max-results=10000',
+            //url: 'https://www.googleapis.com/auth/contacts.readonly',
+            headers: {
+                //'alt':'json',
+                //'dataType': 'jsonp',
+                'Gdata-version': '3.0',
+                'Content-length': '0',
+                //'Authorization': 'Bearer ya29.GlykBUVUz7U18Cyq-8yivLgs4crIU8c4TGEWEgjTKQN-Isy2HV5iRDBjSXoJQ2HFkBvm2JSsWnxtBLiIYFQVW3MSzn8qJp28Wl3JFZJQRpRJw6A95vfdWiPJd1VECw'
+                'Authorization': 'Bearer ' + req.user.google.token
+                //'Authorization': configAuth.googleAuth.clientID,
+                //'Content-Type': 'application/json'
+            },
+            qs: '100', //Optional to get limit, max results etc
+            alt: 'json',
+            method: 'GET'
+        }, function(err, response, body) {
+            //console.log(err);
+            //console.log(response);
+            //console.log(body);
+            // CONTACTS RECEIVED
+
+            var parsed = JSON.parse(body);
+            //console.log(body);
+            //console.log(parsed.feed.entry);
+            var user_contacts = [];
+            for (var i in parsed.feed.entry) {
+                //console.log(parsed.feed.entry[i].id);
+                //console.log(parsed.feed.entry[i].gd$name);
+                if (parsed.feed.entry[i].gd$email != undefined) {
+                    var temp = { name: '', email: parsed.feed.entry[i].gd$email[0].address, avatar:'' };
+                    if (parsed.feed.entry[i].gd$name != undefined) {
+                        temp.name = parsed.feed.entry[i].gd$name.gd$fullName.$t;
+                    }
+                    if (parsed.feed.entry[i].link[0] != undefined) {
+                        temp.avatar = parsed.feed.entry[i].link[0].href;
+                    }
+                    user_contacts.push(temp);
+
+                }
+
+
+                //console.log(parsed.feed.entry[i].gd$email[0].address);
+            }
+            //res.json(parsed);
+            res.json(user_contacts);
+
+
+        });
+
+
     });
     //
     // USERS
@@ -703,6 +967,7 @@ module.exports = function(app, passport) {
     app.post('/chat/conversation', function(req, res) {
         Conversation.create({
             conversation_name: req.body.conversation_name,
+            conversation_avatar: req.body.conversation_avatar,
             conversation_type: req.body.conversation_type,
             admin: req.body.admin,
             participants: req.body.participants,

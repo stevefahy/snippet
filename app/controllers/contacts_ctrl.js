@@ -1,53 +1,8 @@
-cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http', '$timeout', 'Invites', 'Email', 'Users', 'Conversations', 'Profile', 'General', function($scope, $rootScope, $location, $http, $timeout, Invites, Email, Users, Conversations, Profile, General) {
-
-    // TODO - make sure two users cant create a 2 person conv with each other at the same time.
-    // Add users to each others contacts when conv created?
-
-    //The minimum number of characters a user must type before a search is performed.
-    var SEARCH_MIN = 3;
-
-    $scope.contacts = [];
-    $scope.search_results = [];
-
-    $scope.invite_user = {
-        sender_id: '',
-        sender_name: '',
-        recipient: '',
-        group_id: ''
-    };
-
-    $scope.chat_create = {
-        conversation_name: '',
-        //admin: '',
-        participants: []
-    };
-    // contacts checkboxes
-    $scope.selection = [];
-    // contacts checkboxes selected
-    $scope.selected = [];
+cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location', '$http', '$timeout', 'Invites', 'Email', 'Users', 'Conversations', 'Profile', 'General', 'Format', 'Contacts', function($scope, $route, $rootScope, $location, $http, $timeout, Invites, Email, Users, Conversations, Profile, General, Format, Contacts) {
 
     $scope.search_sel = false;
     $scope.import_sel = false;
     $scope.contacts_sel = true;
-
-    $scope.show_selected_drawer = false;
-
-
-
-
-    var cont = {
-        avatar: "fileuploads/images/img_20180406_1523047577836.jpg",
-        contacts: [],
-        conversation_exists: false,
-        conversation_id: "5ac7dd028ad5360dac25a04e",
-        first_login: false,
-        google: { email: "stevefahydev@gmail.com", name: "steve fahy", token: "ya29.Gl2VBSoutMCefwvDi9B0u_YPltbB1Qm5_ayvEoMoTA0Tt…tzQd4zRe-y6b-1qZ-_3Qa157PkXAfOj1_qJ-W3eg-W5bSdsIY", id: "116918311836530879886" },
-        tokens: [],
-        user_name: "Test User",
-        __v: 0,
-        _id: "5ac750022b6e3a438c2ec835"
-    };
-
 
     $scope.contactSearch = function() {
         $scope.search_sel = true;
@@ -67,7 +22,389 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
         $scope.contacts_sel = true;
     };
 
+    $scope.user_contacts = [];
+
+    var paramValue = $route.current.$$route.menuItem;
+    console.log(paramValue);
+
+    contactsFormat = function(result) {
+        result.data.map(function(key, array) {
+            //console.log(key.avatar);
+            $http.get("/api/user_data").then(function(result) {
+                $scope.currentUser = result.data.user;
+                console.log($scope.currentUser);
+                key.avatar = key.avatar + '?access_token=' + $scope.currentUser.google.token;
+            });
+        });
+
+
+        $scope.user_contacts = result.data;
+    };
+
+    if (paramValue != undefined) {
+        // if (paramValue == 'import') {
+        //    $scope.contactImport();
+        // }
+
+        switch (paramValue) {
+            case 'import':
+                $scope.contactImport();
+                Contacts.getContacts().then(function(result) {
+                    contactsFormat(result);
+                });
+                break;
+            case 'search':
+                $scope.contactSearch();
+                break;
+            case 'contacts':
+                $scope.contactContacts();
+                break;
+
+        }
+
+
+    }
+
+    $scope.changePath = function(path) {
+        // $location.path(path, false);
+        //$location.search({name: path});
+        //location.go(path);
+        $location.path(path, { trigger: false });
+    };
+
+    // TODO - make sure two users cant create a 2 person conv with each other at the same time.
+    // Add users to each others contacts when conv created?
+
+    //The minimum number of characters a user must type before a search is performed.
+    var SEARCH_MIN = 3;
+
+    $scope.contacts = [];
+    $scope.search_results = [];
+
+    $scope.invite_user = {
+        sender_id: '',
+        sender_name: '',
+        recipient: '',
+        group_id: ''
+    };
+
+    newChat = function() {
+        $scope.chat_create = {
+            conversation_name: '',
+            //admin: '',
+            conversation_avatar: 'default',
+            participants: []
+        };
+    };
+    newChat();
+    // contacts checkboxes
+    $scope.selection = [];
+    // contacts checkboxes selected
+    $scope.selected = [];
+
+
+
+    $scope.show_selected_drawer = false;
+    $scope.show_image = false;
+    var ua = navigator.userAgent;
+    $scope.setting_change = false;
+    $scope.valid_group = false;
+
     $scope.group_selected = false;
+    $scope.invite_selected = false;
+
+    $scope.invite_sent = false;
+
+    $scope.cancelChanges = function() {
+        console.log('cancel');
+        $scope.show_image = false;
+        // newChat();
+        // $scope.chat_create.conversation_name = 'steve';
+        //$scope.chat_create.conversation_name
+    };
+
+    $scope.cancelGroup = function(event) {
+        console.log('cancelGroup');
+        event.stopPropagation();
+        $scope.group_selected = false;
+        newChat();
+    };
+
+    $scope.cancelInvite = function(event) {
+        console.log('cancelInvite');
+        event.stopPropagation();
+        $scope.invite_selected = false;
+        $scope.invite_sent = false;
+        $scope.invite_input = '';
+        //newChat();
+    };
+
+    inputClicked = function(event) {
+        event.stopPropagation();
+    };
+
+    $('#group_name').on('input', function() {
+        console.log('input: ' + $(this).val());
+        validateGroup();
+    });
+
+    /*
+        $('#email_addr').on('input', function() {
+            console.log('input: ' + $(this).val());
+            //console.log(email_form.invite_input.$valid);
+            //console.log(emailForm.username.$dirty);
+            //validateEmail();
+        });
+        */
+
+    validateGroup = function() {
+        console.log($('#group_name').val().length);
+        console.log($scope.selected.length);
+        if ($('#group_name').val().length > 2 && $scope.selected.length > 0) {
+            console.log('valid group');
+            $scope.valid_group = true;
+        } else {
+            console.log('invalid group');
+            $scope.valid_group = false;
+        }
+
+
+    };
+
+    // IMAGE CTRL
+    var myImageName = '';
+    var mySavedImage = '';
+    $scope.myImage = '';
+    $scope.myCroppedImage = '';
+    // Trigger the file input.
+    $scope.triggerClick = function() {
+        $('#fileInput').trigger('click');
+    };
+
+    // Update Public conv avatar for this user
+    $scope.saveChanges = function() {
+        //$scope.startChat($scope.selected, contact);
+        var saved = false;
+        var profile = {};
+        // If the user has changed the avatar.
+        //if ($scope.myImage != '' && mySavedImage != $scope.myCroppedImage) {
+        mySavedImage = $scope.myCroppedImage;
+        saved = true;
+        myImageName = 'img_' + getDate() + '_' + (new Date()).getTime() + '.jpg';
+        urltoFile($scope.myCroppedImage, myImageName, 'image/jpeg')
+            .then(function(file) {
+                Format.prepareImage([file], function(result) {
+                    profile.avatar = 'fileuploads/images/' + result.file;
+                    // Change the current header.
+                    $scope.$apply(function($scope) {
+                        $scope.avatar = profile.avatar;
+                        $scope.chat_create.conversation_avatar = profile.avatar;
+                        // Close the image selection drawer.
+                        $scope.show_image = false;
+                    });
+
+                    // Save the updated profile avatar and text.
+                    //saveProfile(profile);
+                });
+            });
+        //}
+    };
+
+    $scope.imgcropLoaded = function() {
+        if ($('.crop_container').height() == 0) {
+            $('.crop_container').css('height', '200px');
+            $('.crop_container').css('left', '0px');
+            $timeout(function() {
+                $('.user_details').animate({
+                    opacity: 0
+                }, 100, function() {
+                    // Animation complete.
+                    $('.user_details').animate({
+                        opacity: 0,
+                        //left: 0
+                    }, 0, function() {
+                        // Animation complete.
+                        $('.user_details').animate({
+                            opacity: 0,
+                            left: 0
+                        }, 1000, function() {
+                            // Animation complete.
+                            $('.user_details').animate({
+                                //left:0,
+                                opacity: 1
+                            }, 1000, function() {
+                                // Animation complete.
+                            });
+                        });
+                    });
+                });
+                $('.crop_container').animate({
+                    height: 0
+                }, 100, function() {
+                    // Animation complete.
+                    $('.crop_container').animate({
+                        height: 0
+                    }, 0, function() {
+                        // Animation complete.
+                        $('.crop_container').animate({
+                            height: 200,
+                        }, 1000, function() {
+                            // Animation complete.
+                        });
+                    });
+                });
+                $('.imgcrop').animate({
+                    opacity: 0,
+                }, 100, function() {
+                    // Animation complete.
+                    $('.imgcrop').animate({
+                        opacity: 1,
+                        height: 0
+                    }, 1, function() {
+                        // Animation complete.
+                        $('.imgcrop').animate({
+                            height: 200
+                        }, 1000, function() {
+                            // Animation complete.
+                        });
+                    });
+                });
+            }, 100);
+        }
+    };
+
+    // TODO - make service
+    getDate = function() {
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1;
+        var yyyy = today.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd;
+        }
+        if (mm < 10) {
+            mm = '0' + mm;
+        }
+        var date = yyyy + mm + dd;
+        return date;
+    };
+
+    /*
+    saveProfile = function(profile) {
+        console.log(profile);
+        var pms = { 'id': $scope.currentFullUser._id, 'user': $scope.currentFullUser };
+        // Update this users details.
+        Users.update_user(pms)
+            .then(function(data) {
+                // Update the Profile service.
+                Profile.setProfile(profile);
+            })
+            .catch(function(error) {
+                console.log('error: ' + error);
+            });
+        // Find this users public conversation by id.
+        Conversations.find_user_public_conversation_by_id($scope.currentFullUser._id)
+            .then(function(result) {
+                // Update the avatar for the public conversation.
+                var obj = { 'id': result.data._id, 'avatar': profile.avatar };
+                Conversations.updateAvatar(obj)
+                    .then(function(result) {
+                        console.log(result);
+                    })
+                    .catch(function(error) {
+                        console.log('error: ' + error);
+                    });
+            })
+            .catch(function(error) {
+                console.log('error: ' + error);
+            });
+    };
+    */
+    // Transform the cropped image to a blob.
+    function urltoFile(url, filename, mimeType) {
+        return (fetch(url)
+            .then(function(res) {
+                return res.arrayBuffer();
+            })
+            .then(function(buf) {
+                var blob = new Blob([buf], { type: mimeType });
+                blob.name = filename;
+                return blob;
+            })
+        );
+    }
+
+    // Load image returned from Android.
+    function loadImage(img, callback) {
+        src = 'fileuploads/images/' + img;
+        var file = src;
+        var xhr = new XMLHttpRequest();
+        xhr.onload = function(e) {
+            callback(this.response);
+        };
+        xhr.open('GET', file, true);
+        xhr.responseType = 'blob';
+        xhr.send();
+    }
+
+    // Image returned from Android.
+    androidToJS = function(data) {
+        var file = data.file;
+        myImageName = data.file;
+        var reader = new FileReader();
+        reader.onload = function(evt) {
+            $scope.$apply(function($scope) {
+                $scope.myImage = evt.target.result;
+            });
+            $('.original').hide();
+            $('.preview').css('left', '0px');
+            $('.user_details').css('top', '-15px');
+        };
+        loadImage(file, function(result) {
+            reader.readAsDataURL(result);
+        });
+    };
+    // Android
+    var handleFileClick = function(evt) {
+        if (ua === 'AndroidApp') {
+            Android.choosePhoto();
+            if ($('.crop_container').height() == 0) {
+                $('.user_details').css('left', '-1000px');
+                $('.crop_container').css('height', '0px');
+            }
+        }
+    };
+
+    // Web
+    var handleFileSelect = function(evt) {
+        if ($('.crop_container').height() == 0) {
+            $('.original').hide();
+            $('.preview').css('left', '0px');
+            $('.user_details').css('left', '-1000px');
+        }
+        var file = evt.currentTarget.files[0];
+        myImageName = file.name;
+        var reader = new FileReader();
+        reader.onload = function(evt) {
+            $scope.$apply(function($scope) {
+                $scope.myImage = evt.target.result;
+                $scope.setting_change = true;
+                $('.user_details').css('top', '-20px');
+            });
+        };
+        reader.readAsDataURL(file);
+    };
+    // Web
+    angular.element(document.querySelector('#fileInput')).on('change', handleFileSelect);
+    // Android
+    angular.element(document.querySelector('#fileInput')).on('click', handleFileClick);
+
+
+
+
+
+
+
     $scope.selectGroup = function() {
         $scope.group_selected = !$scope.group_selected;
         console.log('selectGroup');
@@ -76,6 +413,55 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
         //$('#search-query-group').css('display', 'block');
     };
 
+    $scope.selectInvite = function() {
+        console.log('selectInvite');
+        $scope.invite_selected = !$scope.invite_selected;
+    };
+    /*
+               $("#import_contacts").click(function(event) {
+    location.href = "/auth/google_contacts";
+               });
+               */
+
+    $scope.importContacts = function() {
+
+
+        //$('#import_contacts').html('<a href="/auth/google_contacts">Google</a>');
+        console.log('importContacts');
+        /*
+        Contacts.getContacts().then(function(result) {
+            console.log(result);
+        });
+        */
+        Contacts.getPermissions().then(function(result) {
+            console.log(result.data);
+            if (result.data.indexOf('contacts.readonly') >= 0) {
+                console.log('contacts permission granted');
+                Contacts.getContacts().then(function(result) {
+                    //console.log(result.data);
+                    contactsFormat(result);
+                });
+            } else {
+                console.log('contacts permission not granted');
+                //get('/auth/google_contacts')
+                ///auth/google_contacts
+                //$location.path("/auth/google_contacts");
+                //$location.url("/auth/google_contacts");
+                //$http.get("/auth/google_contacts").then(function(result) {
+                //    console.log(result);
+                //});
+                location.href = "/auth/google_contacts";
+            }
+        });
+    };
+
+    $scope.conversationImage = function(event) {
+        event.stopPropagation();
+        console.log('conversationImage');
+        $scope.show_image = !$scope.show_image;
+    };
+
+    /*
     // contact checkbox value changed
     $scope.checkBoxChange = function(checkbox, value) {
         var index = $scope.selected.indexOf(checkbox);
@@ -88,30 +474,58 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
         }
         console.log($scope.selected);
     };
+    */
 
+    /*
+        $scope.saveNameChanges = function(event){
+            event.stopPropagation();
+             //var valy = $("#group_name").val();
+            console.log('saveNameChanges: ' + $scope.group_name);
+                $scope.selectGroup();
+        };
+        */
     // Start a conversation
-    $scope.selectedUsers = function(contact) {
-        $scope.startChat($scope.selected, contact);
+    $scope.selectedUsers = function(event, contact) {
+        event.stopPropagation();
+        console.log(contact);
+        console.log($scope.selected.length);
+        if ($scope.selected.length > 0) {
+            $scope.startChat($scope.selected, contact);
+        }
     };
-
+    //var accessToken;
     // Get the current users details
     $http.get("/api/user_data").then(function(result) {
         $scope.currentUser = result.data.user;
+
+        //accessToken = result.data.user.google.token;
+        // console.log('access_token: ' + accessToken);
         // load this users list of contacts
         loadUserContacts();
+
+        // Image
+        $scope.currentFullUser = result.data.user;
+        $scope.user_name = result.data.user.user_name;
+        $scope.login_name = result.data.user.google.name;
+        $scope.login_email = result.data.user.google.email;
+        $scope.avatar = result.data.user.avatar;
+        if ($scope.avatar == undefined) {
+            $scope.avatar = 'default';
+        }
+        //
+        $scope.avatar = 'default';
+        // Hide the preview avatar
+        $('.preview').css('left', '-1000px');
+        saved_user_name = $scope.user_name;
+        // image
     });
 
-    $scope.doChat = function(contact, $index) {
-        if (contact.conversation_exists) {
-            $scope.chat(contact.conversation_id, contact, $index);
-        } else {
-            $scope.startChat([contact._id], contact, $index);
-        }
-    };
 
 
 
-    $scope.doSelect = function(contact, $index) {
+
+    $scope.doSelect = function(contact) {
+        console.log(contact);
         // reverse item_selected boolean for this contact.
         contact.item_selected = !contact.item_selected;
         // Get the index position of this contact with the $scope.selected array.
@@ -124,6 +538,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
             $timeout(function() {
                 // Add contact to the selected array.
                 $scope.selected.push(contact);
+                validateGroup();
             }, 100);
             // If the contact is deselected and is already in the $scope.selected array.
         } else if (!contact.item_selected && index >= 0) {
@@ -140,13 +555,22 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
                 // If there are no items in $scope.selected then close the div which contains the selected contacts.
                 if ($scope.selected == 0) {
                     $scope.show_selected_drawer = false;
+                    validateGroup();
                 }
             }, 301);
         }
     };
 
+    $scope.doChat = function(contact) {
+        if (contact.conversation_exists) {
+            $scope.chat(contact.conversation_id, contact);
+        } else {
+            $scope.startChat([contact._id], contact);
+        }
+    };
+
     // Continue a conversation by conversation id
-    $scope.chat = function(conversation_id, contact, index) {
+    $scope.chat = function(conversation_id, contact) {
         console.log('Chat');
         var profile_obj = {};
         profile_obj.user_name = contact.user_name;
@@ -160,10 +584,14 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
     // TODO - make sure only one chat created with aother single user.
     $scope.startChat = function(new_participants, contact) {
         console.log('startChat');
+        /*
         var profile_obj = {};
         profile_obj.user_name = contact.user_name;
         profile_obj.avatar = contact.avatar;
         Profile.setConvProfile(profile_obj);
+        */
+
+        //$scope.chat_create.conversation_name = $scope.group_name;
         // reset the participants array.
         $scope.chat_create.participants = [];
         //
@@ -179,10 +607,43 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
         new_participants.map(function(key, array) {
             $scope.chat_create.participants.push({ _id: key, viewed: 0 });
         });
-
+        console.log($scope.chat_create);
         // Create conversation in DB.
         Conversations.create($scope.chat_create)
             .then(function(res) {
+                console.log(res);
+                var profile_obj = {};
+                // if group
+                //if(res.data.participants.length > 2){
+                if (res.data.conversation_name != '') {
+                    profile_obj.user_name = res.data.conversation_name;
+                    profile_obj.avatar = res.data.conversation_avatar;
+                }
+                // If two person
+                //if(res.data.participants.length == 2){
+                if (res.data.conversation_name == '') {
+                    // get the index position of the current user within the participants array
+                    var user_pos = General.findWithAttr(res.data.participants, '_id', $scope.currentUser._id);
+                    // Get the position of the current user
+                    if (user_pos === 0) {
+                        participant_pos = 1;
+                    } else {
+                        participant_pos = 0;
+                    }
+                    // Find the other user
+                    General.findUser(res.data.participants[participant_pos]._id, function(result) {
+                        profile_obj.avatar = "default";
+                        // set the other user name as the name of the conversation.
+                        if (result) {
+                            //key.name = result.user_name;
+                            //avatar = result.avatar;
+                            profile_obj.user_name = result.user_name;
+                            profile_obj.avatar = result.avatar;
+                        }
+                        profile_obj.avatar = avatar;
+                    });
+                }
+                Profile.setConvProfile(profile_obj);
                 // Go to the conversation after it has been created
                 $location.path("/chat/conversation/" + res.data._id);
             });
@@ -223,7 +684,8 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
                 // Update the currentUser model
                 $scope.currentUser = res.data;
                 // remove this search result because it has now been added to the list of contacts
-                $scope.search_results.splice(index, 1);
+                //$scope.search_results.splice(index, 1);
+                $scope.search_results[index].is_contact = true;
                 // re-load the user contacts
                 loadUserContacts();
             });
@@ -254,6 +716,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
 
     // invite a user to join via email
     $scope.inviteUser = function(invite_input) {
+        console.log(invite_input);
         $scope.invite_user.recipient = invite_input;
         $scope.invite_user.sender_id = $scope.currentUser._id;
         $scope.invite_user.sender_name = $scope.currentUser.google.name;
@@ -262,6 +725,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
             .then(function(response) {
                 // send the invite via email
                 sendMail(response.data);
+                $scope.invite_sent = true;
             });
     };
 
@@ -271,13 +735,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$rootScope', '$location', '$http'
         // reset the contacts model
         $scope.contacts = [];
 
-        /*
-        var test_num = 500;
-        for (var i = 0; i < test_num; i++) {
-            cont.$$hashKey = i;
-            $scope.contacts.push(cont);
-        }
-        */
+
 
         var result = $scope.currentUser.contacts.map(function(key, array) {
             // Search for each user in the contacts list by id

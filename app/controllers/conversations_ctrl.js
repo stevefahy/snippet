@@ -108,12 +108,12 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
                     key.avatar = key.conversation_avatar;
                     notification_body = card_content;
                 }
+                /*
                 // Group conversation. 
                 if (key.participants.length > 2) {
                     // Get the conversation name and add to model.
                     key.name = key.conversation_name;
-                    // Temp
-                    key.avatar = 'default';
+                    key.avatar = key.conversation_avatar;
                     notification_body = sender_name + ': ' + card_content;
                 }
                 // Two user conversation (not a group)
@@ -137,6 +137,43 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
                     });
                     notification_body = card_content;
                 }
+                */
+
+
+                // Group conversation. (Two or more)
+                console.log(key.conversation_name);
+                if (key.conversation_name != '') {
+                    console.log('Group conversation. (Two or more)');
+                    // Get the conversation name and add to model.
+                    key.name = key.conversation_name;
+                    key.avatar = key.conversation_avatar;
+                    notification_body = sender_name + ': ' + card_content;
+                }
+                // Two user conversation (not a group)
+                if (key.conversation_name == '') {
+                    console.log('Two user conversation (not a group)');
+                    // Get the position of the current user
+                    if (user_pos === 0) {
+                        participant_pos = 1;
+                    } else {
+                        participant_pos = 0;
+                    }
+                    // Find the other user
+                    General.findUser(key.participants[participant_pos]._id, function(result) {
+                        var avatar = "default";
+                        // set the other user name as the name of the conversation.
+                        if (result) {
+                            key.name = result.user_name;
+                            avatar = result.avatar;
+                        }
+                        key.avatar = avatar;
+
+                    });
+                    notification_body = card_content;
+                }
+
+
+
                 sent_content = FormatHTML.prepSentContent(notification_body, sent_content_length);
                 key.latest_card = sent_content;
                 callback(key);
