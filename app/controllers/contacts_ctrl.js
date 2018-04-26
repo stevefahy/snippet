@@ -522,6 +522,9 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
                 $scope.selectGroup();
         };
         */
+
+
+        
     // Start a conversation
     $scope.selectedUsers = function(event, contact) {
         event.stopPropagation();
