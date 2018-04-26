@@ -523,6 +523,7 @@ module.exports = function(app, passport) {
     // CHECK OATH PERMISSION
     //
     app.get('/api/user_permission/', function(req, res) {
+        console.log('permission: ' + req.user.google.token);
         if (req.user.google) {
             request.get({
                 url: 'https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=' + req.user.google.token
@@ -533,6 +534,7 @@ module.exports = function(app, passport) {
     });
     //
     // USER CONTACTS
+    //https://www.google.com/m8/feeds/contacts/default/thin?alt=json&access_token=ya29.GlupBTMA_9903fys4hzzQc9vH_9DoG0cS6yVuzvlABtcGzKA_veuh5mLkhpHoNa21ZQQpMgzLBj9REJe8HnX3LgEMl4tirvUK-OVQ6KYjm4Vi7DInSYwhS7i8TqK&max-results=700&v=3.0
     //
     // Get all user contacts from social login
     app.get('/api/user_contacts/', function(req, res) {
@@ -640,6 +642,32 @@ module.exports = function(app, passport) {
                 }
             });
         });
+    });
+
+    // add user imported contacts
+    app.post('/api/users/add_imported_contacts', function(req, res) {
+        //var id = req.params.id;
+        var contacts = req.body;
+        console.log('contacts name: ' + contacts.name);
+        console.log('contacts contacts: ' + contacts.contacts);
+        
+        // get the users imported contact array
+        var current_contacts = req.user.imported_contacts;
+        // add the id to the users contacts if it is not already there
+        //if (current_contacts.indexOf(id) < 0) {
+            current_contacts.push(contacts);
+            req.user.imported_contacts = current_contacts;
+            // Save
+            var updateuser = new User(req.user);
+            updateuser.save(function(err, user) {
+                if (err) {
+                    res.send(err);
+                } else {
+                    res.json(user);
+                }
+            });
+        //}
+        
     });
 
     // add user contact by id

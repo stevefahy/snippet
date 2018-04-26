@@ -8,6 +8,7 @@ var Schema = mongoose.Schema;
 var userSchema = new Schema({
     _id: Schema.Types.ObjectId,
     contacts: [{ "type": Schema.Types.ObjectId, "ref": "User" }],
+    imported_contacts: [],
     notification_key_name: String,
     notification_key: String,
     first_login: Boolean,

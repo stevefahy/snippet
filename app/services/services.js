@@ -77,6 +77,9 @@ cardApp.factory('Users', ['$http', function($http) {
         add_contact: function(id) {
             return $http.post('api/users/add_contact/' + id);
         },
+        add_imported_contacts: function(contacts) {
+            return $http.post('api/users/add_imported_contacts', contacts);
+        },
         update_user: function(user) {
             var theurl = 'api/users/update_user/' + user.id;
             return $http.put(theurl, user);

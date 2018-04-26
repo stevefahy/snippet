@@ -24,8 +24,14 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
 
     $scope.user_contacts = [];
 
+    loadGoogleContacts = function() {
+        //https://www.google.com/m8/feeds/contacts/default/thin?alt=json&access_token=ya29.GlupBTMA_9903fys4hzzQc9vH_9DoG0cS6yVuzvlABtcGzKA_veuh5mLkhpHoNa21ZQQpMgzLBj9REJe8HnX3LgEMl4tirvUK-OVQ6KYjm4Vi7DInSYwhS7i8TqK&max-results=700&v=3.0
+    };
+
     var paramValue = $route.current.$$route.menuItem;
     console.log(paramValue);
+
+    $scope.contacts_imported = false;
 
     contactsFormat = function(result) {
         result.data.map(function(key, array) {
@@ -39,7 +45,15 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
 
 
         $scope.user_contacts = result.data;
+
+
+
+        var contacts_obj = {name: 'google', contacts:$scope.user_contacts};
+
+        Users.add_imported_contacts(contacts_obj);
     };
+
+
 
     if (paramValue != undefined) {
         // if (paramValue == 'import') {
@@ -48,8 +62,11 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
 
         switch (paramValue) {
             case 'import':
+            $scope.contacts_imported = true;
+                // check for canceled permission
                 $scope.contactImport();
                 Contacts.getContacts().then(function(result) {
+                    console.log('callback');
                     contactsFormat(result);
                 });
                 break;
@@ -422,19 +439,39 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     location.href = "/auth/google_contacts";
                });
                */
+/*
+    $scope.dimportContacts = function() {
+        $http.get("https://www.google.com/m8/feeds/contacts/default/thin?alt=json&access_token="+ $scope.currentUser.google.token + "&max-results=700&v=3.0").then(function(result) {
+            console.log(result);
+        });
+    };
+    */
 
     $scope.importContacts = function() {
 
 
         //$('#import_contacts').html('<a href="/auth/google_contacts">Google</a>');
         console.log('importContacts');
+
+        $scope.contacts_imported = true;
+
+        /*
+                $http.get("https://www.google.com/m8/feeds/contacts/default/thin?alt=json&access_token=ya29.GlupBTMA_9903fys4hzzQc9vH_9DoG0cS6yVuzvlABtcGzKA_veuh5mLkhpHoNa21ZQQpMgzLBj9REJe8HnX3LgEMl4tirvUK-OVQ6KYjm4Vi7DInSYwhS7i8TqK&max-results=700&v=3.0").then(function(result) {
+                    console.log(result);
+                });
+                */
+
         /*
         Contacts.getContacts().then(function(result) {
             console.log(result);
         });
         */
+
+
         Contacts.getPermissions().then(function(result) {
             console.log(result.data);
+
+
             if (result.data.indexOf('contacts.readonly') >= 0) {
                 console.log('contacts permission granted');
                 Contacts.getContacts().then(function(result) {
@@ -453,6 +490,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
                 location.href = "/auth/google_contacts";
             }
         });
+
     };
 
     $scope.conversationImage = function(event) {
@@ -493,11 +531,24 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
             $scope.startChat($scope.selected, contact);
         }
     };
+
+    checkImportedContacts = function(){
+        //if($scope.currentUser.imported_contacts)
+        console.log($scope.currentUser.imported_contacts);
+        if($scope.currentUser.imported_contacts.length > 0){
+            $scope.contacts_imported = true;
+            console.log('LOAD IMPORTED CONTACTS');
+            $scope.user_contacts = $scope.currentUser.imported_contacts[0].contacts;
+        }
+    };
     //var accessToken;
     // Get the current users details
     $http.get("/api/user_data").then(function(result) {
         $scope.currentUser = result.data.user;
+console.log($scope.currentUser);
 
+        // check whether contacts have been imported
+        checkImportedContacts();
         //accessToken = result.data.user.google.token;
         // console.log('access_token: ' + accessToken);
         // load this users list of contacts
