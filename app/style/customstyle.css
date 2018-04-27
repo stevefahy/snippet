@@ -1405,7 +1405,7 @@ height: 100%;
 .content_cnv_scroll {
     /* height: 100%; */
     width: 100vw;
-    overflow-y: auto;
+    overflow-y: hidden;
     overflow-x: hidden;
     height: calc(100% - 76px);
     border-radius: 1px;
