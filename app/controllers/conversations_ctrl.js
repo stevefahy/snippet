@@ -1,5 +1,6 @@
 cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$http', 'Invites', 'Email', 'Users', 'Conversations', '$q', 'FormatHTML', 'General', 'Profile', function($scope, $rootScope, $location, $http, Invites, Email, Users, Conversations, $q, FormatHTML, General, Profile) {
 
+$scope.pageClass = 'page-conversations'; 
     this.$onInit = function() {
         sent_content_length = 20;
         // array of conversations

@@ -1,5 +1,7 @@
 cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location', '$http', '$timeout', 'Invites', 'Email', 'Users', 'Conversations', 'Profile', 'General', 'Format', 'Contacts', function($scope, $route, $rootScope, $location, $http, $timeout, Invites, Email, Users, Conversations, Profile, General, Format, Contacts) {
 
+$scope.pageClass = 'page-contacts';
+
     $scope.search_sel = false;
     $scope.import_sel = false;
     $scope.contacts_sel = true;
@@ -524,7 +526,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
         */
 
 
-        
+
     // Start a conversation
     $scope.selectedUsers = function(event, contact) {
         event.stopPropagation();

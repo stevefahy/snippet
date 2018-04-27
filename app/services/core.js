@@ -16,13 +16,18 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
         })
         .when("/c/contacts", {
             templateUrl: '/views/contacts.html',
-            reloadOnSearch:false
+            controller: 'contactsCtrl'
         })
         
         .when("/c/contacts/import", {
             templateUrl: '/views/contacts.html',
             menuItem: 'import',
             reloadOnSearch:false
+        })
+
+        .when("/c/contacts_import", {
+            templateUrl: '/views/contacts_import.html',
+            controller: 'contactsimportCtrl'
         })
         /*
         .when("/c/contacts/search", {
@@ -37,7 +42,8 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
         })
         */
         .when("/chat/conversations", {
-            templateUrl: '/views/conversations.html'
+            templateUrl: '/views/conversations.html',
+            controller: 'conversationsCtrl'
         })
         .when("/chat/conversation/:id", {
             templateUrl: '/views/conversation.html'

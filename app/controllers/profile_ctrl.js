@@ -1,6 +1,7 @@
 cardApp.controller("profileCtrl", ['$http', '$rootScope', 'Profile', function($http, $rootScope, Profile) {
     // Get the current users details
     $http.get("/api/user_data").then(function(result) {
+        console.log(result.data.user);
         if (result.data.user) {
             // Get Profile once.
             var profile = {};

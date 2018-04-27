@@ -55,9 +55,6 @@
     <link rel="stylesheet" href="/style/customstyle.css">
     <link rel="stylesheet" href="/style/bootstrap-social.css">
     <link rel="stylesheet" href="/style/ng-img-crop.css">
-
- 
-
     <!-- Sanitize -->
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-sanitize.js"></script>
     <!-- Moment -->
@@ -83,6 +80,7 @@
     <script src="/controllers/header_ctrl.js"></script>
     <script src="/controllers/cardcreate_ctrl.js"></script>
     <script src="/controllers/contacts_ctrl.js"></script>
+    <script src="/controllers/contactsimport_ctrl.js"></script>
     <script src="/controllers/join_ctrl.js"></script>
     <script src="/controllers/usersetting_ctrl.js"></script>
     <script src="/controllers/conversation_ctrl.js"></script>
@@ -99,7 +97,8 @@
     <!-- User Profile -->
     <div class="profile" ng-include src="'/views/profile.html'"></div>
     <!-- Templates loaded into ng-view -->
-    <ng-view class="main_view"></ng-view>
+    <!--<ng-view class="main_view"></ng-view>-->
+    <div class="page {{ pageClass }}" ng-view></div>
     <!-- Hidden input field which gains focus while text formatting is being prepared -->
     <div id="hidden_input_container">
         <input class="form-control" type="text" autocorrect="off" autocapitalize="none" id="hidden_input">

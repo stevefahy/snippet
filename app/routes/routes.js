@@ -119,6 +119,11 @@ module.exports = function(app, passport) {
     // WEB ROUTE
     //----------------------------------------------------------------------
     //
+
+
+
+
+/*
     // NOT LOGGED IN
     app.get('/api/login', function(req, res) {
         // load the single view file (angular will handle the page changes on the front-end)
@@ -128,6 +133,7 @@ module.exports = function(app, passport) {
     app.get('/', isLoggedIn, function(req, res) {
         res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
     });
+    
     // LOGOUT
     app.get('/api/logout', function(req, res) {
         req.logout();
@@ -158,16 +164,21 @@ module.exports = function(app, passport) {
     app.get('/c/contacts/import', isLoggedIn, function(req, res) {
         res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
     });
-    /*
+
     // CONTACTS - IMPORT
-    app.get('/c/contacts/search', isLoggedIn, function(req, res) {
+    app.get('/c/contacts_import', isLoggedIn, function(req, res) {
         res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
     });
+    
     // CONTACTS - IMPORT
-    app.get('/c/contacts/contacts', isLoggedIn, function(req, res) {
-        res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
-    });
-    */
+    //app.get('/c/contacts/search', isLoggedIn, function(req, res) {
+     //   res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
+    //});
+    // CONTACTS - IMPORT
+    //app.get('/c/contacts/contacts', isLoggedIn, function(req, res) {
+     //   res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
+    //});
+    
     // CONVERSATION
     app.get('/chat/conversation/:id', isMember, function(req, res) {
         res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
@@ -180,12 +191,15 @@ module.exports = function(app, passport) {
     app.get('/api/user_setting', isLoggedIn, function(req, res) {
         res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
     });
+    */
     // Route to check passort authentication
     app.get('/api/user_data', isLoggedIn, function(req, res) {
         if (req.user === undefined) {
             // The user is not logged in
             res.json({ 'username': 'forbidden' });
+            console.log('no');
         } else {
+            console.log('yes');
             res.json({
                 user: req.user
             });
@@ -1233,4 +1247,12 @@ module.exports = function(app, passport) {
             res.json(card);
         });
     });
+
+
+    app.all('*', function(req, res, next) {
+    // Just send the index.html for other files to support HTML5Mode
+    res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
+});
+
+
 };
