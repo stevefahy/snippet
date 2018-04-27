@@ -1417,13 +1417,21 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 }
 
     
-
+/*
 .content_import_scroll_contacts {
-    /* height: 100%; */
     width: 100vw;
     overflow-y: scroll;
     overflow-x: hidden;
     height: calc(100% - 76px);
+    border-radius: 1px;
+}
+*/
+
+.content_import_scroll_contacts {
+    width: 100vw;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    height: calc(100% - 125px);
     border-radius: 1px;
 }
 
