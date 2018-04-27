@@ -2251,9 +2251,9 @@ opacity:0;
     transform-origin: 50% 50%;
     animation: rotateOutNewspaper .5s both ease-in;
     */
-    -webkit-animation: slideOutRight 5s both ease-in;
-    -moz-animation: slideOutRight 5s both ease-in;
-    animation: slideOutRight 5s both ease-in;
+    -webkit-animation: slideOutRight .5s both ease-in;
+    -moz-animation: slideOutRight .5s both ease-in;
+    animation: slideOutRight .5s both ease-in;
 }
 
 .page-contactimport.ng-enter {
@@ -2262,9 +2262,9 @@ opacity:0;
     -moz-animation:slideInUp 0.5s both ease-in;
     animation:slideInUp 0.5s both ease-in;  
     */
-    -webkit-animation: slideInRight 5s both ease-in;
-    -moz-animation: slideInRight 5s both ease-in;
-    animation: slideInRight 5s both ease-in;
+    -webkit-animation: slideInRight .5s both ease-in;
+    -moz-animation: slideInRight .5s both ease-in;
+    animation: slideInRight .5s both ease-in;
 }
 
 
@@ -2293,7 +2293,7 @@ opacity:0;
     -moz-animation:slideOutLeft 5s both ease-in;
     animation:slideOutLeft 5s both ease-in; 
     */
-    -webkit-animation: 5s red-to-blue;
+    -webkit-animation: .5s red-to-blue;
 }
 
 .page-contacts.ng-enter {
@@ -2302,7 +2302,7 @@ opacity:0;
     -moz-animation: slideInRight 5s both ease-in;
     animation: slideInRight 5s both ease-in;
     */
-     -webkit-animation: 5s red-to-blue;
+     -webkit-animation: .5s red-to-blue;
 }
 
 .my-special-animation.ng-enter {
