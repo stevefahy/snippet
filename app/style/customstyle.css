@@ -1346,15 +1346,29 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     cursor: pointer;
 }
 
+/*
 .container_cnv {
-    /*position: fixed;*/
+    position: fixed;
+
     width: 100%;
     display: flex;
     flex: auto;
     flex-direction: column;
-    /*height: 100%;*/
+    
+height: 100%;
+
     height: 100vh;
 }
+*/
+.container_cnv {
+    position: fixed;
+    width: 100%;
+    display: flex;
+    flex: auto;
+    flex-direction: column;
+    height: 100%;
+}
+
 
 .container_cnv2 {
 
