@@ -834,12 +834,13 @@ console.log($scope.currentUser);
                 });
         });
 
-        console.log(($scope.contacts));
+        
 
         for (var i=0; i<10; i++){
-        var newcontact = {id:'1234', user_name: 'steve', avatar:'fileuploads/images/img_20180405_1522960590080.jpg'};
+        var newcontact = {id:'1234', user_name: 'stever', avatar:'fileuploads/images/pinky_2.png'};
         $scope.contacts.push(newcontact);
         }
+        console.log(($scope.contacts));
    };
 
     // send email invite to the recipient with the invite code.
