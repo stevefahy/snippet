@@ -41,12 +41,14 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
     }
 
     // Add custom class for Android scrollbar
-    if (ua == 'AndroidApp') {
+    //if (ua == 'AndroidApp') {
+    if (ua.indexOf('AndroidApp') >= 0) {
         $('.content_cnv').addClass('content_cnv_android');
     }
 
     // Android only
-    if (ua == 'AndroidApp') {
+    //if (ua == 'AndroidApp') {
+    if (ua.indexOf('AndroidApp') >= 0) {
         window.addEventListener("resize", function() {
             is_landscape = (screen.height < screen.width);
             if (is_landscape) {
@@ -319,7 +321,8 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
 
     // Android
     var handleFileClick = function(evt) {
-        if (ua === 'AndroidApp') {
+        //if (ua === 'AndroidApp') {
+        if (ua.indexOf('AndroidApp') >= 0) {
             Android.choosePhoto();
             if ($('.crop_container').height() == 0) {
                 $('.user_details').css('left', '-1000px');

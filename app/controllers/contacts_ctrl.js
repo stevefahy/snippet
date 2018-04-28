@@ -410,7 +410,8 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     };
     // Android
     var handleFileClick = function(evt) {
-        if (ua === 'AndroidApp') {
+        //if (ua === 'AndroidApp') {
+            if (ua.indexOf('AndroidApp') >= 0) {
             Android.choosePhoto();
             if ($('.crop_container').height() == 0) {
                 $('.user_details').css('left', '-1000px');

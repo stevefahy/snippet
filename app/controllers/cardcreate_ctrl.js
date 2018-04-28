@@ -60,7 +60,8 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
         $scope.card_create.content = '';
         $('#cecard_create').html('');
         $scope.input = false;
-        if (ua !== 'AndroidApp') {
+        //if (ua !== 'AndroidApp') {
+        if (ua.indexOf('AndroidApp') < 0) {
             $('#cecard_create').focus();
         }
         checkInput('#cecard_create');
@@ -123,7 +124,8 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
     };
 
     // only check focus on web version
-    if (ua !== 'AndroidApp') {
+    //if (ua !== 'AndroidApp') {
+        if (ua.indexOf('AndroidApp') < 0) {
         $window.onfocus = function() {
             // this.setFocus();
         };

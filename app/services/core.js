@@ -150,7 +150,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         insertImage(data);
     };
 
-    if (ua === 'AndroidApp') {
+    //if (ua === 'AndroidApp') {
+    if (ua.indexOf('AndroidApp') >= 0) {
         Android.checkFCMToken();
     }
 
@@ -480,7 +481,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.uploadFile = function(id, card, currentUser) {
-        if (ua === 'AndroidApp') {
+        //if (ua === 'AndroidApp') {
+        if (ua.indexOf('AndroidApp') >= 0) {
             if (document.activeElement.id != 'cecard_create' && id != undefined && id != 'card_create') {
                 // save the card first (Android bug)
                 self.saveCard(id, card, currentUser);
@@ -509,7 +511,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.showAndroidToast = function(toast) {
-        if (ua === 'AndroidApp') {
+        //if (ua === 'AndroidApp') {
+        if (ua.indexOf('AndroidApp') >= 0) {
             Android.showToast(toast);
         }
     };
@@ -559,7 +562,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     checkUpdate = function() {
-        if (ua == 'AndroidApp') {
+        //if (ua == 'AndroidApp') {
+        if (ua.indexOf('AndroidApp') >= 0) {
             if (focused_id != undefined) {
                 self.getBlurAndroid(focused_id, focused_card, focused_user);
             }

@@ -48,7 +48,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     }
 
     // Add custom class for Android scrollbar
-    if (ua == 'AndroidApp') {
+    //if (ua == 'AndroidApp') {
+    if (ua.indexOf('AndroidApp') >= 0) {
         $('.content_cnv').addClass('content_cnv_android');
     }
 
@@ -143,7 +144,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     // Android only
-    if (ua == 'AndroidApp') {
+    //if (ua == 'AndroidApp') {
+    if (ua.indexOf('AndroidApp') >= 0) {
         window.addEventListener("resize", function() {
             is_landscape = (screen.height < screen.width);
             if (is_landscape) {
@@ -190,7 +192,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // start watching onfocus and onblur
     watchFocus = function() {
         // only check focus on web version
-        if (ua !== 'AndroidApp') {
+        //if (ua !== 'AndroidApp') {
+        if (ua.indexOf('AndroidApp') < 0) {
             $window.onfocus = function() {
                 this.setFocus();
             };
@@ -307,7 +310,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Called by Android to get the conversation id.
     getConversationId = function() {
-        if (ua == 'AndroidApp') {
+        //if (ua == 'AndroidApp') {
+        if (ua.indexOf('AndroidApp') >= 0) {
             var id = Conversations.getConversationId();
             Android.conversationId(id);
         }
