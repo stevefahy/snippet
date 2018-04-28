@@ -10,9 +10,11 @@ cardApp.controller("headerCtrl", ['Profile', '$scope', '$rootScope', '$location'
                 // Route where Conversation profile should be displayed.
                 user = Profile.getConvProfile();
             }
+            if(user != undefined){
             console.log(user);
             $scope.avatar = user.avatar;
             $scope.conversation_name = user.user_name;
+        }
         }
     };
 

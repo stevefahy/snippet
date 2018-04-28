@@ -107,10 +107,14 @@ function isMember(req, res, next) {
 
 // route middleware to ensure user is logged in
 function isLoggedIn(req, res, next) {
+    console.log('ILI');
     if (req.isAuthenticated()) {
+        console.log('yes');
         return next();
     } else {
-        res.redirect('/api/login');
+        console.log('no');
+        //res.redirect('/api/login');
+        res.json({ 'auth': 'denied' });
     }
 }
 
@@ -276,7 +280,7 @@ module.exports = function(app, passport) {
     // google callback
     // log in via join page already goes to user settings/
     app.get('/auth/google/callback', function(req, res, next) {
-
+console.log('auth callback');
         passport.authenticate('google', function(err, user, info) {
 
             if (err) {
@@ -519,7 +523,8 @@ module.exports = function(app, passport) {
     // CONTACTS
     //
     // contact search box
-    app.get('/api/search_member', function(req, res) {
+    app.get('/api/search_member', isLoggedIn, function(req, res) {
+        console.log('contacts search');
         var username = new RegExp(req.query["term"], 'i');
         User.find({ 'google.name': username }, function(err, user) {
             if (err) {
@@ -1248,7 +1253,7 @@ module.exports = function(app, passport) {
         });
     });
 
-
+    // Catch all. If none of the above routes match serve the index.html.
     app.all('*', function(req, res, next) {
     // Just send the index.html for other files to support HTML5Mode
     res.sendFile('indexa.html', { root: path.join(__dirname, '../') });

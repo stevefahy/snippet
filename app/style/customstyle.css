@@ -1284,6 +1284,11 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     transition: all .5s cubic-bezier(.4, 0, .2, 1);
 }
 
+.contacts_transition{
+    -webkit-transition: all .5s cubic-bezier(.4, 0, .2, 1);
+    transition: all .5s cubic-bezier(.4, 0, .2, 1);
+}
+
 .transition_5 {
     -webkit-transition: all .5s cubic-bezier(.4, 0, .2, 1);
     transition: all .5s cubic-bezier(.4, 0, .2, 1);
@@ -1405,10 +1410,14 @@ height: 100%;
 .content_cnv_scroll {
     /* height: 100%; */
     width: 100vw;
-    overflow-y: hidden;
+    overflow-y: auto;
     overflow-x: hidden;
     height: calc(100% - 76px);
     border-radius: 1px;
+}
+
+.content_cnv_scroll_off {
+    overflow-y: hidden;
 }
 
 .content_import_scroll {
@@ -1443,10 +1452,14 @@ height: 100%;
 
 .content_import_scroll_contacts {
     width: 100vw;
-    overflow-y: hidden;
+    overflow-y: auto;
     overflow-x: hidden;
     height: calc(100% - 125px);
     border-radius: 1px;
+}
+
+.content_import_scroll_contacts_off {
+    overflow-y: hidden;
 }
 
 

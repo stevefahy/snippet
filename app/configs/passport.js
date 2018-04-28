@@ -327,9 +327,11 @@ module.exports = function(passport) {
                                 user.google.email = (profile.emails[0].value || '').toLowerCase(); // pull the first email
 
                                 user.save(function(err) {
-                                    if (err)
+                                    if (err){
+                                        console.log('err: ' + err)
                                         return done(err);
-
+                                    }
+                                    console.log(user);
                                     return done(null, user);
                                 });
                             } else {

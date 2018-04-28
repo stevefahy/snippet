@@ -1,12 +1,14 @@
 var cardApp = angular.module("cardApp", ['ngSanitize', 'ngRoute', 'angularMoment', 'ngAnimate', 'ngImgCrop']);
 
+
 // Prefix for loading a snip id
 var prefix = '/s/';
 
 cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
     $routeProvider
         .when('/', {
-            templateUrl: '/views/conversations.html'
+            templateUrl: '/views/conversations.html',
+            controller: 'conversationsCtrl'
         })
         .when("/s/:snip", {
             templateUrl: '/views/card.html'
@@ -18,9 +20,10 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
             templateUrl: '/views/contacts.html',
             controller: 'contactsCtrl'
         })
-        
+        ///c/contacts/import
         .when("/c/contacts/import", {
             templateUrl: '/views/contacts.html',
+            controller: 'contactsCtrl',
             menuItem: 'import',
             reloadOnSearch:false
         })
@@ -105,6 +108,7 @@ cardApp.run(['$route', '$rootScope', '$location', function ($route, $rootScope, 
     };
 }]);
 */
+
 
 
 cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', '$injector', function($window, $rootScope, $timeout, $q, Users, Cards, Conversations, replaceTags, socket, $injector) {
@@ -1739,3 +1743,6 @@ cardApp.directive('onErrorSrc', function() {
         }
     };
 });
+
+
+

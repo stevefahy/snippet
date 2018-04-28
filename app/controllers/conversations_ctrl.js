@@ -1,11 +1,15 @@
 cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$http', 'Invites', 'Email', 'Users', 'Conversations', '$q', 'FormatHTML', 'General', 'Profile', function($scope, $rootScope, $location, $http, Invites, Email, Users, Conversations, $q, FormatHTML, General, Profile) {
 
 $scope.pageClass = 'page-conversations'; 
+
+
     this.$onInit = function() {
-        sent_content_length = 20;
+  
+    };
+        //was in init
+          sent_content_length = 20;
         // array of conversations
         $scope.conversations = [];
-    };
 
     // Broadcast by socket service when a  card has been created, updated or deleted by another user to this user
     $scope.$on('NOTIFICATION', function(event, msg) {
@@ -195,6 +199,8 @@ $scope.pageClass = 'page-conversations';
     // TODO - Better way to get user details across controllers. service? middleware? app.use?
     // Get the current users details
     $http.get("/api/user_data").then(function(result) {
+        console.log('GUD');
+        console.log(result);
         if (result.data.user) {
             $scope.currentUser = result.data.user;
             var profile = {};
@@ -229,6 +235,8 @@ $scope.pageClass = 'page-conversations';
                             });
                     });
                 });
+        } else {
+            $location.path("/api/login");
         }
     });
 

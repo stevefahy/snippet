@@ -2,7 +2,7 @@
     <div class="container_cnv">
         <div class="header_container" ng-include="'/views/header_contacts.html'"></div>
         <!-- IMPORT -->
-        <div class="content_conv_import transition_4" ng-class="{ 'content_conv_import_100': contacts_sel, 'content_conv_import_200': search_sel}">
+        <div class="content_conv_import contacts_transition" ng-class="{ 'content_conv_import_100': contacts_sel, 'content_conv_import_200': search_sel}">
             <div class="invite_div" ng-class="{ 'invite_div_off': invite_selected}" ng-click="invite_selected || selectInvite()">
                 <div id="add_goup_button">
                     <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
@@ -102,7 +102,7 @@
             <!---->
             <!-- SCROLLABLE IMPORTED CONTACTS -->
             <!---->
-            <div class="content_import_scroll" ng-class="{'content_import_scroll_contacts': contacts_imported}">
+            <div class="content_import_scroll" ng-class="{'content_import_scroll_contacts': contacts_imported, 'content_import_scroll_contacts_off': contacts_imported && animating}">
                 <div ng-repeat="contact in user_contacts | orderBy:'name'">
 
                     {{contact.name != '' ? contact.name : contact.email }}
@@ -133,7 +133,7 @@
             </div>
         </div>
         <!-- SEARCH -->
-        <div class="content_conv_search transition_4" ng-class="{ 'content_conv_search_100': import_sel, 'content_conv_search_200': contacts_sel}">
+        <div class="content_conv_search contacts_transition" ng-class="{ 'content_conv_search_100': import_sel, 'content_conv_search_200': contacts_sel}">
             <div id="">
                 <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
                     <div class="convs_container contacts_search_container">
@@ -169,7 +169,7 @@
             </div>
         </div>
         <!-- CONTACTS -->
-        <div class="content_cnv_top transition_4" ng-class="{ 'content_conv_100': import_sel,
+        <div class="content_cnv_top contacts_transition" ng-class="{ 'content_conv_100': import_sel,
         'content_conv_200': search_sel}">
             <!---->
             <!-- CONTACTS GROUP -->
@@ -269,7 +269,8 @@
             <!---->
             <!-- SCROLLABLE CONTACTS -->
             <!---->
-            <div class="content_cnv_scroll" ng-class="{'content_cnv_scroll_group': show_selected_drawer}">
+
+            <div class="content_cnv_scroll" ng-class="{'content_cnv_scroll_group': show_selected_drawer, 'content_cnv_scroll_off': animating}">
                 <div ng-repeat="contact in contacts | orderBy:'user_name'">
                     <div class="contact_div" ng-click="group_selected ? doSelect(contact) : doChat(contact)">
                         <li class="list-group-item d-flex justify-content-between align-items-center convs_list">

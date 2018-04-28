@@ -1,27 +1,52 @@
 cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location', '$http', '$timeout', 'Invites', 'Email', 'Users', 'Conversations', 'Profile', 'General', 'Format', 'Contacts', function($scope, $route, $rootScope, $location, $http, $timeout, Invites, Email, Users, Conversations, Profile, General, Format, Contacts) {
 
-$scope.pageClass = 'page-contacts';
+    $scope.pageClass = 'page-contacts';
+
+    this.$onInit = function() {
+        console.log('contacts init');
+        console.log(($scope.contacts));
+    };
+
+    console.log('contacts post init');
+    console.log(($scope.contacts));
 
     $scope.search_sel = false;
     $scope.import_sel = false;
     $scope.contacts_sel = true;
 
+    $scope.animating = false;
+
+
+    $(".contacts_transition").bind('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function() {
+        $scope.$apply(function($scope) {
+            $scope.animating = false;
+        });
+
+        console.log('fin');
+    });
+
     $scope.contactSearch = function() {
         $scope.search_sel = true;
         $scope.import_sel = false;
         $scope.contacts_sel = false;
+
+        $scope.animating = true;
     };
 
     $scope.contactImport = function() {
         $scope.search_sel = false;
         $scope.import_sel = true;
         $scope.contacts_sel = false;
+
+        $scope.animating = true;
     };
 
     $scope.contactContacts = function() {
         $scope.search_sel = false;
         $scope.import_sel = false;
         $scope.contacts_sel = true;
+
+        $scope.animating = true;
     };
 
     $scope.user_contacts = [];
@@ -50,7 +75,7 @@ $scope.pageClass = 'page-contacts';
 
 
 
-        var contacts_obj = {name: 'google', contacts:$scope.user_contacts};
+        var contacts_obj = { name: 'google', contacts: $scope.user_contacts };
 
         Users.add_imported_contacts(contacts_obj);
     };
@@ -64,7 +89,7 @@ $scope.pageClass = 'page-contacts';
 
         switch (paramValue) {
             case 'import':
-            $scope.contacts_imported = true;
+                $scope.contacts_imported = true;
                 // check for canceled permission
                 $scope.contactImport();
                 Contacts.getContacts().then(function(result) {
@@ -441,13 +466,13 @@ $scope.pageClass = 'page-contacts';
     location.href = "/auth/google_contacts";
                });
                */
-/*
-    $scope.dimportContacts = function() {
-        $http.get("https://www.google.com/m8/feeds/contacts/default/thin?alt=json&access_token="+ $scope.currentUser.google.token + "&max-results=700&v=3.0").then(function(result) {
-            console.log(result);
-        });
-    };
-    */
+    /*
+        $scope.dimportContacts = function() {
+            $http.get("https://www.google.com/m8/feeds/contacts/default/thin?alt=json&access_token="+ $scope.currentUser.google.token + "&max-results=700&v=3.0").then(function(result) {
+                console.log(result);
+            });
+        };
+        */
 
     $scope.importContacts = function() {
 
@@ -537,10 +562,10 @@ $scope.pageClass = 'page-contacts';
         }
     };
 
-    checkImportedContacts = function(){
+    checkImportedContacts = function() {
         //if($scope.currentUser.imported_contacts)
         console.log($scope.currentUser.imported_contacts);
-        if($scope.currentUser.imported_contacts.length > 0){
+        if ($scope.currentUser.imported_contacts.length > 0) {
             $scope.contacts_imported = true;
             console.log('LOAD IMPORTED CONTACTS');
             $scope.user_contacts = $scope.currentUser.imported_contacts[0].contacts;
@@ -549,31 +574,36 @@ $scope.pageClass = 'page-contacts';
     //var accessToken;
     // Get the current users details
     $http.get("/api/user_data").then(function(result) {
-        $scope.currentUser = result.data.user;
-console.log($scope.currentUser);
 
-        // check whether contacts have been imported
-        checkImportedContacts();
-        //accessToken = result.data.user.google.token;
-        // console.log('access_token: ' + accessToken);
-        // load this users list of contacts
-        loadUserContacts();
+        if (result.data.user) {
+            $scope.currentUser = result.data.user;
+            console.log($scope.currentUser);
 
-        // Image
-        $scope.currentFullUser = result.data.user;
-        $scope.user_name = result.data.user.user_name;
-        $scope.login_name = result.data.user.google.name;
-        $scope.login_email = result.data.user.google.email;
-        $scope.avatar = result.data.user.avatar;
-        if ($scope.avatar == undefined) {
+            // check whether contacts have been imported
+            checkImportedContacts();
+            //accessToken = result.data.user.google.token;
+            // console.log('access_token: ' + accessToken);
+            // load this users list of contacts
+            loadUserContacts();
+
+            // Image
+            $scope.currentFullUser = result.data.user;
+            $scope.user_name = result.data.user.user_name;
+            $scope.login_name = result.data.user.google.name;
+            $scope.login_email = result.data.user.google.email;
+            $scope.avatar = result.data.user.avatar;
+            if ($scope.avatar == undefined) {
+                $scope.avatar = 'default';
+            }
+            //
             $scope.avatar = 'default';
+            // Hide the preview avatar
+            $('.preview').css('left', '-1000px');
+            saved_user_name = $scope.user_name;
+            // image
+        } else {
+            $location.path("/api/login");
         }
-        //
-        $scope.avatar = 'default';
-        // Hide the preview avatar
-        $('.preview').css('left', '-1000px');
-        saved_user_name = $scope.user_name;
-        // image
     });
 
 
@@ -834,14 +864,14 @@ console.log($scope.currentUser);
                 });
         });
 
-        
 
-        for (var i=0; i<10; i++){
-        var newcontact = {id:'1234', user_name: 'stever', avatar:'fileuploads/images/pinky_2.png'};
-        $scope.contacts.push(newcontact);
+
+        for (var i = 0; i < 10; i++) {
+            var newcontact = { id: '1234', user_name: 'stever', avatar: 'fileuploads/images/pinky_2.png' };
+            $scope.contacts.push(newcontact);
         }
         console.log(($scope.contacts));
-   };
+    };
 
     // send email invite to the recipient with the invite code.
     sendMail = function(invite) {
@@ -898,6 +928,9 @@ console.log($scope.currentUser);
                             }
 
                         }));
+                    },
+                    error: function(error) {
+                        console.log('error: ' + error);
                     }
                 });
             },
