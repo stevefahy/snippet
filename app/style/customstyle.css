@@ -1068,6 +1068,12 @@ li.list-group-item.d-flex.justify-content-between.align-items-center.ng-binding 
     margin-top: 2px;
 }
 
+#invite_name{
+    font-weight: 400;
+    margin-bottom: 2px;
+    margin-top: 2px;
+}
+
 li.list-group-item.d-flex.justify-content-between.align-items-center {
     border-color: #e6e6e6;
     border-width: 1px;
@@ -1127,6 +1133,13 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     align-self: center;
 }
 
+.convs_col_b_import {
+    /* text-align: right; */
+    /* width: 100%; */
+    margin-left: auto;
+    /* margin-right: auto; */
+}
+
 .convs_a {
     grid-column: 1;
     grid-row-end: span 2;
@@ -1136,8 +1149,11 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 .convs_a_small {
     grid-column: 1;
     grid-row-end: span 2;
+    /*
     margin-top: auto;
     margin-bottom: auto;
+    */
+    margin-top: -2px;
 }
 
 .convs_b {
@@ -1429,6 +1445,10 @@ height: 100%;
     border-radius: 1px;
 }
 
+.content_import_scroll .convs_col_b{
+    text-align: unset;
+}
+
 .content_import_scroll2 {
     /* height: 100%; */
     width: 100vw;
@@ -1614,9 +1634,20 @@ span#scroll_image_latest {
     padding-left: 8px;
 }
 
+.mi-person_add_small {
+    color: #FFFFFF;
+    font-size: 20px !important;
+    /* font-weight: 900; */
+    background-color: green;
+    padding-top: 3px;
+    padding-left: 3px;
+}
+
 .mi-person_add_grey {
     background-color: grey !important;
 }
+
+
 
 
 .content_conv_import .mi-import_contacts {
@@ -2147,9 +2178,20 @@ opacity:0;
     width: 100px;
 }
 
+.content_import_scroll .contact_div .convs_col_a {
+    flex: none;
+    width: auto;
+}
+
 .invite_div .convs_col_a {
     flex: none;
     width: 130px;
+}
+
+.invite_div .convs_col_a_header {
+    flex: none;
+        margin-bottom: auto;
+    margin-top: auto;
 }
 
 .convs_col_b_on {

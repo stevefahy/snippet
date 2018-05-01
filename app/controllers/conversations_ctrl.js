@@ -236,6 +236,7 @@ $scope.pageClass = 'page-conversations';
                     });
                 });
         } else {
+            //
             $location.path("/api/login");
         }
     });

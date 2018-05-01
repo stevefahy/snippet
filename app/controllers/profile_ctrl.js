@@ -20,6 +20,13 @@ cardApp.controller("profileCtrl", ['$http', '$rootScope', 'Profile', function($h
             // Store the profile.
             Profile.setProfile(profile);
             $rootScope.$broadcast('PROFILE_SET');
+
+/*
+            $rootScope.$watch('profile', function() {
+                console.log('profile changed');
+            }, true);
+            */
+
         }
     });
 
