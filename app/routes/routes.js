@@ -578,7 +578,7 @@ console.log('auth callback');
         }, function(err, response, body) {
             //console.log(err);
             //console.log(response);
-            //console.log(body);
+            console.log(body);
             // CONTACTS RECEIVED
 
             var parsed = JSON.parse(body);
@@ -1012,6 +1012,7 @@ console.log('auth callback');
     //
     // create conversation
     app.post('/chat/conversation', function(req, res) {
+        console.log(req.body);
         Conversation.create({
             conversation_name: req.body.conversation_name,
             conversation_avatar: req.body.conversation_avatar,

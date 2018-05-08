@@ -791,7 +791,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     function include(arr, obj) {
         return (arr.indexOf(obj) != -1);
     }
-
+//NOW A SERVICE!
     // Check if an Array of Objects includes a value
     function arrayObjectIndexOf(myArray, searchTerm, property) {
         for (var i = 0, len = myArray.length; i < len; i++) {
@@ -1405,10 +1405,24 @@ cardApp.service('General', ['Users', function(Users) {
 
     // Find the array index of an object value
     this.findWithAttr = function(array, attr, value) {
+        //console.log(array);
+        //console.log(array.length);
         for (var i = 0; i < array.length; i += 1) {
+            console.log(array[i][attr]);
             if (array[i][attr] === value) {
                 return i;
             }
+        }
+        return -1;
+    };
+
+
+    // Check if an Array of Objects includes a value
+    this.arrayObjectIndexOfValue = function(myArray, searchTerm, property, value) {
+        for (var i = 0, len = myArray.length; i < len; i++) {
+            //console.log(myArray[i][property][value]);
+            //console.log(myArray[i][property][value] + ' == ' + searchTerm);
+            if (myArray[i][property][value] === searchTerm) return i;
         }
         return -1;
     };
@@ -1736,6 +1750,7 @@ cardApp.directive("contenteditable", function() {
     };
 });
 
+/*
 cardApp.directive('onErrorSrc', function() {
     return {
         link: function(scope, element, attrs) {
@@ -1745,6 +1760,20 @@ cardApp.directive('onErrorSrc', function() {
             }
           });
         }
+    };
+});
+*/
+
+
+cardApp.filter("emptyToEnd", function () {
+    return function (array, key) {
+        var present = array.filter(function (item) {
+            return item[key];
+        });
+        var empty = array.filter(function (item) {
+            return !item[key];
+        });
+        return present.concat(empty);
     };
 });
 
