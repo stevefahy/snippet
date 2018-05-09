@@ -92,7 +92,6 @@
             <!--
             <div class="content_cnv_scroll" ng-class="{'content_cnv_scroll_group': show_selected_drawer, 'content_cnv_scroll_off': animating, 'content_cnv_scroll_input': group_selected}">
             -->
-            {{animating}}
             <div class="content_import_scroll" ng-class="{'content_import_scroll_contacts': contacts_imported, 'content_import_scroll_contacts_off': contacts_imported && animating, 'content_import_scroll_contacts_invite_on_not_imported': invite_selected && !contacts_imported, 'content_import_scroll_contacts_invite_on_imported': invite_selected && contacts_imported}">
                 <div ng-repeat="contact in user_contacts | orderBy:['name','email'] | emptyToEnd:'name'">
                     <div class="contact_div">
