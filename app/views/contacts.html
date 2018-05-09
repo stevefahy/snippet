@@ -102,9 +102,12 @@
                                     <div class="convs_d" id="invite_email">{{contact.name == '' ? '' : contact.email}}</div>
                                 </div>
                                 <div class="convs_col_b_import">
-                                    <div class="search_add_user" ng-class="{'search_add_user_off': invite_selected}" ng-if="true" ng-click="invite_selected || addInvite(contact.email)">
-                                        <!--<i class="material-icons" id="mi-add_circle_outline">&#xE7FE;</i>-->
-                                        <i ng-if="!contact.is_contact" class="material-icons convs_avatar_small_right mi-person_add_small" id="" ng-class="{'mi-person_add_grey': invite_selected}">&#xE7FE;</i>
+                                    <!--<div class="search_add_user" ng-class="{'search_add_user_off': invite_selected}" ng-click="invite_selected || addInvite(contact.email)">
+                                        <i class="material-icons" id="mi-add_circle_outline">&#xE7FE;</i>-->
+                                        <!--<i ng-if="!contact.is_contact" class="material-icons convs_avatar_small_right mi-person_add_small" id="" ng-class="{'mi-person_add_grey': invite_selected}">&#xE7FE;</i>-->
+                                        <div class="search_add_user" ng-click="invite_selected || addInvite(contact.email)">
+                                         <i ng-if="!contact.is_contact" class="material-icons convs_avatar_small_right mi-person_add_small">&#xE7FE;</i>
+
                                     </div>
                                 </div>
                             </div>
