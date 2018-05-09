@@ -1566,15 +1566,6 @@ height: 100%;
     overflow-y: hidden;
 }
 
-.content_import_scroll {
-    /* height: 100%; */
-    width: 100vw;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    height: calc(100% - 152px);
-    border-radius: 1px;
-}
-
 .content_cnv_scroll_input{
         height: calc(100% - 116px);
 }
@@ -1621,17 +1612,21 @@ height: 100%;
 }
 */
 
-
-.content_import_scroll_contacts {
+.content_import_scroll {
     width: 100vw;
     overflow-y: auto;
     overflow-x: hidden;
-    height: calc(100% - 125px);
+    height: calc(100% - 152px);
     border-radius: 1px;
+}
+
+.content_import_scroll_contacts {
+    height: calc(100% - 125px);
 }
 
 .content_import_scroll_contacts_invite_on_imported {
     height: calc(100% - 187px);
+    overflow-y: hidden;
 }
 
 .content_import_scroll_contacts_invite_on_not_imported {
