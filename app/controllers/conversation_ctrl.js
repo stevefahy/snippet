@@ -143,9 +143,36 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         return onlyInA;
     };
 
+
+    resizeListener = function() {
+        console.log('resize');
+        $rootScope.keyboard_listen = true;
+        //window.addEventListener("resize", function() {
+            is_landscape = (screen.height < screen.width);
+            if (is_landscape) {
+                if (window.innerHeight < landscape_height) {
+                    hideFooter();
+                } else {
+                    showFooter();
+                }
+            } else {
+                if (window.innerHeight < portrait_height) {
+                    hideFooter();
+                } else {
+                    showFooter();
+                }
+            }
+        //}, false);
+    };
     // Android only
     //if (ua == 'AndroidApp') {
     if (ua.indexOf('AndroidApp') >= 0) {
+        console.log('$rootScope.keyboard_listen: ' + $rootScope.keyboard_listen);
+        if(!$rootScope.keyboard_listen){
+            console.log('resize sub');
+        window.addEventListener('resize', resizeListener);
+    }
+        /*
         window.addEventListener("resize", function() {
             is_landscape = (screen.height < screen.width);
             if (is_landscape) {
@@ -162,9 +189,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 }
             }
         }, false);
+        */
+        
     }
 
     hideFooter = function() {
+        console.log('hideFooter');
         var focused = document.activeElement;
         if (focused.id != 'cecard_create') {
             $('.create_container').hide();

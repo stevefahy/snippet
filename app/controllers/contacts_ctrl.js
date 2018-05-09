@@ -1,5 +1,14 @@
 cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location', '$http', '$timeout', 'Invites', 'Email', 'Users', 'Conversations', 'Profile', 'General', 'Format', 'Contacts', function($scope, $route, $rootScope, $location, $http, $timeout, Invites, Email, Users, Conversations, Profile, General, Format, Contacts) {
 
+    // Stop listening for keyboard. TODO - Make service?
+    console.log('$rootScope.keyboard_listen: ' + $rootScope.keyboard_listen);
+    if($rootScope.keyboard_listen) {
+        console.log('unsub resize');
+        $rootScope.keyboard_listen = false;
+       window.removeEventListener('resize', resizeListener); 
+    }
+    
+
     $scope.pageClass = 'page-contacts';
     /*
         this.$onInit = function() {
@@ -684,7 +693,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
             $scope.contacts_imported = true;
             console.log('LOAD IMPORTED CONTACTS');
             $scope.user_contacts = $scope.currentUser.imported_contacts[0].contacts;
-
+            //var index1 = General.findWithAttr($scope.contacts, 'google',  $scope.currentUser.google.email);
 
             //console.log($scope.contacts);
             // check if imported contact is already a contact
@@ -698,7 +707,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
                 //  console.log($scope.contacts[i].google.email);
                 //var index = General.findWithAttr($scope.contacts, 'google', key.email);
                 var index = General.arrayObjectIndexOfValue($scope.contacts, key.email, 'google', 'email');
-
+               // console.log(key.email);
                 //console.log(index);
                 if (index > 0) {
                     key.is_contact = true;
@@ -707,7 +716,14 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
                 //key.avatar = key.avatar + '?access_token=' + $scope.currentUser.google.token;
                 //});
             });
-            // console.log($scope.user_contacts);
+
+            //var index = General.arrayObjectIndexOfValue($scope.contacts, key.email, 'google', 'email');
+            // Check whether the current user is in the user_contacts.
+            var index = General.findWithAttr($scope.user_contacts, 'email',  $scope.currentUser.google.email);
+            if(index >= 0){
+            $scope.user_contacts[index].is_contact = true;
+        }
+             //console.log($scope.user_contacts);
 
         }
     };
