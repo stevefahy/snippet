@@ -1,17 +1,17 @@
 cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location', '$http', '$timeout', 'Invites', 'Email', 'Users', 'Conversations', 'Profile', 'General', 'Format', 'Contacts', function($scope, $route, $rootScope, $location, $http, $timeout, Invites, Email, Users, Conversations, Profile, General, Format, Contacts) {
 
     $scope.pageClass = 'page-contacts';
-/*
-    this.$onInit = function() {
-        console.log('contacts init');
-        console.log(($scope.contacts));
-    };
-    */
+    /*
+        this.$onInit = function() {
+            console.log('contacts init');
+            console.log(($scope.contacts));
+        };
+        */
 
-   // console.log('contacts post init');
-   // console.log(($scope.contacts));
+    // console.log('contacts post init');
+    // console.log(($scope.contacts));
 
-   $scope.contacts_on = false;
+    $scope.contacts_on = false;
 
     $scope.search_sel = false;
     $scope.import_sel = false;
@@ -119,10 +119,10 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
         if (paramValue == 'import') {
 
             //if (!$scope.$$phase) {
-              //  $scope.$apply(function($scope) {
-                    $scope.contacts_imported = true;
-                   
-              //  });
+            //  $scope.$apply(function($scope) {
+            $scope.contacts_imported = true;
+
+            //  });
             //}
 
             // check for canceled permission
@@ -230,6 +230,9 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
         $scope.invite_selected = false;
         $scope.invite_sent = false;
         $scope.invite_input = '';
+
+    
+            $scope.animating = true;
         //newChat();
     };
 
@@ -545,6 +548,11 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     $scope.selectInvite = function() {
         console.log('selectInvite');
         $scope.invite_selected = !$scope.invite_selected;
+        //if ($scope.invite_selected == true) {
+            //$scope.$apply(function($scope) {
+                $scope.animating = true;
+            //});
+       // }
     };
     /*
                $("#import_contacts").click(function(event) {
@@ -566,7 +574,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
         console.log('importContacts');
 
         $scope.contacts_imported = true;
-         //$scope.animating = false;
+        //$scope.animating = false;
 
         /*
                 $http.get("https://www.google.com/m8/feeds/contacts/default/thin?alt=json&access_token=ya29.GlupBTMA_9903fys4hzzQc9vH_9DoG0cS6yVuzvlABtcGzKA_veuh5mLkhpHoNa21ZQQpMgzLBj9REJe8HnX3LgEMl4tirvUK-OVQ6KYjm4Vi7DInSYwhS7i8TqK&max-results=700&v=3.0").then(function(result) {
@@ -678,7 +686,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
             $scope.user_contacts = $scope.currentUser.imported_contacts[0].contacts;
 
 
-           //console.log($scope.contacts);
+            //console.log($scope.contacts);
             // check if imported contact is already a contact
             $scope.user_contacts.map(function(key, array) {
                 //console.log(key.email);
@@ -699,7 +707,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
                 //key.avatar = key.avatar + '?access_token=' + $scope.currentUser.google.token;
                 //});
             });
-           // console.log($scope.user_contacts);
+            // console.log($scope.user_contacts);
 
         }
     };
@@ -1026,12 +1034,12 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
 
         // console.log($scope.contacts);
 
-/*
-        for (var i = 0; i < 10; i++) {
-            var newcontact = { id: '1234', user_name: 'stever', avatar: 'fileuploads/images/pinky_2.png' };
-            $scope.contacts.push(newcontact);
-        }
-        */
+        /*
+                for (var i = 0; i < 10; i++) {
+                    var newcontact = { id: '1234', user_name: 'stever', avatar: 'fileuploads/images/pinky_2.png' };
+                    $scope.contacts.push(newcontact);
+                }
+                */
 
 
     };

@@ -1,6 +1,5 @@
 <div class="container_cnv">
     <div class="header_container" ng-include="'/views/header_contacts.html'"></div>
-
     <div class="contacts_container" ng-class="{ 'contacts_container_on': contacts_on}">
         <!---->
         <!-- IMPORT -->
@@ -9,15 +8,17 @@
             <div class="invite_div" ng-class="{ 'invite_div_off': invite_selected}" ng-click="invite_selected || selectInvite()">
                 <div id="add_goup_button">
                     <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
-                        <div class="convs_container contacts_invite_container transition_300" ng-class="{'contacts_invite_container_on': invite_selected}">
+                        <div class="convs_container contacts_invite_container contacts_transition" ng-class="{'contacts_invite_container_on': invite_selected}">
                             <div class="convs_a">
                                 <i class="material-icons convs_avatar mi-person_add" id="" ng-class="{'mi-person_add_grey': invite_selected}">&#xE7FE;</i>
                             </div>
                             <div class="convs_col_a">
                                 <div class="contacts_create_header" id="group_namex">INVITE CONTACT</div>
                             </div>
-                            <div class="convs_col_b transition_500" ng-class="{'convs_col_b_on': invite_selected}">
-                                <div class="contacts_search_input transition_4" ng-class="{'contacts_search_input_on': invite_selected}">
+                            <!--<div class="convs_col_b transition_500" ng-class="{'convs_col_b_on': invite_selected}">
+                                <div class="contacts_search_input transition_4" ng-class="{'contacts_search_input_on': invite_selected}">-->
+                            <div class="convs_col_b">
+                                <div class="contacts_search_input>
                                     <form name="myForm">
                                         <input type="email" name="input" placeholder=" Type email..." id="email_addr" class="contacts_search_group transition_4" ng-class="{'contacts_search_group_on': invite_selected}" ng-model="invite_input" onclick="inputClicked(event)" ng-pattern="/^[\w-]+(\.[\w-]+)*@([a-z0-9-]+(\.[a-z0-9-]+)*?\.[a-z]{2,6}|(\d{1,3}\.){3}\d{1,3})(:\d{4})?$/" noncapitalize required>
                                     </form>
@@ -77,10 +78,10 @@
                         <div class="convs_a_small">
                             <i class="material-icons convs_avatar_small mi-import_contacts_small" id="" ng-class="{'mi-import_contacts_grey': group_selected}">&#xE0E0;</i>
                         </div>
-                        <div class="convs_col_a_header transition_100" ng-class="{'convs_col_a_on': group_selected}">
-                            <div class="contacts_search_header transition_4" id="group_namex">GOOGLE CONTACTS</div>
+                        <div class="convs_col_a_header">
+                            <div class="contacts_search_header" id="group_namex">GOOGLE CONTACTS</div>
                         </div>
-                        <div class="convs_col_b transition_500" ng-class="{'convs_col_b_on': group_selected}">
+                        <div class="convs_col_b">
                         </div>
                     </div>
                 </li>
@@ -88,7 +89,11 @@
             <!---->
             <!-- SCROLLABLE IMPORTED CONTACTS -->
             <!---->
-            <div class="content_import_scroll transition_300" ng-class="{'content_import_scroll_contacts': contacts_imported, 'content_import_scroll_contacts_off': contacts_imported && animating, 'content_import_scroll_contacts_invite_on_not_imported': invite_selected && !contacts_imported, 'content_import_scroll_contacts_invite_on_imported': invite_selected && contacts_imported}">
+            <!--
+            <div class="content_cnv_scroll" ng-class="{'content_cnv_scroll_group': show_selected_drawer, 'content_cnv_scroll_off': animating, 'content_cnv_scroll_input': group_selected}">
+            -->
+            {{animating}}
+            <div class="content_import_scroll" ng-class="{'content_import_scroll_contacts': contacts_imported, 'content_import_scroll_contacts_off': contacts_imported && animating, 'content_import_scroll_contacts_invite_on_not_imported': invite_selected && !contacts_imported, 'content_import_scroll_contacts_invite_on_imported': invite_selected && contacts_imported}">
                 <div ng-repeat="contact in user_contacts | orderBy:['name','email'] | emptyToEnd:'name'">
                     <div class="contact_div">
                         <li class="list-group-item d-flex justify-content-between align-items-center imported_contacts_list">
