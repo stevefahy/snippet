@@ -45,7 +45,7 @@
                     </div>
                 </li>
             </div>
-            <div class="invite_div_off" ng-class="{ 'invite_div_off': invite_selected}" id="import_contacts" ng-click=" importContacts()" ng-show="!contacts_imported">
+            <div class="invite_div" ng-class="{ 'invite_div_off': invite_selected}" id="import_contacts" ng-click=" importContacts()" ng-show="!contacts_imported">
                 <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
                     <div class="convs_container contacts_search_container">
                         <div class="convs_a">
@@ -53,19 +53,6 @@
                         </div>
                         <div class="convs_col_a transition_100" ng-class="{'convs_col_a_on': group_selected}">
                             <div class="contacts_search_header transition_4" id="group_namex" ng-class="{'contacts_search_header_top_on': group_selected}">IMPORT CONTACTS</div>
-                        </div>
-                        <div class="convs_col_b transition_500" ng-class="{'convs_col_b_on': group_selected}">
-                            <div class="contacts_search_input transition_4" ng-class="{'contacts_search_input_on': group_selected}">
-                                <input placeholder=" Type name..." id="group_namex" class="contacts_search_group" data-ng-model="chat_create.conversation_name" maxlength="20" onclick="inputClicked(event)">
-                            </div>
-                            <div class="header_decide">
-                                <div class="header_accept">
-                                    <a href="" ng-click="!valid_group || selectedUsers($event,contact)"><i class="material-icons mi-done_group" ng-class="{'mi-done_group_on': valid_group}" id="">&#xE876;</i></a>
-                                </div>
-                                <div class="header_cancel">
-                                    <a href="" ng-click="cancelGroup($event)"><i class="material-icons" id="mi-clear">&#xE14C;</i></a>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </li>

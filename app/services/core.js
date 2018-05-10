@@ -1495,7 +1495,7 @@ cardApp.service('General', ['Users', 'Format', function(Users, Format) {
 
     this.keyBoardListenStart = function() {
         console.log('keyBoardListenStart?');
-        //if (ua.indexOf('AndroidApp') >= 0) {
+        if (ua.indexOf('AndroidApp') >= 0) {
             console.log('keyboard_listen: ' + keyboard_listen);
             if (!keyboard_listen) {
 
@@ -1503,7 +1503,7 @@ cardApp.service('General', ['Users', 'Format', function(Users, Format) {
                 window.addEventListener('resize', this.resizeListener);
                 keyboard_listen = true;
             }
-        //}
+        }
     };
     // Stop listening for keyboard.
     this.keyBoardListenStop = function() {
