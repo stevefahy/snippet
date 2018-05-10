@@ -18,6 +18,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     };
 
+    // Use the urls id param from the route to load the conversation.
+    var id = $routeParams.id;
+    // Use the urls username param from the route to load the conversation.
+    var username = $routeParams.username;
+
+        // Detect device user agent 
+    var ua = navigator.userAgent;
+
+/*
     // Detect device user agent 
     var ua = navigator.userAgent;
     // Detect soft keyboard on Android
@@ -46,6 +55,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         landscape_height = initial_height;
         portrait_height = initial_width;
     }
+    */
 
     // Add custom class for Android scrollbar
     //if (ua == 'AndroidApp') {
@@ -143,11 +153,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         return onlyInA;
     };
 
+    General.keyBoardListenStart();
 
+/*
+//works
     resizeListener = function() {
         console.log('resize');
         $rootScope.keyboard_listen = true;
-        //window.addEventListener("resize", function() {
             is_landscape = (screen.height < screen.width);
             if (is_landscape) {
                 if (window.innerHeight < landscape_height) {
@@ -162,16 +174,22 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     showFooter();
                 }
             }
-        //}, false);
     };
+    */
     // Android only
     //if (ua == 'AndroidApp') {
+
+
+        /*
+        // Works
     if (ua.indexOf('AndroidApp') >= 0) {
         console.log('$rootScope.keyboard_listen: ' + $rootScope.keyboard_listen);
         if(!$rootScope.keyboard_listen){
             console.log('resize sub');
         window.addEventListener('resize', resizeListener);
     }
+    */
+    
         /*
         window.addEventListener("resize", function() {
             is_landscape = (screen.height < screen.width);
@@ -191,8 +209,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }, false);
         */
         
-    }
+    //}
 
+
+/*
+//works
     hideFooter = function() {
         console.log('hideFooter');
         var focused = document.activeElement;
@@ -212,6 +233,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         $('.create_container').show();
         $('#placeholderDiv').css('bottom', '59px');
     };
+    */
 
     setFocus = function() {
         $timeout(function() {

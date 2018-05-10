@@ -1,12 +1,8 @@
 cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location', '$http', '$timeout', 'Invites', 'Email', 'Users', 'Conversations', 'Profile', 'General', 'Format', 'Contacts', function($scope, $route, $rootScope, $location, $http, $timeout, Invites, Email, Users, Conversations, Profile, General, Format, Contacts) {
 
-    // Stop listening for keyboard. TODO - Make service?
-    console.log('$rootScope.keyboard_listen: ' + $rootScope.keyboard_listen);
-    if($rootScope.keyboard_listen) {
-        console.log('unsub resize');
-        $rootScope.keyboard_listen = false;
-       window.removeEventListener('resize', resizeListener); 
-    }
+
+    
+    General.keyBoardListenStop();
     
 
     $scope.pageClass = 'page-contacts';

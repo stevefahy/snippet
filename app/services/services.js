@@ -168,6 +168,7 @@ cardApp.factory('Conversations', ['$http', function($http) {
     };
 }]);
 
+
 cardApp.factory('Profile', function($rootScope, $window) {
     var user;
     var conversation;

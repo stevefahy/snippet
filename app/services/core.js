@@ -25,7 +25,7 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
             templateUrl: '/views/contacts.html',
             controller: 'contactsCtrl',
             menuItem: 'import',
-            reloadOnSearch:false
+            reloadOnSearch: false
         })
 
         .when("/c/contacts_import", {
@@ -791,7 +791,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     function include(arr, obj) {
         return (arr.indexOf(obj) != -1);
     }
-//NOW A SERVICE!
+    //NOW A SERVICE!
     // Check if an Array of Objects includes a value
     function arrayObjectIndexOf(myArray, searchTerm, property) {
         for (var i = 0, len = myArray.length; i < len; i++) {
@@ -1388,8 +1388,9 @@ cardApp.service('FormatHTML', ['Format', function(Format) {
 
 }]);
 
-cardApp.service('General', ['Users', function(Users) {
-
+cardApp.service('General', ['Users', 'Format', function(Users, Format) {
+    var ua = navigator.userAgent;
+    var keyboard_listen = false;
     // Find User
     this.findUser = function(id, callback) {
         var user_found;
@@ -1425,6 +1426,91 @@ cardApp.service('General', ['Users', function(Users) {
             if (myArray[i][property][value] === searchTerm) return i;
         }
         return -1;
+    };
+
+    //
+    // Keyboard listener
+    //
+    // Detect soft keyboard on Android
+    var is_landscape = false;
+    var initial_height = window.innerHeight;
+    var initial_width = window.innerWidth;
+    var portrait_height;
+    var landscape_height;
+
+    // If the initial height is less than the screen height (status bar etc..)
+    // then adjust the initial width to take into account this difference
+    if (initial_height < screen.height) {
+        initial_width = initial_width - (screen.height - initial_height);
+    }
+    if (initial_height > initial_width) {
+        //portrait
+        portrait_height = initial_height;
+        landscape_height = initial_width;
+    } else {
+        // landscape
+        landscape_height = initial_height;
+        portrait_height = initial_width;
+    }
+
+    this.resizeListener = function() {
+        console.log('resize');
+        keyboard_listen = true;
+        is_landscape = (screen.height < screen.width);
+        if (is_landscape) {
+            if (window.innerHeight < landscape_height) {
+                hideFooter();
+            } else {
+                showFooter();
+            }
+        } else {
+            if (window.innerHeight < portrait_height) {
+                hideFooter();
+            } else {
+                showFooter();
+            }
+        }
+    };
+
+    hideFooter = function() {
+        console.log('hideFooter');
+        var focused = document.activeElement;
+        if (focused.id != 'cecard_create') {
+            $('.create_container').hide();
+        }
+        $('.footer').hide();
+        $('#placeholderDiv').css('bottom', '-1px');
+        // Paste div that will be scrolled into view if necessary and the deleted.
+        Format.pasteHtmlAtCaret("<span class='scroll_latest_footer' id='scroll_latest_footer'></span>");
+        // Scroll into view if necessary
+        Format.scrollLatest('scroll_latest_footer');
+    };
+
+    showFooter = function() {
+        console.log('showFooter');
+        $('.footer').show();
+        $('.create_container').show();
+        $('#placeholderDiv').css('bottom', '59px');
+    };
+
+    this.keyBoardListenStart = function() {
+        console.log('keyBoardListenStart?');
+        //if (ua.indexOf('AndroidApp') >= 0) {
+            console.log('keyboard_listen: ' + keyboard_listen);
+            if (!keyboard_listen) {
+                console.log('resize sub');
+                window.addEventListener('resize', this.resizeListener);
+            }
+        //}
+    };
+    // Stop listening for keyboard.
+    this.keyBoardListenStop = function() {
+        console.log('keyboard_listen: ' + keyboard_listen);
+        if (keyboard_listen) {
+            console.log('unsub resize');
+            keyboard_listen = false;
+            window.removeEventListener('resize', this.resizeListener);
+        }
     };
 
 }]);
@@ -1750,32 +1836,14 @@ cardApp.directive("contenteditable", function() {
     };
 });
 
-/*
-cardApp.directive('onErrorSrc', function() {
-    return {
-        link: function(scope, element, attrs) {
-          element.bind('error', function() {
-            if (attrs.src != attrs.onErrorSrc) {
-              attrs.$set('src', attrs.onErrorSrc);
-            }
-          });
-        }
-    };
-});
-*/
-
-
-cardApp.filter("emptyToEnd", function () {
-    return function (array, key) {
-        var present = array.filter(function (item) {
+cardApp.filter("emptyToEnd", function() {
+    return function(array, key) {
+        var present = array.filter(function(item) {
             return item[key];
         });
-        var empty = array.filter(function (item) {
+        var empty = array.filter(function(item) {
             return !item[key];
         });
         return present.concat(empty);
     };
 });
-
-
-
