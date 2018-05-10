@@ -1498,8 +1498,10 @@ cardApp.service('General', ['Users', 'Format', function(Users, Format) {
         //if (ua.indexOf('AndroidApp') >= 0) {
             console.log('keyboard_listen: ' + keyboard_listen);
             if (!keyboard_listen) {
+
                 console.log('resize sub');
                 window.addEventListener('resize', this.resizeListener);
+                keyboard_listen = true;
             }
         //}
     };
@@ -1508,8 +1510,9 @@ cardApp.service('General', ['Users', 'Format', function(Users, Format) {
         console.log('keyboard_listen: ' + keyboard_listen);
         if (keyboard_listen) {
             console.log('unsub resize');
-            keyboard_listen = false;
+            
             window.removeEventListener('resize', this.resizeListener);
+            keyboard_listen = false;
         }
     };
 
