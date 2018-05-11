@@ -2333,6 +2333,10 @@ opacity:0;
     opacity: 0;
 }
 
+.imgcrop_show{
+     opacity: 1;
+}
+
 .contact_div .preview {
     padding-top: 0px;
 
@@ -2347,6 +2351,11 @@ opacity:0;
 
 .contact_div .crop_container {
     /* top: -40px; */
+}
+
+.contact_div .crop_container_show {
+        height: 200px;
+    left: 0px;
 }
 
 

@@ -114,7 +114,7 @@
             </div>
             <div class="content_cnv_scroll">
                 <div ng-repeat="search_result in search_results">
-                    <div class="contacts_result_container" ng-class="{ 'contacts_result_container_on': search_result.is_contact}" ng-click="!search_result.is_contact || doChat(search_result)">
+                    <div class="contacts_result_container" ng-class="{ 'contacts_result_container_on': search_result.is_contact}" ng-click="!search_result.is_contact || chat(search_result)">
                         <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
                             <div class="convs_container">
                                 <div class="convs_a">
@@ -162,7 +162,7 @@
                         </div>
                         <div class="convs_col_b">
                             <div class="contacts_search_input">
-                                <input placeholder=" Type name..." id="group_name" class="contacts_search_group" maxlength="20" ng-model="group_name" onclick="inputClicked(event)">
+                                <input placeholder=" Type name..." id="group_name" class="contacts_search_group" maxlength="20" ng-model="group_name">
                             </div>
                             <div class="header_decide transition_500" ng-class="{'header_decide_off': show_image}">
                                 <div class="header_accept">
@@ -202,9 +202,9 @@
                             <input type="file" id="fileInput" />
                         </div>
                     </div>
-                    <div class="crop_container">
+                    <div class="crop_container" ng-class="{'crop_container_show': image_loaded}">
                         <div class="cropArea" ng-class="{'cropArea_show': image_loaded}">
-                            <img-crop class="imgcrop " image="myImage" result-image="myCroppedImage" result-image-format="image/jpeg" result-image-size="125" change-on-fly="true" on-load-done="imgcropLoaded();"></img-crop>
+                            <img-crop class="imgcrop transition_100" ng-class="{'imgcrop_show': image_loaded}" image="myImage" result-image="myCroppedImage" result-image-format="image/jpeg" result-image-size="125" change-on-fly="true" on-load-done="imgcropLoaded();"></img-crop>
                         </div>
                     </div>
                 </div>
@@ -239,7 +239,7 @@
             <!---->
             <div class="content_cnv_scroll" ng-class="{'content_cnv_scroll_group': show_selected_drawer, 'content_cnv_scroll_off': animating, 'content_cnv_scroll_input': group_selected}">
                 <div ng-repeat="contact in contacts | orderBy:'user_name'">
-                    <div class="contact_div" ng-click="group_selected ? doSelect(contact) : doChat(contact)">
+                    <div class="contact_div" ng-click="group_selected ? doSelect(contact) : chat(contact)">
                         <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
                             <div class="convs_container">
                                 <div class="convs_a">

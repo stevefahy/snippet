@@ -557,8 +557,6 @@ console.log('auth callback');
     //
     // Get all user contacts from social login
     app.get('/api/user_contacts/', function(req, res) {
-        console.log(req.user);
-        //?max-results=999999&alt=json&oauth_token=' + token;
         request.get({
             url: 'https://www.google.com/m8/feeds/contacts/default/full/?alt=json&max-results=10000',
             //url: 'https://www.googleapis.com/auth/contacts.readonly',
@@ -593,9 +591,11 @@ console.log('auth callback');
                     if (parsed.feed.entry[i].gd$name != undefined) {
                         temp.name = parsed.feed.entry[i].gd$name.gd$fullName.$t;
                     }
+                    /*
                     if (parsed.feed.entry[i].link[0] != undefined) {
                         temp.avatar = parsed.feed.entry[i].link[0].href;
                     }
+                    */
                     user_contacts.push(temp);
 
                 }

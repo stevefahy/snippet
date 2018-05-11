@@ -1391,6 +1391,8 @@ cardApp.service('FormatHTML', ['Format', function(Format) {
 cardApp.service('General', ['Users', 'Format', function(Users, Format) {
     var ua = navigator.userAgent;
     var keyboard_listen = false;
+
+    // USERS
     // Find User
     this.findUser = function(id, callback) {
         var user_found;
@@ -1409,7 +1411,7 @@ cardApp.service('General', ['Users', 'Format', function(Users, Format) {
         //console.log(array);
         //console.log(array.length);
         for (var i = 0; i < array.length; i += 1) {
-            console.log(array[i][attr]);
+            //console.log(array[i][attr]);
             if (array[i][attr] === value) {
                 return i;
             }
@@ -1417,6 +1419,20 @@ cardApp.service('General', ['Users', 'Format', function(Users, Format) {
         return -1;
     };
 
+    this.getDate = function() {
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1;
+        var yyyy = today.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd;
+        }
+        if (mm < 10) {
+            mm = '0' + mm;
+        }
+        var date = yyyy + mm + dd;
+        return date;
+    };
 
     // Check if an Array of Objects includes a value
     this.arrayObjectIndexOfValue = function(myArray, searchTerm, property, value) {
@@ -1510,7 +1526,7 @@ cardApp.service('General', ['Users', 'Format', function(Users, Format) {
         console.log('keyboard_listen: ' + keyboard_listen);
         if (keyboard_listen) {
             console.log('unsub resize');
-            
+
             window.removeEventListener('resize', this.resizeListener);
             keyboard_listen = false;
         }
