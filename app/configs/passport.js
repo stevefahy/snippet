@@ -303,31 +303,25 @@ module.exports = function(passport) {
             clientSecret: configAuth.googleAuth.clientSecret,
             callbackURL: global.callbackURL,
             passReqToCallback: true // allows us to pass in the req from our route (lets us check if a user is logged in or not)
-
         },
         function(req, token, refreshToken, profile, done) {
             // asynchronous
-            console.log('token: ' + token);
             process.nextTick(function() {
                 // check if the user is already logged in
                 if (!req.user) {
-                    console.log('not logged in');
                     User.findOne({ 'google.id': profile.id }, function(err, user) {
                         if (err)
                             return done(err);
 
                         if (user) {
-                            console.log('user');
-                            console.log('db: ' + user.google.token + ', current: ' + token);
                             // if there is a user id already but no token (user was linked at one point and then removed)
                             if (!user.google.token || user.google.token != token) {
-                                console.log('user but no token || update token');
                                 user.google.token = token;
                                 user.google.name = profile.displayName;
                                 user.google.email = (profile.emails[0].value || '').toLowerCase(); // pull the first email
 
                                 user.save(function(err) {
-                                    if (err){
+                                    if (err) {
                                         console.log('err: ' + err)
                                         return done(err);
                                     }
@@ -339,12 +333,10 @@ module.exports = function(passport) {
                                 return done(null, user);
                             }
 
-                           // return done(null, user);
                         } else {
                             //
                             // NEW USER
                             //
-                            console.log('new user');
                             var newUser = new User();
                             newUser._id = new mongoose.Types.ObjectId();
                             //newUser.contacts = ''; Empty
@@ -371,11 +363,9 @@ module.exports = function(passport) {
                     });
 
                 } else {
-                    console.log('already logged in');
                     // A user is already logged in
                     // If the logged in user is the as the user loggin in
                     if (req.user.google.id === profile.id) {
-                        console.log('logged in user same as user logging in');
                         var user = req.user; // pull the user out of the session
 
                         user.google.id = profile.id;
@@ -392,16 +382,13 @@ module.exports = function(passport) {
                     } else {
                         // The user logging in is different to the currently logged in user
                         // Find the user logging in
-                        console.log('user logging in different to currently logged in');
                         User.findOne({ 'google.id': profile.id }, function(err, user) {
                             if (err)
                                 return done(err);
 
                             if (user) {
-                                console.log('user found');
                                 // if there is a user id already but no token (user was linked at one point and then removed)
                                 if (!user.google.token) {
-                                    console.log('no token');
                                     user.google.token = token;
                                     user.google.name = profile.displayName;
                                     user.google.email = (profile.emails[0].value || '').toLowerCase(); // pull the first email
@@ -419,7 +406,6 @@ module.exports = function(passport) {
                                 //
                                 // NEW USER
                                 //
-                                console.log('new user');
                                 var newUser = new User();
                                 newUser._id = new mongoose.Types.ObjectId();
                                 //newUser.contacts = ''; Empty

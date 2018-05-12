@@ -30,6 +30,7 @@ cardApp.controller("footerCtrl", ['$scope', 'Cards', '$rootScope', '$location', 
         // close socket.io connection and delete namespace
         socket.delete();
         Cards.logout();
+
         $scope.changePath('/api/logout');
     };
 
@@ -39,7 +40,6 @@ cardApp.controller("footerCtrl", ['$scope', 'Cards', '$rootScope', '$location', 
     };
 
     $scope.searchCard = function(input) {
-        //$location.path('/');
         // validate the formData to make sure that something is there
         if ($scope.input !== undefined) {
             // call the create function from our service (returns a promise object)

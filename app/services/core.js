@@ -1,8 +1,11 @@
 var cardApp = angular.module("cardApp", ['ngSanitize', 'ngRoute', 'angularMoment', 'ngAnimate', 'ngImgCrop']);
 
-
 // Prefix for loading a snip id
 var prefix = '/s/';
+
+//
+// ROUTES
+//
 
 cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
     $routeProvider
@@ -20,30 +23,13 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
             templateUrl: '/views/contacts.html',
             controller: 'contactsCtrl'
         })
-        ///c/contacts/import
+        // callback from importing google contacts.
         .when("/c/contacts/import", {
             templateUrl: '/views/contacts.html',
             controller: 'contactsCtrl',
             menuItem: 'import',
             reloadOnSearch: false
         })
-
-        .when("/c/contacts_import", {
-            templateUrl: '/views/contacts_import.html',
-            controller: 'contactsimportCtrl'
-        })
-        /*
-        .when("/c/contacts/search", {
-            templateUrl: '/views/contacts.html',
-            menuItem: 'search',
-            reloadOnSearch:false
-        })
-        .when("/c/contacts/contacts", {
-            templateUrl: '/views/contacts.html',
-            menuItem: 'contacts',
-            reloadOnSearch:false
-        })
-        */
         .when("/chat/conversations", {
             templateUrl: '/views/conversations.html',
             controller: 'conversationsCtrl'
@@ -77,39 +63,9 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
     });
 });
 
-/*
-cardApp.run([
-  '$rootScope',
-  function($rootScope) {
-    // see what's going on when the route tries to change
-    $rootScope.$on('$routeChangeStart', function(event, next, current) {
-      // next is an object that is the route that we are starting to go to
-      // current is an object that is the route where we are currently
-      var currentPath = current.originalPath;
-      var nextPath = next.originalPath;
-      console.log('Starting to leave %s to go to %s', currentPath, nextPath);
-    });
-  }
-]);
-*/
-/*
-cardApp.run(['$route', '$rootScope', '$location', function ($route, $rootScope, $location) {
-    var original = $location.path;
-    $location.path = function (path, reload) {
-        if (reload === false) {
-            console.log('FALSE');
-            var lastRoute = $route.current;
-            var un = $rootScope.$on('$locationChangeSuccess', function () {
-                $route.current = lastRoute;
-                un();
-            });
-        }
-        return original.apply($location, [path]);
-    };
-}]);
-*/
-
-
+//
+// SERVICES
+//
 
 cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', '$injector', function($window, $rootScope, $timeout, $q, Users, Cards, Conversations, replaceTags, socket, $injector) {
 
@@ -150,7 +106,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         insertImage(data);
     };
 
-    //if (ua === 'AndroidApp') {
     if (ua.indexOf('AndroidApp') >= 0) {
         Android.checkFCMToken();
     }
@@ -511,7 +466,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.showAndroidToast = function(toast) {
-        //if (ua === 'AndroidApp') {
         if (ua.indexOf('AndroidApp') >= 0) {
             Android.showToast(toast);
         }
@@ -562,7 +516,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     checkUpdate = function() {
-        //if (ua == 'AndroidApp') {
         if (ua.indexOf('AndroidApp') >= 0) {
             if (focused_id != undefined) {
                 self.getBlurAndroid(focused_id, focused_card, focused_user);
@@ -791,14 +744,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     function include(arr, obj) {
         return (arr.indexOf(obj) != -1);
     }
-    //NOW A SERVICE!
-    // Check if an Array of Objects includes a value
-    function arrayObjectIndexOf(myArray, searchTerm, property) {
-        for (var i = 0, len = myArray.length; i < len; i++) {
-            if (myArray[i][property] === searchTerm) return i;
-        }
-        return -1;
-    }
 
     function closeMarky(marky_array, marky_started_array, char_watch) {
         // Close Marky tag and remove it from the marky_started_array
@@ -815,6 +760,14 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         $(node.attr('id', 'marky'));
         return marky_started_array;
     }
+
+    // Check if an Array of Objects includes a property
+    arrayObjectIndexOf = function(myArray, searchTerm, property) {
+        for (var i = 0, len = myArray.length; i < len; i++) {
+            if (myArray[i][property] === searchTerm) return i;
+        }
+        return -1;
+    };
 
     function unclosedMarky(marky_started_array, marky_array) {
         // if still within an an unclosed Marky then continue with that unclosed Marky
@@ -1392,6 +1345,22 @@ cardApp.service('General', ['Users', 'Format', function(Users, Format) {
     var ua = navigator.userAgent;
     var keyboard_listen = false;
 
+    // Profile Image
+    //
+    // Transform the cropped image to a blob.
+    this.urltoFile = function(url, filename, mimeType) {
+        return (fetch(url)
+            .then(function(res) {
+                return res.arrayBuffer();
+            })
+            .then(function(buf) {
+                var blob = new Blob([buf], { type: mimeType });
+                blob.name = filename;
+                return blob;
+            })
+        );
+    };
+
     // USERS
     // Find User
     this.findUser = function(id, callback) {
@@ -1408,10 +1377,7 @@ cardApp.service('General', ['Users', 'Format', function(Users, Format) {
 
     // Find the array index of an object value
     this.findWithAttr = function(array, attr, value) {
-        //console.log(array);
-        //console.log(array.length);
         for (var i = 0; i < array.length; i += 1) {
-            //console.log(array[i][attr]);
             if (array[i][attr] === value) {
                 return i;
             }
@@ -1434,11 +1400,17 @@ cardApp.service('General', ['Users', 'Format', function(Users, Format) {
         return date;
     };
 
-    // Check if an Array of Objects includes a value
+    // Check if an Array of Objects includes a property
+    this.arrayObjectIndexOf = function(myArray, searchTerm, property) {
+        for (var i = 0, len = myArray.length; i < len; i++) {
+            if (myArray[i][property] === searchTerm) return i;
+        }
+        return -1;
+    };
+
+    // Check if an Array of Objects includes a property value
     this.arrayObjectIndexOfValue = function(myArray, searchTerm, property, value) {
         for (var i = 0, len = myArray.length; i < len; i++) {
-            //console.log(myArray[i][property][value]);
-            //console.log(myArray[i][property][value] + ' == ' + searchTerm);
             if (myArray[i][property][value] === searchTerm) return i;
         }
         return -1;
@@ -1470,7 +1442,6 @@ cardApp.service('General', ['Users', 'Format', function(Users, Format) {
     }
 
     this.resizeListener = function() {
-        console.log('resize');
         keyboard_listen = true;
         is_landscape = (screen.height < screen.width);
         if (is_landscape) {
@@ -1489,7 +1460,6 @@ cardApp.service('General', ['Users', 'Format', function(Users, Format) {
     };
 
     hideFooter = function() {
-        console.log('hideFooter');
         var focused = document.activeElement;
         if (focused.id != 'cecard_create') {
             $('.create_container').hide();
@@ -1503,19 +1473,14 @@ cardApp.service('General', ['Users', 'Format', function(Users, Format) {
     };
 
     showFooter = function() {
-        console.log('showFooter');
         $('.footer').show();
         $('.create_container').show();
         $('#placeholderDiv').css('bottom', '59px');
     };
 
     this.keyBoardListenStart = function() {
-        console.log('keyBoardListenStart?');
         if (ua.indexOf('AndroidApp') >= 0) {
-            console.log('keyboard_listen: ' + keyboard_listen);
             if (!keyboard_listen) {
-
-                console.log('resize sub');
                 window.addEventListener('resize', this.resizeListener);
                 keyboard_listen = true;
             }
@@ -1523,10 +1488,7 @@ cardApp.service('General', ['Users', 'Format', function(Users, Format) {
     };
     // Stop listening for keyboard.
     this.keyBoardListenStop = function() {
-        console.log('keyboard_listen: ' + keyboard_listen);
         if (keyboard_listen) {
-            console.log('unsub resize');
-
             window.removeEventListener('resize', this.resizeListener);
             keyboard_listen = false;
         }
@@ -1855,6 +1817,7 @@ cardApp.directive("contenteditable", function() {
     };
 });
 
+// Filter to put empty values to the end of an array.
 cardApp.filter("emptyToEnd", function() {
     return function(array, key) {
         var present = array.filter(function(item) {

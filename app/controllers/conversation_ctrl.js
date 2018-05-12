@@ -1,7 +1,6 @@
-cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', function($scope, $rootScope, $location, $http, $window, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General) {
+cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', function($scope, $rootScope, $location, $http, $window, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile) {
 
     this.$onInit = function() {
-
         $scope.getFocus = Format.getFocus;
         $scope.getBlur = Format.getBlur;
         $scope.contentChanged = Format.contentChanged;
@@ -15,50 +14,19 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         $scope.pasteHtmlAtCaret = Format.pasteHtmlAtCaret;
         $scope.checkCursor = Format.checkCursor;
         $scope.isMember = false;
-
     };
 
+    General.keyBoardListenStart();
+
     // Use the urls id param from the route to load the conversation.
     var id = $routeParams.id;
     // Use the urls username param from the route to load the conversation.
     var username = $routeParams.username;
 
-        // Detect device user agent 
-    var ua = navigator.userAgent;
-
-/*
     // Detect device user agent 
     var ua = navigator.userAgent;
-    // Detect soft keyboard on Android
-    var is_landscape = false;
-    var initial_height = window.innerHeight;
-    var initial_width = window.innerWidth;
-    var portrait_height;
-    var landscape_height;
-
-    // Use the urls id param from the route to load the conversation.
-    var id = $routeParams.id;
-    // Use the urls username param from the route to load the conversation.
-    var username = $routeParams.username;
-
-    // If the initial height is less than the screen height (status bar etc..)
-    // then adjust the initial width to take into account this difference
-    if (initial_height < screen.height) {
-        initial_width = initial_width - (screen.height - initial_height);
-    }
-    if (initial_height > initial_width) {
-        //portrait
-        portrait_height = initial_height;
-        landscape_height = initial_width;
-    } else {
-        // landscape
-        landscape_height = initial_height;
-        portrait_height = initial_width;
-    }
-    */
 
     // Add custom class for Android scrollbar
-    //if (ua == 'AndroidApp') {
     if (ua.indexOf('AndroidApp') >= 0) {
         $('.content_cnv').addClass('content_cnv_android');
     }
@@ -153,88 +121,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         return onlyInA;
     };
 
-    General.keyBoardListenStart();
-
-/*
-//works
-    resizeListener = function() {
-        console.log('resize');
-        $rootScope.keyboard_listen = true;
-            is_landscape = (screen.height < screen.width);
-            if (is_landscape) {
-                if (window.innerHeight < landscape_height) {
-                    hideFooter();
-                } else {
-                    showFooter();
-                }
-            } else {
-                if (window.innerHeight < portrait_height) {
-                    hideFooter();
-                } else {
-                    showFooter();
-                }
-            }
-    };
-    */
-    // Android only
-    //if (ua == 'AndroidApp') {
-
-
-        /*
-        // Works
-    if (ua.indexOf('AndroidApp') >= 0) {
-        console.log('$rootScope.keyboard_listen: ' + $rootScope.keyboard_listen);
-        if(!$rootScope.keyboard_listen){
-            console.log('resize sub');
-        window.addEventListener('resize', resizeListener);
-    }
-    */
-    
-        /*
-        window.addEventListener("resize", function() {
-            is_landscape = (screen.height < screen.width);
-            if (is_landscape) {
-                if (window.innerHeight < landscape_height) {
-                    hideFooter();
-                } else {
-                    showFooter();
-                }
-            } else {
-                if (window.innerHeight < portrait_height) {
-                    hideFooter();
-                } else {
-                    showFooter();
-                }
-            }
-        }, false);
-        */
-        
-    //}
-
-
-/*
-//works
-    hideFooter = function() {
-        console.log('hideFooter');
-        var focused = document.activeElement;
-        if (focused.id != 'cecard_create') {
-            $('.create_container').hide();
-        }
-        $('.footer').hide();
-        $('#placeholderDiv').css('bottom', '-1px');
-        // Paste div that will be scrolled into view if necessary and the deleted.
-        $scope.pasteHtmlAtCaret("<span class='scroll_latest_footer' id='scroll_latest_footer'></span>");
-        // Scroll into view if necessary
-        Format.scrollLatest('scroll_latest_footer');
-    };
-
-    showFooter = function() {
-        $('.footer').show();
-        $('.create_container').show();
-        $('#placeholderDiv').css('bottom', '59px');
-    };
-    */
-
     setFocus = function() {
         $timeout(function() {
             findConversationId();
@@ -244,7 +130,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // start watching onfocus and onblur
     watchFocus = function() {
         // only check focus on web version
-        //if (ua !== 'AndroidApp') {
         if (ua.indexOf('AndroidApp') < 0) {
             $window.onfocus = function() {
                 this.setFocus();
@@ -346,6 +231,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             checkPermission(id, function(result) {
                                 $scope.isMember = result;
                                 getConversation(id, 500);
+                                //getPublicConversation(id, 500);
                             });
                         }
                     });
@@ -362,7 +248,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Called by Android to get the conversation id.
     getConversationId = function() {
-        //if (ua == 'AndroidApp') {
         if (ua.indexOf('AndroidApp') >= 0) {
             var id = Conversations.getConversationId();
             Android.conversationId(id);
@@ -393,6 +278,54 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             callback(false);
         }
     };
+
+    /*
+    getPublicConversation = function(id, speed) {
+        Conversations.getPublicConversationById(id)
+            .then(function(result) {
+                $scope.cards = result.data;
+                // Clear the cards unviewed arrary for this participant of this conversation.
+                updateConversationViewed(id);
+                // Map relevant data to the loaded cards.
+                $scope.cards.map(function(key, array) {
+                    // Store the original characters of the card.
+                    key.original_content = key.content;
+                    // Get the user name for the user id
+                    // TODO dont repeat if user id already retreived
+                    Users.search_id(key.user)
+                        .then(function(res) {
+                            if (res.data.error === 'null') {
+                                // user cannot be found
+                            }
+                            if (res.data.success) {
+                                // Set the user_name to the retrieved name
+                                key.user_name = res.data.success.user_name;
+                                var profile = {};
+                                if (res.data.user.user_name == undefined) {
+                                    profile.user_name = res.data.user.google.name;
+                                } else {
+                                    profile.user_name = res.data.user.user_name;
+                                }
+                                if (res.data.user.avatar == undefined) {
+                                    profile.avatar = 'default';
+                                } else {
+                                    profile.avatar = result.data.user.avatar;
+                                }
+                                // Store the profile.
+                                Profile.setProfile(profile);
+                            }
+                        })
+                        .catch(function(error) {
+                            console.log('error: ' + error);
+                        });
+                });
+                // Scroll to the bottom of the list
+                $timeout(function() {
+                    scrollToBottom(1);
+                }, speed);
+            });
+    };
+    */
 
     // Get the conversation by id
     getConversation = function(id, speed) {

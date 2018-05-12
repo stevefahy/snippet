@@ -271,7 +271,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     $scope.saveChanges = function() {
         mySavedImage = $scope.myCroppedImage;
         myImageName = 'img_' + General.getDate() + '_' + (new Date()).getTime() + '.jpg';
-        urltoFile($scope.myCroppedImage, myImageName, 'image/jpeg')
+        General.urltoFile($scope.myCroppedImage, myImageName, 'image/jpeg')
             .then(function(file) {
                 Format.prepareImage([file], function(result) {
                     // Change the current header.
@@ -437,20 +437,6 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
 
     // CONTACTS - IMAGE
 
-    // Transform the cropped image to a blob.
-    urltoFile = function(url, filename, mimeType) {
-        return (fetch(url)
-            .then(function(res) {
-                return res.arrayBuffer();
-            })
-            .then(function(buf) {
-                var blob = new Blob([buf], { type: mimeType });
-                blob.name = filename;
-                return blob;
-            })
-        );
-    };
-
     // Load image returned from Android.
     loadImage = function(img, callback) {
         src = 'fileuploads/images/' + img;
@@ -473,9 +459,6 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
             $scope.$apply(function($scope) {
                 $scope.myImage = evt.target.result;
             });
-           // $('.original').hide();
-            //$('.preview').css('left', '0px');
-           // $('.user_details').css('top', '-15px');
         };
         loadImage(file, function(result) {
             reader.readAsDataURL(result);
@@ -486,10 +469,6 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     var handleFileClick = function(evt) {
         if (ua.indexOf('AndroidApp') >= 0) {
             Android.choosePhoto();
-           //if ($('.crop_container').height() == 0) {
-            //    $('.user_details').css('left', '-1000px');
-            //    $('.crop_container').css('height', '0px');
-           // }
         }
     };
 
@@ -501,7 +480,6 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
         reader.onload = function(evt) {
             $scope.$apply(function($scope) {
                 $scope.myImage = evt.target.result;
-                $('.user_details').css('top', '-20px');
             });
         };
         reader.readAsDataURL(file);

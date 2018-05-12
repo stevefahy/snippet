@@ -124,14 +124,12 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
     };
 
     // only check focus on web version
-    //if (ua !== 'AndroidApp') {
-        if (ua.indexOf('AndroidApp') < 0) {
+    if (ua.indexOf('AndroidApp') < 0) {
         $window.onfocus = function() {
             // this.setFocus();
         };
         $window.focus();
         setFocus();
-
     }
 
 }]);

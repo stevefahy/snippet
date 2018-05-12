@@ -1,5 +1,5 @@
 cardApp.controller("headerCtrl", ['Profile', '$scope', '$rootScope', '$location', '$http', function(Profile, $scope, $rootScope, $location, $http) {
-    
+
     displayProfile = function() {
         var user;
         // Routes where User profile should be displayed.
@@ -10,23 +10,20 @@ cardApp.controller("headerCtrl", ['Profile', '$scope', '$rootScope', '$location'
                 // Route where Conversation profile should be displayed.
                 user = Profile.getConvProfile();
             }
-            if(user != undefined){
-            console.log(user);
-            $scope.avatar = user.avatar;
-            $scope.conversation_name = user.user_name;
-        }
+            if (user != undefined) {
+                $scope.avatar = user.avatar;
+                $scope.conversation_name = user.user_name;
+            }
         }
     };
 
     // If header ctrl loads after Profile
     this.$onInit = function() {
-        console.log('init');
         displayProfile();
     };
 
     // If header ctrl loads before Profile
     $scope.$on('PROFILE_SET', function(event, data) {
-        console.log('profile set');
         displayProfile();
     });
 

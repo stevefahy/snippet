@@ -107,108 +107,38 @@ function isMember(req, res, next) {
 
 // route middleware to ensure user is logged in
 function isLoggedIn(req, res, next) {
-    console.log('ILI');
     if (req.isAuthenticated()) {
-        console.log('yes');
         return next();
     } else {
-        console.log('no');
-        //res.redirect('/api/login');
         res.json({ 'auth': 'denied' });
     }
 }
 
 module.exports = function(app, passport) {
-    //
-    // WEB ROUTE
-    //----------------------------------------------------------------------
-    //
 
-
-
-
-/*
-    // NOT LOGGED IN
-    app.get('/api/login', function(req, res) {
-        // load the single view file (angular will handle the page changes on the front-end)
-        res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
-    });
-    // LOGGED IN
-    app.get('/', isLoggedIn, function(req, res) {
-        res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
-    });
-    
     // LOGOUT
     app.get('/api/logout', function(req, res) {
         req.logout();
         req.logOut();
-
         req.session.destroy(function(err) {
             if (err) {
                 console.log('err: ' + err);
             }
-            res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
         });
     });
 
-    // /:USERNAME (users home page)
-    app.get('/:username', function(req, res) {
-        res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
-    });
-    // /:SNIP (single snip)
-    app.get('/s/:snip', function(req, res) {
-        res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
-    });
-    // CONTACTS
-    app.get('/c/contacts', isLoggedIn, function(req, res) {
-        res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
-    });
-
-    // CONTACTS - IMPORT
-    app.get('/c/contacts/import', isLoggedIn, function(req, res) {
-        res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
-    });
-
-    // CONTACTS - IMPORT
-    app.get('/c/contacts_import', isLoggedIn, function(req, res) {
-        res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
-    });
-    
-    // CONTACTS - IMPORT
-    //app.get('/c/contacts/search', isLoggedIn, function(req, res) {
-     //   res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
-    //});
-    // CONTACTS - IMPORT
-    //app.get('/c/contacts/contacts', isLoggedIn, function(req, res) {
-     //   res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
-    //});
-    
-    // CONVERSATION
-    app.get('/chat/conversation/:id', isMember, function(req, res) {
-        res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
-    });
-    // CONVERSATIONS
-    app.get('/chat/conversations', isLoggedIn, function(req, res) {
-        res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
-    });
-    // USER SETTING
-    app.get('/api/user_setting', isLoggedIn, function(req, res) {
-        res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
-    });
-    */
     // Route to check passort authentication
     app.get('/api/user_data', isLoggedIn, function(req, res) {
         if (req.user === undefined) {
             // The user is not logged in
             res.json({ 'username': 'forbidden' });
-            console.log('no');
         } else {
-            console.log('yes');
             res.json({
                 user: req.user
             });
         }
     });
+
     // Get the FCM data
     app.get('/api/fcm_data', function(req, res) {
         if (req.user === undefined) {
@@ -232,8 +162,6 @@ module.exports = function(app, passport) {
     // send to google to do the authentication
     app.get('/auth/google',
         passport.authenticate('google', {
-            //scope: ['profile', 'email', 'https://www.google.com/m8/feeds/'],
-            //scope: ['profile', 'email', 'https://www.googleapis.com/auth/contacts.readonly'],
             scope: ['profile', 'email'],
             prompt: "select_account"
         }),
@@ -245,14 +173,9 @@ module.exports = function(app, passport) {
     app.get('/auth/google_contacts', function(request, response) {
         var stateString = base64url('{ "redirect" : "contacts/import" }');
         passport.authenticate('google', {
-            //scope: ['profile', 'email', 'https://www.google.com/m8/feeds/'],
             scope: ['profile', 'email', 'https://www.googleapis.com/auth/contacts.readonly'],
-            //scope: ['https://www.googleapis.com/auth/contacts.readonly'],
-            //prompt: "select_account",
-
             state: stateString,
             loginHint: 'stevefahy@gmail.com',
-
             authorizationParams: {
                 access_type: 'offline',
                 approval_prompt: 'force'
@@ -280,7 +203,6 @@ module.exports = function(app, passport) {
     // google callback
     // log in via join page already goes to user settings/
     app.get('/auth/google/callback', function(req, res, next) {
-console.log('auth callback');
         passport.authenticate('google', function(err, user, info) {
 
             if (err) {
@@ -290,8 +212,6 @@ console.log('auth callback');
 
             // cancelled permission
             if (!user) {
-                console.log('!user');
-                console.log(req.user);
                 if (req.user) {
                     user = req.user;
                 } else {
@@ -364,8 +284,8 @@ console.log('auth callback');
                         // First time logging in. Redirect to the User Settings screen.
                         res.redirect('/api/user_setting');
                     } else if (state.redirect != undefined) {
+                        // Google contacts callback.
                         if (state.redirect == 'contacts/import') {
-                            console.log('callback import');
                             res.redirect('/c/contacts/import');
                         }
                     }
@@ -398,112 +318,6 @@ console.log('auth callback');
         })(req, res, next);
     });
 
-    /*
-        // google callback
-        // log in via join page already goes to user settings/
-        app.get('/auth/google/callback',
-            passport.authenticate('google', {
-                //failureRedirect: '/login'
-
-            }),
-            function(req, res) {
-                console.log('google callback');
-                console.log(req.query.state);
-                // If this is a callback from an invite link then there will be a state variable
-                if (req.query.state) {
-                    // Invite accepted
-                    // Add this user to the inviter's list of contacts
-                    // Send the newly logged in user to the relevant group if stated
-                    // delete or set invite to accepted
-                    //
-                    // decode the invite code
-                    var state = JSON.parse(base64url.decode(req.query.state));
-                    console.log(state);
-                    if (state.invite_id != undefined) {
-                        //var invite_code = JSON.parse(base64url.decode(req.query.state));
-                        //}
-                        var invite_code = state;
-                        // Find the invite using the decoded invite code
-                        Invite.findById({ _id: invite_code.invite_id }, function(err, invite) {
-                            if (err) {
-                                res.send(err);
-                            }
-                            // ADD NEW INVITED USER TO INVITER CONTACTS
-                            var sender = invite.sender_id;
-                            // Find the inviter User
-                            User.findById({ _id: sender }, function(err, user) {
-                                if (err) {
-                                    res.send(err);
-                                }
-                                // get the inviter contact array
-                                var current_contacts = user.contacts;
-                                // check if this contact already exist, if not add it
-                                if (current_contacts.indexOf(req.user._id) < 0) {
-                                    // add the invited User id to the inviter array of contacts
-                                    current_contacts.push(req.user._id);
-                                    user.contacts = current_contacts;
-                                    // Save the new contact to the to the inviter array of contacts
-                                    var updateuser = new User(user);
-                                    updateuser.save(function(err, user) {
-                                        if (err) {
-                                            res.send(err);
-                                        } else {}
-                                    });
-                                }
-                            });
-                            // ADD INVITER USER TO NEW INVITED USER CONTACTS
-                            // get the invited contact array
-                            var current_contacts = req.user.contacts;
-                            // check if this contact already exist, if not add it
-                            if (current_contacts.indexOf(sender) < 0) {
-                                // add the inviter User id to the invited array of contacts
-                                current_contacts.push(sender);
-                                req.user.contacts = current_contacts;
-                                // Save the new contact to the to the invited array of contacts
-                                var updateuser = new User(req.user);
-                                updateuser.save(function(err, user) {
-                                    if (err) {
-                                        res.send(err);
-                                    } else {}
-                                });
-                            }
-                        });
-                        // First time logging in. Redirect to the User Settings screen.
-                        res.redirect('/api/user_setting');
-                    } else if (state.redirect != undefined) {
-                        console.log('redirect: ' + state);
-                        if (state.redirect == 'contacts/import') {
-                            res.redirect('/c/contacts');
-                        }
-                    }
-                } else {
-                    // Check if this is first log in
-                    // if so got to settings of not go to home /
-                    if (req.user.first_login == true) {
-                        req.user.first_login = false;
-
-                        // Save the new contact to the to the inviter array of contacts
-                        var updateuser = new User(req.user);
-                        updateuser.save(function(err, user) {
-                            if (err) {
-                                res.send(err);
-                            } else {
-                                //console.log(user);
-                            }
-                        });
-
-                        // Create Public conversation for this user
-                        // Any time profile changes update Public conv profile also.
-                        createPublicConversation(req.user, function(result) {
-                            res.redirect('/api/user_setting');
-                        });
-                    } else {
-                        res.redirect('/');
-                    }
-                }
-            });
-    */
-
     // Login from /api/join route
     // send to google to do the authentication. Pass the invite id to google within state.
     app.get("/auth/google/join/:code", function(request, response) {
@@ -524,7 +338,6 @@ console.log('auth callback');
     //
     // contact search box
     app.get('/api/search_member', isLoggedIn, function(req, res) {
-        console.log('contacts search');
         var username = new RegExp(req.query["term"], 'i');
         User.find({ 'google.name': username }, function(err, user) {
             if (err) {
@@ -542,7 +355,6 @@ console.log('auth callback');
     // CHECK OATH PERMISSION
     //
     app.get('/api/user_permission/', function(req, res) {
-        console.log('permission: ' + req.user.google.token);
         if (req.user.google) {
             request.get({
                 url: 'https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=' + req.user.google.token
@@ -553,63 +365,34 @@ console.log('auth callback');
     });
     //
     // USER CONTACTS
-    //https://www.google.com/m8/feeds/contacts/default/thin?alt=json&access_token=ya29.GlupBTMA_9903fys4hzzQc9vH_9DoG0cS6yVuzvlABtcGzKA_veuh5mLkhpHoNa21ZQQpMgzLBj9REJe8HnX3LgEMl4tirvUK-OVQ6KYjm4Vi7DInSYwhS7i8TqK&max-results=700&v=3.0
     //
     // Get all user contacts from social login
     app.get('/api/user_contacts/', function(req, res) {
         request.get({
             url: 'https://www.google.com/m8/feeds/contacts/default/full/?alt=json&max-results=10000',
-            //url: 'https://www.googleapis.com/auth/contacts.readonly',
             headers: {
-                //'alt':'json',
-                //'dataType': 'jsonp',
                 'Gdata-version': '3.0',
                 'Content-length': '0',
-                //'Authorization': 'Bearer ya29.GlykBUVUz7U18Cyq-8yivLgs4crIU8c4TGEWEgjTKQN-Isy2HV5iRDBjSXoJQ2HFkBvm2JSsWnxtBLiIYFQVW3MSzn8qJp28Wl3JFZJQRpRJw6A95vfdWiPJd1VECw'
                 'Authorization': 'Bearer ' + req.user.google.token
-                //'Authorization': configAuth.googleAuth.clientID,
-                //'Content-Type': 'application/json'
             },
             qs: '100', //Optional to get limit, max results etc
             alt: 'json',
             method: 'GET'
         }, function(err, response, body) {
-            //console.log(err);
-            //console.log(response);
-            console.log(body);
             // CONTACTS RECEIVED
-
             var parsed = JSON.parse(body);
-            //console.log(body);
-            //console.log(parsed.feed.entry);
             var user_contacts = [];
             for (var i in parsed.feed.entry) {
-                //console.log(parsed.feed.entry[i].id);
-                //console.log(parsed.feed.entry[i].gd$name);
                 if (parsed.feed.entry[i].gd$email != undefined) {
-                    var temp = { name: '', email: parsed.feed.entry[i].gd$email[0].address, avatar:'' };
+                    var temp = { name: '', email: parsed.feed.entry[i].gd$email[0].address, avatar: '' };
                     if (parsed.feed.entry[i].gd$name != undefined) {
                         temp.name = parsed.feed.entry[i].gd$name.gd$fullName.$t;
                     }
-                    /*
-                    if (parsed.feed.entry[i].link[0] != undefined) {
-                        temp.avatar = parsed.feed.entry[i].link[0].href;
-                    }
-                    */
                     user_contacts.push(temp);
-
                 }
-
-
-                //console.log(parsed.feed.entry[i].gd$email[0].address);
             }
-            //res.json(parsed);
             res.json(user_contacts);
-
-
         });
-
-
     });
     //
     // USERS
@@ -619,6 +402,7 @@ console.log('auth callback');
         var id = req.params.id;
         User.findById({ '_id': id }, function(error, user) {
             if (error) {
+                console.log(error);
                 res.json(error);
             } else if (user === null) {
                 // no user found
@@ -665,28 +449,21 @@ console.log('auth callback');
 
     // add user imported contacts
     app.post('/api/users/add_imported_contacts', function(req, res) {
-        //var id = req.params.id;
         var contacts = req.body;
-        console.log('contacts name: ' + contacts.name);
-        console.log('contacts contacts: ' + contacts.contacts);
-        
         // get the users imported contact array
         var current_contacts = req.user.imported_contacts;
         // add the id to the users contacts if it is not already there
-        //if (current_contacts.indexOf(id) < 0) {
-            current_contacts.push(contacts);
-            req.user.imported_contacts = current_contacts;
-            // Save
-            var updateuser = new User(req.user);
-            updateuser.save(function(err, user) {
-                if (err) {
-                    res.send(err);
-                } else {
-                    res.json(user);
-                }
-            });
-        //}
-        
+        current_contacts.push(contacts);
+        req.user.imported_contacts = current_contacts;
+        // Save
+        var updateuser = new User(req.user);
+        updateuser.save(function(err, user) {
+            if (err) {
+                res.send(err);
+            } else {
+                res.json(user);
+            }
+        });
     });
 
     // add user contact by id
@@ -975,6 +752,7 @@ console.log('auth callback');
     // EMAIL
     //
     // TODO - email and password to safe config file.
+    // TODO - make values VARS
     // send email invite
     app.post('/api/post_email', function(req, res) {
         var transporter = nodemailer.createTransport({
@@ -994,7 +772,6 @@ console.log('auth callback');
             if (error) {
                 console.log(error);
             } else {
-                //console.log(info);
                 res.sendStatus(200);
             }
         });
@@ -1012,7 +789,6 @@ console.log('auth callback');
     //
     // create conversation
     app.post('/chat/conversation', function(req, res) {
-        console.log(req.body);
         Conversation.create({
             conversation_name: req.body.conversation_name,
             conversation_avatar: req.body.conversation_avatar,
@@ -1151,7 +927,8 @@ console.log('auth callback');
     });
 
     // get a conversation by conversation id
-    app.get('/chat/conversation_id/:id', function(req, res) {
+    app.get('/chat/conversation_id/:id', isMember, function(req, res) {
+        console.log('conv im check');
         Conversation.findOne({ '_id': req.params.id }, function(err, conversation) {
             if (err) {
                 return done(err);
@@ -1232,9 +1009,9 @@ console.log('auth callback');
         });
     });
 
-    // get all cards for a conversation by conversation id
+    // get all cards for a PRIVATE conversation by conversation id
     // does not need to be a member because public chats are available even if not logged in
-    app.get('/chat/get_conversation/:id', function(req, res) {
+    app.get('/chat/get_conversation/:id', isMember, function(req, res) {
         // TODO if no id exists then re-route
         Card.find({ 'conversationId': req.params.id }, function(err, cards) {
             if (err) {
@@ -1243,6 +1020,20 @@ console.log('auth callback');
             res.json(cards);
         });
     });
+
+    /*
+    // get all cards for a PUBLIC conversation by conversation id
+    // does not need to be a member because public chats are available even if not logged in
+    app.get('/chat/get_public_conversation/:id', function(req, res) {
+        // TODO if no id exists then re-route
+        Card.find({ 'conversationId': req.params.id }, function(err, cards) {
+            if (err) {
+                console.log('err: ' + err);
+            }
+            res.json(cards);
+        });
+    });
+    */
 
     // get latest card for a conversation by conversation id
     app.get('/chat/get_conversation_latest_card/:id', function(req, res) {
@@ -1256,9 +1047,8 @@ console.log('auth callback');
 
     // Catch all. If none of the above routes match serve the index.html.
     app.all('*', function(req, res, next) {
-    // Just send the index.html for other files to support HTML5Mode
-    res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
-});
-
+        // Just send the index.html for other files to support HTML5Mode
+        res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
+    });
 
 };

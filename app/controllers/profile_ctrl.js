@@ -1,10 +1,7 @@
 cardApp.controller("profileCtrl", ['$http', '$rootScope', 'Profile', function($http, $rootScope, Profile) {
     // Get the current users details
-    console.log('profilectrl');
-    
+
     $http.get("/api/user_data").then(function(result) {
-        console.log('GET RESULT');
-        console.log(result.data.user);
         if (result.data.user) {
             // Get Profile once.
             var profile = {};
@@ -21,13 +18,6 @@ cardApp.controller("profileCtrl", ['$http', '$rootScope', 'Profile', function($h
             // Store the profile.
             Profile.setProfile(profile);
             $rootScope.$broadcast('PROFILE_SET');
-
-/*
-            $rootScope.$watch('profile', function() {
-                console.log('profile changed');
-            }, true);
-            */
-
         }
     });
 

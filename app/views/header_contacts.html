@@ -1,42 +1,19 @@
-<div ng-controller="headerCtrl">
-    <div class="header">
-        <div class="header_back"><a href ng-click="changePath('/chat/conversations')"><i class="material-icons header-mi">&#xE5C4;</i></a></div>
-        <!--
-        <div class="user">
-            <img ng-if="avatar!='default'" alt="" class="heading_avatar" ng-src="{{avatar}}" />
-            <img ng-if="avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="convs_avatar" />
-        </div>
-    -->
-        <div class="header_conv_name">CONTACTS</div>
-        <!--
-        <div class="header_decide">
-            <div class="header_accept">
-                <a href="" ng-click="saveChanges()"><i class="material-icons" id="mi-group_add">&#xE7F0;</i></a>
-            </div>
-            <div class="header_cancel">
-                <a href="" ng-click="cancelChanges()"><i class="material-icons" id="mi-person_add">&#xE7FE;</i></a>
-            </div>
-            <div class="header_import">
-                <a href="" ng-click="contactImport()"><i class="material-icons" id="mi-import_contacts">&#xE0E0;</i></a>
-            </div>
-        -->
-        <div class="header_contacts_container">
-            <div class="header_contacts hcc">
-                <a href="" ng-click="contactContacts()"><!--<i class="material-icons" id="mi-contacts">&#xE0BA;</i>-->
+<div class="header">
+    <div class="header_back"><a href ng-click="changePath('/chat/conversations')"><i class="material-icons header-mi">&#xE5C4;</i></a></div>
+    <div class="header_conv_name">CONTACTS</div>
+    <div class="header_contacts_container">
+        <div class="header_contacts hcc">
+            <a href="" ng-click="contactContacts()">
                     <i class="material-icons mi-people_contacts transition_5" ng-class="{ 'mi-people_contacts_n': !contacts_sel}" id="mi-people_contacts" >&#xE7FB;</i>
                 </a>
-            </div>
-            <!--ng-click="changePath('/c/contacts_import')"-->
-            <div class="header_import hcc">
-                <a href=""  ng-click="contactImport()"><i class="material-icons mi-import_contacts transition_5" ng-class="{ 'mi-import_contacts_n': !import_sel}" id="mi-import_contacts">&#xE0E0;</i></a>
-            </div>
-            <div class="header_search hcc">
-                <a href="" ng-click="contactSearch()"><i class="material-icons mi-search_contacts transition_5" ng-class="{ 'mi-search_contacts_n': !search_sel}" id="mi-search_contacts">&#xE8B6;</i></a>
-            </div>
-            <!--
-                <a href="" ng-click="contactSearch()"><i class="material-icons" id="mi-search_contacts">&#xE8B6;</i></a>-->
+        </div>
+        <div class="header_import hcc">
+            <a href="" ng-click="contactImport()"><i class="material-icons mi-import_contacts transition_5" ng-class="{ 'mi-import_contacts_n': !import_sel}" id="mi-import_contacts">&#xE0E0;</i></a>
+        </div>
+        <div class="header_search hcc">
+            <a href="" ng-click="contactSearch()"><i class="material-icons mi-search_contacts transition_5" ng-class="{ 'mi-search_contacts_n': !search_sel}" id="mi-search_contacts">&#xE8B6;</i></a>
         </div>
     </div>
 </div>
-<div class="header_bottom"></div>
 </div>
+<div class="header_bottom"></div>

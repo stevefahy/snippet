@@ -1,30 +1,28 @@
-<!--<div ng-controller="conversationsCtrl">-->
-    <div class="container_cnv">
-        <div class="header_container" ng-include="'/views/header.html'"></div>
-        <div class="content_cnv">
-            <div ng-repeat="conversation in conversations | orderBy :'updatedAt' : true">
-                <div id="conv_div" ng-click="(conversation.conversation_type == 'private') ? chat(conversation._id, conversation,  $index) : chatPublic(conversation.admin, conversation, $index)">
-                    <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
-                        <div class="convs_container">
-                            <div class="convs_a">
-                                <img ng-if="conversation.avatar!='default'" alt="" ng-src="{{conversation.avatar}}" class="convs_avatar" />
-                                <img ng-if="conversation.avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="convs_avatar" />
-                            </div>
-                            <div class="convs_col_a">
-                                <div class="convs_b" id="convs_name">{{conversation.name}}</div>
-                                <div class="convs_d" id="convs_msg" ng-bind-html="conversation.latest_card"></div>
-                            </div>
-                            <div class="convs_col_b">
-                                <div class="convs_c badge" id="conversations_badge" ng-if="conversation.new_messages > 0">{{conversation.new_messages}}</div>
-                                <div class="convs_e">
-                                    <time am-time-ago="conversation.updatedAt" id="time"></time>
-                                </div>
+<div class="container_cnv">
+    <div class="header_container" ng-include="'/views/header.html'"></div>
+    <div class="content_cnv">
+        <div ng-repeat="conversation in conversations | orderBy :'updatedAt' : true">
+            <div id="conv_div" ng-click="(conversation.conversation_type == 'private') ? chat(conversation._id, conversation,  $index) : chatPublic(conversation.admin, conversation, $index)">
+                <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
+                    <div class="convs_container">
+                        <div class="convs_a">
+                            <img ng-if="conversation.avatar!='default'" alt="" ng-src="{{conversation.avatar}}" class="convs_avatar" />
+                            <img ng-if="conversation.avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="convs_avatar" />
+                        </div>
+                        <div class="convs_col_a">
+                            <div class="convs_b" id="convs_name">{{conversation.name}}</div>
+                            <div class="convs_d" id="convs_msg" ng-bind-html="conversation.latest_card"></div>
+                        </div>
+                        <div class="convs_col_b">
+                            <div class="convs_c badge" id="conversations_badge" ng-if="conversation.new_messages > 0">{{conversation.new_messages}}</div>
+                            <div class="convs_e">
+                                <time am-time-ago="conversation.updatedAt" id="time"></time>
                             </div>
                         </div>
-                    </li>
-                </div>
+                    </div>
+                </li>
             </div>
         </div>
-        <div ng-include src="'/views/footer.html'"></div>
     </div>
-<!--</div>-->
+    <div ng-include src="'/views/footer.html'"></div>
+</div>

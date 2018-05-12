@@ -150,8 +150,8 @@
                 <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
                     <div class="convs_container contacts_create_container contacts_transition" ng-class="{'contacts_create_container_on': group_selected}">
                         <div class="convs_a">
-                            <img ng-if="avatar!='default'" alt="" class="convs_avatar" ng-src="{{avatar}}" />
-                            <i ng-if="avatar=='default'" class="material-icons convs_avatar mi-group_add" id="" ng-class="{'mi-group_add_grey': group_selected}">&#xE7F0;</i>
+                            <img ng-if="avatar!='default'" alt="" class="convs_avatar_abs" ng-src="{{avatar}}" id="loaded_image"/>
+                            <i ng-if="avatar=='default'" class="material-icons convs_avatar_abs mi-group_add" id="" ng-class="{'mi-group_add_grey': group_selected}">&#xE7F0;</i>
                             <div class="done_camera " ng-class="{'done_camera_selected': group_selected}">
                                 <i class="material-icons" id="mi-done_camera_bg">&#xE439;</i>
                                 <i class="material-icons" id="mi-done_camera" ng-click="!group_selected || conversationImage($event)">&#xE439;</i>
