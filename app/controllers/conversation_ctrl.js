@@ -1,25 +1,26 @@
 cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', function($scope, $rootScope, $location, $http, $window, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile) {
 
-    this.$onInit = function() {
-        $scope.getFocus = Format.getFocus;
-        $scope.getBlur = Format.getBlur;
-        $scope.contentChanged = Format.contentChanged;
-        $scope.checkKey = Format.checkKey;
-        $scope.handlePaste = Format.handlePaste;
-        $scope.keyListen = Format.keyListen;
-        $scope.showAndroidToast = Format.showAndroidToast;
-        $scope.uploadFile = Format.uploadFile;
-        $scope.myFunction = Edit.myFunction;
-        $scope.dropDownToggle = Edit.dropDownToggle;
-        $scope.pasteHtmlAtCaret = Format.pasteHtmlAtCaret;
-        $scope.checkCursor = Format.checkCursor;
-        $scope.isMember = false;
-    };
+    //this.$onInit = function() {
+    $scope.getFocus = Format.getFocus;
+    $scope.getBlur = Format.getBlur;
+    $scope.contentChanged = Format.contentChanged;
+    $scope.checkKey = Format.checkKey;
+    $scope.handlePaste = Format.handlePaste;
+    $scope.keyListen = Format.keyListen;
+    $scope.showAndroidToast = Format.showAndroidToast;
+    $scope.uploadFile = Format.uploadFile;
+    $scope.myFunction = Edit.myFunction;
+    $scope.dropDownToggle = Edit.dropDownToggle;
+    $scope.pasteHtmlAtCaret = Format.pasteHtmlAtCaret;
+    $scope.checkCursor = Format.checkCursor;
+    $scope.isMember = false;
+    //};
 
     General.keyBoardListenStart();
 
     // Use the urls id param from the route to load the conversation.
     var id = $routeParams.id;
+    console.log('initial id: ' + id);
     // Use the urls username param from the route to load the conversation.
     var username = $routeParams.username;
 
@@ -39,6 +40,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Broadcast by socket service when a  card has been created, updated or deleted by another user to this user
     $scope.$on('NOTIFICATION', function(event, msg) {
+        console.log('NOTIFICATION');
         var id = Conversations.getConversationId();
         // only update the conversation if the user is currently in that conversation
         if (id === msg.conversation_id) {
@@ -122,10 +124,17 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     setFocus = function() {
+        console.log('SF');
         $timeout(function() {
             findConversationId();
         });
     };
+
+    $scope.$on('$destroy', function() {
+        // clean up stuff
+        console.log('BYE');
+        $window.onfocus = null;
+    });
 
     // start watching onfocus and onblur
     watchFocus = function() {
@@ -137,7 +146,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             $window.onblur = function() {
                 //console.log('blur');
             };
-            $window.focus();
+            //$window.focus();
             setFocus();
         } else {
             setFocus();
@@ -215,33 +224,47 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         // Use the id from $routeParams.id if it exists. 
         // The conversation may have been loaded by username.
         if (id === undefined) {
-            // Use the username from $routeParams.username to load that users public conversation.
+            // Use the username from $routeParams.username to load that users Public conversation.
             if (username != undefined) {
                 Conversations.find_user_public_conversation_id(username)
                     .then(function(res) {
+                        console.log(res);
                         // check if this is a valid username
                         if (res.data.error) {
                             console.log('error: ' + res.data.error);
+                            $location.path("/api/login");
                         } else {
+                            var profile = {};
+                            profile.user_name = res.data.conversation_name;
+                            profile.avatar = res.data.conversation_avatar;
+                            Profile.setProfile(profile);
+                            $rootScope.$broadcast('PROFILE_SET');
                             // get the public conversation id for this username
-                            id = res.data._id;
+                            var public_id = res.data._id;
                             // Set the conversation id so that it can be retrieved by cardcreate_ctrl
-                            Conversations.setConversationId(id);
+                            Conversations.setConversationId(public_id);
                             // Check the users permission for this conversation. (logged in and participant)
-                            checkPermission(id, function(result) {
+                            checkPermission(public_id, function(result) {
                                 $scope.isMember = result;
-                                getConversation(id, 500);
-                                //getPublicConversation(id, 500);
+                                getPublicConversation(public_id, res.data.conversation_name, 500);
                             });
                         }
+                    })
+                    .catch(function(error) {
+                        console.log(error);
                     });
             }
         } else {
+            console.log(id);
             Conversations.setConversationId(id);
             // Check the users permission for this conversation. (logged in and participant)
             checkPermission(id, function(result) {
                 $scope.isMember = result;
-                getConversation(id, 500);
+                if (result) {
+                    getConversation(id, 500);
+                } else {
+                    $location.path("/api/login");
+                }
             });
         }
     };
@@ -258,11 +281,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // If the user is logged in and a participant of the conversation the $scope.isMember=true.
     // card_create.html is added to the conversation if $scope.isMember=true.
     checkPermission = function(conversation_id, callback) {
+        console.log('CP?');
         // If looged in
         if ($scope.currentUser) {
             // Find the conversation by id.
             Conversations.find_conversation_id(conversation_id)
                 .then(function(res) {
+                    console.log(res);
                     // Find the current user in the conversation participants array.
                     var user_pos = General.findWithAttr(res.data.participants, '_id', $scope.currentUser._id);
                     if (user_pos >= 0) {
@@ -279,53 +304,71 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     };
 
-    /*
-    getPublicConversation = function(id, speed) {
+
+    getPublicConversation = function(id, name, speed) {
         Conversations.getPublicConversationById(id)
             .then(function(result) {
+                console.log(result);
                 $scope.cards = result.data;
                 // Clear the cards unviewed arrary for this participant of this conversation.
-                updateConversationViewed(id);
+                //updateConversationViewed(id);
                 // Map relevant data to the loaded cards.
-                $scope.cards.map(function(key, array) {
-                    // Store the original characters of the card.
-                    key.original_content = key.content;
-                    // Get the user name for the user id
-                    // TODO dont repeat if user id already retreived
-                    Users.search_id(key.user)
-                        .then(function(res) {
-                            if (res.data.error === 'null') {
-                                // user cannot be found
-                            }
-                            if (res.data.success) {
-                                // Set the user_name to the retrieved name
-                                key.user_name = res.data.success.user_name;
-                                var profile = {};
-                                if (res.data.user.user_name == undefined) {
-                                    profile.user_name = res.data.user.google.name;
-                                } else {
-                                    profile.user_name = res.data.user.user_name;
+                if ($scope.cards.length > 0) {
+                    $scope.cards.map(function(key, array) {
+                        console.log(key);
+                        // Store the original characters of the card.
+                        key.original_content = key.content;
+
+
+                        // Get the user name for the user id
+                        key.user_name = name;
+
+
+                        // TODO dont repeat if user id already retreived
+                        /*
+                        Users.search_id(key.user)
+                            .then(function(res) {
+                                console.log(res);
+                                if (res.data.error === 'null') {
+                                    // user cannot be found
                                 }
-                                if (res.data.user.avatar == undefined) {
-                                    profile.avatar = 'default';
-                                } else {
-                                    profile.avatar = result.data.user.avatar;
+
+                                if (res.data.success) {
+                                    // Set the user_name to the retrieved name
+                                    key.user_name = res.data.success.user_name;
+                                    var profile = {};
+                                    if (res.data.success.user_name == undefined) {
+                                        profile.user_name = res.data.success.google.name;
+                                    } else {
+                                        profile.user_name = res.data.success.user_name;
+                                    }
+                                    if (res.data.success.avatar == undefined) {
+                                        profile.avatar = 'default';
+                                    } else {
+                                        profile.avatar = res.data.success.avatar;
+                                    }
+                                    // Store the profile.
+                                    console.log(profile);
+                                    Profile.setProfile(profile);
+                                    $rootScope.$broadcast('PROFILE_SET');
                                 }
-                                // Store the profile.
-                                Profile.setProfile(profile);
-                            }
-                        })
-                        .catch(function(error) {
-                            console.log('error: ' + error);
-                        });
-                });
+                            })
+                            .catch(function(error) {
+        console.log('error: ' + error);
+    });
+                            */
+                    });
+                }
                 // Scroll to the bottom of the list
                 $timeout(function() {
                     scrollToBottom(1);
                 }, speed);
+            })
+            .catch(function(error) {
+                console.log('error: ' + error);
             });
     };
-    */
+
 
     // Get the conversation by id
     getConversation = function(id, speed) {

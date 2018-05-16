@@ -17,7 +17,8 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
             templateUrl: '/views/card.html'
         })
         .when("/:username", {
-            templateUrl: '/views/conversation.html'
+            templateUrl: '/views/conversation.html',
+            controller: 'conversationCtrl'
         })
         .when("/c/contacts", {
             templateUrl: '/views/contacts.html',
@@ -35,10 +36,12 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
             controller: 'conversationsCtrl'
         })
         .when("/chat/conversation/:id", {
-            templateUrl: '/views/conversation.html'
+            templateUrl: '/views/conversation.html',
+            controller: 'conversationCtrl'
         })
         .when("/chat/user_public_conversation/:username", {
-            templateUrl: '/views/conversation.html'
+            templateUrl: '/views/conversation.html',
+            controller: 'conversationCtrl'
         })
         .when("/api/join/:code", {
             templateUrl: '/views/join.html'
@@ -1273,6 +1276,7 @@ cardApp.service('Edit', function() {
     // EDIT Dropdown
     // On user click toggle between hiding and showing the dropdown content
     this.dropDownToggle = function(id) {
+        console.log('DT');
         closeDropdowns();
         document.getElementById("myDropdown" + id).classList.toggle("show");
     };
@@ -1534,6 +1538,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
     // Get the FCM details (Google firebase notifications).
     $http.get("/api/fcm_data").then(function(result) {
+        console.log(result);
         if (result != result.data.fcm != 'forbidden') {
             fcm = result.data.fcm;
             headers.Authorization = 'key=' + fcm.firebaseserverkey;
@@ -1699,6 +1704,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 // Update the Conversation updateAt time.
                 Conversations.updateTime(current_conversation_id)
                     .then(function(response) {
+                        console.log(response);
                         var notification = self.setNotification(response.data, currentUser, card_content);
                         notification_title = notification.title;
                         notification_body = notification.body;

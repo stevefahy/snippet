@@ -66,15 +66,14 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
             $scope.avatar = 'default';
             // Check if the page has been loaded witha param (user contacts import callback).
             if (paramValue != undefined && paramValue == 'import') {
-                $scope.contacts_imported = true;
+                // Set the navigation.
+                $scope.contactImportNoAnim();
+                // load this users list of contacts
                 Contacts.getContacts().then(function(result) {
-                    saveImportedContacts(result, function(result) {
-                        $scope.currentUser = result.data;
-                        // load this users list of contacts
-                        loadUserContacts();
-                        // Set the navigation.
-                        $scope.contactImportNoAnim();
-                    });
+                    // Update the current user with the imported contacts.
+                    $scope.currentUser = result.data;
+                    // load this users list of contacts
+                    loadUserContacts();
                 });
             } else {
                 // load this users list of contacts
@@ -300,17 +299,8 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
 
     $scope.importContacts = function() {
         $scope.contacts_imported = true;
-        Contacts.getPermissions().then(function(result) {
-            if (result.data.indexOf('contacts.readonly') >= 0) {
-                //console.log('contacts permission granted');
-                Contacts.getContacts().then(function(result) {
-                    saveImportedContacts(result);
-                });
-            } else {
-                //console.log('contacts permission not granted');
-                location.href = "/auth/google_contacts";
-            }
-        });
+        // Always use /auth/google_contacts route (permission not granted) so that token can be returned.
+        location.href = "/auth/google_contacts";
     };
 
     $scope.cancelInvite = function(event) {
@@ -427,7 +417,6 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
         });
         // All the users contacts have been mapped.
         $q.all(promises).then(function() {
-            $scope.contacts_on = true;
             // check whether contacts have been imported
             checkImportedContacts();
         }).catch(function(err) {
@@ -512,14 +501,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
                 $scope.user_contacts[index].is_contact = true;
             }
         }
-    };
-
-    saveImportedContacts = function(result, callback) {
-        $scope.user_contacts = result.data;
-        var contacts_obj = { name: 'google', contacts: $scope.user_contacts };
-        Users.add_imported_contacts(contacts_obj).then(function(result) {
-            callback(result);
-        });
+        $scope.contacts_on = true;
     };
 
     inputClicked = function(event) {

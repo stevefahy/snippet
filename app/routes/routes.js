@@ -17,6 +17,7 @@ var fcm = require('../configs/fcm');
 // load the auth variables
 var configAuth = require('../configs/auth'); // use this one for testing
 
+/*
 function getContacts(res) {
     User.find(function(err, users) {
         // if there is an error retrieving, send the error. nothing after res.send(err) will execute
@@ -26,6 +27,7 @@ function getContacts(res) {
         res.json(cards);
     });
 }
+*/
 
 function getConversationId(id) {
     var query = Conversation.findOne({ '_id': id });
@@ -61,7 +63,7 @@ function createPublicConversation(user, callback) {
     participants.push({ _id: user._id, unviewed: [] });
     // Create conversation in DB.
     Conversation.create({
-        conversation_name: 'Public',
+        conversation_name: user.user_name,
         conversation_type: 'public',
         conversation_avatar: user.avatar,
         admin: user._id,
@@ -79,8 +81,10 @@ function createPublicConversation(user, callback) {
 
 // route middleware to ensure user is logged in and a member of the conversation
 function isMember(req, res, next) {
+    console.log('IM?');
     // must be logged in to be a member
     if (req.isAuthenticated()) {
+        console.log('IM auth Y');
         // get the members of this conversation
         var query = getConversationId(req.params.id);
         query.exec(function(err, conversation) {
@@ -95,11 +99,13 @@ function isMember(req, res, next) {
                 // if the current is is a member of this conversation continue
                 return next();
             } else {
+                console.log('IM conv !exist or !member');
                 // otherwise redirect to login
                 res.redirect('/api/login');
             }
         });
     } else {
+        console.log('IM auth N redirect');
         // causing infinite loop
         res.redirect('/api/login');
     }
@@ -107,9 +113,13 @@ function isMember(req, res, next) {
 
 // route middleware to ensure user is logged in
 function isLoggedIn(req, res, next) {
+    console.log('ILI?');
     if (req.isAuthenticated()) {
+        console.log('ILI Y');
+        //console.log(req.user);
         return next();
     } else {
+        console.log('ILI N');
         res.json({ 'auth': 'denied' });
     }
 }
@@ -128,7 +138,9 @@ module.exports = function(app, passport) {
     });
 
     // Route to check passort authentication
-    app.get('/api/user_data', isLoggedIn, function(req, res) {
+    app.get('/api/user_data', function(req, res) {
+        //console.log('/api/user_data');
+        //console.log(req.query);
         if (req.user === undefined) {
             // The user is not logged in
             res.json({ 'username': 'forbidden' });
@@ -141,7 +153,8 @@ module.exports = function(app, passport) {
 
     // Get the FCM data
     app.get('/api/fcm_data', function(req, res) {
-        if (req.user === undefined) {
+        //if (req.user === undefined) {
+        if (!req.isAuthenticated()) {
             // The user is not logged in
             res.json({ 'fcm': 'forbidden' });
         } else {
@@ -171,18 +184,20 @@ module.exports = function(app, passport) {
 
 
     app.get('/auth/google_contacts', function(request, response) {
+        console.log('auth/contacts google_contacts');
+        console.log(request.user);
         var stateString = base64url('{ "redirect" : "contacts/import" }');
         passport.authenticate('google', {
             scope: ['profile', 'email', 'https://www.googleapis.com/auth/contacts.readonly'],
             state: stateString,
-            loginHint: 'stevefahy@gmail.com',
+            //loginHint: 'stevefahy@gmail.com',
+            loginHint: request.user.google.email,
             authorizationParams: {
                 access_type: 'offline',
                 approval_prompt: 'force'
             }
         })(request, response);
     });
-
 
     // Login from /api/join route
     // send to google to do the authentication. Pass the invite id to google within state.
@@ -203,6 +218,18 @@ module.exports = function(app, passport) {
     // google callback
     // log in via join page already goes to user settings/
     app.get('/auth/google/callback', function(req, res, next) {
+        var state;
+        // Decode the state if it exists.
+        if (req.query.state != undefined) {
+            state = JSON.parse(base64url.decode(req.query.state));
+        }
+        // If this is a callback from importing contacts then pass use_access_token true to passport authenticate.
+        if (state != undefined && state.redirect == 'contacts/import') {
+            req.use_access_token = true;
+        } else {
+            req.use_access_token = false;
+        }
+
         passport.authenticate('google', function(err, user, info) {
 
             if (err) {
@@ -226,15 +253,12 @@ module.exports = function(app, passport) {
                 }
 
                 // If this is a callback from an invite link then there will be a state variable
-                if (req.query.state) {
-                    // Invite accepted
-                    // Add this user to the inviter's list of contacts
-                    // Send the newly logged in user to the relevant group if stated
-                    // delete or set invite to accepted
-                    //
-                    // decode the invite code
-                    var state = JSON.parse(base64url.decode(req.query.state));
+                if (state != undefined) {
                     if (state.invite_id != undefined) {
+                        // Invite accepted
+                        // Add this user to the inviter's list of contacts
+                        // Send the newly logged in user to the relevant group if stated
+                        // delete or set invite to accepted
                         var invite_code = state;
                         // Find the invite using the decoded invite code
                         Invite.findById({ _id: invite_code.invite_id }, function(err, invite) {
@@ -286,6 +310,25 @@ module.exports = function(app, passport) {
                     } else if (state.redirect != undefined) {
                         // Google contacts callback.
                         if (state.redirect == 'contacts/import') {
+
+                            // Find the user and store the acces_token their uder details in the database temporarily.
+                            User.findOne({ 'google.id': user.google.id }, function(err, user) {
+                                if (err)
+                                    return done(err);
+
+                                if (user) {
+                                    user.google.token = info.access_token;
+
+                                    user.save(function(err) {
+                                        if (err) {
+                                            console.log('err: ' + err);
+                                            return done(err);
+                                        }
+                                    });
+                                }
+
+                            });
+
                             res.redirect('/c/contacts/import');
                         }
                     }
@@ -316,6 +359,7 @@ module.exports = function(app, passport) {
                 }
             });
         })(req, res, next);
+
     });
 
     // Login from /api/join route
@@ -348,13 +392,18 @@ module.exports = function(app, passport) {
     });
 
     // Get all contacts
+    /*
     app.get('/api/contacts/', function(req, res) {
         getContacts(res);
     });
+    */
     //
     // CHECK OATH PERMISSION
-    //
-    app.get('/api/user_permission/', function(req, res) {
+    // Contacts.getPermissions()
+    /*
+    app.get('/api/user_permission/', isLoggedIn, function(req, res) {
+        console.log('PERMISSION');
+        console.log(req.user);
         if (req.user.google) {
             request.get({
                 url: 'https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=' + req.user.google.token
@@ -363,42 +412,97 @@ module.exports = function(app, passport) {
             });
         }
     });
+    */
     //
     // USER CONTACTS
     //
     // Get all user contacts from social login
-    app.get('/api/user_contacts/', function(req, res) {
+    // TODO - Make work as API endpoint.
+    // Contacts.getContacts()
+    app.get('/api/user_contacts/', isLoggedIn, function(req, res) {
+        console.log('CONTACTS');
         request.get({
             url: 'https://www.google.com/m8/feeds/contacts/default/full/?alt=json&max-results=10000',
             headers: {
                 'Gdata-version': '3.0',
                 'Content-length': '0',
                 'Authorization': 'Bearer ' + req.user.google.token
+                //'Authorization': 'Bearer ' + req.tkn
             },
             qs: '100', //Optional to get limit, max results etc
             alt: 'json',
             method: 'GET'
         }, function(err, response, body) {
             // CONTACTS RECEIVED
-            var parsed = JSON.parse(body);
-            var user_contacts = [];
-            for (var i in parsed.feed.entry) {
-                if (parsed.feed.entry[i].gd$email != undefined) {
-                    var temp = { name: '', email: parsed.feed.entry[i].gd$email[0].address, avatar: '' };
-                    if (parsed.feed.entry[i].gd$name != undefined) {
-                        temp.name = parsed.feed.entry[i].gd$name.gd$fullName.$t;
+            //console.log(err);
+            //console.log(body);
+            if (body != null) {
+                console.log('parse');
+                var parsed = JSON.parse(body);
+                var user_contacts = [];
+                for (var i in parsed.feed.entry) {
+                    if (parsed.feed.entry[i].gd$email != undefined) {
+                        //var temp = { name: '', email: parsed.feed.entry[i].gd$email[0].address, avatar: '' };
+                        var temp = { name: '', email: parsed.feed.entry[i].gd$email[0].address };
+                        if (parsed.feed.entry[i].gd$name != undefined) {
+                            temp.name = parsed.feed.entry[i].gd$name.gd$fullName.$t;
+                        }
+                        user_contacts.push(temp);
                     }
-                    user_contacts.push(temp);
                 }
+
+                var contacts_obj = { name: 'google', contacts: user_contacts };
+
+                // Delete the temporarily stored access token.
+                User.findOne({ 'google.id': req.user.google.id }, function(err, user) {
+                    if (err)
+                        return done(err);
+
+                    if (user) {
+                        user.google.token = 'deleted';
+                        //console.log(user);
+
+                        // get the users imported contact array
+                        //var current_contacts = user.imported_contacts;
+                        // add the id to the users contacts if it is not already there
+                        user.imported_contacts.push(contacts_obj);
+                        //req.user.imported_contacts = current_contacts;
+
+                        user.save(function(err) {
+                            if (err) {
+                                console.log('err: ' + err);
+                                return done(err);
+                            }
+                            console.log(user);
+                            //return done(null, user, tkn);
+                            res.json(user);
+                        });
+                    }
+
+                });
+                //console.log(user_contacts);
+                //var contacts_obj = { name: 'google', contacts: $scope.user_contacts };
+
+                /*
+                        // get the users imported contact array
+        var current_contacts = req.user.imported_contacts;
+        // add the id to the users contacts if it is not already there
+        current_contacts.push(contacts);
+        req.user.imported_contacts = current_contacts;
+        */
+
+                //res.json(user_contacts);
             }
-            res.json(user_contacts);
         });
     });
+
     //
     // USERS
     //
     // search for user by id
-    app.post('/api/users/search_id/:id', function(req, res) {
+    //Users.search_id(key.user)
+    // Needed for Public not logged in route.
+    app.post('/api/users/search_id/:id', isLoggedIn, function(req, res) {
         var id = req.params.id;
         User.findById({ '_id': id }, function(error, user) {
             if (error) {
@@ -414,7 +518,7 @@ module.exports = function(app, passport) {
     });
 
     // delete user contact by id
-    app.post('/api/users/delete_contact/:id', function(req, res) {
+    app.post('/api/users/delete_contact/:id', isLoggedIn, function(req, res) {
         // get the position of this contact within the contacts array and delete it
         var index = req.user.contacts.indexOf(req.params.id);
         req.user.contacts.splice(index, 1);
@@ -428,7 +532,7 @@ module.exports = function(app, passport) {
     });
 
     // Update User profile
-    app.put('/api/users/update_user/:user_id', function(req, res) {
+    app.put('/api/users/update_user/:user_id', isLoggedIn, function(req, res) {
         User.findById({ _id: req.params.user_id }, function(err, user) {
             if (err) {
                 res.send(err);
@@ -447,8 +551,9 @@ module.exports = function(app, passport) {
         });
     });
 
+    /*
     // add user imported contacts
-    app.post('/api/users/add_imported_contacts', function(req, res) {
+    app.post('/api/users/add_imported_contacts', isLoggedIn, function(req, res) {
         var contacts = req.body;
         // get the users imported contact array
         var current_contacts = req.user.imported_contacts;
@@ -465,9 +570,10 @@ module.exports = function(app, passport) {
             }
         });
     });
-
+    */
+    
     // add user contact by id
-    app.post('/api/users/add_contact/:id', function(req, res) {
+    app.post('/api/users/add_contact/:id', isLoggedIn, function(req, res) {
         var id = req.params.id;
         // get the users contact array
         var current_contacts = req.user.contacts;
@@ -488,7 +594,7 @@ module.exports = function(app, passport) {
     });
 
     // notify user
-    app.post('/api/users/send_notification', function(req, res) {
+    app.post('/api/users/send_notification', isLoggedIn, function(req, res) {
         var options = req.body;
         request(options, function(err, response, body) {
             if (err) {
@@ -501,7 +607,7 @@ module.exports = function(app, passport) {
     });
 
     // update user notification data
-    app.post('/api/users/update_notification', function(req, res) {
+    app.post('/api/users/update_notification', isLoggedIn, function(req, res) {
         // Find the current users details
         User.findById({ '_id': req.user._id }, function(error, user) {
             if (error) {
@@ -620,7 +726,7 @@ module.exports = function(app, passport) {
     // CARDS
     //
     // search for cards by username
-    app.post('/api/cards/search_user/:username', function(req, res) {
+    app.post('/api/cards/search_user/:username', isLoggedIn, function(req, res) {
         var username = req.params.username;
         // get the user id for this user name
         User.findOne({ 'google.name': new RegExp('^' + username + '$', "i") }, function(err, user) {
@@ -644,7 +750,7 @@ module.exports = function(app, passport) {
     });
 
     // search for a card by id
-    app.post('/api/cards/search_id/:snip', function(req, res) {
+    app.post('/api/cards/search_id/:snip', isLoggedIn, function(req, res) {
         var snip = req.params.snip;
         Card.find({ '_id': snip }, function(err, cards) {
             if (err) {
@@ -655,7 +761,7 @@ module.exports = function(app, passport) {
     });
 
     // search all cards by string
-    app.post('/api/cards/search/:input', function(req, res) {
+    app.post('/api/cards/search/:input', isLoggedIn, function(req, res) {
         // use mongoose to search all cards in the database
         var input = req.params.input;
         Card.find()
@@ -669,7 +775,7 @@ module.exports = function(app, passport) {
     });
 
     // create card and send back the created card after creation
-    app.post('/api/cards', function(req, res) {
+    app.post('/api/cards', isLoggedIn, function(req, res) {
         Card.create({
             conversationId: req.body.conversationId,
             content: req.body.content,
@@ -686,7 +792,7 @@ module.exports = function(app, passport) {
     });
 
     // update a card by id
-    app.put('/api/cards/:card_id', function(req, res) {
+    app.put('/api/cards/:card_id', isLoggedIn, function(req, res) {
         Card.findById({ _id: req.params.card_id }, function(err, card) {
             if (err) {
                 res.send(err);
@@ -709,7 +815,7 @@ module.exports = function(app, passport) {
     });
 
     // delete a card by id.
-    app.delete('/api/cards/:card_id', function(req, res) {
+    app.delete('/api/cards/:card_id', isLoggedIn, function(req, res) {
         Card.remove({
             _id: req.params.card_id
         }, function(err, card) {
@@ -722,7 +828,7 @@ module.exports = function(app, passport) {
     // INVITES
     //
     // create invite and send back the created invite
-    app.post('/api/invite', function(req, res) {
+    app.post('/api/invite', isLoggedIn, function(req, res) {
         Invite.create({
             sender_id: req.body.sender_id,
             sender_name: req.body.sender_name,
@@ -739,7 +845,7 @@ module.exports = function(app, passport) {
     });
 
     // search for an invite by id
-    app.post('/api/invite/search_id/:code', function(req, res) {
+    app.post('/api/invite/search_id/:code', isLoggedIn, function(req, res) {
         var code = req.params.code;
         Invite.findOne({ '_id': code }, function(err, invites) {
             if (err) {
@@ -754,7 +860,7 @@ module.exports = function(app, passport) {
     // TODO - email and password to safe config file.
     // TODO - make values VARS
     // send email invite
-    app.post('/api/post_email', function(req, res) {
+    app.post('/api/post_email', isLoggedIn, function(req, res) {
         var transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
@@ -788,7 +894,7 @@ module.exports = function(app, passport) {
     // CONVERSATION
     //
     // create conversation
-    app.post('/chat/conversation', function(req, res) {
+    app.post('/chat/conversation', isLoggedIn, function(req, res) {
         Conversation.create({
             conversation_name: req.body.conversation_name,
             conversation_avatar: req.body.conversation_avatar,
@@ -808,7 +914,7 @@ module.exports = function(app, passport) {
 
     // TODO just update the updatedAt
     // Update a conversation updatedAt time (For sorting conversations by most recent updates)
-    app.put('/chat/conversation_time/:id', function(req, res) {
+    app.put('/chat/conversation_time/:id', isLoggedIn, function(req, res) {
         Conversation.findById({ _id: req.params.id }, function(err, conversation) {
             if (err) {
                 console.log('err: ' + err);
@@ -830,7 +936,7 @@ module.exports = function(app, passport) {
 
     // Update the conversation unviewed array for this participant with this card id.
     // Only add the card if it doesnt already exist in the array (for Updates).
-    app.put('/chat/conversation_viewed/:id/:user_id/:card_id', function(req, res) {
+    app.put('/chat/conversation_viewed/:id/:user_id/:card_id', isLoggedIn, function(req, res) {
         Conversation.update({ _id: req.params.id, 'participants._id': req.params.user_id }, {
                 $addToSet: {
                     'participants.$.unviewed': { '_id': req.params.card_id }
@@ -846,7 +952,7 @@ module.exports = function(app, passport) {
     });
 
     // Remove a card id from from this users unviewed array
-    app.put('/chat/conversation_viewed_remove/:id/:user_id/:card_id', function(req, res) {
+    app.put('/chat/conversation_viewed_remove/:id/:user_id/:card_id', isLoggedIn, function(req, res) {
         Conversation.findById({ _id: req.params.id }, function(err, conversation) {
             if (err) {
                 console.log('err: ' + err);
@@ -879,7 +985,7 @@ module.exports = function(app, passport) {
     });
 
     // Update the conversation avatar.
-    app.put('/chat/conversation_avatar/:id', function(req, res) {
+    app.put('/chat/conversation_avatar/:id', isLoggedIn, function(req, res) {
         Conversation.findById({ _id: req.params.id }, function(err, conversation) {
             if (err) {
                 console.log('err: ' + err);
@@ -900,7 +1006,7 @@ module.exports = function(app, passport) {
     });
 
     // clear a conversation unviewed array by conversation id and user id
-    app.put('/chat/conversation_viewed_clear/:id/:user_id/', function(req, res) {
+    app.put('/chat/conversation_viewed_clear/:id/:user_id/', isLoggedIn, function(req, res) {
         Conversation.update({ _id: req.params.id, 'participants._id': req.params.user_id }, {
                 '$set': {
                     'participants.$.unviewed': []
@@ -916,7 +1022,7 @@ module.exports = function(app, passport) {
     });
 
     // get all conversations for current user
-    app.get('/chat/conversation', function(req, res) {
+    app.get('/chat/conversation', isLoggedIn, function(req, res) {
         Conversation.find({ 'participants._id': req.user._id }, function(err, conversations) {
             if (err) {
                 console.log('err: ' + err);
@@ -938,7 +1044,7 @@ module.exports = function(app, passport) {
     });
 
     // get all conversations by user id
-    app.get('/chat/user_conversations/:id', function(req, res) {
+    app.get('/chat/user_conversations/:id', isLoggedIn, function(req, res) {
         Conversation.find({ 'participants._id': req.params.id }, function(err, conversations) {
             if (err) {
                 return done(err);
@@ -987,6 +1093,7 @@ module.exports = function(app, passport) {
     });
 
     // get user public conversation id by user name
+    // Conversations.find_user_public_conversation_id(username);
     app.get('/chat/user_public_conversation_id/:username', function(req, res) {
         // Get the user id associated with this name
         User.findOne({ 'google.name': req.params.username }, function(error, user) {
@@ -1011,8 +1118,10 @@ module.exports = function(app, passport) {
 
     // get all cards for a PRIVATE conversation by conversation id
     // does not need to be a member because public chats are available even if not logged in
+    // getConversationById(id)
     app.get('/chat/get_conversation/:id', isMember, function(req, res) {
         // TODO if no id exists then re-route
+        console.log('getConversationById(id) isMember ' + req.params.id);
         Card.find({ 'conversationId': req.params.id }, function(err, cards) {
             if (err) {
                 console.log('err: ' + err);
@@ -1021,22 +1130,36 @@ module.exports = function(app, passport) {
         });
     });
 
-    /*
     // get all cards for a PUBLIC conversation by conversation id
     // does not need to be a member because public chats are available even if not logged in
+    //getPublicConversationById(id);
     app.get('/chat/get_public_conversation/:id', function(req, res) {
         // TODO if no id exists then re-route
-        Card.find({ 'conversationId': req.params.id }, function(err, cards) {
+        // Ensure the conversation id is a public conversation
+        Conversation.findOne({ '_id': req.params.id, 'conversation_type': 'public' }, function(err, conversation) {
             if (err) {
-                console.log('err: ' + err);
+                res.json({ 'error': 'not found' });
             }
-            res.json(cards);
+            if (conversation == null) {
+                res.json({ 'error': 'denied' });
+            } else {
+                if (conversation.conversation_type === 'public') {
+                    Card.find({ 'conversationId': req.params.id }, function(err, cards) {
+                        if (err) {
+                            console.log('err: ' + err);
+                        }
+                        res.json(cards);
+                    });
+                } else {
+                    res.json({ 'error': 'denied' });
+                }
+            }
         });
+
     });
-    */
 
     // get latest card for a conversation by conversation id
-    app.get('/chat/get_conversation_latest_card/:id', function(req, res) {
+    app.get('/chat/get_conversation_latest_card/:id', isLoggedIn, function(req, res) {
         Card.findOne({ 'conversationId': req.params.id }).sort('-updatedAt').exec(function(err, card) {
             if (err) {
                 console.log('err: ' + err);

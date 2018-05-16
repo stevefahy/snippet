@@ -85,6 +85,7 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
 
     // Create Card
     $scope.createCard = function(id, card_create) {
+        console.log(id);
         Database.createCard(id, card_create, $scope.currentUser);
     };
 

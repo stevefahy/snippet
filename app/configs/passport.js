@@ -24,12 +24,14 @@ module.exports = function(passport) {
 
     // used to serialize the user for the session
     passport.serializeUser(function(user, done) {
+        //console.log('serializeUser');
         done(null, user.id);
     });
 
     // used to deserialize the user
     passport.deserializeUser(function(id, done) {
         User.findById(id, function(err, user) {
+            //console.log('deserializeUser');
             done(err, user);
         });
     });
@@ -298,35 +300,47 @@ module.exports = function(passport) {
     // =========================================================================
     // GOOGLE ==================================================================
     // =========================================================================
-    passport.use(new GoogleStrategy({
+
+
+    passport.use('google', new GoogleStrategy({
             clientID: configAuth.googleAuth.clientID,
             clientSecret: configAuth.googleAuth.clientSecret,
             callbackURL: global.callbackURL,
             passReqToCallback: true // allows us to pass in the req from our route (lets us check if a user is logged in or not)
         },
         function(req, token, refreshToken, profile, done) {
+
+            // If req.use_access_token = true has been passed from /auth/google/callback
+            // then pass back the access_token otherwise set it to empty.
+            var contacts_token = {'access_token':token};
+            // 
+            if(!req.use_access_token){
+                contacts_token.access_token = 'empty';
+            }
             // asynchronous
             process.nextTick(function() {
                 // check if the user is already logged in
                 if (!req.user) {
+                    //console.log('!req.user');
                     User.findOne({ 'google.id': profile.id }, function(err, user) {
                         if (err)
                             return done(err);
 
                         if (user) {
+                            //console.log('user found');
                             // if there is a user id already but no token (user was linked at one point and then removed)
                             if (!user.google.token || user.google.token != token) {
-                                user.google.token = token;
+                                //user.google.token = token;
                                 user.google.name = profile.displayName;
                                 user.google.email = (profile.emails[0].value || '').toLowerCase(); // pull the first email
 
                                 user.save(function(err) {
                                     if (err) {
-                                        console.log('err: ' + err)
+                                        console.log('err: ' + err);
                                         return done(err);
                                     }
-                                    console.log(user);
-                                    return done(null, user);
+                                    // Pass back the user and the access_token.
+                                    return done(null, user, contacts_token);
                                 });
                             } else {
                                 // added
@@ -348,7 +362,7 @@ module.exports = function(passport) {
                                 newUser.avatar = 'default';
                             }
                             newUser.google.id = profile.id;
-                            newUser.google.token = token;
+                            //newUser.google.token = token;
                             newUser.google.name = profile.displayName;
                             newUser.google.email = (profile.emails[0].value || '').toLowerCase(); // pull the first email
 
@@ -363,21 +377,22 @@ module.exports = function(passport) {
                     });
 
                 } else {
+                    //console.log('req.user');
                     // A user is already logged in
                     // If the logged in user is the as the user loggin in
                     if (req.user.google.id === profile.id) {
                         var user = req.user; // pull the user out of the session
 
                         user.google.id = profile.id;
-                        user.google.token = token;
+                        //user.google.token = token;
                         user.google.name = profile.displayName;
                         user.google.email = (profile.emails[0].value || '').toLowerCase(); // pull the first email
 
                         user.save(function(err) {
                             if (err)
                                 return done(err);
-
-                            return done(null, user);
+                            // Pass back the user and the access_token.
+                            return done(null, user, contacts_token);
                         });
                     } else {
                         // The user logging in is different to the currently logged in user
@@ -389,7 +404,7 @@ module.exports = function(passport) {
                             if (user) {
                                 // if there is a user id already but no token (user was linked at one point and then removed)
                                 if (!user.google.token) {
-                                    user.google.token = token;
+                                    //user.google.token = token;
                                     user.google.name = profile.displayName;
                                     user.google.email = (profile.emails[0].value || '').toLowerCase(); // pull the first email
 
@@ -417,7 +432,7 @@ module.exports = function(passport) {
                                     newUser.avatar = 'default';
                                 }
                                 newUser.google.id = profile.id;
-                                newUser.google.token = token;
+                                //newUser.google.token = token;
                                 newUser.google.name = profile.displayName;
                                 newUser.google.email = (profile.emails[0].value || '').toLowerCase(); // pull the first email
 

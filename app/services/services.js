@@ -62,9 +62,6 @@ cardApp.factory('Contacts', ['$http', function($http) {
     return {
         getContacts: function() {
             return $http.get("api/user_contacts/");
-        },
-        getPermissions: function() {
-            return $http.get("api/user_permission/");
         }
     };
 }]);
@@ -76,9 +73,6 @@ cardApp.factory('Users', ['$http', function($http) {
         },
         add_contact: function(id) {
             return $http.post('api/users/add_contact/' + id);
-        },
-        add_imported_contacts: function(contacts) {
-            return $http.post('api/users/add_imported_contacts', contacts);
         },
         update_user: function(user) {
             var theurl = 'api/users/update_user/' + user.id;
@@ -162,11 +156,9 @@ cardApp.factory('Conversations', ['$http', function($http) {
         getConversationById: function(id) {
             return $http.get('/chat/get_conversation/' + id);
         },
-        /*
         getPublicConversationById: function(id) {
             return $http.get('/chat/get_public_conversation/' + id);
         },
-        */
         getConversationLatestCard: function(id) {
             return $http.get('/chat/get_conversation_latest_card/' + id);
         }
