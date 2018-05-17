@@ -1,44 +1,42 @@
-<div ng-controller="usersettingCtrl">
-    <div class="container_cnv">
-        <div class="header_container" ng-include="'/views/header_settings.html'"></div>
-        <div class="content_cnv">
-            <div class="user_setting_image">
-                <div class="preview"><img class="cropped_image" ng-src="{{myCroppedImage}}" /></div>
-                <div class="original">
-                    <img ng-if="avatar!='default'" alt="" class="user_settings_avatar" ng-src="{{avatar}}" />
-                    <i ng-if="avatar=='default'" class="material-icons" id="mi-account_circle_settings">&#xE853;</i>
-                    <input type="file" id="fileInput" />
-                </div>
-                <div class="avatar_choose">
-                    <div class="choose_icon">
-                        <a hfref ng-click="triggerClick()"><i class="material-icons" id="mi-add-a-photo">&#xE439;</i></a>
-                    </div>
-                </div>
+<div class="container_cnv">
+    <div class="header_container" ng-include="'/views/header_settings.html'"></div>
+    <div class="content_cnv">
+        <div class="user_setting_image">
+            <div class="preview"><img class="cropped_image" ng-src="{{myCroppedImage}}" /></div>
+            <div class="original">
+                <img ng-if="avatar!='default'" alt="" class="user_settings_avatar" ng-src="{{avatar}}" />
+                <i ng-if="avatar=='default'" class="material-icons" id="mi-account_circle_settings">&#xE853;</i>
+                <input type="file" id="fileInput" />
             </div>
-            <div class="crop_container">
-                <div class="cropArea">
-                    <img-crop class="imgcrop " image="myImage" result-image="myCroppedImage" result-image-format="image/jpeg" result-image-size="125" change-on-fly="true" on-load-done="imgcropLoaded();"></img-crop>
+            <div class="avatar_choose">
+                <div class="choose_icon">
+                    <a hfref ng-click="triggerClick()"><i class="material-icons" id="mi-add-a-photo">&#xE439;</i></a>
                 </div>
-            </div>
-            <div class="user_details">
-                <div class="left"></div>
-                <div class="centre">
-                    <div class="user_details_container">
-                        <div class="login_name login_detail">Name</div>
-                        <div class="login_name">{{login_name}}</div>
-                    </div>
-                    <div class="user_details_container">
-                        <div class="login_email login_detail">Email</div>
-                        <div class="login_email">{{login_email}}</div>
-                    </div>
-                    <div class="user_details_container">
-                        <div class="user_name login_detail">User Name</div>
-                        <input class="ce_username user_name" id="profile_username" maxlength="20" type="text" ng-model="user_name" />
-                    </div>
-                </div>
-                <div class="right"></div>
             </div>
         </div>
-        <div ng-include src="'/views/footer.html'"></div>
+        <div class="crop_container">
+            <div class="cropArea">
+                <img-crop class="imgcrop " image="myImage" result-image="myCroppedImage" result-image-format="image/jpeg" result-image-size="125" change-on-fly="true" on-load-done="imgcropLoaded();"></img-crop>
+            </div>
+        </div>
+        <div class="user_details">
+            <div class="left"></div>
+            <div class="centre">
+                <div class="user_details_container">
+                    <div class="login_name login_detail">Name</div>
+                    <div class="login_name">{{login_name}}</div>
+                </div>
+                <div class="user_details_container">
+                    <div class="login_email login_detail">Email</div>
+                    <div class="login_email">{{login_email}}</div>
+                </div>
+                <div class="user_details_container">
+                    <div class="user_name login_detail">User Name</div>
+                    <input class="ce_username user_name" id="profile_username" maxlength="20" type="text" ng-model="user_name" />
+                </div>
+            </div>
+            <div class="right"></div>
+        </div>
     </div>
+    <div ng-include src="'/views/footer.html'"></div>
 </div>

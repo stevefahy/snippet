@@ -1,6 +1,5 @@
 <div class="container-fluid" id="conversation_container">
-    <div ng-controller="cardCtrl">
-        <div id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : false" ">
+    <div id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : false" ">
             <div class=" resize-container " id="conversation_part ">
                 <form class="form-horizontal ">
                     <div id="user ">

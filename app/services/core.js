@@ -14,7 +14,8 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
             controller: 'conversationsCtrl'
         })
         .when("/s/:snip", {
-            templateUrl: '/views/card.html'
+            templateUrl: '/views/card.html',
+            controller: 'cardCtrl'
         })
         .when("/:username", {
             templateUrl: '/views/conversation.html',
@@ -44,16 +45,20 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
             controller: 'conversationCtrl'
         })
         .when("/api/join/:code", {
-            templateUrl: '/views/join.html'
+            templateUrl: '/views/join.html',
+            controller: 'joinCtrl'
         })
         .when("/api/user_setting", {
-            templateUrl: '/views/user_setting.html'
+            templateUrl: '/views/user_setting.html',
+            controller: 'usersettingCtrl'
         })
         .when("/api/logout", {
-            templateUrl: '/views/login.html'
+            templateUrl: '/views/login.html',
+            controller: 'loginCtrl'
         })
         .when("/api/login", {
-            templateUrl: '/views/login.html'
+            templateUrl: '/views/login.html',
+            controller: 'loginCtrl'
         })
         .otherwise({
             redirectTo: '/'
@@ -1276,7 +1281,6 @@ cardApp.service('Edit', function() {
     // EDIT Dropdown
     // On user click toggle between hiding and showing the dropdown content
     this.dropDownToggle = function(id) {
-        console.log('DT');
         closeDropdowns();
         document.getElementById("myDropdown" + id).classList.toggle("show");
     };
@@ -1538,7 +1542,6 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
     // Get the FCM details (Google firebase notifications).
     $http.get("/api/fcm_data").then(function(result) {
-        console.log(result);
         if (result != result.data.fcm != 'forbidden') {
             fcm = result.data.fcm;
             headers.Authorization = 'key=' + fcm.firebaseserverkey;

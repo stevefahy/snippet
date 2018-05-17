@@ -312,9 +312,9 @@ module.exports = function(passport) {
 
             // If req.use_access_token = true has been passed from /auth/google/callback
             // then pass back the access_token otherwise set it to empty.
-            var contacts_token = {'access_token':token};
+            var contacts_token = { 'access_token': token };
             // 
-            if(!req.use_access_token){
+            if (!req.use_access_token) {
                 contacts_token.access_token = 'empty';
             }
             // asynchronous
