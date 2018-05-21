@@ -278,6 +278,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             // Find the conversation by id.
             Conversations.find_conversation_id(conversation_id)
                 .then(function(res) {
+                    console.log(res);
                     // Find the current user in the conversation participants array.
                     var user_pos = General.findWithAttr(res.data.participants, '_id', $scope.currentUser._id);
                     if (user_pos >= 0) {

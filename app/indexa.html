@@ -57,6 +57,10 @@
     <link rel="stylesheet" href="/style/ng-img-crop.css">
     <!-- Sanitize -->
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-sanitize.js"></script>
+    <!-- Angular Cookies -->
+    <script type="text/javascript" src="/js/angular-cookies.min_1.6.9.js"></script>
+    <!-- Angular JWT -->
+    <script type="text/javascript" src="/js/angular-jwt.js"></script>
     <!-- Moment -->
     <script src="/js/moment.min.js"></script>
     <script>
@@ -84,6 +88,7 @@
     <script src="/controllers/usersetting_ctrl.js"></script>
     <script src="/controllers/conversation_ctrl.js"></script>
     <script src="/controllers/conversations_ctrl.js"></script>
+    <script src="/controllers/authcallback_ctrl.js"></script>
     <!-- load Services -->
     <script src="/services/services.js"></script>
     <!-- socket.io -->
@@ -92,9 +97,9 @@
 
 <body>
     <!-- socket controller loaded once to make socket connection -->
-    <div class="socket" ng-include src="'/views/socket.html'"></div>
+    <!--<div class="socket" ng-include src="'/views/socket.html'"></div>-->
     <!-- User Profile -->
-    <div class="profile" ng-include src="'/views/profile.html'"></div>
+    <!--<div class="profile" ng-include src="'/views/profile.html'"></div>-->
     <!-- Templates loaded into ng-view -->
     <ng-view class="main_view"></ng-view>
     <!--<div class="page {{ pageClass }}" ng-view></div>-->

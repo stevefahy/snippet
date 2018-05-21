@@ -1,10 +1,27 @@
-cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$http', 'Invites', 'Email', 'Users', 'Conversations', '$q', 'FormatHTML', 'General', 'Profile', function($scope, $rootScope, $location, $http, Invites, Email, Users, Conversations, $q, FormatHTML, General, Profile) {
+cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$http', 'Invites', 'Email', 'Users', 'Conversations', '$q', 'FormatHTML', 'General', 'Profile', '$cookies', 'principal', 'UserData', function($scope, $rootScope, $location, $http, Invites, Email, Users, Conversations, $q, FormatHTML, General, Profile, $cookies, principal, UserData) {
+
+    principal.getToken();
 
     $scope.pageClass = 'page-conversations';
 
     this.$onInit = function() {
 
     };
+
+    var token = $cookies.get('_accessToken');
+    console.log('token: ' + token);
+
+    //    $cookies.remove('_accessToken');
+    //var token_removed = $cookies.get('_accessToken');
+
+    //console.log('token cookie removed?: ' + token_removed);
+
+    //console.log(principal.user.name);
+
+    //$http.get("/api/user_data").then(function(result) {
+    //   console.log(result);
+    //});
+
 
     sent_content_length = 20;
     // array of conversations
@@ -158,15 +175,47 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
 
     // TODO - Better way to get user details across controllers. service? middleware? app.use?
     // Get the current users details
-    $http.get("/api/user_data").then(function(result) {
-        if (result.data.user) {
-            $scope.currentUser = result.data.user;
+    //$http.get("/api/user_data").then(function(result) {
+    //if (result.data.user) {
+    console.log('CONVERSATIONS VALID?');
+    //console.log(UserData.checkUser());
+    /*
+    UserData.checkUser().then(function(result) {
+        console.log(result);
+    });
+    */
+    console.log(principal.isValid());
+    //if (UserData.loadUser() != undefined && principal.isValid ) {
+
+
+
+    if (principal.isValid()) {
+
+        //UserData.getUser().then(function(result) {
+        //console.log(result);
+
+        UserData.checkUser().then(function(result) {
+            console.log(result);
+            //$scope.currentUser = result.data.user;
+            $scope.currentUser = UserData.getUser();
             var profile = {};
             profile.avatar = 'default';
-            profile.user_name = result.data.user.user_name;
-            if (result.data.user.avatar != undefined) {
-                profile.avatar = result.data.user.avatar;
+            //profile.user_name = result.data.user.user_name;
+            profile.user_name = UserData.getUser().user_name;
+            //if (result.data.user.avatar != undefined) {
+            //    profile.avatar = result.data.user.avatar;
+            if (UserData.getUser().avatar != undefined) {
+                profile.avatar = UserData.getUser().avatar;
             }
+
+            //
+
+            // Store the profile.
+            Profile.setProfile(profile);
+            console.log('PROFILE_SET');
+            $rootScope.$broadcast('PROFILE_SET');
+
+            //
             // Find the conversations for current user
             Conversations.find_user_conversations($scope.currentUser._id)
                 .then(function(res) {
@@ -193,9 +242,12 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
                             });
                     });
                 });
-        } else {
-            $location.path("/api/login");
-        }
-    });
+        });
+    } else {
+        console.log("/api/login");
+        $location.path("/api/login");
+    }
+    //});
+
 
 }]);

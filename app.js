@@ -125,11 +125,14 @@ app.use(cookieParser()); // read cookies (needed for auth)
 // Passport
 require('./app/configs/passport')(passport); // pass passport for configuration
 // required for passport
+/*
 app.use(session({
     secret: 'bigsniplongsessionbeesecretbeesnip', // session secret
-    resave: true,
-    saveUninitialized: true
+    resave: false,
+    saveUninitialized: false
 }));
+*/
+
 app.use(favicon(path.join(__dirname, '/app/assets', 'images', 'favicon.ico')));
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions

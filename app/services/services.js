@@ -165,8 +165,9 @@ cardApp.factory('Conversations', ['$http', function($http) {
     };
 }]);
 
-
+/*
 cardApp.factory('Profile', function($rootScope, $window) {
+    console.log('PROFILE FACTORY');
     var user;
     var conversation;
     return {
@@ -186,6 +187,7 @@ cardApp.factory('Profile', function($rootScope, $window) {
         },
     };
 });
+*/
 
 
 cardApp.factory('socket', function($rootScope, $window) {

@@ -1,4 +1,4 @@
-var cardApp = angular.module("cardApp", ['ngSanitize', 'ngRoute', 'angularMoment', 'ngAnimate', 'ngImgCrop']);
+var cardApp = angular.module("cardApp", ['ngSanitize', 'ngRoute', 'angularMoment', 'ngAnimate', 'ngImgCrop', 'ngCookies', 'angular-jwt']);
 
 // Prefix for loading a snip id
 var prefix = '/s/';
@@ -9,9 +9,19 @@ var prefix = '/s/';
 
 cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
     $routeProvider
+        /*
         .when('/', {
             templateUrl: '/views/conversations.html',
             controller: 'conversationsCtrl'
+        })*/
+        .when('/', {
+            templateUrl: '/views/authcallback.html',
+            controller: 'authcallbackCtrl'
+        })
+        .when('/normal', {
+            templateUrl: '/views/authcallback.html',
+            controller: 'authcallbackCtrl',
+            redirect: '/chat/conversations',
         })
         .when("/s/:snip", {
             templateUrl: '/views/card.html',
@@ -60,6 +70,10 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
             templateUrl: '/views/login.html',
             controller: 'loginCtrl'
         })
+        .when("/auth/callback", {
+            templateUrl: '/views/authcallback.html',
+            controller: 'authcallbackCtrl'
+        })
         .otherwise({
             redirectTo: '/'
         });
@@ -74,6 +88,8 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
 //
 // SERVICES
 //
+
+// Format Service
 
 cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', '$injector', function($window, $rootScope, $timeout, $q, Users, Cards, Conversations, replaceTags, socket, $injector) {
 
@@ -1200,6 +1216,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 }]);
 
 
+// replaceTags Service
+
+
 cardApp.service('replaceTags', function() {
 
     var self = this;
@@ -1266,6 +1285,10 @@ cardApp.service('replaceTags', function() {
 
 });
 
+
+// Edit Service
+
+
 cardApp.service('Edit', function() {
     // Close currently opened dropdowns
     closeDropdowns = function() {
@@ -1293,6 +1316,10 @@ cardApp.service('Edit', function() {
     };
 
 });
+
+
+// FormatHTML Service
+
 
 cardApp.service('FormatHTML', ['Format', function(Format) {
 
@@ -1348,6 +1375,10 @@ cardApp.service('FormatHTML', ['Format', function(Format) {
     };
 
 }]);
+
+
+// General Service
+
 
 cardApp.service('General', ['Users', 'Format', function(Users, Format) {
     var ua = navigator.userAgent;
@@ -1503,6 +1534,9 @@ cardApp.service('General', ['Users', 'Format', function(Users, Format) {
     };
 
 }]);
+
+
+// Database Service
 
 cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', 'General', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML, General) {
 
@@ -1806,6 +1840,10 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
 }]);
 
+
+// contenteditable directive
+
+
 cardApp.directive("contenteditable", function() {
     return {
         require: "ngModel",
@@ -1826,6 +1864,10 @@ cardApp.directive("contenteditable", function() {
     };
 });
 
+
+// emtpyToEnd Filter
+
+
 // Filter to put empty values to the end of an array.
 cardApp.filter("emptyToEnd", function() {
     return function(array, key) {
@@ -1838,3 +1880,357 @@ cardApp.filter("emptyToEnd", function() {
         return present.concat(empty);
     };
 });
+
+/*
+cardApp.service('AuthToken', ['$http', function($http) {
+    var token;
+    return {
+        // User.
+        getToken: function(id) {
+            return token;
+        },
+        setToken: function(value) {
+            console.log('AuthToken setToken');
+            token = value;
+        },
+        loadUser: function() {
+
+            return $http.get("/api/user_data").then(function(result) {
+                console.log('principal loadUser 2');
+                // console.log(result.data.user);
+
+                //self.setUser(result.data.user);
+                return result.data.user;
+                // deferred.resolve(result);
+                //return deferred.promise;
+            });
+
+
+        }
+    };
+}]);
+*/
+
+// principal Factory
+
+cardApp.factory('principal', function($cookies, jwtHelper, $q, $rootScope) {
+
+    var principal = { isAuthenticated: false, roles: [], user: { name: 'Guest' } };
+
+    console.log('PRINCIPAL');
+    var self = this;
+
+    principal.getUser = function(id) {
+        return user;
+    };
+
+    principal.setUser = function(value) {
+        console.log('UserData setUser');
+        user = value;
+    };
+
+
+    principal.loadUser = function(AuthToken) {
+        var self = this;
+        //var deferred = $q.defer();
+        console.log('principal loadUser 1');
+        // Get the User details
+        //Authtoken.loadUser();
+        /*
+                return $http.get("/api/user_data").then(function(result) {
+                    console.log('principal loadUser 2');
+                    console.log(result.data.user);
+
+                    self.setUser(result.data.user);
+                    return result.data.user;
+                    // deferred.resolve(result);
+                    //return deferred.promise;
+                });
+                */
+
+    };
+
+    try {
+        var token = $cookies.get('_accessToken');
+        //var dtoken = $cookies.getObject('_accessToken');
+        //var token = $cookies._accessToken;
+        console.log('core token: ' + token);
+        //console.log('core dtoken: ' + dtoken);
+        var decoded = jwtHelper.decodeToken(token);
+
+        console.log('decoded: ' + decoded);
+        console.log(decoded.data.user);
+        //console.log(decoded.data.user.user_name);
+        //console.log(decoded.data.user.google);
+        console.log(token);
+
+        if (decoded && !jwtHelper.isTokenExpired(token)) {
+            console.log('set principal');
+            principal.isAuthenticated = true;
+            //principal.roles = decoded.roles;
+            principal.user = decoded.data.user;
+            principal.token = token;
+            // Authtoken.setToken(token);
+
+
+        }
+    } catch (e) {
+        console.log('ERROR while parsing principal cookie.' + e);
+    }
+
+    principal.logout = function() {
+        delete $cookies._accessToken;
+    };
+
+    principal.getToken = function() {
+        var deferred = $q.defer();
+
+        deferred.resolve(principal);
+        return deferred.promise;
+        //return principal;
+    };
+
+    principal.isValid = function() {
+        //var deferred = $q.defer();
+        console.log(principal.token);
+        if (principal.token != undefined) {
+            jwtHelper.isTokenExpired(principal.token);
+            console.log(jwtHelper.isTokenExpired(principal.token));
+
+            principal.isAuthenticated = !jwtHelper.isTokenExpired(principal.token);
+        }
+        return principal.isAuthenticated;
+        //deferred.resolve(principal.isAuthenticated);
+        //return deferred.promise;
+    };
+
+    return principal;
+
+});
+
+
+
+cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHelper, $q) {
+    console.log('UserData FACTORY');
+    var user;
+    var user_undefined;
+    var self = this;
+    var UserData = { isAuthenticated: false };
+
+    UserData.loadUser = function() {
+        var self = this;
+        //var deferred = $q.defer();
+        console.log('UserData loadUser');
+        console.log(user);
+
+        // Get the User details
+        console.log('HTTP');
+        return $http.get("/api/user_data").then(function(result) {
+            console.log('UserData loadUser');
+            console.log(result.data.user);
+            self.setUser(result.data.user);
+            return result.data.user;
+            //var deferred = $q.defer();
+            // deferred.resolve(result);
+            //return deferred.promise;
+        });
+
+
+    };
+
+    try {
+        var token = $cookies.get('_accessToken');
+        //var dtoken = $cookies.getObject('_accessToken');
+        //var token = $cookies._accessToken;
+        console.log('UD core token: ' + token);
+        //console.log('core dtoken: ' + dtoken);
+        var decoded = jwtHelper.decodeToken(token);
+
+        console.log('UD decoded: ' + decoded);
+        console.log(decoded.data.user);
+        //console.log(decoded.data.user.user_name);
+        //console.log(decoded.data.user.google);
+        console.log(token);
+
+        if (decoded && !jwtHelper.isTokenExpired(token)) {
+            console.log('UD set principal');
+            UserData.isAuthenticated = true;
+            //principal.roles = decoded.roles;
+            //principal.user = decoded.data.user;
+            //principal.token = token;
+            // Authtoken.setToken(token);
+            UserData.loadUser();
+
+        }
+    } catch (e) {
+        console.log('ERROR while parsing principal cookie.' + e);
+    }
+
+    UserData.checkUser = function() {
+        var self = this;
+        //var deferred = $q.defer();
+        //deferred.resolve(user);
+        //return deferred.promise;
+        //return user;
+        console.log(UserData.getUser());
+
+        if (UserData.getUser() != undefined) {
+            console.log('VAR');
+            //var deferred = $q.defer();
+            var deferred = $q.defer();
+            deferred.resolve(user);
+            return deferred.promise;
+            //return  user;
+        } else {
+            //var deferred = $q.defer();
+            //deferred.resolve(UserData.loadUser());
+            //return deferred.promise;
+            //return  UserData.loadUser();
+            console.log('HTTP');
+            return $http.get("/api/user_data").then(function(result) {
+                console.log('UserData loadUser');
+                console.log(result.data.user);
+                self.setUser(result.data.user);
+
+                //deferred.resolve(result.data.user);
+                //return deferred.promise;
+                return result.data.user;
+                //var deferred = $q.defer();
+                // deferred.resolve(result);
+                //return deferred.promise;
+            });
+        }
+    };
+
+    // User.
+    UserData.getUser = function() {
+        //var deferred = $q.defer();
+        //deferred.resolve(user);
+        //return deferred.promise;
+        return user;
+    };
+
+    UserData.setUser = function(value) {
+        console.log('UserData setUser');
+        user = value;
+    };
+
+
+
+    return UserData;
+
+});
+
+cardApp.factory('Profile', function($rootScope, $window) {
+    console.log('PROFILE FACTORY');
+    var user;
+    var conversation;
+    return {
+        // User profile.
+        getProfile: function() {
+            return user;
+        },
+        setProfile: function(value) {
+            user = value;
+        },
+        // Conversation profile.
+        getConvProfile: function() {
+            return conversation;
+        },
+        setConvProfile: function(value) {
+            conversation = value;
+        },
+    };
+});
+
+
+// User service
+
+/*
+cardApp.service('User', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', 'General', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML, General) {
+
+
+
+}]);
+*/
+
+/*
+cardApp.config(['$provide', '$httpProvider', function ($provide, $httpProvider) {
+    $provide.factory('httpInterceptor', ['$rootScope', '$q', '$injector', 'principal', function ($rootScope, $q, $injector, principal) {
+        return {
+            // occurs on request
+            request: function (config) {
+                //Add your header to the request here
+                config.headers['x-access-token'] = principal.token;
+                return config;
+            }
+        };
+    }]);
+    $httpProvider.config(['$httpProvider', function ($httpProvider) {
+        $httpProvider.interceptors.push('httpInterceptor');
+    }]);
+ }]);
+*/
+
+
+cardApp.config([
+    '$httpProvider',
+    function($httpProvider) {
+
+        var interceptor = [
+            '$q',
+            '$rootScope',
+            'principal',
+            function($q, $rootScope, principal) {
+
+                var service = {
+
+                    // run this function before making requests
+                    'request': function(config) {
+
+
+                        //if (config.method === 'GET' || principal.isAuthenticated) {
+                        // the request looks good, so return the config
+                        // return config;
+                        // }
+
+                        //Add your header to the request here
+                        console.log('x-access-token: ' + principal.token);
+                        if(principal.token != undefined){
+                        config.headers['x-access-token'] = principal.token;
+                    }
+                        return config;
+
+                        // bad request, so reject
+                        //return $q.reject(config);
+
+                    }
+
+                };
+
+                return service;
+
+            }
+        ];
+
+        $httpProvider.interceptors.push(interceptor);
+
+    }
+]);
+
+
+/*
+myApp.config(['$httpProvider', function ($httpProvider) {
+    $httpProvider.defaults.headers.common['Content-Type'] = 'application/json; charset=utf-8';
+}]);
+
+
+$httpProvider.interceptors.push(function($q, $cookies) {
+  return {
+   'request': function(config) {
+        config.headers['Token'] = $cookies.loginTokenCookie;
+        return config;
+    }
+  };
+});
+*/

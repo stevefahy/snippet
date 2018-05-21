@@ -4,6 +4,7 @@ var FacebookStrategy = require('passport-facebook').Strategy;
 var TwitterStrategy = require('passport-twitter').Strategy;
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
+
 var mongoose = require('mongoose');
 var ObjectId = mongoose.Types.ObjectId;
 
@@ -309,7 +310,8 @@ module.exports = function(passport) {
             passReqToCallback: true // allows us to pass in the req from our route (lets us check if a user is logged in or not)
         },
         function(req, token, refreshToken, profile, done) {
-
+            console.log(token);
+            console.log(req.user);
             // If req.use_access_token = true has been passed from /auth/google/callback
             // then pass back the access_token otherwise set it to empty.
             var contacts_token = { 'access_token': token };

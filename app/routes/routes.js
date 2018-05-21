@@ -14,6 +14,8 @@ var base64url = require('base64url');
 var request = require('request');
 var fcm = require('../configs/fcm');
 
+var jwt = require('jsonwebtoken');
+
 // load the auth variables
 var configAuth = require('../configs/auth'); // use this one for testing
 
@@ -70,14 +72,39 @@ function createPublicConversation(user, callback) {
 // route middleware to ensure user is logged in and a member of the conversation
 function isMember(req, res, next) {
     // must be logged in to be a member
-    if (req.isAuthenticated()) {
+    //if (req.isAuthenticated()) {
+    var token = req.headers['x-access-token'];
+    console.log('IM: ' + token);
+    if (token) {
+        try {
+            var decoded = jwt.verify(token, configAuth.auth.token.secret);
+            console.log(decoded);
+            req.principal = {
+                isAuthenticated: true,
+                //roles: decoded.roles || [],
+                user: decoded.data.user
+            };
+
+            // ITS ID NOT NAME!
+
+            console.log('good token: ' + decoded.data.user.name);
+            //return next();
+
+        } catch (err) {
+            console.log('ERROR when parsing access token.', err);
+            req.principal.isAuthenticated = false;
+        }
+    }
+
+
+    if (req.principal.isAuthenticated) {
         // get the members of this conversation
         var query = getConversationId(req.params.id);
         query.exec(function(err, conversation) {
             if (err) {
                 return console.log(err);
             }
-            var user_pos = findWithAttr(conversation.participants, '_id', req.user._id);
+            var user_pos = findWithAttr(conversation.participants, '_id', req.principal.user._id);
             // Check that the conversation exists.
             if (conversation === null) {
                 res.redirect('/');
@@ -96,12 +123,36 @@ function isMember(req, res, next) {
 }
 
 // route middleware to ensure user is logged in
+/*
 function isLoggedIn(req, res, next) {
+    console.log('ILI user: ' + req.user);
+    console.log(req.secret);
     if (req.isAuthenticated()) {
         return next();
     } else {
         res.json({ 'auth': 'denied' });
     }
+}*/
+
+function isLoggedIn(req, res, next) {
+    var token = req.headers['x-access-token'];
+    console.log('ILI: ' + token);
+    if (token) {
+        try {
+            var decoded = jwt.verify(token, configAuth.auth.token.secret);
+            console.log(decoded);
+            req.principal = {
+                isAuthenticated: true,
+                //roles: decoded.roles || [],
+                _id: decoded.data.user._id
+            };
+            console.log('good token: ' + decoded.data.user._id);
+            return next();
+
+        } catch (err) { console.log('ERROR when parsing access token.', err); }
+    }
+
+    return res.status(401).json({ error: 'Invalid access token!' });
 }
 
 module.exports = function(app, passport) {
@@ -110,22 +161,60 @@ module.exports = function(app, passport) {
     app.get('/api/logout', function(req, res) {
         req.logout();
         req.logOut();
+        /*
         req.session.destroy(function(err) {
             if (err) {
                 console.log('err: ' + err);
             }
         });
+        */
     });
+
+    /*
+        // Route to check passort authentication
+        app.get('/api/user_data', isLoggedIn, function(req, res) {
+            //if (req.user === undefined) {
+            console.log(req.principal.isAuthenticated);
+            if (!req.principal.isAuthenticated) {
+                // The user is not logged in
+                res.json({ 'username': 'forbidden' });
+            } else {
+                res.json({
+                    //user: req.user
+                    user: req.principal.user
+                });
+            }
+        });
+        */
 
     // Route to check passort authentication
     app.get('/api/user_data', isLoggedIn, function(req, res) {
-        if (req.user === undefined) {
+        //if (req.user === undefined) {
+        console.log(req.principal.isAuthenticated);
+        if (!req.principal.isAuthenticated) {
             // The user is not logged in
-            res.json({ 'username': 'forbidden' });
+            res.json({ 'auth': 'forbidden' });
         } else {
-            res.json({
-                user: req.user
+            console.log('USER DATA');
+            console.log(req.principal);
+            console.log(req.principal._id);
+
+            User.findById({ _id: req.principal._id }, function(err, user) {
+                if (err) {
+                    console.log('err: ' + err);
+                    res.send(err);
+                } else{
+                var foundUser = user;
+
+                          res.json({
+                //user: req.user
+
+                //user: req.principal._id
+                user: foundUser
             });
+}
+            });
+
         }
     });
 
@@ -192,6 +281,7 @@ module.exports = function(app, passport) {
     // google callback
     // log in via join page already goes to user settings/
     app.get('/auth/google/callback', function(req, res, next) {
+        console.log('app.get(/auth/google/callback');
         var state;
         // Decode the state if it exists.
         if (req.query.state != undefined) {
@@ -212,6 +302,7 @@ module.exports = function(app, passport) {
             }
 
             // cancelled permission
+
             if (!user) {
                 if (req.user) {
                     user = req.user;
@@ -220,8 +311,13 @@ module.exports = function(app, passport) {
                 }
             }
 
-            req.logIn(user, function(err) {
+
+            req.logIn(user, { session: false }, function(err) {
+                req.secret = 'steve';
+                console.log('user: ' + user);
+                console.log('state:' + state);
                 if (err) {
+                    console.log('err');
                     console.log(err);
                     res.redirect('/login');
                 }
@@ -328,7 +424,113 @@ module.exports = function(app, passport) {
                             res.redirect('/api/user_setting');
                         });
                     } else {
-                        res.redirect('/');
+                        console.log('USER');
+                        console.log(user);
+                        req.user = user;
+                        console.log('/');
+                        //var token = 'steve';
+                        //res.set('x-token', token);
+                        //res.header('x-authorization', "Bearer " + token);
+                        //res.cookie('_accessToken', token);
+                        //res.cookie("_accessToken", "1234567890", { signed: true });
+
+                        //req.session.access_token = token;
+
+
+                        //var userData = { name: user.user_name };
+                        /*
+                        { _id: 5afc6d45ad9e7f10e0d81a29,
+                          avatar: 'default',
+                          user_name: 'Stephen Fahy',
+                          first_login: false,
+                          __v: 1,
+                          google:
+                           { email: 'stevefahy@gmail.com',
+                             name: 'Stephen Fahy',
+                             id: '112572970172778386751',
+                             token: 'deleted' },
+                          tokens: [],
+                          imported_contacts: [ { contacts: [Object], name: 'google' } ],
+                          contacts: [ 5af81ec0b6c14d24e41fbb2b ] }
+                          */
+
+                        console.log(user.imported_contacts[0].contacts);
+                        console.log(user.imported_contacts[0].name);
+
+                        var userData = {
+                            _id: user._id
+                        };
+                        /*
+                                                    avatar: user.avatar,
+                                                    user_name: user.user_name,
+                                                    first_login: user.first_login,
+                                                    google: user.google,
+                                                    tokens: user.tokens,
+                                                    */
+                        //imported_contacts: {contacts: user.imported_contacts[0].contacts, name: user.imported_contacts[0].name},
+                        //contacts: user.contacts
+                        /*
+                          google:
+                           { email: 'stevefahy@gmail.com',
+                             name: 'Stephen Fahy',
+                             id: '112572970172778386751',
+                             token: 'deleted' },
+                          tokens: [],
+                          imported_contacts: [ { contacts: [Object], name: 'google' } ],
+                          contacts: [ 5af81ec0b6c14d24e41fbb2b ] }*/
+
+
+                        //};
+                        //var userData = user;
+                        /*
+                        var rolesData = {};
+                        user.roles.forEach(function(r) {
+                            rolesData[r] = true;
+                        });
+                        */
+
+                        var tokenData = {
+                            user: userData //,
+                            //roles: rolesData
+                        };
+                        //console.log(user);
+                        //var tokenData = JSON.stringify(user);
+                        /*
+                        jwt.sign({
+  data: 'foobar'
+}, 'secret', { expiresIn: 60 * 60 });
+*/
+
+                        var token = jwt.sign({ data: tokenData },
+                            configAuth.auth.token.secret, { expiresIn: configAuth.auth.token.expiresIn });
+
+                        // console.log(token);
+
+                        var buf = Buffer.from(token);
+
+                        // console.log(buf.toString().length);
+
+                        //res.cookie(configAuth.auth.cookieName, token, { expires: new Date(Date.now() + 900000) });
+                        res.cookie(configAuth.auth.cookieName, token, { expires: new Date(Date.now() + configAuth.auth.token.expiresIn) });
+                        //res.set('route', '/');
+                        res.redirect('/normal');
+                        //res.redirect('/auth/callback');
+
+                        // res. redirect to /authorized?
+                        // from there in angular send a get request for a token
+                        // no because a non logged in person can use this route.
+
+
+                        /*
+                        var token = 'steve';
+                        res.json({
+                            success: true,
+                            message: 'Enjoy your token!',
+                            token: token
+                        });
+                        */
+
+
                     }
                 }
             });
