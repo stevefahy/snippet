@@ -1,15 +1,17 @@
-cardApp.controller("footerCtrl", ['$scope', 'Cards', '$rootScope', '$location', '$http', 'socket', 'Database', function($scope, Cards, $rootScope, $location, $http, socket, Database) {
+cardApp.controller("footerCtrl", ['$scope', 'Cards', '$rootScope', '$location', '$http', 'socket', 'Database', 'principal', function($scope, Cards, $rootScope, $location, $http, socket, Database, principal) {
 
     this.$onInit = function() {
         $scope.showDiv = false;
     };
 
     // TODO - change to global?
+    /*
     $http.get("/api/user_data").then(function(result) {
         if (result.data.user) {
             $scope.currentUser = result.data.user;
         }
     });
+    */
 
     $scope.search_icon = function() {
         $scope.showDiv = !$scope.showDiv;
@@ -30,6 +32,8 @@ cardApp.controller("footerCtrl", ['$scope', 'Cards', '$rootScope', '$location', 
         // close socket.io connection and delete namespace
         socket.delete();
         Cards.logout();
+
+        principal.logOut();
 
         $scope.changePath('/api/logout');
     };

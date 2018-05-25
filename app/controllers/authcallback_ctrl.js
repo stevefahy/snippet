@@ -13,7 +13,9 @@ cardApp.controller("authcallbackCtrl", ['$rootScope', '$route', '$location', '$h
 
     if (principal.isValid()) {
 
-        UserData.loadUser().then(function(result) {
+//console.log(UserData.checkUser());
+        //UserData.loadUser().then(function(result) {
+        UserData.checkUser().then(function(result) {
             console.log(result);
 
             //UserData.setUser(result);
@@ -56,15 +58,6 @@ cardApp.controller("authcallbackCtrl", ['$rootScope', '$route', '$location', '$h
     } else {
         $location.path('/api/login');
     }
-    /*
-            $http.get("/api/user_data").then(function(result) {
-                console.log(result);
 
-                
-
-            });
-            */
-
-    //});
 
 }]);

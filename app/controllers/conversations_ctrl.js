@@ -1,27 +1,10 @@
 cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$http', 'Invites', 'Email', 'Users', 'Conversations', '$q', 'FormatHTML', 'General', 'Profile', '$cookies', 'principal', 'UserData', function($scope, $rootScope, $location, $http, Invites, Email, Users, Conversations, $q, FormatHTML, General, Profile, $cookies, principal, UserData) {
 
-    principal.getToken();
-
     $scope.pageClass = 'page-conversations';
 
     this.$onInit = function() {
 
     };
-
-    var token = $cookies.get('_accessToken');
-    console.log('token: ' + token);
-
-    //    $cookies.remove('_accessToken');
-    //var token_removed = $cookies.get('_accessToken');
-
-    //console.log('token cookie removed?: ' + token_removed);
-
-    //console.log(principal.user.name);
-
-    //$http.get("/api/user_data").then(function(result) {
-    //   console.log(result);
-    //});
-
 
     sent_content_length = 20;
     // array of conversations
@@ -190,10 +173,7 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
 
 
     if (principal.isValid()) {
-
-        //UserData.getUser().then(function(result) {
-        //console.log(result);
-
+        console.log('CONVS CHECK USER');
         UserData.checkUser().then(function(result) {
             console.log(result);
             //$scope.currentUser = result.data.user;
@@ -217,13 +197,18 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
 
             //
             // Find the conversations for current user
-            Conversations.find_user_conversations($scope.currentUser._id)
+            //Conversations.find_user_conversations($scope.currentUser._id)
+            UserData.getConversations()
                 .then(function(res) {
-                    var conversations_raw = res.data;
+                    console.log(res);
+                    //var conversations_raw = res.data;
+                    var conversations_raw = res;
                     conversations_raw.map(function(key, array) {
                         // Get the latest card posted to this conversation
-                        Conversations.getConversationLatestCard(key._id)
+                        //Conversations.getConversationLatestCard(key._id)
+                        UserData.getConversationLatestCardById(key._id)
                             .then(function(res) {
+                                console.log(res);
                                 if (res.data != null) {
                                     formatLatestCard(res.data, key, function(result) {
                                         // Add this conversation to the conversations model

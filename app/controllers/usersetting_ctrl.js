@@ -1,4 +1,4 @@
-cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites', '$rootScope', '$location', '$http', '$window', '$routeParams', 'Users', 'Profile', 'Conversations', 'General', function($scope, $timeout, Format, Invites, $rootScope, $location, $http, $window, $routeParams, Users, Profile, Conversations, General) {
+cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites', '$rootScope', '$location', '$http', '$window', '$routeParams', 'Users', 'Profile', 'Conversations', 'General', 'principal', 'UserData', function($scope, $timeout, Format, Invites, $rootScope, $location, $http, $window, $routeParams, Users, Profile, Conversations, General, principal, UserData) {
 
     $scope.myImage = '';
     $scope.myCroppedImage = '';
@@ -25,21 +25,27 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
     }
 
     // TODO - make service?
-    $http.get("/api/user_data").then(function(result) {
-        if (result.data.user) {
-            $scope.currentFullUser = result.data.user;
-            $scope.user_name = result.data.user.user_name;
-            $scope.login_name = result.data.user.google.name;
-            $scope.login_email = result.data.user.google.email;
-            $scope.avatar = result.data.user.avatar;
-            if ($scope.avatar == undefined) {
-                $scope.avatar = 'default';
+    //$http.get("/api/user_data").then(function(result) {
+
+    if (principal.isValid()) {
+        UserData.checkUser().then(function(result) {
+            if (result.data.user) {
+                $scope.currentFullUser = result.data.user;
+                $scope.user_name = result.data.user.user_name;
+                $scope.login_name = result.data.user.google.name;
+                $scope.login_email = result.data.user.google.email;
+                $scope.avatar = result.data.user.avatar;
+                if ($scope.avatar == undefined) {
+                    $scope.avatar = 'default';
+                }
+                // Hide the preview avatar
+                $('.preview').css('left', '-1000px');
+                saved_user_name = $scope.user_name;
             }
-            // Hide the preview avatar
-            $('.preview').css('left', '-1000px');
-            saved_user_name = $scope.user_name;
-        }
-    });
+        });
+    } else {
+       // $location.path("/api/login");
+    }
 
     // Trigger the file input.
     $scope.triggerClick = function() {

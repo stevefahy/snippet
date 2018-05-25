@@ -77,7 +77,7 @@ function isMember(req, res, next) {
     console.log('IM: ' + token);
     if (token) {
         try {
-            var decoded = jwt.verify(token, configAuth.auth.token.secret);
+            var decoded = jwt.verify(token, configAuth.tokenAuth.token.secret);
             console.log(decoded);
             req.principal = {
                 isAuthenticated: true,
@@ -104,7 +104,7 @@ function isMember(req, res, next) {
             if (err) {
                 return console.log(err);
             }
-            var user_pos = findWithAttr(conversation.participants, '_id', req.principal.user._id);
+            var user_pos = findWithAttr(conversation.participants, '_id', req.principal._id);
             // Check that the conversation exists.
             if (conversation === null) {
                 res.redirect('/');
@@ -123,37 +123,26 @@ function isMember(req, res, next) {
 }
 
 // route middleware to ensure user is logged in
-/*
-function isLoggedIn(req, res, next) {
-    console.log('ILI user: ' + req.user);
-    console.log(req.secret);
-    if (req.isAuthenticated()) {
-        return next();
-    } else {
-        res.json({ 'auth': 'denied' });
-    }
-}*/
-
 function isLoggedIn(req, res, next) {
     var token = req.headers['x-access-token'];
-    console.log('ILI: ' + token);
     if (token) {
         try {
-            var decoded = jwt.verify(token, configAuth.auth.token.secret);
-            console.log(decoded);
+            var decoded = jwt.verify(token, configAuth.tokenAuth.token.secret);
             req.principal = {
                 isAuthenticated: true,
-                //roles: decoded.roles || [],
                 _id: decoded.data.user._id
             };
-            console.log('good token: ' + decoded.data.user._id);
+            console.log('ILI TOKEN GOOD');
             return next();
-
-        } catch (err) { console.log('ERROR when parsing access token.', err); }
+        } catch (err) {
+            console.log('ERROR when parsing access token.', err);
+        }
     }
-
     return res.status(401).json({ error: 'Invalid access token!' });
 }
+
+
+
 
 module.exports = function(app, passport) {
 
@@ -190,29 +179,29 @@ module.exports = function(app, passport) {
     // Route to check passort authentication
     app.get('/api/user_data', isLoggedIn, function(req, res) {
         //if (req.user === undefined) {
-        console.log(req.principal.isAuthenticated);
+        //console.log(req.principal.isAuthenticated);
         if (!req.principal.isAuthenticated) {
             // The user is not logged in
             res.json({ 'auth': 'forbidden' });
         } else {
-            console.log('USER DATA');
-            console.log(req.principal);
-            console.log(req.principal._id);
+            //console.log('USER DATA');
+            //console.log(req.principal);
+            //console.log(req.principal._id);
 
             User.findById({ _id: req.principal._id }, function(err, user) {
                 if (err) {
                     console.log('err: ' + err);
                     res.send(err);
-                } else{
-                var foundUser = user;
+                } else {
+                    var foundUser = user;
+                    //req.user = user;
+                    res.json({
+                        //user: req.user
 
-                          res.json({
-                //user: req.user
-
-                //user: req.principal._id
-                user: foundUser
-            });
-}
+                        //user: req.principal._id
+                        user: foundUser
+                    });
+                }
             });
 
         }
@@ -249,18 +238,7 @@ module.exports = function(app, passport) {
         });
 
 
-    app.get('/auth/google_contacts', function(request, response) {
-        var stateString = base64url('{ "redirect" : "contacts/import" }');
-        passport.authenticate('google', {
-            scope: ['profile', 'email', 'https://www.googleapis.com/auth/contacts.readonly'],
-            state: stateString,
-            loginHint: request.user.google.email,
-            authorizationParams: {
-                access_type: 'offline',
-                approval_prompt: 'force'
-            }
-        })(request, response);
-    });
+
 
     // Login from /api/join route
     // send to google to do the authentication. Pass the invite id to google within state.
@@ -281,7 +259,7 @@ module.exports = function(app, passport) {
     // google callback
     // log in via join page already goes to user settings/
     app.get('/auth/google/callback', function(req, res, next) {
-        console.log('app.get(/auth/google/callback');
+        //console.log('app.get(/auth/google/callback');
         var state;
         // Decode the state if it exists.
         if (req.query.state != undefined) {
@@ -293,6 +271,24 @@ module.exports = function(app, passport) {
         } else {
             req.use_access_token = false;
         }
+
+        createToken = function(id) {
+
+            console.log('createToken: ' + id);
+
+            var userData = {
+                _id: id
+            };
+
+            var tokenData = {
+                user: userData
+            };
+
+            var token = jwt.sign({ data: tokenData },
+                configAuth.tokenAuth.token.secret, { expiresIn: configAuth.tokenAuth.token.expiresIn });
+
+            res.cookie(configAuth.tokenAuth.cookieName, token, { expires: new Date(Date.now() + configAuth.tokenAuth.token.expiresIn * 1000) });
+        };
 
         passport.authenticate('google', function(err, user, info) {
 
@@ -313,14 +309,17 @@ module.exports = function(app, passport) {
 
 
             req.logIn(user, { session: false }, function(err) {
-                req.secret = 'steve';
-                console.log('user: ' + user);
-                console.log('state:' + state);
+                //req.secret = 'steve';
+                //console.log('the user: ' + user);
+                //console.log('the state:' + state);
                 if (err) {
                     console.log('err');
                     console.log(err);
                     res.redirect('/login');
                 }
+
+                // Create the access token and set cookie
+                createToken(user._id);
 
                 // If this is a callback from an invite link then there will be a state variable
                 if (state != undefined) {
@@ -424,112 +423,33 @@ module.exports = function(app, passport) {
                             res.redirect('/api/user_setting');
                         });
                     } else {
-                        console.log('USER');
-                        console.log(user);
-                        req.user = user;
-                        console.log('/');
-                        //var token = 'steve';
-                        //res.set('x-token', token);
-                        //res.header('x-authorization', "Bearer " + token);
-                        //res.cookie('_accessToken', token);
-                        //res.cookie("_accessToken", "1234567890", { signed: true });
 
-                        //req.session.access_token = token;
+                        //createToken(user._id);
+                        //res.locals._id = user._id;
 
+                        //createToken(user._id);
 
-                        //var userData = { name: user.user_name };
+                        //createToken(res, user._id);
+
+                        //auth(user._id);
+
                         /*
-                        { _id: 5afc6d45ad9e7f10e0d81a29,
-                          avatar: 'default',
-                          user_name: 'Stephen Fahy',
-                          first_login: false,
-                          __v: 1,
-                          google:
-                           { email: 'stevefahy@gmail.com',
-                             name: 'Stephen Fahy',
-                             id: '112572970172778386751',
-                             token: 'deleted' },
-                          tokens: [],
-                          imported_contacts: [ { contacts: [Object], name: 'google' } ],
-                          contacts: [ 5af81ec0b6c14d24e41fbb2b ] }
-                          */
+                                                var userData = {
+                                                    _id: user._id
+                                                };
 
-                        console.log(user.imported_contacts[0].contacts);
-                        console.log(user.imported_contacts[0].name);
+                                                var tokenData = {
+                                                    user: userData
+                                                };
 
-                        var userData = {
-                            _id: user._id
-                        };
-                        /*
-                                                    avatar: user.avatar,
-                                                    user_name: user.user_name,
-                                                    first_login: user.first_login,
-                                                    google: user.google,
-                                                    tokens: user.tokens,
-                                                    */
-                        //imported_contacts: {contacts: user.imported_contacts[0].contacts, name: user.imported_contacts[0].name},
-                        //contacts: user.contacts
-                        /*
-                          google:
-                           { email: 'stevefahy@gmail.com',
-                             name: 'Stephen Fahy',
-                             id: '112572970172778386751',
-                             token: 'deleted' },
-                          tokens: [],
-                          imported_contacts: [ { contacts: [Object], name: 'google' } ],
-                          contacts: [ 5af81ec0b6c14d24e41fbb2b ] }*/
+                                                var token = jwt.sign({ data: tokenData },
+                                                    configAuth.auth.token.secret, { expiresIn: configAuth.auth.token.expiresIn });
 
-
-                        //};
-                        //var userData = user;
-                        /*
-                        var rolesData = {};
-                        user.roles.forEach(function(r) {
-                            rolesData[r] = true;
-                        });
+                                                res.cookie(configAuth.auth.cookieName, token, { expires: new Date(Date.now() + configAuth.auth.token.expiresIn * 1000) });
                         */
-
-                        var tokenData = {
-                            user: userData //,
-                            //roles: rolesData
-                        };
-                        //console.log(user);
-                        //var tokenData = JSON.stringify(user);
-                        /*
-                        jwt.sign({
-  data: 'foobar'
-}, 'secret', { expiresIn: 60 * 60 });
-*/
-
-                        var token = jwt.sign({ data: tokenData },
-                            configAuth.auth.token.secret, { expiresIn: configAuth.auth.token.expiresIn });
-
-                        // console.log(token);
-
-                        var buf = Buffer.from(token);
-
-                        // console.log(buf.toString().length);
-
-                        //res.cookie(configAuth.auth.cookieName, token, { expires: new Date(Date.now() + 900000) });
-                        res.cookie(configAuth.auth.cookieName, token, { expires: new Date(Date.now() + configAuth.auth.token.expiresIn) });
-                        //res.set('route', '/');
-                        res.redirect('/normal');
+                        //res.redirect('/normal');
+                        res.redirect('/');
                         //res.redirect('/auth/callback');
-
-                        // res. redirect to /authorized?
-                        // from there in angular send a get request for a token
-                        // no because a non logged in person can use this route.
-
-
-                        /*
-                        var token = 'steve';
-                        res.json({
-                            success: true,
-                            message: 'Enjoy your token!',
-                            token: token
-                        });
-                        */
-
 
                     }
                 }
@@ -570,50 +490,78 @@ module.exports = function(app, passport) {
     //
     // USER CONTACTS
     //
+    // Get permision for all user contacts from social login
+    app.get('/auth/google_contacts/:email', function(req, res) {
+        //console.log(req.principal);
+
+        /*
+                User.findOne({ 'google.id': req.principal._id }, function(err, user) {
+                    if (err)
+                        return done(err);
+
+                    if (user) {
+                        console.log(user);
+                    }
+                });
+                */
+
+        var email = req.params.email;
+        var stateString = base64url('{ "redirect" : "contacts/import" }');
+        passport.authenticate('google', {
+            scope: ['profile', 'email', 'https://www.googleapis.com/auth/contacts.readonly'],
+            state: stateString,
+            loginHint: email,
+            authorizationParams: {
+                access_type: 'offline',
+                approval_prompt: 'force'
+            }
+        })(req, res);
+    });
 
     // Get all user contacts from social login
     // TODO - Make work as API endpoint.
     // Contacts.getContacts()
     app.get('/api/user_contacts/', isLoggedIn, function(req, res) {
+        // Get the temporarily stored access token.
+        User.findOne({ '_id': req.principal._id }, function(err, user) {
+            if (err) {
+                console.log(err);
+                return done(err);
+            }
 
-        request.get({
-            url: 'https://www.google.com/m8/feeds/contacts/default/full/?alt=json&max-results=10000',
-            headers: {
-                'Gdata-version': '3.0',
-                'Content-length': '0',
-                'Authorization': 'Bearer ' + req.user.google.token
-            },
-            qs: '100', //Optional to get limit, max results etc
-            alt: 'json',
-            method: 'GET'
-        }, function(err, response, body) {
-            // CONTACTS RECEIVED
-            if (body != null) {
-                var parsed = JSON.parse(body);
-                var user_contacts = [];
-                for (var i in parsed.feed.entry) {
-                    if (parsed.feed.entry[i].gd$email != undefined) {
-                        //var temp = { name: '', email: parsed.feed.entry[i].gd$email[0].address, avatar: '' };
-                        var temp = { name: '', email: parsed.feed.entry[i].gd$email[0].address };
-                        if (parsed.feed.entry[i].gd$name != undefined) {
-                            temp.name = parsed.feed.entry[i].gd$name.gd$fullName.$t;
+            if (user) {
+
+                request.get({
+                    url: 'https://www.google.com/m8/feeds/contacts/default/full/?alt=json&max-results=10000',
+                    headers: {
+                        'Gdata-version': '3.0',
+                        'Content-length': '0',
+                        'Authorization': 'Bearer ' + user.google.token
+                    },
+                    qs: '100', //Optional to get limit, max results etc
+                    alt: 'json',
+                    method: 'GET'
+                }, function(err, response, body) {
+                    // CONTACTS RECEIVED
+                    if (body != null) {
+                        var parsed = JSON.parse(body);
+                        var user_contacts = [];
+                        for (var i in parsed.feed.entry) {
+                            if (parsed.feed.entry[i].gd$email != undefined) {
+                                //var temp = { name: '', email: parsed.feed.entry[i].gd$email[0].address, avatar: '' };
+                                var temp = { name: '', email: parsed.feed.entry[i].gd$email[0].address };
+                                if (parsed.feed.entry[i].gd$name != undefined) {
+                                    temp.name = parsed.feed.entry[i].gd$name.gd$fullName.$t;
+                                }
+                                user_contacts.push(temp);
+                            }
                         }
-                        user_contacts.push(temp);
-                    }
-                }
 
-                var contacts_obj = { name: 'google', contacts: user_contacts };
+                        var contacts_obj = { name: 'google', contacts: user_contacts };
 
-                // Delete the temporarily stored access token.
-                User.findOne({ 'google.id': req.user.google.id }, function(err, user) {
-                    if (err)
-                        return done(err);
-
-                    if (user) {
                         user.google.token = 'deleted';
                         // Add the users contacts.
                         user.imported_contacts.push(contacts_obj);
-                        //req.user.imported_contacts = current_contacts;
 
                         user.save(function(err) {
                             if (err) {
@@ -623,11 +571,17 @@ module.exports = function(app, passport) {
 
                             res.json(user);
                         });
-                    }
 
+                    }
                 });
+
             }
+
         });
+
+
+
+
     });
 
     //
@@ -651,17 +605,48 @@ module.exports = function(app, passport) {
         });
     });
 
-    // delete user contact by id
+
+    // delete a user contact by id
     app.post('/api/users/delete_contact/:id', isLoggedIn, function(req, res) {
         // get the position of this contact within the contacts array and delete it
-        var index = req.user.contacts.indexOf(req.params.id);
-        req.user.contacts.splice(index, 1);
-        req.user.save(function(err, user) {
+        User.findById({ _id: req.principal._id }, function(err, user) {
             if (err) {
-                res.send(err);
-            } else {
-                res.json(user);
+                console.log(err);
+                res.json(err);
             }
+            var index = user.contacts.indexOf(req.params.id);
+            user.contacts.splice(index, 1);
+            user.save(function(err, user) {
+                if (err) {
+                    res.send(err);
+                } else {
+                    res.json(user);
+                }
+            });
+        });
+    });
+
+    // delete user contacts by id using an array of contacts.
+    app.put('/api/users/delete_contacts', isLoggedIn, function(req, res) {
+        var arr = req.body.contacts;
+        User.findById({ _id: req.principal._id }, function(err, user) {
+            if (err) {
+                console.log(err);
+                res.json(err);
+            }
+            // get the position of this contact within the contacts array and delete it
+            for (var i = 0; i < arr.length; i++) {
+                var index = user.contacts.indexOf(arr[i]);
+                user.contacts.splice(index, 1);
+            }
+
+            user.save(function(err, user) {
+                if (err) {
+                    res.send(err);
+                } else {
+                    res.json(user);
+                }
+            });
         });
     });
 
@@ -689,21 +674,27 @@ module.exports = function(app, passport) {
     app.post('/api/users/add_contact/:id', isLoggedIn, function(req, res) {
         var id = req.params.id;
         // get the users contact array
-        var current_contacts = req.user.contacts;
-        // add the id to the users contacts if it is not already there
-        if (current_contacts.indexOf(id) < 0) {
-            current_contacts.push(id);
-            req.user.contacts = current_contacts;
-            // Save
-            var updateuser = new User(req.user);
-            updateuser.save(function(err, user) {
-                if (err) {
-                    res.send(err);
+        User.findById({ _id: req.principal._id }, function(err, user) {
+            if (err) {
+                console.log('err: ' + err);
+                res.send(err);
+            } else {
+                // add the id to the users contacts if it is not already there
+                if (user.contacts.indexOf(id) < 0) {
+                    user.contacts.push(id);
+                    // Save
+                    user.save(function(err, user) {
+                        if (err) {
+                            res.send(err);
+                        } else {
+                            res.json(user);
+                        }
+                    });
                 } else {
                     res.json(user);
                 }
-            });
-        }
+            }
+        });
     });
 
     // notify user
@@ -1135,8 +1126,11 @@ module.exports = function(app, passport) {
     });
 
     // get all conversations for current user
+    // Conversations.find();
     app.get('/chat/conversation', isLoggedIn, function(req, res) {
-        Conversation.find({ 'participants._id': req.user._id }, function(err, conversations) {
+        console.log('------------------------------------------');
+        console.log(req.principal._id);
+        Conversation.find({ 'participants._id': req.principal._id }, function(err, conversations) {
             if (err) {
                 console.log('err: ' + err);
                 return res.send(err);
@@ -1156,6 +1150,7 @@ module.exports = function(app, passport) {
     });
 
     // get all conversations by user id
+    // find_user_conversations(id) 
     app.get('/chat/user_conversations/:id', isLoggedIn, function(req, res) {
         Conversation.find({ 'participants._id': req.params.id }, function(err, conversations) {
             if (err) {

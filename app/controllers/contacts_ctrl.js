@@ -1,4 +1,4 @@
-cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location', '$http', '$timeout', 'Invites', 'Email', 'Users', 'Conversations', 'Profile', 'General', 'Format', 'Contacts', '$q', function($scope, $route, $rootScope, $location, $http, $timeout, Invites, Email, Users, Conversations, Profile, General, Format, Contacts, $q) {
+cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location', '$http', '$timeout', 'principal', 'UserData', 'Invites', 'Email', 'Users', 'Conversations', 'Profile', 'General', 'Format', 'Contacts', '$q', function($scope, $route, $rootScope, $location, $http, $timeout, principal, UserData, Invites, Email, Users, Conversations, Profile, General, Format, Contacts, $q) {
 
 
     // TODO - make sure two users cant create a 2 person conv with each other at the same time.
@@ -57,11 +57,14 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     var myImageName = '';
     var mySavedImage = '';
 
-
+    console.log('CONTACTS CTRL');
     // Get the current users details
-    $http.get("/api/user_data").then(function(result) {
-        if (result.data.user) {
-            $scope.currentUser = result.data.user;
+    //$http.get("/api/user_data").then(function(result) {
+    //if (result.data.user) {
+    if (principal.isValid()) {
+        UserData.checkUser().then(function(result) {
+
+            $scope.currentUser = UserData.getUser();
             // Default Group Image
             $scope.avatar = 'default';
             // Check if the page has been loaded witha param (user contacts import callback).
@@ -79,10 +82,10 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
                 // load this users list of contacts
                 loadUserContacts();
             }
-        } else {
-            $location.path("/api/login");
-        }
-    });
+        });
+    } else {
+        $location.path("/api/login");
+    }
 
     // Navigation functions
     $scope.contactSearch = function() {
@@ -300,7 +303,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     $scope.importContacts = function() {
         $scope.contacts_imported = true;
         // Always use /auth/google_contacts route (permission not granted) so that token can be returned.
-        location.href = "/auth/google_contacts";
+        location.href = "/auth/google_contacts/"+UserData.getUser().google.email;
     };
 
     $scope.cancelInvite = function(event) {
@@ -338,14 +341,42 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     // add a user to the current users contact list
     $scope.addUser = function(id, index, event) {
         event.stopPropagation();
+        console.log(id);
         Users.add_contact(id)
             .then(function(res) {
                 // Update the currentUser model
-                $scope.currentUser = res.data;
+                //$scope.currentUser = res.data;
+
+
+                //UserData.getUser().contacts.push(id);
+
+                //UserData.addContact(id);
+                UserData.addUserContact(id);
+
+                console.log(UserData.getUser());
                 // remove this search result because it has now been added to the list of contacts
                 $scope.search_results[index].is_contact = true;
                 // re-load the user contacts
-                loadUserContacts();
+                //loadUserContacts();
+                $scope.currentUser = UserData.getUser();
+
+                //loadUserContacts();
+
+                //$scope.contacts = UserData.getContacts();
+
+                //$scope.contacts = UserData.getContacts();
+                
+                UserData.loadUserContacts().then(function(res) {
+                    console.log('contacts fin loadUserContacts');
+                    console.log(res);
+                    console.log(UserData.getUser());
+                    console.log($scope.currentUser);
+
+                    $scope.contacts = UserData.getContacts();
+                    // re-load the user contacts
+                //loadUserContacts();
+
+                });
             });
     };
 
@@ -370,6 +401,12 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
         }
     };
 
+    loadUserContacts = function() {
+        $scope.contacts = UserData.getContacts();
+        console.log($scope.contacts);
+        checkImportedContacts();
+    };
+    /*
     // load this users contacts
     loadUserContacts = function() {
         // reset the contacts model
@@ -423,6 +460,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
             // do something when any of the promises in array are rejected
         });
     };
+    */
 
     // CONTACTS - IMAGE
 
@@ -538,6 +576,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
             source: function(request, response) {
                 $.ajax({
                     url: "/api/search_member",
+                    headers: { 'x-access-token': principal.token },
                     type: "GET",
                     data: request, // request is the value of search input
                     success: function(data) {
@@ -576,7 +615,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
                         }));
                     },
                     error: function(error) {
-                        console.log('error: ' + error);
+                        console.log(error);
                     }
                 });
             },

@@ -81,6 +81,10 @@ cardApp.factory('Users', ['$http', function($http) {
         delete_contact: function(id) {
             return $http.post('api/users/delete_contact/' + id);
         },
+        delete_contacts: function(contacts) {
+            var theurl = 'api/users/delete_contacts/';
+            return $http.put(theurl, contacts);
+        },
         update_notification: function(refreshedToken) {
             return $http.post('api/users/update_notification', refreshedToken);
         },

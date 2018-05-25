@@ -9,15 +9,16 @@ var prefix = '/s/';
 
 cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
     $routeProvider
-        /*
+
         .when('/', {
             templateUrl: '/views/conversations.html',
             controller: 'conversationsCtrl'
-        })*/
-        .when('/', {
-            templateUrl: '/views/authcallback.html',
-            controller: 'authcallbackCtrl'
         })
+        /*
+                .when('/', {
+                    templateUrl: '/views/authcallback.html',
+                    controller: 'authcallbackCtrl'
+                })*/
         .when('/normal', {
             templateUrl: '/views/authcallback.html',
             controller: 'authcallbackCtrl',
@@ -1403,10 +1404,13 @@ cardApp.service('General', ['Users', 'Format', function(Users, Format) {
     // USERS
     // Find User
     this.findUser = function(id, callback) {
+        console.log('FINDUSER');
+        console.log(id);
         var user_found;
         Users.search_id(id)
             .then(function(handleSuccess) {
                 user_found = handleSuccess.data.success;
+                console.log(user_found);
                 return callback(user_found);
             })
             .catch(function(handleError) {
@@ -1881,35 +1885,6 @@ cardApp.filter("emptyToEnd", function() {
     };
 });
 
-/*
-cardApp.service('AuthToken', ['$http', function($http) {
-    var token;
-    return {
-        // User.
-        getToken: function(id) {
-            return token;
-        },
-        setToken: function(value) {
-            console.log('AuthToken setToken');
-            token = value;
-        },
-        loadUser: function() {
-
-            return $http.get("/api/user_data").then(function(result) {
-                console.log('principal loadUser 2');
-                // console.log(result.data.user);
-
-                //self.setUser(result.data.user);
-                return result.data.user;
-                // deferred.resolve(result);
-                //return deferred.promise;
-            });
-
-
-        }
-    };
-}]);
-*/
 
 // principal Factory
 
@@ -1917,209 +1892,611 @@ cardApp.factory('principal', function($cookies, jwtHelper, $q, $rootScope) {
 
     var principal = { isAuthenticated: false, roles: [], user: { name: 'Guest' } };
 
-    console.log('PRINCIPAL');
-    var self = this;
-
-    principal.getUser = function(id) {
-        return user;
-    };
-
-    principal.setUser = function(value) {
-        console.log('UserData setUser');
-        user = value;
-    };
-
-
-    principal.loadUser = function(AuthToken) {
-        var self = this;
-        //var deferred = $q.defer();
-        console.log('principal loadUser 1');
-        // Get the User details
-        //Authtoken.loadUser();
-        /*
-                return $http.get("/api/user_data").then(function(result) {
-                    console.log('principal loadUser 2');
-                    console.log(result.data.user);
-
-                    self.setUser(result.data.user);
-                    return result.data.user;
-                    // deferred.resolve(result);
-                    //return deferred.promise;
-                });
-                */
-
-    };
+    console.log('PRINCIPAL FACTORY');
 
     try {
         var token = $cookies.get('_accessToken');
-        //var dtoken = $cookies.getObject('_accessToken');
-        //var token = $cookies._accessToken;
-        console.log('core token: ' + token);
-        //console.log('core dtoken: ' + dtoken);
         var decoded = jwtHelper.decodeToken(token);
 
-        console.log('decoded: ' + decoded);
-        console.log(decoded.data.user);
-        //console.log(decoded.data.user.user_name);
-        //console.log(decoded.data.user.google);
-        console.log(token);
-
         if (decoded && !jwtHelper.isTokenExpired(token)) {
-            console.log('set principal');
             principal.isAuthenticated = true;
-            //principal.roles = decoded.roles;
             principal.user = decoded.data.user;
+            console.log(principal.user);
             principal.token = token;
-            // Authtoken.setToken(token);
-
-
         }
     } catch (e) {
         console.log('ERROR while parsing principal cookie.' + e);
     }
 
-    principal.logout = function() {
-        delete $cookies._accessToken;
+    principal.logOut = function() {
+        principal.isAuthenticated = false;
+        principal.token = null;
+        $cookies.remove('_accessToken');
     };
 
     principal.getToken = function() {
-        var deferred = $q.defer();
-
-        deferred.resolve(principal);
-        return deferred.promise;
-        //return principal;
+        console.log(principal.isValid());
+        return principal.token;
     };
 
     principal.isValid = function() {
-        //var deferred = $q.defer();
-        console.log(principal.token);
+        //console.log(principal.token);
         if (principal.token != undefined) {
             jwtHelper.isTokenExpired(principal.token);
-            console.log(jwtHelper.isTokenExpired(principal.token));
+            //console.log(jwtHelper.isTokenExpired(principal.token));
+            //console.log(jwtHelper.getTokenExpirationDate(principal.token));
 
             principal.isAuthenticated = !jwtHelper.isTokenExpired(principal.token);
         }
         return principal.isAuthenticated;
-        //deferred.resolve(principal.isAuthenticated);
-        //return deferred.promise;
     };
 
     return principal;
+});
+
+
+
+cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHelper, $q, principal, Users, Conversations, General) {
+    console.log('UserData FACTORY');
+
+    var user;
+    var contacts = [];
+    var conversations;
+    var conversationsLatestCard = [];
+    var UserData = { isAuthenticated: false, isLoaded: false, isLoading: false };
+
+    $rootScope.loaded = false;
+    var isLoading = false;
+
+    addContact = function(val) {
+        contacts.push(val);
+        return contacts;
+    };
+
+    setContacts = function(value) {
+        var deferred = $q.defer();
+        console.log(contacts);
+        console.log('setContacts: ' + value);
+        contacts = value;
+        deferred.resolve(contacts);
+        return deferred.promise;
+        //return contacts;
+    };
+
+    getContacts = function() {
+        return contacts;
+    };
+
+    loadUser = function() {
+        return $http.get("/api/user_data").then(function(result) {
+            console.log('HTTP /api/user_data');
+            console.log(result.data.user);
+            ud = result.data.user;
+            console.log('R 1 UD');
+            console.log(ud);
+            return result.data.user;
+        });
+    };
+
+    /*
+    loadUser = function() {
+        var self = this;
+        // Get the User details
+        isLoading = true;
+        return $http.get("/api/user_data").then(function(result) {
+            console.log('HTTP /api/user_data');
+            console.log(result.data.user);
+            $rootScope.loaded = true;
+            isLoading = false;
+            return this.setUser(result.data.user);
+        });
+    };
+    */
+
+    // User.
+    setUser = function(value) {
+        console.log('setUser: ' + value);
+        var deferred = $q.defer();
+        user = value;
+        //return user;
+        deferred.resolve(user);
+        console.log('R 2 SU');
+        return deferred.promise;
+    };
+
+
+    getUser = function() {
+        return user;
+    };
+
+    addUserContact = function(id) {
+        var deferred = $q.defer();
+        //UserData.getUser().contacts.push(id);
+        user.contacts.push(id);
+        deferred.resolve(user.contacts);
+        return deferred.promise;
+        //return user.contacts;
+    };
+
+    getConversations = function() {
+        var deferred = $q.defer();
+        deferred.resolve(conversations);
+        return deferred.promise;
+        //return conversations;
+    };
+
+    loadConversations = function() {
+        return Conversations.find().then(function(result) {
+            console.log('R 3 GC');
+            console.log(result.data);
+            conversations = result.data;
+        });
+    };
+
+    removeConversations = function(conversations_delete) {
+        var deferred = $q.defer();
+        console.log(conversations);
+        console.log(conversations_delete);
+        var i = conversations.length;
+        while (i--) {
+            var index = General.findWithAttr(conversations_delete, '_id', conversations[i]._id);
+            console.log(index);
+            if (index >= 0) {
+                console.log(conversations_delete[index]._id + ' : ' + conversations[i]._id);
+                conversations.splice(i, 1);
+            }
+        }
+        console.log('removeConversations FIN');
+        deferred.resolve(conversations);
+        return deferred.promise;
+        /*
+        for(var i in conversations_delete){
+            var index = General.findWithAttr(conversations, '_id', conversations_delete[i]);
+            if(index >= 0){
+                 console.log('remove');
+            console.log(conversations[index]);
+            //conversations.splice(index, 1);
+            } else {
+                console.log('keep');
+                console.log(conversations[index]);
+            }
+        }
+        */
+
+        //var index = General.findWithAttr(conversationsLatestCard, '_id', id);
+        //var index = General.findWithAttr(conversations, '_id', id);
+        //console.log(index);
+        //return conversationsLatestCard[index];
+        //conversations.splice(index, 1);
+        //console.log(conversations);
+        //deferred.resolve(conversations);
+        //return deferred.promise;
+
+    };
+
+    /*
+        // Check if an Array of Objects includes a property
+    this.arrayObjectIndexOf = function(myArray, searchTerm, property) {
+        for (var i = 0, len = myArray.length; i < len; i++) {
+            if (myArray[i][property] === searchTerm) return i;
+        }
+        return -1;
+    };
+
+    // Check if an Array of Objects includes a property value
+    this.arrayObjectIndexOfValue = function(myArray, searchTerm, property, value) {
+        for (var i = 0, len = myArray.length; i < len; i++) {
+            if (myArray[i][property][value] === searchTerm) return i;
+        }
+        return -1;
+    };
+    */
+
+    cleanConversations = function() {
+        console.log('cleanConversations');
+        //console.log(conversations);
+        var deferred = $q.defer();
+        var promises = [];
+        var conversations_delete = [];
+
+        var result = getConversations()
+            .then(function(res) {
+                console.log(res);
+                res.map(function(key, array) {
+                    console.log(key);
+
+                    if (key.participants.length == 2) {
+                        console.log(principal.user._id);
+                        //var index = General.arrayObjectIndexOf(key.participants, id, '_id');
+                        var index = General.findWithAttr(key.participants, '_id', principal.user._id);
+                        console.log(index);
+                        // Get the other user.
+                        index = 1 - index;
+                        promises.push(Users.search_id(key.participants[index]._id)
+                            .then(function(res) {
+                                console.log('xxx');
+                                console.log(res);
+                                if (res.data.error === 'null') {
+                                    // remove this conversation as the user cannot be found
+                                    //delete_contacts.contacts.push(key);
+                                    console.log('remove: ' + key._id);
+                                    console.log(key);
+                                    //removeConversation(key._id);
+                                    conversations_delete.push({ _id: key._id });
+                                }
+                                if (res.data.success) {
+
+                                }
+                                //return;
+                            }));
+                        //} else {
+                        // promises.push();
+                        //}
+
+                    }
+                });
+                console.log('conversations_delete');
+                console.log(conversations_delete);
+
+                // All the users contacts have been mapped.
+                $q.all(promises).then(function() {
+                    console.log('cleanConversations FIN');
+                    //console.log(promises.length);
+                    //console.log(conversations);
+                    removeConversations(conversations_delete)
+                        .then(function() {
+                            deferred.resolve(conversations);
+                        });
+                }).catch(function(err) {
+                    // do something when any of the promises in array are rejected
+                });
+
+            });
+
+        return deferred.promise;
+
+    };
+
+    conversationsLatestCardAdd = function(id, data) {
+        var deferred = $q.defer();
+        var card = { _id: id, data: data };
+        conversationsLatestCard.push(card);
+        console.log(conversationsLatestCard);
+        deferred.resolve(conversationsLatestCard);
+        return deferred.promise;
+    };
+
+    getConversationLatestCardById = function(id) {
+        var deferred = $q.defer();
+        var index = General.findWithAttr(conversationsLatestCard, '_id', id);
+        //return conversationsLatestCard[index];
+        deferred.resolve(conversationsLatestCard[index]);
+        return deferred.promise;
+
+    };
+
+    // Get the latest card posted to each conversation
+    // Conversations.getConversationLatestCard(key._id)
+    // array by conversation id
+    // TODO - replace with function to get lates card from loaded conversation.
+
+    getConversationsLatestCard = function() {
+        var deferred = $q.defer();
+        var promises = [];
+        var result = getConversations()
+            .then(function(res) {
+                console.log(res);
+                res.map(function(key, array) {
+                    console.log(key);
+                    // Get the latest card posted to this conversation
+                    promises.push(Conversations.getConversationLatestCard(key._id)
+                        .then(function(res) {
+                            console.log(res);
+                            return conversationsLatestCardAdd(key._id, res.data)
+                                .then(function(res) {
+                                    console.log(res);
+                                    //return;
+                                });
+                        }));
+
+
+                });
+                // All the users contacts have been mapped.
+                $q.all(promises).then(function() {
+                    console.log('R 5 GCLC ALL PROMISES');
+                    deferred.resolve(res);
+
+                }).catch(function(err) {
+                    // do something when any of the promises in array are rejected
+                });
+            });
+        return deferred.promise;
+    };
+
+    parseUserContact = function(result, user) {
+        //var contacts = [];
+        console.log('PUC');
+        console.log(result);
+        result.map(function(key, array) {
+            // check that this is a two person chat.
+            // Groups of three or more are loaded in conversations.html
+            if (key.conversation_name == '') {
+                // Check that current user is a participant of this conversation
+                console.log(key);
+                console.log(user);
+                if (General.findWithAttr(key.participants, '_id', user._id) >= 0) {
+                    console.log('GENERAL');
+                    // set conversation_exists and conversation_id for the contacts
+                    user.conversation_exists = true;
+                    //user.conversation_id = key._id;
+                }
+            }
+        });
+        return user;
+    };
+
+    // load this users contacts
+    loadUserContacts = function() {
+
+        // ADD ERROR CHECKING!
+
+        this.finish = function(contacts) {
+            this.setContacts(contacts).then(function(result) {
+                console.log('FIN CONTACTS');
+                console.log('S 4 LUC');
+                deferred.resolve(result);
+            });
+        };
+
+        console.log('loadUserContacts');
+        var deferred = $q.defer();
+        // reset the contacts model
+        var contacts = [];
+        var promises = [];
+        //var promises2 = [];
+        var delete_contacts = { contacts: [] };
+        //var result = $scope.currentUser.contacts.map(function(key, array) {
+        console.log(this.getUser().contacts);
+        var result = this.getUser().contacts.map(function(key, array) {
+            // Search for each user in the contacts list by id
+            promises.push(Users.search_id(key)
+                .then(function(res) {
+                    console.log(res);
+                    if (res.data.error === 'null') {
+                        // remove this contact as the user cannot be found
+                        delete_contacts.contacts.push(key);
+                    }
+                    if (res.data.success) {
+                        // Check if individual conversation already created with this contact
+                        // Get all coversations containing current user.
+                        //return $http.get("/chat/conversation").then(function(result) {
+                        return this.getConversations().then(function(result) {
+                            //result.data.map(function(key, array) {
+                            console.log('parseUserContacts');
+                            console.log(result);
+                            console.log(res.data.success);
+                            var s = parseUserContact(result, res.data.success);
+                            console.log(s);
+                            contacts.push(s);
+                        });
+                    }
+                })
+                .catch(function(error) {
+                    console.log('error: ' + error);
+                }));
+        });
+
+        // All the users contacts have been mapped.
+        $q.all(promises).then(function() {
+            console.log(delete_contacts.contacts);
+            if (delete_contacts.contacts.length > 0) {
+                console.log('delete_contacts');
+                console.log(delete_contacts);
+                return Users.delete_contacts(delete_contacts)
+                    .then(function(data) {
+                        console.log('deleted');
+                        console.log(data);
+                        finish(contacts);
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                    });
+            } else {
+                finish(contacts);
+            }
+        }).catch(function(err) {
+            // do something when any of the promises in array are rejected
+        });
+        return deferred.promise;
+    };
+
+
+    loadUserData = function() {
+        console.log('LOADUSERDATA');
+        var self = this;
+        // Get the User details
+        isLoading = true;
+
+        var user_data;
+
+        var deferred = $q.defer();
+        console.log('G 1 UD');
+        /*$http.get("/api/user_data").then(function(result) {
+            console.log('HTTP /api/user_data');
+            console.log(result.data.user);
+            ud = result.data.user;
+            console.log('R 1 UD');
+            console.log(ud);*/
+        loadUser().then(function(user) {
+            console.log('GOT 1 UD');
+            console.log(user);
+            user_data = user;
+            //ud = result;
+        }).then(function() {
+            console.log('G 2 SU');
+            console.log(user_data);
+            return this.setUser(user_data);
+        }).then(function(user) {
+            console.log('L 3 GC');
+            return this.loadConversations();
+        }).then(function(user) {
+            console.log('G 4 LUC');
+            return loadUserContacts();
+        }).then(function(user) {
+            console.log('L 4a CC');
+            //console.log(conversations);
+            return this.cleanConversations();
+            // look up all the user participants in the conversations and store in an array
+            // General.findUser
+        }).then(function(user) {
+            //console.log(conversations);
+            console.log('G 5 GCLC');
+            return getConversationsLatestCard();
+        }).then(function(user) {
+            console.log('timeout');
+            setTimeout(function() {
+                //deferred.resolve();
+                $rootScope.loaded = true;
+                isLoading = false;
+                console.log('FIN TIME');
+                deferred.resolve();
+                //return;
+            }, 2000);
+
+        });
+        return deferred.promise;
+    };
+
+
+
+
+
+    if (principal.isValid()) {
+        this.isAuthenticated = true;
+        //UserData.isLoading = true;
+        console.log('USERDATA LOADUSER');
+        //loadUser();
+        loadUserData().then(function(result) {
+            console.log('UD LOADED');
+        });
+    } else {
+        this.isAuthenticated = false;
+    }
+
+
+    checkUser = function() {
+        var deferred = $q.defer();
+        var self = this;
+        console.log('CHECK USER: ' + isLoading);
+        if (isLoading) {
+            console.log('already loading...wait');
+            $rootScope.$watch('loaded', function(n) {
+                if (n) {
+                    console.log(n);
+                    //methodA();
+                    deferred.resolve();
+                }
+            });
+        } else {
+            console.log('not loading...get');
+            // Check whether the user data has already been retrieved.
+            if (this.getUser() != undefined) {
+                console.log('CALL VAR /api/user_data');
+                deferred.resolve(user);
+            } else {
+                console.log('CALL HTTP /api/user_data');
+                deferred.resolve(loadUserData());
+            }
+        }
+        return deferred.promise;
+    };
+
+    return {
+        // All User related data
+        loadUserData: loadUserData,
+        // Check whether the User has been loaded.
+        checkUser: checkUser,
+        // Current user
+        loadUser: loadUser,
+        getUser: getUser,
+        setUser: setUser,
+        addUserContact: addUserContact,
+        // Contacts
+        setContacts: setContacts,
+        getContacts: getContacts,
+        addContact: addContact,
+        loadUserContacts: loadUserContacts,
+        // Conversations
+        getConversations: getConversations,
+        getConversationsLatestCard: getConversationsLatestCard,
+        getConversationLatestCardById: getConversationLatestCardById
+    };
 
 });
 
 
 
-cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHelper, $q) {
+/*
+cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHelper, $q, principal) {
     console.log('UserData FACTORY');
+
     var user;
-    var user_undefined;
-    var self = this;
-    var UserData = { isAuthenticated: false };
+    var UserData = { isAuthenticated: false, isLoaded: false, isLoading: false };
 
     UserData.loadUser = function() {
         var self = this;
-        //var deferred = $q.defer();
-        console.log('UserData loadUser');
-        console.log(user);
-
         // Get the User details
-        console.log('HTTP');
         return $http.get("/api/user_data").then(function(result) {
-            console.log('UserData loadUser');
+            console.log('HTTP /api/user_data');
             console.log(result.data.user);
             self.setUser(result.data.user);
             return result.data.user;
-            //var deferred = $q.defer();
-            // deferred.resolve(result);
-            //return deferred.promise;
         });
-
-
     };
 
-    try {
-        var token = $cookies.get('_accessToken');
-        //var dtoken = $cookies.getObject('_accessToken');
-        //var token = $cookies._accessToken;
-        console.log('UD core token: ' + token);
-        //console.log('core dtoken: ' + dtoken);
-        var decoded = jwtHelper.decodeToken(token);
-
-        console.log('UD decoded: ' + decoded);
-        console.log(decoded.data.user);
-        //console.log(decoded.data.user.user_name);
-        //console.log(decoded.data.user.google);
-        console.log(token);
-
-        if (decoded && !jwtHelper.isTokenExpired(token)) {
-            console.log('UD set principal');
-            UserData.isAuthenticated = true;
-            //principal.roles = decoded.roles;
-            //principal.user = decoded.data.user;
-            //principal.token = token;
-            // Authtoken.setToken(token);
-            UserData.loadUser();
-
-        }
-    } catch (e) {
-        console.log('ERROR while parsing principal cookie.' + e);
+    if (principal.isValid()) {
+        UserData.isAuthenticated = true;
+        UserData.isLoading = true;
+        UserData.loadUser().then(function(result) {
+            console.log('UD LOADED');
+            UserData.isLoaded = true;
+        });
+    } else {
+        UserData.isAuthenticated = false;
     }
 
     UserData.checkUser = function() {
         var self = this;
-        //var deferred = $q.defer();
-        //deferred.resolve(user);
-        //return deferred.promise;
-        //return user;
+        console.log('CHECK USER');
         console.log(UserData.getUser());
-
+        // Check whether the user data has already been retrieved.
         if (UserData.getUser() != undefined) {
-            console.log('VAR');
-            //var deferred = $q.defer();
+            console.log('CALL VAR /api/user_data');
             var deferred = $q.defer();
             deferred.resolve(user);
             return deferred.promise;
-            //return  user;
         } else {
-            //var deferred = $q.defer();
-            //deferred.resolve(UserData.loadUser());
-            //return deferred.promise;
-            //return  UserData.loadUser();
-            console.log('HTTP');
-            return $http.get("/api/user_data").then(function(result) {
-                console.log('UserData loadUser');
-                console.log(result.data.user);
-                self.setUser(result.data.user);
-
-                //deferred.resolve(result.data.user);
-                //return deferred.promise;
-                return result.data.user;
-                //var deferred = $q.defer();
-                // deferred.resolve(result);
-                //return deferred.promise;
-            });
+                console.log('CALL HTTP /api/user_data');
+                return self.loadUser();
         }
     };
 
     // User.
     UserData.getUser = function() {
-        //var deferred = $q.defer();
-        //deferred.resolve(user);
-        //return deferred.promise;
         return user;
     };
 
     UserData.setUser = function(value) {
-        console.log('UserData setUser');
+        console.log(user);
+        console.log('setUser: ' + value);
         user = value;
     };
-
-
 
     return UserData;
 
 });
+*/
+
 
 cardApp.factory('Profile', function($rootScope, $window) {
     console.log('PROFILE FACTORY');
@@ -2143,36 +2520,6 @@ cardApp.factory('Profile', function($rootScope, $window) {
     };
 });
 
-
-// User service
-
-/*
-cardApp.service('User', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', 'General', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML, General) {
-
-
-
-}]);
-*/
-
-/*
-cardApp.config(['$provide', '$httpProvider', function ($provide, $httpProvider) {
-    $provide.factory('httpInterceptor', ['$rootScope', '$q', '$injector', 'principal', function ($rootScope, $q, $injector, principal) {
-        return {
-            // occurs on request
-            request: function (config) {
-                //Add your header to the request here
-                config.headers['x-access-token'] = principal.token;
-                return config;
-            }
-        };
-    }]);
-    $httpProvider.config(['$httpProvider', function ($httpProvider) {
-        $httpProvider.interceptors.push('httpInterceptor');
-    }]);
- }]);
-*/
-
-
 cardApp.config([
     '$httpProvider',
     function($httpProvider) {
@@ -2187,34 +2534,17 @@ cardApp.config([
 
                     // run this function before making requests
                     'request': function(config) {
-
-
-                        //if (config.method === 'GET' || principal.isAuthenticated) {
-                        // the request looks good, so return the config
-                        // return config;
-                        // }
-
                         //Add your header to the request here
-                        console.log('x-access-token: ' + principal.token);
-                        if(principal.token != undefined){
-                        config.headers['x-access-token'] = principal.token;
-                    }
+                        if (principal.token != undefined) {
+                            config.headers['x-access-token'] = principal.token;
+                        }
                         return config;
-
-                        // bad request, so reject
-                        //return $q.reject(config);
-
                     }
-
                 };
-
                 return service;
-
             }
         ];
-
         $httpProvider.interceptors.push(interceptor);
-
     }
 ]);
 

@@ -21,13 +21,14 @@ module.exports = {
         //'callbackURL': 'http://localhost:8090/auth/google/callback'
     },
 
-  'auth': {
-    token: {
-      secret: '--some-secret-here--',
-      // zeit/ms format. '2 days' '1d' '10h' '2.5 hrs' '2h' '1m' '5s' 1y' '-3 days'
-      expiresIn: 50000
-    },
-    cookieName: '_accessToken'
-  }
+    'tokenAuth': {
+        token: {
+            secret: '--some-secret-here--',
+            // zeit/ms format. '2 days' '1d' '10h' '2.5 hrs' '2h' '1m' '5s' 1y' '-3 days'
+            // Seconds
+            expiresIn: 180
+        },
+        cookieName: '_accessToken'
+    }
 
 };

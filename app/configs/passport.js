@@ -310,8 +310,6 @@ module.exports = function(passport) {
             passReqToCallback: true // allows us to pass in the req from our route (lets us check if a user is logged in or not)
         },
         function(req, token, refreshToken, profile, done) {
-            console.log(token);
-            console.log(req.user);
             // If req.use_access_token = true has been passed from /auth/google/callback
             // then pass back the access_token otherwise set it to empty.
             var contacts_token = { 'access_token': token };
@@ -325,8 +323,9 @@ module.exports = function(passport) {
                 if (!req.user) {
                     //console.log('!req.user');
                     User.findOne({ 'google.id': profile.id }, function(err, user) {
-                        if (err)
+                        if (err) {
                             return done(err);
+                        }
 
                         if (user) {
                             //console.log('user found');
