@@ -7,15 +7,9 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
     var saved_user_name = '';
     $window.androidToJS = this.androidToJS;
     $scope.prepareImage = Format.prepareImage;
-    $scope.setting_change = true;
+    $scope.setting_change = false;
 
     General.keyBoardListenStart();
-
-    $('.imgcrop').animate({
-        opacity: 0
-    }, 100, function() {
-        // Animation complete.
-    });
 
     // Detect device user agent 
     var ua = navigator.userAgent;
@@ -24,27 +18,30 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
         $('.content_cnv').addClass('content_cnv_android');
     }
 
-    // TODO - make service?
-    //$http.get("/api/user_data").then(function(result) {
-
+    // Get User details.
     if (principal.isValid()) {
         UserData.checkUser().then(function(result) {
-            if (result.data.user) {
-                $scope.currentFullUser = result.data.user;
-                $scope.user_name = result.data.user.user_name;
-                $scope.login_name = result.data.user.google.name;
-                $scope.login_email = result.data.user.google.email;
-                $scope.avatar = result.data.user.avatar;
-                if ($scope.avatar == undefined) {
-                    $scope.avatar = 'default';
-                }
-                // Hide the preview avatar
-                $('.preview').css('left', '-1000px');
-                saved_user_name = $scope.user_name;
+            $scope.currentFullUser = UserData.getUser();
+            $scope.user_name = UserData.getUser().user_name;
+            var loaded_user_name = UserData.getUser().user_name;
+            $scope.login_name = UserData.getUser().google.name;
+            $scope.login_email = UserData.getUser().google.email;
+            $scope.avatar = UserData.getUser().avatar;
+            if ($scope.avatar == undefined) {
+                $scope.avatar = 'default';
             }
+            saved_user_name = UserData.getUser().user_name;
+            // Listen for the user_name changing.
+            $scope.$watch('user_name', function() {
+                if ($scope.user_name != saved_user_name) {
+                    $scope.setting_change = true;
+                } else {
+                    $scope.setting_change = false;
+                }
+            }, true);
         });
     } else {
-       // $location.path("/api/login");
+        $location.path("/api/login");
     }
 
     // Trigger the file input.
@@ -94,66 +91,8 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
     };
 
     $scope.imgcropLoaded = function() {
-        if ($('.crop_container').height() == 0) {
-            $('.crop_container').css('height', '200px');
-            $('.crop_container').css('left', '0px');
-            $timeout(function() {
-                $('.user_details').animate({
-                    opacity: 0
-                }, 100, function() {
-                    // Animation complete.
-                    $('.user_details').animate({
-                        opacity: 0,
-                        //left: 0
-                    }, 0, function() {
-                        // Animation complete.
-                        $('.user_details').animate({
-                            opacity: 0,
-                            left: 0
-                        }, 1000, function() {
-                            // Animation complete.
-                            $('.user_details').animate({
-                                //left:0,
-                                opacity: 1
-                            }, 1000, function() {
-                                // Animation complete.
-                            });
-                        });
-                    });
-                });
-                $('.crop_container').animate({
-                    height: 0
-                }, 100, function() {
-                    // Animation complete.
-                    $('.crop_container').animate({
-                        height: 0
-                    }, 0, function() {
-                        // Animation complete.
-                        $('.crop_container').animate({
-                            height: 200,
-                        }, 1000, function() {
-                            // Animation complete.
-                        });
-                    });
-                });
-                $('.imgcrop').animate({
-                    opacity: 0,
-                }, 100, function() {
-                    // Animation complete.
-                    $('.imgcrop').animate({
-                        opacity: 1,
-                        height: 0
-                    }, 1, function() {
-                        // Animation complete.
-                        $('.imgcrop').animate({
-                            height: 200
-                        }, 1000, function() {
-                            // Animation complete.
-                        });
-                    });
-                });
-            }, 100);
-        }
+        $scope.image_loaded = true;
+        $scope.setting_change = true;
     };
 
     saveProfile = function(profile) {
@@ -174,7 +113,8 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
                 var obj = { 'id': result.data._id, 'avatar': profile.avatar };
                 Conversations.updateAvatar(obj)
                     .then(function(result) {
-                        //console.log(result);
+                        // Update UserData.
+                        UserData.updateProfile(profile);
                     })
                     .catch(function(error) {
                         console.log('error: ' + error);
@@ -207,9 +147,6 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
             $scope.$apply(function($scope) {
                 $scope.myImage = evt.target.result;
             });
-            $('.original').hide();
-            $('.preview').css('left', '0px');
-            $('.user_details').css('top', '-15px');
         };
         loadImage(file, function(result) {
             reader.readAsDataURL(result);
@@ -220,27 +157,17 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
     var handleFileClick = function(evt) {
         if (ua.indexOf('AndroidApp') >= 0) {
             Android.choosePhoto();
-            if ($('.crop_container').height() == 0) {
-                $('.user_details').css('left', '-1000px');
-                $('.crop_container').css('height', '0px');
-            }
         }
     };
 
     // Web
     var handleFileSelect = function(evt) {
-        if ($('.crop_container').height() == 0) {
-            $('.original').hide();
-            $('.preview').css('left', '0px');
-            $('.user_details').css('left', '-1000px');
-        }
         var file = evt.currentTarget.files[0];
         myImageName = file.name;
         var reader = new FileReader();
         reader.onload = function(evt) {
             $scope.$apply(function($scope) {
                 $scope.myImage = evt.target.result;
-                $('.user_details').css('top', '-20px');
             });
         };
         reader.readAsDataURL(file);

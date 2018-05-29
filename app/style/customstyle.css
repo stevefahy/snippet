@@ -635,8 +635,12 @@ hr {
     border: 1px solid #9E9E9E;
 }
 
-.user_setting_image {
+.image_container .user_setting_image {
     margin-top: 15px;
+}
+
+.user_setting_image {
+    margin-top: -25px;
 }
 
 #mi-add-a-photo {
@@ -748,7 +752,11 @@ input#fileInput {
     position: relative;
     display: flex;
     width: 100%;
-    top: -30px;
+    /*top: -30px;*/
+}
+
+.user_details_image_loaded{
+    top: 220px;
 }
 
 .left {
@@ -1953,7 +1961,18 @@ span#scroll_image_latest {
     margin-top: -128px;
 }
 
+.user_setting_image .preview {
+    padding-top: 0px;
+    left: -1000px;
+    margin-top: -128px;
+}
+/*
 .contact_div .preview_show {
+    left: unset;
+    margin-top: 0px;
+}
+*/
+.user_setting_image .preview_show {
     left: unset;
     margin-top: 0px;
 }

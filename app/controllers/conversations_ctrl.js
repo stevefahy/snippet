@@ -10,11 +10,86 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
     // array of conversations
     $scope.conversations = [];
 
+    $scope.$on('NOTIFICATION_CONVS', function(event, type, msg) {
+        console.log('NOTIFICATION_CONVS');
+        console.log(type);
+        console.log(msg);
+        //console.log(msg.local_conversation_pos);
+        //var local_conversation_pos = Number(msg.local_conversation_pos);
+        //var user_pos = Number(msg.user_pos);
+        //var user_unviewed = msg.user_unviewed;
+        // Update existing
+        console.log($scope.conversations);
+        //console.log($scope.conversations[local_conversation_pos]);
+        // console.log(msg.data.conversationId);
+
+
+
+        if (type == 'update') {
+                    // Get the index position of the updated conversation within the conversations model by conversation id
+        var conversation_pos = General.findWithAttr($scope.conversations, '_id', msg.conversationId);
+        console.log(conversation_pos);
+        // Get the index position of the current user within the updated conversation participants array in the conversations model
+        var user_pos = General.findWithAttr($scope.conversations[conversation_pos].participants, '_id', UserData.getUser()._id);
+        console.log(user_pos);
+
+            if (msg.latestCard != null) {
+
+                // Get the unviewed cards for this user in this conversation.
+                //var user_unviewed = $scope.conversations[conversation_pos].participants[user_pos].unviewed;
+                // Get the index position of the updated conversation within the  CURRENT conversations model by conversation id
+                //var local_conversation_pos = General.findWithAttr(conversations, '_id', msg.conversation_id);
+
+                // update the local model
+                $scope.conversations[conversation_pos].participants[user_pos].unviewed = msg.user_unviewed;
+                // Set the new_messages number.
+                $scope.conversations[conversation_pos].new_messages = msg.user_unviewed.length;
+
+
+                //conversationsLatestCardAdd(msg.data.conversationId, res.data);
+                // Format the latest card
+                formatLatestCard(msg.latestCard, $scope.conversations[conversation_pos], function(result) {
+                    console.log(result);
+                });
+            } else {
+                // Remove the conversation from the local model.
+
+                //conversationId
+
+                //var conversation_pos = General.findWithAttr($scope.conversations, '_id', msg.conversationId);
+
+                $scope.conversations[conversation_pos].latest_card = ' ';
+            }
+        }
+
+        if (type == 'add') {
+            if (msg.latestCard != null) {
+                formatLatestCard(msg.latestCard, msg.latestConversation, function(response) {
+                    // Add this conversation to the conversations model
+                    //UserData.conversationsLatestCardAdd(response._id, response);
+                    //conversationsLatestCardAdd(key._id, res.data)
+                    //UserData.getConversationLatestCardById(key._id)
+
+
+                    $scope.conversations.push(response);
+                });
+            } else {
+                //key.latest_card = ' ';
+            }
+        }
+
+    });
+
+
     // Broadcast by socket service when a  card has been created, updated or deleted by another user to this user
     $scope.$on('NOTIFICATION', function(event, msg) {
+        console.log('NOTIFICATION');
+        /*
         // Find the conversations for current user
         Conversations.find_user_conversations($scope.currentUser._id)
             .then(function(res) {
+                console.log(res);
+
                 // Get the index position of the updated conversation within the conversations model by conversation id
                 var conversation_pos = General.findWithAttr(res.data, '_id', msg.conversation_id);
                 // Get the index position of the current user within the updated conversation participants array in the conversations model
@@ -24,13 +99,32 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
                 // Get the index position of the updated conversation within the  CURRENT conversations model by conversation id
                 var local_conversation_pos = General.findWithAttr($scope.conversations, '_id', msg.conversation_id);
                 // If the conversation does not exist within the local model then add it.
+                
+                // Find the users and check if they need to be added to Userdata 
+                // get it first  UserData.addConversation(res.data[conversation_pos]);
+                //UserData.addConversationsUser(data.user)
+                console.log(res.data[conversation_pos].participants); // ._id
+                UserData.addConversationsUsers(res.data[conversation_pos].participants);
+
+                //if (General.findWithAttr(conversationsUsers, '_id', key2._id) < 0) {
+
+                //}
+
+
                 if (local_conversation_pos < 0) {
+                    UserData.addConversation(res.data[conversation_pos]);
                     // Get the latest card posted to this conversation
                     Conversations.getConversationLatestCard(res.data[conversation_pos]._id)
                         .then(function(result) {
                             if (result.data != null) {
+                                console.log('convs');
+                                UserData.conversationsLatestCardAdd(result.data.conversationId, result.data);
+
                                 formatLatestCard(result.data, res.data[conversation_pos], function(response) {
                                     // Add this conversation to the conversations model
+                                    //UserData.conversationsLatestCardAdd(response._id, response);
+                                    //conversationsLatestCardAdd(key._id, res.data)
+                                    //UserData.getConversationLatestCardById(key._id)
                                     $scope.conversations.push(response);
                                 });
                             } else {
@@ -47,6 +141,7 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
                         .then(function(res) {
                             // If a card exists in the conversation
                             if (res.data != null) {
+                                UserData.conversationsLatestCardAdd(res.data.conversationId, res.data);
                                 // Format the latest card
                                 formatLatestCard(res.data, $scope.conversations[local_conversation_pos], function(result) {
                                     //console.log(result);
@@ -58,10 +153,12 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
                         });
                 }
             });
+            */
     });
 
     // Continue chat
     $scope.chat = function(conversation_id, conversation, index) {
+        console.log('chat');
         // Set profile change for the conversation.
         var profile_obj = {};
         profile_obj.user_name = conversation.name;
@@ -73,15 +170,20 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
 
     // Continue public conversation
     $scope.chatPublic = function(admin, conversation, index) {
+        console.log('chatPublic');
         // Set profile change for the conversation.
         var profile_obj = {};
         profile_obj.user_name = conversation.name;
         profile_obj.avatar = conversation.avatar;
         Profile.setConvProfile(profile_obj);
         // Find the username then redirect to the conversation.
-        General.findUser(admin, function(result) {
-            $location.path("/" + result.google.name);
-        });
+        //General.findUser(admin, function(result) {
+            console.log(admin);
+        UserData.getConversationsUser(admin[0])
+            .then(function(result) {
+                console.log(result);
+                $location.path("/" + result.google.name);
+            });
     };
 
     formatLatestCard = function(data, key, callback) {
@@ -94,55 +196,66 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
             // Update the updatedAt
             key.updatedAt = data.updatedAt;
             // Get the name of the user which sent the card.
-            General.findUser(data.user, function(result) {
-                // get the index position of the current user within the participants array
-                var user_pos = General.findWithAttr(key.participants, '_id', $scope.currentUser._id);
-                // get the currently stored unviewed cards for the current user
-                var user_unviewed = key.participants[user_pos].unviewed;
-                // Set the new_messages number.
-                key.new_messages = user_unviewed.length;
-                // Set the card content.
-                card_content = data.content;
-                // set the name of the user who sent the card
-                sender_name = result.user_name;
-                // Public conversation
-                if (key.conversation_type == 'public') {
-                    // Get the conversation name and add to model.
-                    key.name = key.conversation_name;
-                    key.avatar = key.conversation_avatar;
-                    notification_body = card_content;
-                }
-                // Group conversation. (Two or more)
-                if (key.conversation_name != '') {
-                    // Get the conversation name and add to model.
-                    key.name = key.conversation_name;
-                    key.avatar = key.conversation_avatar;
-                    notification_body = sender_name + ': ' + card_content;
-                }
-                // Two user conversation (not a group)
-                if (key.conversation_name == '') {
-                    // Get the position of the current user
-                    if (user_pos === 0) {
-                        participant_pos = 1;
+            console.log(data);
+            //General.findUser(data.user, function(result,error) {
+            UserData.getConversationsUser(data.user)
+                .then(function(result) {
+                    console.log(result);
+                    //console.log(error);
+                    // get the index position of the current user within the participants array
+                    var user_pos = General.findWithAttr(key.participants, '_id', $scope.currentUser._id);
+                    // get the currently stored unviewed cards for the current user
+                    var user_unviewed = key.participants[user_pos].unviewed;
+                    // Set the new_messages number.
+                    key.new_messages = user_unviewed.length;
+                    // Set the card content.
+                    card_content = data.content;
+                    // set the name of the user who sent the card
+                    if (result != 'null') {
+                        sender_name = result.user_name;
                     } else {
-                        participant_pos = 0;
+                        sender_name = 'null';
                     }
-                    // Find the other user
-                    General.findUser(key.participants[participant_pos]._id, function(result) {
-                        var avatar = "default";
-                        // set the other user name as the name of the conversation.
-                        if (result) {
-                            key.name = result.user_name;
-                            avatar = result.avatar;
+                    // Public conversation
+                    if (key.conversation_type == 'public') {
+                        // Get the conversation name and add to model.
+                        key.name = key.conversation_name;
+                        key.avatar = key.conversation_avatar;
+                        notification_body = card_content;
+                    }
+                    // Group conversation. (Two or more)
+                    if (key.conversation_name != '') {
+                        // Get the conversation name and add to model.
+                        key.name = key.conversation_name;
+                        key.avatar = key.conversation_avatar;
+                        notification_body = sender_name + ': ' + card_content;
+                    }
+                    // Two user conversation (not a group)
+                    if (key.conversation_name == '') {
+                        // Get the position of the current user
+                        if (user_pos === 0) {
+                            participant_pos = 1;
+                        } else {
+                            participant_pos = 0;
                         }
-                        key.avatar = avatar;
-                    });
-                    notification_body = card_content;
-                }
-                sent_content = FormatHTML.prepSentContent(notification_body, sent_content_length);
-                key.latest_card = sent_content;
-                callback(key);
-            });
+                        // Find the other user
+                        //General.findUser(key.participants[participant_pos]._id, function(result) {
+                        UserData.getConversationsUser(key.participants[participant_pos]._id)
+                            .then(function(result) {
+                                var avatar = "default";
+                                // set the other user name as the name of the conversation.
+                                if (result) {
+                                    key.name = result.user_name;
+                                    avatar = result.avatar;
+                                }
+                                key.avatar = avatar;
+                            });
+                        notification_body = card_content;
+                    }
+                    sent_content = FormatHTML.prepSentContent(notification_body, sent_content_length);
+                    key.latest_card = sent_content;
+                    callback(key);
+                });
         } else {
             // Empty conversation. Only empty public converations are listed.
             // Public conversation
@@ -206,6 +319,9 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
                     conversations_raw.map(function(key, array) {
                         // Get the latest card posted to this conversation
                         //Conversations.getConversationLatestCard(key._id)
+
+                        //console.log(UserData.getLatestCards());
+
                         UserData.getConversationLatestCardById(key._id)
                             .then(function(res) {
                                 console.log(res);

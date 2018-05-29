@@ -6,9 +6,9 @@
             <img ng-if="avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="convs_avatar" />
         </div>
         <div class="header_conv_name">EDIT PROFILE</div>
-        <div ng-if="setting_change" class="header_decide">
+        <div class="header_decide">
             <div class="header_accept">
-                <a href="" ng-click="saveChanges()"><i class="material-icons" id="mi-done">&#xE876;</i></a>
+                <a href="" ng-click="!setting_change || saveChanges()"><i class="material-icons mi-done_group" ng-class="{'mi-done_group_on': setting_change}">&#xE876;</i></a>
             </div>
             <div class="header_cancel">
                 <a href="" ng-click="cancelChanges()"><i class="material-icons" id="mi-clear">&#xE14C;</i></a>

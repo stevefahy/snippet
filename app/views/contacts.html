@@ -126,7 +126,7 @@
                                     <div class="convs_d" id="convs_msg" ng-bind-html="search_result.latest_card"></div>
                                 </div>
                                 <div class="convs_col_b">
-                                    <div class="search_add_user" ng-if="!search_result.is_contact" ng-click="addUser(search_result._id, $index, $event)">
+                                    <div class="search_add_user" ng-if="!search_result.is_contact" ng-click="addUser(search_result, $index, $event)">
                                         <i class="material-icons" id="mi-add_circle_outline">&#xE148;</i>
                                     </div>
                                 </div>
@@ -150,7 +150,7 @@
                 <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
                     <div class="convs_container contacts_create_container contacts_transition" ng-class="{'contacts_create_container_on': group_selected}">
                         <div class="convs_a">
-                            <img ng-if="avatar!='default'" alt="" class="convs_avatar_abs" ng-src="{{avatar}}" id="loaded_image"/>
+                            <img ng-if="avatar!='default'" alt="" class="convs_avatar_abs" ng-src="{{avatar}}" id="loaded_image" />
                             <i ng-if="avatar=='default'" class="material-icons convs_avatar_abs mi-group_add" id="" ng-class="{'mi-group_add_grey': group_selected}">&#xE7F0;</i>
                             <div class="done_camera " ng-class="{'done_camera_selected': group_selected}">
                                 <i class="material-icons" id="mi-done_camera_bg">&#xE439;</i>

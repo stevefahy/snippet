@@ -1,4 +1,4 @@
-cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$timeout', 'Cards', 'replaceTags', 'Format', 'FormatHTML', 'Edit', 'Conversations', 'socket', 'Users', 'Database', function($scope, $rootScope, $location, $http, $window, $timeout, Cards, replaceTags, Format, FormatHTML, Edit, Conversations, socket, Users, Database) {
+cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$timeout', 'Cards', 'replaceTags', 'Format', 'FormatHTML', 'Edit', 'Conversations', 'socket', 'Users', 'Database', 'principal', 'UserData', function($scope, $rootScope, $location, $http, $window, $timeout, Cards, replaceTags, Format, FormatHTML, Edit, Conversations, socket, Users, Database, principal, UserData) {
 
     var ua = navigator.userAgent;
 
@@ -17,12 +17,13 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
     $scope.input = false;
     var isFocused = false;
 
-    // TODO - Better way to get user details across controllers. service? middleware? app.use?
-    // Get the current users details
-    $http.get("/api/user_data").then(function(result) {
-        $scope.currentUser = result.data.user;
-        $scope.card_create.user = $scope.currentUser.google.name;
-    });
+
+    if (principal.isValid()) {
+        UserData.checkUser().then(function(result) {
+            $scope.currentUser = UserData.getUser();
+            $scope.card_create.user = $scope.currentUser.user_name;
+        });
+    }
 
     $timeout(function() {
         // Add the input prompt text
@@ -60,7 +61,6 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
         $scope.card_create.content = '';
         $('#cecard_create').html('');
         $scope.input = false;
-        //if (ua !== 'AndroidApp') {
         if (ua.indexOf('AndroidApp') < 0) {
             $('#cecard_create').focus();
         }
@@ -85,7 +85,6 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
 
     // Create Card
     $scope.createCard = function(id, card_create) {
-        console.log(id);
         Database.createCard(id, card_create, $scope.currentUser);
     };
 

@@ -77,17 +77,17 @@ function isMember(req, res, next) {
     console.log('IM: ' + token);
     if (token) {
         try {
+
+
             var decoded = jwt.verify(token, configAuth.tokenAuth.token.secret);
-            console.log(decoded);
             req.principal = {
                 isAuthenticated: true,
-                //roles: decoded.roles || [],
-                user: decoded.data.user
+                _id: decoded.data.user._id
             };
 
             // ITS ID NOT NAME!
 
-            console.log('good token: ' + decoded.data.user.name);
+            console.log('good token: ' + decoded.data.user.id);
             //return next();
 
         } catch (err) {
@@ -132,7 +132,7 @@ function isLoggedIn(req, res, next) {
                 isAuthenticated: true,
                 _id: decoded.data.user._id
             };
-            console.log('ILI TOKEN GOOD');
+            //console.log('ILI TOKEN GOOD');
             return next();
         } catch (err) {
             console.log('ERROR when parsing access token.', err);
@@ -542,6 +542,9 @@ module.exports = function(app, passport) {
                     alt: 'json',
                     method: 'GET'
                 }, function(err, response, body) {
+                    console.log(err);
+                    console.log(response);
+                    console.log(body);
                     // CONTACTS RECEIVED
                     if (body != null) {
                         var parsed = JSON.parse(body);
@@ -594,7 +597,7 @@ module.exports = function(app, passport) {
         var id = req.params.id;
         User.findById({ '_id': id }, function(error, user) {
             if (error) {
-                console.log(error);
+                //console.log(error);
                 res.json(error);
             } else if (user === null) {
                 // no user found
@@ -883,7 +886,7 @@ module.exports = function(app, passport) {
         Card.create({
             conversationId: req.body.conversationId,
             content: req.body.content,
-            user: req.user._id,
+            user: req.principal._id,
             done: false
         }, function(err, card) {
             if (err) {
@@ -1110,7 +1113,8 @@ module.exports = function(app, passport) {
     });
 
     // clear a conversation unviewed array by conversation id and user id
-    app.put('/chat/conversation_viewed_clear/:id/:user_id/', isLoggedIn, function(req, res) {
+    // Conversations.clearViewed(id, user_id)
+    app.put('/chat/conversation_viewed_clear/:id/:user_id/', isMember, function(req, res) {
         Conversation.update({ _id: req.params.id, 'participants._id': req.params.user_id }, {
                 '$set': {
                     'participants.$.unviewed': []
@@ -1229,10 +1233,12 @@ module.exports = function(app, passport) {
     // getConversationById(id)
     app.get('/chat/get_conversation/:id', isMember, function(req, res) {
         // TODO if no id exists then re-route
+        console.log(req.params.id);
         Card.find({ 'conversationId': req.params.id }, function(err, cards) {
             if (err) {
                 console.log('err: ' + err);
             }
+            console.log(cards);
             res.json(cards);
         });
     });

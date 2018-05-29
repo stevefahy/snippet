@@ -1,4 +1,4 @@
-cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', function($scope, $rootScope, $location, $http, $window, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile) {
+cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', function($scope, $rootScope, $location, $http, $window, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData) {
 
     $scope.getFocus = Format.getFocus;
     $scope.getBlur = Format.getBlur;
@@ -69,6 +69,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     });
 
     // TODO - change to global?
+    /*
     $http.get("/api/user_data").then(function(result) {
         if (result.data.user) {
             $scope.currentUser = result.data.user;
@@ -76,6 +77,45 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         // Start watching onfocus and onblur, then load the conversation for the first time.
         watchFocus();
     });
+    */
+    setFocus = function() {
+        console.log('sf');
+        $timeout(function() {
+            findConversationId();
+        });
+    };
+
+    $scope.$on('$destroy', function() {
+        // leaving controller.
+        $window.onfocus = null;
+    });
+
+    // start watching onfocus and onblur
+    watchFocus = function() {
+        // only check focus on web version
+        if (ua.indexOf('AndroidApp') < 0) {
+            $window.onfocus = function() {
+                this.setFocus();
+            };
+            $window.onblur = function() {
+                //console.log('blur');
+            };
+            //$window.focus();
+            setFocus();
+        } else {
+            setFocus();
+        }
+    };
+
+    if (principal.isValid()) {
+        console.log('CONV CHECK USER');
+        UserData.checkUser().then(function(result) {
+            console.log(result);
+            $scope.currentUser = UserData.getUser();
+        });
+    }
+    // Start watching onfocus and onblur, then load the conversation for the first time.
+    watchFocus();
 
     // DELETE ==================================================================
     $scope.deleteCard = function(card_id, conversation_id) {
@@ -119,33 +159,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         return onlyInA;
     };
 
-    setFocus = function() {
-        $timeout(function() {
-            findConversationId();
-        });
-    };
 
-    $scope.$on('$destroy', function() {
-        // leaving controller.
-        $window.onfocus = null;
-    });
-
-    // start watching onfocus and onblur
-    watchFocus = function() {
-        // only check focus on web version
-        if (ua.indexOf('AndroidApp') < 0) {
-            $window.onfocus = function() {
-                this.setFocus();
-            };
-            $window.onblur = function() {
-                //console.log('blur');
-            };
-            //$window.focus();
-            setFocus();
-        } else {
-            setFocus();
-        }
-    };
 
     // Scroll to the bottom of the list
     scrollToBottom = function(speed) {
@@ -253,6 +267,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             checkPermission(id, function(result) {
                 $scope.isMember = result;
                 if (result) {
+                    console.log('gc');
                     getConversation(id, 500);
                 } else {
                     $location.path("/api/login");
@@ -276,11 +291,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         // If looged in
         if ($scope.currentUser) {
             // Find the conversation by id.
-            Conversations.find_conversation_id(conversation_id)
+            //Conversations.find_conversation_id(conversation_id)
+            //.then(function(res) {
+            UserData.getConversationById(conversation_id)
                 .then(function(res) {
                     console.log(res);
                     // Find the current user in the conversation participants array.
-                    var user_pos = General.findWithAttr(res.data.participants, '_id', $scope.currentUser._id);
+                    var user_pos = General.findWithAttr(res.participants, '_id', $scope.currentUser._id);
                     if (user_pos >= 0) {
                         // user found in the participants array.
                         callback(true);
@@ -321,8 +338,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Get the conversation by id
     getConversation = function(id, speed) {
+        console.log(id);
         Conversations.getConversationById(id)
             .then(function(result) {
+                console.log(result);
                 $scope.cards = result.data;
                 // Clear the cards unviewed arrary for this participant of this conversation.
                 updateConversationViewed(id);
@@ -355,17 +374,22 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // clear the participants unviewed array by conversation id
     updateConversationViewed = function(id) {
+        console.log('updateConversationViewed');
+        UserData.updateConversationViewed(id);
         // If the user is logged in and a participant of the conversation the $scope.isMember=true.
+        /*
         if ($scope.isMember) {
             Conversations.clearViewed(id, $scope.currentUser._id)
                 .then(function(res) {
                     //console.log(res.data);
                 });
         }
+        */
     };
 
     // called by NOTIFICATION broadcast when another user has updated this conversation
     getConversationUpdate = function(id) {
+        console.log('update');
         // get all cards for a conversation by conversation id
         Conversations.getConversationById(id)
             .then(function(result) {

@@ -1,5 +1,5 @@
 cardApp.controller("headerCtrl", ['Profile', '$scope', '$rootScope', '$location', '$http', function(Profile, $scope, $rootScope, $location, $http) {
-console.log('HEADER CTRL');
+
     displayProfile = function() {
         var user;
         // Routes where User profile should be displayed.
@@ -24,7 +24,6 @@ console.log('HEADER CTRL');
 
     // If header ctrl loads before Profile
     $scope.$on('PROFILE_SET', function(event, data) {
-        console.log('on PROFILE_SET');
         displayProfile();
     });
 
@@ -36,7 +35,6 @@ console.log('HEADER CTRL');
                 $scope.user_name = data.user_name;
             });
         }
-
     });
 
     $scope.changePath = function(path) {

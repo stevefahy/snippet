@@ -57,30 +57,31 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     var myImageName = '';
     var mySavedImage = '';
 
-    console.log('CONTACTS CTRL');
     // Get the current users details
-    //$http.get("/api/user_data").then(function(result) {
-    //if (result.data.user) {
     if (principal.isValid()) {
         UserData.checkUser().then(function(result) {
-
+            console.log('start');
             $scope.currentUser = UserData.getUser();
             // Default Group Image
             $scope.avatar = 'default';
             // Check if the page has been loaded witha param (user contacts import callback).
             if (paramValue != undefined && paramValue == 'import') {
+
                 // Set the navigation.
                 $scope.contactImportNoAnim();
-                // load this users list of contacts
+                // load this users list of imported user contacts
                 Contacts.getContacts().then(function(result) {
+                    console.log(result);
                     // Update the current user with the imported contacts.
                     $scope.currentUser = result.data;
+                    // Update the local model with the imported contacts.
+                    UserData.setUser(result.data);
                     // load this users list of contacts
-                    loadUserContacts();
+                    loadUserContacts1();
                 });
             } else {
                 // load this users list of contacts
-                loadUserContacts();
+                loadUserContacts1();
             }
         });
     } else {
@@ -226,8 +227,9 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
         // Create conversation in DB.
         Conversations.create($scope.chat_create)
             .then(function(res) {
+                // Add this conversation to the local model.
+                UserData.addConversation(res.data);
                 var profile_obj = {};
-                //var promises = [];
                 // if group
                 if (res.data.conversation_name != '') {
                     profile_obj.user_name = res.data.conversation_name;
@@ -303,7 +305,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     $scope.importContacts = function() {
         $scope.contacts_imported = true;
         // Always use /auth/google_contacts route (permission not granted) so that token can be returned.
-        location.href = "/auth/google_contacts/"+UserData.getUser().google.email;
+        location.href = "/auth/google_contacts/" + UserData.getUser().google.email;
     };
 
     $scope.cancelInvite = function(event) {
@@ -339,44 +341,20 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     //
 
     // add a user to the current users contact list
-    $scope.addUser = function(id, index, event) {
+    $scope.addUser = function(user, index, event) {
         event.stopPropagation();
-        console.log(id);
-        Users.add_contact(id)
+        Users.add_contact(user._id)
             .then(function(res) {
                 // Update the currentUser model
-                //$scope.currentUser = res.data;
-
-
-                //UserData.getUser().contacts.push(id);
-
-                //UserData.addContact(id);
-                UserData.addUserContact(id);
-
-                console.log(UserData.getUser());
+                UserData.addUserContact(user._id);
+                UserData.addConversationsUser(user);
+                UserData.addContact(user)
+                    .then(function(res) {
+                        // re-load the user contacts
+                        $scope.contacts = UserData.getContacts();
+                    });
                 // remove this search result because it has now been added to the list of contacts
                 $scope.search_results[index].is_contact = true;
-                // re-load the user contacts
-                //loadUserContacts();
-                $scope.currentUser = UserData.getUser();
-
-                //loadUserContacts();
-
-                //$scope.contacts = UserData.getContacts();
-
-                //$scope.contacts = UserData.getContacts();
-                
-                UserData.loadUserContacts().then(function(res) {
-                    console.log('contacts fin loadUserContacts');
-                    console.log(res);
-                    console.log(UserData.getUser());
-                    console.log($scope.currentUser);
-
-                    $scope.contacts = UserData.getContacts();
-                    // re-load the user contacts
-                //loadUserContacts();
-
-                });
             });
     };
 
@@ -401,66 +379,11 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
         }
     };
 
-    loadUserContacts = function() {
+    loadUserContacts1 = function() {
+        console.log('LUC in contacts');
         $scope.contacts = UserData.getContacts();
-        console.log($scope.contacts);
         checkImportedContacts();
     };
-    /*
-    // load this users contacts
-    loadUserContacts = function() {
-        // reset the contacts model
-        $scope.contacts = [];
-        var promises = [];
-        var result = $scope.currentUser.contacts.map(function(key, array) {
-            // Search for each user in the contacts list by id
-            promises.push(Users.search_id(key)
-                .then(function(res) {
-                    if (res.error === 'null') {
-                        // remove this contact as the user cannot be found
-                        Users.delete_contact(key)
-                            .then(function(data) {
-                                //
-                            })
-                            .catch(function(error) {
-                                console.log('error: ' + error);
-                            });
-                    }
-                    if (res.data.success) {
-                        // Check if individual conversation already created with this contact
-                        // Get all coversations containing current user.
-                        return $http.get("/chat/conversation").then(function(result) {
-                            result.data.map(function(key, array) {
-                                // check that this is a two person chat.
-                                // Groups of three or more are loaded in conversations.html
-                                if (key.conversation_name == '') {
-                                    // Check that current user is a participant of this conversation
-                                    if (General.findWithAttr(key.participants, '_id', res.data.success._id) >= 0) {
-                                        // set conversation_exists and conversation_id for the contacts
-                                        res.data.success.conversation_exists = true;
-                                        res.data.success.conversation_id = key._id;
-                                    }
-                                }
-                            });
-                            // add the user as a contact
-                            $scope.contacts.push(res.data.success);
-                        });
-
-                    }
-                })
-                .catch(function(error) {
-                    console.log('error: ' + error);
-                }));
-        });
-        // All the users contacts have been mapped.
-        $q.all(promises).then(function() {
-            // check whether contacts have been imported
-            checkImportedContacts();
-        }).catch(function(err) {
-            // do something when any of the promises in array are rejected
-        });
-    };
-    */
 
     // CONTACTS - IMAGE
 
@@ -595,10 +518,8 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
                                     result.data.map(function(key, array) {
                                         // check that this is a two person chat.
                                         // Groups of three or more are loaded in conversations.html
-                                        //if (key.participants.length === 2) {
                                         if (key.conversation_name != '') {
                                             // Check that current user is a participant of this conversation
-                                            //var conversation_pos = General.findWithAttr(res.data, '_id', msg.conversation_id);
                                             if (General.findWithAttr(key.participants, '_id', res._id) >= 0) {
                                                 // set conversation_exists and conversation_id for the contacts
                                                 res.conversation_exists = true;

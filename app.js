@@ -119,19 +119,11 @@ if (addresses == '192.168.192.60' || addresses == '10.21.221.127' || addresses =
     global.mailUrl = 'http://www.snipbee.com';
 }
 // set up our express application
-app.use(morgan('dev')); // log every request to the console
+//app.use(morgan('dev')); // log every request to the console
 app.use(cookieParser()); // read cookies (needed for auth)
 
 // Passport
 require('./app/configs/passport')(passport); // pass passport for configuration
-// required for passport
-/*
-app.use(session({
-    secret: 'bigsniplongsessionbeesecretbeesnip', // session secret
-    resave: false,
-    saveUninitialized: false
-}));
-*/
 
 app.use(favicon(path.join(__dirname, '/app/assets', 'images', 'favicon.ico')));
 app.use(passport.initialize());

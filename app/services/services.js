@@ -158,6 +158,7 @@ cardApp.factory('Conversations', ['$http', function($http) {
             return $http.put('chat/conversation_time/' + id);
         },
         getConversationById: function(id) {
+            console.log(id);
             return $http.get('/chat/get_conversation/' + id);
         },
         getPublicConversationById: function(id) {
@@ -168,31 +169,6 @@ cardApp.factory('Conversations', ['$http', function($http) {
         }
     };
 }]);
-
-/*
-cardApp.factory('Profile', function($rootScope, $window) {
-    console.log('PROFILE FACTORY');
-    var user;
-    var conversation;
-    return {
-        // User profile.
-        getProfile: function() {
-            return user;
-        },
-        setProfile: function(value) {
-            user = value;
-        },
-        // Conversation profile.
-        getConvProfile: function() {
-            return conversation;
-        },
-        setConvProfile: function(value) {
-            conversation = value;
-        },
-    };
-});
-*/
-
 
 cardApp.factory('socket', function($rootScope, $window) {
 
