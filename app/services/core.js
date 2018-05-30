@@ -1777,7 +1777,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                             // Send the notification
                                             Users.send_notification(options)
                                                 .then(function(res) {
-                                                    //console.log(res);
+                                                    console.log(res);
                                                 });
                                         }
                                     });
