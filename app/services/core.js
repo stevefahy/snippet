@@ -1762,23 +1762,25 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                 //getConversationsUser
                                 console.log(response.data.participants[i]._id);
                                 //General.findUser(response.data.participants[i]._id, function(result) {
-                                UserData.getConversationsUser(response.data.participants[i]._id, function(result) {
-                                    console.log(result);
-                                    // Get the participants notification key
-                                    // Set the message title and body
-                                    if (result.notification_key !== undefined) {
-                                        data.to = result.notification_key;
-                                        data.notification.title = notification_title;
-                                        data.notification.body = sent_content;
-                                        // get the conversation id
-                                        data.data.url = response.data._id;
-                                        // Send the notification
-                                        Users.send_notification(options)
-                                            .then(function(res) {
-                                                //console.log(res);
-                                            });
-                                    }
-                                });
+                                //UserData.getConversationsUser(response.data.participants[i]._id, function(result) {
+                                UserData.getConversationsUser(response.data.participants[i]._id)
+                                    .then(function(result) {
+                                        console.log(result);
+                                        // Get the participants notification key
+                                        // Set the message title and body
+                                        if (result.notification_key !== undefined) {
+                                            data.to = result.notification_key;
+                                            data.notification.title = notification_title;
+                                            data.notification.body = sent_content;
+                                            // get the conversation id
+                                            data.data.url = response.data._id;
+                                            // Send the notification
+                                            Users.send_notification(options)
+                                                .then(function(res) {
+                                                    //console.log(res);
+                                                });
+                                        }
+                                    });
                             }
                         }
                         // Update the unviewed arrary for all participants.
@@ -2384,7 +2386,7 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
         console.log(index);
         // If no user found then use UserData.addConversationsUsers to look up the user and add them.
         if (index < 0) {
-            var users = [{_id: id}];
+            var users = [{ _id: id }];
             UserData.addConversationsUsers(users).then(function(result) {
                 console.log(result);
                 var index = General.findWithAttr(conversationsUsers, '_id', id);
