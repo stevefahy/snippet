@@ -61,7 +61,9 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     if (principal.isValid()) {
         UserData.checkUser().then(function(result) {
             console.log('start');
-            $scope.currentUser = UserData.getUser();
+            //UserData.getUser().then(function(result) {
+                $scope.currentUser  = UserData.getUser();
+            
             // Default Group Image
             $scope.avatar = 'default';
             // Check if the page has been loaded witha param (user contacts import callback).
@@ -77,13 +79,14 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
                     // Update the local model with the imported contacts.
                     UserData.setUser(result.data);
                     // load this users list of contacts
-                    loadUserContacts1();
+                    loadUserContacts();
                 });
             } else {
                 // load this users list of contacts
-                loadUserContacts1();
+                loadUserContacts();
             }
-        });
+            });
+        //});
     } else {
         $location.path("/api/login");
     }
@@ -305,7 +308,10 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     $scope.importContacts = function() {
         $scope.contacts_imported = true;
         // Always use /auth/google_contacts route (permission not granted) so that token can be returned.
-        location.href = "/auth/google_contacts/" + UserData.getUser().google.email;
+        //UserData.getUser().then (function(result){
+            location.href = "/auth/google_contacts/" + UserData.getUser().google.email;
+        //});
+        
     };
 
     $scope.cancelInvite = function(event) {
@@ -379,7 +385,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
         }
     };
 
-    loadUserContacts1 = function() {
+    loadUserContacts = function() {
         console.log('LUC in contacts');
         $scope.contacts = UserData.getContacts();
         checkImportedContacts();

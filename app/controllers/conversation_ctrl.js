@@ -111,7 +111,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log('CONV CHECK USER');
         UserData.checkUser().then(function(result) {
             console.log(result);
-            $scope.currentUser = UserData.getUser();
+            //UserData.getUser().then(function(result) {
+                $scope.currentUser = UserData.getUser();
+                console.log($scope.currentUser);
+            //});
         });
     }
     // Start watching onfocus and onblur, then load the conversation for the first time.
