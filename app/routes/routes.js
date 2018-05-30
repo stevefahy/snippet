@@ -208,16 +208,16 @@ module.exports = function(app, passport) {
     });
 
     // Get the FCM data
-    app.get('/api/fcm_data', function(req, res) {
+    app.get('/api/fcm_data', isLoggedIn, function(req, res) {
         //if (!req.isAuthenticated()) {
-        if(!req.principal.isAuthenticated){
+        //if(!req.principal.isAuthenticated){
             // The user is not logged in
-            res.json({ 'fcm': 'forbidden' });
-        } else {
+         //   res.json({ 'fcm': 'forbidden' });
+        //} else {
             res.json({
                 fcm: fcm
             });
-        }
+        //}
     });
     //
     // API
