@@ -1580,8 +1580,11 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
     // Get the FCM details (Google firebase notifications).
     $http.get("/api/fcm_data").then(function(result) {
         if (result != result.data.fcm != 'forbidden') {
+            console.log('fcm ok');
             fcm = result.data.fcm;
             headers.Authorization = 'key=' + fcm.firebaseserverkey;
+        } else {
+            console.log('fcm problem');
         }
     });
 
