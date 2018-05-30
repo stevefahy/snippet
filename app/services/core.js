@@ -1733,6 +1733,8 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         var notification_body;
         var card_content = card_create.content;
 
+        console.log(currentUser);
+
         Cards.create(card_create)
             .then(function(response) {
                 var card_id = response.data._id;
@@ -1751,12 +1753,17 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                         sent_content = FormatHTML.prepSentContent(notification_body, sent_content_length);
                         // Send notifications
                         for (var i in response.data.participants) {
+                            console.log('1');
                             // dont emit to the user which sent the card
                             if (response.data.participants[i]._id !== currentUser._id) {
                                 // Add this users id to the viewed_users array.
                                 viewed_users.push({ "_id": response.data.participants[i]._id });
                                 // Find the other user(s)
-                                General.findUser(response.data.participants[i]._id, function(result) {
+                                //getConversationsUser
+                                console.log(response.data.participants[i]._id);
+                                //General.findUser(response.data.participants[i]._id, function(result) {
+                                UserData.getConversationsUser(response.data.participants[i]._id, function(result) {
+                                    console.log(result);
                                     // Get the participants notification key
                                     // Set the message title and body
                                     if (result.notification_key !== undefined) {
