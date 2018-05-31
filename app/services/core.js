@@ -1568,7 +1568,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
     };
     var headers = {
         'Authorization': "",
-        'x-access-token': principal.token,
+        //'x-access-token': principal.token,
         'Content-Type': 'application/json'
     };
     var options = {
@@ -2061,7 +2061,7 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
             console.log('HTTP /api/user_data');
             //console.log(result.data.user);
             ud = result.data.user;
-            console.log('R 1 UD');
+            console.log('RETURN 1 LU');
             //console.log(ud);
             return result.data.user;
         });
@@ -2072,7 +2072,7 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
         //var deferred = $q.defer();
         user = value;
         //deferred.resolve(user);
-        console.log('R 2 SU');
+        console.log('RETURN 2 SU');
         //return deferred.promise;
         return user;
     };
@@ -2195,7 +2195,7 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
 
     UserData.loadConversations = function() {
         return Conversations.find().then(function(result) {
-            console.log('R 3 GC');
+            console.log('RETURN 3 LC');
             console.log(result.data);
             conversations = result.data;
         });
@@ -2267,6 +2267,7 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
                     //console.log(conversations);
                     UserData.removeConversations(conversations_delete)
                         .then(function() {
+                            console.log('RETURN 5 CC');
                             deferred.resolve(conversations);
                         });
                 }).catch(function(err) {
@@ -2410,19 +2411,23 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
     UserData.loadConversationsUsers = function() {
         var deferred = $q.defer();
         var promises = [];
-
+        var temp_users = [];
         var result = UserData.getConversations()
             .then(function(res) {
                 //console.log(res);
+                
                 promises.push(res.map(function(key, array) {
-                    //console.log(key.participants);
+                    console.log(key.participants);
                     key.participants.map(function(key2, array) {
-                        // console.log(key2);
-
-                        if (General.findWithAttr(conversationsUsers, '_id', key2._id) < 0) {
+                         console.log(key2);
+                         console.log('look up?: ' + key2._id);
+                         if (General.findWithAttr(temp_users, '_id', key2._id) < 0) {
+                            temp_users.push({_id: key2._id});
+                        //if (General.findWithAttr(conversationsUsers, '_id', key2._id) < 0) {
+                            console.log('looking up: ' + key2._id);
                             promises.push(Users.search_id(key2._id)
                                 .then(function(res) {
-                                    //console.log(res);
+                                    console.log(res);
                                     if (res.data.error === 'null') {
                                         // remove this contact as the user cannot be found
                                         //delete_contacts.contacts.push(key);
@@ -2443,7 +2448,9 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
                 }));
                 // All the users contacts have been mapped.
                 $q.all(promises).then(function() {
-                    console.log('R LCU 4b ALL PROMISES');
+                    console.log('RETURN 6 LCU ALL PROMISES');
+                    // reset the temp_users array;
+                    temp_users = [];
                     deferred.resolve(res);
 
                 }).catch(function(err) {
@@ -2466,7 +2473,7 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
             .then(function(res) {
                 console.log(res);
                 res.map(function(key, array) {
-                    // console.log(key);
+                     console.log(key);
                     // Get the latest card posted to this conversation
                     promises.push(Conversations.getConversationLatestCard(key._id)
                         .then(function(res) {
@@ -2482,7 +2489,7 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
                 });
                 // All the users contacts have been mapped.
                 $q.all(promises).then(function() {
-                    console.log('R 5 GCLC ALL PROMISES');
+                    console.log('RETURN 7 GCLC ALL PROMISES');
                     deferred.resolve(res);
 
                 }).catch(function(err) {
@@ -2519,14 +2526,14 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
 
         // ADD ERROR CHECKING!
 
-        this.finish = function(contacts) {
+        finish = function(contacts) {
             UserData.setContacts(contacts).then(function(result) {
                 console.log(result);
                 console.log('FIN CONTACTS');
-                console.log('S 4 LUC');
+                console.log('RETURN 4 LUC');
 
                 deferred.resolve(result);
-
+                
             });
         };
 
@@ -2546,7 +2553,7 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
         console.log(user_contacts);
         //if (user_contacts.length > 0) {
         var promises = [];
-        return user_contacts.map(function(key, array) {
+        promises.push(user_contacts.map(function(key, array) {
             // Search for each user in the contacts list by id
             console.log('key');
 
@@ -2577,67 +2584,40 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
                     console.log('error: ' + error);
                 }));
 
-            //console.log(result);
-            console.log(promises);
-            console.log(promises.length);
-            // All the users contacts have been mapped.
-            $q.all(promises).then(function() {
-                //console.log(delete_contacts.contacts);
-                if (delete_contacts.contacts.length > 0) {
-                    console.log('delete_contacts');
-                    //console.log(delete_contacts);
-                    return Users.delete_contacts(delete_contacts)
-                        .then(function(data) {
-                            //console.log('deleted');
-                            //console.log(data);
-                            finish(contacts);
-                        })
-                        .catch(function(error) {
-                            console.log(error);
-                        });
-                } else {
-                    return finish(contacts);
-                }
-            }).catch(function(err) {
-                // do something when any of the promises in array are rejected
-            });
+
+
+
+        }));
+
+        //console.log(result);
+        console.log(promises);
+        console.log(promises.length);
+        // All the users contacts have been mapped.
+        $q.all(promises).then(function() {
+            console.log('FINNY');
+            //console.log(delete_contacts.contacts);
+            if (delete_contacts.contacts.length > 0) {
+                console.log('delete_contacts');
+                //console.log(delete_contacts);
+                return Users.delete_contacts(delete_contacts)
+                    .then(function(data) {
+                        //console.log('deleted');
+                        //console.log(data);
+                        console.log('FINNY 2');
+                        finish(contacts);
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                    });
+            } else {
+                console.log('FINNY 1');
+                return finish(contacts);
+            }
+        }).catch(function(err) {
+            // do something when any of the promises in array are rejected
         });
 
-
-        // } else {
-        //this.finish(contacts);
-        //    deferred.resolve();
-        //}
-        //});
-
-
-
-        /*
-                //console.log(result);
-                console.log(promises);
-                console.log(promises.length);
-                // All the users contacts have been mapped.
-                $q.all(promises).then(function() {
-                    //console.log(delete_contacts.contacts);
-                    if (delete_contacts.contacts.length > 0) {
-                        console.log('delete_contacts');
-                        //console.log(delete_contacts);
-                        return Users.delete_contacts(delete_contacts)
-                            .then(function(data) {
-                                //console.log('deleted');
-                                //console.log(data);
-                                finish(contacts);
-                            })
-                            .catch(function(error) {
-                                console.log(error);
-                            });
-                    } else {
-                        return finish(contacts);
-                    }
-                }).catch(function(err) {
-                    // do something when any of the promises in array are rejected
-                });
-                */
+        //return deferred.promise;
         return deferred.promise;
     };
 
@@ -2651,36 +2631,35 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
         var user_data;
 
         var deferred = $q.defer();
-        console.log('G 1 UD');
-
+        console.log('GET 1 LU');
         UserData.loadUser().then(function(user) {
-            console.log('GOT 1 UD');
+            console.log('GOT 1 LU');
             //console.log(user);
             user_data = user;
             //ud = result;
         }).then(function() {
-            console.log('G 2 SU');
+            console.log('GET 2 SU');
             //console.log(user_data);
             return UserData.setUser(user_data);
         }).then(function(user) {
-            console.log('L 3 GC');
+            console.log('GET 3 LC');
             return UserData.loadConversations();
         }).then(function(user) {
-            console.log('G 4 LUC');
+            console.log('GET 4 LUC');
             return UserData.loadUserContacts();
         }).then(function(user) {
-            console.log('L 4a CC');
+            console.log('GET 5 CC');
             //console.log(conversations);
             return UserData.cleanConversations();
             // look up all the user participants in the conversations and store in an array
             // General.findUser
         }).then(function(user) {
             //console.log(conversations);
-            console.log('L LCU 4b ');
+            console.log('GET LCU 6');
             return UserData.loadConversationsUsers();
         }).then(function(user) {
             //console.log(conversations);
-            console.log('G 5 GCLC');
+            console.log('GET 7 GCLC');
             return UserData.getConversationsLatestCard();
         }).then(function(user) {
             // console.log('timeout');
