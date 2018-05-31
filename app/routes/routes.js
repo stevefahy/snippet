@@ -735,6 +735,7 @@ module.exports = function(app, passport) {
                 };
                 var headers = {
                     'Authorization': 'key=' + fcm.firebaseserverkey,
+                    //'x-access-token': req.principal.token,
                     'Content-Type': 'application/json',
                     'project_id': fcm.project_id
 

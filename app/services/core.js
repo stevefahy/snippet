@@ -1541,7 +1541,7 @@ cardApp.service('General', ['Users', 'Format', function(Users, Format) {
 
 // Database Service
 
-cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', 'General', 'UserData', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML, General, UserData) {
+cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', 'General', 'UserData', 'principal', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML, General, UserData, principal) {
 
     var self = this;
 
@@ -1568,6 +1568,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
     };
     var headers = {
         'Authorization': "",
+        'x-access-token': principal.token,
         'Content-Type': 'application/json'
     };
     var options = {
