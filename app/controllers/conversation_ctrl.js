@@ -112,13 +112,17 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         UserData.checkUser().then(function(result) {
             console.log(result);
             //UserData.getUser().then(function(result) {
-                $scope.currentUser = UserData.getUser();
-                console.log($scope.currentUser);
+            $scope.currentUser = UserData.getUser();
+            console.log($scope.currentUser);
             //});
+            // Start watching onfocus and onblur, then load the conversation for the first time.
+            watchFocus();
         });
+    } else {
+        $location.path("/api/login");
     }
     // Start watching onfocus and onblur, then load the conversation for the first time.
-    watchFocus();
+    //watchFocus();
 
     // DELETE ==================================================================
     $scope.deleteCard = function(card_id, conversation_id) {
@@ -242,13 +246,18 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         // check if this is a valid username
                         if (res.data.error) {
                             console.log('error: ' + res.data.error);
+                            console.log('zzzzzzzzzzzzzzzzz 1');
                             $location.path("/api/login");
                         } else {
+                            /*
                             var profile = {};
+                            console.log('profile');
+                            console.log(res);
                             profile.user_name = res.data.conversation_name;
                             profile.avatar = res.data.conversation_avatar;
                             Profile.setProfile(profile);
                             $rootScope.$broadcast('PROFILE_SET');
+                            */
                             // get the public conversation id for this username
                             var public_id = res.data._id;
                             // Set the conversation id so that it can be retrieved by cardcreate_ctrl
@@ -271,8 +280,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $scope.isMember = result;
                 if (result) {
                     console.log('gc');
+
+
+
                     getConversation(id, 500);
                 } else {
+                    console.log('zzzzzzzzzzzzzzzzz 2');
                     $location.path("/api/login");
                 }
             });
@@ -305,12 +318,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         // user found in the participants array.
                         callback(true);
                     } else {
+                        console.log('not participant');
                         // user not found in the participants array.
                         callback(false);
                     }
                 });
         } else {
             // not logged in.
+            console.log('not currentUser');
             callback(false);
         }
     };
@@ -342,6 +357,64 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // Get the conversation by id
     getConversation = function(id, speed) {
         console.log(id);
+
+        var profile = {};
+        console.log('profile');
+        UserData.getConversationById(id)
+            .then(function(res) {
+                console.log(res);
+                //profile.user_name = res.data.conversation_name;
+                //profile.avatar = res.data.conversation_avatar;
+
+
+                if (res.conversation_type == 'public') {
+                    profile.user_name = res.conversation_name;
+                    profile.avatar = res.conversation_avatar;
+                    //Profile.setProfile(profile);
+                    Profile.setConvProfile(profile);
+                    $rootScope.$broadcast('PROFILE_SET');
+                }
+                // Group conversation. (Two or more)
+                if (res.conversation_name != '') {
+                    profile.user_name = key.conversation_name;
+                    profile.avatar = key.conversation_avatar;
+                    //Profile.setProfile(profile);
+                    Profile.setConvProfile(profile);
+                    $rootScope.$broadcast('PROFILE_SET');
+                }
+                // Two user conversation (not a group)
+                if (res.conversation_name == '') {
+                    // get the index position of the current user within the participants array
+                    var user_pos = General.findWithAttr(res.participants, '_id', $scope.currentUser._id);
+                    // Get the position of the current user
+                    if (user_pos === 0) {
+                        participant_pos = 1;
+                    } else {
+                        participant_pos = 0;
+                    }
+                    // Find the other user
+                    //General.findUser(key.participants[participant_pos]._id, function(result) {
+                    UserData.getConversationsUser(res.participants[participant_pos]._id)
+                        .then(function(result) {
+                            console.log(result);
+                            var avatar = "default";
+                            // set the other user name as the name of the conversation.
+                            if (result) {
+                                profile.user_name = result.user_name;
+                                avatar = result.avatar;
+                            }
+                            profile.avatar = avatar;
+                            //Profile.setProfile(profile);
+                            Profile.setConvProfile(profile);
+                            $rootScope.$broadcast('PROFILE_SET');
+                        });
+                }
+
+
+
+            });
+
+
         Conversations.getConversationById(id)
             .then(function(result) {
                 console.log(result);

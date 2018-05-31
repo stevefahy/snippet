@@ -112,11 +112,13 @@ function isMember(req, res, next) {
                 // if the current is is a member of this conversation continue
                 return next();
             } else {
+                console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
                 // otherwise redirect to login
                 res.redirect('/api/login');
             }
         });
     } else {
+        console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
         // causing infinite loop
         res.redirect('/api/login');
     }
@@ -1241,7 +1243,7 @@ module.exports = function(app, passport) {
             if (err) {
                 console.log('err: ' + err);
             }
-            console.log(cards);
+            //console.log(cards);
             res.json(cards);
         });
     });

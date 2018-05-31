@@ -160,6 +160,7 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
     // Continue chat
     $scope.chat = function(conversation_id, conversation, index) {
         console.log('chat');
+        console.log(conversation);
         // Set profile change for the conversation.
         var profile_obj = {};
         profile_obj.user_name = conversation.name;

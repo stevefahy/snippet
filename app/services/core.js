@@ -2862,6 +2862,8 @@ cardApp.factory('Profile', function($rootScope, $window) {
             return user;
         },
         setProfile: function(value) {
+            console.log('PROFILE');
+            console.log(value);
             user = value;
         },
         // Conversation profile.
