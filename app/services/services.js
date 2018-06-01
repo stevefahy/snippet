@@ -158,7 +158,6 @@ cardApp.factory('Conversations', ['$http', function($http) {
             return $http.put('chat/conversation_time/' + id);
         },
         getConversationById: function(id) {
-            console.log(id);
             return $http.get('/chat/get_conversation/' + id);
         },
         getPublicConversationById: function(id) {

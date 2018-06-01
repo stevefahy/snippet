@@ -69,33 +69,22 @@ function createPublicConversation(user, callback) {
     });
 }
 
-// route middleware to ensure user is logged in and a member of the conversation
+// route middleware to ensure user is logged in and is a member of the conversation
 function isMember(req, res, next) {
     // must be logged in to be a member
-    //if (req.isAuthenticated()) {
     var token = req.headers['x-access-token'];
-    console.log('IM: ' + token);
     if (token) {
         try {
-
-
             var decoded = jwt.verify(token, configAuth.tokenAuth.token.secret);
             req.principal = {
                 isAuthenticated: true,
                 _id: decoded.data.user._id
             };
-
-            // ITS ID NOT NAME!
-
-            console.log('good token: ' + decoded.data.user.id);
-            //return next();
-
         } catch (err) {
             console.log('ERROR when parsing access token.', err);
             req.principal.isAuthenticated = false;
         }
     }
-
 
     if (req.principal.isAuthenticated) {
         // get the members of this conversation
@@ -112,13 +101,11 @@ function isMember(req, res, next) {
                 // if the current is is a member of this conversation continue
                 return next();
             } else {
-                console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
                 // otherwise redirect to login
                 res.redirect('/api/login');
             }
         });
     } else {
-        console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
         // causing infinite loop
         res.redirect('/api/login');
     }
@@ -134,7 +121,7 @@ function isLoggedIn(req, res, next) {
                 isAuthenticated: true,
                 _id: decoded.data.user._id
             };
-            //console.log('ILI TOKEN GOOD');
+            // Authenticated, continue.
             return next();
         } catch (err) {
             console.log('ERROR when parsing access token.', err);
@@ -144,83 +131,40 @@ function isLoggedIn(req, res, next) {
 }
 
 
-
-
 module.exports = function(app, passport) {
 
     // LOGOUT
     app.get('/api/logout', function(req, res) {
         req.logout();
         req.logOut();
-        /*
-        req.session.destroy(function(err) {
-            if (err) {
-                console.log('err: ' + err);
-            }
-        });
-        */
     });
 
-    /*
-        // Route to check passort authentication
-        app.get('/api/user_data', isLoggedIn, function(req, res) {
-            //if (req.user === undefined) {
-            console.log(req.principal.isAuthenticated);
-            if (!req.principal.isAuthenticated) {
-                // The user is not logged in
-                res.json({ 'username': 'forbidden' });
-            } else {
-                res.json({
-                    //user: req.user
-                    user: req.principal.user
-                });
-            }
-        });
-        */
-
-    // Route to check passort authentication
+    // Route to get user data.
     app.get('/api/user_data', isLoggedIn, function(req, res) {
-        //if (req.user === undefined) {
-        //console.log(req.principal.isAuthenticated);
         if (!req.principal.isAuthenticated) {
             // The user is not logged in
             res.json({ 'auth': 'forbidden' });
         } else {
-            //console.log('USER DATA');
-            //console.log(req.principal);
-            //console.log(req.principal._id);
-
             User.findById({ _id: req.principal._id }, function(err, user) {
                 if (err) {
                     console.log('err: ' + err);
                     res.send(err);
                 } else {
-                    var foundUser = user;
-                    //req.user = user;
                     res.json({
-                        //user: req.user
-
-                        //user: req.principal._id
-                        user: foundUser
+                        user: user
                     });
                 }
             });
-
         }
     });
 
     // Get the FCM data
     app.get('/api/fcm_data', isLoggedIn, function(req, res) {
-        //if (!req.isAuthenticated()) {
-        //if(!req.principal.isAuthenticated){
-            // The user is not logged in
-         //   res.json({ 'fcm': 'forbidden' });
-        //} else {
-            res.json({
-                fcm: fcm
-            });
-        //}
+        res.json({
+            fcm: fcm
+        });
     });
+
     //
     // API
     //------------------------------------------------------------------
@@ -239,9 +183,6 @@ module.exports = function(app, passport) {
         function(req, res) {
             //
         });
-
-
-
 
     // Login from /api/join route
     // send to google to do the authentication. Pass the invite id to google within state.
@@ -262,7 +203,6 @@ module.exports = function(app, passport) {
     // google callback
     // log in via join page already goes to user settings/
     app.get('/auth/google/callback', function(req, res, next) {
-        //console.log('app.get(/auth/google/callback');
         var state;
         // Decode the state if it exists.
         if (req.query.state != undefined) {
@@ -275,9 +215,8 @@ module.exports = function(app, passport) {
             req.use_access_token = false;
         }
 
+        // create the JWT and set it in a cookie.
         createToken = function(id) {
-
-            console.log('createToken: ' + id);
 
             var userData = {
                 _id: id
@@ -312,16 +251,12 @@ module.exports = function(app, passport) {
 
 
             req.logIn(user, { session: false }, function(err) {
-                //req.secret = 'steve';
-                //console.log('the user: ' + user);
-                //console.log('the state:' + state);
                 if (err) {
-                    console.log('err');
                     console.log(err);
                     res.redirect('/login');
                 }
 
-                // Create the access token and set cookie
+                // Logged in correctly. Create the access token and set cookie
                 createToken(user._id);
 
                 // If this is a callback from an invite link then there will be a state variable
@@ -385,8 +320,9 @@ module.exports = function(app, passport) {
 
                             // Find the user and store the acces_token their uder details in the database temporarily.
                             User.findOne({ 'google.id': user.google.id }, function(err, user) {
-                                if (err)
+                                if (err) {
                                     return done(err);
+                                }
 
                                 if (user) {
                                     user.google.token = info.access_token;
@@ -398,15 +334,13 @@ module.exports = function(app, passport) {
                                         }
                                     });
                                 }
-
                             });
-
                             res.redirect('/c/contacts/import');
                         }
                     }
                 } else {
                     // Check if this is first log in
-                    // if so got to settings of not go to home /
+                    // if so go to settings if not go to home /
                     if (req.user.first_login == true) {
                         req.user.first_login = false;
 
@@ -426,34 +360,7 @@ module.exports = function(app, passport) {
                             res.redirect('/api/user_setting');
                         });
                     } else {
-
-                        //createToken(user._id);
-                        //res.locals._id = user._id;
-
-                        //createToken(user._id);
-
-                        //createToken(res, user._id);
-
-                        //auth(user._id);
-
-                        /*
-                                                var userData = {
-                                                    _id: user._id
-                                                };
-
-                                                var tokenData = {
-                                                    user: userData
-                                                };
-
-                                                var token = jwt.sign({ data: tokenData },
-                                                    configAuth.auth.token.secret, { expiresIn: configAuth.auth.token.expiresIn });
-
-                                                res.cookie(configAuth.auth.cookieName, token, { expires: new Date(Date.now() + configAuth.auth.token.expiresIn * 1000) });
-                        */
-                        //res.redirect('/normal');
                         res.redirect('/');
-                        //res.redirect('/auth/callback');
-
                     }
                 }
             });
@@ -476,9 +383,11 @@ module.exports = function(app, passport) {
             state: stateString
         })(request, response);
     });
+
     //
     // CONTACTS
     //
+
     // contact search box
     app.get('/api/search_member', isLoggedIn, function(req, res) {
         var username = new RegExp(req.query["term"], 'i');
@@ -493,21 +402,9 @@ module.exports = function(app, passport) {
     //
     // USER CONTACTS
     //
+
     // Get permision for all user contacts from social login
     app.get('/auth/google_contacts/:email', function(req, res) {
-        //console.log(req.principal);
-
-        /*
-                User.findOne({ 'google.id': req.principal._id }, function(err, user) {
-                    if (err)
-                        return done(err);
-
-                    if (user) {
-                        console.log(user);
-                    }
-                });
-                */
-
         var email = req.params.email;
         var stateString = base64url('{ "redirect" : "contacts/import" }');
         passport.authenticate('google', {
@@ -533,7 +430,6 @@ module.exports = function(app, passport) {
             }
 
             if (user) {
-
                 request.get({
                     url: 'https://www.google.com/m8/feeds/contacts/default/full/?alt=json&max-results=10000',
                     headers: {
@@ -545,9 +441,6 @@ module.exports = function(app, passport) {
                     alt: 'json',
                     method: 'GET'
                 }, function(err, response, body) {
-                    console.log(err);
-                    console.log(response);
-                    console.log(body);
                     // CONTACTS RECEIVED
                     if (body != null) {
                         var parsed = JSON.parse(body);
@@ -574,28 +467,21 @@ module.exports = function(app, passport) {
                                 console.log('err: ' + err);
                                 return done(err);
                             }
-
                             res.json(user);
                         });
-
                     }
                 });
-
             }
-
         });
-
-
-
-
     });
 
     //
     // USERS
     //
+
     // Search for user by id
+    // TODO - Needed for Public not logged in route?
     // Users.search_id(key.user)
-    // Needed for Public not logged in route?
     app.post('/api/users/search_id/:id', isLoggedIn, function(req, res) {
         var id = req.params.id;
         User.findById({ '_id': id }, function(error, user) {
@@ -610,7 +496,6 @@ module.exports = function(app, passport) {
             }
         });
     });
-
 
     // delete a user contact by id
     app.post('/api/users/delete_contact/:id', isLoggedIn, function(req, res) {
@@ -706,7 +591,6 @@ module.exports = function(app, passport) {
     // notify user
     app.post('/api/users/send_notification', isLoggedIn, function(req, res) {
         var options = req.body;
-        console.log(options);
         request(options, function(err, response, body) {
             if (err) {
                 console.log('err: ' + err);
@@ -737,7 +621,6 @@ module.exports = function(app, passport) {
                 };
                 var headers = {
                     'Authorization': 'key=' + fcm.firebaseserverkey,
-                    //'x-access-token': req.principal.token,
                     'Content-Type': 'application/json',
                     'project_id': fcm.project_id
 
@@ -834,9 +717,11 @@ module.exports = function(app, passport) {
             }
         });
     });
+
     //
     // CARDS
     //
+
     // search for cards by username
     app.post('/api/cards/search_user/:username', isLoggedIn, function(req, res) {
         var username = req.params.username;
@@ -936,9 +821,11 @@ module.exports = function(app, passport) {
             res.json(card);
         });
     });
+
     //
     // INVITES
     //
+
     // create invite and send back the created invite
     app.post('/api/invite', isLoggedIn, function(req, res) {
         Invite.create({
@@ -966,9 +853,11 @@ module.exports = function(app, passport) {
             res.json(invites);
         });
     });
+
     // 
     // EMAIL
     //
+
     // TODO - email and password to safe config file.
     // TODO - make values VARS
     // send email invite
@@ -995,16 +884,20 @@ module.exports = function(app, passport) {
         });
 
     });
+
     //
     // JOIN
     //
+
     // User has accepted invite to join via email.
     app.get('/api/join/:code', function(req, res) {
         res.sendFile('indexa.html', { root: path.join(__dirname, '../') });
     });
+
     //
     // CONVERSATION
     //
+
     // create conversation
     app.post('/chat/conversation', isLoggedIn, function(req, res) {
         Conversation.create({
@@ -1137,8 +1030,6 @@ module.exports = function(app, passport) {
     // get all conversations for current user
     // Conversations.find();
     app.get('/chat/conversation', isLoggedIn, function(req, res) {
-        console.log('------------------------------------------');
-        console.log(req.principal._id);
         Conversation.find({ 'participants._id': req.principal._id }, function(err, conversations) {
             if (err) {
                 console.log('err: ' + err);
@@ -1233,23 +1124,21 @@ module.exports = function(app, passport) {
         });
     });
 
-    // get all cards for a PRIVATE conversation by conversation id
-    // does not need to be a member because public chats are available even if not logged in
+    // Get all cards for a PRIVATE conversation by conversation id.
+    // Needs to be a member.
     // getConversationById(id)
     app.get('/chat/get_conversation/:id', isMember, function(req, res) {
         // TODO if no id exists then re-route
-        console.log(req.params.id);
         Card.find({ 'conversationId': req.params.id }, function(err, cards) {
             if (err) {
                 console.log('err: ' + err);
             }
-            //console.log(cards);
             res.json(cards);
         });
     });
 
-    // get all cards for a PUBLIC conversation by conversation id
-    // does not need to be a member because public chats are available even if not logged in
+    // Get all cards for a PUBLIC conversation by conversation id.
+    // Does not need to be a member or logged in because it is a public chat.
     //getPublicConversationById(id);
     app.get('/chat/get_public_conversation/:id', function(req, res) {
         // TODO if no id exists then re-route
