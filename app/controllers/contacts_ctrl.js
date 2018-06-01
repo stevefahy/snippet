@@ -16,7 +16,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     $scope.search_sel = false;
     $scope.import_sel = false;
     $scope.contacts_sel = true;
-    $scope.animating = false;
+    $scope.animating = true;
     // Vars
     $scope.contacts_on = false;
     $scope.image_drawer_opened = false;
@@ -455,18 +455,6 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
         if ($scope.currentUser.imported_contacts.length > 0) {
             $scope.contacts_imported = true;
             $scope.user_contacts = $scope.currentUser.imported_contacts[0].contacts;
-            // check if imported contact is already a contact
-            $scope.user_contacts.map(function(key, array) {
-                var index = General.arrayObjectIndexOfValue($scope.contacts, key.email, 'google', 'email');
-                if (index >= 0) {
-                    key.is_contact = true;
-                }
-            });
-            // Check whether the current user is in the user_contacts.
-            var index = General.findWithAttr($scope.user_contacts, 'email', $scope.currentUser.google.email);
-            if (index >= 0) {
-                $scope.user_contacts[index].is_contact = true;
-            }
         }
         $scope.contacts_on = true;
     };
@@ -552,9 +540,13 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     });
 
     // Animation end listeners.
+
     $(".contacts_transition").bind('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function() {
         $scope.$apply(function($scope) {
-            $scope.animating = false;
+            //$scope.animating = false;
+            if($scope.import_sel == true){
+                $scope.animating = false;
+            }
         });
     });
 

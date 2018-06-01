@@ -2093,6 +2093,48 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
         return user;
     };
 
+    UserData.parseImportedContacts = function() {
+        console.log('parseImportedContacts');
+        var deferred = $q.defer();
+        console.log(UserData.getUser().imported_contacts[0].contacts);
+
+        // check if imported contact is already a contact
+        UserData.getUser().imported_contacts[0].contacts.map(function(key, array) {
+            //console.log(key);
+            var index = General.arrayObjectIndexOfValue(UserData.getContacts(), key.email, 'google', 'email');
+            if (index >= 0) {
+                key.is_contact = true;
+                console.log(key);
+            }
+        });
+        // Check whether the current user is in the user_contacts.
+        var index = General.findWithAttr(UserData.getUser().imported_contacts[0].contacts, 'email', UserData.getUser().google.email);
+        if (index >= 0) {
+            UserData.getUser().imported_contacts[0].contacts[index].is_contact = true;
+            console.log(UserData.getUser().imported_contacts[0].contacts[index]);
+        }
+
+        deferred.resolve();
+        return deferred.promise;
+        /*
+            $scope.user_contacts = $scope.currentUser.imported_contacts[0].contacts;
+            // check if imported contact is already a contact
+            $scope.user_contacts.map(function(key, array) {
+                console.log(key);
+                var index = General.arrayObjectIndexOfValue($scope.contacts, key.email, 'google', 'email');
+                if (index >= 0) {
+                    key.is_contact = true;
+                }
+            });
+            // Check whether the current user is in the user_contacts.
+            var index = General.findWithAttr($scope.user_contacts, 'email', $scope.currentUser.google.email);
+            if (index >= 0) {
+                $scope.user_contacts[index].is_contact = true;
+            }
+        }
+        */
+    };
+
     // load this users contacts
     UserData.loadUserContacts = function() {
         //console.log('loadUserContacts');
@@ -2669,6 +2711,9 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
         }).then(function() {
             //console.log('GET 4 LUC');
             return UserData.loadUserContacts();
+        }).then(function() {
+            //console.log('GET 4a PIC');
+            return UserData.parseImportedContacts();
         }).then(function() {
             //console.log('GET 5 CC');
             return UserData.cleanConversations();
