@@ -309,11 +309,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             // Find the conversation by id.
             //Conversations.find_conversation_id(conversation_id)
             //.then(function(res) {
-            UserData.getConversationById(conversation_id)
+            //UserData.getConversationById(conversation_id)
+            UserData.getConversationModelById(conversation_id)
                 .then(function(res) {
                     console.log(res);
                     // Find the current user in the conversation participants array.
-                    var user_pos = General.findWithAttr(res.participants, '_id', $scope.currentUser._id);
+                    var user_pos = General.findWithAttr(res.participants, '_id', UserData.getUser()._id);
                     if (user_pos >= 0) {
                         // user found in the participants array.
                         callback(true);
@@ -360,7 +361,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
         var profile = {};
         console.log('profile');
-        UserData.getConversationById(id)
+        //UserData.getConversationById(id)
+        UserData.getConversationModelById(id)
             .then(function(res) {
                 console.log(res);
                 //profile.user_name = res.data.conversation_name;
@@ -376,8 +378,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 }
                 // Group conversation. (Two or more)
                 if (res.conversation_name != '') {
-                    profile.user_name = key.conversation_name;
-                    profile.avatar = key.conversation_avatar;
+                    profile.user_name = res.conversation_name;
+                    profile.avatar = res.conversation_avatar;
                     //Profile.setProfile(profile);
                     Profile.setConvProfile(profile);
                     $rootScope.$broadcast('PROFILE_SET');
@@ -469,6 +471,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         // get all cards for a conversation by conversation id
         Conversations.getConversationById(id)
             .then(function(result) {
+                console.log(result);
                 // get the number of cards in the existing conversation
                 var conversation_length = $scope.cards.length;
                 // Check for new cards.

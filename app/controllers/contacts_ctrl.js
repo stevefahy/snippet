@@ -7,7 +7,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     // TODO - make sure only one chat created with aother single user.
 
     // Animation
-    $scope.pageClass = 'page-contacts';
+    //$scope.pageClass = 'page-contacts';
     // Check if the page has been loaded witha param (user contacts import callback).
     var paramValue = $route.current.$$route.menuItem;
     // Stop listening for Mobile soft keyboard.
@@ -62,8 +62,8 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
         UserData.checkUser().then(function(result) {
             console.log('start');
             //UserData.getUser().then(function(result) {
-                $scope.currentUser  = UserData.getUser();
-            
+            $scope.currentUser = UserData.getUser();
+
             // Default Group Image
             $scope.avatar = 'default';
             // Check if the page has been loaded witha param (user contacts import callback).
@@ -85,7 +85,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
                 // load this users list of contacts
                 loadUserContacts();
             }
-            });
+        });
         //});
     } else {
         $location.path("/api/login");
@@ -231,7 +231,137 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
         Conversations.create($scope.chat_create)
             .then(function(res) {
                 // Add this conversation to the local model.
-                UserData.addConversation(res.data);
+                //UserData.addConversation(res.data);
+                console.log(res);
+
+                /*
+                UserData.conversationsLatestCardAdd(res.data._id, null)
+                .then(function(res) {
+                                    console.log(res);
+                                });
+                                */
+
+
+                UserData.addConversationModel(res.data)
+                    .then(function(res) {
+                        console.log(res);
+                    });
+
+ UserData.addConversation(res.data)
+                    .then(function(res) {
+                        console.log(res);
+
+
+                    });
+                    
+
+
+
+
+
+
+
+/*
+                UserData.addConversation(res.data)
+                    .then(function(res) {
+                        console.log(res);
+                    });
+
+                UserData.addConversationModel(res.data)
+                    .then(function(res) {
+                        console.log(res);
+                    });
+                    */
+                    
+/*
+
+
+
+
+
+                             UserData.buildConversations()
+                    .then(function(res) {
+                        console.log(res);
+                    });
+                    */
+                    
+
+
+                /*
+
+                UserData.formatLatestCard(res.data, res)
+                    .then(function(result) {
+                        console.log(result);
+                        // Add this conversation to the conversations model
+                        //$scope.conversations.push(result);
+                        return conversations_model.push(result);
+                    });
+
+                    */
+
+                /*
+                                 UserData.addConversation(res.data)
+                                 .then(function(res) {
+                                                    console.log(res);
+                                                });
+
+                                 UserData.addConversationsUsers(res.data.participants)
+                                    .then(function(res) {
+                                                   // console.log(res);
+                                                });
+
+                                 UserData.buildConversations()
+                                 .then(function(res) {
+                                                    console.log(res);
+                                                });
+                                                */
+
+
+
+
+                /*
+                                // FORMAT FIRST?
+                                UserData.addConversationModel(res.data).then(function(res) {
+                                    console.log(res);
+                                    //console.log(UserData.getConversationModel());
+
+
+                                    Conversations.getConversationLatestCard(res._id)
+                                        .then(function(result) {
+                                            console.log(result);
+
+                                            UserData.formatLatestCard(res.data, res)
+                                                .then(function(result) {
+                                                    // Add this conversation to the conversations model
+                                                    //$scope.conversations.push(result);
+                                                    return conversations_model.push(result);
+                                                });
+
+                                            
+                                            return UserData.conversationsLatestCardAdd(res._id, result.data)
+                                                .then(function(res) {
+                                                    console.log(res);
+
+                                      
+
+                                                });
+                                                
+                                        });
+                                        */
+
+                // });
+
+                /*
+                // latest card, conversation
+                key the conversation to format , res.data content of latest card
+                   return UserData.formatLatestCard(res.data, key) 
+                                                    .then(function(result) {
+                                                        // Add this conversation to the conversations model
+                                                        //$scope.conversations.push(result);
+                                                        return conversations_model.push(result);
+                                                    });
+                                                    */
+
                 var profile_obj = {};
                 // if group
                 if (res.data.conversation_name != '') {
@@ -252,6 +382,9 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
                         participant_pos = 0;
                     }
                     // Find the other user
+
+                    // USERDATA PARTICIPANTS
+
                     General.findUser(res.data.participants[participant_pos]._id, function(result) {
                         profile_obj.avatar = "default";
                         // set the other user name as the name of the conversation.
@@ -309,9 +442,9 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
         $scope.contacts_imported = true;
         // Always use /auth/google_contacts route (permission not granted) so that token can be returned.
         //UserData.getUser().then (function(result){
-            location.href = "/auth/google_contacts/" + UserData.getUser().google.email;
+        location.href = "/auth/google_contacts/" + UserData.getUser().google.email;
         //});
-        
+
     };
 
     $scope.cancelInvite = function(event) {
@@ -543,8 +676,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
 
     $(".contacts_transition").bind('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function() {
         $scope.$apply(function($scope) {
-            //$scope.animating = false;
-            if($scope.import_sel == true){
+            if ($scope.import_sel == true) {
                 $scope.animating = false;
             }
         });
