@@ -247,12 +247,14 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
                         console.log(res);
                     });
 
+/*
  UserData.addConversation(res.data)
                     .then(function(res) {
                         console.log(res);
 
 
                     });
+                    */
                     
 
 
