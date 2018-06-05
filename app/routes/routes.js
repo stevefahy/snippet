@@ -919,6 +919,7 @@ module.exports = function(app, passport) {
 
     // TODO just update the updatedAt
     // Update a conversation updatedAt time (For sorting conversations by most recent updates)
+    // Conversations.updateTime(id);
     app.put('/chat/conversation_time/:id', isLoggedIn, function(req, res) {
         Conversation.findById({ _id: req.params.id }, function(err, conversation) {
             if (err) {

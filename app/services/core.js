@@ -1579,12 +1579,16 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
     };
 
     // Get the FCM details (Google firebase notifications).
-    $http.get("/api/fcm_data").then(function(result) {
-        if (result != result.data.fcm != 'forbidden') {
-            fcm = result.data.fcm;
-            headers.Authorization = 'key=' + fcm.firebaseserverkey;
-        }
-    });
+    // Only get if the user is logged in, otherwise it is not required.
+    if (principal.isAuthenticated) {
+        $http.get("/api/fcm_data").then(function(result) {
+            if (result != result.data.fcm != 'forbidden') {
+                fcm = result.data.fcm;
+                headers.Authorization = 'key=' + fcm.firebaseserverkey;
+            }
+        });
+    }
+
 
     this.setNotification = function(data, currentUser, card_content) {
         var notification_title;
@@ -1634,6 +1638,8 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         }
     };
 
+    // CREATE AND UPDATE CARD
+    // MERGE  Conversations.updateTime(card.conversationId) & Conversations.updateViewed(card.conversationId, viewed_users[x]._id, card_id)
     // UPDATE CARD
     this.updateCard = function(card_id, card, currentUser) {
         if (!updateinprogress) {
@@ -1937,6 +1943,8 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
     var sent_content_length = 20;
     // Final conversations model for display.
     var conversations_model = [];
+    // Final cards model for display.
+    var cards_model = [];
 
     var UserData = { isAuthenticated: false, isLoaded: false, isLoading: false };
 
@@ -1951,34 +1959,34 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
                 console.log(res);
                 console.log(data);
                 UserData.getConversationModelById(data.conversationId)
-                .then(function(result) {
-                    var key =  result;
-                
+                    .then(function(result) {
+                        var key = result;
 
-                console.log(key);
-                //if (data.content != null) {
-                    UserData.formatLatestCard(data, key)
-                        .then(function(result) {
-                            // Add this conversation to the conversations model
-                            //$scope.conversations.push(result);
-                            //conversations_model.push(result);
-                            UserData.addConversationModel(result);
-                        });
-                /*} else {
-                    console.log('PUBLIC');
-                    // Only empty publc conversations are displayed.
-                    key.latest_card = ' ';
-                    if (key.conversation_type === 'public') {
-                         UserData.formatLatestCard(res.data, key)
+
+                        console.log(key);
+                        //if (data.content != null) {
+                        UserData.formatLatestCard(data, key)
                             .then(function(result) {
                                 // Add this conversation to the conversations model
                                 //$scope.conversations.push(result);
-                                 conversations_model.push(result);
+                                //conversations_model.push(result);
+                                UserData.addConversationModel(result);
                             });
-                    }
-                }*/
+                        /*} else {
+                            console.log('PUBLIC');
+                            // Only empty publc conversations are displayed.
+                            key.latest_card = ' ';
+                            if (key.conversation_type === 'public') {
+                                 UserData.formatLatestCard(res.data, key)
+                                    .then(function(result) {
+                                        // Add this conversation to the conversations model
+                                        //$scope.conversations.push(result);
+                                         conversations_model.push(result);
+                                    });
+                            }
+                        }*/
 
-                });
+                    });
 
                 /*
                 UserData.buildConversations()
@@ -2379,11 +2387,12 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
         return deferred.promise;
     };
     //CVN
-    UserData.findPublicConversation = function(user_id) {
+    //UserData.findPublicConversation = function(user_id) {
+    UserData.findPublicConversation = function() {
         var deferred = $q.defer();
         //deferred.resolve(conversations);
-        var index = General.findWithAttr(conversations, 'conversation_type', 'public');
-        deferred.resolve(conversations[index]);
+        var index = General.findWithAttr(conversations_model, 'conversation_type', 'public');
+        deferred.resolve(conversations_model[index]);
         return deferred.promise;
     };
     // CVN
@@ -2628,6 +2637,87 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
                 });
             });
         return deferred.promise;
+    };
+
+    //
+    // Conversation
+    //
+
+    UserData.getCardsModelById = function(id) {
+        var deferred = $q.defer();
+        var index = General.findWithAttr(cards_model, '_id', id);
+        deferred.resolve(cards_model[index]);
+        //return  cards_model[index];
+        return deferred.promise;
+    };
+
+    UserData.getConversation = function() {
+        var deferred = $q.defer();
+        var promises = [];
+        cards_model = [];
+        console.log('getConversation');
+        console.log(UserData.getConversationsBuild());
+        var convs = UserData.getConversationsBuild();
+        // Map all conversations.
+
+        promises.push(convs.map(function(key, array) {
+            console.log('push1');
+            promises.push(Conversations.getConversationById(key._id)
+                .then(function(result) {
+                    console.log('push2');
+                    console.log(result);
+                    //if (result.data.length > 0) {
+                    var temp = { _id: key._id, data: [] };
+                    promises.push(result.data.map(function(key, array) {
+                        console.log('push3');
+
+                        // Store the original characters of the card.
+                        key.original_content = key.content;
+                        // Get the user name for the user id
+                        // TODO dont repeat if user id already retreived
+                        promises.push(UserData.getConversationsUser(key.user)
+                            //Users.search_id(key.user)
+                            .then(function(res) {
+                                console.log('push4');
+                                console.log(res);
+
+                                //if (res.data.error === 'null') {
+                                // user cannot be found
+                                //}
+                                //if (res.data.success) {
+                                // Set the user_name to the retrieved name
+                                key.user_name = res.user_name;
+                                return;
+                                //}
+                            })
+                            .catch(function(error) {
+                                console.log('error: ' + error);
+                            }));
+                        temp.data.push(key);
+                        console.log('finished card: ' + key._id);
+                    }));
+                    //}
+                    console.log('finished conv: ' + key._id);
+
+                    cards_model.push(temp);
+                    console.log(cards_model);
+
+                }));
+            console.log('here');
+        }));
+        console.log(promises.length);
+        // all conversations have been mapped.
+        $q.all(promises).then(function() {
+            console.log('RETURN CARDS ALL PROMISES');
+            console.log(cards_model);
+            // reset the temp_users array.
+            //temp_users = [];
+            deferred.resolve();
+        }).catch(function(err) {
+            // do something when any of the promises in array are rejected
+        });
+return deferred.promise;
+
     };
 
 
@@ -2880,6 +2970,9 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
             //console.log('GET 8 BC');
             return UserData.buildConversations();
         }).then(function() {
+            //console.log('GET 8 BC');
+            return UserData.getConversation();
+        }).then(function() {
             // connect to socket.io via socket service 
             // and request that a unique namespace be created for this user with their user id
             socket.setId(UserData.getUser()._id);
@@ -2887,7 +2980,8 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
             // Set loaded to true.
             $rootScope.loaded = true;
             isLoading = false;
-            //console.log('FIN loadUserData');
+            console.log('FIN loadUserData');
+            //UserData.getConversation();
             deferred.resolve();
         });
         return deferred.promise;
@@ -2902,7 +2996,7 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
             $rootScope.$watch('loaded', function(n) {
                 if (n) {
                     // loaded!
-                    deferred.resolve();
+                    deferred.resolve(user);
                 }
             });
         } else {
