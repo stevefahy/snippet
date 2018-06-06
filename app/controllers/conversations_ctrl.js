@@ -1,6 +1,6 @@
 cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$http', 'Invites', 'Email', 'Users', 'Conversations', '$q', 'FormatHTML', 'General', 'Profile', '$cookies', 'principal', 'UserData', function($scope, $rootScope, $location, $http, Invites, Email, Users, Conversations, $q, FormatHTML, General, Profile, $cookies, principal, UserData) {
 
-    $scope.pageClass = 'page-conversations';
+    //$scope.pageClass = 'page-conversations';
 
     // array of conversations
     $scope.conversations = [];
