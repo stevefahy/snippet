@@ -31,6 +31,10 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
             templateUrl: '/views/contacts.html',
             controller: 'contactsCtrl'
         })
+        .when("/c/test", {
+            templateUrl: '/views/test.html',
+            controller: 'testCtrl'
+        })
         // callback from importing google contacts.
         .when("/c/contacts/import", {
             templateUrl: '/views/contacts.html',
