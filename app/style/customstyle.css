@@ -2225,11 +2225,24 @@ span#scroll_image_latest {
 /* conversation ---------------------- */
 
 .page-conversation.ng-leave {
-    -webkit-animation: 1s page-enter;
+   /* -webkit-animation: 1s page-enter;*/
+        -webkit-animation:slideOutRight 0.5s both ease-in;
+ 
 }
 
 .page-conversation.ng-enter {
-    -webkit-animation: 1s page-leave;
+    /*-webkit-animation: 1s page-leave;*/
+   /* -webkit-animation:slideIn 0.5s both ease-in;*/
+     -webkit-animation: slide-in 0.5s forwards;
+}
+
+@keyframes slide-in {
+    0% {
+        transform: translateX(100%); 
+    }
+    100% { 
+        transform: translateX(0); 
+    }
 }
 
 .my-special-animation.ng-enter {
@@ -2238,28 +2251,50 @@ span#scroll_image_latest {
 }
 
 .page-conversation{
+      position: absolute;
+   /* width: 100px;
+    height: 100px;*/
+    /*-webkit-transform: translateX(100%);
+    transform: translateX(100%);*/
     z-index: 1000;
 }
 
 .page-conversations{
+      position: absolute;
+   /* width: 100px;
+    height: 100px;*/
+    -webkit-transform: translateX(100%);
+    transform: translateX(100%);
     z-index: 1;
 }
 
 @keyframes page-enter {
+    /*
     0% {
         left: 0%;
     }
     100% {
         left: 100%;
     }
+    */
+
 }
 
 @keyframes page-leave {
+    /*
     0% {
         left: 100%;
     }
     100% {
         left: 0%;
+    }
+    */
+        from {
+        -moz-transform: translateX(0);
+    }
+
+    to {
+        -moz-transform: translateX(100%);
     }
 }
 
