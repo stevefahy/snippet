@@ -2209,7 +2209,7 @@ span#scroll_image_latest {
     -moz-animation:slideOutLeft 5s both ease-in;
     animation:slideOutLeft 5s both ease-in;  
     */
-     -webkit-animation: 1s conversations-leave;
+     -webkit-animation: .5s conversations-leave;
 
 
 }
@@ -2219,8 +2219,8 @@ span#scroll_image_latest {
     -moz-animation:slideInRight 5s both ease-in;
     animation:slideInRight 5s both ease-in; 
     
-     -webkit-animation: 1s conversations-enter;*/
-     -webkit-animation: 1s conversations-leave;
+     -webkit-animation: 1s conversations-enter;
+     -webkit-animation: 1s conversations-leave;*/
 }
 
 
@@ -2245,6 +2245,28 @@ span#scroll_image_latest {
     }
     100% { 
         transform: translateX(0); 
+    }
+}
+
+@-webkit-keyframes slideInRight {
+    from {
+        -webkit-transform: translateX(100%);
+    }
+
+    to {
+        -webkit-transform: translateX(0);
+    }
+}
+
+
+/* slide out from the right */
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(100%);
     }
 }
 
@@ -2311,14 +2333,16 @@ span#scroll_image_latest {
 }
 
 @keyframes conversations-leave {
-        from {
+      /*  from {
         -moz-transform: translateX(100%);
     }
 
     to {
         -moz-transform: translateX(100%);
-    }
+    }*/
+{transform: translateX(100%);}
 }
+
 
 
 
@@ -2449,27 +2473,7 @@ span#scroll_image_latest {
     }
 }
 
-@-webkit-keyframes slideInRight {
-    from {
-        -webkit-transform: translateX(100%);
-    }
 
-    to {
-        -webkit-transform: translateX(0);
-    }
-}
-
-
-/* slide out from the right */
-@keyframes slideOutRight {
-    from {
-        transform: translateX(0);
-    }
-
-    to {
-        transform: translateX(100%);
-    }
-}
 
 @-moz-keyframes slideOutRight {
     from {
@@ -2572,6 +2576,7 @@ span#scroll_image_latest {
     top: 0;
     position: absolute;
     width: 100%;
+        box-shadow: rgba(0, 0, 0, 0.14) -6px 0px 20px 2px, rgba(0, 0, 0, 0.12) 0px 0px 0px 0px, rgba(0, 0, 0, 0.2) 0px 0px 0px 0px;
 }
 
 .page.page-contactimport {
