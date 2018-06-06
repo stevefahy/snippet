@@ -13,6 +13,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.pasteHtmlAtCaret = Format.pasteHtmlAtCaret;
     $scope.checkCursor = Format.checkCursor;
     $scope.isMember = false;
+    $scope.totalDisplayed = -60;
 
     General.keyBoardListenStart();
 
@@ -181,6 +182,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
 
     // Scroll to the bottom of the list
+    /*
     scrollToBottom = function(speed) {
         $timeout(function() {
             var bottom = $('.content_cnv')[0].scrollHeight;
@@ -189,6 +191,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }, speed, function() {});
         }, 200);
     };
+    */
 
     // TODO - make service (also in card_create.js)
     // Function called from core.js by dynamically added input type=checkbox.
@@ -373,7 +376,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 }
                 // Scroll to the bottom of the list
                 $timeout(function() {
-                    scrollToBottom(1);
+                    //scrollToBottom(1);
                 }, speed);
             })
             .catch(function(error) {
@@ -475,7 +478,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 */
                 // Scroll to the bottom of the list
                 $timeout(function() {
-                    scrollToBottom(1);
+                    //scrollToBottom(1);
                 }, speed);
             });
     };
@@ -580,7 +583,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         updateConversationViewed(data.conversationId);
         // scroll if necessary
         $timeout(function() {
-            scrollToBottom(1000);
+            //scrollToBottom(1000);
         }, 200);
     };
 

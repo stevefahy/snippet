@@ -1,4 +1,4 @@
-var cardApp = angular.module("cardApp", ['ngSanitize', 'ngRoute', 'angularMoment', 'ngAnimate', 'ngImgCrop', 'ngCookies', 'angular-jwt']);
+var cardApp = angular.module("cardApp", ['ngSanitize', 'ngRoute', 'angularMoment', 'ngAnimate', 'ngImgCrop', 'ngCookies', 'angular-jwt', 'luegg.directives']);
 
 // Prefix for loading a snip id
 var prefix = '/s/';
@@ -1933,7 +1933,7 @@ cardApp.factory('principal', function($cookies, jwtHelper, $q, $rootScope) {
 
 
 
-cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHelper, $q, principal, Users, Conversations, FormatHTML, General, socket) {
+cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHelper, $q, principal, Users, Conversations, FormatHTML, General, socket, $filter) {
 
     var user;
     var contacts = [];
@@ -2698,7 +2698,9 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
                     }));
                     //}
                     console.log('finished conv: ' + key._id);
-
+                    //console.log(temp);
+                    //temp.data = $filter('orderBy')(temp.data, 'updatedAt', true);
+                    //console.log(temp);
                     cards_model.push(temp);
                     console.log(cards_model);
 
@@ -2710,6 +2712,10 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
         $q.all(promises).then(function() {
             console.log('RETURN CARDS ALL PROMISES');
             console.log(cards_model);
+            //$scope.person = $filter('orderBy')(person, 'name');
+            //cards_model = $filter('orderBy')(cards_model, 'updatedAt');
+            //console.log(cards_model);
+            //$filter('orderBy')(collection, expression, reverse, comparator);
             // reset the temp_users array.
             //temp_users = [];
             deferred.resolve();
