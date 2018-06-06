@@ -2576,7 +2576,13 @@ span#scroll_image_latest {
     top: 0;
     position: absolute;
     width: 100%;
-        box-shadow: rgba(0, 0, 0, 0.14) -6px 0px 20px 2px, rgba(0, 0, 0, 0.12) 0px 0px 0px 0px, rgba(0, 0, 0, 0.2) 0px 0px 0px 0px;
+
+    border-left-style: solid;
+    border-left-color: lightgray;
+    border-left-width: 2px;
+    
+       /* box-shadow: rgba(0, 0, 0, 0.14) -6px 0px 20px 2px, rgba(0, 0, 0, 0.12) 0px 0px 0px 0px, rgba(0, 0, 0, 0.2) 0px 0px 0px 0px;*/
+
 }
 
 .page.page-contactimport {
