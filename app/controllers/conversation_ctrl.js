@@ -13,7 +13,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.pasteHtmlAtCaret = Format.pasteHtmlAtCaret;
     $scope.checkCursor = Format.checkCursor;
     $scope.isMember = false;
-    $scope.totalDisplayed = -60;
+    $scope.totalDisplayed = -6;
 
     General.keyBoardListenStart();
 
@@ -452,6 +452,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 console.log(result);
                 //$scope.cards = result.data;
                 $scope.cards = result.data;
+
+                
+
+                   $timeout(function() {
+                    $scope.totalDisplayed = -1000;
+                    //scrollToBottom(1);
+                }, 2000);
+
                 // Clear the cards unviewed arrary for this participant of this conversation.
                 updateConversationViewed(id);
                 // Map relevant data to the loaded cards. 
