@@ -97,8 +97,8 @@
 
 <body>
     <!-- Templates loaded into ng-view -->
-    <ng-view class="main_view"></ng-view>
-    <!--<div class="page {{ pageClass }}" ng-view></div>-->
+    <!--<ng-view class="main_view"></ng-view>-->
+    <div class="page {{ pageClass }}" ng-view></div>
     <!-- Hidden input field which gains focus while text formatting is being prepared -->
     <div id="hidden_input_container">
         <input class="form-control" type="text" autocorrect="off" autocapitalize="none" id="hidden_input">

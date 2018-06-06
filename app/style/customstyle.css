@@ -1375,6 +1375,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     overflow-x: hidden;
     height: calc(100%);
     border-radius: 1px;
+    background-color: snow;
 }
 
 .content_cnv_top {
@@ -2136,7 +2137,7 @@ span#scroll_image_latest {
 
 /* ANIMATIONS
 ============================================================================= */
-
+/*
 .page.ng-leave {
     z-index: 9999;
 }
@@ -2144,6 +2145,7 @@ span#scroll_image_latest {
 .page.ng-enter {
     z-index: 8888;
 }
+*/
 
 
 /* page specific animations ------------------------ */
@@ -2200,28 +2202,34 @@ span#scroll_image_latest {
 /* conversations ---------------------- */
 
 
-/*
+
 .page-conversations.ng-leave      {
+    /*
         -webkit-animation:slideOutLeft 5s both ease-in;
     -moz-animation:slideOutLeft 5s both ease-in;
     animation:slideOutLeft 5s both ease-in;  
+    */
+     -webkit-animation: 1s conversations-leave;
 }
 .page-conversations.ng-enter      { 
+    /*
     -webkit-animation:slideInRight 5s both ease-in;
     -moz-animation:slideInRight 5s both ease-in;
     animation:slideInRight 5s both ease-in; 
-}
-*/
-
-
-/* contacts ---------------------- */
-
-.page-contacts.ng-leave {
-    -webkit-animation: .5s red-to-blue;
+    */
+     -webkit-animation: 1s conversations-enter;
 }
 
-.page-contacts.ng-enter {
-    -webkit-animation: .5s red-to-blue;
+
+
+/* conversation ---------------------- */
+
+.page-conversation.ng-leave {
+    -webkit-animation: 1s page-enter;
+}
+
+.page-conversation.ng-enter {
+    -webkit-animation: 1s page-leave;
 }
 
 .my-special-animation.ng-enter {
@@ -2229,25 +2237,52 @@ span#scroll_image_latest {
     animation: 0.5s red-to-blue;
 }
 
-@keyframes red-to-blue {
+.page-conversation{
+    z-index: 1000;
+}
+
+.page-conversations{
+    z-index: 1;
+}
+
+@keyframes page-enter {
     0% {
-        background: red;
-    }
-    50% {
-        background: blue;
+        left: 0%;
     }
     100% {
-        background: green;
+        left: 100%;
+    }
+}
+
+@keyframes page-leave {
+    0% {
+        left: 100%;
+    }
+    100% {
+        left: 0%;
+    }
+}
+
+@keyframes conversations-enter {
+    0% {
+        left: 0%;
+    }
+    100% {
+        left: 0%;
+    }
+}
+
+@keyframes conversations-leave {
+    0% {
+        left: 0%;
+    }
+    100% {
+        left: 0%;
     }
 }
 
 
 
-}
-
-0% {
-    transform: translate(0, 0);
-}
 
 @-webkit-keyframes red-to-blue {
     from {

@@ -1,5 +1,8 @@
 cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', function($scope, $rootScope, $location, $http, $window, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData) {
 
+   // Animation
+    $scope.pageClass = 'page-conversation';
+
     $scope.getFocus = Format.getFocus;
     $scope.getBlur = Format.getBlur;
     $scope.contentChanged = Format.contentChanged;
