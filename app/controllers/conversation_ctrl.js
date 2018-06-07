@@ -1,7 +1,51 @@
-cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', function($scope, $rootScope, $location, $http, $window, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData) {
-
+cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', '$animate', function($scope, $rootScope, $location, $http, $window, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, $animate) {
+/*
+if(!$rootScope.hasConfig){
+$animate.enabled(false);
+}
+*/
+$scope.cvn_enter = true;
    // Animation
     $scope.pageClass = 'page-conversation';
+
+$animate.enabled($rootScope.hasConfig);
+
+
+console.log($rootScope.hasConfig);
+$scope.$on('$routeChangeStart', function($event, next, current) { 
+   // ... you could trigger something here ...
+   console.log('CHANGE');
+   $animate.enabled(true);
+ });
+
+$scope.$on('$routeChangeSuccess', function () {
+  // run some code to do your animations
+  console.log('FINISHED');
+});
+
+
+    $(".page").bind('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(event) {
+        //$scope.image_drawer_opened = !$scope.image_drawer_opened;
+        console.log(event);
+        console.log('CONV ANIM FIN');
+
+       // $timeout(function() {
+        $scope.cvn_enter = false;
+    //},1000);
+
+
+    });
+
+/*
+    myBox.one('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend',   
+    function(e) {
+
+    // code to execute after transition ends
+
+  });
+  */
+
+    
 
     $scope.getFocus = Format.getFocus;
     $scope.getBlur = Format.getBlur;
@@ -118,6 +162,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     if (principal.isValid()) {
         console.log('CONV CHECK USER');
+        //$animate.enabled(false);
         UserData.checkUser().then(function(result) {
             console.log('READY');
             console.log(result);

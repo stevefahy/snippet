@@ -1,6 +1,9 @@
 cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$http', 'Invites', 'Email', 'Users', 'Conversations', '$q', 'FormatHTML', 'General', 'Profile', '$cookies', 'principal', 'UserData', function($scope, $rootScope, $location, $http, Invites, Email, Users, Conversations, $q, FormatHTML, General, Profile, $cookies, principal, UserData) {
 
     $scope.pageClass = 'page-conversations';
+    //$scope.cvn_enter = true;
+
+$rootScope.hasConfig = true;
 
     // array of conversations
     $scope.conversations = [];
@@ -44,7 +47,7 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
             // Store the profile.
             Profile.setProfile(profile);
             $rootScope.$broadcast('PROFILE_SET');
-            
+
             $scope.conversations = UserData.getConversationsBuild();
         });
     } else {

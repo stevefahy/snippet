@@ -2221,6 +2221,8 @@ span#scroll_image_latest {
     
      -webkit-animation: 1s conversations-enter;
      -webkit-animation: 1s conversations-leave;*/
+
+
 }
 
 
@@ -2237,6 +2239,29 @@ span#scroll_image_latest {
     /*-webkit-animation: 1s page-leave;*/
    /* -webkit-animation:slideIn 0.5s both ease-in;*/
      -webkit-animation: slide-in 0.5s forwards;
+
+     /*
+         -webkit-transition: all .5s cubic-bezier(.4, 0, .2, 1);
+    transition: all .5s cubic-bezier(.4, 0, .2, 1);
+    */
+}
+
+.conversation-enter {
+    /*-webkit-animation: 1s page-leave;*/
+   /* -webkit-animation:slideIn 0.5s both ease-in;*/
+    /* -webkit-animation: slide-in 0.5s forwards;*/
+    overflow-y: hidden;
+}
+
+.conversations-remain      {
+    /*
+        -webkit-animation:slideOutLeft 5s both ease-in;
+    -moz-animation:slideOutLeft 5s both ease-in;
+    animation:slideOutLeft 5s both ease-in;  
+    */
+     -webkit-animation: .5s conversations-leave;
+
+
 }
 
 @keyframes slide-in {
@@ -2576,14 +2601,6 @@ span#scroll_image_latest {
     top: 0;
     position: absolute;
     width: 100%;
-/*
-    border-left-style: solid;
-    border-left-color: lightgray;
-    border-left-width: 2px;
-    */
-
-       /* box-shadow: rgba(0, 0, 0, 0.14) -6px 0px 20px 2px, rgba(0, 0, 0, 0.12) 0px 0px 0px 0px, rgba(0, 0, 0, 0.2) 0px 0px 0px 0px;*/
-
 }
 
 .page.page-contactimport {

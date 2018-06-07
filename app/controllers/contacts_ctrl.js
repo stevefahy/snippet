@@ -7,7 +7,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     // TODO - make sure only one chat created with aother single user.
 
     // Animation
-    //$scope.pageClass = 'page-contacts';
+    $scope.pageClass = 'page-contacts';
     // Check if the page has been loaded witha param (user contacts import callback).
     var paramValue = $route.current.$$route.menuItem;
     // Stop listening for Mobile soft keyboard.
