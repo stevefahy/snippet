@@ -8,6 +8,23 @@ $rootScope.hasConfig = true;
     // array of conversations
     $scope.conversations = [];
 
+$scope.animEnd = function(){
+    console.log('animEnd cnvs');
+    $scope.cvn_enter = false;
+};
+
+    $(".page").bind('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(event) {
+        //$scope.image_drawer_opened = !$scope.image_drawer_opened;
+        console.log(event);
+        console.log('CONVS ANIM FIN');
+
+       // $timeout(function() {
+        $scope.cvn_enter = false;
+    //},1000);
+
+
+    });
+
     // Continue chat
     $scope.chat = function(conversation_id, conversation, index) {
         // Set profile change for the conversation.

@@ -2726,7 +2726,7 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
         }).catch(function(err) {
             // do something when any of the promises in array are rejected
         });
-return deferred.promise;
+        return deferred.promise;
 
     };
 
@@ -3086,3 +3086,21 @@ cardApp.config(['$httpProvider', function($httpProvider) {
 }]);
 
 
+
+cardApp.directive('animationend', function() {
+    return {
+        restrict: 'A',
+        scope: {
+            animationend: '&'
+        },
+        link: function(scope, element) {
+            var callback = scope.animationend(),
+                events = 'animationend webkitAnimationEnd MSAnimationEnd' +
+                'transitionend webkitTransitionEnd';
+
+            element.on(events, function(event) {
+                callback.call(element[0], event);
+            });
+        }
+    };
+});

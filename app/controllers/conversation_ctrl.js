@@ -11,6 +11,8 @@ $scope.cvn_enter = true;
 $animate.enabled($rootScope.hasConfig);
 
 
+
+
 console.log($rootScope.hasConfig);
 $scope.$on('$routeChangeStart', function($event, next, current) { 
    // ... you could trigger something here ...
@@ -23,6 +25,11 @@ $scope.$on('$routeChangeSuccess', function () {
   console.log('FINISHED');
 });
 
+
+$scope.animEnd = function(){
+    console.log('animEnd');
+     $scope.cvn_enter = false;
+};
 
     $(".page").bind('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(event) {
         //$scope.image_drawer_opened = !$scope.image_drawer_opened;
