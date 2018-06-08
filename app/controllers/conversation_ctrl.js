@@ -19,8 +19,8 @@ $scope.$on('$routeChangeStart', function($event, next, current) {
    // ... you could trigger something here ...
    console.log('CHANGE');
    $animate.enabled(true);
+$scope.glued = true;
 
-   
    /*
    $scope.cvn_enter = true;
    //$('content_cnv').css()
@@ -46,6 +46,7 @@ $scope.$on('$routeChangeSuccess', function () {
 $scope.pageAnimationEnd = function(){
     console.log('pageAnimationEnd cnv');
      $scope.cvn_enter = false;
+     $scope.glued = true;
 };
 
 /*
