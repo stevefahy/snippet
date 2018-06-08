@@ -47,6 +47,11 @@ $scope.pageAnimationEnd = function(){
     console.log('pageAnimationEnd cnv');
      $scope.cvn_enter = false;
 
+          //$timeout(function() {
+                    $scope.totalDisplayed = -1000;
+                    //scrollToBottom(1);
+                //}, 2000);
+
 };
 
 /*
@@ -555,11 +560,12 @@ $scope.pageAnimationEnd = function(){
                 $scope.cards = result.data;
 
                 
-
+/*
                    $timeout(function() {
                     $scope.totalDisplayed = -1000;
                     //scrollToBottom(1);
                 }, 2000);
+                */
 
                 // Clear the cards unviewed arrary for this participant of this conversation.
                 updateConversationViewed(id);
