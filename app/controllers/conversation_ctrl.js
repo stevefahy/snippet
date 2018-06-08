@@ -49,6 +49,32 @@ $scope.animEnd = function(){
 
 
     });
+
+    
+
+        $(".page.page-conversation").bind('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(event) {
+        //$scope.image_drawer_opened = !$scope.image_drawer_opened;
+        console.log(event);
+        console.log('CONV ANIM FIN .page.page-conversation');
+
+       // $timeout(function() {
+        $scope.cvn_enter = false;
+    //},1000);
+
+
+    });
+
+        $(".page.page-conversations").bind('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(event) {
+        //$scope.image_drawer_opened = !$scope.image_drawer_opened;
+        console.log(event);
+        console.log('CONV ANIM FIN .page.page-conversations');
+
+       // $timeout(function() {
+        $scope.cvn_enter = false;
+    //},1000);
+
+
+    });
     
 
 /*
