@@ -8,36 +8,47 @@ $scope.cvn_enter = true;
    // Animation
     $scope.pageClass = 'page-conversation';
 
-$animate.enabled($rootScope.hasConfig);
+$animate.enabled($rootScope.animate_pages);
 
 
 
-console.log($rootScope.hasConfig);
+console.log($rootScope.animate_pages);
+
+
 $scope.$on('$routeChangeStart', function($event, next, current) { 
    // ... you could trigger something here ...
    console.log('CHANGE');
    $animate.enabled(true);
+
+   
+   /*
    $scope.cvn_enter = true;
    //$('content_cnv').css()
    $(".content_conv").css({ "overflow-y": "hidden" });
 
     $animate.addClass(".content_conv", 'disabler');
+    */
  });
+ 
 
 $scope.$on('$routeChangeSuccess', function () {
   // run some code to do your animations
   console.log('FINISHED');
+  $scope.cvn_enter = false;
+  //$animate.enabled(true);
 });
 
 
 
 
 
-$scope.animEnd = function(){
-    console.log('animEnd');
+
+$scope.pageAnimationEnd = function(){
+    console.log('pageAnimationEnd cnv');
      $scope.cvn_enter = false;
 };
 
+/*
     $(".page").bind('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(event) {
         //$scope.image_drawer_opened = !$scope.image_drawer_opened;
         console.log(event);
@@ -75,7 +86,7 @@ $scope.animEnd = function(){
 
 
     });
-    
+    */
 
 /*
     myBox.one('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend',   

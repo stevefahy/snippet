@@ -1384,6 +1384,7 @@ cardApp.service('General', ['Users', 'Format', function(Users, Format) {
     var ua = navigator.userAgent;
     var keyboard_listen = false;
 
+
     // Profile Image
     //
     // Transform the cropped image to a blob.
