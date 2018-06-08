@@ -2280,7 +2280,7 @@ span#scroll_image_latest {
     -webkit-animation: slide-in .5s forwards;
 }
 
-.page-conversation.ng-enter .content_cnv {
+.page-conversation.ng-enter.ng-enter-active .content_cnv {
 overflow-y: hidden;
 background-color: green;
     }
