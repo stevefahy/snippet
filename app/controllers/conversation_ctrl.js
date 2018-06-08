@@ -47,10 +47,10 @@ $scope.pageAnimationEnd = function(){
     console.log('pageAnimationEnd cnv');
      $scope.cvn_enter = false;
 
-          //$timeout(function() {
+          $timeout(function() {
                     $scope.totalDisplayed = -1000;
                     //scrollToBottom(1);
-                //}, 2000);
+                }, 200);
 
 };
 
