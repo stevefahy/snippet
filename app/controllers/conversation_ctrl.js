@@ -12,18 +12,25 @@ $animate.enabled($rootScope.hasConfig);
 
 
 
-
 console.log($rootScope.hasConfig);
 $scope.$on('$routeChangeStart', function($event, next, current) { 
    // ... you could trigger something here ...
    console.log('CHANGE');
    $animate.enabled(true);
+   $scope.cvn_enter = true;
+   //$('content_cnv').css()
+   $(".content_conv").css({ "overflow-y": "hidden" });
+
+    $animate.addClass(".content_conv", 'disabler');
  });
 
 $scope.$on('$routeChangeSuccess', function () {
   // run some code to do your animations
   console.log('FINISHED');
 });
+
+
+
 
 
 $scope.animEnd = function(){
@@ -42,6 +49,7 @@ $scope.animEnd = function(){
 
 
     });
+    
 
 /*
     myBox.one('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend',   

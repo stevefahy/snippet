@@ -1,17 +1,26 @@
 cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$http', 'Invites', 'Email', 'Users', 'Conversations', '$q', 'FormatHTML', 'General', 'Profile', '$cookies', 'principal', 'UserData', function($scope, $rootScope, $location, $http, Invites, Email, Users, Conversations, $q, FormatHTML, General, Profile, $cookies, principal, UserData) {
 
     $scope.pageClass = 'page-conversations';
-    //$scope.cvn_enter = true;
+    $rootScope.cvn_enter = true;
 
 $rootScope.hasConfig = true;
-
+ //$scope.cvn_enter = true;
     // array of conversations
     $scope.conversations = [];
 
 $scope.animEnd = function(){
     console.log('animEnd cnvs');
-    $scope.cvn_enter = false;
+    $scope.cvn_enter = true;
+    $(".content_conv").css({ "overflow-y": "hidden" });
 };
+
+$scope.$on('$routeChangeStart', function($event, next, current) { 
+   // ... you could trigger something here ...
+   console.log('CHANGE');
+   //$animate.enabled(true);
+    $rootScope.cvn_enter = true;
+ });
+
 
     $(".page").bind('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(event) {
         //$scope.image_drawer_opened = !$scope.image_drawer_opened;
@@ -24,6 +33,7 @@ $scope.animEnd = function(){
 
 
     });
+    
 
     // Continue chat
     $scope.chat = function(conversation_id, conversation, index) {

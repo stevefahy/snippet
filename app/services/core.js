@@ -3099,8 +3099,11 @@ cardApp.directive('animationend', function() {
                 'transitionend webkitTransitionEnd';
 
             element.on(events, function(event) {
+                if(callback){
                 callback.call(element[0], event);
+            }
             });
         }
     };
 });
+

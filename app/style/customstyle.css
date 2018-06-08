@@ -1376,6 +1376,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     height: calc(100%);
     border-radius: 1px;
     background-color: snow;
+     direction: rtl;
 }
 
 .content_cnv_top {
@@ -2231,14 +2232,48 @@ span#scroll_image_latest {
 
 .page-conversation.ng-leave {
    /* -webkit-animation: 1s page-enter;*/
-        -webkit-animation:slideOutRight 0.5s both ease-in;
+
+        -webkit-animation:slideOutRight .5s both ease-in;
+
  
+}
+
+.page-conversation.ng-leave .content_cnv {
+   /* -webkit-animation: 1s page-enter;*/
+
+      
+         overflow-y: hidden;
+         background-color: red;
+ 
+}
+
+.disabler{
+      overflow-y: hidden;
+    background-color: red;
+}
+.page-conversations.ng-enter {
+    overflow-y: hidden;
+    background-color: red;
+}
+.page-conversations.ng-enter.ng-enter-active {
+    overflow-y: hidden;
+    background-color: red;
+}
+
+
+.page-conversations.ng-leave {
+    overflow-y: hidden;
+    background-color: red;
+}
+.page-conversations.ng-leave.ng-leave-active {
+    overflow-y: hidden;
+    background-color: red;
 }
 
 .page-conversation.ng-enter {
     /*-webkit-animation: 1s page-leave;*/
    /* -webkit-animation:slideIn 0.5s both ease-in;*/
-     -webkit-animation: slide-in 0.5s forwards;
+     -webkit-animation: slide-in .5s forwards;
 
      /*
          -webkit-transition: all .5s cubic-bezier(.4, 0, .2, 1);
