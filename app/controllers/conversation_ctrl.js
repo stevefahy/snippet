@@ -34,7 +34,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
 bindings = function(){
  console.log("The DOM is now loaded and can be manipulated.");
-
+/*
     $(".page .page-conversation").bind('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(event) {
         //$scope.image_drawer_opened = !$scope.image_drawer_opened;
         console.log(event);
@@ -43,9 +43,19 @@ bindings = function(){
         // $timeout(function() {
         //$scope.cvn_enter = false;
         //},1000);
-
-
     });
+    */
+
+$(".page")
+.on("webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend",
+ function(e){
+    console.log(e);
+    // do something here
+    //$(this).off(e);
+    console.log('EEENNNDDD');
+    //listen();
+ });
+
 };
 
 
