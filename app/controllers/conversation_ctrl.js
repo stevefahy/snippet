@@ -4,7 +4,7 @@ if(!$rootScope.hasConfig){
 $animate.enabled(false);
 }
 */
-$scope.cvn_enter = true;
+//$scope.cvn_enter = true;
    // Animation
     $scope.pageClass = 'page-conversation';
 
@@ -45,7 +45,7 @@ $scope.$on('$routeChangeSuccess', function () {
 
 $scope.pageAnimationEnd = function(){
     console.log('pageAnimationEnd cnv');
-     $scope.cvn_enter = false;
+     //$scope.cvn_enter = false;
 
           $timeout(function() {
                     $scope.totalDisplayed = -1000;

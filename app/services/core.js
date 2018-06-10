@@ -3087,7 +3087,7 @@ cardApp.config(['$httpProvider', function($httpProvider) {
 }]);
 
 
-
+/*
 cardApp.directive('animationend', function() {
     return {
         restrict: 'A',
@@ -3107,4 +3107,5 @@ cardApp.directive('animationend', function() {
         }
     };
 });
+*/
 
