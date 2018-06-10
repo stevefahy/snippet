@@ -32,19 +32,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
          */
     });
 
-bindings = function(){
- console.log("The DOM is now loaded and can be manipulated.");
-/*
-    $(".page .page-conversation").bind('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(event) {
-        //$scope.image_drawer_opened = !$scope.image_drawer_opened;
-        console.log(event);
-        console.log('CONV ANIM FIN');
-        $scope.totalDisplayed = -1000;
-        // $timeout(function() {
-        //$scope.cvn_enter = false;
-        //},1000);
-    });
-    */
+
 
 $(".page")
 .on("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend",
@@ -54,10 +42,11 @@ $(".page")
     //$(this).off(e);
     if(e.originalEvent.animationName == "slide-in")
     console.log('EEENNNDDD');
+ $scope.totalDisplayed = -1000;
     
  });
 
-};
+
 
 
 //$scope.$apply(function(){
@@ -65,10 +54,6 @@ $(".page")
                            //console.log('NOW');
                        //});
 
-                         $scope.load = function() {
-    console.log("Window is loaded");
-    bindings();
-  };
 
  
 
@@ -76,7 +61,7 @@ $(".page")
     $scope.$on('$routeChangeSuccess', function() {
         // run some code to do your animations
         console.log('FINISHED');
-        $scope.cvn_enter = false;
+       // $scope.cvn_enter = false;
         //$animate.enabled(true);
     });
 
@@ -88,11 +73,12 @@ $(".page")
     $scope.pageAnimationEnd = function() {
         console.log('pageAnimationEnd cnv');
         //$scope.cvn_enter = false;
-
+/*
         $timeout(function() {
             $scope.totalDisplayed = -1000;
             //scrollToBottom(1);
         }, 200);
+        */
 
     };
 

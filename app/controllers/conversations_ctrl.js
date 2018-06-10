@@ -34,11 +34,7 @@ $scope.$on('$routeChangeStart', function($event, next, current) {
     });
     */
 
-bindings = function(){
- console.log("The DOM is now loaded and can be manipulated.");
 
-
-};
 
 
 //$scope.$apply(function(){
@@ -46,10 +42,7 @@ bindings = function(){
                            //console.log('NOW');
                        //});
 
-                         $scope.load = function() {
-    console.log("Window is loaded");
-    bindings();
-  };
+
 
     
 

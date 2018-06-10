@@ -1,4 +1,4 @@
-<div class="container_cnv" ng-class="{ 'conversations-remain': cvn_enter}" ng-init="load()">
+<div class="container_cnv">
     <div class="header_container" ng-include="'/views/header.html'"></div>
     <div class="content_cnv">
         <div ng-repeat="conversation in conversations | orderBy :'updatedAt' : true">
