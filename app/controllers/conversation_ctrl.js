@@ -52,6 +52,7 @@ $(".page")
     console.log(e);
     // do something here
     //$(this).off(e);
+    if(e.originalEvent.animationName == "slide-in")
     console.log('EEENNNDDD');
     
  });
