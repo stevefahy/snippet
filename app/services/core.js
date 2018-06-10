@@ -3058,8 +3058,9 @@ $(".page").css('top', '50px');
     });
 
 listen = function(){
+    console.log('LISTEN');
 $(".page")
-.on("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd",
+.on("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend",
  function(e){
     // do something here
     //$(this).off(e);
