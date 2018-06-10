@@ -20,7 +20,20 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log('CHANGE');
         $animate.enabled(true);
 
-            console.log("The DOM is now loaded and can be manipulated.");
+           
+
+
+        /*
+        $scope.cvn_enter = true;
+        //$('content_cnv').css()
+        $(".content_conv").css({ "overflow-y": "hidden" });
+
+         $animate.addClass(".content_conv", 'disabler');
+         */
+    });
+
+bindings = function(){
+ console.log("The DOM is now loaded and can be manipulated.");
 
     $(".page").bind('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(event) {
         //$scope.image_drawer_opened = !$scope.image_drawer_opened;
@@ -33,17 +46,20 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
 
     });
+};
 
 
+//$scope.$apply(function(){
+                           document.addEventListener('load', bindings);
+                           console.log('NOW');
+                       //});
 
-        /*
-        $scope.cvn_enter = true;
-        //$('content_cnv').css()
-        $(".content_conv").css({ "overflow-y": "hidden" });
+                         $scope.load = function() {
+    console.log("Window is loaded");
+    bindings();
+  };
 
-         $animate.addClass(".content_conv", 'disabler');
-         */
-    });
+ 
 
 
     $scope.$on('$routeChangeSuccess', function() {

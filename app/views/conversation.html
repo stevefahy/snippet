@@ -1,5 +1,5 @@
 <!--<div class="container_cnv" ng-class="{ 'conversation-enter': cvn_enter}">-->
-<div class="container_cnv" ng-class="{ 'conversation-enter': cvn_enter}">
+<div class="container_cnv" ng-class="{ 'conversation-enter': cvn_enter}" ng-init="load()">
     <div class="slide-animate header_container" ng-include="'/views/header_conv.html'"></div>
     <div class="content_cnv" ng-class="{ 'conversation-enter': cvn_enter}" scroll-glue>
         <div class="" id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : false | limitTo:totalDisplayed">
