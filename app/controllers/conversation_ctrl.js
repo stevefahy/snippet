@@ -38,10 +38,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log(e);
         // do something here
         //$(this).off(e);
-        //if (e.originalEvent.animationName == "slide-in") {
+        if (e.originalEvent.animationName == "slide-in") {
             console.log('EEENNNDDD');
+            $scope.$apply(function(){
             $scope.totalDisplayed = -1000;
-        //}
+        });
+        }
 
 
     });
