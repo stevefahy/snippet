@@ -3044,6 +3044,32 @@ cardApp.factory('Profile', function($rootScope, $window) {
     //console.log('PROFILE FACTORY');
     var user;
     var conversation;
+$(".page").css('top', '50px');
+        $(".page").bind('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(event) {
+        //$scope.image_drawer_opened = !$scope.image_drawer_opened;
+        console.log(event);
+        console.log('CONV ANIM FIN');
+        $scope.totalDisplayed = -1000;
+        // $timeout(function() {
+        //$scope.cvn_enter = false;
+        //},1000);
+
+
+    });
+
+listen = function(){
+$(".page")
+.on("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd",
+ function(e){
+    // do something here
+    //$(this).off(e);
+    console.log('EENNDD');
+    listen();
+ });
+};
+
+listen();
+
     return {
         // User profile.
         getProfile: function() {
@@ -3061,6 +3087,8 @@ cardApp.factory('Profile', function($rootScope, $window) {
             console.log(conversation);
         },
     };
+
+
 });
 
 // Add the access token to every request to the server.

@@ -35,7 +35,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 bindings = function(){
  console.log("The DOM is now loaded and can be manipulated.");
 
-    $(".page").bind('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(event) {
+    $(".page .page-conversation").bind('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(event) {
         //$scope.image_drawer_opened = !$scope.image_drawer_opened;
         console.log(event);
         console.log('CONV ANIM FIN');
