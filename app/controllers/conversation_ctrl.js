@@ -47,13 +47,13 @@ bindings = function(){
     */
 
 $(".page")
-.on("webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend",
+.on("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend",
  function(e){
     console.log(e);
     // do something here
     //$(this).off(e);
     console.log('EEENNNDDD');
-    //listen();
+    
  });
 
 };
