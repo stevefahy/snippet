@@ -50,8 +50,8 @@ bindings = function(){
 
 
 //$scope.$apply(function(){
-                           document.addEventListener('load', bindings);
-                           console.log('NOW');
+                          // document.addEventListener('load', bindings);
+                           //console.log('NOW');
                        //});
 
                          $scope.load = function() {

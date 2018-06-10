@@ -33,6 +33,34 @@ $scope.$on('$routeChangeStart', function($event, next, current) {
 
     });
     */
+
+bindings = function(){
+ console.log("The DOM is now loaded and can be manipulated.");
+
+    $(".page").bind('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(event) {
+        //$scope.image_drawer_opened = !$scope.image_drawer_opened;
+        console.log(event);
+        console.log('CONV ANIM FIN');
+        $scope.totalDisplayed = -1000;
+        // $timeout(function() {
+        //$scope.cvn_enter = false;
+        //},1000);
+
+
+    });
+};
+
+
+//$scope.$apply(function(){
+                          // document.addEventListener('load', bindings);
+                           //console.log('NOW');
+                       //});
+
+                         $scope.load = function() {
+    console.log("Window is loaded");
+    bindings();
+  };
+
     
 
     // Continue chat
