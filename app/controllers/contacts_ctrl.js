@@ -557,6 +557,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     });
 
     $(".show_image_transition").bind('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(event) {
+        console.log('IMAGE TRANSITION');
         $scope.image_drawer_opened = !$scope.image_drawer_opened;
     });
 

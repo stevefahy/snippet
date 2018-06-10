@@ -1,71 +1,80 @@
 cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', '$animate', function($scope, $rootScope, $location, $http, $window, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, $animate) {
-/*
-if(!$rootScope.hasConfig){
-$animate.enabled(false);
-}
-*/
-//$scope.cvn_enter = true;
-   // Animation
+    /*
+    if(!$rootScope.hasConfig){
+    $animate.enabled(false);
+    }
+    */
+    //$scope.cvn_enter = true;
+    // Animation
     $scope.pageClass = 'page-conversation';
 
-$animate.enabled($rootScope.animate_pages);
+    $animate.enabled($rootScope.animate_pages);
 
 
 
-console.log($rootScope.animate_pages);
+    console.log($rootScope.animate_pages);
 
 
-$scope.$on('$routeChangeStart', function($event, next, current) { 
-   // ... you could trigger something here ...
-   console.log('CHANGE');
-   $animate.enabled(true);
+    $scope.$on('$routeChangeStart', function($event, next, current) {
+        // ... you could trigger something here ...
+        console.log('CHANGE');
+        $animate.enabled(true);
 
-
-   /*
-   $scope.cvn_enter = true;
-   //$('content_cnv').css()
-   $(".content_conv").css({ "overflow-y": "hidden" });
-
-    $animate.addClass(".content_conv", 'disabler');
-    */
- });
- 
-
-$scope.$on('$routeChangeSuccess', function () {
-  // run some code to do your animations
-  console.log('FINISHED');
-  $scope.cvn_enter = false;
-  //$animate.enabled(true);
-});
-
-
-
-
-
-
-$scope.pageAnimationEnd = function(){
-    console.log('pageAnimationEnd cnv');
-     //$scope.cvn_enter = false;
-
-          $timeout(function() {
-                    $scope.totalDisplayed = -1000;
-                    //scrollToBottom(1);
-                }, 200);
-
-};
-
+            console.log("The DOM is now loaded and can be manipulated.");
 
     $(".page").bind('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(event) {
         //$scope.image_drawer_opened = !$scope.image_drawer_opened;
         console.log(event);
         console.log('CONV ANIM FIN');
-$scope.totalDisplayed = -1000;
-       // $timeout(function() {
+        $scope.totalDisplayed = -1000;
+        // $timeout(function() {
         //$scope.cvn_enter = false;
-    //},1000);
+        //},1000);
 
 
     });
+
+
+
+        /*
+        $scope.cvn_enter = true;
+        //$('content_cnv').css()
+        $(".content_conv").css({ "overflow-y": "hidden" });
+
+         $animate.addClass(".content_conv", 'disabler');
+         */
+    });
+
+
+    $scope.$on('$routeChangeSuccess', function() {
+        // run some code to do your animations
+        console.log('FINISHED');
+        $scope.cvn_enter = false;
+        //$animate.enabled(true);
+    });
+
+
+
+
+
+
+    $scope.pageAnimationEnd = function() {
+        console.log('pageAnimationEnd cnv');
+        //$scope.cvn_enter = false;
+
+        $timeout(function() {
+            $scope.totalDisplayed = -1000;
+            //scrollToBottom(1);
+        }, 200);
+
+    };
+
+
+
+
+
+
+
 
     /*
 
@@ -94,16 +103,16 @@ $scope.totalDisplayed = -1000;
     });
     */
 
-/*
-    myBox.one('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend',   
-    function(e) {
+    /*
+        myBox.one('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend',   
+        function(e) {
 
-    // code to execute after transition ends
+        // code to execute after transition ends
 
-  });
-  */
+      });
+      */
 
-    
+
 
     $scope.getFocus = Format.getFocus;
     $scope.getBlur = Format.getBlur;
@@ -185,9 +194,9 @@ $scope.totalDisplayed = -1000;
                 UserData.getCardsModelById(result)
                     .then(function(result) {
                         console.log(result);
-                        if(result != undefined){
-                        $scope.cards = result.data;
-                    }
+                        if (result != undefined) {
+                            $scope.cards = result.data;
+                        }
                     });
             });
 
@@ -559,13 +568,13 @@ $scope.totalDisplayed = -1000;
                 //$scope.cards = result.data;
                 $scope.cards = result.data;
 
-                
-/*
-                   $timeout(function() {
-                    $scope.totalDisplayed = -1000;
-                    //scrollToBottom(1);
-                }, 2000);
-                */
+
+                /*
+                                   $timeout(function() {
+                                    $scope.totalDisplayed = -1000;
+                                    //scrollToBottom(1);
+                                }, 2000);
+                                */
 
                 // Clear the cards unviewed arrary for this participant of this conversation.
                 updateConversationViewed(id);
