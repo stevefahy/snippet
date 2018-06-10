@@ -54,20 +54,20 @@ $scope.pageAnimationEnd = function(){
 
 };
 
-/*
+
     $(".page").bind('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(event) {
         //$scope.image_drawer_opened = !$scope.image_drawer_opened;
         console.log(event);
         console.log('CONV ANIM FIN');
-
+$scope.totalDisplayed = -1000;
        // $timeout(function() {
-        $scope.cvn_enter = false;
+        //$scope.cvn_enter = false;
     //},1000);
 
 
     });
 
-    
+    /*
 
         $(".page.page-conversation").bind('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(event) {
         //$scope.image_drawer_opened = !$scope.image_drawer_opened;
