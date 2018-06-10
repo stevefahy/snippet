@@ -20,7 +20,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log('CHANGE');
         $animate.enabled(true);
 
-           
+
 
 
         /*
@@ -34,34 +34,34 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
 
 
-$(".page")
-.on("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend",
- function(e){
-    console.log(e);
-    // do something here
-    //$(this).off(e);
-    if(e.originalEvent.animationName == "slide-in")
-    console.log('EEENNNDDD');
- $scope.totalDisplayed = -1000;
-    
- });
+    $(".page").on("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend", function(e) {
+        console.log(e);
+        // do something here
+        //$(this).off(e);
+        //if (e.originalEvent.animationName == "slide-in") {
+            console.log('EEENNNDDD');
+            $scope.totalDisplayed = -1000;
+        //}
+
+
+    });
 
 
 
 
-//$scope.$apply(function(){
-                          // document.addEventListener('load', bindings);
-                           //console.log('NOW');
-                       //});
+    //$scope.$apply(function(){
+    // document.addEventListener('load', bindings);
+    //console.log('NOW');
+    //});
 
 
- 
+
 
 
     $scope.$on('$routeChangeSuccess', function() {
         // run some code to do your animations
         console.log('FINISHED');
-       // $scope.cvn_enter = false;
+        // $scope.cvn_enter = false;
         //$animate.enabled(true);
     });
 
@@ -73,12 +73,12 @@ $(".page")
     $scope.pageAnimationEnd = function() {
         console.log('pageAnimationEnd cnv');
         //$scope.cvn_enter = false;
-/*
-        $timeout(function() {
-            $scope.totalDisplayed = -1000;
-            //scrollToBottom(1);
-        }, 200);
-        */
+        /*
+                $timeout(function() {
+                    $scope.totalDisplayed = -1000;
+                    //scrollToBottom(1);
+                }, 200);
+                */
 
     };
 
