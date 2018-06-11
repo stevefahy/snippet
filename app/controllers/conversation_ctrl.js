@@ -2,11 +2,16 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Animation
     $scope.pageClass = 'page-conversation';
+
     // Loading conversation directly should not animate.
     $animate.enabled($rootScope.animate_pages);
 
     $scope.$on('$routeChangeStart', function($event, next, current) {
         $animate.enabled(true);
+    });
+
+    $scope.$on('$viewContentLoaded', function() {
+        console.log('conversation view loaded');
     });
 
 
@@ -97,6 +102,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 UserData.getCardsModelById(result)
                     .then(function(result) {
                         if (result != undefined) {
+                            console.log('cards ready');
                             $scope.cards = result.data;
                         }
                     });

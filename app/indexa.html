@@ -88,6 +88,7 @@
     <script src="/controllers/usersetting_ctrl.js"></script>
     <script src="/controllers/conversation_ctrl.js"></script>
     <script src="/controllers/conversations_ctrl.js"></script>
+    <script src="/controllers/main_ctrl.js"></script>
     <!-- load Services -->
     <script src="/services/services.js"></script>
     <!-- socket.io -->
@@ -96,8 +97,22 @@
 
 <body>
     <!-- Templates loaded into ng-view -->
-    <!--<ng-view class="main_view"></ng-view>-->
-    <div class="page {{ pageClass }}" ng-view></div>
+    <div ng-controller="MainCtrl">
+        <!--<ng-view class="main_view"></ng-view>-->
+        <div class="page {{ pageClass }}" ng-view></div>
+        <div class="loading_screen" ng-if="$root.dataLoading">
+            <div id="circular3dG">
+                <div id="circular3d_1G" class="circular3dG"></div>
+                <div id="circular3d_2G" class="circular3dG"></div>
+                <div id="circular3d_3G" class="circular3dG"></div>
+                <div id="circular3d_4G" class="circular3dG"></div>
+                <div id="circular3d_5G" class="circular3dG"></div>
+                <div id="circular3d_6G" class="circular3dG"></div>
+                <div id="circular3d_7G" class="circular3dG"></div>
+                <div id="circular3d_8G" class="circular3dG"></div>
+            </div>
+        </div>
+    </div>
     <!-- Hidden input field which gains focus while text formatting is being prepared -->
     <div id="hidden_input_container">
         <input class="form-control" type="text" autocorrect="off" autocapitalize="none" id="hidden_input">
