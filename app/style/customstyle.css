@@ -2,7 +2,7 @@ html,
 body {}
 
 html {
-  touch-action: manipulation;
+    touch-action: manipulation;
 }
 
 body {
@@ -226,6 +226,8 @@ hr {
 
 
 
+
+
 /* HEADER */
 
 .header {
@@ -285,6 +287,8 @@ hr {
     box-shadow: rgba(0, 0, 0, 0.14) 0px 4px 5px 0px, ;
     box-shadow: rgba(0, 0, 0, 0.14) 0px 4px 5px 0px, rgba(0, 0, 0, 0.12) 0px 1px 10px 0px, rgba(0, 0, 0, 0.2) 0px 2px 4px -1px;
 }
+
+
 
 
 
@@ -420,6 +424,8 @@ hr {
 
 
 
+
+
 /* HEADER CONV */
 
 .header_conv_name {
@@ -438,6 +444,8 @@ hr {
 .header_back {
     z-index: 2000;
 }
+
+
 
 
 
@@ -464,6 +472,8 @@ hr {
 }
 
 .header_search {}
+
+
 
 
 
@@ -531,6 +541,8 @@ hr {
 .material-icons.md-36 {
     font-size: 36px;
 }
+
+
 
 
 
@@ -675,6 +687,8 @@ hr {
     margin-left: auto;
     left: 90px;
 }
+
+
 
 
 
@@ -848,6 +862,8 @@ div#user {
 
 
 
+
+
 /* EDIT MENU */
 
 
@@ -861,10 +877,14 @@ div#user {
 
 
 
+
+
 /* Dropdown button on hover & focus */
 
 .dropbtn:hover,
 .dropbtn:focus {}
+
+
 
 
 
@@ -874,6 +894,8 @@ div#user {
     position: relative;
     display: inline-block;
 }
+
+
 
 
 
@@ -899,6 +921,8 @@ div#user {
 
 
 
+
+
 /* Links inside the dropdown */
 
 .dropdown-content div {
@@ -911,11 +935,15 @@ div#user {
 
 
 
+
+
 /* Change color of dropdown links on hover */
 
 .dropdown-content a:hover {
     background-color: #f1f1f1
 }
+
+
 
 
 
@@ -1568,6 +1596,8 @@ span#scroll_image_latest {
 
 
 
+
+
 /* CONTACTS */
 
 #mi-add_circle_outline {
@@ -1987,6 +2017,8 @@ span#scroll_image_latest {
 }
 
 
+
+
 /*
 .contact_div .preview_show {
     left: unset;
@@ -2122,6 +2154,8 @@ span#scroll_image_latest {
 
 
 
+
+
 /* SEARCH CONTACTS */
 
 .contacts_result_container {
@@ -2158,80 +2192,10 @@ span#scroll_image_latest {
 
 
 
+
+
 /* ANIMATIONS
-============================================================================= */
-
-
-/*
-.page.ng-leave {
-    z-index: 9999;
-}
-
-.page.ng-enter {
-    z-index: 8888;
-}
-*/
-
-
-/* page specific animations ------------------------ */
-
-
-/* home -------------------------- */
-
-
-/*
-.page-home.ng-leave {
-    -webkit-transform-origin: 0% 0%;
-    -webkit-animation: rotateFall 1s both ease-in;
-    -moz-transform-origin: 0% 0%;
-    -moz-animation: rotateFall 1s both ease-in;
-    transform-origin: 0% 0%;
-    animation: rotateFall 1s both ease-in;
-}
-
-.page-home.ng-enter {
-    -webkit-animation: scaleUp 0.5s both ease-in;
-    -moz-animation: scaleUp 0.5s both ease-in;
-    animation: scaleUp 0.5s both ease-in;
-}
-
-*/
-
-
-/* about ------------------------ */
-
-
-/*
-.page-about.ng-leave {
-    -webkit-animation: slideOutLeft 0.5s both ease-in;
-    -moz-animation: slideOutLeft 0.5s both ease-in;
-    animation: slideOutLeft 0.5s both ease-in;
-}
-
-.page-about.ng-enter {
-    -webkit-animation: slideInRight 0.5s both ease-in;
-    -moz-animation: slideInRight 0.5s both ease-in;
-    animation: slideInRight 0.5s both ease-in;
-}
-
-*/
-
-
-/* contact ---------------------- */
-
-
-/*
-.page-contactimport.ng-leave {
-    -webkit-animation: slideOutRight .5s both ease-in;
-    -moz-animation: slideOutRight .5s both ease-in;
-    animation: slideOutRight .5s both ease-in;
-}
-
-.page-contactimport.ng-enter {
-    -webkit-animation: slideInRight .5s both ease-in;
-    -moz-animation: slideInRight .5s both ease-in;
-    animation: slideInRight .5s both ease-in;
-}
+============================================================================= 
 */
 
 .page {
@@ -2242,14 +2206,14 @@ span#scroll_image_latest {
 }
 
 .page-conversation {
-    /*position: absolute;*/
     z-index: 1000;
 }
 
 .page-conversations {
-    /*position: absolute;*/
     z-index: 1;
 }
+
+
 
 /* conversations ---------------------- */
 
@@ -2266,6 +2230,8 @@ span#scroll_image_latest {
 }
 
 
+
+
 /* conversation ---------------------- */
 
 .page-conversation.ng-leave {
@@ -2274,23 +2240,16 @@ span#scroll_image_latest {
 
 .page-conversation.ng-leave .content_cnv {
     overflow-y: hidden;
-    /*background-color: hotpink;*/
 }
 
 .page-conversation.ng-enter {
-     
     -webkit-animation: slide-in .5s forwards;
 }
 
 .page-conversation.ng-enter.ng-enter-active .content_cnv {
-overflow-y: hidden;
-/*background-color: yellow;*/
-    }
-/*
-.conversation-enter {
     overflow-y: hidden;
 }
-*/
+
 
 /* slide out from the right */
 
@@ -2313,322 +2272,3 @@ overflow-y: hidden;
         transform: translateX(0);
     }
 }
-
-/* conversations ---------------------- */
-
-/*
-.conversations-remain {
-    -webkit-animation: .5s conversations-leave;
-}
-*/
-
-/*
-.page-conversations.ng-enter {
-    overflow-y: hidden;
-    background-color: olive;
-}
-
-.page-conversations.ng-enter.ng-enter-active {
-    overflow-y: hidden;
-    background-color: lime;
-}
-
-.page-conversations.ng-leave {
-    overflow-y: hidden;
-    background-color: purple;
-}
-
-.page-conversations.ng-leave.ng-leave-active {
-    overflow-y: hidden;
-    background-color: orange;
-}
-*/
-
-.test {
-    width: 100%;
-    height: 100%;
-    background-color: red;
-}
-
-
-/*
-.page.page-contactimport {
-    z-index: 300;
-}
-
-.page.page-contacts {
-    z-index: 200;
-}
-
-.logo_container {
-    z-index: 2000;
-}
-*/
-
-/*
-@-webkit-keyframes slideInRight {
-    from {
-        -webkit-transform: translateX(100%);
-    }
-
-    to {
-        -webkit-transform: translateX(0);
-    }
-}
-
-
-
-
-
-.my-special-animation.ng-enter {
-    -webkit-animation: 0.5s red-to-blue;
-    animation: 0.5s red-to-blue;
-}
-*/
-
-/*
-
-@keyframes page-enter {
-
-}
-
-@keyframes page-leave {
-
-    from {
-        -moz-transform: translateX(0);
-    }
-
-    to {
-        -moz-transform: translateX(100%);
-    }
-}
-
-@keyframes conversations-enter {
-    0% {
-        left: 0%;
-    }
-    100% {
-        left: 0%;
-    }
-}
-
-
-@-webkit-keyframes red-to-blue {
-    from {
-        background: red;
-    }
-
-    to {
-        background: blue;
-    }
-}
-
-
-@-webkit-keyframes rotateFall {
-    0% {
-        -webkit-transform: rotateZ(0deg);
-    }
-
-    20% {
-        -webkit-transform: rotateZ(10deg);
-        -webkit-animation-timing-function: ease-out;
-    }
-
-    40% {
-        -webkit-transform: rotateZ(17deg);
-    }
-
-    60% {
-        -webkit-transform: rotateZ(16deg);
-    }
-
-    100% {
-        -webkit-transform: translateY(100%) rotateZ(17deg);
-    }
-}
-
-@-moz-keyframes rotateFall {
-    0% {
-        -moz-transform: rotateZ(0deg);
-    }
-
-    20% {
-        -moz-transform: rotateZ(10deg);
-        -moz-animation-timing-function: ease-out;
-    }
-
-    40% {
-        -moz-transform: rotateZ(17deg);
-    }
-
-    60% {
-        -moz-transform: rotateZ(16deg);
-    }
-
-    100% {
-        -moz-transform: translateY(100%) rotateZ(17deg);
-    }
-}
-
-@keyframes rotateFall {
-    0% {
-        transform: rotateZ(0deg);
-    }
-
-    20% {
-        transform: rotateZ(10deg);
-        animation-timing-function: ease-out;
-    }
-
-    40% {
-        transform: rotateZ(17deg);
-    }
-
-    60% {
-        transform: rotateZ(16deg);
-    }
-
-    100% {
-        transform: translateY(100%) rotateZ(17deg);
-    }
-}
-
-
-
-@keyframes scaleUp {
-    from {
-        opacity: 0.3;
-        transform: scale(0.8);
-    }
-}
-
-@-moz-keyframes scaleUp {
-    from {
-        opacity: 0.3;
-        -moz-transform: scale(0.8);
-    }
-}
-
-@-webkit-keyframes scaleUp {
-    from {
-        opacity: 0.3;
-        -webkit-transform: scale(0.8);
-    }
-}
-
-
-
-@keyframes slideInRight {
-    from {
-        transform: translateX(100%);
-    }
-
-    to {
-        transform: translateX(0);
-    }
-}
-
-@-moz-keyframes slideInRight {
-    from {
-        -moz-transform: translateX(100%);
-    }
-
-    to {
-        -moz-transform: translateX(0);
-    }
-}
-
-
-
-@-moz-keyframes slideOutRight {
-    from {
-        -moz-transform: translateX(0);
-    }
-
-    to {
-        -moz-transform: translateX(100%);
-    }
-}
-
-@-webkit-keyframes slideOutRight {
-    from {
-        -webkit-transform: translateX(0);
-    }
-
-    to {
-        -webkit-transform: translateX(100%);
-    }
-}
-
-
-@keyframes slideInUp {
-    from {
-        transform: translateY(100%);
-    }
-
-    to {
-        transform: translateY(0);
-    }
-}
-
-@-moz-keyframes slideInUp {
-    from {
-        -moz-transform: translateY(100%);
-    }
-
-    to {
-        -moz-transform: translateY(0);
-    }
-}
-
-@-webkit-keyframes slideInUp {
-    from {
-        -webkit-transform: translateY(100%);
-    }
-
-    to {
-        -webkit-transform: translateY(0);
-    }
-}
-
-
-@keyframes slideOutLeft {
-    to {
-        transform: translateX(-100%);
-    }
-}
-
-@-moz-keyframes slideOutLeft {
-    to {
-        -moz-transform: translateX(-100%);
-    }
-}
-
-@-webkit-keyframes slideOutLeft {
-    to {
-        -webkit-transform: translateX(-100%);
-    }
-}
-
-
-@-webkit-keyframes rotateOutNewspaper {
-    to {
-        -webkit-transform: translateZ(-3000px) rotateZ(360deg);
-        opacity: 0;
-    }
-}
-
-@-moz-keyframes rotateOutNewspaper {
-    to {
-        -moz-transform: translateZ(-3000px) rotateZ(360deg);
-        opacity: 0;
-    }
-}
-
-@keyframes rotateOutNewspaper {
-    to {
-        transform: translateZ(-3000px) rotateZ(360deg);
-        opacity: 0;
-    }
-}
-*/

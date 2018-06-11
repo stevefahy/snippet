@@ -20,10 +20,8 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
 
     if (principal.isValid()) {
         UserData.checkUser().then(function(result) {
-            //UserData.getUser().then(function(result) {
-                $scope.currentUser = UserData.getUser();
-                $scope.card_create.user = $scope.currentUser.user_name;
-            //});
+            $scope.currentUser = UserData.getUser();
+            $scope.card_create.user = $scope.currentUser.user_name;
         });
     }
 

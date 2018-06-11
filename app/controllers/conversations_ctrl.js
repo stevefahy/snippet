@@ -1,51 +1,11 @@
 cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$http', 'Invites', 'Email', 'Users', 'Conversations', '$q', 'FormatHTML', 'General', 'Profile', '$cookies', 'principal', 'UserData', function($scope, $rootScope, $location, $http, Invites, Email, Users, Conversations, $q, FormatHTML, General, Profile, $cookies, principal, UserData) {
 
+    // Animation
     $scope.pageClass = 'page-conversations';
-    //$rootScope.cvn_enter = true;
-
-$rootScope.animate_pages = true;
- //$scope.cvn_enter = true;
+    // variable to turn on animation of view chage. Loading conversation directly should not animate.
+    $rootScope.animate_pages = true;
     // array of conversations
     $scope.conversations = [];
-
-$scope.pageAnimationEnd = function(){
-    console.log('pageAnimationEnd cnvs');
-     //$scope.cvn_enter = false;
-};
-
-$scope.$on('$routeChangeStart', function($event, next, current) { 
-   // ... you could trigger something here ...
-   console.log('CHANGE');
-   //$animate.enabled(true);
-   // $rootScope.cvn_enter = true;
- });
-
-/*
-    $(".page").bind('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(event) {
-        //$scope.image_drawer_opened = !$scope.image_drawer_opened;
-        console.log(event);
-        console.log('CONVS ANIM FIN');
-
-       // $timeout(function() {
-        $scope.cvn_enter = false;
-    //},1000);
-
-
-    });
-    */
-
-
-
-
-//$scope.$apply(function(){
-                          // document.addEventListener('load', bindings);
-                           //console.log('NOW');
-                       //});
-
-
-
-    
-
     // Continue chat
     $scope.chat = function(conversation_id, conversation, index) {
         // Set profile change for the conversation.
@@ -85,7 +45,7 @@ $scope.$on('$routeChangeStart', function($event, next, current) {
             // Store the profile.
             Profile.setProfile(profile);
             $rootScope.$broadcast('PROFILE_SET');
-
+            // get the local conversations
             $scope.conversations = UserData.getConversationsBuild();
         });
     } else {

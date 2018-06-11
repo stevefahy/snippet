@@ -14,11 +14,6 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
             templateUrl: '/views/conversations.html',
             controller: 'conversationsCtrl'
         })
-        .when('/normal', {
-            templateUrl: '/views/authcallback.html',
-            controller: 'authcallbackCtrl',
-            redirect: '/chat/conversations',
-        })
         .when("/s/:snip", {
             templateUrl: '/views/card.html',
             controller: 'cardCtrl'
@@ -30,10 +25,6 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
         .when("/c/contacts", {
             templateUrl: '/views/contacts.html',
             controller: 'contactsCtrl'
-        })
-        .when("/c/test", {
-            templateUrl: '/views/test.html',
-            controller: 'testCtrl'
         })
         // callback from importing google contacts.
         .when("/c/contacts/import", {
@@ -126,7 +117,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     }
 
     androidToJS = function(data) {
-        console.log('core android to js');
         insertImage(data);
     };
 
@@ -1384,7 +1374,6 @@ cardApp.service('General', ['Users', 'Format', function(Users, Format) {
     var ua = navigator.userAgent;
     var keyboard_listen = false;
 
-
     // Profile Image
     //
     // Transform the cropped image to a blob.
@@ -1402,10 +1391,9 @@ cardApp.service('General', ['Users', 'Format', function(Users, Format) {
     };
 
     // USERS
+    //
     // Find User
     this.findUser = function(id, callback) {
-        console.log('FINDUSER');
-        console.log(id);
         var user_found;
         Users.search_id(id)
             .then(function(res) {
@@ -1573,7 +1561,6 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
     };
     var headers = {
         'Authorization': "",
-        //'x-access-token': principal.token,
         'Content-Type': 'application/json'
     };
     var options = {
@@ -1593,7 +1580,6 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
             }
         });
     }
-
 
     this.setNotification = function(data, currentUser, card_content) {
         var notification_title;
@@ -1882,7 +1868,6 @@ cardApp.directive("contenteditable", function() {
 
 // emtpyToEnd Filter
 
-
 // Filter to put empty values to the end of an array.
 cardApp.filter("emptyToEnd", function() {
     return function(array, key) {
@@ -1936,7 +1921,7 @@ cardApp.factory('principal', function($cookies, jwtHelper, $q, $rootScope) {
 });
 
 
-
+// UserData Factory
 
 cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHelper, $q, principal, Users, Conversations, FormatHTML, General, socket, $filter) {
 
@@ -1958,83 +1943,21 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
 
     // Broadcast by Database createCard service when a new card has been created
     $rootScope.$on('CARD_CREATED', function(event, data) {
-        console.log('CARD_CREATED CORE');
         UserData.conversationsLatestCardAdd(data.conversationId, data)
             .then(function(res) {
-                console.log(res);
-                console.log(data);
                 UserData.getConversationModelById(data.conversationId)
                     .then(function(result) {
                         var key = result;
-
-
-                        console.log(key);
-                        //if (data.content != null) {
                         UserData.formatLatestCard(data, key)
                             .then(function(result) {
                                 // Add this conversation to the conversations model
-                                //$scope.conversations.push(result);
-                                //conversations_model.push(result);
                                 UserData.addConversationModel(result);
                             });
-                        /*} else {
-                            console.log('PUBLIC');
-                            // Only empty publc conversations are displayed.
-                            key.latest_card = ' ';
-                            if (key.conversation_type === 'public') {
-                                 UserData.formatLatestCard(res.data, key)
-                                    .then(function(result) {
-                                        // Add this conversation to the conversations model
-                                        //$scope.conversations.push(result);
-                                         conversations_model.push(result);
-                                    });
-                            }
-                        }*/
-
                     });
-
-                /*
-                UserData.buildConversations()
-                .then(function(res) {
-                console.log(res);
-            });
-            */
-
-                /*
-                conversations_raw.map(function(key, array) {
-                    // Get the latest card posted to this conversation
-                    promises.push(UserData.getConversationLatestCardById(key._id)
-                        .then(function(res) {
-                            if (res.data != null) {
-                                return UserData.formatLatestCard(res.data, key)
-                                    .then(function(result) {
-                                        // Add this conversation to the conversations model
-                                        //$scope.conversations.push(result);
-                                        return conversations_model.push(result);
-                                    });
-                            } else {
-                                // Only empty publc conversations are displayed.
-                                key.latest_card = ' ';
-                                if (key.conversation_type === 'public') {
-                                    return UserData.formatLatestCard(res.data, key)
-                                        .then(function(result) {
-                                            // Add this conversation to the conversations model
-                                            //$scope.conversations.push(result);
-                                            return conversations_model.push(result);
-                                        });
-                                }
-                            }
-                        }));
-                });
-                */
-
-
-
             });
     });
 
     $rootScope.$on('NOTIFICATION', function(event, msg) {
-        console.log('NOTIFICATION CORE');
 
         // CONVERSATIONS
 
@@ -2042,36 +1965,18 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
         var user_id = UserData.getUser()._id;
         Conversations.find_user_conversations(user_id)
             .then(function(res) {
-                console.log(res);
                 // Get the index position of the updated conversation within the conversations model by conversation id
                 var conversation_pos = General.findWithAttr(res.data, '_id', msg.conversation_id);
                 // Get the index position of the current user within the updated conversation participants array in the conversations model
                 var user_pos = General.findWithAttr(res.data[conversation_pos].participants, '_id', user_id);
                 // Get the unviewed cards for this user in this conversation.
                 var user_unviewed = res.data[conversation_pos].participants[user_pos].unviewed;
-                console.log(user_unviewed);
-                // Get the index position of the updated conversation within the  CURRENT conversations model by conversation id
-                //var local_conversation_pos = General.findWithAttr(conversations, '_id', msg.conversation_id);
-                //var local_conversation_pos = General.findWithAttr(conversations_model, '_id', msg.conversation_id);
-
                 // Find and add the users to Userdata conversationsUsers array if they haven't already been added..
                 UserData.addConversationsUsers(res.data[conversation_pos].participants);
-
                 // add this conversation to the local model.
-                //
-                // Test CVN
-                //UserData.addConversation(res.data[conversation_pos]);
-
-
-
                 UserData.addConversationModel(res.data[conversation_pos]);
                 // Get the index position of the updated conversation within the  CURRENT conversations model by conversation id
-                //var local_conversation_pos = General.findWithAttr(conversations, '_id', msg.conversation_id);
                 var local_conversation_pos = General.findWithAttr(conversations_model, '_id', msg.conversation_id);
-
-
-                // add this conversation to the local model.
-                //UserData.addConversationModel(res.data[conversation_pos]);
 
                 // Get the latest card for this converation from the DB.
                 Conversations.getConversationLatestCard(msg.conversation_id)
@@ -2080,50 +1985,33 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
                             // Add latest card for this converation to LM.
                             UserData.conversationsLatestCardAdd(result.data.conversationId, result.data);
                         }
-
-                        // Notify Conversations controller of the update.
-
                         // Get the index position of the updated conversation within the conversations model by conversation id
                         var conversation_pos = General.findWithAttr(conversations_model, '_id', msg.conversation_id);
                         // Get the index position of the current user within the updated conversation participants array in the conversations model
-                        //var user_pos = General.findWithAttr(conversations[conversation_pos].participants, '_id', user_id);
                         var user_pos = General.findWithAttr(conversations_model[conversation_pos].participants, '_id', user_id);
-
                         if (local_conversation_pos < 0) {
-                            console.log('add');
                             // Add this conversaition to the local model.
-                            //UserData.addConversation(res.data[conversation_pos]);
                             UserData.addConversationModel(res.data[conversation_pos]);
-                            //$rootScope.$broadcast('NOTIFICATION_CONVS', 'add', msgs);
-                            //
                             if (result.data != null) {
                                 UserData.formatLatestCard(result.data, res.data[conversation_pos], function(response) {
                                     // Add this conversation to the conversations model
                                     conversations_model.push(response);
                                 });
                             }
-                            //
                         } else {
-                            //$rootScope.$broadcast('NOTIFICATION_CONVS', 'update', msgs);
-                            //
-                            console.log('update');
+                            // Update
                             if (result.data != null) {
                                 // update the local model
                                 conversations_model[conversation_pos].participants[user_pos].unviewed = user_unviewed;
                                 // Set the new_messages number.
                                 conversations_model[conversation_pos].new_messages = user_unviewed.length;
                                 // Format the latest card
-                                UserData.formatLatestCard(result.data, conversations_model[conversation_pos], function(result) {
-                                    //
-                                });
+                                UserData.formatLatestCard(result.data, conversations_model[conversation_pos], function(result) {});
                             } else {
                                 // Remove the conversation from the local model.
                                 conversations_model[conversation_pos].latest_card = ' ';
                             }
-                            //
                         }
-
-
                     });
             });
     });
@@ -2134,15 +2022,12 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
 
     UserData.loadUser = function() {
         return $http.get("/api/user_data").then(function(result) {
-            //console.log('HTTP /api/user_data');
-            //console.log('RETURN 1 LU');
             return result.data.user;
         });
     };
 
     UserData.setUser = function(value) {
         user = value;
-        //console.log('RETURN 2 SU');
         return user;
     };
 
@@ -2196,25 +2081,19 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
     };
 
     UserData.parseImportedContacts = function() {
-        console.log('parseImportedContacts');
         var deferred = $q.defer();
         if (UserData.getUser().imported_contacts.length > 0) {
-            console.log(UserData.getUser().imported_contacts[0].contacts);
-
             // check if imported contact is already a contact
             UserData.getUser().imported_contacts[0].contacts.map(function(key, array) {
-                //console.log(key);
                 var index = General.arrayObjectIndexOfValue(UserData.getContacts(), key.email, 'google', 'email');
                 if (index >= 0) {
                     key.is_contact = true;
-                    console.log(key);
                 }
             });
             // Check whether the current user is in the user_contacts.
             var index = General.findWithAttr(UserData.getUser().imported_contacts[0].contacts, 'email', UserData.getUser().google.email);
             if (index >= 0) {
                 UserData.getUser().imported_contacts[0].contacts[index].is_contact = true;
-                console.log(UserData.getUser().imported_contacts[0].contacts[index]);
             }
 
             deferred.resolve();
@@ -2222,28 +2101,10 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
             deferred.resolve();
         }
         return deferred.promise;
-        /*
-            $scope.user_contacts = $scope.currentUser.imported_contacts[0].contacts;
-            // check if imported contact is already a contact
-            $scope.user_contacts.map(function(key, array) {
-                console.log(key);
-                var index = General.arrayObjectIndexOfValue($scope.contacts, key.email, 'google', 'email');
-                if (index >= 0) {
-                    key.is_contact = true;
-                }
-            });
-            // Check whether the current user is in the user_contacts.
-            var index = General.findWithAttr($scope.user_contacts, 'email', $scope.currentUser.google.email);
-            if (index >= 0) {
-                $scope.user_contacts[index].is_contact = true;
-            }
-        }
-        */
     };
 
     // load this users contacts
     UserData.loadUserContacts = function() {
-        //console.log('loadUserContacts');
         var deferred = $q.defer();
         // reset the contacts model
         var contacts = [];
@@ -2252,8 +2113,6 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
 
         finish = function(contacts) {
             UserData.setContacts(contacts).then(function(result) {
-                //console.log('FIN CONTACTS');
-                //console.log('RETURN 4 LUC');
                 deferred.resolve(result);
             });
         };
@@ -2272,7 +2131,6 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
                         UserData.addConversationsUser(res.data.success);
                         // Check if individual conversation already created with this contact
                         // Get all coversations containing current user.
-                        // CVN
                         return UserData.getConversations().then(function(result) {
                             var s = UserData.parseUserContact(result, res.data.success);
                             return contacts.push(s);
@@ -2286,13 +2144,10 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
 
         // All the users contacts have been mapped.
         $q.all(promises).then(function() {
-            //console.log('loadUserContacts ALL PROMISES');
             // If there are any users in the delete_contacts array then delete them.
             if (delete_contacts.contacts.length > 0) {
-                //console.log('delete_contacts');
                 return Users.delete_contacts(delete_contacts)
                     .then(function(data) {
-                        // console.log('delete_contacts finished');
                         finish(contacts);
                     })
                     .catch(function(error) {
@@ -2314,7 +2169,6 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
 
     UserData.updateProfile = function(profile) {
         var deferred = $q.defer();
-        // user_name and avatar
         user.user_name = profile.user_name;
         user.avatar = profile.avatar;
         // public conversation
@@ -2322,7 +2176,6 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
             .then(function(res) {
                 res.conversation_avatar = profile.avatar;
                 res.conversation_name = profile.user_name;
-                // CVN
                 updateConversationById(res._id, res);
                 deferred.resolve(user);
             });
@@ -2332,26 +2185,12 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
     //
     // Conversations
     //
-    // CVN
+
     UserData.getConversations = function() {
         var deferred = $q.defer();
         deferred.resolve(conversations);
         return deferred.promise;
     };
-    // CVN
-    /*
-    UserData.getConversationById = function(id) {
-        var deferred = $q.defer();
-        var index = General.findWithAttr(conversations, '_id', id);
-        // If the conversation exist then return it, otherwise return false.
-        if (index >= 0) {
-            deferred.resolve(conversations[index]);
-        } else {
-            deferred.resolve(false);
-        }
-        return deferred.promise;
-    };
-    */
 
     UserData.getConversationModelById = function(id) {
         var deferred = $q.defer();
@@ -2370,20 +2209,13 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
         return conversations_model;
     };
 
-    getConversationModel = function() {
-        return conversations_model;
-    };
-
     UserData.addConversationModel = function(conv) {
         var deferred = $q.defer();
         // Only add if the conversation does not already exist otherwise update.
         var index = General.findWithAttr(conversations_model, '_id', conv._id);
         if (index < 0) {
             // Add
-
             conversations_model.push(conv);
-            console.log(conversations_model);
-            console.log(conv);
         } else {
             // Update
             conversations_model[index] = conv;
@@ -2391,33 +2223,14 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
         deferred.resolve(conversations_model);
         return deferred.promise;
     };
-    //CVN
-    //UserData.findPublicConversation = function(user_id) {
+
     UserData.findPublicConversation = function() {
         var deferred = $q.defer();
-        //deferred.resolve(conversations);
         var index = General.findWithAttr(conversations_model, 'conversation_type', 'public');
         deferred.resolve(conversations_model[index]);
         return deferred.promise;
     };
-    // CVN
-    /*
-    UserData.addConversation = function(conv) {
-        var deferred = $q.defer();
-        // Only add if the conversation does not already exist otherwise update.
-        var index = General.findWithAttr(conversations, '_id', conv._id);
-        if (index < 0) {
-            // Add
-            conversations.push(conv);
-        } else {
-            // Update
-            conversations[index] = conv;
-        }
-        deferred.resolve(conversations);
-        return deferred.promise;
-    };
-    */
-    // CVN
+
     UserData.updateConversationById = function(id, conv) {
         var deferred = $q.defer();
         var index = General.findWithAttr(conversations, '_id', id);
@@ -2436,30 +2249,22 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
         var user_id = UserData.getUser()._id;
         Conversations.clearViewed(id, user_id)
             .then(function(res) {
-                console.log(res);
                 // Update the local model.
-                console.log(id);
-                console.log(UserData.getConversationModel());
                 UserData.getConversationModelById(id).then(function(result) {
-                    console.log(result);
-                    //UserData.getConversationById(id).then(function(result) {
                     var index = General.findWithAttr(result.participants, '_id', user_id);
                     result.participants[index].unviewed = [];
                     result.new_messages = 0;
-                    // CVN
-                    //UserData.updateConversationById(id, result);
                 });
 
             });
     };
-    // CVN
+
     UserData.loadConversations = function() {
         return Conversations.find().then(function(result) {
-            //console.log('RETURN 3 LC');
             conversations = result.data;
         });
     };
-    // CVN
+
     UserData.removeConversations = function(conversations_delete) {
         var deferred = $q.defer();
         var i = conversations.length;
@@ -2470,17 +2275,14 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
                 conversations.splice(i, 1);
             }
         }
-        //console.log('removeConversations FIN');
         deferred.resolve(conversations);
         return deferred.promise;
     };
 
     UserData.cleanConversations = function() {
-        console.log('cleanConversations');
         var deferred = $q.defer();
         var promises = [];
         var conversations_delete = [];
-        // CVN
         var result = UserData.getConversations()
             .then(function(res) {
                 res.map(function(key, array) {
@@ -2493,7 +2295,6 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
                         promises.push(Users.search_id(key.participants[index]._id)
                             .then(function(res) {
                                 if (res.data.error === 'null') {
-                                    // remove form contacts? delete_contacts.contacts.push(key);
                                     // remove this conversation as the user cannot be found.
                                     conversations_delete.push({ _id: key._id });
                                 }
@@ -2506,11 +2307,8 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
 
                 // All the conversations have been mapped.
                 $q.all(promises).then(function() {
-                    //console.log('cleanConversations ALL PROMESES');
-                    // CVN
                     UserData.removeConversations(conversations_delete)
                         .then(function() {
-                            //console.log('RETURN 5 CC');
                             deferred.resolve(conversations);
                         });
                 }).catch(function(err) {
@@ -2567,7 +2365,6 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
 
         // All the users have been mapped.
         $q.all(promises).then(function() {
-            //console.log('addConversationsUsers ALL PROMISES');
             deferred.resolve();
         }).catch(function(err) {
             // do something when any of the promises in array are rejected
@@ -2601,7 +2398,6 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
         var deferred = $q.defer();
         var promises = [];
         var temp_users = [];
-        // CVN
         var result = UserData.getConversations()
             .then(function(res) {
                 // Map all conversations.
@@ -2633,7 +2429,6 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
                 }));
                 // All the participants of all conversations have been mapped.
                 $q.all(promises).then(function() {
-                    //console.log('RETURN 6 LCU ALL PROMISES');
                     // reset the temp_users array.
                     temp_users = [];
                     deferred.resolve(res);
@@ -2652,7 +2447,6 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
         var deferred = $q.defer();
         var index = General.findWithAttr(cards_model, '_id', id);
         deferred.resolve(cards_model[index]);
-        //return  cards_model[index];
         return deferred.promise;
     };
 
@@ -2660,98 +2454,56 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
         var deferred = $q.defer();
         var promises = [];
         cards_model = [];
-        console.log('getConversation');
-        console.log(UserData.getConversationsBuild());
         var convs = UserData.getConversationsBuild();
         // Map all conversations.
-
         promises.push(convs.map(function(key, array) {
-            console.log('push1');
             promises.push(Conversations.getConversationById(key._id)
                 .then(function(result) {
-                    console.log('push2');
-                    console.log(result);
-                    //if (result.data.length > 0) {
                     var temp = { _id: key._id, data: [] };
                     promises.push(result.data.map(function(key, array) {
-                        console.log('push3');
-
                         // Store the original characters of the card.
                         key.original_content = key.content;
                         // Get the user name for the user id
                         // TODO dont repeat if user id already retreived
                         promises.push(UserData.getConversationsUser(key.user)
-                            //Users.search_id(key.user)
                             .then(function(res) {
-                                console.log('push4');
-                                console.log(res);
-
-                                //if (res.data.error === 'null') {
-                                // user cannot be found
-                                //}
-                                //if (res.data.success) {
                                 // Set the user_name to the retrieved name
                                 key.user_name = res.user_name;
                                 return;
-                                //}
                             })
                             .catch(function(error) {
                                 console.log('error: ' + error);
                             }));
                         temp.data.push(key);
-                        console.log('finished card: ' + key._id);
                     }));
-                    //}
-                    console.log('finished conv: ' + key._id);
-                    //console.log(temp);
-                    //temp.data = $filter('orderBy')(temp.data, 'updatedAt', true);
-                    //console.log(temp);
                     cards_model.push(temp);
-                    console.log(cards_model);
-
                 }));
-            console.log('here');
         }));
-        console.log(promises.length);
         // all conversations have been mapped.
         $q.all(promises).then(function() {
-            console.log('RETURN CARDS ALL PROMISES');
-            console.log(cards_model);
-            //$scope.person = $filter('orderBy')(person, 'name');
-            //cards_model = $filter('orderBy')(cards_model, 'updatedAt');
-            //console.log(cards_model);
-            //$filter('orderBy')(collection, expression, reverse, comparator);
-            // reset the temp_users array.
-            //temp_users = [];
             deferred.resolve();
         }).catch(function(err) {
             // do something when any of the promises in array are rejected
         });
         return deferred.promise;
-
     };
-
 
     //
     // Conversations - Latest cards
     //
 
     UserData.conversationsLatestCardAdd = function(id, data) {
-        console.log(id);
-        console.log(data);
         var deferred = $q.defer();
         var index = General.findWithAttr(conversationsLatestCard, '_id', id);
         // Add if conversationsLatestCard for with this id doesnt exist. otherwise update
         if (index >= 0) {
-            console.log('update');
+            // Update.
             conversationsLatestCard[index].data = data;
-            console.log(conversationsLatestCard);
             deferred.resolve(conversationsLatestCard);
         } else {
-            console.log('add');
+            // Add.
             var card = { _id: id, data: data };
             conversationsLatestCard.push(card);
-            console.log(conversationsLatestCard);
             deferred.resolve(conversationsLatestCard);
         }
         return deferred.promise;
@@ -2763,16 +2515,11 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
         return deferred.promise;
     };
 
-    getLatestCards = function() {
-        return conversationsLatestCard;
-    };
-
     UserData.getConversationLatestCardById = function(id) {
         var deferred = $q.defer();
         var index = General.findWithAttr(conversationsLatestCard, '_id', id);
         deferred.resolve(conversationsLatestCard[index]);
         return deferred.promise;
-
     };
 
     // Get the latest card posted to each conversation
@@ -2780,7 +2527,6 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
     UserData.getConversationsLatestCard = function() {
         var deferred = $q.defer();
         var promises = [];
-        // CVN
         var result = UserData.getConversations()
             .then(function(res) {
                 res.map(function(key, array) {
@@ -2795,7 +2541,6 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
                 });
                 // All the conversations have been mapped.
                 $q.all(promises).then(function() {
-                    //console.log('RETURN 7 GCLC ALL PROMISES');
                     deferred.resolve(res);
                 }).catch(function(err) {
                     // do something when any of the promises in array are rejected
@@ -2804,10 +2549,7 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
         return deferred.promise;
     };
 
-
     UserData.formatLatestCard = function(data, key) {
-        console.log(data);
-        console.log(key);
         var deferred = $q.defer();
         var promises = [];
         if (data != null) {
@@ -2821,11 +2563,8 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
             // Get the name of the user which sent the card.
             UserData.getConversationsUser(data.user)
                 .then(function(result) {
-                    console.log(result);
-                    console.log(UserData.getUser()._id);
                     // get the index position of the current user within the participants array
                     var user_pos = General.findWithAttr(key.participants, '_id', UserData.getUser()._id);
-                    console.log(user_pos);
                     if (user_pos >= 0) {
                         // get the currently stored unviewed cards for the current user
                         var user_unviewed = key.participants[user_pos].unviewed;
@@ -2902,7 +2641,6 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
         var deferred = $q.defer();
         var promises = [];
         // Find the conversations for current user
-        // CVN
         UserData.getConversations()
             .then(function(res) {
                 var conversations_raw = res;
@@ -2914,7 +2652,6 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
                                 return UserData.formatLatestCard(res.data, key)
                                     .then(function(result) {
                                         // Add this conversation to the conversations model
-                                        //$scope.conversations.push(result);
                                         return conversations_model.push(result);
                                     });
                             } else {
@@ -2924,7 +2661,6 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
                                     return UserData.formatLatestCard(res.data, key)
                                         .then(function(result) {
                                             // Add this conversation to the conversations model
-                                            //$scope.conversations.push(result);
                                             return conversations_model.push(result);
                                         });
                                 }
@@ -2933,8 +2669,6 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
                 });
                 // All the users conversations have been mapped.
                 $q.all(promises).then(function() {
-                    //console.log('buildConversations ALL PROMISES');
-                    //console.log('RETURN 8 BC');
                     deferred.resolve(conversations_model);
                 }).catch(function(err) {
                     // do something when any of the promises in array are rejected
@@ -2949,7 +2683,6 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
     //
 
     UserData.loadUserData = function() {
-        //console.log('LOADUSERDATA');
         var self = this;
         isLoading = true;
         var deferred = $q.defer();
@@ -2960,7 +2693,6 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
             return UserData.setUser(user);
         }).then(function() {
             //console.log('GET 3 LC');
-            // CVN
             return UserData.loadConversations();
         }).then(function() {
             //console.log('GET 4 LUC');
@@ -2991,8 +2723,7 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
             // Set loaded to true.
             $rootScope.loaded = true;
             isLoading = false;
-            console.log('FIN loadUserData');
-            //UserData.getConversation();
+            //console.log('FIN loadUserData');
             deferred.resolve();
         });
         return deferred.promise;
@@ -3000,7 +2731,6 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
 
     // Check whether the loadUserData is loading or has been loaded already.
     UserData.checkUser = function() {
-        // console.log('CHECK USER: ' + isLoading);
         var deferred = $q.defer();
         if (isLoading) {
             //console.log('already loading...wait');
@@ -3034,17 +2764,14 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
     } else {
         this.isAuthenticated = false;
     }
-
     return UserData;
-
 });
 
 
 cardApp.factory('Profile', function($rootScope, $window) {
-    //console.log('PROFILE FACTORY');
     var user;
     var conversation;
-    
+
     return {
         // User profile.
         getProfile: function() {
@@ -3059,11 +2786,8 @@ cardApp.factory('Profile', function($rootScope, $window) {
         },
         setConvProfile: function(value) {
             conversation = value;
-            console.log(conversation);
         },
     };
-
-
 });
 
 // Add the access token to every request to the server.
@@ -3088,30 +2812,3 @@ cardApp.config(['$httpProvider', function($httpProvider) {
     ];
     $httpProvider.interceptors.push(interceptor);
 }]);
-
-
-/*
-cardApp.directive('animationend', function() {
-    return {
-        restrict: 'A',
-        scope: {
-            animationend: '&'
-        },
-        link: function(scope, element) {
-            var callback = scope.animationend(),
-                events = 'animationend webkitAnimationEnd MSAnimationEnd' +
-                'transitionend webkitTransitionEnd';
-
-            element.on(events, function(event) {
-                if(callback){
-                callback.call(element[0], event);
-            }
-            });
-        }
-    };
-});
-*/
-
-
-
-

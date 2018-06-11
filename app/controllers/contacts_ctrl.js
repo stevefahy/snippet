@@ -60,20 +60,15 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     // Get the current users details
     if (principal.isValid()) {
         UserData.checkUser().then(function(result) {
-            console.log('start');
-            //UserData.getUser().then(function(result) {
             $scope.currentUser = UserData.getUser();
-
             // Default Group Image
             $scope.avatar = 'default';
             // Check if the page has been loaded witha param (user contacts import callback).
             if (paramValue != undefined && paramValue == 'import') {
-
                 // Set the navigation.
                 $scope.contactImportNoAnim();
                 // load this users list of imported user contacts
                 Contacts.getContacts().then(function(result) {
-                    console.log(result);
                     // Update the current user with the imported contacts.
                     $scope.currentUser = result.data;
                     // Update the local model with the imported contacts.
@@ -86,7 +81,6 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
                 loadUserContacts();
             }
         });
-        //});
     } else {
         $location.path("/api/login");
     }
@@ -233,7 +227,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
                 // Add this conversation to the local model.
                 UserData.addConversationModel(res.data)
                     .then(function(res) {
-                        console.log(res);
+                        //
                     });
 
                 var profile_obj = {};
@@ -315,10 +309,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     $scope.importContacts = function() {
         $scope.contacts_imported = true;
         // Always use /auth/google_contacts route (permission not granted) so that token can be returned.
-        //UserData.getUser().then (function(result){
         location.href = "/auth/google_contacts/" + UserData.getUser().google.email;
-        //});
-
     };
 
     $scope.cancelInvite = function(event) {
@@ -393,7 +384,6 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     };
 
     loadUserContacts = function() {
-        console.log('LUC in contacts');
         $scope.contacts = UserData.getContacts();
         checkImportedContacts();
     };
@@ -557,7 +547,6 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     });
 
     $(".show_image_transition").bind('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(event) {
-        console.log('IMAGE TRANSITION');
         $scope.image_drawer_opened = !$scope.image_drawer_opened;
     });
 
