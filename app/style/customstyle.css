@@ -1,7 +1,9 @@
 html,
 body {}
 
-html {}
+html {
+  touch-action: manipulation;
+}
 
 body {
     background-color: snow;
@@ -1521,7 +1523,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 .content_cnv_android::-webkit-scrollbar {}
 
 .content_cnv_android::-webkit-scrollbar-thumb {
-    /*background-color: #b0fccd;*/
+    background-color: #D3D3D3;
     border-radius: 1px;
 }
 
