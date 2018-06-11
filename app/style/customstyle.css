@@ -2242,12 +2242,12 @@ span#scroll_image_latest {
 }
 
 .page-conversation {
-    position: absolute;
+    /*position: absolute;*/
     z-index: 1000;
 }
 
 .page-conversations {
-    position: absolute;
+    /*position: absolute;*/
     z-index: 1;
 }
 
@@ -2269,7 +2269,7 @@ span#scroll_image_latest {
 /* conversation ---------------------- */
 
 .page-conversation.ng-leave {
-    -webkit-animation: slideOutRight .5s both ease-in;
+    -webkit-animation: slideOutRight .5s forwards;
 }
 
 .page-conversation.ng-leave .content_cnv {
@@ -2295,11 +2295,11 @@ overflow-y: hidden;
 /* slide out from the right */
 
 @keyframes slideOutRight {
-    from {
+    0% {
         transform: translateX(0);
     }
 
-    to {
+    100% {
         transform: translateX(100%);
     }
 }
@@ -2316,9 +2316,11 @@ overflow-y: hidden;
 
 /* conversations ---------------------- */
 
+/*
 .conversations-remain {
     -webkit-animation: .5s conversations-leave;
 }
+*/
 
 /*
 .page-conversations.ng-enter {
