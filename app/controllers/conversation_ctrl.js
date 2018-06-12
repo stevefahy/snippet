@@ -1,8 +1,8 @@
 cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', '$animate', function($scope, $rootScope, $location, $http, $window, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, $animate) {
 
-$rootScope.pageLoading = true;
-//$rootScope.cardLoading = true;
-    
+    $rootScope.pageLoading = true;
+    //$rootScope.cardLoading = true;
+
     // Animation
     $scope.pageClass = 'page-conversation';
 
@@ -398,9 +398,15 @@ $rootScope.pageLoading = true;
 
         UserData.getCardsModelById(id)
             .then(function(result) {
-                $scope.cards = result.data;
-                // Clear the cards unviewed arrary for this participant of this conversation.
-                updateConversationViewed(id);
+                console.log(result);
+                if (result != undefined) {
+                    $scope.cards = result.data;
+                    // Clear the cards unviewed array for this participant of this conversation.
+                    updateConversationViewed(id);
+                } else{
+                    $scope.cards = [];
+                    $rootScope.pageLoading = false;
+                }
             });
     };
 
