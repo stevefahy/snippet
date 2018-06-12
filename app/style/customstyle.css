@@ -443,10 +443,18 @@ font-size: 22px;
 /* HEADER CONV */
 
 .header_conv_name {
+     /*position: relative;
+    margin-left: 5px;
+    color: #000000;
+   
+    font-size: 16px;
+    font-weight: 500;
+    */
+    font-family: 'Raleway', sans-serif;
     position: relative;
     margin-left: 5px;
     color: #000000;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 500;
 }
 
