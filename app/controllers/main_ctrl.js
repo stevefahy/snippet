@@ -1,7 +1,7 @@
 cardApp.controller("MainCtrl", ['$scope', function($scope) {
 
 	console.log('MainCtrl');
-	$scope.dataLoading = false;
+	$rootScope.dataLoading = false;
 
 	 $scope.$on('$viewContentLoaded', function(){
     //Here your view content is fully loaded !!

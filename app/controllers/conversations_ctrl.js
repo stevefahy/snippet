@@ -3,7 +3,7 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
     // Animation
     $scope.pageClass = 'page-conversations';
 
-        $rootScope.dataLoading = true;
+    $rootScope.dataLoading = true;
 
     // variable to turn on animation of view chage. Loading conversation directly should not animate.
     $rootScope.animate_pages = true;
