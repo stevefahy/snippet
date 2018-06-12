@@ -1940,6 +1940,7 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
 
     $rootScope.loaded = false;
     var isLoading = false;
+    $rootScope.dataLoading = true;
 
     // Broadcast by Database createCard service when a new card has been created
     $rootScope.$on('CARD_CREATED', function(event, data) {
@@ -2722,6 +2723,7 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
             socket.connect(socket.getId());
             // Set loaded to true.
             $rootScope.loaded = true;
+            $rootScope.dataLoading = false;
             isLoading = false;
             //console.log('FIN loadUserData');
             deferred.resolve();
@@ -2812,3 +2814,17 @@ cardApp.config(['$httpProvider', function($httpProvider) {
     ];
     $httpProvider.interceptors.push(interceptor);
 }]);
+
+
+cardApp.directive('onFinishRender', function ($timeout) {
+    return {
+        restrict: 'A',
+        link: function (scope, element, attr) {
+            if (scope.$last === true) {
+                $timeout(function () {
+                    scope.$emit('ngRepeatFinished');
+                });
+            }
+        }
+    };
+});

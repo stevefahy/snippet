@@ -1,5 +1,7 @@
 cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', '$animate', function($scope, $rootScope, $location, $http, $window, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, $animate) {
 
+$rootScope.pageLoading = true;
+    
     // Animation
     $scope.pageClass = 'page-conversation';
 
@@ -7,6 +9,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $animate.enabled($rootScope.animate_pages);
 
     $scope.$on('$routeChangeStart', function($event, next, current) {
+        console.log('change');
         $animate.enabled(true);
     });
 
@@ -476,4 +479,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         // Clear the cards unviewed arrary for this participant of this conversation.
         updateConversationViewed(data.conversationId);
     };
+
+    $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
+        console.log('ngRepeatFinished');
+        $rootScope.pageLoading = false;
+    });
+
 }]);

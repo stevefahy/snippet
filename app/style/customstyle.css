@@ -2202,7 +2202,6 @@ position: absolute;
 
 /* LOADING SPINNER */
 
-
 #circularG{
     top: 40%;
 
@@ -2210,6 +2209,17 @@ position: absolute;
     width:58px;
     height:58px;
     margin: auto;
+}
+
+
+#circularG1{
+    top: 40%;
+
+    position:relative;
+    width:58px;
+    height:58px;
+    margin: auto;
+        background-color: bisque;
 }
 
 .circularG{

@@ -1,4 +1,4 @@
-cardApp.controller("MainCtrl", ['$scope', function($scope) {
+cardApp.controller("MainCtrl", ['$scope', '$rootScope', function($scope, $rootScope) {
 
 	console.log('MainCtrl');
 	$rootScope.dataLoading = false;

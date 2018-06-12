@@ -1,9 +1,7 @@
-cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$http', 'Invites', 'Email', 'Users', 'Conversations', '$q', 'FormatHTML', 'General', 'Profile', '$cookies', 'principal', 'UserData', function($scope, $rootScope, $location, $http, Invites, Email, Users, Conversations, $q, FormatHTML, General, Profile, $cookies, principal, UserData) {
+cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$http', 'Invites', 'Email', 'Users', 'Conversations', '$q', 'FormatHTML', 'General', 'Profile', '$cookies', '$timeout', 'principal', 'UserData', function($scope, $rootScope, $location, $http, Invites, Email, Users, Conversations, $q, FormatHTML, General, Profile, $cookies, $timeout, principal, UserData) {
 
     // Animation
     $scope.pageClass = 'page-conversations';
-
-    $rootScope.dataLoading = true;
 
     // variable to turn on animation of view chage. Loading conversation directly should not animate.
     $rootScope.animate_pages = true;
@@ -50,7 +48,10 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
             $rootScope.$broadcast('PROFILE_SET');
             // get the local conversations
             $scope.conversations = UserData.getConversationsBuild();
-            $rootScope.dataLoading = false;
+            console.log('cvns');
+            $timeout(function() {
+                $rootScope.dataLoading = false;
+            }, 200);
         });
     } else {
         $location.path("/api/login");
