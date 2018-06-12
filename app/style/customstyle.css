@@ -235,7 +235,7 @@ hr {
     display: flex;
     top: 0;
     background-color: #FFFFFF;
-    height: 50px;
+    height: 55px;
     padding-left: 1.25em;
     padding-right: 1.25em;
     align-items: center;
@@ -294,7 +294,7 @@ font-size: 22px;
     position: absolute;
     width: 100%;
     z-index: 1000;
-    height: 50px;
+    height: 55px;
     left: 0px;
     box-shadow: rgba(0, 0, 0, 0.14) 0px 4px 5px 0px, ;
     box-shadow: rgba(0, 0, 0, 0.14) 0px 4px 5px 0px, rgba(0, 0, 0, 0.12) 0px 1px 10px 0px, rgba(0, 0, 0, 0.2) 0px 2px 4px -1px;
