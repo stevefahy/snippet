@@ -1,19 +1,10 @@
 <div class="container_cnv">
     <div class="slide-animate header_container" ng-include="'/views/header_conv.html'"></div>
-    <div class="content_cnv" scroll-glue>
-                <div class="loading_screen" ng-if="$root.pageLoading">
-            <div id="circularG1">
-                <div id="circularG_1" class="circularG"></div>
-                <div id="circularG_2" class="circularG"></div>
-                <div id="circularG_3" class="circularG"></div>
-                <div id="circularG_4" class="circularG"></div>
-                <div id="circularG_5" class="circularG"></div>
-                <div id="circularG_6" class="circularG"></div>
-                <div id="circularG_7" class="circularG"></div>
-                <div id="circularG_8" class="circularG"></div>
-            </div>
-        </div>
-        <div class="" id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : false | limitTo:totalDisplayed" on-finish-render="ngRepeatFinished">
+    <div ng-if="$root.pageLoading" class="loading_screen">
+        <div ng-include="'/views/spinner.html'"></div>
+    </div>
+    <div class="content_cnv" ng-class="{ 'content_conv_off': $root.pageLoading}" scroll-glue>
+        <div id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : false | limitTo:totalDisplayed" on-finish-render="ngRepeatFinished">
             <div class=" resize-container" id="conversation_part" ng-init="disableCheckboxes(card._id)">
                 <form class="form-horizontal">
                     <div id="user">

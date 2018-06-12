@@ -1,6 +1,7 @@
 cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', '$animate', function($scope, $rootScope, $location, $http, $window, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, $animate) {
 
 $rootScope.pageLoading = true;
+//$rootScope.cardLoading = true;
     
     // Animation
     $scope.pageClass = 'page-conversation';
@@ -107,6 +108,7 @@ $rootScope.pageLoading = true;
                         if (result != undefined) {
                             console.log('cards ready');
                             $scope.cards = result.data;
+                            //$rootScope.pageLoading = false;
                         }
                     });
             });
@@ -482,6 +484,7 @@ $rootScope.pageLoading = true;
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
         console.log('ngRepeatFinished');
+        //$rootScope.cardLoading = false;
         $rootScope.pageLoading = false;
     });
 

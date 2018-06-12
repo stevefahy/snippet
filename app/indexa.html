@@ -100,17 +100,8 @@
     <div ng-controller="MainCtrl">
         <!--<ng-view class="main_view"></ng-view>-->
         <div class="page {{ pageClass }}" ng-view></div>
-        <div class="loading_screen" ng-if="$root.dataLoading">
-            <div id="circularG">
-                <div id="circularG_1" class="circularG"></div>
-                <div id="circularG_2" class="circularG"></div>
-                <div id="circularG_3" class="circularG"></div>
-                <div id="circularG_4" class="circularG"></div>
-                <div id="circularG_5" class="circularG"></div>
-                <div id="circularG_6" class="circularG"></div>
-                <div id="circularG_7" class="circularG"></div>
-                <div id="circularG_8" class="circularG"></div>
-            </div>
+        <div ng-if="$root.dataLoading">
+            <div class="data_loading_screen" ng-include="'/views/spinner.html'"></div>
         </div>
     </div>
     <!-- Hidden input field which gains focus while text formatting is being prepared -->

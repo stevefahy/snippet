@@ -50,7 +50,7 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
             $scope.conversations = UserData.getConversationsBuild();
             console.log('cvns');
             $timeout(function() {
-                $rootScope.dataLoading = false;
+                //$rootScope.dataLoading = false;
             }, 200);
         });
     } else {
