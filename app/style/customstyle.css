@@ -465,7 +465,13 @@ font-size: 22px;
 }
 
 .header_back {
-    z-index: 2000;
+   
+}
+
+.btn_zindex {
+     z-index: 2000;
+            padding: 5px;
+    margin: -5px;
 }
 
 
