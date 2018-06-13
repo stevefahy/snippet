@@ -1,4 +1,16 @@
-cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites', '$rootScope', '$location', '$http', '$window', '$routeParams', 'Users', 'Profile', 'Conversations', 'General', 'principal', 'UserData', function($scope, $timeout, Format, Invites, $rootScope, $location, $http, $window, $routeParams, Users, Profile, Conversations, General, principal, UserData) {
+cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites', '$rootScope', '$location', '$http', '$window', '$routeParams', 'Users', 'Profile', 'Conversations', 'General', 'principal', 'UserData', '$animate', function($scope, $timeout, Format, Invites, $rootScope, $location, $http, $window, $routeParams, Users, Profile, Conversations, General, principal, UserData, $animate) {
+
+    // Animation
+    $scope.pageClass = 'page-user_setting';
+
+    // Loading conversation directly should not animate.
+    $animate.enabled($rootScope.animate_pages);
+
+    $scope.$on('$routeChangeStart', function($event, next, current) {
+        console.log('change');
+        $animate.enabled(true);
+    });
+
 
     $scope.myImage = '';
     $scope.myCroppedImage = '';
@@ -21,6 +33,7 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
     // Get User details.
     if (principal.isValid()) {
         UserData.checkUser().then(function(result) {
+            $scope.currentUser = UserData.getUser();
             $scope.currentFullUser = UserData.getUser();
             $scope.user_name = UserData.getUser().user_name;
             var loaded_user_name = UserData.getUser().user_name;

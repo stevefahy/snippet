@@ -6,7 +6,7 @@ html {
 }
 
 body {
-    background-color: snow;
+    background-color: #FFFFFF;
     word-wrap: normal;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arimo, Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
     font-size: 1rem;
@@ -444,14 +444,6 @@ font-size: 22px;
 /* HEADER CONV */
 
 .header_conv_name {
-     /*position: relative;
-    margin-left: 5px;
-    color: #000000;
-   
-    font-size: 16px;
-    font-weight: 500;
-    */
-    /*font-family: 'Raleway', sans-serif;*/
     position: relative;
     margin-left: 10px;
     color: #000000;
@@ -469,14 +461,10 @@ font-size: 22px;
 }
 
 .btn_zindex {
-     z-index: 2000;
-            padding: 5px;
+    z-index: 2000;
+    padding: 5px;
     margin: -5px;
 }
-
-
-
-
 
 
 /* HEADER CONTACTS */
@@ -1494,7 +1482,8 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     overflow-x: hidden;
     height: calc(100%);
     border-radius: 1px;
-    background-color: snow;
+    /*background-color: snow;*/
+    background-color: #FFFFFF;
     /*direction: rtl;*/
 }
 
@@ -2562,8 +2551,28 @@ fieldset[disabled] .btn-google.focus {
     z-index: 1;
 }
 
+.page-user_setting {
+    z-index: 2000;
+}
 
 
+/* page-user_setting */
+
+.page-user_setting.ng-leave {
+     -webkit-animation: slideOutRight .5s forwards;
+}
+
+.page-user_setting.ng-leave .content_cnv {
+    overflow-y: hidden;
+}
+
+.page-user_setting.ng-enter {
+    -webkit-animation: slide-in .5s forwards;
+}
+
+.page-user_setting.ng-enter.ng-enter-active .content_cnv {
+    overflow-y: hidden;
+}
 
 /* conversations ---------------------- */
 

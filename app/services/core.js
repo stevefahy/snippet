@@ -2173,11 +2173,11 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
         user.user_name = profile.user_name;
         user.avatar = profile.avatar;
         // public conversation
-        findPublicConversation(UserData.getUser()._id)
+        UserData.findPublicConversation(UserData.getUser()._id)
             .then(function(res) {
                 res.conversation_avatar = profile.avatar;
                 res.conversation_name = profile.user_name;
-                updateConversationById(res._id, res);
+                UserData.updateConversationById(res._id, res);
                 deferred.resolve(user);
             });
         return deferred.promise;
