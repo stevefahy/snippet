@@ -2175,6 +2175,7 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
         // public conversation
         UserData.findPublicConversation(UserData.getUser()._id)
             .then(function(res) {
+                res.avatar = profile.avatar;
                 res.conversation_avatar = profile.avatar;
                 res.conversation_name = profile.user_name;
                 UserData.updateConversationById(res._id, res);

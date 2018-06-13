@@ -7,6 +7,19 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
     $rootScope.animate_pages = true;
     // array of conversations
     $scope.conversations = [];
+
+        // Broadcast by Database updateCard service when a card has been updated.
+    $scope.$on('CONV_UPDATED', function(event, data) {
+        console.log(data);
+        /*
+        var card_pos = General.findWithAttr($scope.cards, '_id', data._id);
+        if (card_pos >= 0) {
+            $scope.cards[card_pos].updatedAt = data.updatedAt;
+            $scope.cards[card_pos].original_content = $scope.cards[card_pos].content;
+        }
+        */
+    });
+
     // Continue chat
     $scope.chat = function(conversation_id, conversation, index) {
         // Set profile change for the conversation.
@@ -48,10 +61,6 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
             $rootScope.$broadcast('PROFILE_SET');
             // get the local conversations
             $scope.conversations = UserData.getConversationsBuild();
-            console.log('cvns');
-            $timeout(function() {
-                //$rootScope.dataLoading = false;
-            }, 200);
         });
     } else {
         $location.path("/api/login");

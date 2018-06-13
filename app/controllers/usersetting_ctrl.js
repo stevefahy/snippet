@@ -2,12 +2,10 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
 
     // Animation
     $scope.pageClass = 'page-user_setting';
-
     // Loading conversation directly should not animate.
     $animate.enabled($rootScope.animate_pages);
-
+    // turn on animation.
     $scope.$on('$routeChangeStart', function($event, next, current) {
-        console.log('change');
         $animate.enabled(true);
     });
 
