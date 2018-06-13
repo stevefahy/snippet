@@ -1163,7 +1163,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 }
 
 .contacts_container {
-    height: calc(100% - 130px);
+    height: calc(100% - 115px);
     opacity: 0;
 }
 
@@ -1497,6 +1497,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     overflow-x: hidden;
     height: calc(100%);
     border-radius: 1px;
+    background-color: #FFFFFF;
 }
 
 .content_cnv_scroll {
@@ -1580,14 +1581,19 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     margin-left: -200vw;
 }
 
+.content_conv_hide {
+    display: none;
+}
+
 .content_conv_search {
     position: absolute;
     width: 100vw;
     overflow-y: hidden;
     overflow-x: hidden;
-    height: calc(100% - 130px);
+    height: calc(100% - 115px);
     border-radius: 1px;
-    top: 70px;
+    background-color: #FFFFFF;
+    /*top: 70px;*/
 }
 
 .content_conv_search_100 {
@@ -1598,14 +1604,23 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     margin-left: 200vw;
 }
 
+.content_conv_search_hide {
+    display: none;
+}
+
 .content_conv_import {
     position: absolute;
     width: 100vw;
     overflow-y: hidden;
     overflow-x: hidden;
-    height: calc(100% - 130px);
+    height: calc(100% - 115px);
     border-radius: 1px;
-    top: 70px;
+    background-color: #FFFFFF;
+    /*top: 70px;*/
+}
+
+.content_conv_import_hide {
+    display: none;
 }
 
 .content_conv_import_100 {
@@ -2555,6 +2570,27 @@ fieldset[disabled] .btn-google.focus {
     z-index: 2000;
 }
 
+.page-contacts {
+    z-index: 2000;
+}
+
+/* page-contacts */
+
+.page-contacts.ng-leave {
+     -webkit-animation: slideOutRight .5s forwards;
+}
+
+.page-contacts.ng-leave .content_cnv {
+    overflow-y: hidden;
+}
+
+.page-contacts.ng-enter {
+    -webkit-animation: slide-in .5s forwards;
+}
+
+.page-contacts.ng-enter.ng-enter-active .content_cnv {
+    overflow-y: hidden;
+}
 
 /* page-user_setting */
 
@@ -2587,9 +2623,6 @@ fieldset[disabled] .btn-google.focus {
         transform: translateX(100%);
     }
 }
-
-
-
 
 
 /* conversation ---------------------- */

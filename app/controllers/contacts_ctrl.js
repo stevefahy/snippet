@@ -1,4 +1,4 @@
-cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location', '$http', '$timeout', 'principal', 'UserData', 'Invites', 'Email', 'Users', 'Conversations', 'Profile', 'General', 'Format', 'Contacts', '$q', function($scope, $route, $rootScope, $location, $http, $timeout, principal, UserData, Invites, Email, Users, Conversations, Profile, General, Format, Contacts, $q) {
+cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location', '$http', '$timeout', 'principal', 'UserData', 'Invites', 'Email', 'Users', 'Conversations', 'Profile', 'General', 'Format', 'Contacts', '$q', '$animate', function($scope, $route, $rootScope, $location, $http, $timeout, principal, UserData, Invites, Email, Users, Conversations, Profile, General, Format, Contacts, $q, $animate) {
 
 
     // TODO - make sure two users cant create a 2 person conv with each other at the same time.
@@ -8,6 +8,22 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
 
     // Animation
     $scope.pageClass = 'page-contacts';
+    // Loading conversation directly should not animate.
+    $animate.enabled($rootScope.animate_pages);
+    // turn on animation.
+    $scope.contact_back = false;
+    $scope.$on('$routeChangeStart', function($event, next, current) {
+        console.log('start');
+        $animate.enabled(true);
+
+        //if($scope.contacts_sel != true){
+          //  console.log('not contacts');
+            //$scope.contact_back = true;
+                    //$scope.search_sel = true;
+        //$scope.import_sel = false;
+        //$scope.contacts_sel = false;
+        //}
+    });
     // Check if the page has been loaded witha param (user contacts import callback).
     var paramValue = $route.current.$$route.menuItem;
     // Stop listening for Mobile soft keyboard.
@@ -84,6 +100,20 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     } else {
         $location.path("/api/login");
     }
+
+    $scope.pageAnimationStart = function(){
+        console.log('pageAnimationStart');
+        if($scope.search_sel){
+            console.log('search back');
+            $scope.search_back = true;
+                    //$scope.search_sel = true;
+        //$scope.import_sel = false;
+        //$scope.contacts_sel = false;
+        } else if ($scope.import_sel == true) {
+            console.log('import back');
+            $scope.import_back = true;
+        }
+    };
 
     // Navigation functions
     $scope.contactSearch = function() {

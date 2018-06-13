@@ -6,7 +6,7 @@
         <!-- IMPORT -->
         <!---->
         <!---->
-        <div class="content_conv_import contacts_transition" ng-class="{ 'content_conv_import_100': contacts_sel, 'content_conv_import_200': search_sel}">
+        <div class="content_conv_import contacts_transition" ng-class="{ 'content_conv_import_100': contacts_sel, 'content_conv_import_200': search_sel, 'content_conv_import_hide': search_back}">
             <div class="invite_div" ng-class="{ 'invite_div_off': invite_selected}" ng-click="invite_selected || selectInvite()">
                 <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
                     <div class="convs_container contacts_invite_container contacts_transition" ng-class="{'contacts_invite_container_on': invite_selected}">
@@ -97,7 +97,7 @@
         <!-- SEARCH -->
         <!---->
         <!---->
-        <div class="content_conv_search contacts_transition" ng-class="{ 'content_conv_search_100': import_sel, 'content_conv_search_200': contacts_sel}">
+        <div class="content_conv_search contacts_transition" ng-class="{ 'content_conv_search_100': import_sel, 'content_conv_search_200': contacts_sel, 'content_conv_search_hide': contacts_sel_hide}">
             <div>
                 <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
                     <div class="convs_container contacts_search_container">
@@ -141,8 +141,7 @@
         <!-- CONTACTS -->
         <!---->
         <!---->
-        <div class="content_cnv_top contacts_transition" ng-class="{ 'content_conv_100': import_sel,
-        'content_conv_200': search_sel}">
+        <div class="content_cnv_top contacts_transition" ng-class="{ 'content_conv_100': import_sel, 'content_conv_200': search_sel, 'content_conv_hide': import_back}">
             <!---->
             <!-- CONTACTS GROUP -->
             <!---->

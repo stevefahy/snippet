@@ -1,19 +1,24 @@
-<div class="header">
-    <div class="header_back"><a href ng-click="changePath('/chat/conversations')"><i class="material-icons header-mi">&#xE5C4;</i></a></div>
-    <div class="header_conv_name">CONTACTS</div>
-    <div class="header_contacts_container">
-        <div class="header_contacts hcc">
-            <a href="" ng-click="contactContacts()">
+<div ng-controller="headerCtrl">
+    <div class="header">
+        <a class="btn_zindex" href ng-click="changePath('/chat/conversations')">
+            <div class="header_back">
+                <i class="material-icons header-mi">&#xE5C4;</i>
+            </div>
+        </a>
+        <div class="header_conv_name">CONTACTS</div>
+        <div class="header_contacts_container">
+            <div class="header_contacts hcc">
+                <a href="" ng-click="contactContacts()">
                     <i class="material-icons mi-people_contacts transition_5" ng-class="{ 'mi-people_contacts_n': !contacts_sel}" id="mi-people_contacts" >&#xE7FB;</i>
                 </a>
-        </div>
-        <div class="header_import hcc">
-            <a href="" ng-click="contactImport()"><i class="material-icons mi-import_contacts transition_5" ng-class="{ 'mi-import_contacts_n': !import_sel}" id="mi-import_contacts">&#xE0E0;</i></a>
-        </div>
-        <div class="header_search hcc">
-            <a href="" ng-click="contactSearch()"><i class="material-icons mi-search_contacts transition_5" ng-class="{ 'mi-search_contacts_n': !search_sel}" id="mi-search_contacts">&#xE8B6;</i></a>
+            </div>
+            <div class="header_import hcc">
+                <a href="" ng-click="contactImport()"><i class="material-icons mi-import_contacts transition_5" ng-class="{ 'mi-import_contacts_n': !import_sel}" id="mi-import_contacts">&#xE0E0;</i></a>
+            </div>
+            <div class="header_search hcc">
+                <a href="" ng-click="contactSearch()"><i class="material-icons mi-search_contacts transition_5" ng-class="{ 'mi-search_contacts_n': !search_sel}" id="mi-search_contacts">&#xE8B6;</i></a>
+            </div>
         </div>
     </div>
+    <div class="header_bottom"></div>
 </div>
-</div>
-<div class="header_bottom"></div>

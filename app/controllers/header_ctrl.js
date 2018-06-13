@@ -39,6 +39,7 @@ cardApp.controller("headerCtrl", ['Profile', '$scope', '$rootScope', '$location'
 
     $scope.changePath = function(path) {
         $location.path(path);
+        $scope.pageAnimationStart();
     };
 
 }]);
