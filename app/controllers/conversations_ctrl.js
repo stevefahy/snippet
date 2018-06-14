@@ -76,6 +76,7 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
         // Find the username then redirect to the conversation.
         UserData.getConversationsUser(admin[0])
             .then(function(result) {
+                $rootScope.nav = { from: 'convs', to: 'conv' };
                 $location.path("/" + result.google.name);
             });
     };
