@@ -1,4 +1,4 @@
-cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location', '$http', '$timeout', 'principal', 'UserData', 'Invites', 'Email', 'Users', 'Conversations', 'Profile', 'General', 'Format', 'Contacts', '$q', '$animate', 'viewAnimationsService', function($scope, $route, $rootScope, $location, $http, $timeout, principal, UserData, Invites, Email, Users, Conversations, Profile, General, Format, Contacts, $q, $animate, viewAnimationsService) {
+cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$location', '$http', '$timeout', 'principal', 'UserData', 'Invites', 'Email', 'Users', 'Conversations', 'Profile', 'General', 'Format', 'Contacts', '$q', '$animate', 'viewAnimationsService', function($scope, $route, $rootScope, $location, $http, $timeout, principal, UserData, Invites, Email, Users, Conversations, Profile, General, Format, Contacts, $q, $animate, viewAnimationsService) {
 
 
     // TODO - make sure two users cant create a 2 person conv with each other at the same time.
@@ -7,9 +7,9 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     // TODO - make sure only one chat created with aother single user.
 
     // Animation
-    $rootScope.nav = { from: 'contacts', to: 'convs' };
-    viewAnimationsService.setEnterAnimation('page-contacts');
-    viewAnimationsService.setLeaveAnimation('static');
+    $rootScope.nav = { from: 'group', to: 'conv' };
+    viewAnimationsService.setEnterAnimation('page-group');
+    viewAnimationsService.setLeaveAnimation('page-group');
     // Loading conversation directly should not animate.
     $animate.enabled($rootScope.animate_pages);
     // turn on animation.
@@ -102,6 +102,14 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
             $scope.import_back = true;
         }
     };
+    /*
+        $scope.resetPage = function() {
+            console.log('resetPage');
+            //$scope.pageClass = 'page-group';
+            //$animate.enabled(false);
+            //$scope.pageClass = 'page-conversation_group';
+        };
+        */
 
     // Navigation functions
     $scope.contactSearch = function() {

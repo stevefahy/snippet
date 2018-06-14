@@ -1,4 +1,4 @@
-cardApp.controller("headerCtrl", ['Profile', '$scope', '$rootScope', '$location', '$http', function(Profile, $scope, $rootScope, $location, $http) {
+cardApp.controller("headerCtrl", ['Profile', 'Conversations', '$scope', '$rootScope', '$location', '$http', 'viewAnimationsService', function(Profile, Conversations, $scope, $rootScope, $location, $http, viewAnimationsService) {
 
     displayProfile = function() {
         var user;
@@ -39,7 +39,32 @@ cardApp.controller("headerCtrl", ['Profile', '$scope', '$rootScope', '$location'
 
     $scope.changePath = function(path) {
         $location.path(path);
-        $scope.pageAnimationStart();
     };
+
+    /*
+    $scope.changePathConversations = function(){
+        //$rootScope.nav = {from:'conv', to:'convs'};
+        $location.path('/chat/conversations');
+    };
+    */
+    /*
+    $scope.changePathContacts = function(path) {
+        $location.path(path);
+    };
+    */
+
+    $scope.changePathConversation = function() {
+        var id = Conversations.getConversationId();
+        //$rootScope.nav = {from:'group', to:'conv'};
+        $location.path('chat/conversation/' + id);
+    };
+
+    /*
+    $scope.returnConversation = function() {
+        var id = Conversations.getConversationId();
+        $rootScope.nav = {from:'conv', to:'convs'};
+        $location.path('chat/conversation/' + id);
+    };
+    */
 
 }]);

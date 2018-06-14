@@ -53,6 +53,10 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
             templateUrl: '/views/user_setting.html',
             controller: 'usersettingCtrl'
         })
+        .when("/api/group_info", {
+            templateUrl: '/views/group.html',
+            controller: 'groupCtrl'
+        })
         .when("/api/logout", {
             templateUrl: '/views/login.html',
             controller: 'loginCtrl'
@@ -2817,15 +2821,62 @@ cardApp.config(['$httpProvider', function($httpProvider) {
 }]);
 
 
-cardApp.directive('onFinishRender', function ($timeout) {
+cardApp.directive('onFinishRender', function($timeout) {
     return {
         restrict: 'A',
-        link: function (scope, element, attr) {
+        link: function(scope, element, attr) {
             if (scope.$last === true) {
-                $timeout(function () {
+                $timeout(function() {
                     scope.$emit('ngRepeatFinished');
                 });
             }
+        }
+    };
+});
+
+
+cardApp.factory('viewAnimationsService', function($rootScope) {
+
+    var enterAnimation;
+
+    var getEnterAnimation = function() {
+        return enterAnimation;
+    };
+
+    var setEnterAnimation = function(animation) {
+        enterAnimation = animation;
+    };
+
+    var setLeaveAnimation = function(animation) {
+        $rootScope.$emit('event:newLeaveAnimation', animation);
+    };
+
+    return {
+        getEnterAnimation: getEnterAnimation,
+        setEnterAnimation: setEnterAnimation,
+        setLeaveAnimation: setLeaveAnimation
+    };
+});
+
+cardApp.directive('viewAnimations', function(viewAnimationsService, $rootScope) {
+    return {
+        restrict: 'A',
+        link: function(scope, element) {
+
+            var previousEnter, previousLeave;
+
+            var enterAnimation = viewAnimationsService.getEnterAnimation();
+            if (enterAnimation) {
+                if (previousEnter) element.removeClass(previousEnter);
+                previousEnter = enterAnimation;
+                element.addClass(enterAnimation);
+            }
+
+            $rootScope.$on('event:newLeaveAnimation', function(event, leaveAnimation) {
+                if (previousLeave) element.removeClass(previousLeave);
+                previousLeave = leaveAnimation;
+                element.addClass(leaveAnimation);
+            });
         }
     };
 });

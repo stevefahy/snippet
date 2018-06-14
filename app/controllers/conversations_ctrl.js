@@ -1,14 +1,45 @@
-cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$http', 'Invites', 'Email', 'Users', 'Conversations', '$q', 'FormatHTML', 'General', 'Profile', '$cookies', '$timeout', 'principal', 'UserData', function($scope, $rootScope, $location, $http, Invites, Email, Users, Conversations, $q, FormatHTML, General, Profile, $cookies, $timeout, principal, UserData) {
+cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$http', 'Invites', 'Email', 'Users', 'Conversations', '$q', 'FormatHTML', 'General', 'Profile', '$cookies', '$timeout', 'principal', 'UserData', 'viewAnimationsService', function($scope, $rootScope, $location, $http, Invites, Email, Users, Conversations, $q, FormatHTML, General, Profile, $cookies, $timeout, principal, UserData, viewAnimationsService) {
 
-    // Animation
-    $scope.pageClass = 'page-conversations';
+    console.log($rootScope.nav);
+    /*
+    if ($rootScope.nav) {
+        if ($rootScope.nav.from == 'convs') {
+            console.log('DEFAULT');
+            //viewAnimationsService.setEnterAnimation('page-conversations');
+            //viewAnimationsService.setLeaveAnimation('page-conversation');
+        } else if ($rootScope.nav.from == 'conv') {
+            console.log('DEFAULT 2');
+            $('#page-system').removeClass("page-conversation-static");
+            $('#page-system').addClass("page-conversation");
+            viewAnimationsService.setEnterAnimation('page-conversations');
+            viewAnimationsService.setLeaveAnimation('page-conversation');
+        } else if ($rootScope.nav.from == 'group') {
+            console.log('conv from group');
+            // viewAnimationsService.setEnterAnimation('page-conversations');
+            // viewAnimationsService.setLeaveAnimation('page-conversation');
+        } else if ($rootScope.nav.from == 'contacts') {
+            console.log('convs from contacts');
+            viewAnimationsService.setEnterAnimation('page-conversations');
+            viewAnimationsService.setLeaveAnimation('page-conversation');
+        }
+    }
+    */
+    if ($rootScope.nav) {
+        $('#page-system').removeClass("page-conversation-static");
+        $('#page-system').addClass("page-conversation");
+        viewAnimationsService.setEnterAnimation('page-conversations');
+        viewAnimationsService.setLeaveAnimation('page-conversation');
+    }
+
 
     // variable to turn on animation of view chage. Loading conversation directly should not animate.
     $rootScope.animate_pages = true;
     // array of conversations
     $scope.conversations = [];
 
-        // Broadcast by Database updateCard service when a card has been updated.
+
+
+    // Broadcast by Database updateCard service when a card has been updated.
     $scope.$on('CONV_UPDATED', function(event, data) {
         console.log(data);
         /*
@@ -28,6 +59,10 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
         profile_obj.avatar = conversation.avatar;
         Profile.setConvProfile(profile_obj);
         // redirect to the chat
+
+        $rootScope.nav = { from: 'convs', to: 'conv' };
+        //viewAnimationsService.setEnterAnimation('page-conversation');
+        //viewAnimationsService.setLeaveAnimation('page-conversation-static');
         $location.path("/chat/conversation/" + conversation_id);
     };
 

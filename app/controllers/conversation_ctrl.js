@@ -1,23 +1,30 @@
-cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', '$animate', function($scope, $rootScope, $location, $http, $window, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, $animate) {
+cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', '$animate', 'viewAnimationsService', function($scope, $rootScope, $location, $http, $window, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, $animate, viewAnimationsService) {
 
     $rootScope.pageLoading = true;
-    //$rootScope.cardLoading = true;
 
-    // Animation
-    $scope.pageClass = 'page-conversation';
+    console.log($rootScope.nav);
+
+    // Default navigation
+    viewAnimationsService.setEnterAnimation('page-conversation');
+    viewAnimationsService.setLeaveAnimation('page-conversation-static');
+
+    if ($rootScope.nav.from == 'group') {
+        viewAnimationsService.setEnterAnimation('page-conversation-static');
+        viewAnimationsService.setLeaveAnimation('page-conversation');
+    }
+
+    $rootScope.nav = { from: 'conv', to: 'convs' };
+
+    $scope.changePathGroup = function(){
+    //$scope.groupInfo = function() {
+        $rootScope.nav = { from: 'conv', to: 'group' };
+        viewAnimationsService.setLeaveAnimation('page page-conversation');
+        viewAnimationsService.setEnterAnimation('page page-group');
+        $location.path("/api/group_info");
+    };
 
     // Loading conversation directly should not animate.
     $animate.enabled($rootScope.animate_pages);
-
-    $scope.$on('$routeChangeStart', function($event, next, current) {
-        console.log('change');
-        $animate.enabled(true);
-    });
-
-    $scope.$on('$viewContentLoaded', function() {
-        console.log('conversation view loaded');
-    });
-
 
     // Listen for the end of the view transition.
     $(".page").on("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend", function(e) {
@@ -106,7 +113,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 UserData.getCardsModelById(result)
                     .then(function(result) {
                         if (result != undefined) {
-                            console.log('cards ready');
+                            //console.log('cards ready');
                             $scope.cards = result.data;
                             //$rootScope.pageLoading = false;
                         }
@@ -165,6 +172,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }
         }, 0);
     };
+
+
+
+
 
     function comparer(otherArray) {
         return function(current) {
@@ -398,12 +409,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
         UserData.getCardsModelById(id)
             .then(function(result) {
-                console.log(result);
                 if (result != undefined) {
                     $scope.cards = result.data;
                     // Clear the cards unviewed array for this participant of this conversation.
                     updateConversationViewed(id);
-                } else{
+                } else {
                     $scope.cards = [];
                     $rootScope.pageLoading = false;
                 }
@@ -489,7 +499,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
-        console.log('ngRepeatFinished');
+        //console.log('ngRepeatFinished');
         //$rootScope.cardLoading = false;
         $rootScope.pageLoading = false;
     });

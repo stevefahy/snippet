@@ -874,6 +874,8 @@ form.form-horizontal.ng-valid.ng-dirty.ng-valid-parse {
 
 .edit {
     float: right;
+    margin-left: auto;
+    z-index: 2000;
 }
 
 div#user {
@@ -2562,6 +2564,10 @@ fieldset[disabled] .btn-google.focus {
     z-index: 1000;
 }
 
+.page-conversation-static {
+     z-index: 1000;
+}
+
 .page-conversations {
     z-index: 1;
 }
@@ -2571,7 +2577,42 @@ fieldset[disabled] .btn-google.focus {
 }
 
 .page-contacts {
-    z-index: 2000;
+    z-index: 4000;
+}
+
+.page-group {
+    z-index: 3000;
+}
+
+.pause.ng-leave {
+    -webkit-animation: .5s conversations-leave;
+}
+
+.pause.ng-enter {
+    -webkit-animation: .5s conversations-leave;
+}
+
+
+/* page-group */
+
+.page-group-leave.ng-leave {
+    -webkit-animation: .5s conversations-leave;
+}
+
+.page-group.ng-leave {
+     -webkit-animation: slideOutRight .5s forwards;
+}
+
+.page-group.ng-leave .content_cnv {
+    overflow-y: hidden;
+}
+
+.page-group.ng-enter {
+    -webkit-animation: slide-in .5s forwards;
+}
+
+.page-group.ng-enter.ng-enter-active .content_cnv {
+    overflow-y: hidden;
 }
 
 /* page-contacts */
@@ -2626,6 +2667,43 @@ fieldset[disabled] .btn-google.focus {
 
 
 /* conversation ---------------------- */
+/*
+.page-conversation-enter {
+    -webkit-animation: slide-in .5s forwards;
+}
+
+.page-conversation-leave {
+    -webkit-animation: slideOutRight .5s forwards;
+}
+*/
+
+.left-to-right.ng-leave {
+    -webkit-animation: slideOutRight 5s forwards;
+}
+
+.left-to-right.ng-enter {
+    -webkit-animation: slide-in 5s forwards;
+}
+
+.static.ng-leave {
+-webkit-animation: 5s conversations-leave;
+}
+
+.static.ng-enter {
+-webkit-animation: 5s conversations-leave;
+}
+
+.page-conversation_group.ng-leave {
+    -webkit-animation: .5s conversations-leave;
+    /*-webkit-animation: slideOutRight .5s forwards;*/
+}
+
+.page-conversation_group.ng-enter {
+    -webkit-animation: .5s conversations-leave;
+    /*-webkit-animation: slide-in 50s forwards;*/
+}
+
+
 
 .page-conversation.ng-leave {
     -webkit-animation: slideOutRight .5s forwards;
@@ -2633,6 +2711,15 @@ fieldset[disabled] .btn-google.focus {
 
 .page-conversation.ng-leave .content_cnv {
     overflow-y: hidden;
+}
+
+.page-conversation-static.ng-enter {
+     -webkit-animation: 5s conversations-leave;
+}
+
+.page-conversation-static.ng-leave {
+     -webkit-animation: 5s conversations-leave;
+     /* -webkit-animation: slideOutRight 5s forwards;*/
 }
 
 .page-conversation.ng-enter {
