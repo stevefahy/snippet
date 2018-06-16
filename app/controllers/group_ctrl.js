@@ -1,10 +1,4 @@
-cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$location', '$http', '$timeout', 'principal', 'UserData', 'Invites', 'Email', 'Users', 'Conversations', 'Profile', 'General', 'Format', 'Contacts', '$q', '$animate', 'viewAnimationsService', function($scope, $route, $rootScope, $location, $http, $timeout, principal, UserData, Invites, Email, Users, Conversations, Profile, General, Format, Contacts, $q, $animate, viewAnimationsService) {
-
-
-    // TODO - make sure two users cant create a 2 person conv with each other at the same time.
-    // Add users to each others contacts when conv created?
-    // TODO - make sure two users cannot create a chat simultanously
-    // TODO - make sure only one chat created with aother single user.
+cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams', '$location', '$http', '$timeout', 'principal', 'UserData', 'Invites', 'Email', 'Users', 'Conversations', 'Profile', 'General', 'Format', 'Contacts', '$q', '$animate', 'viewAnimationsService', function($scope, $route, $rootScope, $routeParams, $location, $http, $timeout, principal, UserData, Invites, Email, Users, Conversations, Profile, General, Format, Contacts, $q, $animate, viewAnimationsService) {
 
     // Animation
     $rootScope.nav = { from: 'group', to: 'conv' };
@@ -17,8 +11,12 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$location', 
     $scope.$on('$routeChangeStart', function($event, next, current) {
         $animate.enabled(true);
     });
+
+    // Use the urls id param from the route to load the conversation.
+    var id = $routeParams.id;
+
     // Check if the page has been loaded witha param (user contacts import callback).
-    var paramValue = $route.current.$$route.menuItem;
+    //var paramValue = $route.current.$$route.menuItem;
     // Stop listening for Mobile soft keyboard.
     General.keyBoardListenStop();
     // Contacts animation
@@ -32,6 +30,7 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$location', 
     $scope.user_contacts = [];
     $scope.contacts_imported = false;
     $scope.contacts = [];
+    $scope.participants = [];
     $scope.search_results = [];
     // contacts selected
     $scope.selected = [];
@@ -57,6 +56,9 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$location', 
     $scope.myCroppedImage = '';
     $scope.image_loaded = false;
 
+    $scope.is_admin = false;
+    $scope.conversation ='';
+
     //The minimum number of characters a user must type before a search is performed.
     var SEARCH_MIN = 3;
     var SELECTED_DRAWER_WAIT = 100;
@@ -66,13 +68,67 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$location', 
     var myImageName = '';
     var mySavedImage = '';
 
+    $scope.isAdmin = function(id){
+        if($scope.conversation.admin.includes(id)) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
     // Get the current users details
     if (principal.isValid()) {
         UserData.checkUser().then(function(result) {
             $scope.currentUser = UserData.getUser();
             // Default Group Image
             $scope.avatar = 'default';
+
+            UserData.getConversationModelById(id)
+                .then(function(res) {
+                    console.log(res);
+                    $scope.conversation = res;
+                    if (res.admin.includes(UserData.getUser()._id)) {
+                        console.log('is admin');
+                        $scope.is_admin = true;
+                    }
+
+                    //$scope.participants = res.participants;
+                    console.log(UserData.listConversationsUsers());
+                    res.participants.map(function(key, array) {
+                        console.log(key._id);
+                        UserData.getConversationsUser(key._id)
+                            .then(function(result) {
+                                console.log(result);
+                                $scope.participants.push(result);
+                            });
+                    });
+
+
+                    $scope.avatar = res.conversation_avatar;
+                    $scope.conversation_name = res.conversation_name;
+                    $scope.group_name = $scope.conversation_name;
+                    var profile = {};
+                    profile.avatar = $scope.avatar;
+                    profile.conversation_name = $scope.conversation_name;
+                    // Store the profile.
+                    Profile.setProfile(profile);
+                    $rootScope.$broadcast('PROFILE_SET');
+                });
+            /*
+            var profile = {};
+            profile.avatar = 'default';
+            profile.user_name = UserData.getUser().user_name;
+            if (UserData.getUser().avatar != undefined) {
+                profile.avatar = UserData.getUser().avatar;
+                $scope.avatar = UserData.getUser().avatar;
+            }
+            // Store the profile.
+            Profile.setProfile(profile);
+            $rootScope.$broadcast('PROFILE_SET');
+            */
+
             // Check if the page has been loaded witha param (user contacts import callback).
+            /*
             if (paramValue != undefined && paramValue == 'import') {
                 // Set the navigation.
                 $scope.contactImportNoAnim();
@@ -89,12 +145,15 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$location', 
                 // load this users list of contacts
                 loadUserContacts();
             }
+            */
+            loadUserContacts();
         });
     } else {
         $location.path("/api/login");
     }
 
     // Called by back button in header. (Hides Search or Import for back animation).
+    /*
     $scope.pageAnimationStart = function() {
         if ($scope.search_sel) {
             $scope.search_back = true;
@@ -102,7 +161,7 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$location', 
             $scope.import_back = true;
         }
     };
-    /*
+   
         $scope.resetPage = function() {
             console.log('resetPage');
             //$scope.pageClass = 'page-group';
@@ -112,6 +171,7 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$location', 
         */
 
     // Navigation functions
+    /*
     $scope.contactSearch = function() {
         $scope.search_sel = true;
         $scope.import_sel = false;
@@ -139,6 +199,8 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$location', 
         $scope.contacts_sel = true;
         $scope.animating = true;
     };
+    */
+
 
     //
     // CONTACTS
@@ -154,15 +216,18 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$location', 
             item.item_selected = false;
         });
         $scope.valid_group = false;
-        $scope.group_name = '';
+        $scope.group_name = $scope.conversation_name;
         $scope.myImage = '';
         $scope.myCroppedImage = '';
         $scope.image_loaded = false;
-        $scope.avatar = 'default';
+        //$scope.avatar = 'default';
+        //$scope.avatar = $scope.saved_avatar;
     };
 
     $scope.selectGroup = function() {
-        $scope.group_selected = !$scope.group_selected;
+        if ($scope.is_admin) {
+            $scope.group_selected = !$scope.group_selected;
+        }
     };
 
     $scope.doSelect = function(contact) {
@@ -331,7 +396,7 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$location', 
     //
     // IMPORT
     //
-
+    /*
     $scope.importContacts = function() {
         $scope.contacts_imported = true;
         // Always use /auth/google_contacts route (permission not granted) so that token can be returned.
@@ -365,11 +430,12 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$location', 
                 $scope.invite_input = '';
             });
     };
+    */
 
     //
     // SEARCH
     //
-
+    /*
     // add a user to the current users contact list
     $scope.addUser = function(user, index, event) {
         event.stopPropagation();
@@ -392,7 +458,7 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$location', 
         $scope.selectInvite();
         $scope.invite_input = email;
     };
-
+    */
     //
     // CONTACTS
     //
@@ -411,7 +477,8 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$location', 
 
     loadUserContacts = function() {
         $scope.contacts = UserData.getContacts();
-        checkImportedContacts();
+        //checkImportedContacts();
+        $scope.contacts_on = true;
     };
 
     // CONTACTS - IMAGE
@@ -467,7 +534,7 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$location', 
     //
     // IMPORT
     //
-
+    /*
     // send email invite to the recipient with the invite code.
     sendMail = function(invite) {
         Email.postEmail(invite)
@@ -486,11 +553,11 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$location', 
         event.stopPropagation();
         $scope.invite_sent = false;
     };
-
+    */
     //
     // SEARCH
     //
-
+    /*
     // check whether the search result is already a contact
     checkIfContact = function(result) {
         // if the result is the current user
@@ -561,7 +628,7 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$location', 
             minLength: SEARCH_MIN,
         });
     });
-
+    */
     // Animation end listeners.
 
     $(".contacts_transition").bind('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function() {

@@ -5,12 +5,13 @@
                 <i class="material-icons header-mi">&#xE5C4;</i>
             </div>
         </a>
-        <div class="user">
+        <div class="header_conv_name">{{conversation_name}}</div>
+        <div class="user_right">
             <img ng-if="avatar!='default'" alt="" class="heading_avatar" ng-src="{{avatar}}" />
             <img ng-if="avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="heading_avatar" />
         </div>
-        <div class="header_conv_name">{{conversation_name}}</div>
-        <div ng-if="true" class="edit">
+        
+        <div ng-if="true" class="header_edit">
             <div class="dropdown" ng-attr-id="{{ 'cem' + card._id }}">
                 <div ng-click="dropDownToggle('cem'+card._id)" class="dropbtn">
                     <i class="material-icons" id="mi-more_vert">&#xE5D4;</i>

@@ -26,10 +26,16 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
     */
     if ($rootScope.nav) {
         $('#page-system').removeClass("page-conversation-static");
+        $('#page-system').removeClass("page-contacts");
         $('#page-system').addClass("page-conversation");
         viewAnimationsService.setEnterAnimation('page-conversations');
         viewAnimationsService.setLeaveAnimation('page-conversation');
+    //viewAnimationsService.setEnterAnimation('page-contacts');
+        //viewAnimationsService.setLeaveAnimation('page-conversations-static');
     }
+
+    //$rootScope.nav = { from: 'conv', to: 'convs' };
+     $rootScope.nav = { from: 'convs', to: 'conv' };
 
 
     // variable to turn on animation of view chage. Loading conversation directly should not animate.
@@ -40,16 +46,15 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
 
 
     // Broadcast by Database updateCard service when a card has been updated.
+    /*
     $scope.$on('CONV_UPDATED', function(event, data) {
-        console.log(data);
-        /*
-        var card_pos = General.findWithAttr($scope.cards, '_id', data._id);
-        if (card_pos >= 0) {
-            $scope.cards[card_pos].updatedAt = data.updatedAt;
-            $scope.cards[card_pos].original_content = $scope.cards[card_pos].content;
-        }
-        */
+        //var card_pos = General.findWithAttr($scope.cards, '_id', data._id);
+        //if (card_pos >= 0) {
+        //    $scope.cards[card_pos].updatedAt = data.updatedAt;
+        //    $scope.cards[card_pos].original_content = $scope.cards[card_pos].content;
+        //}
     });
+    */
 
     // Continue chat
     $scope.chat = function(conversation_id, conversation, index) {
@@ -59,8 +64,7 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
         profile_obj.avatar = conversation.avatar;
         Profile.setConvProfile(profile_obj);
         // redirect to the chat
-
-        $rootScope.nav = { from: 'convs', to: 'conv' };
+        //$rootScope.nav = { from: 'convs', to: 'conv' };
         //viewAnimationsService.setEnterAnimation('page-conversation');
         //viewAnimationsService.setLeaveAnimation('page-conversation-static');
         $location.path("/chat/conversation/" + conversation_id);
@@ -76,7 +80,7 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
         // Find the username then redirect to the conversation.
         UserData.getConversationsUser(admin[0])
             .then(function(result) {
-                $rootScope.nav = { from: 'convs', to: 'conv' };
+                //$rootScope.nav = { from: 'convs', to: 'conv' };
                 $location.path("/" + result.google.name);
             });
     };

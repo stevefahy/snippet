@@ -53,7 +53,7 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
             templateUrl: '/views/user_setting.html',
             controller: 'usersettingCtrl'
         })
-        .when("/api/group_info", {
+        .when("/api/group_info/:id", {
             templateUrl: '/views/group.html',
             controller: 'groupCtrl'
         })
@@ -2386,7 +2386,9 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
 
     UserData.getConversationsUser = function(id) {
         var deferred = $q.defer();
+        console.log(id);
         var index = General.findWithAttr(conversationsUsers, '_id', id);
+        console.log(index);
         // If no user found then use UserData.addConversationsUsers to look up the user and add them.
         if (index < 0) {
             var users = [{ _id: id }];
@@ -2455,6 +2457,27 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
         deferred.resolve(cards_model[index]);
         return deferred.promise;
     };
+
+    UserData.addCardsModelById = function(id) {
+        console.log('addCardsModelById');
+        console.log(id);
+        var deferred = $q.defer();
+        var index = General.findWithAttr(cards_model, '_id', id);
+        if(index < 0){
+            // Create
+            console.log('created');
+            var temp = { _id: id, data: [] };
+            cards_model.push(temp);
+            deferred.resolve(cards_model);
+        } else {
+            // Already Created.
+            //cards_model[index].data.push(data);
+            console.log('already created');
+            deferred.resolve(cards_model[index]);
+        }
+        return deferred.promise;
+    };
+
 
     UserData.getConversation = function() {
         var deferred = $q.defer();

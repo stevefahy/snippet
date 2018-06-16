@@ -7,9 +7,25 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     // TODO - make sure only one chat created with aother single user.
 
     // Animation
+    console.log($rootScope.nav);
+
+    if ($rootScope.nav) {
+        if ($rootScope.nav.from == 'conv') {
+            console.log('back from conv');
+            viewAnimationsService.setEnterAnimation('page-contacts-static');
+            //viewAnimationsService.setLeaveAnimation('static');
+            viewAnimationsService.setLeaveAnimation('page-conversation');
+        } else if ($rootScope.nav.from == 'convs') {
+            console.log('from convs');
+            viewAnimationsService.setLeaveAnimation('page-contacts-static');
+            viewAnimationsService.setEnterAnimation('page-contacts');
+        }
+    }
     $rootScope.nav = { from: 'contacts', to: 'convs' };
-    viewAnimationsService.setEnterAnimation('page-contacts');
-    viewAnimationsService.setLeaveAnimation('static');
+    //viewAnimationsService.setEnterAnimation('page-contacts');
+    //viewAnimationsService.setLeaveAnimation('page-contacts-static');
+
+
     // Loading conversation directly should not animate.
     $animate.enabled($rootScope.animate_pages);
     // turn on animation.
@@ -212,6 +228,10 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
 
     // Continue a conversation by conversation id
     $scope.continueChat = function(conversation_id, contact) {
+        console.log('continueChat');
+        $('#page-system').removeClass("page-contacts");
+        $('#page-system').addClass("page-contacts-static");
+        //$rootScope.nav = { from: 'contacts', to: 'conv' };
         var profile_obj = {};
         profile_obj.user_name = contact.user_name;
         profile_obj.avatar = contact.avatar;
@@ -221,6 +241,10 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
 
     // Start a conversation
     $scope.startChat = function(new_participants, contact, name) {
+        console.log('startChat');
+        $('#page-system').removeClass("page-contacts");
+        $('#page-system').addClass("page-contacts-static");
+        $rootScope.nav = { from: 'contacts', to: 'conv' };
         if (name != undefined) {
             $scope.chat_create.conversation_name = name;
         }
@@ -229,9 +253,11 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
         //
         $scope.chat_create.conversation_type = 'private';
         // set the creating user as admin if a group
-        if (new_participants.length > 1) {
-            $scope.chat_create.admin = $scope.currentUser._id;
-        }
+        //if (new_participants.length > 1) {
+        // A group may be one ro more participants.
+        $scope.chat_create.admin = $scope.currentUser._id;
+        console.log($scope.chat_create.admin);
+        //}
         // Add current user as a participant
         $scope.chat_create.participants.push({ _id: $scope.currentUser._id, viewed: 0 });
 
@@ -242,11 +268,26 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
         // Create conversation in DB.
         Conversations.create($scope.chat_create)
             .then(function(res) {
+                console.log(res);
                 // Add this conversation to the local model.
                 UserData.addConversationModel(res.data)
-                    .then(function(res) {
+                    .then(function(result) {
                         //
+                        console.log(result);
+                        // If this is the first card in a new conversation then create the cards model for this conversation.
+                        UserData.addCardsModelById(res.data._id)
+                            .then(function(res) {
+                                //
+                                console.log(res);
+                            });
+                            
                     });
+                /*
+                                UserData.addCardsModelById(id, data)
+                                    .then(function(res) {
+                                        //
+                                    });
+                                    */
 
                 var profile_obj = {};
                 // if group
