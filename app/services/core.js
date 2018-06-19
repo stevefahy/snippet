@@ -1931,6 +1931,7 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
 
     var user;
     var contacts = [];
+    var contacts_and_user = [];
     var conversations;
     var conversationsLatestCard = [];
     var conversationsUsers = [];
@@ -2062,6 +2063,18 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
         return contacts;
     };
 
+    UserData.setContactsAndUser = function() {
+        var deferred = $q.defer();
+        contacts_and_user = contacts;
+        contacts_and_user.push(UserData.getUser());
+        deferred.resolve(contacts_and_user);
+        return deferred.promise;
+    };
+
+    UserData.getContactsAndUser = function() {
+        return contacts_and_user;
+    };
+
     UserData.addUserContact = function(id) {
         var deferred = $q.defer();
         user.contacts.push(id);
@@ -2118,7 +2131,12 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
 
         finish = function(contacts) {
             UserData.setContacts(contacts).then(function(result) {
-                deferred.resolve(result);
+                UserData.setContactsAndUser()
+                    .then(function(res) {
+                        console.log(res);
+                        deferred.resolve(result);
+                    });
+
             });
         };
 
@@ -2222,11 +2240,13 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
         if (index < 0) {
             // Add
             conversations_model.push(conv);
+            deferred.resolve(conversations_model);
         } else {
             // Update
             conversations_model[index] = conv;
+            deferred.resolve(conversations_model);
         }
-        deferred.resolve(conversations_model);
+        
         return deferred.promise;
     };
 
@@ -2463,7 +2483,7 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
         console.log(id);
         var deferred = $q.defer();
         var index = General.findWithAttr(cards_model, '_id', id);
-        if(index < 0){
+        if (index < 0) {
             // Create
             console.log('created');
             var temp = { _id: id, data: [] };
@@ -2662,7 +2682,20 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
     };
 
     UserData.getConversationsBuild = function() {
-        return conversations_model;
+        var conversations_model_display = [];
+        // Check for empty conversations before returning.
+        conversations_model.map(function(key, index) {
+            console.log(key);
+            console.log(key.latest_card);
+            if((key.latest_card == " " && key.conversation_type != "public") || key.latest_card == undefined){
+                console.log(conversations_model[index]);
+                //conversations_model.splice(index,1);
+            } else {
+                conversations_model_display.push(conversations_model[index]);
+            }
+        });
+        //return conversations_model;
+        return conversations_model_display;
     };
 
     UserData.buildConversations = function() {

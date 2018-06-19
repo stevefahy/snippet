@@ -4,21 +4,21 @@
         <!---->
         <!-- CONTACTS GROUP -->
         <!---->
-        <div class="contact_div" ng-class="{ 'contact_div_off': group_selected}" ng-click="group_selected || selectGroup()">
+        <div class="contact_div" ng-class="{ 'contact_div_off': edit_conversation}" ng-click="edit_conversation || editConversation()">
             <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
-                <div class="convs_container contacts_create_container contacts_transition" ng-class="{'contacts_create_container_on': group_selected}">
+                <div class="convs_container contacts_create_container contacts_transition" ng-class="{'contacts_create_container_on': edit_conversation}">
                     <div class="convs_a">
                         <img ng-if="avatar!='default'" alt="" class="convs_avatar_abs" ng-src="{{avatar}}" id="loaded_image" />
-                        <i ng-if="avatar=='default'" class="material-icons convs_avatar_abs mi-group_add" id="" ng-class="{'mi-group_add_grey': group_selected}">&#xE7F0;</i>
-                        <div class="done_camera " ng-class="{'done_camera_selected': group_selected}">
+                        <i ng-if="avatar=='default'" class="material-icons convs_avatar_abs mi-group_add" id="" ng-class="{'mi-group_add_grey': edit_conversation}">&#xE7F0;</i>
+                        <div class="done_camera " ng-class="{'done_camera_selected': edit_conversation}">
                             <i class="material-icons" id="mi-done_camera_bg">&#xE439;</i>
-                            <i class="material-icons" id="mi-done_camera" ng-click="!group_selected || conversationImage($event)">&#xE439;</i>
+                            <i class="material-icons" id="mi-done_camera" ng-click="!edit_conversation || conversationImage($event)">&#xE439;</i>
                         </div>
                     </div>
                     <div class="convs_col_a">
-                        <div class="contacts_create_header">{{conversation_name}}</div>
+                        <div class="contacts_create_header">{{group_name}}</div>
                     </div>
-                    <div class="convs_col_c" ng-show="is_admin" ng-class="{'edit_off': group_selected}">
+                    <div class="convs_col_c" ng-show="is_admin" ng-class="{'edit_off': edit_conversation}">
                         <div class="group_edit"><i class="material-icons" id="mi-edit">edit</i></div>
                     </div>
                     <div class="convs_col_b">
@@ -27,7 +27,7 @@
                         </div>
                         <div class="header_decide transition_500" ng-class="{'header_decide_off': show_image}">
                             <div class="header_accept">
-                                <a href="" ng-click="!valid_group || createGroup($event,contact)"><i class="material-icons mi-done_group" ng-class="{'mi-done_group_on': valid_group}" id="">&#xE876;</i></a>
+                                <a href="" ng-click="!valid_group || updateGroup($event)"><i class="material-icons mi-done_group" ng-class="{'mi-done_group_on': valid_group}" id="">&#xE876;</i></a>
                             </div>
                             <div class="header_cancel">
                                 <a href="" ng-click="cancelGroup($event)"><i class="material-icons" id="mi-clear">&#xE14C;</i></a>
@@ -72,6 +72,32 @@
             </div>
         </div>
         <!---->
+        <!-- PARTICIPANTS DIV -->
+        <!---->
+        <div>
+            <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
+                <div class="convs_container group_participants_container">
+                    <div class="group_participants_header">PARTICIPANTS - {{!edit_conversation ? participants.length : selected.length}}</div>
+                    
+                    <!--
+                    <div class="convs_col_c" ng-show="is_admin" ng-class="{'edit_off': edit_conversation}">
+                        <div class="group_edit"><i class="material-icons" id="mi-edit">edit</i></div>
+                    </div>
+                    <div class="convs_col_c" ng-show="is_admin">
+                        <div class="header_decide transition_500" ng-class="{'header_decide_off': !edit_conversation}">
+                            <div class="header_accept">
+                                <a href="" ng-click="!valid_group || updateGroup($event)"><i class="material-icons mi-done_group" ng-class="{'mi-done_group_on': valid_group}" id="">&#xE876;</i></a>
+                            </div>
+                            <div class="header_cancel">
+                                <a href="" ng-click="editParticipants($event)"><i class="material-icons" id="mi-clear">&#xE14C;</i></a>
+                            </div>
+                        </div>
+                    </div>
+                -->
+                </div>
+            </li>
+        </div>
+        <!---->
         <!-- SELECTED CONTACTS -->
         <!---->
         <div class="contact_div contact_div_selected_members transition_100" ng-class="{'contact_div_selected_members_selected': show_selected_drawer}">
@@ -85,63 +111,50 @@
                             <div class="contact_selected">
                                 <img ng-if="select.avatar!='default'" alt="" ng-src="{{select.avatar}}" class="convs_avatar_selected" />
                                 <img ng-if="select.avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="convs_avatar_selected" />
-                                <div class="done_contacts_added">
+                                <div class="done_contacts_added" ng-show="!isAdmin(select._id)">
                                     <i class="material-icons" id="mi-clear_contacts_bg">&#xE14C;</i>
                                     <i class="material-icons" id="mi-clear_contacts" ng-click="doSelect(select)">&#xE14C;</i>
                                 </div>
-                                <div class="contact_selected_name">{{select.user_name}}</div>
+                                <div class="contact_selected_name" ng-class="{'contact_selected_name_off': isAdmin(select._id)}">{{select.user_name}}</div>
                             </div>
                         </div>
                     </div>
                 </div>
             </li>
         </div>
-        <div class="contact_div">
-            <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
-                <div class="convs_container group_participants_container">
-                    <div>
-                        <div class="group_participants_header">PARTICIPANTS - {{participants.length}}</div>
-                    </div>
-                    <div class="convs_col_c" ng-show="is_admin" ng-class="{'edit_off': participants_selected}">
-                        <div class="group_edit"><i class="material-icons" id="mi-edit">edit</i></div>
-                    </div>
-                </div>
-            </li>
-            </div>
-            <!---->
-            <!-- SCROLLABLE PARTICIPANTS -->
-            <!---->
-            <div class="content_cnv_scroll" ng-class="{'content_cnv_scroll_group': show_selected_drawer, 'content_cnv_scroll_off': animating, 'content_cnv_scroll_input': group_selected}">
-                <div ng-repeat="participant in participants | orderBy:'user_name'">
-                    <div class="contact_div" ng-click="group_selected ? doSelect(contact) : null">
-                        <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
-                            <div class="convs_container">
-                                <div class="convs_a">
-                                    <img ng-if="participant.avatar!='default'" alt="" ng-src="{{participant.avatar}}" class="convs_avatar" />
-                                    <img ng-if="participant.avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="convs_avatar" />
-                                    <div class="done_contacts " ng-class="{'done_contacts_selected': contact.item_selected}">
-                                        <i class="material-icons" id="mi-done_contacts_bg">&#xE876;</i>
-                                        <i class="material-icons" id="mi-done_contacts">&#xE876;</i>
-                                    </div>
-                                </div>
-                                <div class="convs_col_a">
-                                    <div class="convs_b" id="convs_name">{{participant.user_name}}</div>
-                                </div>
-                                <div class="admin_container" ng-show="isAdmin(participant._id)">
-                                    <div class="convs_b" id="convs_name"><span class="badge badge-secondary group-admin"> Group Admin </span></div>
+        <!---->
+        <!-- SCROLLABLE PARTICIPANTS -->
+        <!---->
+        <div class="content_cnv_scroll participants_scroll contacts_transition" ng-class="{'content_cnv_scroll_off': animating, 'content_cnv_participants_off': edit_conversation}">
+            <div ng-repeat="participant in participants | orderBy:'user_name'">
+                <div>
+                    <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
+                        <div class="convs_container">
+                            <div class="convs_a">
+                                <img ng-if="participant.avatar!='default'" alt="" ng-src="{{participant.avatar}}" class="convs_avatar" />
+                                <img ng-if="participant.avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="convs_avatar" />
+                                <div class="done_contacts " ng-class="{'done_contacts_selected': contact.item_selected}">
+                                    <i class="material-icons" id="mi-done_contacts_bg">&#xE876;</i>
+                                    <i class="material-icons" id="mi-done_contacts">&#xE876;</i>
                                 </div>
                             </div>
-                        </li>
-                    </div>
+                            <div class="convs_col_a">
+                                <div class="convs_b" id="convs_name">{{participant.user_name}}</div>
+                            </div>
+                            <div class="admin_container" ng-show="isAdmin(participant._id)">
+                                <div class="convs_b" id="convs_name"><span class="badge badge-secondary group-admin"> Group Admin </span></div>
+                            </div>
+                        </div>
+                    </li>
                 </div>
             </div>
-            <!---->
-            <!-- SCROLLABLE CONTACTS -->
-            <!---->
-            <!--
-        <div class="content_cnv_scroll" ng-class="{'content_cnv_scroll_group': show_selected_drawer, 'content_cnv_scroll_off': animating, 'content_cnv_scroll_input': group_selected}">
-            <div ng-repeat="contact in contacts | orderBy:'user_name'">
-                <div class="contact_div" ng-click="group_selected ? doSelect(contact) : null">
+        </div>
+        <!---->
+        <!-- SCROLLABLE CONTACTS -->
+        <!---->
+        <div class="content_cnv_scroll contacts_scroll contacts_transition" ng-class="{'content_cnv_scroll_group': show_selected_drawer, 'content_cnv_scroll_off': animating, 'content_cnv_scroll_input': edit_conversation}">
+            <div ng-repeat="contact in contacts | orderBy:['!item_selected','user_name'] ">
+                <div class="contact_div" ng-class="{'contact_div_off': isAdmin(contact._id)}" ng-click="isAdmin(contact._id) ? null : doSelect(contact)">
                     <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
                         <div class="convs_container">
                             <div class="convs_a">
@@ -155,11 +168,15 @@
                             <div class="convs_col_a">
                                 <div class="convs_b" id="convs_name">{{contact.user_name}}</div>
                             </div>
+                            <div class="admin_container" ng-show="isAdmin(contact._id)">
+                                <div class="convs_b" id="convs_name"><span class="badge badge-secondary group-admin"> Group Admin </span></div>
+                            </div>
                         </div>
-                    </li>
                 </div>
+                </li>
             </div>
-        </div>-->
         </div>
-        <!--<div ng-include src="'/views/footer.html'"></div>-->
     </div>
+</div>
+<!--<div ng-include src="'/views/footer.html'"></div>-->
+</div>

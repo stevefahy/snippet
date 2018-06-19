@@ -222,11 +222,11 @@
                                 <div class="contact_selected">
                                     <img ng-if="select.avatar!='default'" alt="" ng-src="{{select.avatar}}" class="convs_avatar_selected" />
                                     <img ng-if="select.avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="convs_avatar_selected" />
-                                    <div class="done_contacts_added">
+                                    <div class="done_contacts_added" ng-show="!select.is_admin">
                                         <i class="material-icons" id="mi-clear_contacts_bg">&#xE14C;</i>
                                         <i class="material-icons" id="mi-clear_contacts" ng-click="doSelect(select)">&#xE14C;</i>
                                     </div>
-                                    <div class="contact_selected_name">{{select.user_name}}</div>
+                                    <div class="contact_selected_name" ng-class="{'contact_selected_name_off': select.is_admin}">{{select.user_name}}</div>
                                 </div>
                             </div>
                         </div>
@@ -236,9 +236,9 @@
             <!---->
             <!-- SCROLLABLE CONTACTS -->
             <!---->
-            <div class="content_cnv_scroll" ng-class="{'content_cnv_scroll_group': show_selected_drawer, 'content_cnv_scroll_off': animating, 'content_cnv_scroll_input': group_selected}">
+            <div class="content_cnv_contacts_scroll" ng-class="{'content_cnv_contacts_scroll_group': show_selected_drawer, 'content_cnv_scroll_off': animating, 'content_cnv_scroll_input': group_selected}">
                 <div ng-repeat="contact in contacts | orderBy:'user_name'">
-                    <div class="contact_div" ng-click="group_selected ? doSelect(contact) : chat(contact)">
+                    <div class="contact_div" ng-class="{'contact_div_off': contact.is_admin}" ng-click="contactBtn(contact)">
                         <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
                             <div class="convs_container">
                                 <div class="convs_a">
@@ -252,6 +252,9 @@
                                 <div class="convs_col_a">
                                     <div class="convs_b" id="convs_name">{{contact.user_name}}</div>
                                 </div>
+                                <div class="admin_container" ng-show="group_selected ? contact.is_admin : false">
+                                    <div class="convs_b" id="convs_name"><span class="badge badge-secondary group-admin"> Group Admin </span></div>
+                                </div>
                             </div>
                         </li>
                     </div>
@@ -259,5 +262,5 @@
             </div>
         </div>
     </div>
-    <div ng-include src="'/views/footer.html'"></div>
+    <!--<div ng-include src="'/views/footer.html'"></div>-->
 </div>

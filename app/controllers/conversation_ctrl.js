@@ -14,7 +14,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             //viewAnimationsService.setLeaveAnimation('page-conversation');
             viewAnimationsService.setEnterAnimation('page-conversation-static');
             viewAnimationsService.setLeaveAnimation('page-group');
-        } else if($rootScope.nav.from == 'contacts'){
+        } else if ($rootScope.nav.from == 'contacts') {
             console.log('contacts to conv here');
             $rootScope.nav = { from: 'conv', to: 'contacts' };
             //viewAnimationsService.setEnterAnimation('page-contacts');
@@ -32,7 +32,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         $rootScope.nav = { from: 'conv', to: 'convs' };
     }
 
-    
+
 
     $scope.changePathGroup = function() {
         //$scope.groupInfo = function() {
@@ -132,8 +132,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     setFocus = function() {
         $timeout(function() {
             findConversationId(function(result) {
+                console.log(result);
                 UserData.getCardsModelById(result)
                     .then(function(result) {
+                        console.log(result);
                         if (result != undefined) {
                             //console.log('cards ready');
                             $scope.cards = result.data;
@@ -351,14 +353,49 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             UserData.getConversationModelById(conversation_id)
                 .then(function(res) {
                     console.log(res);
-                    // Find the current user in the conversation participants array.
-                    var user_pos = General.findWithAttr(res.participants, '_id', UserData.getUser()._id);
-                    if (user_pos >= 0) {
-                        // user found in the participants array.
-                        callback(true);
+                    if (res) {
+                        // Find the current user in the conversation participants array.
+                        var user_pos = General.findWithAttr(res.participants, '_id', UserData.getUser()._id);
+                        if (user_pos >= 0) {
+                            // user found in the participants array.
+                            callback(true);
+                        } else {
+                            // user not found in the participants array.
+                            callback(false);
+                        }
                     } else {
-                        // user not found in the participants array.
-                        callback(false);
+                        // empty conversation
+                        console.log('empty conversation');
+                        UserData.getConversations()
+                            .then(function(res) {
+                                console.log(res);
+                                // Find the conversation in the conversations.
+                                var conv_pos = General.findWithAttr(res, '_id', conversation_id);
+                                // Find the current user in the conversation participants array.
+                                var user_pos = General.findWithAttr(res[conv_pos].participants, '_id', UserData.getUser()._id);
+                                if (user_pos >= 0) {
+                                    // user found in the participants array.
+
+                                    // Add this conversation to the local model.
+                                    UserData.addConversationModel(res[conv_pos])
+                                        .then(function(result) {
+                                            //
+                                            console.log(result);
+                                            // If this is the first card in a new conversation then create the cards model for this conversation.
+                                            UserData.addCardsModelById(res[conv_pos]._id)
+                                                .then(function(res) {
+                                                    //
+                                                    console.log(res);
+                                                });
+                                        });
+
+                                    callback(true);
+                                } else {
+                                    // user not found in the participants array.
+                                    callback(false);
+                                }
+                            });
+
                     }
                 });
         } else {
@@ -440,7 +477,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 if (result != undefined) {
                     $scope.cards = result.data;
                     console.log(result.data.length);
-                    if(result.data.length == 0){
+                    if (result.data.length == 0) {
                         $rootScope.pageLoading = false;
                     }
                     // Clear the cards unviewed array for this participant of this conversation.
@@ -509,11 +546,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // update the conversation with the new card data
     // OK
     updateConversation = function(data) {
+        console.log(data);
         // Get the user name for the user id
         // TODO dont repeat if user id already retreived
         UserData.getConversationsUser(data.user)
             //Users.search_id(data.user)
             .then(function(res) {
+                console.log(res);
                 // Set the user_name to the retrieved name
                 data.user_name = res.user_name;
             })

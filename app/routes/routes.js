@@ -917,6 +917,68 @@ module.exports = function(app, passport) {
         });
     });
 
+    // Update Conversation
+    // Update User profile
+    app.put('/chat/update_conversation/:conversation_id', isLoggedIn, function(req, res) {
+        Conversation.findById({ _id: req.params.conversation_id }, function(err, conversation) {
+            if (err) {
+                console.log(err);
+                res.send(err);
+            }
+            console.log(conversation);
+            var toupdate = req.body.conversation;
+            console.log('toupdate');
+            console.log(toupdate);
+            conversation.conversation_avatar = toupdate.conversation_avatar;
+            conversation.conversation_name = toupdate.conversation_name;
+
+            //conversation.participants = toupdate.participants;
+            // Update participants with the latest viewed data.
+            // Convert the conversation model to JSON so that findWithAttr functions.
+            conversation_temp = conversation.toJSON();
+            // Add new participants.
+            for (var i in toupdate.participants) {
+                var index = findWithAttr(conversation_temp.participants, '_id', toupdate.participants[i]._id);
+                // If new participant.
+                if (index < 0) {
+                    console.log('Add');
+                    console.log(toupdate.participants[i]);
+                    var temp = {_id: toupdate.participants[i]._id, unviewed: []};
+                    conversation.participants.push(temp);
+                }
+            }
+            // Delete old participants.
+            for (var j in conversation_temp.participants) {
+                var index2 = findWithAttr(toupdate.participants, '_id', conversation_temp.participants[j]._id);
+                // If old participant.
+                if (index2 < 0) {
+                    console.log('Delete');
+                    console.log(conversation.participants[j]);
+                    conversation.participants.splice(j, 1);
+                    //conversation.participants.push(toupdate.participants[i]);
+                }
+            }
+            //conversation = conversation_temp;
+
+            // Update the Conversations updatedAt time.
+            conversation.updatedAt = new Date().toISOString();
+
+            console.log(conversation);
+            var updateConversation = new Conversation(conversation);
+            updateConversation.save(function(err, conversation_update) {
+                if (err) {
+                    console.log('err');
+                    console.log(err);
+                    res.send(err);
+                } else {
+                    console.log('conversation');
+                    console.log(conversation_update);
+                    res.json(conversation_update);
+                }
+            });
+        });
+    });
+
     // TODO just update the updatedAt
     // Update a conversation updatedAt time (For sorting conversations by most recent updates)
     // Conversations.updateTime(id);

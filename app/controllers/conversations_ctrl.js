@@ -101,6 +101,7 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
             $rootScope.$broadcast('PROFILE_SET');
             // get the local conversations
             $scope.conversations = UserData.getConversationsBuild();
+            console.log($scope.conversations);
         });
     } else {
         $location.path("/api/login");

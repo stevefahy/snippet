@@ -108,6 +108,10 @@ cardApp.factory('Conversations', ['$http', function($http) {
                     return response;
                 });
         },
+        update: function(conversation) {
+            var theurl = 'chat/update_conversation/' + conversation.id;
+            return $http.put(theurl, conversation);
+        },
         updateViewed: function(id, user_id, card_id) {
             return $http.put('chat/conversation_viewed/' + id + '/' + user_id + '/' + card_id);
         },

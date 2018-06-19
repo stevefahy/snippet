@@ -46,7 +46,14 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams
         recipient: '',
         group_id: ''
     };
+    /*
     $scope.chat_create = {
+        conversation_name: '',
+        conversation_avatar: 'default',
+        participants: []
+    };
+    */
+    $scope.chat_update = {
         conversation_name: '',
         conversation_avatar: 'default',
         participants: []
@@ -57,7 +64,14 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams
     $scope.image_loaded = false;
 
     $scope.is_admin = false;
-    $scope.conversation ='';
+    $scope.conversation = '';
+    $scope.edit_participants = false;
+
+    $scope.edit_conversation = false;
+    $scope.participants_orig = [];
+    $scope.saved_avatar = '';
+
+
 
     //The minimum number of characters a user must type before a search is performed.
     var SEARCH_MIN = 3;
@@ -68,13 +82,7 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams
     var myImageName = '';
     var mySavedImage = '';
 
-    $scope.isAdmin = function(id){
-        if($scope.conversation.admin.includes(id)) {
-            return true;
-        } else {
-            return false;
-        }
-    };
+
 
     // Get the current users details
     if (principal.isValid()) {
@@ -100,11 +108,15 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams
                             .then(function(result) {
                                 console.log(result);
                                 $scope.participants.push(result);
+                                $scope.participants_orig.push(result);
                             });
                     });
 
 
+
                     $scope.avatar = res.conversation_avatar;
+                    $scope.saved_avatar = res.conversation_avatar;
+                    $scope.chat_update.conversation_avatar = res.conversation_avatar;
                     $scope.conversation_name = res.conversation_name;
                     $scope.group_name = $scope.conversation_name;
                     var profile = {};
@@ -206,9 +218,53 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams
     // CONTACTS
     //
 
+    $scope.editConversation = function() {
+        $scope.edit_conversation = !$scope.edit_conversation;
+        if ($scope.edit_conversation) {
+            showSelected();
+        } else {
+            if (event) {
+                $scope.cancelGroup(event);
+            } else {
+                $scope.cancelGroup();
+            }
+
+        }
+    };
+
+
+
+
+    /*
+    $scope.editParticipants = function(event) {
+        console.log($scope.edit_participants);
+        $scope.edit_participants = !$scope.edit_participants;
+        if ($scope.edit_participants) {
+            showSelected();
+        } else {
+            if (event) {
+                $scope.cancelGroup(event);
+            } else {
+                $scope.cancelGroup();
+            }
+
+        }
+    };
+    */
+
+    $scope.isAdmin = function(id) {
+        if ($scope.conversation.admin.includes(id)) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
     $scope.cancelGroup = function(event) {
-        event.stopPropagation();
-        $scope.group_selected = false;
+        if (event) {
+            event.stopPropagation();
+        }
+        $scope.edit_conversation = false;
         $scope.show_selected_drawer = false;
         $scope.selected = [];
         // reset the items selected.
@@ -221,13 +277,27 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams
         $scope.myCroppedImage = '';
         $scope.image_loaded = false;
         //$scope.avatar = 'default';
-        //$scope.avatar = $scope.saved_avatar;
+        $scope.avatar = $scope.saved_avatar;
     };
 
+    /*
     $scope.selectGroup = function() {
+        console.log($scope.is_admin);
         if ($scope.is_admin) {
             $scope.group_selected = !$scope.group_selected;
         }
+    };
+    */
+
+    showSelected = function() {
+        $scope.contacts.map(function(key, array) {
+            //$scope.chat_create.participants.push({ _id: key._id, viewed: 0 });
+            console.log(key);
+            if (General.findWithAttr($scope.participants, '_id', key._id) >= 0) {
+                $scope.doSelect(key);
+            }
+            //$scope.doSelect(key);
+        });
     };
 
     $scope.doSelect = function(contact) {
@@ -257,15 +327,17 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams
                 var index = General.findWithAttr($scope.selected, '_id', contact._id);
                 // Remove contact from $scope.selected.
                 $scope.selected.splice(index, 1);
+                validateGroup();
                 // If there are no items in $scope.selected then close the div which contains the selected contacts.
                 if ($scope.selected == 0) {
                     $scope.show_selected_drawer = false;
-                    validateGroup();
+                    //validateGroup();
                 }
             }, SELECTED_REMOVE_WAIT);
         }
     };
 
+    /*
     // Start or continue a single user conversation with a contact.
     $scope.chat = function(contact) {
         if (contact.conversation_exists) {
@@ -282,7 +354,103 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams
             $scope.startChat($scope.selected, contact, $scope.group_name);
         }
     };
+    */
+    // Update a Group conversation
+    $scope.updateGroup = function(event) {
+        event.stopPropagation();
+        if ($scope.selected.length > 0) {
+            //$scope.startChat($scope.selected, contact, $scope.group_name);
+            $scope.chat_update.conversation_name = $scope.group_name;
+            //$scope.chat_create.conversation_avatar
+            // reset the participants array.
+            $scope.chat_update.participants = [];
+            // Add all users contained in the new_participants array
+            $scope.selected.map(function(key, array) {
+                $scope.chat_update.participants.push({ _id: key._id, viewed: 0 });
+            });
+            console.log($scope.chat_update);
+            var pms = { 'id': id, 'conversation': $scope.chat_update };
+            // Updateconversation in DB.
 
+            Conversations.update(pms)
+                .then(function(res) {
+
+                    console.log(res);
+                    console.log($scope.conversation);
+                    $scope.saved_avatar = res.data.conversation_avatar;
+                    // Update the conversation details for the model
+                    res.data.avatar = res.data.conversation_avatar;
+                    //res.data.conversation_avatar = $scope.conversation.conversation_avatar;
+                    res.data.latest_card = $scope.conversation.latest_card;
+                    res.data.name = res.data.conversation_name;
+                    // Update the participants model.
+                    //if (General.findWithAttr($scope.participants, '_id', key._id) >= 0) {
+                    //$scope.doSelect(key);
+                    //}
+                    $scope.participants = [];
+                    res.data.participants.map(function(key, array) {
+                        console.log(key._id);
+                        UserData.getConversationsUser(key._id)
+                            .then(function(result) {
+                                console.log(result);
+                                $scope.participants.push(result);
+                            });
+                    });
+
+                    // Add this conversation to the local model.
+                    UserData.addConversationModel(res.data)
+                        .then(function(res) {
+                            //
+                            console.log(res);
+                        });
+
+                    var profile_obj = {};
+                    // if group
+                    if (res.data.conversation_name != '') {
+                        profile_obj.user_name = res.data.conversation_name;
+                        profile_obj.avatar = res.data.conversation_avatar;
+                        Profile.setConvProfile(profile_obj);
+                        // Go to the conversation after it has been created
+                        //$location.path("/chat/conversation/" + res.data._id);
+                    }
+                    // If two person
+                    if (res.data.conversation_name == '') {
+                        // get the index position of the current user within the participants array
+                        var user_pos = General.findWithAttr(res.data.participants, '_id', $scope.currentUser._id);
+                        // Get the position of the current user
+                        if (user_pos === 0) {
+                            participant_pos = 1;
+                        } else {
+                            participant_pos = 0;
+                        }
+                        // Find the other user
+
+                        // USERDATA PARTICIPANTS
+
+                        General.findUser(res.data.participants[participant_pos]._id, function(result) {
+                            profile_obj.avatar = "default";
+                            // set the other user name as the name of the conversation.
+                            if (result) {
+                                profile_obj.user_name = result.user_name;
+                                profile_obj.avatar = result.avatar;
+                            }
+                            Profile.setConvProfile(profile_obj);
+                            // Go to the conversation after it has been created
+                            $location.path("/chat/conversation/" + res.data._id);
+                        });
+                    }
+
+                    // reset.
+                    $scope.conversation_name = res.data.conversation_name;
+                    $scope.cancelGroup();
+
+                });
+
+
+        }
+    };
+
+    /*
     // Continue a conversation by conversation id
     $scope.continueChat = function(conversation_id, contact) {
         var profile_obj = {};
@@ -358,6 +526,7 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams
                 }
             });
     };
+    */
 
     // CONTACTS - IMAGE
 
@@ -376,10 +545,12 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams
                     // Change the current header.
                     $scope.$apply(function($scope) {
                         $scope.avatar = 'fileuploads/images/' + result.file;
-                        $scope.chat_create.conversation_avatar = 'fileuploads/images/' + result.file;
+                        $scope.chat_update.conversation_avatar = 'fileuploads/images/' + result.file;
                         // Close the image selection drawer.
                         $scope.show_image = false;
+                        
                     });
+                    validateGroup();
                 });
             });
     };
@@ -462,9 +633,42 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams
     //
     // CONTACTS
     //
+    //function arraysAreEqual(ary1, ary2) {
+    //   return (ary1.join('') == ary2.join(''));
+    //}
+
+    function comparer(otherArray) {
+        return function(current) {
+            return otherArray.filter(function(other) {
+                return other._id == current._id;
+            }).length == 0;
+        };
+    }
+
+    function arraysAreEqual(a, b) {
+        var onlyInA = a.filter(comparer(b));
+        var onlyInB = b.filter(comparer(a));
+        result = onlyInA.concat(onlyInB);
+        //console.log(result);
+        if (result.length == 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+
+
+
 
     validateGroup = function() {
-        if ($('#group_name').val().length > 2 && $scope.selected.length > 0) {
+        console.log($scope.selected);
+        console.log($scope.participants);
+        console.log(arraysAreEqual($scope.selected, $scope.participants));
+        console.log($('#group_name').val() + ' != ' + $scope.conversation_name);
+        console.log($scope.saved_avatar  + ' != ' + $scope.avatar);
+        if (($('#group_name').val().length > 2 && $('#group_name').val() != $scope.conversation_name) || ($scope.selected.length > 0 && !arraysAreEqual($scope.selected, $scope.participants)) || ($scope.saved_avatar  != $scope.avatar)) {
             $scope.$apply(function($scope) {
                 $scope.valid_group = true;
             });
@@ -477,6 +681,10 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams
 
     loadUserContacts = function() {
         $scope.contacts = UserData.getContacts();
+        //$scope.contacts = UserData.getContactsAndUser();
+
+        //$scope.contacts.push($scope.currentUser);
+        console.log($scope.contacts);
         //checkImportedContacts();
         $scope.contacts_on = true;
     };
