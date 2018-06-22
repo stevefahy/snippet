@@ -1,42 +1,16 @@
 cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$http', 'Invites', 'Email', 'Users', 'Conversations', '$q', 'FormatHTML', 'General', 'Profile', '$cookies', '$timeout', 'principal', 'UserData', 'viewAnimationsService', function($scope, $rootScope, $location, $http, Invites, Email, Users, Conversations, $q, FormatHTML, General, Profile, $cookies, $timeout, principal, UserData, viewAnimationsService) {
 
     console.log($rootScope.nav);
-    /*
-    if ($rootScope.nav) {
-        if ($rootScope.nav.from == 'convs') {
-            console.log('DEFAULT');
-            //viewAnimationsService.setEnterAnimation('page-conversations');
-            //viewAnimationsService.setLeaveAnimation('page-conversation');
-        } else if ($rootScope.nav.from == 'conv') {
-            console.log('DEFAULT 2');
-            $('#page-system').removeClass("page-conversation-static");
-            $('#page-system').addClass("page-conversation");
-            viewAnimationsService.setEnterAnimation('page-conversations');
-            viewAnimationsService.setLeaveAnimation('page-conversation');
-        } else if ($rootScope.nav.from == 'group') {
-            console.log('conv from group');
-            // viewAnimationsService.setEnterAnimation('page-conversations');
-            // viewAnimationsService.setLeaveAnimation('page-conversation');
-        } else if ($rootScope.nav.from == 'contacts') {
-            console.log('convs from contacts');
-            viewAnimationsService.setEnterAnimation('page-conversations');
-            viewAnimationsService.setLeaveAnimation('page-conversation');
-        }
-    }
-    */
+
     if ($rootScope.nav) {
         $('#page-system').removeClass("page-conversation-static");
         $('#page-system').removeClass("page-contacts");
         $('#page-system').addClass("page-conversation");
         viewAnimationsService.setEnterAnimation('page-conversations');
         viewAnimationsService.setLeaveAnimation('page-conversation');
-    //viewAnimationsService.setEnterAnimation('page-contacts');
-        //viewAnimationsService.setLeaveAnimation('page-conversations-static');
     }
 
-    //$rootScope.nav = { from: 'conv', to: 'convs' };
-     $rootScope.nav = { from: 'convs', to: 'conv' };
-
+    $rootScope.nav = { from: 'convs', to: 'conv' };
 
     // variable to turn on animation of view chage. Loading conversation directly should not animate.
     $rootScope.animate_pages = true;
@@ -54,6 +28,35 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
         //    $scope.cards[card_pos].original_content = $scope.cards[card_pos].content;
         //}
     });
+    */
+
+    // Broadcast by socket service when a  card has been created, updated or deleted by another user to this user
+    $scope.$on('NOTIFICATION', function(event, msg) {
+        console.log('NOTIFICATION');
+        var id = Conversations.getConversationId();
+        console.log(msg);
+        //$scope.conversations = UserData.getConversationsBuild();
+        // only update the conversation if the user is currently in that conversation
+        //if (id === msg.conversation_id) {
+        //getConversationUpdate(msg.conversation_id);
+        //}
+        // Update the conversations.
+        $scope.conversations = UserData.getConversationModel();
+    });
+
+    /*
+    updateConversations = function() {
+
+    };
+    // DUPE
+    // called by NOTIFICATION broadcast when another user has updated this conversation
+    getConversationUpdate = function(id) {
+        console.log(UserData.getConversationModel());
+        $scope.conversations = UserData.getConversationModel();
+
+
+
+    };
     */
 
     // Continue chat

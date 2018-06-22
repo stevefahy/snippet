@@ -4,7 +4,7 @@
         <!---->
         <!-- CONTACTS GROUP -->
         <!---->
-        <div class="contact_div" ng-class="{ 'contact_div_off': edit_conversation}" ng-click="edit_conversation || editConversation()">
+        <div class="contact_div" ng-class="{ 'contact_div_off': !editable()}" ng-click="!admin_rights || editConversation()">
             <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
                 <div class="convs_container contacts_create_container contacts_transition" ng-class="{'contacts_create_container_on': edit_conversation}">
                     <div class="convs_a">
@@ -18,7 +18,7 @@
                     <div class="convs_col_a">
                         <div class="contacts_create_header">{{group_name}}</div>
                     </div>
-                    <div class="convs_col_c" ng-show="is_admin" ng-class="{'edit_off': edit_conversation}">
+                    <div class="convs_col_c" ng-show="is_admin" ng-class="{'edit_off': !editable()}">
                         <div class="group_edit"><i class="material-icons" id="mi-edit">edit</i></div>
                     </div>
                     <div class="convs_col_b">

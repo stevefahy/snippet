@@ -17,7 +17,8 @@
                     <i class="material-icons" id="mi-more_vert">&#xE5D4;</i>
                 </div>
                 <div ng-attr-id="myDropdown{{ 'cem' + card._id }}" class="dropdown-content">
-                    <div ng-click="changePathGroup()">Group Info</div>
+                    <div ng-show="conv_type == 'group'" ng-click="changePathGroup()">Group Info</div>
+                    <div ng-show="conv_type == 'two'"" ng-click="changePathGroup()">Contact Info</div>
                 </div>
             </div>
         </div>

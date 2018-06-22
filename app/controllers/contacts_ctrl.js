@@ -320,6 +320,8 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
                 }
 
                 // Add this conversation to the local model.
+                res.data.avatar = res.data.conversation_avatar;
+                res.data.name = res.data.conversation_name;
                 UserData.addConversationModel(res.data)
                     .then(function(result) {
                         //

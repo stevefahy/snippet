@@ -12,7 +12,8 @@
         </div>
         <div class="header_conv_name">{{conversation_name}}</div>
     -->
-        <div class="header_conv_name">GROUP INFO</div>
+        <div ng-show="conv_type == 'group'" class="header_conv_name">GROUP INFO</div>
+        <div ng-show="conv_type == 'two'" class="header_conv_name">CONTACT INFO</div>
     </div>
     <div class="header_bottom"></div>
 </div>

@@ -83,6 +83,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // Detect device user agent 
     var ua = navigator.userAgent;
 
+
+
     // Add custom class for Android scrollbar
     if (ua.indexOf('AndroidApp') >= 0) {
         $('.content_cnv').addClass('content_cnv_android');
@@ -94,12 +96,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     });
 
     // Broadcast by socket service when a  card has been created, updated or deleted by another user to this user
-    $scope.$on('NOTIFICATION', function(event, msg) {
-        console.log('NOTIFICATION');
-        var id = Conversations.getConversationId();
+    $scope.$on('CONV_NOTIFICATION', function(event, msg) {
+        console.log('CONV_NOTIFICATION');
+        console.log(msg);
+        //var id = Conversations.getConversationId();
         // only update the conversation if the user is currently in that conversation
         if (id === msg.conversation_id) {
-            getConversationUpdate(msg.conversation_id);
+            // DELETED
+            //getConversationUpdate(msg.conversation_id);
+            updateConversationViewed(id);
         }
     });
 
@@ -111,6 +116,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Broadcast by Database updateCard service when a card has been updated.
     $scope.$on('CARD_UPDATED', function(event, data) {
+        console.log('CARD_UPDATED');
         var card_pos = General.findWithAttr($scope.cards, '_id', data._id);
         if (card_pos >= 0) {
             $scope.cards[card_pos].updatedAt = data.updatedAt;
@@ -120,6 +126,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Broadcast by Database deleteCard service when a card has been deleted.
     $scope.$on('CARD_DELETED', function(event, card_id) {
+        console.log('CARD_DELETED');
         // find the position of the deleted card within the cards array.
         var deleted_card_pos = General.findWithAttr($scope.cards, '_id', card_id);
         // if the card is found then remove it.
@@ -127,6 +134,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             $scope.cards.splice(deleted_card_pos, 1);
         }
     });
+
 
 
     setFocus = function() {
@@ -137,8 +145,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     .then(function(result) {
                         console.log(result);
                         if (result != undefined) {
-                            //console.log('cards ready');
+                            console.log('latest cards!');
                             $scope.cards = result.data;
+
+                            $scope.$watch(result.data, function() {
+                                console.log('changed');
+                                console.log(result.data);
+                            });
                             //$rootScope.pageLoading = false;
                         }
                     });
@@ -377,6 +390,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                     // user found in the participants array.
 
                                     // Add this conversation to the local model.
+                                    console.log('addConversationModel');
                                     UserData.addConversationModel(res[conv_pos])
                                         .then(function(result) {
                                             //
@@ -406,6 +420,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
 
     getPublicConversation = function(id, name) {
+        console.log('getPublicConversation');
         Conversations.getPublicConversationById(id)
             .then(function(result) {
                 $scope.cards = result.data;
@@ -428,11 +443,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Get the conversation by id
     getConversation = function(id) {
+        console.log('getConversation');
         var profile = {};
         UserData.getConversationModelById(id)
             .then(function(res) {
                 console.log(res);
                 if (res.conversation_type == 'public') {
+                    $scope.conv_type = 'public';
                     profile.user_name = res.conversation_name;
                     profile.avatar = res.conversation_avatar;
                     Profile.setConvProfile(profile);
@@ -440,6 +457,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 }
                 // Group conversation. (Two or more)
                 if (res.conversation_name != '') {
+                    $scope.conv_type = 'group';
                     profile.user_name = res.conversation_name;
                     profile.avatar = res.conversation_avatar;
                     Profile.setConvProfile(profile);
@@ -447,6 +465,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 }
                 // Two user conversation (not a group)
                 if (res.conversation_name == '') {
+                    $scope.conv_type = 'two';
                     // get the index position of the current user within the participants array
                     var user_pos = General.findWithAttr(res.participants, '_id', $scope.currentUser._id);
                     // Get the position of the current user
@@ -491,11 +510,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // clear the participants unviewed array by conversation id
     updateConversationViewed = function(id) {
+        console.log('updateConversationViewed: ' + id);
         UserData.updateConversationViewed(id);
     };
 
     // called by NOTIFICATION broadcast when another user has updated this conversation
     getConversationUpdate = function(id) {
+        console.log('getConversationUpdate');
         // get all cards for a conversation by conversation id
         Conversations.getConversationById(id)
             .then(function(result) {
@@ -512,7 +533,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     });
                 }
                 // Check for updated cards
-                var updated = findDifference(result.data, $scope.cards, 'updated');
+                //var updated = findDifference(result.data, $scope.cards, 'updated');
+                // updated - content, deleted - id
+                var updated = General.findDifference(result.data, $scope.cards, 'content');
+                console.log(updated);
                 // If there is a difference between cards content update that card 
                 // TODO Can there be more then one updated card?
                 if (updated.length > 0) {
@@ -528,7 +552,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 }
                 // Check for deleted cards
                 if ($scope.cards.length > result.data.length) {
-                    var deleted = findDifference($scope.cards, result.data, 'deleted');
+                    //var deleted = findDifference($scope.cards, result.data, 'deleted');
+                    var deleted = findDifference($scope.cards, result.data, '_id');
+                    console.log(deleted);
                     // TODO Can there be more then one deleted card?
                     // If there are deleted cards.
                     if (deleted.length > 0) {
@@ -546,6 +572,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // update the conversation with the new card data
     // OK
     updateConversation = function(data) {
+        console.log('updateConversation ');
         console.log(data);
         // Get the user name for the user id
         // TODO dont repeat if user id already retreived

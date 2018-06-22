@@ -71,6 +71,8 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams
     $scope.participants_orig = [];
     $scope.saved_avatar = '';
 
+    $scope.admin_rights = false;
+
 
 
     //The minimum number of characters a user must type before a search is performed.
@@ -82,7 +84,15 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams
     var myImageName = '';
     var mySavedImage = '';
 
-
+    updateProfile = function() {
+        var profile = {};
+        profile.avatar = $scope.avatar;
+        profile.conversation_name = $scope.conversation_name;
+        // Store the profile.
+        console.log(profile);
+        Profile.setProfile(profile);
+        $rootScope.$broadcast('PROFILE_SET');
+    };
 
     // Get the current users details
     if (principal.isValid()) {
@@ -112,19 +122,46 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams
                             });
                     });
 
+                    // Admin rights
+                    if(res.admin.includes(UserData.getUser()._id)){
+                        $scope.admin_rights = true;
+                    }
+
+                    // If two person
+                    if (res.conversation_name == '') {
+                        $scope.conv_type = "two";
+                        // Turn off admin of two person chat.
+                        $scope.admin_rights = false;
+                        // TODO - make General function.
+                        var index = General.findWithAttr(res.participants, '_id', UserData.getUser()._id);
+                        // Get the other user.
+                        index = 1 - index;
+                        UserData.getConversationsUser(res.participants[index]._id)
+                            .then(function(result) {
+                                console.log(result);
+                                //$scope.participants.push(result);
+
+                                $scope.avatar = result.avatar;
+                                $scope.saved_avatar = result.avatar;
+                                $scope.conversation_name = result.user_name;
+                                $scope.chat_update.conversation_avatar = result.avatar;
+                                $scope.group_name = $scope.conversation_name;
+                                updateProfile();
+                            });
+
+                        //
+                    } else {
+                        $scope.conv_type = "group";
+                        $scope.avatar = res.conversation_avatar;
+                        $scope.saved_avatar = res.conversation_avatar;
+                        $scope.conversation_name = res.conversation_name;
+                        $scope.chat_update.conversation_avatar = res.conversation_avatar;
+                        $scope.group_name = $scope.conversation_name;
+                        updateProfile();
+                    }
 
 
-                    $scope.avatar = res.conversation_avatar;
-                    $scope.saved_avatar = res.conversation_avatar;
-                    $scope.chat_update.conversation_avatar = res.conversation_avatar;
-                    $scope.conversation_name = res.conversation_name;
-                    $scope.group_name = $scope.conversation_name;
-                    var profile = {};
-                    profile.avatar = $scope.avatar;
-                    profile.conversation_name = $scope.conversation_name;
-                    // Store the profile.
-                    Profile.setProfile(profile);
-                    $rootScope.$broadcast('PROFILE_SET');
+
                 });
             /*
             var profile = {};
@@ -218,7 +255,16 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams
     // CONTACTS
     //
 
+    $scope.editable = function(){
+        if($scope.admin_rights && !$scope.edit_conversation){
+            return true;
+        } else {
+            return false;
+        }
+    };
+
     $scope.editConversation = function() {
+        if($scope.admin_rights && !$scope.edit_conversation){
         $scope.edit_conversation = !$scope.edit_conversation;
         if ($scope.edit_conversation) {
             showSelected();
@@ -230,6 +276,7 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams
             }
 
         }
+    }
     };
 
 
@@ -548,7 +595,7 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams
                         $scope.chat_update.conversation_avatar = 'fileuploads/images/' + result.file;
                         // Close the image selection drawer.
                         $scope.show_image = false;
-                        
+
                     });
                     validateGroup();
                 });
@@ -667,8 +714,8 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams
         console.log($scope.participants);
         console.log(arraysAreEqual($scope.selected, $scope.participants));
         console.log($('#group_name').val() + ' != ' + $scope.conversation_name);
-        console.log($scope.saved_avatar  + ' != ' + $scope.avatar);
-        if (($('#group_name').val().length > 2 && $('#group_name').val() != $scope.conversation_name) || ($scope.selected.length > 0 && !arraysAreEqual($scope.selected, $scope.participants)) || ($scope.saved_avatar  != $scope.avatar)) {
+        console.log($scope.saved_avatar + ' != ' + $scope.avatar);
+        if (($('#group_name').val().length > 2 && $('#group_name').val() != $scope.conversation_name) || ($scope.selected.length > 0 && !arraysAreEqual($scope.selected, $scope.participants)) || ($scope.saved_avatar != $scope.avatar)) {
             $scope.$apply(function($scope) {
                 $scope.valid_group = true;
             });
