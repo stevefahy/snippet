@@ -2950,6 +2950,7 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
         UserData.loadUser().then(function(user) {
             //console.log('GOT 1 LU');
             //console.log('GET 2 SU');
+            console.log(user);
             return UserData.setUser(user);
         }).then(function() {
             //console.log('GET 3 LC');
