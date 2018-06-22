@@ -604,7 +604,7 @@ module.exports = function(app, passport) {
     // update user notification data
     app.post('/api/users/update_notification', isLoggedIn, function(req, res) {
         // Find the current users details
-        User.findById({ '_id': req.user._id }, function(error, user) {
+        User.findById({ '_id': req.principal._id }, function(error, user) {
             if (error) {
                 console.log('error');
                 res.json(error);
@@ -616,7 +616,7 @@ module.exports = function(app, passport) {
                 // Set the FCM data for the request
                 var data = {
                     "operation": "",
-                    "notification_key_name": req.user._id,
+                    "notification_key_name": req.principal._id,
                     "registration_ids": [req.body.refreshedToken]
                 };
                 var headers = {

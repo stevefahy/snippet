@@ -1703,7 +1703,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                                 // Send the notification
                                                 Users.send_notification(options)
                                                     .then(function(res) {
-                                                        //console.log(res);
+                                                        console.log(res);
                                                     });
                                             }
                                         });
@@ -1776,8 +1776,10 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                 // Find the other user(s)
                                 UserData.getConversationsUser(response.data.participants[i]._id)
                                     .then(function(result) {
+                                        console.log(result);
                                         // Get the participants notification key
                                         // Set the message title and body
+                                        console.log(result.notification_key);
                                         if (result.notification_key !== undefined) {
                                             data.to = result.notification_key;
                                             data.notification.title = notification_title;
@@ -1945,7 +1947,7 @@ cardApp.factory('principal', function($cookies, jwtHelper, $q, $rootScope) {
 
 // UserData Factory
 
-cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHelper, $q, principal, Users, Conversations, FormatHTML, General, socket, $filter) {
+cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, $location, jwtHelper, $q, principal, Users, Conversations, FormatHTML, General, socket, $filter) {
 
     var user;
     var contacts = [];
@@ -2951,7 +2953,18 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
             //console.log('GOT 1 LU');
             //console.log('GET 2 SU');
             console.log(user);
+if(user != null){
             return UserData.setUser(user);
+} else {
+console.log('no user');
+            // Set loaded to true.
+            $rootScope.loaded = true;
+            $rootScope.dataLoading = false;
+            isLoading = false;
+$location.path("/api/logout");
+deferred.resolve();
+
+}
         }).then(function() {
             //console.log('GET 3 LC');
             return UserData.loadConversations();
@@ -2995,21 +3008,22 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, jwtHe
     UserData.checkUser = function() {
         var deferred = $q.defer();
         if (isLoading) {
-            //console.log('already loading...wait');
+            console.log('already loading...wait');
             $rootScope.$watch('loaded', function(n) {
                 if (n) {
                     // loaded!
+console.log(user);
                     deferred.resolve(user);
                 }
             });
         } else {
-            //console.log('not loading...get');
+            console.log('not loading...get');
             // Check whether the user data has already been retrieved.
             if (UserData.getUser() != undefined) {
-                //console.log('CALL VAR /api/user_data');
+                console.log('CALL VAR /api/user_data');
                 deferred.resolve(user);
             } else {
-                //console.log('CALL HTTP /api/user_data');
+                console.log('CALL HTTP /api/user_data');
                 deferred.resolve(loadUserData());
             }
         }

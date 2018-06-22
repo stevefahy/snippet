@@ -92,6 +92,8 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
     if (principal.isValid()) {
         // Check whether the users data has loaded.
         UserData.checkUser().then(function(result) {
+console.log(result);
+if(result != undefined){
             $scope.currentUser = UserData.getUser();
             var profile = {};
             profile.avatar = 'default';
@@ -105,6 +107,9 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
             // get the local conversations
             $scope.conversations = UserData.getConversationsBuild();
             console.log($scope.conversations);
+} else {
+$location.path("/api/login");
+}
         });
     } else {
         $location.path("/api/login");
