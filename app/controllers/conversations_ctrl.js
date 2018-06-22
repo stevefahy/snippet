@@ -92,24 +92,24 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
     if (principal.isValid()) {
         // Check whether the users data has loaded.
         UserData.checkUser().then(function(result) {
-console.log(result);
-if(result != undefined){
-            $scope.currentUser = UserData.getUser();
-            var profile = {};
-            profile.avatar = 'default';
-            profile.user_name = UserData.getUser().user_name;
-            if (UserData.getUser().avatar != undefined) {
-                profile.avatar = UserData.getUser().avatar;
+            console.log(result);
+            if (result != undefined) {
+                $scope.currentUser = UserData.getUser();
+                var profile = {};
+                profile.avatar = 'default';
+                profile.user_name = UserData.getUser().user_name;
+                if (UserData.getUser().avatar != undefined) {
+                    profile.avatar = UserData.getUser().avatar;
+                }
+                // Store the profile.
+                Profile.setProfile(profile);
+                $rootScope.$broadcast('PROFILE_SET');
+                // get the local conversations
+                $scope.conversations = UserData.getConversationsBuild();
+                console.log($scope.conversations);
+            } else {
+                $location.path("/api/login");
             }
-            // Store the profile.
-            Profile.setProfile(profile);
-            $rootScope.$broadcast('PROFILE_SET');
-            // get the local conversations
-            $scope.conversations = UserData.getConversationsBuild();
-            console.log($scope.conversations);
-} else {
-$location.path("/api/login");
-}
         });
     } else {
         $location.path("/api/login");

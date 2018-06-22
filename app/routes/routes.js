@@ -603,15 +603,18 @@ module.exports = function(app, passport) {
 
     // update user notification data
     app.post('/api/users/update_notification', isLoggedIn, function(req, res) {
+        console.log('/api/users/update_notification');
         // Find the current users details
         User.findById({ '_id': req.principal._id }, function(error, user) {
             if (error) {
                 console.log('error');
                 res.json(error);
             } else if (user === null) {
+                console.log(user);
                 // no user found
                 res.json({ 'error': 'null' });
             } else {
+                console.log(user);
                 // User found
                 // Set the FCM data for the request
                 var data = {

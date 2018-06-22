@@ -110,7 +110,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     var savedSelection;
 
     $window.androidToJS = this.androidToJS;
-    $window.androidTokenRefresh = this.androidTokenRefresh;
+    //$window.androidTokenRefresh = this.androidTokenRefresh;
 
     // Set serverUrl based upon current host (local or live)
     if (location.hostname === 'localhost') {
@@ -124,17 +124,22 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         insertImage(data);
     };
 
-    if (ua.indexOf('AndroidApp') >= 0) {
-        Android.checkFCMToken();
-    }
-
-    androidTokenRefresh = function(data) {
-        refreshedToken = JSON.parse(data);
-        if (refreshedToken.id != undefined && refreshedToken.refreshedToken != undefined) {
-            // get notifcation data and check if this needs to be updated or added
-            Users.update_notification(refreshedToken);
+    /*
+        if (ua.indexOf('AndroidApp') >= 0) {
+            console.log('Android.checkFCMToken()');
+            // check if exists in db, if so check fro refresh:
+            Android.checkFCMToken();
+            // Otherwise get token from Android (may have created account on Web).
         }
-    };
+
+        androidTokenRefresh = function(data) {
+            refreshedToken = JSON.parse(data);
+            if (refreshedToken.id != undefined && refreshedToken.refreshedToken != undefined) {
+                // get notifcation data and check if this needs to be updated or added
+                Users.update_notification(refreshedToken);
+            }
+        };
+        */
 
     // Array to dynamically set marky chars to html tags
     var marky_array = [{
@@ -1967,7 +1972,42 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, $loca
     var isLoading = false;
     $rootScope.dataLoading = true;
 
+    $window.androidTokenRefresh = this.androidTokenRefresh;
+    $window.androidToken = this.androidToken;
 
+    UserData.checkFCMToken = function() {
+        console.log('checkFCMToken');
+        if (ua.indexOf('AndroidApp') >= 0) {
+            console.log('Android.checkFCMToken()');
+
+            // check if exists in db, if so check fro refresh:
+            console.log(UserData.getUser().notification_key);
+            if(UserData.getUser().notification_key != undefined){
+            Android.checkFCMToken();
+        } else {
+            // Otherwise get token from Android (may have created account on Web).
+            Android.getFCMToken();
+        }
+        }
+    };
+
+    androidTokenRefresh = function(data) {
+        console.log('androidTokenRefresh: ' + data);
+        refreshedToken = JSON.parse(data);
+        if (refreshedToken.id != undefined && refreshedToken.refreshedToken != undefined) {
+            // get notifcation data and check if this needs to be updated or added
+            Users.update_notification(refreshedToken);
+        }
+    };
+
+    androidToken = function(data) {
+        console.log('androidToken: ' + data);
+        token = JSON.parse(data);
+        if (token.id != undefined) {
+            // get notifcation data and check if this needs to be updated or added
+            Users.update_notification(token);
+        }
+    };
 
 
     // Broadcast by Database createCard service when a new card has been created
@@ -2953,18 +2993,18 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, $loca
             //console.log('GOT 1 LU');
             //console.log('GET 2 SU');
             console.log(user);
-if(user != null){
-            return UserData.setUser(user);
-} else {
-console.log('no user');
-            // Set loaded to true.
-            $rootScope.loaded = true;
-            $rootScope.dataLoading = false;
-            isLoading = false;
-$location.path("/api/logout");
-deferred.resolve();
+            if (user != null) {
+                return UserData.setUser(user);
+            } else {
+                console.log('no user');
+                // Set loaded to true.
+                $rootScope.loaded = true;
+                $rootScope.dataLoading = false;
+                isLoading = false;
+                $location.path("/api/logout");
+                deferred.resolve();
 
-}
+            }
         }).then(function() {
             //console.log('GET 3 LC');
             return UserData.loadConversations();
@@ -2990,6 +3030,9 @@ deferred.resolve();
             //console.log('GET 8 BC');
             return UserData.getConversation();
         }).then(function() {
+            //console.log('GET 9 BC');
+            return UserData.checkFCMToken();
+        }).then(function() {
             // connect to socket.io via socket service 
             // and request that a unique namespace be created for this user with their user id
             socket.setId(UserData.getUser()._id);
@@ -3012,7 +3055,7 @@ deferred.resolve();
             $rootScope.$watch('loaded', function(n) {
                 if (n) {
                     // loaded!
-console.log(user);
+                    console.log(user);
                     deferred.resolve(user);
                 }
             });
