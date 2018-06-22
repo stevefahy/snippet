@@ -1971,7 +1971,7 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, $loca
     $rootScope.loaded = false;
     var isLoading = false;
     $rootScope.dataLoading = true;
-
+        var ua = navigator.userAgent;
     $window.androidTokenRefresh = this.androidTokenRefresh;
     $window.androidToken = this.androidToken;
 
