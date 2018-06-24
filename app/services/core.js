@@ -1971,7 +1971,7 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, $loca
     $rootScope.loaded = false;
     var isLoading = false;
     $rootScope.dataLoading = true;
-        var ua = navigator.userAgent;
+    var ua = navigator.userAgent;
     $window.androidTokenRefresh = this.androidTokenRefresh;
     $window.androidToken = this.androidToken;
 
@@ -1982,12 +1982,12 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, $loca
 
             // check if exists in db, if so check fro refresh:
             console.log(UserData.getUser().notification_key);
-            if(UserData.getUser().notification_key != undefined){
-            Android.checkFCMToken();
-        } else {
-            // Otherwise get token from Android (may have created account on Web).
-            Android.getFCMToken();
-        }
+            if (UserData.getUser().notification_key != undefined) {
+                Android.checkFCMToken();
+            } else {
+                // Otherwise get token from Android (may have created account on Web).
+                Android.getFCMToken();
+            }
         }
     };
 
@@ -2037,6 +2037,7 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, $loca
         var user_id = UserData.getUser()._id;
         Conversations.find_user_conversations(user_id)
             .then(function(res) {
+                console.log(res);
                 // Get the index position of the updated conversation within the conversations model by conversation id
                 var conversation_pos = General.findWithAttr(res.data, '_id', msg.conversation_id);
                 // Get the index position of the current user within the updated conversation participants array in the conversations model
@@ -2044,7 +2045,46 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, $loca
                 // Get the unviewed cards for this user in this conversation.
                 var user_unviewed = res.data[conversation_pos].participants[user_pos].unviewed;
                 // Find and add the users to Userdata conversationsUsers array if they haven't already been added..
-                UserData.addConversationsUsers(res.data[conversation_pos].participants);
+                UserData.addConversationsUsers(res.data[conversation_pos].participants)
+                    .then(function(response) {
+                        console.log(response);
+                        console.log(conversation_pos);
+                        // If this is a new conversation add the participants to the users contacts
+                        //if (conversation_pos < 0) {
+                        res.data[conversation_pos].participants.map(function(key) {
+                            console.log(UserData.getUser().contacts);
+                            // not already a contact and not current user.
+                            if (!UserData.getUser().contacts.includes(key._id) && UserData.getUser()._id != key._id) {
+                                // not already a contact
+                                console.log(key._id);
+                            
+                                UserData.createContact(key)
+                                    .then(function(ret) {
+                                        console.log(ret);
+                                    });
+                            }
+                            
+                            UserData.getConversationsUser(key._id)
+                                .then(function(returned) {
+                                    console.log(returned);
+
+                                    //UserData.createContact
+                                    //if(UserData.getUser()._id != key._id){
+                                    if(UserData.getUser()._id != returned._id){
+                                        //key.conversation_exists = true;
+                                       // key.conversation_id = ;
+                                    returned.conversation_exists = true;
+                                    returned.conversation_id = res.data[conversation_pos]._id;
+                                    UserData.addContact(returned)
+                                        .then(function(response) {
+                                            console.log(response);
+                                        });
+                                    }
+                                });
+                                
+                        });
+                        //}
+                    });
                 // add this conversation to the local model.
                 console.log('addConversationModel');
                 UserData.addConversationModel(res.data[conversation_pos])
@@ -2059,6 +2099,7 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, $loca
                 // Get the latest card for this converation from the DB.
                 Conversations.getConversationLatestCard(msg.conversation_id)
                     .then(function(result) {
+                        console.log(result);
                         if (result.data != null) {
                             // Add latest card for this converation to LM.
                             UserData.conversationsLatestCardAdd(result.data.conversationId, result.data);
@@ -2078,6 +2119,7 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, $loca
                             if (result.data != null) {
                                 UserData.formatLatestCard(result.data, res.data[conversation_pos], function(response) {
                                     // Add this conversation to the conversations model
+                                    console.log(response);
                                     conversations_model.push(response);
 
                                 });
@@ -2100,102 +2142,117 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, $loca
                             $rootScope.$broadcast('CONV_NOTIFICATION', msg);
                         }
                     });
-            });
-
-        // CONVERSATION
-        // Update the cards model
 
 
-        // get all cards for a conversation by conversation id
-        Conversations.getConversationById(msg.conversation_id)
-            .then(function(result) {
-                //console.log(result);
-                //Cards model
-                UserData.getCardsModelById(msg.conversation_id)
-                    .then(function(res) {
-                        //console.log(res);
-                        // get the number of cards in the existing conversation
-                        var conversation_length = res.data.length;
-                        //console.log(conversation_length);
-                        // Check for new cards.
-                        // deleted
-                        console.log(General.findDifference(res.data, result.data, 'content'));
-                        console.log(General.findDifference(result.data, res.data, '_id'));
-                        console.log(General.findDifference(result.data, res.data, 'content'));
-                        console.log(General.findDifference(res.data, result.data, '_id'));
-                        // find only the new cards which have been posted
-                        var updates = result.data.slice(conversation_length, result.data.length);
-                        if (conversation_length < result.data.length) {
-                            console.log('add new card');
-                            // update the conversation model with the new cards
-                            updates.map(function(key) {
-                                //console.log(key);
-                                key.original_content = key.content;
-                                // Find the username then redirect to the conversation.
-                                UserData.getConversationsUser(key.user)
-                                    .then(function(r) {
-                                        key.user_name = r.user_name;
-                                        // Update the cards model
-                                        UserData.addCardsModel(key.conversationId, key)
-                                            .then(function(response) {
-                                                console.log(response);
-                                            });
-                                    });
-                            });
-                        } else if (conversation_length == result.data.length) {
-                            console.log('update existing card');
-                            var local_updated = General.findDifference(result.data, res.data, 'content');
-                            var db_updated = General.findDifference(res.data, result.data, 'content');
-                            //new
-                            //console.log(result.data);
-                            //old
-                            //console.log(res.data);
-                            console.log(local_updated);
-                            if (local_updated.length > 0) {
-                                local_updated.map(function(key) {
-                                    console.log(key);
 
-                                    // Find the username then redirect to the conversation.
-                                    UserData.getConversationsUser(key.user)
-                                        .then(function(r) {
-                                            // Update 
+                // CONVERSATION
+                // Update the cards model
+
+
+                // get all cards for a conversation by conversation id
+                Conversations.getConversationById(msg.conversation_id)
+                    .then(function(result) {
+                        console.log(result);
+                        //Cards model
+                        UserData.getCardsModelById(msg.conversation_id)
+                            .then(function(res) {
+                                var conversation_length;
+                                console.log(res);
+                                if (res != undefined) {
+                                    // get the number of cards in the existing conversation
+                                    conversation_length = res.data.length;
+                                } else {
+                                    conversation_length = 0;
+                                }
+                                    //console.log(conversation_length);
+                                    // Check for new cards.
+                                    // deleted
+                                    //console.log(General.findDifference(res.data, result.data, 'content'));
+                                    //console.log(General.findDifference(result.data, res.data, '_id'));
+                                    //console.log(General.findDifference(result.data, res.data, 'content'));
+                                    //console.log(General.findDifference(res.data, result.data, '_id'));
+                                    // find only the new cards which have been posted
+                                    var updates = result.data.slice(conversation_length, result.data.length);
+                                    if (conversation_length < result.data.length || res == undefined) {
+                                        console.log('add new card');
+                                        // update the conversation model with the new cards
+                                        updates.map(function(key) {
+                                            //console.log(key);
                                             key.original_content = key.content;
-                                            key.user_name = r.user_name;
-                                            // Update the cards model
-                                            UserData.addCardsModel(key.conversationId, key)
-                                                .then(function(response) {
-                                                    console.log(response);
-
+                                            // Find the username then redirect to the conversation.
+                                            UserData.getConversationsUser(key.user)
+                                                .then(function(r) {
+                                                    key.user_name = r.user_name;
+                                                    // Update the cards model
+                                                    UserData.addCardsModel(key.conversationId, key)
+                                                        .then(function(response) {
+                                                            console.log(response);
+                                                        });
                                                 });
                                         });
-                                });
-                            }
-                        } else if (conversation_length > result.data.length) {
-                            console.log('delete existing card');
+                                    } else if (conversation_length == result.data.length) {
+                                        console.log('update existing card');
+                                        var local_updated = General.findDifference(result.data, res.data, 'content');
+                                        var db_updated = General.findDifference(res.data, result.data, 'content');
+                                        //new
+                                        //console.log(result.data);
+                                        //old
+                                        //console.log(res.data);
+                                        console.log(local_updated);
+                                        if (local_updated.length > 0) {
+                                            local_updated.map(function(key) {
+                                                console.log(key);
 
-                            var local_deleted = General.findDifference(res.data, result.data, '_id');
-                            //var db_deleted = General.findDifference(result.data, res.data, '_id');
-                            if (local_deleted.length > 0) {
-                                console.log('deleteCardsModel');
-                                local_deleted.map(function(key) {
-                                    console.log(key);
-                                    //key.original_content = key.content;
-                                    // Find the username then redirect to the conversation.
-                                    //UserData.getConversationsUser(key.user)
-                                    // .then(function(r) {
-                                    //key.user_name = r.user_name;
-                                    // Update the cards model
-                                    UserData.deleteCardsModel(key.conversationId, key)
-                                        .then(function(response) {
-                                            console.log(response);
-                                        });
-                                    //});
-                                });
-                            }
+                                                // Find the username then redirect to the conversation.
+                                                UserData.getConversationsUser(key.user)
+                                                    .then(function(r) {
+                                                        // Update 
+                                                        key.original_content = key.content;
+                                                        key.user_name = r.user_name;
+                                                        // Update the cards model
+                                                        UserData.addCardsModel(key.conversationId, key)
+                                                            .then(function(response) {
+                                                                console.log(response);
 
-                        }
+                                                            });
+                                                    });
+                                            });
+                                        }
+                                    } else if (conversation_length > result.data.length) {
+                                        console.log('delete existing card');
+
+                                        var local_deleted = General.findDifference(res.data, result.data, '_id');
+                                        //var db_deleted = General.findDifference(result.data, res.data, '_id');
+                                        if (local_deleted.length > 0) {
+                                            console.log('deleteCardsModel');
+                                            local_deleted.map(function(key) {
+                                                console.log(key);
+                                                //key.original_content = key.content;
+                                                // Find the username then redirect to the conversation.
+                                                //UserData.getConversationsUser(key.user)
+                                                // .then(function(r) {
+                                                //key.user_name = r.user_name;
+                                                // Update the cards model
+                                                UserData.deleteCardsModel(key.conversationId, key)
+                                                    .then(function(response) {
+                                                        console.log(response);
+                                                    });
+                                                //});
+                                            });
+                                        }
+
+                                    }
+                                //} else {
+                                    // create model
+                                //}
+                            });
                     });
+
+
+
             });
+
+
     });
 
     //
@@ -2220,11 +2277,41 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, $loca
     //
     // User - Contacts
     //
+    // Create Contact in DB and add to local contacts
+    // NOT USED!
+    UserData.createContact = function(val) {
+        var deferred = $q.defer();
+        console.log(val);
+        // Only add locally if it does not already exist.
+        console.log(contacts);
+        if (General.findWithAttr(contacts, '_id', val._id) < 0) {
+            console.log('create contact in db');
+            Users.add_contact(val._id)
+                .then(function(res) {
+                    console.log(res);
+                    //contacts.push(val);
+                    deferred.resolve(contacts);
+                });
+
+        } else {
+            deferred.resolve(contacts);
+        }
+        return deferred.promise;
+    };
 
     UserData.addContact = function(val) {
         var deferred = $q.defer();
-        contacts.push(val);
-        deferred.resolve(contacts);
+        var index = General.findWithAttr(contacts, '_id', val._id);
+        // Only add locally if it does not already exist.
+        if (index < 0) {
+            console.log('add contact to LM');
+            contacts.push(val);
+            deferred.resolve(contacts);
+        } else {
+            console.log('contact already in LM ; update');
+            contacts[index] = val;
+            deferred.resolve(contacts);
+        }
         return deferred.promise;
     };
 

@@ -316,6 +316,12 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
                     console.log(index);
                     $scope.contacts[index].conversation_exists = true;
                     $scope.contacts[index].conversation_id = res.data._id;
+                    // update contact to LM
+                    UserData.addContact($scope.contacts[index])
+                     .then(function(res) {
+                        console.log(res);
+                     });
+
                     console.log($scope.contacts);
                 }
 
