@@ -41,30 +41,9 @@ cardApp.controller("headerCtrl", ['Profile', 'Conversations', '$scope', '$rootSc
         $location.path(path);
     };
 
-    /*
-    $scope.changePathConversations = function(){
-        //$rootScope.nav = {from:'conv', to:'convs'};
-        $location.path('/chat/conversations');
-    };
-    */
-    /*
-    $scope.changePathContacts = function(path) {
-        $location.path(path);
-    };
-    */
-
     $scope.changePathConversation = function() {
         var id = Conversations.getConversationId();
-        //$rootScope.nav = {from:'group', to:'conv'};
         $location.path('chat/conversation/' + id);
     };
-
-    /*
-    $scope.returnConversation = function() {
-        var id = Conversations.getConversationId();
-        $rootScope.nav = {from:'conv', to:'convs'};
-        $location.path('chat/conversation/' + id);
-    };
-    */
 
 }]);

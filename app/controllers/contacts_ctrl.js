@@ -7,25 +7,16 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     // TODO - make sure only one chat created with aother single user.
 
     // Animation
-    console.log($rootScope.nav);
-
     if ($rootScope.nav) {
         if ($rootScope.nav.from == 'conv') {
-            console.log('back from conv');
             viewAnimationsService.setEnterAnimation('page-contacts-static');
-            //viewAnimationsService.setLeaveAnimation('static');
             viewAnimationsService.setLeaveAnimation('page-conversation');
         } else if ($rootScope.nav.from == 'convs') {
-            console.log('from convs');
             viewAnimationsService.setLeaveAnimation('page-contacts-static');
             viewAnimationsService.setEnterAnimation('page-contacts');
         }
     }
     $rootScope.nav = { from: 'contacts', to: 'convs' };
-    //viewAnimationsService.setEnterAnimation('page-contacts');
-    //viewAnimationsService.setLeaveAnimation('page-contacts-static');
-
-
     // Loading conversation directly should not animate.
     $animate.enabled($rootScope.animate_pages);
     // turn on animation.
@@ -179,13 +170,8 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     };
 
     $scope.contactBtn = function(contact) {
-        console.log(contact);
-        //group_selected ? doSelect(contact) : chat(contact)
-        console.log(contact._id + ' != ' + UserData.getUser()._id);
-        //if ($scope.group_selected && contact._id != UserData.getUser()._id) {
         if ($scope.group_selected && !contact.is_admin) {
             $scope.doSelect(contact);
-            //} else if (!$scope.group_selected && contact._id != UserData.getUser()._id) {
         } else if (!$scope.group_selected && !contact.is_admin) {
             $scope.chat(contact);
         }
@@ -246,10 +232,8 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
 
     // Continue a conversation by conversation id
     $scope.continueChat = function(conversation_id, contact) {
-        console.log('continueChat');
         $('#page-system').removeClass("page-contacts");
         $('#page-system').addClass("page-contacts-static");
-        //$rootScope.nav = { from: 'contacts', to: 'conv' };
         var profile_obj = {};
         profile_obj.user_name = contact.user_name;
         profile_obj.avatar = contact.avatar;
@@ -259,9 +243,6 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
 
     // Start a conversation
     $scope.startChat = function(new_participants, contact, name) {
-        console.log('startChat');
-        console.log(new_participants);
-        console.log(contact);
         $('#page-system').removeClass("page-contacts");
         $('#page-system').addClass("page-contacts-static");
         $rootScope.nav = { from: 'contacts', to: 'conv' };
@@ -270,85 +251,43 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
         }
         // reset the participants array.
         $scope.chat_create.participants = [];
-        //
         $scope.chat_create.conversation_type = 'private';
         // set the creating user as admin if a group
-        //if (new_participants.length > 1) {
         // A group may be one ro more participants.
         $scope.chat_create.admin = $scope.currentUser._id;
-        console.log($scope.chat_create.admin);
-        //}
-        // Add current user as a participant
-        $scope.chat_create.participants.push({ _id: $scope.currentUser._id, viewed: 0 });
-
         // Add all users contained in the new_participants array
         new_participants.map(function(key, array) {
             $scope.chat_create.participants.push({ _id: key._id, viewed: 0 });
-            // Update local model.
-
-
-
-            /*
-            console.log(UserData.getUser().contacts);
-            $scope.chat_create.participants.map(function(key, array) {
-                UserData.getUser().contacts.push(key);
-            });
-            console.log(UserData.getUser().contacts);
-              UserData.loadUserContacts()
-                                    .then(function(res) {
-                                        console.log(res);
-                                    });
-                                    */
         });
         // Create conversation in DB.
         Conversations.create($scope.chat_create)
             .then(function(res) {
-                console.log(res.data);
                 // If two person conversation
                 if (res.data.participants.length == 2) {
                     $scope.contacts = UserData.getContacts();
-                    console.log($scope.contacts);
                     var participant_index = General.findWithAttr(res.data.participants, '_id', UserData.getUser()._id);
-                    console.log(participant_index);
                     // Get the other participant
                     participant_index = 1 - participant_index;
                     var index = General.findWithAttr($scope.contacts, '_id', res.data.participants[participant_index]._id);
-                    console.log(index);
                     $scope.contacts[index].conversation_exists = true;
                     $scope.contacts[index].conversation_id = res.data._id;
                     // update contact to LM
                     UserData.addContact($scope.contacts[index])
-                     .then(function(res) {
-                        console.log(res);
-                     });
-
-                    console.log($scope.contacts);
+                        .then(function(res) {
+                            //console.log(res);
+                        });
                 }
-
                 // Add this conversation to the local model.
                 res.data.avatar = res.data.conversation_avatar;
                 res.data.name = res.data.conversation_name;
                 UserData.addConversationModel(res.data)
                     .then(function(result) {
-                        //
-                        console.log(result);
                         // If this is the first card in a new conversation then create the cards model for this conversation.
                         UserData.addCardsModelById(res.data._id)
                             .then(function(res) {
-                                //
-                                console.log(res);
-
-
+                                //console.log(res);
                             });
-
                     });
-                /*
-                                UserData.addCardsModelById(id, data)
-                                    .then(function(res) {
-                                        //
-                                    });
-                                    */
-
                 var profile_obj = {};
                 // if group
                 if (res.data.conversation_name != '') {
@@ -369,9 +308,6 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
                         participant_pos = 0;
                     }
                     // Find the other user
-
-                    // USERDATA PARTICIPANTS
-
                     General.findUser(res.data.participants[participant_pos]._id, function(result) {
                         profile_obj.avatar = "default";
                         // set the other user name as the name of the conversation.
@@ -508,7 +444,6 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
         $scope.contacts = UserData.getContacts();
         var index = General.findWithAttr($scope.contacts, '_id', UserData.getUser()._id);
         $scope.contacts[index].is_admin = true;
-        console.log($scope.contacts);
         checkImportedContacts();
     };
 
@@ -630,7 +565,6 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
                                 // Check if individual conversation already created with this contact
                                 // Get all coversations containing current user.
                                 $http.get("/chat/conversation").then(function(result) {
-                                    console.log(result);
                                     result.data.map(function(key, array) {
                                         // check that this is a two person chat.
                                         // Groups of three or more are loaded in conversations.html

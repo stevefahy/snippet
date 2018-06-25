@@ -249,7 +249,6 @@ module.exports = function(app, passport) {
                 }
             }
 
-
             req.logIn(user, { session: false }, function(err) {
                 if (err) {
                     console.log(err);
@@ -603,18 +602,15 @@ module.exports = function(app, passport) {
 
     // update user notification data
     app.post('/api/users/update_notification', isLoggedIn, function(req, res) {
-        console.log('/api/users/update_notification');
         // Find the current users details
         User.findById({ '_id': req.principal._id }, function(error, user) {
             if (error) {
                 console.log('error');
                 res.json(error);
             } else if (user === null) {
-                console.log(user);
                 // no user found
                 res.json({ 'error': 'null' });
             } else {
-                console.log(user);
                 // User found
                 // Set the FCM data for the request
                 var data = {
@@ -626,7 +622,6 @@ module.exports = function(app, passport) {
                     'Authorization': 'key=' + fcm.firebaseserverkey,
                     'Content-Type': 'application/json',
                     'project_id': fcm.project_id
-
                 };
                 var options = {
                     uri: 'https://android.googleapis.com/gcm/notification',
@@ -928,54 +923,37 @@ module.exports = function(app, passport) {
                 console.log(err);
                 res.send(err);
             }
-            console.log(conversation);
             var toupdate = req.body.conversation;
-            console.log('toupdate');
-            console.log(toupdate);
             conversation.conversation_avatar = toupdate.conversation_avatar;
             conversation.conversation_name = toupdate.conversation_name;
-
-            //conversation.participants = toupdate.participants;
             // Update participants with the latest viewed data.
             // Convert the conversation model to JSON so that findWithAttr functions.
             conversation_temp = conversation.toJSON();
             // Add new participants.
             for (var i in toupdate.participants) {
                 var index = findWithAttr(conversation_temp.participants, '_id', toupdate.participants[i]._id);
-                // If new participant.
+                // If new participant. Add
                 if (index < 0) {
-                    console.log('Add');
-                    console.log(toupdate.participants[i]);
-                    var temp = {_id: toupdate.participants[i]._id, unviewed: []};
+                    var temp = { _id: toupdate.participants[i]._id, unviewed: [] };
                     conversation.participants.push(temp);
                 }
             }
             // Delete old participants.
             for (var j in conversation_temp.participants) {
                 var index2 = findWithAttr(toupdate.participants, '_id', conversation_temp.participants[j]._id);
-                // If old participant.
+                // If old participant. Delete.
                 if (index2 < 0) {
-                    console.log('Delete');
-                    console.log(conversation.participants[j]);
                     conversation.participants.splice(j, 1);
-                    //conversation.participants.push(toupdate.participants[i]);
                 }
             }
-            //conversation = conversation_temp;
-
             // Update the Conversations updatedAt time.
             conversation.updatedAt = new Date().toISOString();
-
-            console.log(conversation);
             var updateConversation = new Conversation(conversation);
             updateConversation.save(function(err, conversation_update) {
                 if (err) {
-                    console.log('err');
                     console.log(err);
                     res.send(err);
                 } else {
-                    console.log('conversation');
-                    console.log(conversation_update);
                     res.json(conversation_update);
                 }
             });
@@ -1206,9 +1184,8 @@ module.exports = function(app, passport) {
 
     // Get all cards for a PUBLIC conversation by conversation id.
     // Does not need to be a member or logged in because it is a public chat.
-    //getPublicConversationById(id);
+    // getPublicConversationById(id);
     app.get('/chat/get_public_conversation/:id', function(req, res) {
-        // TODO if no id exists then re-route
         // Ensure the conversation id is a public conversation
         Conversation.findOne({ '_id': req.params.id, 'conversation_type': 'public' }, function(err, conversation) {
             if (err) {

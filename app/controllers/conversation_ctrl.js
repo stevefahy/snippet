@@ -1,62 +1,7 @@
 cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', '$animate', 'viewAnimationsService', function($scope, $rootScope, $location, $http, $window, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, $animate, viewAnimationsService) {
 
+
     $rootScope.pageLoading = true;
-
-    console.log($rootScope.nav);
-
-    // Default navigation
-    viewAnimationsService.setEnterAnimation('page-conversation');
-    viewAnimationsService.setLeaveAnimation('page-conversation-static');
-
-    if ($rootScope.nav) {
-        if ($rootScope.nav.from == 'group') {
-            //viewAnimationsService.setEnterAnimation('page-conversation-static');
-            //viewAnimationsService.setLeaveAnimation('page-conversation');
-            viewAnimationsService.setEnterAnimation('page-conversation-static');
-            viewAnimationsService.setLeaveAnimation('page-group');
-        } else if ($rootScope.nav.from == 'contacts') {
-            console.log('contacts to conv here');
-            $rootScope.nav = { from: 'conv', to: 'contacts' };
-            //viewAnimationsService.setEnterAnimation('page-contacts');
-            //viewAnimationsService.setLeaveAnimation('page-conversation-static');
-
-            //viewAnimationsService.setEnterAnimation('page-contacts-static');
-            //viewAnimationsService.setLeaveAnimation('page-conversation');
-
-            viewAnimationsService.setEnterAnimation('page-conversation');
-            viewAnimationsService.setLeaveAnimation('page-contacts-static');
-        } else {
-            $rootScope.nav = { from: 'conv', to: 'convs' };
-        }
-    } else {
-        $rootScope.nav = { from: 'conv', to: 'convs' };
-    }
-
-
-
-    $scope.changePathGroup = function() {
-        //$scope.groupInfo = function() {
-        $rootScope.nav = { from: 'conv', to: 'group' };
-        viewAnimationsService.setLeaveAnimation('page page-conversation');
-        viewAnimationsService.setEnterAnimation('page page-group');
-        console.log(Conversations.getConversationId());
-        $location.path("/api/group_info/" + Conversations.getConversationId());
-    };
-
-    // Loading conversation directly should not animate.
-    $animate.enabled($rootScope.animate_pages);
-
-    // Listen for the end of the view transition.
-    $(".page").on("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend", function(e) {
-        if (e.originalEvent.animationName == "slide-in") {
-            $timeout(function() {
-                $scope.$apply(function() {
-                    // Load the rest of the cards.
-                    $scope.totalDisplayed = -1000;
-                }, 0);
-            });
-        }
-    });
 
     $scope.getFocus = Format.getFocus;
     $scope.getBlur = Format.getBlur;
@@ -73,8 +18,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.isMember = false;
     $scope.totalDisplayed = -6;
 
-    General.keyBoardListenStart();
-
     // Use the urls id param from the route to load the conversation.
     var id = $routeParams.id;
     // Use the urls username param from the route to load the conversation.
@@ -83,40 +26,50 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // Detect device user agent 
     var ua = navigator.userAgent;
 
+    // Default navigation
+    viewAnimationsService.setEnterAnimation('page-conversation');
+    viewAnimationsService.setLeaveAnimation('page-conversation-static');
 
+    if ($rootScope.nav) {
+        if ($rootScope.nav.from == 'group') {
+            viewAnimationsService.setEnterAnimation('page-conversation-static');
+            viewAnimationsService.setLeaveAnimation('page-group');
+        } else if ($rootScope.nav.from == 'contacts') {
+            $rootScope.nav = { from: 'conv', to: 'contacts' };
+            viewAnimationsService.setEnterAnimation('page-conversation');
+            viewAnimationsService.setLeaveAnimation('page-contacts-static');
+        } else {
+            $rootScope.nav = { from: 'conv', to: 'convs' };
+        }
+    } else {
+        $rootScope.nav = { from: 'conv', to: 'convs' };
+    }
+
+    // Loading conversation directly should not animate.
+    $animate.enabled($rootScope.animate_pages);
+
+    General.keyBoardListenStart();
 
     // Add custom class for Android scrollbar
     if (ua.indexOf('AndroidApp') >= 0) {
         $('.content_cnv').addClass('content_cnv_android');
     }
 
-    // Broadcast by cardcreate_ctrl and conversation_ctrl when the window regains focus
-    $scope.$on('CONV_CHECK', function() {
-        // TODO - Remove?
-    });
-
-    // Broadcast by socket service when a  card has been created, updated or deleted by another user to this user
+    // Broadcast by UserData after it has processed the notification. (card has been created, updated or deleted by another user to this user).
     $scope.$on('CONV_NOTIFICATION', function(event, msg) {
-        console.log('CONV_NOTIFICATION');
-        console.log(msg);
-        //var id = Conversations.getConversationId();
         // only update the conversation if the user is currently in that conversation
         if (id === msg.conversation_id) {
-            // DELETED
-            //getConversationUpdate(msg.conversation_id);
             updateConversationViewed(id);
         }
     });
 
-    // Broadcast by Database createCard service when a new card has been created
+    // Broadcast by Database createCard service when a new card has been created by this user.
     $scope.$on('CARD_CREATED', function(event, data) {
-        console.log('CARD_CREATED');
         updateConversation(data);
     });
 
     // Broadcast by Database updateCard service when a card has been updated.
     $scope.$on('CARD_UPDATED', function(event, data) {
-        console.log('CARD_UPDATED');
         var card_pos = General.findWithAttr($scope.cards, '_id', data._id);
         if (card_pos >= 0) {
             $scope.cards[card_pos].updatedAt = data.updatedAt;
@@ -126,7 +79,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Broadcast by Database deleteCard service when a card has been deleted.
     $scope.$on('CARD_DELETED', function(event, card_id) {
-        console.log('CARD_DELETED');
         // find the position of the deleted card within the cards array.
         var deleted_card_pos = General.findWithAttr($scope.cards, '_id', card_id);
         // if the card is found then remove it.
@@ -135,34 +87,23 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     });
 
-
+    $scope.$on('$destroy', function() {
+        // leaving controller.
+        $window.onfocus = null;
+    });
 
     setFocus = function() {
         $timeout(function() {
             findConversationId(function(result) {
-                console.log(result);
                 UserData.getCardsModelById(result)
                     .then(function(result) {
-                        console.log(result);
                         if (result != undefined) {
-                            console.log('latest cards!');
                             $scope.cards = result.data;
-
-                            $scope.$watch(result.data, function() {
-                                console.log('changed');
-                                console.log(result.data);
-                            });
-                            //$rootScope.pageLoading = false;
                         }
                     });
             });
         });
     };
-
-    $scope.$on('$destroy', function() {
-        // leaving controller.
-        $window.onfocus = null;
-    });
 
     // start watching onfocus and onblur
     watchFocus = function() {
@@ -174,7 +115,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             $window.onblur = function() {
                 //console.log('blur');
             };
-            //$window.focus();
             setFocus();
         } else {
             setFocus();
@@ -194,6 +134,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // Start watching onfocus and onblur, then load the conversation for the first time.
     //watchFocus();
 
+    $scope.changePathGroup = function() {
+        $rootScope.nav = { from: 'conv', to: 'group' };
+        viewAnimationsService.setLeaveAnimation('page page-conversation');
+        viewAnimationsService.setEnterAnimation('page page-group');
+        $location.path("/api/group_info/" + Conversations.getConversationId());
+    };
+
     // DELETE ==================================================================
     $scope.deleteCard = function(card_id, conversation_id) {
         Database.deleteCard(card_id, conversation_id, $scope.currentUser);
@@ -210,10 +157,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }, 0);
     };
 
-
-
-
-
+    // TODO - check if compatibel with General version.
     function comparer(otherArray) {
         return function(current) {
             return otherArray.filter(function(other) {
@@ -361,11 +305,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // card_create.html is added to the conversation if $scope.isMember=true.
     checkPermission = function(conversation_id, callback) {
         // If looged in
-        console.log(conversation_id);
         if ($scope.currentUser) {
             UserData.getConversationModelById(conversation_id)
                 .then(function(res) {
-                    console.log(res);
                     if (res) {
                         // Find the current user in the conversation participants array.
                         var user_pos = General.findWithAttr(res.participants, '_id', UserData.getUser()._id);
@@ -378,38 +320,29 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         }
                     } else {
                         // empty conversation
-                        console.log('empty conversation');
                         UserData.getConversations()
                             .then(function(res) {
-                                console.log(res);
                                 // Find the conversation in the conversations.
                                 var conv_pos = General.findWithAttr(res, '_id', conversation_id);
                                 // Find the current user in the conversation participants array.
                                 var user_pos = General.findWithAttr(res[conv_pos].participants, '_id', UserData.getUser()._id);
                                 if (user_pos >= 0) {
                                     // user found in the participants array.
-
                                     // Add this conversation to the local model.
-                                    console.log('addConversationModel');
                                     UserData.addConversationModel(res[conv_pos])
                                         .then(function(result) {
-                                            //
-                                            console.log(result);
                                             // If this is the first card in a new conversation then create the cards model for this conversation.
                                             UserData.addCardsModelById(res[conv_pos]._id)
                                                 .then(function(res) {
-                                                    //
-                                                    console.log(res);
+                                                    //console.log(res);
                                                 });
                                         });
-
                                     callback(true);
                                 } else {
                                     // user not found in the participants array.
                                     callback(false);
                                 }
                             });
-
                     }
                 });
         } else {
@@ -420,7 +353,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
 
     getPublicConversation = function(id, name) {
-        console.log('getPublicConversation');
         Conversations.getPublicConversationById(id)
             .then(function(result) {
                 $scope.cards = result.data;
@@ -443,12 +375,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Get the conversation by id
     getConversation = function(id) {
-        console.log('getConversation');
         var profile = {};
         UserData.getConversationModelById(id)
             .then(function(res) {
-                console.log(res);
                 if (res.conversation_type == 'public') {
+                    //  $scope.conv_type used for Header
                     $scope.conv_type = 'public';
                     profile.user_name = res.conversation_name;
                     profile.avatar = res.conversation_avatar;
@@ -469,11 +400,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     // get the index position of the current user within the participants array
                     var user_pos = General.findWithAttr(res.participants, '_id', $scope.currentUser._id);
                     // Get the position of the current user
-                    if (user_pos === 0) {
-                        participant_pos = 1;
-                    } else {
-                        participant_pos = 0;
-                    }
+                    participant_pos = 1 - user_pos;
                     // Find the other user
                     UserData.getConversationsUser(res.participants[participant_pos]._id)
                         .then(function(result) {
@@ -492,10 +419,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
         UserData.getCardsModelById(id)
             .then(function(result) {
-                console.log(result);
                 if (result != undefined) {
                     $scope.cards = result.data;
-                    console.log(result.data.length);
                     if (result.data.length == 0) {
                         $rootScope.pageLoading = false;
                     }
@@ -510,76 +435,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // clear the participants unviewed array by conversation id
     updateConversationViewed = function(id) {
-        console.log('updateConversationViewed: ' + id);
         UserData.updateConversationViewed(id);
     };
 
-    // called by NOTIFICATION broadcast when another user has updated this conversation
-    getConversationUpdate = function(id) {
-        console.log('getConversationUpdate');
-        // get all cards for a conversation by conversation id
-        Conversations.getConversationById(id)
-            .then(function(result) {
-                console.log(result);
-                // get the number of cards in the existing conversation
-                var conversation_length = $scope.cards.length;
-                // Check for new cards.
-                // find only the new cards which have been posted
-                var updates = result.data.slice(conversation_length, result.data.length);
-                if (conversation_length < result.data.length) {
-                    // update the conversation with the new cards
-                    updates.map(function(key) {
-                        updateConversation(key);
-                    });
-                }
-                // Check for updated cards
-                //var updated = findDifference(result.data, $scope.cards, 'updated');
-                // updated - content, deleted - id
-                var updated = General.findDifference(result.data, $scope.cards, 'content');
-                console.log(updated);
-                // If there is a difference between cards content update that card 
-                // TODO Can there be more then one updated card?
-                if (updated.length > 0) {
-                    // Find the card postion within the cards array.
-                    var card_pos = General.findWithAttr($scope.cards, '_id', updated[0]._id);
-                    // If the card is found then update it.
-                    if (card_pos >= 0) {
-                        $scope.cards[card_pos].content = updated[0].content;
-                        $scope.cards[card_pos].updatedAt = updated[0].updatedAt;
-                    }
-                    // Clear the cards unviewed arrary for this participant of this conversation.
-                    updateConversationViewed(id);
-                }
-                // Check for deleted cards
-                if ($scope.cards.length > result.data.length) {
-                    //var deleted = findDifference($scope.cards, result.data, 'deleted');
-                    var deleted = findDifference($scope.cards, result.data, '_id');
-                    console.log(deleted);
-                    // TODO Can there be more then one deleted card?
-                    // If there are deleted cards.
-                    if (deleted.length > 0) {
-                        // Find the card postion within the cards array.
-                        var deleted_card_pos = General.findWithAttr($scope.cards, '_id', deleted[0]._id);
-                        //If the card is found then delete it.
-                        if (deleted_card_pos >= 0) {
-                            $scope.cards.splice(deleted_card_pos, 1);
-                        }
-                    }
-                }
-            });
-    };
-
     // update the conversation with the new card data
-    // OK
     updateConversation = function(data) {
-        console.log('updateConversation ');
-        console.log(data);
         // Get the user name for the user id
         // TODO dont repeat if user id already retreived
         UserData.getConversationsUser(data.user)
-            //Users.search_id(data.user)
             .then(function(res) {
-                console.log(res);
                 // Set the user_name to the retrieved name
                 data.user_name = res.user_name;
             })
@@ -598,9 +462,19 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
-        //console.log('ngRepeatFinished');
-        //$rootScope.cardLoading = false;
         $rootScope.pageLoading = false;
+    });
+
+    // Listen for the end of the view transition.
+    $(".page").on("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend", function(e) {
+        if (e.originalEvent.animationName == "slide-in") {
+            $timeout(function() {
+                $scope.$apply(function() {
+                    // Load the rest of the cards.
+                    $scope.totalDisplayed = -1000;
+                }, 0);
+            });
+        }
     });
 
 }]);
