@@ -1684,7 +1684,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                                 // Send the notification
                                                 Users.send_notification(options)
                                                     .then(function(res) {
-                                                        //console.log(res);
+                                                        console.log(res);
                                                     });
                                             }
                                         });
@@ -1741,6 +1741,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 // Update the Conversation updateAt time.
                 Conversations.updateTime(current_conversation_id)
                     .then(function(response) {
+                        console.log(response);
                         var notification = self.setNotification(response.data, currentUser, card_content);
                         notification_title = notification.title;
                         notification_body = notification.body;
@@ -1754,6 +1755,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                 // Find the other user(s)
                                 UserData.getConversationsUser(response.data.participants[i]._id)
                                     .then(function(result) {
+                                        console.log(result);
                                         // Get the participants notification key
                                         // Set the message title and body
                                         if (result.notification_key !== undefined) {
@@ -1765,7 +1767,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                             // Send the notification
                                             Users.send_notification(options)
                                                 .then(function(res) {
-                                                    //console.log(res);
+                                                    console.log(res);
                                                 });
                                         }
                                     });
@@ -1823,7 +1825,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                         // Send the notification
                                         Users.send_notification(options)
                                             .then(function(res) {
-                                                //console.log(res);
+                                                console.log(res);
                                             });
                                     }
                                 });
