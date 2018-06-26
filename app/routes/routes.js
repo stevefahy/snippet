@@ -622,7 +622,7 @@ module.exports = function(app, passport) {
                     "operation": "",
                     "notification_key_name": req.principal._id,
                     //"registration_ids": [req.body.refreshedToken]
-                    "registration_ids": [req.body.id]
+                    "registration_ids": [req.body.token]
                 };
                 var headers = {
                     'Authorization': 'key=' + fcm.firebaseserverkey,
