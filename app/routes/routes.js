@@ -609,10 +609,12 @@ module.exports = function(app, passport) {
                 res.json(error);
             } else if (user === null) {
                 // no user found
+                console.log('no user');
                 res.json({ 'error': 'null' });
             } else {
                 // User found
                 // Set the FCM data for the request
+                console.log(user);
                 var data = {
                     "operation": "",
                     "notification_key_name": req.principal._id,
@@ -631,6 +633,7 @@ module.exports = function(app, passport) {
                 };
                 // First time. Create notification key
                 if (user.notification_key === undefined) {
+                    console.log('first');
                     data.operation = "create";
                     request(options, function(err, response, body) {
                         if (err) {
@@ -645,8 +648,10 @@ module.exports = function(app, passport) {
                             updateuser.tokens.push({ _id: req.body.id, token: req.body.refreshedToken });
                             updateuser.save(function(err, user) {
                                 if (err) {
+                                    console.log(err);
                                     res.send(err);
                                 } else {
+                                    console.log(user);
                                     res.json(user);
                                 }
                             });
@@ -655,19 +660,26 @@ module.exports = function(app, passport) {
                 } else {
                     // User notification key already created. Update tokens if necessary.
                     // Find the Android device id
+                    console.log('already');
                     var id_pos = findWithAttr(user.tokens, '_id', req.body.id);
                     var new_user = new User(user);
                     var token_array;
+                    console.log(id_pos);
                     if (id_pos >= 0) {
+                        console.log('check changed');
                         // This device was already registered
                         // Check if the token has been changed
+                        console.log(user.tokens[id_pos].token);
+                        console.log(req.body.refreshedToken);
                         if (user.tokens[id_pos].token != req.body.refreshedToken) {
                             // The token has been changed. Update DB and FCM
                             new_user.tokens[id_pos].token = req.body.refreshedToken;
                             new_user.save(function(err, user) {
                                 if (err) {
+                                    console.log(err);
                                     res.send(err);
                                 } else {
+                                    console.log(user);
                                     res.json(user);
                                 }
                             });
@@ -679,13 +691,15 @@ module.exports = function(app, passport) {
                             data.registration_ids = token_array;
                             request(options, function(err, response, body) {
                                 if (err) {
+                                    console.log(err);
                                     throw err;
                                 } else {
-                                    // console.log(body);
+                                     console.log(body);
                                 }
                             });
                         }
                     } else {
+                        console.log('new device');
                         // User notification key already created.
                         // New Device.
                         // Update DB and FCM
@@ -705,9 +719,10 @@ module.exports = function(app, passport) {
                         data.registration_ids = token_array;
                         request(options, function(err, response, body) {
                             if (err) {
+                                console.log(err);
                                 throw err;
                             } else {
-                                //console.log(body);
+                                console.log(body);
                             }
                         });
                     }

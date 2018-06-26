@@ -1962,8 +1962,9 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, $loca
     };
 
     androidTokenRefresh = function(data) {
-        console.log(data);
+        
         refreshedToken = JSON.parse(data);
+        console.log(refreshedToken);
         if (refreshedToken.id != undefined && refreshedToken.refreshedToken != undefined) {
             // get notifcation data and check if this needs to be updated or added
             Users.update_notification(refreshedToken);
@@ -1971,8 +1972,9 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, $loca
     };
 
     androidToken = function(data) {
-        console.log(data);
+        
         token = JSON.parse(data);
+        console.log(token);
         if (token.id != undefined) {
             // get notifcation data and check if this needs to be updated or added
             Users.update_notification(token);
