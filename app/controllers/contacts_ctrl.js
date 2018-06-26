@@ -73,6 +73,8 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     var myImageName = '';
     var mySavedImage = '';
 
+
+
     // Get the current users details
     if (principal.isValid()) {
         UserData.checkUser().then(function(result) {
@@ -144,7 +146,9 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     //
 
     $scope.cancelGroup = function(event) {
-        event.stopPropagation();
+        if (event) {
+            event.stopPropagation();
+        }
         $scope.group_selected = false;
         $scope.show_selected_drawer = false;
         $scope.selected = [];
@@ -159,6 +163,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
         $scope.image_loaded = false;
         $scope.avatar = 'default';
     };
+
 
     $scope.selectGroup = function() {
         $scope.group_selected = !$scope.group_selected;
@@ -255,6 +260,11 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
         // set the creating user as admin if a group
         // A group may be one ro more participants.
         $scope.chat_create.admin = $scope.currentUser._id;
+        // Add current user as participant to two person chat.
+        if (name == undefined) {
+            // Add current user as a participant
+            $scope.chat_create.participants.push({ _id: $scope.currentUser._id, viewed: 0 });
+        }
         // Add all users contained in the new_participants array
         new_participants.map(function(key, array) {
             $scope.chat_create.participants.push({ _id: key._id, viewed: 0 });
@@ -444,6 +454,8 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
         $scope.contacts = UserData.getContacts();
         var index = General.findWithAttr($scope.contacts, '_id', UserData.getUser()._id);
         $scope.contacts[index].is_admin = true;
+        // Reset
+        $scope.cancelGroup();
         checkImportedContacts();
     };
 

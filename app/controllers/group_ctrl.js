@@ -51,6 +51,7 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams
     var myImageName = '';
     var mySavedImage = '';
 
+
     updateProfile = function() {
         var profile = {};
         profile.avatar = $scope.avatar;
@@ -126,6 +127,8 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams
     };
 
     $scope.editConversation = function() {
+        // Reset group
+        $scope.cancelGroup();
         if ($scope.admin_rights && !$scope.edit_conversation) {
             $scope.edit_conversation = !$scope.edit_conversation;
             if ($scope.edit_conversation) {
