@@ -605,6 +605,14 @@ module.exports = function(app, passport) {
         // Find the current users details
         console.log('body');
         console.log(req.body);
+        var reg_id;
+        if(req.body.refreshedToken == undefined){
+            // First time 
+            reg_id = req.body.token;
+        } else {
+            // refreshedToken
+            reg_id = req.body.refreshedToken;
+        }
         User.findById({ '_id': req.principal._id }, function(error, user) {
             if (error) {
                 console.log('error');
@@ -622,7 +630,8 @@ module.exports = function(app, passport) {
                     "operation": "",
                     "notification_key_name": req.principal._id,
                     //"registration_ids": [req.body.refreshedToken]
-                    "registration_ids": [req.body.token]
+                    //"registration_ids": [req.body.token]
+                    "registration_ids": [reg_id]
                 };
                 var headers = {
                     'Authorization': 'key=' + fcm.firebaseserverkey,

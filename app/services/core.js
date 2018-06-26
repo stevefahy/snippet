@@ -1784,6 +1784,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                         }
                         // All Conversation participants unviewed arrays updated
                         $q.all(promises).then(function() {
+                            console.log('all');
                             // update other paticipants in the conversation via socket.
                             socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: current_conversation_id, participants: viewed_users });
                         });
@@ -1967,10 +1968,10 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, $loca
         
         refreshedToken = JSON.parse(data);
         console.log(refreshedToken);
-        //if (refreshedToken.id != undefined && refreshedToken.refreshedToken != undefined) {
-        if (refreshedToken.token != undefined || (refreshedToken.id != undefined && refreshedToken.refreshedToken != undefined)) {
+        if (refreshedToken.id != undefined && refreshedToken.refreshedToken != undefined) {
+        //if (refreshedToken.token != undefined || (refreshedToken.id != undefined && refreshedToken.refreshedToken != undefined)) {
             // get notifcation data and check if this needs to be updated or added
-            console.log('update notif');
+            console.log('update token');
             Users.update_notification(refreshedToken);
         }
     };
@@ -1980,6 +1981,7 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, $loca
         token = JSON.parse(data);
         console.log(token);
         if (token.id != undefined) {
+            console.log('first token');
             // get notifcation data and check if this needs to be updated or added
             Users.update_notification(token);
         }
