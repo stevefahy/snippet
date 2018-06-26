@@ -1968,7 +1968,7 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, $loca
         refreshedToken = JSON.parse(data);
         console.log(refreshedToken);
         //if (refreshedToken.id != undefined && refreshedToken.refreshedToken != undefined) {
-        if (refreshedToken.token != undefined && refreshedToken.id != undefined && refreshedToken.refreshedToken != undefined) {
+        if (refreshedToken.token != undefined || (refreshedToken.id != undefined && refreshedToken.refreshedToken != undefined)) {
             // get notifcation data and check if this needs to be updated or added
             console.log('update notif');
             Users.update_notification(refreshedToken);
