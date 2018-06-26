@@ -53,6 +53,7 @@ io.on('connection', function(socket) {
             // emited by cardcreate_ctrl when card has been created
             socket.on('card_posted', function(data) {
                 console.log('card_posted, conv id: ' + data.conversation_id + ' , participants: ' + data.participants);
+                console.log(data.participants);
                 // notify relevant namespace(s) of the cards creation
                 for (var i in data.participants) {
                     // dont emit to the user which sent the card

@@ -1785,6 +1785,8 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                         // All Conversation participants unviewed arrays updated
                         $q.all(promises).then(function() {
                             console.log('all');
+                            console.log(current_conversation_id);
+                            console.log(viewed_users);
                             // update other paticipants in the conversation via socket.
                             socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: current_conversation_id, participants: viewed_users });
                         });
