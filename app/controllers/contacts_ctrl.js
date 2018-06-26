@@ -220,9 +220,12 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
 
     // Start or continue a single user conversation with a contact.
     $scope.chat = function(contact) {
+        console.log(contact);
         if (contact.conversation_exists) {
+            console.log('continue');
             $scope.continueChat(contact.conversation_id, contact);
         } else {
+            console.log('start');
             $scope.startChat([contact], contact);
         }
     };

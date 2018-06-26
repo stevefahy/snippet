@@ -1946,19 +1946,23 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, $loca
     $window.androidToken = this.androidToken;
 
     UserData.checkFCMToken = function() {
+        console.log('checkFCMToken');
         if (ua.indexOf('AndroidApp') >= 0) {
             // check if exists in DB.
             if (UserData.getUser().notification_key != undefined) {
                 // Check for refresh token.
+                console.log('check');
                 Android.checkFCMToken();
             } else {
                 // Otherwise get token from Android (may have created account on Web).
+                console.log('get');
                 Android.getFCMToken();
             }
         }
     };
 
     androidTokenRefresh = function(data) {
+        console.log(data);
         refreshedToken = JSON.parse(data);
         if (refreshedToken.id != undefined && refreshedToken.refreshedToken != undefined) {
             // get notifcation data and check if this needs to be updated or added
@@ -1967,6 +1971,7 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, $loca
     };
 
     androidToken = function(data) {
+        console.log(data);
         token = JSON.parse(data);
         if (token.id != undefined) {
             // get notifcation data and check if this needs to be updated or added
@@ -1994,6 +1999,7 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, $loca
     $rootScope.$on('NOTIFICATION', function(event, msg) {
 
         // CONVERSATIONS
+        console.log(msg);
 
         // Find the conversations for current user
         var user_id = UserData.getUser()._id;
