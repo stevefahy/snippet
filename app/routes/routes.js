@@ -620,7 +620,8 @@ module.exports = function(app, passport) {
                 var data = {
                     "operation": "",
                     "notification_key_name": req.principal._id,
-                    "registration_ids": [req.body.refreshedToken]
+                    //"registration_ids": [req.body.refreshedToken]
+                    "registration_ids": [req.body.id]
                 };
                 var headers = {
                     'Authorization': 'key=' + fcm.firebaseserverkey,
