@@ -1951,7 +1951,7 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, $loca
         console.log('checkFCMToken');
         if (ua.indexOf('AndroidApp') >= 0) {
             // check if exists in DB.
-            if (UserData.getUser().notification_key != undefined) {
+            if (UserData.getUser().notification_key_name != undefined) {
                 // Check for refresh token.
                 console.log('check');
                 Android.checkFCMToken();
