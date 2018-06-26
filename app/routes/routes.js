@@ -603,6 +603,8 @@ module.exports = function(app, passport) {
     // update user notification data
     app.post('/api/users/update_notification', isLoggedIn, function(req, res) {
         // Find the current users details
+        console.log('body');
+        console.log(req.body);
         User.findById({ '_id': req.principal._id }, function(error, user) {
             if (error) {
                 console.log('error');
