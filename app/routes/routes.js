@@ -617,6 +617,7 @@ module.exports = function(app, passport) {
                 // User found
                 // Set the FCM data for the request
                 console.log(user);
+                console.log(req.body.id);
                 var data = {
                     "operation": "",
                     "notification_key_name": req.principal._id,
