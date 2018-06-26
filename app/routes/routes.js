@@ -640,7 +640,10 @@ module.exports = function(app, passport) {
                             console.log('err: ' + err);
                             throw err;
                         } else {
+                            console.log('create notification_key');
+                            console.log(body);
                             var notification_key = body.notification_key;
+                            console.log(notification_key);
                             // Save to DB
                             var updateuser = new User(user);
                             updateuser.notification_key_name = user._id;
@@ -651,6 +654,7 @@ module.exports = function(app, passport) {
                                     console.log(err);
                                     res.send(err);
                                 } else {
+                                    console.log('first success');
                                     console.log(user);
                                     res.json(user);
                                 }
