@@ -1750,12 +1750,15 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                         notification_body = notification.body;
                         sent_content = FormatHTML.prepSentContent(notification_body, sent_content_length);
                         // Send notifications
+
+                        var optionsCopy  = {};
+
                         for (var i in response.data.participants) {
 
                             //var dataCopy = Object.assign({}, data);
-                            var optionsCopy = JSON.parse(JSON.stringify(options));
+                            optionsCopy.i = JSON.parse(JSON.stringify(options));
                             var dataCopy = JSON.parse(JSON.stringify(data));
-                            optionsCopy.json = dataCopy;
+                            optionsCopy.i.json = dataCopy;
 
                             // dont emit to the user which sent the card
                             if (response.data.participants[i]._id !== currentUser._id) {
@@ -1779,7 +1782,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                              console.log('send');
                                              
                                                 console.log(options);
-                                            Users.send_notification(optionsCopy)
+                                            Users.send_notification(optionsCopy.i)
                                                 .then(function(res) {
                                                     console.log(res);
                                                 });
