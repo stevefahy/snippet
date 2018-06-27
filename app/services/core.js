@@ -1972,18 +1972,13 @@ cardApp.factory('UserData', function($rootScope, $timeout, $window, $http, $cook
                         deferred.resolve();
                     }
                 });
-
                 Android.getFCMToken();
-
-
-
-
             }
         } else {
             // Web
-            $timeout(function() {
+            //$timeout(function() {
             deferred.resolve();
-        },100);
+        //},100);
         }
         return deferred.promise;
     };
@@ -3015,7 +3010,10 @@ cardApp.factory('UserData', function($rootScope, $timeout, $window, $http, $cook
             console.log(UserData.getUser()._id);
             socket.setId(UserData.getUser()._id);
             console.log(socket.getId());
-            socket.connect(socket.getId());
+
+            $timeout(function() {
+                socket.connect(socket.getId());
+            },100);
             
             // Set loaded to true.
             $rootScope.loaded = true;
