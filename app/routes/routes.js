@@ -661,7 +661,8 @@ module.exports = function(app, passport) {
                             var updateuser = new User(user);
                             updateuser.notification_key_name = user._id;
                             updateuser.notification_key = notification_key;
-                            updateuser.tokens.push({ _id: req.body.id, token: req.body.refreshedToken });
+                            //updateuser.tokens.push({ _id: req.body.id, token: req.body.refreshedToken });
+                            updateuser.tokens.push({ _id: req.body.id, token: reg_id });
                             updateuser.save(function(err, user) {
                                 if (err) {
                                     console.log(err);
