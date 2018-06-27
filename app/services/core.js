@@ -1751,6 +1751,11 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                         sent_content = FormatHTML.prepSentContent(notification_body, sent_content_length);
                         // Send notifications
                         for (var i in response.data.participants) {
+
+                             (function(i) {
+
+
+
                             // dont emit to the user which sent the card
                             if (response.data.participants[i]._id !== currentUser._id) {
                                 // Add this users id to the viewed_users array.
@@ -1778,6 +1783,8 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                         }
                                     }));
                             }
+
+                            })(i);
                         }
                         // Update the unviewed array for all participants.
                         for (var x = 0; x < viewed_users.length; x++) {
