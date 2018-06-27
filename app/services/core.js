@@ -1976,9 +1976,9 @@ cardApp.factory('UserData', function($rootScope, $timeout, $window, $http, $cook
             }
         } else {
             // Web
-            //$timeout(function() {
+            $timeout(function() {
             deferred.resolve();
-        //},100);
+        },100);
         }
         return deferred.promise;
     };
@@ -3007,16 +3007,12 @@ cardApp.factory('UserData', function($rootScope, $timeout, $window, $http, $cook
             console.log('sockets');
             // connect to socket.io via socket service 
             // and request that a unique namespace be created for this user with their user id
-       
+            console.log(UserData.getUser()._id);
+            socket.setId(UserData.getUser()._id);
+            console.log(socket.getId());
 
-            $timeout(function() {
-                     console.log(UserData.getUser()._id);
             
-            
-                socket.setId(UserData.getUser()._id);
-                console.log(socket.getId());
-                socket.connect(socket.getId());
-            },500);
+            socket.connect(socket.getId());
             
             // Set loaded to true.
             $rootScope.loaded = true;
