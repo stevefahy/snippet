@@ -1983,7 +1983,7 @@ cardApp.factory('UserData', function($rootScope, $timeout, $window, $http, $cook
             // Web
             $timeout(function() {
             deferred.resolve();
-        }, 2000);
+        });
         }
         return deferred.promise;
     };
