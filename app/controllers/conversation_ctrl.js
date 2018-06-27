@@ -292,6 +292,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     // Called by Android to get the conversation id.
+    // TODO - Still needed?
     getConversationId = function() {
         if (ua.indexOf('AndroidApp') >= 0) {
             var id = Conversations.getConversationId();
