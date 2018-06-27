@@ -3011,8 +3011,8 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, $loca
             // connect to socket.io via socket service 
             // and request that a unique namespace be created for this user with their user id
             console.log(UserData.getUser()._id);
-            console.log(socket.getId());
             socket.setId(UserData.getUser()._id);
+            console.log(socket.getId());
             socket.connect(socket.getId());
             // Set loaded to true.
             $rootScope.loaded = true;
