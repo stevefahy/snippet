@@ -56,8 +56,11 @@ io.on('connection', function(socket) {
                 console.log('card_posted, conv id: ' + data.conversation_id + ' , participants: ' + data.participants);
                 console.log(data.participants);
                 // notify relevant namespace(s) of the cards creation
+                console.log(nspn);
                 for (var i in data.participants) {
                     console.log(data.participants[i]._id);
+                    console.log('===');
+                    console.log(nspn.substring(1, nspn.length));
                     // dont emit to the user which sent the card
                     if (data.participants[i]._id === nspn.substring(1, nspn.length)) {
                         //
