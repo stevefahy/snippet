@@ -1931,7 +1931,7 @@ cardApp.factory('principal', function($cookies, jwtHelper, $q, $rootScope) {
 // UserData Factory
 //
 
-cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, $location, jwtHelper, $q, principal, Users, Conversations, FormatHTML, General, socket, $filter) {
+cardApp.factory('UserData', function($rootScope, $window, $timeout, $http, $cookies, $location, jwtHelper, $q, principal, Users, Conversations, FormatHTML, General, socket, $filter) {
     var user;
     var contacts = [];
     var contacts_and_user = [];
