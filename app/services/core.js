@@ -1773,7 +1773,7 @@ console.log(i);
                                         // Set the message title and body
                                         if (result.notification_key !== undefined) {
                                             optionsCopy[i].data.to = result.notification_key;
-                                            console.log(optionsCopy.i.data.to);
+                                            console.log(optionsCopy[i].data.to);
                                             optionsCopy[i].data.notification.title = notification_title;
                                             optionsCopy[i].data.notification.body = sent_content;
                                             // get the conversation id
