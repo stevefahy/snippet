@@ -1755,7 +1755,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                 // Add this users id to the viewed_users array.
                                 viewed_users.push({ "_id": response.data.participants[i]._id });
                                 // Find the other user(s)
-                                UserData.getConversationsUser(response.data.participants[i]._id)
+                                promises.push(UserData.getConversationsUser(response.data.participants[i]._id)
                                     .then(function(result) {
                                         console.log(result);
                                         // Get the participants notification key
@@ -1774,7 +1774,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                                     console.log(res);
                                                 });
                                         }
-                                    });
+                                    }));
                             }
                         }
                         // Update the unviewed array for all participants.
