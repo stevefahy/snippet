@@ -1752,9 +1752,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                         // Send notifications
                         for (var i in response.data.participants) {
 
-                             (function(i) {
-
-
+                            var dataCopy = Object.assign({}, data);
 
                             // dont emit to the user which sent the card
                             if (response.data.participants[i]._id !== currentUser._id) {
@@ -1764,17 +1762,19 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                 promises.push(UserData.getConversationsUser(response.data.participants[i]._id)
                                     .then(function(result) {
                                         console.log(result);
+
                                         // Get the participants notification key
                                         // Set the message title and body
                                         if (result.notification_key !== undefined) {
-                                            data.to = result.notification_key;
-                                            console.log(data.to);
-                                            data.notification.title = notification_title;
-                                            data.notification.body = sent_content;
+                                            dataCopy.to = result.notification_key;
+                                            console.log(dataCopy.to);
+                                            dataCopy.notification.title = notification_title;
+                                            dataCopy.notification.body = sent_content;
                                             // get the conversation id
-                                            data.data.url = response.data._id;
+                                            dataCopy.data.url = response.data._id;
                                             // Send the notification
                                              console.log('send');
+                                             options.json = dataCopy;
                                                 console.log(options);
                                             Users.send_notification(options)
                                                 .then(function(res) {
@@ -1783,8 +1783,6 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                         }
                                     }));
                             }
-
-                            })(i);
                         }
                         // Update the unviewed array for all participants.
                         for (var x = 0; x < viewed_users.length; x++) {
