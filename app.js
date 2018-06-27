@@ -38,9 +38,9 @@ io.on('connection', function(socket) {
     // namespace sent by client
     var ns;
     socket.on('create_ns', function(ns) {
-        //console.log('create ns: ' + ns);
+        console.log('create ns: ' + ns);
         // create unique namespace requested by client
-        //socket = io.of('/' + ns);
+        socket = io.of('/' + ns);
         // namespace name
         var nspn;
         // namespace connection made
@@ -98,11 +98,6 @@ io.on('connection', function(socket) {
                 socket.removeAllListeners('connection');
             });
         });
-
-           console.log('create ns: ' + ns);
-        // create unique namespace requested by client
-        socket = io.of('/' + ns);
-
     });
 
     // on socket disconnect

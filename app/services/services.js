@@ -182,13 +182,10 @@ cardApp.factory('socket', function($rootScope, $window) {
         // called by index_ctrl once when the app loads 
         connect: function(id) {
             console.log('connect: ' + socket.id + ' : ' + id);
-
-                        // create the unique namespace on the client
-            socket = io('/' + id);
             // Connected, request unique namespace to be created
             socket.emit('create_ns', id);
             // create the unique namespace on the client
-            //socket = io('/' + id);
+            socket = io('/' + id);
             // namespace connect
             socket.on('connect', function() {
                 console.log('CLIENT NS connect: ' + socket.id);
