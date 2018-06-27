@@ -1756,7 +1756,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                         for (var i in response.data.participants) {
 console.log(i);
                             //var dataCopy = Object.assign({}, data);
-                            optionsCopy[i].options = JSON.parse(JSON.stringify(options));
+                            optionsCopy[i] = {options:JSON.parse(JSON.stringify(options))};
                             optionsCopy[i].options.json = JSON.parse(JSON.stringify(data));
                             optionsCopy[i].options.headers = JSON.parse(JSON.stringify(headers));
                             //optionsCopy.i.json = dataCopy;
@@ -1783,7 +1783,7 @@ console.log(i);
                                              console.log('send');
                                              
                                                 console.log(optionsCopy[i].options);
-                                            Users.send_notification(optionsCopy[i].options)
+                                            Users.send_notification(optionsCopy[i])
                                                 .then(function(res) {
                                                     console.log(res);
                                                 });
