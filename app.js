@@ -57,14 +57,24 @@ io.on('connection', function(socket) {
                 console.log(data.participants);
                 // notify relevant namespace(s) of the cards creation
                 for (var i in data.participants) {
+                    console.log(data.participants[i]._id);
                     // dont emit to the user which sent the card
                     if (data.participants[i]._id === nspn.substring(1, nspn.length)) {
                         //
+                        console.log('dont emit');
+                        console.log(data.participants[i]._id);
+                        console.log('===');
+                        console.log(nspn.substring(1, nspn.length));
                     } else {
                         for (var y in Object.keys(io.nsps)) {
                             // if the namespace exists on the server
+                            console.log(Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length));
+                            console.log('==');
+                            console.log(data.participants[i]._id);
                             if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.participants[i]._id) {
                                 // emit to the participant
+                                console.log('emit to:');
+                                console.log(data.participants[i]._id);
                                 var nsp_new = io.of('/' + data.participants[i]._id);
                                 nsp_new.emit('notify_users', { conversation_id: data.conversation_id, participants: data.participants });
                             }
