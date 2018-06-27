@@ -1952,6 +1952,7 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, $loca
     $window.androidToken = this.androidToken;
 
     UserData.checkFCMToken = function() {
+        var deferred = $q.defer();
         console.log('checkFCMToken');
         if (ua.indexOf('AndroidApp') >= 0) {
             // check if exists in DB.
@@ -1959,12 +1960,27 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, $loca
                 // Check for refresh token.
                 console.log('check');
                 Android.checkFCMToken();
+                deferred.resolve();
             } else {
                 // Otherwise get token from Android (may have created account on Web).
                 console.log('get');
+
+                $rootScope.$watch('receivedToken', function(n) {
+                    if (n) {
+                        // loaded!
+                        console.log('receivedToken');
+                        deferred.resolve();
+                    }
+                });
+
                 Android.getFCMToken();
+
+
+
+
             }
         }
+        return deferred.promise;
     };
 
     androidTokenRefresh = function(data) {
@@ -1984,9 +2000,11 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, $loca
         token = JSON.parse(data);
         console.log(token);
         if (token.id != undefined) {
-            console.log('first token');
+            console.log('first token received');
             // get notifcation data and check if this needs to be updated or added
             Users.update_notification(token);
+            $rootScope.receivedToken = token;
+            //deferred.resolve(user);
         }
     };
 
@@ -2981,9 +2999,10 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, $loca
             //console.log('GET 8 BC');
             return UserData.getConversation();
         }).then(function() {
-            //console.log('GET 9 BC');
+            console.log('GET 9 BC');
             return UserData.checkFCMToken();
         }).then(function() {
+            console.log('sockets');
             // connect to socket.io via socket service 
             // and request that a unique namespace be created for this user with their user id
             socket.setId(UserData.getUser()._id);
