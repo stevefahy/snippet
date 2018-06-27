@@ -1767,6 +1767,8 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                             // get the conversation id
                                             data.data.url = response.data._id;
                                             // Send the notification
+                                             console.log('send');
+                                                console.log(options);
                                             Users.send_notification(options)
                                                 .then(function(res) {
                                                     console.log(res);
