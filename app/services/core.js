@@ -1931,7 +1931,7 @@ cardApp.factory('principal', function($cookies, jwtHelper, $q, $rootScope) {
 // UserData Factory
 //
 
-cardApp.factory('UserData', function($rootScope, $window, $timeout, $http, $cookies, $location, jwtHelper, $q, principal, Users, Conversations, FormatHTML, General, socket, $filter) {
+cardApp.factory('UserData', function($rootScope, $timeout, $window, $http, $cookies, $location, jwtHelper, $q, principal, Users, Conversations, FormatHTML, General, socket, $filter) {
     var user;
     var contacts = [];
     var contacts_and_user = [];
@@ -1981,7 +1981,9 @@ cardApp.factory('UserData', function($rootScope, $window, $timeout, $http, $cook
             }
         } else {
             // Web
+            $timeout(function() {
             deferred.resolve();
+        }, 2000);
         }
         return deferred.promise;
     };
@@ -3013,10 +3015,8 @@ cardApp.factory('UserData', function($rootScope, $window, $timeout, $http, $cook
             console.log(UserData.getUser()._id);
             socket.setId(UserData.getUser()._id);
             console.log(socket.getId());
-
-            $timeout(function() {
-                socket.connect(socket.getId());
-            },1000);
+            socket.connect(socket.getId());
+            
             // Set loaded to true.
             $rootScope.loaded = true;
             $rootScope.dataLoading = false;
