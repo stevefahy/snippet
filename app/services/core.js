@@ -1783,7 +1783,7 @@ console.log(i);
                                              console.log('send');
                                              
                                                 console.log(optionsCopy[i].options);
-                                            Users.send_notification(optionsCopy[i])
+                                            Users.send_notification(optionsCopy[i].options)
                                                 .then(function(res) {
                                                     console.log(res);
                                                 });
