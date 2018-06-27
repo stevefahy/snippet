@@ -1756,9 +1756,9 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                         for (var i in response.data.participants) {
 console.log(i);
                             //var dataCopy = Object.assign({}, data);
-                            optionsCopy[i] = JSON.parse(JSON.stringify(options));
-                            optionsCopy[i].data = JSON.parse(JSON.stringify(data));
-                            optionsCopy[i].headers = JSON.parse(JSON.stringify(headers));
+                            optionsCopy[i].options = JSON.parse(JSON.stringify(options));
+                            optionsCopy[i].options.json = JSON.parse(JSON.stringify(data));
+                            optionsCopy[i].options.headers = JSON.parse(JSON.stringify(headers));
                             //optionsCopy.i.json = dataCopy;
 
                             // dont emit to the user which sent the card
@@ -1773,17 +1773,17 @@ console.log(i);
                                         // Get the participants notification key
                                         // Set the message title and body
                                         if (result.notification_key !== undefined) {
-                                            optionsCopy[i].data.to = result.notification_key;
-                                            console.log(optionsCopy[i].data.to);
-                                            optionsCopy[i].data.notification.title = notification_title;
-                                            optionsCopy[i].data.notification.body = sent_content;
+                                            optionsCopy[i].options.json.to = result.notification_key;
+                                            console.log(optionsCopy[i].options.json.to);
+                                            optionsCopy[i].options.json.notification.title = notification_title;
+                                            optionsCopy[i].options.json.notification.body = sent_content;
                                             // get the conversation id
-                                            optionsCopy[i].data.data.url = response.data._id;
+                                            optionsCopy[i].options.json.data.url = response.data._id;
                                             // Send the notification
                                              console.log('send');
                                              
-                                                console.log(optionsCopy[i]);
-                                            Users.send_notification(optionsCopy[i])
+                                                console.log(optionsCopy[i].options);
+                                            Users.send_notification(optionsCopy[i].options)
                                                 .then(function(res) {
                                                     console.log(res);
                                                 });
