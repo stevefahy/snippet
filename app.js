@@ -45,6 +45,7 @@ io.on('connection', function(socket) {
         var nspn;
         // namespace connection made
         socket.on('connection', function(socket) {
+            console.log('connection');
             socket.setMaxListeners(0);
             // store the namespace name
             nspn = ns;
