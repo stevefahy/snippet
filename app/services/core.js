@@ -3013,7 +3013,10 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, $loca
             console.log(UserData.getUser()._id);
             socket.setId(UserData.getUser()._id);
             console.log(socket.getId());
-            socket.connect(socket.getId());
+
+            $timeout(function() {
+                socket.connect(socket.getId());
+            },1000);
             // Set loaded to true.
             $rootScope.loaded = true;
             $rootScope.dataLoading = false;
