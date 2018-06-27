@@ -1788,6 +1788,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                             console.log(current_conversation_id);
                             console.log(viewed_users);
                             // update other paticipants in the conversation via socket.
+                            console.log(socket.getId());
                             socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: current_conversation_id, participants: viewed_users });
                         });
                     });
