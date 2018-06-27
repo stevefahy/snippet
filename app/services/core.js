@@ -2002,8 +2002,10 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, $loca
         if (token.id != undefined) {
             console.log('first token received');
             // get notifcation data and check if this needs to be updated or added
-            Users.update_notification(token);
-            $rootScope.receivedToken = token;
+            Users.update_notification(token)
+            .then(function(res) {
+                $rootScope.receivedToken = token;
+            });
             //deferred.resolve(user);
         }
     };
