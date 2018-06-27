@@ -1979,6 +1979,9 @@ cardApp.factory('UserData', function($rootScope, $window, $http, $cookies, $loca
 
 
             }
+        } else {
+            // Web
+            deferred.resolve();
         }
         return deferred.promise;
     };
