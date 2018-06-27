@@ -1763,6 +1763,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                         // Set the message title and body
                                         if (result.notification_key !== undefined) {
                                             data.to = result.notification_key;
+                                            console.log(data.to);
                                             data.notification.title = notification_title;
                                             data.notification.body = sent_content;
                                             // get the conversation id
