@@ -1757,7 +1757,8 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 console.log(i);
                             //var dataCopy = Object.assign({}, data);
                             optionsCopy[i] = JSON.parse(JSON.stringify(options));
-                            //optionsCopy[i].data = JSON.parse(JSON.stringify(data));
+                            optionsCopy[i].data = JSON.parse(JSON.stringify(data));
+                            optionsCopy[i].headers = JSON.parse(JSON.stringify(headers));
                             //optionsCopy.i.json = dataCopy;
 
                             // dont emit to the user which sent the card
