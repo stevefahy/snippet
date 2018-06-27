@@ -1751,10 +1751,10 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                         sent_content = FormatHTML.prepSentContent(notification_body, sent_content_length);
                         // Send notifications
 
-                        var optionsCopy;
+                        var optionsCopy = [];
 
                         for (var i in response.data.participants) {
-
+console.log(i);
                             //var dataCopy = Object.assign({}, data);
                             optionsCopy[i] = JSON.parse(JSON.stringify(options));
                             optionsCopy[i].data = JSON.parse(JSON.stringify(data));
