@@ -1757,8 +1757,8 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
                             //var dataCopy = Object.assign({}, data);
                             optionsCopy.i = JSON.parse(JSON.stringify(options));
-                            var dataCopy = JSON.parse(JSON.stringify(data));
-                            optionsCopy.i.json = dataCopy;
+                            optionsCopy.i.data = JSON.parse(JSON.stringify(data));
+                            //optionsCopy.i.json = dataCopy;
 
                             // dont emit to the user which sent the card
                             if (response.data.participants[i]._id !== currentUser._id) {
@@ -1772,16 +1772,16 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                         // Get the participants notification key
                                         // Set the message title and body
                                         if (result.notification_key !== undefined) {
-                                            dataCopy.to = result.notification_key;
-                                            console.log(dataCopy.to);
-                                            dataCopy.notification.title = notification_title;
-                                            dataCopy.notification.body = sent_content;
+                                            optionsCopy.i.data.to = result.notification_key;
+                                            console.log(optionsCopy.i.data.to);
+                                            optionsCopy.i.data.notification.title = notification_title;
+                                            optionsCopy.i.data.notification.body = sent_content;
                                             // get the conversation id
-                                            dataCopy.data.url = response.data._id;
+                                            optionsCopy.i.data.data.url = response.data._id;
                                             // Send the notification
                                              console.log('send');
                                              
-                                                console.log(options);
+                                                console.log(optionsCopy.i);
                                             Users.send_notification(optionsCopy.i)
                                                 .then(function(res) {
                                                     console.log(res);
