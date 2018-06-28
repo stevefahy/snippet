@@ -213,6 +213,9 @@ cardApp.factory('socket', function($rootScope, $window) {
         setId: function(value) {
             property = value;
         },
+        isConnected: function(){
+            return socket.connected;
+        },
         on: function(eventName, callback) {
             socket.on(eventName, function() {
                 var args = arguments;

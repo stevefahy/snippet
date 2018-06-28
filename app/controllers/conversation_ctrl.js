@@ -47,7 +47,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // Loading conversation directly should not animate.
     $animate.enabled($rootScope.animate_pages);
 
-    General.keyBoardListenStart();
+    //FGeneral.keyBoardListenStart();
 
     // Add custom class for Android scrollbar
     if (ua.indexOf('AndroidApp') >= 0) {
@@ -88,10 +88,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     $scope.$on('$destroy', function() {
         // leaving controller.
+        console.log('destroy');
         $window.onfocus = null;
     });
 
     setFocus = function() {
+        console.log('focus');
         $timeout(function() {
             findConversationId(function(result) {
                 UserData.getCardsModelById(result)
@@ -104,15 +106,27 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         });
     };
 
+    wOnFocus = function(){
+        console.log('wOnFocus');
+        this.setFocus();
+    };
+
     // start watching onfocus and onblur
     watchFocus = function() {
         // only check focus on web version
         if (ua.indexOf('AndroidApp') < 0) {
+            console.log('watchFocus');
+
+            //$window.onfocus = wOnFocus;
+            //$window.onblur = onBlur; 
+            
             $window.onfocus = function() {
+                console.log('foc');
                 this.setFocus();
             };
+            
             $window.onblur = function() {
-                //console.log('blur');
+                console.log('blur');
             };
             setFocus();
         } else {
