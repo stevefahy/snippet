@@ -1579,9 +1579,55 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         json: data
     };
     */
+    /*
+        var options = {
+            uri: 'https://fcm.googleapis.com/fcm/send',
+            method: 'POST',
+            headers: {
+                'Authorization': "",
+                'Content-Type': 'application/json'
+            },
+            json: {
+                "to": "",
+                "notification": {
+                    "title": "",
+                    "body": ""
+                },
+                "data": {
+                    "url": ""
+                }
+            }
+        };
+        */
 
+    function createOptions(headers, data) {
+        this.options = {
+            uri: 'https://fcm.googleapis.com/fcm/send',
+            method: 'POST',
+            headers: headers,
+            json: data
+        };
+    }
 
+    function createHeaders(auth) {
+        this.headers = {
+            'Authorization': auth,
+            'Content-Type': 'application/json'
+        };
+    }
 
+    function createData(to, title, body, url) {
+        this.data = {
+            "to": to,
+            "notification": {
+                "title": title,
+                "body": body
+            },
+            "data": {
+                "url": url
+            }
+        };
+    }
 
 
     // Get the FCM details (Google firebase notifications).
@@ -1763,24 +1809,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                         for (var i in response.data.participants) {
                             console.log(i);
 
-                            var options = {
-                                uri: 'https://fcm.googleapis.com/fcm/send',
-                                method: 'POST',
-                                headers: {
-                                    'Authorization': "",
-                                    'Content-Type': 'application/json'
-                                },
-                                json: {
-                                    "to": "",
-                                    "notification": {
-                                        "title": "",
-                                        "body": ""
-                                    },
-                                    "data": {
-                                        "url": ""
-                                    }
-                                }
-                            };
+
 
                             options.headers.Authorization = 'key=' + fcm.firebaseserverkey;
                             //var dataCopy = Object.assign({}, data);
@@ -1801,12 +1830,18 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                         // Get the participants notification key
                                         // Set the message title and body
                                         if (result.notification_key !== undefined) {
+                                            /*
                                             options.json.to = result.notification_key;
                                             console.log(options.json.to);
                                             options.json.notification.title = notification_title;
                                             options.json.notification.body = sent_content;
                                             // get the conversation id
                                             options.json.data.url = response.data._id;
+                                            */
+                                            //var firstBook = new Book("Pro AngularJS", 2014);
+                                            var data = new createData(result.notification_key, notification_title, sent_content, response.data._id);
+                                            var headers = new createHeaders('key=' + fcm.firebaseserverkey);
+                                            var options = new createOptions(headers, data);
                                             // Send the notification
                                             console.log('send');
 
