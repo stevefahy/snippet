@@ -73,8 +73,6 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     var myImageName = '';
     var mySavedImage = '';
 
-
-
     // Get the current users details
     if (principal.isValid()) {
         UserData.checkUser().then(function(result) {
@@ -220,12 +218,9 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
 
     // Start or continue a single user conversation with a contact.
     $scope.chat = function(contact) {
-        console.log(contact);
         if (contact.conversation_exists) {
-            console.log('continue');
             $scope.continueChat(contact.conversation_id, contact);
         } else {
-            console.log('start');
             $scope.startChat([contact], contact);
         }
     };
@@ -588,7 +583,6 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
                                             if (General.findWithAttr(key.participants, '_id', res._id) >= 0) {
                                                 // set conversation_exists and conversation_id for the contacts
                                                 res.conversation_exists = true;
-                                                console.log(key._id);
                                                 res.conversation_id = key._id;
                                             }
                                         }

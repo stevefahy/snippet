@@ -38,14 +38,14 @@ io.on('connection', function(socket) {
     // namespace sent by client
     var ns;
     socket.on('create_ns', function(ns) {
-        console.log('create ns: ' + ns);
+        //console.log('create ns: ' + ns);
         // create unique namespace requested by client
         socket = io.of('/' + ns);
         // namespace name
         var nspn;
         // namespace connection made
         socket.on('connection', function(socket) {
-            console.log('connection');
+            //console.log('connection');
             socket.setMaxListeners(0);
             // store the namespace name
             nspn = ns;
@@ -53,35 +53,17 @@ io.on('connection', function(socket) {
             socket.emit('joined_ns', socket.id);
             // emited by cardcreate_ctrl when card has been created
             socket.on('card_posted', function(data) {
-                console.log('card_posted, conv id: ' + data.conversation_id + ' , participants: ' + data.participants);
-                console.log(data.participants);
+                //console.log('card_posted, conv id: ' + data.conversation_id + ' , participants: ' + data.participants);
                 // notify relevant namespace(s) of the cards creation
-                console.log(nspn);
                 for (var i in data.participants) {
-                    //console.log('1');
-                    //console.log(data.participants[i]._id);
-                    //console.log('===');
-                    //console.log(nspn.substring(1, nspn.length));
                     // dont emit to the user which sent the card
                     if (data.participants[i]._id === nspn.substring(1, nspn.length)) {
                         //
-                        console.log('dont emit');
-                        console.log(data.participants[i]._id);
-                        console.log('===');
-                        console.log(nspn.substring(1, nspn.length));
                     } else {
-                        //console.log('namespaces');
-                        //console.log(io.nsps);
                         for (var y in Object.keys(io.nsps)) {
                             // if the namespace exists on the server
-                            console.log('2');
-                            console.log(Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length));
-                            console.log('==');
-                            console.log(data.participants[i]._id);
                             if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.participants[i]._id) {
                                 // emit to the participant
-                                console.log('emit to:');
-                                console.log(data.participants[i]._id);
                                 var nsp_new = io.of('/' + data.participants[i]._id);
                                 nsp_new.emit('notify_users', { conversation_id: data.conversation_id, participants: data.participants });
                             }
@@ -92,11 +74,11 @@ io.on('connection', function(socket) {
 
             // on namespace disconnect
             socket.on('disconnect', function(sockets) {
-                console.log('SERVER NS DISCONNECT: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+                //console.log('SERVER NS DISCONNECT: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
             });
             // close socket connection and delete nsmespace from io.nsps array
             socket.on('delete', function(sockets) {
-                console.log('SERVER NS DELETE: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+                //console.log('SERVER NS DELETE: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
                 delete io.nsps['/' + nspn];
                 socket.disconnect('unauthorized');
                 socket.removeAllListeners('connection');
@@ -106,7 +88,7 @@ io.on('connection', function(socket) {
 
     // on socket disconnect
     socket.on('disconnect', function(sockets) {
-        console.log('SERVER DISCONNECT, clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+        //console.log('SERVER DISCONNECT, clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     });
 });
 
@@ -123,7 +105,7 @@ for (var k in interfaces) {
     }
 }
 // Dell XPS 13 or other local networks
-console.log(addresses);
+//console.log(addresses);
 if (addresses == '192.168.192.60' || addresses == '10.21.221.127' || addresses == '10.61.137.245' || addresses == '10.32.139.207' || addresses == '192.168.43.199') {
     // MongoDB
     var dburl = urls.localUrl;

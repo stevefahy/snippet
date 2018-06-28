@@ -1557,48 +1557,6 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
     };
 
     //Set the FCM data for the Notification request
-    /*
-    var data = {
-        "to": "",
-        "notification": {
-            "title": "",
-            "body": ""
-        },
-        "data": {
-            "url": ""
-        }
-    };
-    var headers = {
-        'Authorization': "",
-        'Content-Type': 'application/json'
-    };
-    var options = {
-        uri: 'https://fcm.googleapis.com/fcm/send',
-        method: 'POST',
-        headers: headers,
-        json: data
-    };
-    */
-    /*
-        var options = {
-            uri: 'https://fcm.googleapis.com/fcm/send',
-            method: 'POST',
-            headers: {
-                'Authorization': "",
-                'Content-Type': 'application/json'
-            },
-            json: {
-                "to": "",
-                "notification": {
-                    "title": "",
-                    "body": ""
-                },
-                "data": {
-                    "url": ""
-                }
-            }
-        };
-        */
 
     function createOptions(headers, data) {
         this.options = {
@@ -1632,12 +1590,12 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
     // Get the FCM details (Google firebase notifications).
     // Only get if the user is logged in, otherwise it is not required.
-    var fcm;
+    var headersObj;
     if (principal.isAuthenticated) {
         $http.get("/api/fcm_data").then(function(result) {
             if (result != result.data.fcm != 'forbidden') {
                 fcm = result.data.fcm;
-                //headers.Authorization = 'key=' + fcm.firebaseserverkey;
+                headersObj = new createHeaders('key=' + fcm.firebaseserverkey);
             }
         });
     }
@@ -1729,18 +1687,12 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                             // Get the participants notification key
                                             // Set the message title and body
                                             if (result.notification_key !== undefined) {
-                                                data.to = result.notification_key;
-                                                console.log(data.to);
-                                                data.notification.title = notification_title;
-                                                data.notification.body = sent_content;
-                                                // get the conversation id
-                                                data.data.url = response.data._id;
                                                 // Send the notification
-                                                console.log('send');
-                                                console.log(options);
-                                                Users.send_notification(options)
+                                                var dataObj = new createData(result.notification_key, notification_title, sent_content, response.data._id);
+                                                var optionsObj = new createOptions(headersObj.headers, dataObj.data);
+                                                Users.send_notification(optionsObj.options)
                                                     .then(function(res) {
-                                                        console.log(res);
+                                                        //console.log(res);
                                                     });
                                             }
                                         });
@@ -1797,27 +1749,12 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 // Update the Conversation updateAt time.
                 Conversations.updateTime(current_conversation_id)
                     .then(function(response) {
-                        console.log(response);
                         var notification = self.setNotification(response.data, currentUser, card_content);
                         notification_title = notification.title;
                         notification_body = notification.body;
                         sent_content = FormatHTML.prepSentContent(notification_body, sent_content_length);
                         // Send notifications
-
-                        var optionsCopy = [];
-
                         for (var i in response.data.participants) {
-                            console.log(i);
-
-
-
-                            options.headers.Authorization = 'key=' + fcm.firebaseserverkey;
-                            //var dataCopy = Object.assign({}, data);
-                            //optionsCopy[i] = { options: JSON.parse(JSON.stringify(options)) };
-                            //optionsCopy[i].options.json = JSON.parse(JSON.stringify(data));
-                            //optionsCopy[i].options.headers = JSON.parse(JSON.stringify(headers));
-                            //optionsCopy.i.json = dataCopy;
-
                             // dont emit to the user which sent the card
                             if (response.data.participants[i]._id !== currentUser._id) {
                                 // Add this users id to the viewed_users array.
@@ -1825,30 +1762,15 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                 // Find the other user(s)
                                 promises.push(UserData.getConversationsUser(response.data.participants[i]._id)
                                     .then(function(result) {
-                                        console.log(result);
-
                                         // Get the participants notification key
                                         // Set the message title and body
                                         if (result.notification_key !== undefined) {
-                                            /*
-                                            options.json.to = result.notification_key;
-                                            console.log(options.json.to);
-                                            options.json.notification.title = notification_title;
-                                            options.json.notification.body = sent_content;
-                                            // get the conversation id
-                                            options.json.data.url = response.data._id;
-                                            */
-                                            //var firstBook = new Book("Pro AngularJS", 2014);
-                                            var data = new createData(result.notification_key, notification_title, sent_content, response.data._id);
-                                            var headers = new createHeaders('key=' + fcm.firebaseserverkey);
-                                            var options = new createOptions(headers, data);
+                                            var dataObj = new createData(result.notification_key, notification_title, sent_content, response.data._id);
+                                            var optionsObj = new createOptions(headersObj.headers, dataObj.data);
                                             // Send the notification
-                                            console.log('send');
-
-                                            console.log(options);
-                                            Users.send_notification(options)
+                                            Users.send_notification(optionsObj.options)
                                                 .then(function(res) {
-                                                    console.log(res);
+                                                    //console.log(res);
                                                 });
                                         }
                                     }));
@@ -1865,12 +1787,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                         }
                         // All Conversation participants unviewed arrays updated
                         $q.all(promises).then(function() {
-                            console.log('all');
-                            console.log(current_conversation_id);
-                            console.log(viewed_users);
-                            console.log(optionsCopy);
                             // update other paticipants in the conversation via socket.
-                            console.log(socket.getId());
                             socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: current_conversation_id, participants: viewed_users });
                         });
                     });
@@ -1903,15 +1820,12 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                     // Get the participants notification key
                                     // set the message title and body
                                     if (result.notification_key !== undefined) {
-                                        data.to = result.notification_key;
-                                        data.notification.title = notification_title;
-                                        data.notification.body = sent_content;
-                                        // get the conversation id
-                                        data.data.url = response.data._id;
+                                        var dataObj = new createData(result.notification_key, notification_title, sent_content, response.data._id);
+                                        var optionsObj = new createOptions(headersObj.headers, dataObj.data);
                                         // Send the notification
-                                        Users.send_notification(options)
+                                        Users.send_notification(optionsObj.options)
                                             .then(function(res) {
-                                                console.log(res);
+                                                //console.log(res);
                                             });
                                     }
                                 });
@@ -2035,22 +1949,17 @@ cardApp.factory('UserData', function($rootScope, $timeout, $window, $http, $cook
 
     UserData.checkFCMToken = function() {
         var deferred = $q.defer();
-        console.log('checkFCMToken');
         if (ua.indexOf('AndroidApp') >= 0) {
             // check if exists in DB.
             if (UserData.getUser().notification_key_name != undefined) {
                 // Check for refresh token.
-                console.log('check');
                 Android.checkFCMToken();
                 deferred.resolve();
             } else {
                 // Otherwise get token from Android (may have created account on Web).
-                console.log('get');
-
                 $rootScope.$watch('receivedToken', function(n) {
                     if (n) {
-                        // loaded!
-                        console.log('receivedToken');
+                        // received token
                         deferred.resolve();
                     }
                 });
@@ -2066,29 +1975,21 @@ cardApp.factory('UserData', function($rootScope, $timeout, $window, $http, $cook
     };
 
     androidTokenRefresh = function(data) {
-
         refreshedToken = JSON.parse(data);
-        console.log(refreshedToken);
         if (refreshedToken.id != undefined && refreshedToken.refreshedToken != undefined) {
-            //if (refreshedToken.token != undefined || (refreshedToken.id != undefined && refreshedToken.refreshedToken != undefined)) {
             // get notifcation data and check if this needs to be updated or added
-            console.log('update token');
             Users.update_notification(refreshedToken);
         }
     };
 
     androidToken = function(data) {
-
         token = JSON.parse(data);
-        console.log(token);
         if (token.id != undefined) {
-            console.log('first token received');
             // get notifcation data and check if this needs to be updated or added
             Users.update_notification(token)
                 .then(function(res) {
                     $rootScope.receivedToken = token;
                 });
-            //deferred.resolve(user);
         }
     };
 
@@ -2108,11 +2009,13 @@ cardApp.factory('UserData', function($rootScope, $timeout, $window, $http, $cook
             });
     });
 
+    //
     // MAIN NOTIFICATION CENTER
+    //
+
     $rootScope.$on('NOTIFICATION', function(event, msg) {
 
         // CONVERSATIONS
-        console.log(msg);
 
         // Find the conversations for current user
         var user_id = UserData.getUser()._id;
@@ -2198,8 +2101,6 @@ cardApp.factory('UserData', function($rootScope, $timeout, $window, $http, $cook
                             $rootScope.$broadcast('CONV_NOTIFICATION', msg);
                         }
                     });
-
-
 
                 // CONVERSATION - Update the cards model
 
@@ -3083,19 +2984,13 @@ cardApp.factory('UserData', function($rootScope, $timeout, $window, $http, $cook
             //console.log('GET 8 BC');
             return UserData.getConversation();
         }).then(function() {
-            console.log('GET 9 BC');
+            //console.log('GET 9 BC');
             return UserData.checkFCMToken();
         }).then(function() {
-            console.log('sockets');
             // connect to socket.io via socket service 
             // and request that a unique namespace be created for this user with their user id
-            console.log(UserData.getUser()._id);
             socket.setId(UserData.getUser()._id);
-            console.log(socket.getId());
-
-
             socket.connect(socket.getId());
-
             // Set loaded to true.
             $rootScope.loaded = true;
             $rootScope.dataLoading = false;

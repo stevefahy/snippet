@@ -81,7 +81,7 @@ function isMember(req, res, next) {
                 _id: decoded.data.user._id
             };
         } catch (err) {
-            console.log('ERROR when parsing access token.', err);
+            //console.log('ERROR when parsing access token.', err);
             req.principal.isAuthenticated = false;
         }
     }
@@ -124,7 +124,7 @@ function isLoggedIn(req, res, next) {
             // Authenticated, continue.
             return next();
         } catch (err) {
-            console.log('ERROR when parsing access token.', err);
+            //console.log('ERROR when parsing access token.', err);
         }
     }
     return res.status(401).json({ error: 'Invalid access token!' });
@@ -235,7 +235,7 @@ module.exports = function(app, passport) {
         passport.authenticate('google', function(err, user, info) {
 
             if (err) {
-                console.log(err);
+                //console.log(err);
                 res.redirect('/login');
             }
 
@@ -251,7 +251,7 @@ module.exports = function(app, passport) {
 
             req.logIn(user, { session: false }, function(err) {
                 if (err) {
-                    console.log(err);
+                    //console.log(err);
                     res.redirect('/login');
                 }
 
@@ -328,7 +328,7 @@ module.exports = function(app, passport) {
 
                                     user.save(function(err) {
                                         if (err) {
-                                            console.log('err: ' + err);
+                                            //console.log('err: ' + err);
                                             return done(err);
                                         }
                                     });
@@ -424,7 +424,7 @@ module.exports = function(app, passport) {
         // Get the temporarily stored access token.
         User.findOne({ '_id': req.principal._id }, function(err, user) {
             if (err) {
-                console.log(err);
+                //console.log(err);
                 return done(err);
             }
 
@@ -463,7 +463,7 @@ module.exports = function(app, passport) {
 
                         user.save(function(err) {
                             if (err) {
-                                console.log('err: ' + err);
+                                //console.log('err: ' + err);
                                 return done(err);
                             }
                             res.json(user);
@@ -590,7 +590,6 @@ module.exports = function(app, passport) {
     // notify user
     app.post('/api/users/send_notification', isLoggedIn, function(req, res) {
         var options = req.body;
-        console.log(options);
         request(options, function(err, response, body) {
             if (err) {
                 console.log('err: ' + err);
@@ -604,10 +603,8 @@ module.exports = function(app, passport) {
     // update user notification data
     app.post('/api/users/update_notification', isLoggedIn, function(req, res) {
         // Find the current users details
-        console.log('body');
-        console.log(req.body);
         var reg_id;
-        if(req.body.refreshedToken == undefined){
+        if (req.body.refreshedToken == undefined) {
             // First time 
             reg_id = req.body.token;
         } else {
@@ -616,22 +613,18 @@ module.exports = function(app, passport) {
         }
         User.findById({ '_id': req.principal._id }, function(error, user) {
             if (error) {
-                console.log('error');
+                //console.log('error');
                 res.json(error);
             } else if (user === null) {
                 // no user found
-                console.log('no user');
+                //console.log('no user');
                 res.json({ 'error': 'null' });
             } else {
                 // User found
                 // Set the FCM data for the request
-                console.log(user);
-                console.log(req.body.id);
                 var data = {
                     "operation": "",
                     "notification_key_name": req.principal._id,
-                    //"registration_ids": [req.body.refreshedToken]
-                    //"registration_ids": [req.body.token]
                     "registration_ids": [reg_id]
                 };
                 var headers = {
@@ -647,30 +640,23 @@ module.exports = function(app, passport) {
                 };
                 // First time. Create notification key
                 if (user.notification_key === undefined) {
-                    console.log('first');
                     data.operation = "create";
                     request(options, function(err, response, body) {
                         if (err) {
                             console.log('err: ' + err);
                             throw err;
                         } else {
-                            console.log('create notification_key');
-                            console.log(body);
                             var notification_key = body.notification_key;
-                            console.log(notification_key);
                             // Save to DB
                             var updateuser = new User(user);
                             updateuser.notification_key_name = user._id;
                             updateuser.notification_key = notification_key;
-                            //updateuser.tokens.push({ _id: req.body.id, token: req.body.refreshedToken });
                             updateuser.tokens.push({ _id: req.body.id, token: reg_id });
                             updateuser.save(function(err, user) {
                                 if (err) {
                                     console.log(err);
                                     res.send(err);
                                 } else {
-                                    console.log('first success');
-                                    console.log(user);
                                     res.json(user);
                                 }
                             });
@@ -679,17 +665,12 @@ module.exports = function(app, passport) {
                 } else {
                     // User notification key already created. Update tokens if necessary.
                     // Find the Android device id
-                    console.log('already');
                     var id_pos = findWithAttr(user.tokens, '_id', req.body.id);
                     var new_user = new User(user);
                     var token_array;
-                    console.log(id_pos);
                     if (id_pos >= 0) {
-                        console.log('check changed');
                         // This device was already registered
                         // Check if the token has been changed
-                        console.log(user.tokens[id_pos].token);
-                        console.log(req.body.refreshedToken);
                         if (user.tokens[id_pos].token != req.body.refreshedToken) {
                             // The token has been changed. Update DB and FCM
                             new_user.tokens[id_pos].token = req.body.refreshedToken;
@@ -698,7 +679,6 @@ module.exports = function(app, passport) {
                                     console.log(err);
                                     res.send(err);
                                 } else {
-                                    console.log(user);
                                     res.json(user);
                                 }
                             });
@@ -713,12 +693,11 @@ module.exports = function(app, passport) {
                                     console.log(err);
                                     throw err;
                                 } else {
-                                     console.log(body);
+                                    //console.log(body);
                                 }
                             });
                         }
                     } else {
-                        console.log('new device');
                         // User notification key already created.
                         // New Device.
                         // Update DB and FCM
@@ -741,7 +720,7 @@ module.exports = function(app, passport) {
                                 console.log(err);
                                 throw err;
                             } else {
-                                console.log(body);
+                                //console.log(body);
                             }
                         });
                     }

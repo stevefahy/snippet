@@ -291,15 +291,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     };
 
-    // Called by Android to get the conversation id.
-    // TODO - Still needed?
-    getConversationId = function() {
-        if (ua.indexOf('AndroidApp') >= 0) {
-            var id = Conversations.getConversationId();
-            Android.conversationId(id);
-        }
-    };
-
     // Check the users permission for this conversation. (logged in and participant)
     // If the user is logged in and a participant of the conversation the $scope.isMember=true.
     // card_create.html is added to the conversation if $scope.isMember=true.
@@ -350,7 +341,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             callback(false);
         }
     };
-
 
     getPublicConversation = function(id, name) {
         Conversations.getPublicConversationById(id)
