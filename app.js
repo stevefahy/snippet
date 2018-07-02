@@ -33,6 +33,9 @@ var io = require('socket.io')(server);
 server.setMaxListeners(0);
 io.sockets.setMaxListeners(0);
 
+// Test
+io.set('transports', ['websocket']);
+
 io.on('connection', function(socket) {
     console.log('SERVER CONNECTION: ' + socket.id + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     // namespace sent by client

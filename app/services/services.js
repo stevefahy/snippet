@@ -176,7 +176,9 @@ cardApp.factory('Conversations', ['$http', function($http) {
 cardApp.factory('socket', function($rootScope, $window) {
 
     var socket;
-    socket = io();
+    //socket = io();
+    //Test
+    socket = io({transports: ['websocket']});
 
     return {
         // called by index_ctrl once when the app loads 
