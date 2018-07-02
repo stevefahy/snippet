@@ -123,7 +123,7 @@ if (addresses == '192.168.192.59' || addresses == '10.21.221.127' || addresses =
     global.mailUrl = 'http://www.snipbee.com';
 }
 // set up our express application
-//app.use(morgan('dev')); // log every request to the console
+app.use(morgan('dev')); // log every request to the console
 app.use(cookieParser()); // read cookies (needed for auth)
 
 // Passport
