@@ -1,4 +1,4 @@
-cardApp.controller("MainCtrl", ['$scope', '$rootScope', 'socket', 'principal', 'UserData', function($scope, $rootScope, socket, principal, UserData) {
+cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', 'socket', 'principal', 'UserData', function($scope, $window, $rootScope, socket, principal, UserData) {
 
     $rootScope.dataLoading = false;
 
@@ -30,7 +30,7 @@ cardApp.controller("MainCtrl", ['$scope', '$rootScope', 'socket', 'principal', '
     // use the property name to generate the prefixed event name
     var visProp = getHiddenProp();
     if (visProp) {
-    	// Web only
+        // Web only
         if (ua.indexOf('AndroidApp') < 0) {
             var evtname = visProp.replace(/[H|h]idden/, '') + 'visibilitychange';
             document.addEventListener(evtname, visChange);
@@ -53,6 +53,13 @@ cardApp.controller("MainCtrl", ['$scope', '$rootScope', 'socket', 'principal', '
             }
         }
 
+    }
+
+    if (ua.indexOf('AndroidApp') < 0) {
+        $window.onfocus = function() {
+            console.log('foc');
+            UserData.checkDataUpdate();
+        };
     }
 
 }]);
