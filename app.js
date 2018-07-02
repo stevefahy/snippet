@@ -36,6 +36,8 @@ io.sockets.setMaxListeners(0);
 // Test
 io.set('transports', ['websocket']);
 
+
+
 io.on('connection', function(socket) {
     console.log('SERVER CONNECTION: ' + socket.id + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     // namespace sent by client
@@ -77,11 +79,11 @@ io.on('connection', function(socket) {
 
             // on namespace disconnect
             socket.on('disconnect', function(sockets) {
-                //console.log('SERVER NS DISCONNECT: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+                console.log('SERVER NS DISCONNECT: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
             });
             // close socket connection and delete nsmespace from io.nsps array
             socket.on('delete', function(sockets) {
-                //console.log('SERVER NS DELETE: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+                console.log('SERVER NS DELETE: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
                 delete io.nsps['/' + nspn];
                 socket.disconnect('unauthorized');
                 socket.removeAllListeners('connection');
@@ -91,8 +93,32 @@ io.on('connection', function(socket) {
 
     // on socket disconnect
     socket.on('disconnect', function(sockets) {
-        //console.log('SERVER DISCONNECT, clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+        console.log('SERVER DISCONNECT, clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     });
+
+    // on reconnection, reset the transports option, as the Websocket
+    // connection may have failed (caused by proxy, firewall, browser, ...)
+    socket.on('reconnect_attempt', function(sockets) {
+        console.log('socket reconnect attempt');
+        socket.io.opts.transports = ['polling', 'websocket'];
+    });
+
+    socket.on('reconnect', function(sockets) {
+        console.log('socket reconnect');
+    });
+
+    socket.on('reconnecting', function(sockets) {
+        console.log('socket reconnecting');
+    });
+
+    socket.on('reconnect_error', function(sockets) {
+        console.log('reconnect_error');
+    });
+
+    socket.on('reconnect_failed', function(sockets) {
+        console.log('reconnect_failed');
+    });
+
 });
 
 // Check for local or production environment
@@ -155,7 +181,7 @@ mongoose.connect(dburl); // Connect to local MongoDB instance. A remoteUrl is al
 var db = mongoose.connection;
 //db.on('error', console.error.bind(console, 'connection error:'));
 //db.once('open', function() {
-    //console.log('mongoose open');
+//console.log('mongoose open');
 //});
 
 db.on('connecting', function() {
