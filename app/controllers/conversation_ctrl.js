@@ -120,10 +120,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             //$window.onfocus = wOnFocus;
             //$window.onblur = onBlur; 
             
-            $window.onfocus = function() {
-                console.log('foc');
-                this.setFocus();
-            };
+            //$window.onfocus = function() {
+                //console.log('foc');
+                //this.setFocus();
+            //};
             
             $window.onblur = function() {
                 console.log('blur');
