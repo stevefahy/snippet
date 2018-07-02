@@ -1972,6 +1972,8 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     $window.mobileNotification = this.mobileNotification;
     $window.networkChange = this.networkChange;
 
+    var update_inprogress = false;
+
     networkChange = function(status) {
         console.log(status);
         if (status == "connected") {
@@ -2106,138 +2108,143 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     // Check for updates
 
     UserData.checkDataUpdate = function() {
+        if (!updateinprogress) {
+            console.log('checking update');
+            update_inprogress = true;
 
-        //var msg = { conversation_id: key._id };
-        //notification(msg);
-        //$route.reload();
+            //var msg = { conversation_id: key._id };
+            //notification(msg);
+            //$route.reload();
 
-        /*
-        socket.delete();
-        socket.setId(UserData.getUser()._id);
-        socket.connect(socket.getId());
-        */
+            /*
+            socket.delete();
+            socket.setId(UserData.getUser()._id);
+            socket.connect(socket.getId());
+            */
 
 
-        var toUpdate = [];
-        // Find the conversations for current user
-        var user_id = UserData.getUser()._id;
-        console.log(user_id);
+            var toUpdate = [];
+            // Find the conversations for current user
+            var user_id = UserData.getUser()._id;
+            console.log(user_id);
 
-        var check_objects = ['admin', 'conversation_avatar', 'conversation_name', 'participants'];
-        var same = true;
-        var convs_updated = [];
+            var check_objects = ['admin', 'conversation_avatar', 'conversation_name', 'participants'];
+            var same = true;
+            var convs_updated = [];
 
-        Conversations.find_user_conversations(user_id)
-            .then(function(res) {
-                console.log(res);
-                res.data.map(function(key) {
-                    // Use array diff check
-                    //arraysAreEqual = function(a, b, value) "_id", content?
-                    //console.log(key);
-                    //General.findWithAttr(res.data, '_id', msg.conversation_id);
-                    //if(key._id)
-                    //if (key.conversation_type != 'public') {
-                    //key.conversation_name = 'new name';
-                    console.log(key);
-                    UserData.getConversationModelById(key._id)
-                        .then(function(res) {
-                            console.log(res);
-                            for (var i in check_objects) {
-                                console.log(check_objects[i]);
-                                console.log(key[check_objects[i]] + ' : ' + res[check_objects[i]]);
-                                console.log(isEqual(key[check_objects[i]], res[check_objects[i]]));
-                                if (!isEqual(key[check_objects[i]], res[check_objects[i]])) {
-                                    same = false;
+            Conversations.find_user_conversations(user_id)
+                .then(function(res) {
+                    console.log(res);
+                    res.data.map(function(key) {
+                        // Use array diff check
+                        //arraysAreEqual = function(a, b, value) "_id", content?
+                        //console.log(key);
+                        //General.findWithAttr(res.data, '_id', msg.conversation_id);
+                        //if(key._id)
+                        //if (key.conversation_type != 'public') {
+                        //key.conversation_name = 'new name';
+                        console.log(key);
+                        UserData.getConversationModelById(key._id)
+                            .then(function(res) {
+                                console.log(res);
+                                for (var i in check_objects) {
+                                    console.log(check_objects[i]);
+                                    console.log(key[check_objects[i]] + ' : ' + res[check_objects[i]]);
+                                    console.log(isEqual(key[check_objects[i]], res[check_objects[i]]));
+                                    if (!isEqual(key[check_objects[i]], res[check_objects[i]])) {
+                                        same = false;
+                                    }
                                 }
-                            }
-                            console.log(same);
-                            if(!same){
-                                var msg = { conversation_id: key._id };
-                                notification(msg);
-                            } else if (same) {
-                                // check latest cards
-                                //key.map(function(key2) {
-                                //Conversations.getConversationLatestCard(key._id)
-                                var conv_same = true;
-                                Conversations.getConversationById(key._id)
-                                    .then(function(result) {
-                                        console.log(result);
-                                        if(result.data.length > 0){
-                                        //result.data[2].content = "TEST";
-                                        //result.data[4].content = "TEST 2";
-                                        //UserData.getConversationModelById(key._id)
-                                        UserData.getCardsModelById(key._id)
-                                            .then(function(res) {
-                                                console.log(res);
-                                                for(var i in result.data){
-                                                    console.log(result.data[i].content);
-                                                    
-                                                    console.log(isEqual(result.data[i].content, res.data[i].content));
-                                                    if(!isEqual(result.data[i].content, res.data[i].content)){
-                                                        //convs_updated.push(res._id);
-                                                        conv_same = false;
-                                                    }
-                                                    
-                                                }
-                                                if(!conv_same){
-                                                    //convs_updated.push(res._id);
-                                                    var msg = { conversation_id: res._id };
-                                                    notification(msg);
-                                                }
-                                                //console.log(convs_updated);
+                                console.log(same);
+                                if (!same) {
+                                    var msg = { conversation_id: key._id };
+                                    notification(msg);
+                                    update_inprogress = false;
+                                } else if (same) {
+                                    // check latest cards
+                                    //key.map(function(key2) {
+                                    //Conversations.getConversationLatestCard(key._id)
+                                    var conv_same = true;
+                                    Conversations.getConversationById(key._id)
+                                        .then(function(result) {
+                                            console.log(result);
+                                            if (result.data.length > 0) {
+                                                //result.data[2].content = "TEST";
+                                                //result.data[4].content = "TEST 2";
+                                                //UserData.getConversationModelById(key._id)
+                                                UserData.getCardsModelById(key._id)
+                                                    .then(function(res) {
+                                                        console.log(res);
+                                                        for (var i in result.data) {
+                                                            console.log(result.data[i].content);
 
-                                                
-                                                /*
-                                                var conversation_length;
-                                                if (res != undefined) {
-                                                    // get the number of cards in the existing conversation
-                                                    conversation_length = res.data.length;
-                                                } else {
-                                                    conversation_length = 0;
-                                                }
-                                                // Check for new cards.
-                                                // find only the new cards which have been posted
-                                                var updates = result.data.slice(conversation_length, result.data.length);
-                                                if (conversation_length < result.data.length || res == undefined) {
-                                                    // new card
-                                                    //convs_updated.push();
-                                                } else if (conversation_length == result.data.length) {
-                                                    // Same number of cards
-                                                    //console.log('update existing card');
-                                                }
-                                                */
+                                                            console.log(isEqual(result.data[i].content, res.data[i].content));
+                                                            if (!isEqual(result.data[i].content, res.data[i].content)) {
+                                                                //convs_updated.push(res._id);
+                                                                conv_same = false;
+                                                            }
 
-                                            });
-                                        }
-                                    });
-                                //});
+                                                        }
+                                                        if (!conv_same) {
+                                                            //convs_updated.push(res._id);
+                                                            var msg = { conversation_id: res._id };
+                                                            notification(msg);
+                                                        }
+                                                        //console.log(convs_updated);
 
-                            }
-                            //console.log(isEqual(key.participants,res.participants) && isEqual(key.admin,res.admin));
-                            //var msg = { conversation_id: key._id };
-                            //notification(msg);
-                            /*
-                               var conversation_length;
-                                if (res != undefined) {
-                                    // get the number of cards in the existing conversation
-                                    conversation_length = res.data.length;
-                                } else {
-                                    conversation_length = 0;
+
+                                                        /*
+                                                        var conversation_length;
+                                                        if (res != undefined) {
+                                                            // get the number of cards in the existing conversation
+                                                            conversation_length = res.data.length;
+                                                        } else {
+                                                            conversation_length = 0;
+                                                        }
+                                                        // Check for new cards.
+                                                        // find only the new cards which have been posted
+                                                        var updates = result.data.slice(conversation_length, result.data.length);
+                                                        if (conversation_length < result.data.length || res == undefined) {
+                                                            // new card
+                                                            //convs_updated.push();
+                                                        } else if (conversation_length == result.data.length) {
+                                                            // Same number of cards
+                                                            //console.log('update existing card');
+                                                        }
+                                                        */
+
+                                                    });
+                                            }
+                                            update_inprogress = false;
+                                        });
+                                    //});
+
                                 }
-                                // Check for new cards.
-                                // find only the new cards which have been posted
-                                var updates = result.data.slice(conversation_length, result.data.length);
-                                if (conversation_length < result.data.length || res == undefined) {
-                                    */
+                                //console.log(isEqual(key.participants,res.participants) && isEqual(key.admin,res.admin));
+                                //var msg = { conversation_id: key._id };
+                                //notification(msg);
+                                /*
+                                   var conversation_length;
+                                    if (res != undefined) {
+                                        // get the number of cards in the existing conversation
+                                        conversation_length = res.data.length;
+                                    } else {
+                                        conversation_length = 0;
+                                    }
+                                    // Check for new cards.
+                                    // find only the new cards which have been posted
+                                    var updates = result.data.slice(conversation_length, result.data.length);
+                                    if (conversation_length < result.data.length || res == undefined) {
+                                        */
 
-                        });
-                    //}
+                            });
+                        //}
+                    });
+                    //console.log(convs_updated);
                 });
-//console.log(convs_updated);
-            });
 
 
-
+        }
     };
 
     //
