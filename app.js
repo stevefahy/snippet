@@ -88,15 +88,10 @@ io.on('connection', function(socket) {
                 socket.disconnect('unauthorized');
                 socket.removeAllListeners('connection');
             });
-        });
-    });
 
-    // on socket disconnect
-    socket.on('disconnect', function(sockets) {
-        console.log('SERVER DISCONNECT, clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
-    });
 
-    // on reconnection, reset the transports option, as the Websocket
+
+            // on reconnection, reset the transports option, as the Websocket
     // connection may have failed (caused by proxy, firewall, browser, ...)
     socket.on('reconnect_attempt', function(sockets) {
         console.log('socket reconnect attempt');
@@ -118,6 +113,19 @@ io.on('connection', function(socket) {
     socket.on('reconnect_failed', function(sockets) {
         console.log('reconnect_failed');
     });
+
+
+
+    
+        });
+    });
+
+    // on socket disconnect
+    socket.on('disconnect', function(sockets) {
+        console.log('SERVER DISCONNECT, clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    });
+
+    
 
 });
 
