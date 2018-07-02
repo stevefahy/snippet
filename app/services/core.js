@@ -2157,9 +2157,10 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                                 }
                                 console.log(same);
                                 if (!same) {
+                                    update_inprogress = false;
                                     var msg = { conversation_id: key._id };
                                     notification(msg);
-                                    update_inprogress = false;
+                                    
                                 } else if (same) {
                                     // check latest cards
                                     //key.map(function(key2) {
@@ -2187,6 +2188,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                                                         }
                                                         if (!conv_same) {
                                                             //convs_updated.push(res._id);
+                                                            update_inprogress = false;
                                                             var msg = { conversation_id: res._id };
                                                             notification(msg);
                                                         }
@@ -2255,6 +2257,8 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
         console.log(msg);
         // CONVERSATIONS
 
+        if(!update_inprogress){
+            console.log('check notification');
         // Find the conversations for current user
         var user_id = UserData.getUser()._id;
         Conversations.find_user_conversations(user_id)
@@ -2410,6 +2414,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                             });
                     });
             });
+}
 
     };
 
