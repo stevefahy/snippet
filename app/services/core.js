@@ -2108,7 +2108,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     // Check for updates
 
     UserData.checkDataUpdate = function() {
-        if (!updateinprogress) {
+        if (!update_inprogress) {
             console.log('checking update');
             update_inprogress = true;
 
