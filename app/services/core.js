@@ -2112,17 +2112,19 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
             console.log('checking update');
             update_inprogress = true;
 
+             location.reload();
+
             //var msg = { conversation_id: key._id };
             //notification(msg);
             //$route.reload();
 
-            /*
-            socket.delete();
-            socket.setId(UserData.getUser()._id);
-            socket.connect(socket.getId());
-            */
+            
+            //socket.delete();
+            //socket.setId(UserData.getUser()._id);
+           // socket.connect(socket.getId());
+        
 
-
+/*
             var toUpdate = [];
             // Find the conversations for current user
             var user_id = UserData.getUser()._id;
@@ -2195,25 +2197,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                                                         //console.log(convs_updated);
 
 
-                                                        /*
-                                                        var conversation_length;
-                                                        if (res != undefined) {
-                                                            // get the number of cards in the existing conversation
-                                                            conversation_length = res.data.length;
-                                                        } else {
-                                                            conversation_length = 0;
-                                                        }
-                                                        // Check for new cards.
-                                                        // find only the new cards which have been posted
-                                                        var updates = result.data.slice(conversation_length, result.data.length);
-                                                        if (conversation_length < result.data.length || res == undefined) {
-                                                            // new card
-                                                            //convs_updated.push();
-                                                        } else if (conversation_length == result.data.length) {
-                                                            // Same number of cards
-                                                            //console.log('update existing card');
-                                                        }
-                                                        */
+                                                 
 
                                                     });
                                             }
@@ -2225,19 +2209,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                                 //console.log(isEqual(key.participants,res.participants) && isEqual(key.admin,res.admin));
                                 //var msg = { conversation_id: key._id };
                                 //notification(msg);
-                                /*
-                                   var conversation_length;
-                                    if (res != undefined) {
-                                        // get the number of cards in the existing conversation
-                                        conversation_length = res.data.length;
-                                    } else {
-                                        conversation_length = 0;
-                                    }
-                                    // Check for new cards.
-                                    // find only the new cards which have been posted
-                                    var updates = result.data.slice(conversation_length, result.data.length);
-                                    if (conversation_length < result.data.length || res == undefined) {
-                                        */
+                          
 
                             });
                         //}
@@ -2245,7 +2217,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                     //console.log(convs_updated);
                 });
 
-
+*/
         }
     };
 
