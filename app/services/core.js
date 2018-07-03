@@ -2110,6 +2110,14 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
 
     // Check for updates
 
+    UserData.checkDataUpdateg = function() {
+    if (!update_inprogress) {
+            console.log('checking update');
+            update_inprogress = true;
+            $location.path("/api/logout");
+        }
+    };
+
     UserData.checkDataUpdate = function() {
         if (!update_inprogress) {
             console.log('checking update');
