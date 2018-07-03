@@ -28,6 +28,8 @@ var request = require('request');
 
 var http = require('http');
 var server = http.createServer(app);
+
+/*
 var io = require('socket.io')(server);
 
 server.setMaxListeners(0);
@@ -116,7 +118,7 @@ io.on('connection', function(socket) {
 
 
 
-    
+
         });
     });
 
@@ -128,7 +130,7 @@ io.on('connection', function(socket) {
     
 
 });
-
+*/
 // Check for local or production environment
 var os = require('os');
 var interfaces = os.networkInterfaces();
