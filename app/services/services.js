@@ -209,6 +209,9 @@ cardApp.factory('socket', function($rootScope, $window) {
         delete: function() {
             socket.emit('delete');
         },
+        disconnect: function(){
+            socket.disconnect(true);
+        },
         getId: function() {
             return property;
         },

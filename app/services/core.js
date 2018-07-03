@@ -1981,6 +1981,9 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
             $timeout(function() {
                 UserData.checkDataUpdate();
             });
+        } else if(status == "disconnected"){
+            console.log('disconnected');
+            socket.disconnect();
         }
     };
 
@@ -2118,8 +2121,9 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
 
             
             //socket.delete();
-            //socket.setId(UserData.getUser()._id);
-           // socket.connect(socket.getId());
+            socket.setId(UserData.getUser()._id);
+            socket.connect(socket.getId());
+           //socket.disconnect();
         
 
 
