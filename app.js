@@ -116,7 +116,7 @@ io.on('connection', function(socket) {
 
 
 
-    
+
         });
     });
 
@@ -157,7 +157,7 @@ if (addresses == '192.168.192.59' || addresses == '10.21.221.127' || addresses =
     global.mailUrl = 'http://www.snipbee.com';
 }
 // set up our express application
-app.use(morgan('dev')); // log every request to the console
+//app.use(morgan('dev')); // log every request to the console
 app.use(cookieParser()); // read cookies (needed for auth)
 
 // Passport
@@ -182,7 +182,7 @@ app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 // configuration ===============================================================
-
+//mongoose.set('debug', true);
 mongoose.connect(dburl); // Connect to local MongoDB instance. A remoteUrl is also available (modulus.io)
 //mongoose.connect(dbuserurl); // User login
 
