@@ -2124,6 +2124,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
             update_inprogress = true;
 
             $http.get("/ip/").then(function(result) {
+                console.log('ip returned');
                 console.log(result);
             });
 
