@@ -22,11 +22,11 @@ cardApp.controller("footerCtrl", ['$scope', 'Cards', '$rootScope', '$location', 
     $scope.logOut = function() {
         // close socket.io connection and delete namespace
         socket.delete();
-        Cards.logout();
+        //Cards.logout();
 
-        principal.logOut();
+        //principal.logOut();
 
-        $scope.changePath('/api/logout');
+        $scope.changePath('/api/logoutx');
     };
 
     $scope.logIn = function() {

@@ -56,7 +56,7 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
             templateUrl: '/views/group.html',
             controller: 'groupCtrl'
         })
-        .when("/api/logout", {
+        .when("/api/logoutx", {
             templateUrl: '/views/login.html',
             controller: 'loginCtrl'
         })
