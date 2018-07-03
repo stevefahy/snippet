@@ -203,14 +203,15 @@ cardApp.factory('socket', function($rootScope, $window) {
             });
             // namespace disconnected by server
             socket.on('disconnect', function(reason) {
-                //console.log('CLIENT NS disconnected by server: ' + reason);
+                console.log('CLIENT NS disconnected by server: ' + reason);
             });
         },
         delete: function() {
             socket.emit('delete');
         },
         disconnect: function(){
-            socket.disconnect(true);
+            //socket.disconnect(true);
+            socket.emit('disconnect');
         },
         getId: function() {
             return property;
