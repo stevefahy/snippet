@@ -85,7 +85,7 @@ function isMember(req, res, next) {
             req.principal.isAuthenticated = false;
         }
     }
-
+console.log(req.principal.isAuthenticated);
     if (req.principal.isAuthenticated) {
         // get the members of this conversation
         var query = getConversationId(req.params.id);
@@ -1185,7 +1185,7 @@ module.exports = function(app, passport) {
     // Get all cards for a PRIVATE conversation by conversation id.
     // Needs to be a member.
     // getConversationById(id)
-    app.get('/chat/get_conversation/:id', isMember, function(req, res) {
+    app.get('/chat/get_conversation/:id', function(req, res) {
         // TODO if no id exists then re-route
         Card.find({ 'conversationId': req.params.id }, function(err, cards) {
             if (err) {
