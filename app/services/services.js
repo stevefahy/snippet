@@ -178,7 +178,7 @@ cardApp.factory('socket', function($rootScope, $window) {
     var socket;
     //socket = io();
     //Test
-    //socket = io({transports: ['websocket']});
+    socket = io({transports: ['websocket']});
 
     return {
         // called by index_ctrl once when the app loads 
@@ -207,7 +207,7 @@ cardApp.factory('socket', function($rootScope, $window) {
             });
         },
         delete: function() {
-            //socket.emit('delete');
+            socket.emit('delete');
         },
         disconnect: function(){
             //socket.disconnect(true);

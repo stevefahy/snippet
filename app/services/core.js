@@ -2123,7 +2123,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
             console.log('checking update');
             update_inprogress = true;
 
-
+            
 
             //var msg = { conversation_id: key._id };
             //notification(msg);
@@ -3412,7 +3412,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
             // connect to socket.io via socket service 
             // and request that a unique namespace be created for this user with their user id
             socket.setId(UserData.getUser()._id);
-            //socket.connect(socket.getId());
+            socket.connect(socket.getId());
             // Set loaded to true.
             $rootScope.loaded = true;
             $rootScope.dataLoading = false;

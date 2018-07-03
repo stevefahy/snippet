@@ -28,7 +28,7 @@ var request = require('request');
 
 var http = require('http');
 var server = http.createServer(app);
-/*var io = require('socket.io')(server);
+var io = require('socket.io')(server);
 
 server.setMaxListeners(0);
 io.sockets.setMaxListeners(0);
@@ -92,27 +92,27 @@ io.on('connection', function(socket) {
 
 
             // on reconnection, reset the transports option, as the Websocket
-            // connection may have failed (caused by proxy, firewall, browser, ...)
-            socket.on('reconnect_attempt', function(sockets) {
-                console.log('socket reconnect attempt');
-                socket.io.opts.transports = ['polling', 'websocket'];
-            });
+    // connection may have failed (caused by proxy, firewall, browser, ...)
+    socket.on('reconnect_attempt', function(sockets) {
+        console.log('socket reconnect attempt');
+        socket.io.opts.transports = ['polling', 'websocket'];
+    });
 
-            socket.on('reconnect', function(sockets) {
-                console.log('socket reconnect');
-            });
+    socket.on('reconnect', function(sockets) {
+        console.log('socket reconnect');
+    });
 
-            socket.on('reconnecting', function(sockets) {
-                console.log('socket reconnecting');
-            });
+    socket.on('reconnecting', function(sockets) {
+        console.log('socket reconnecting');
+    });
 
-            socket.on('reconnect_error', function(sockets) {
-                console.log('reconnect_error');
-            });
+    socket.on('reconnect_error', function(sockets) {
+        console.log('reconnect_error');
+    });
 
-            socket.on('reconnect_failed', function(sockets) {
-                console.log('reconnect_failed');
-            });
+    socket.on('reconnect_failed', function(sockets) {
+        console.log('reconnect_failed');
+    });
 
 
 
@@ -125,10 +125,9 @@ io.on('connection', function(socket) {
         console.log('SERVER DISCONNECT, clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     });
 
-
+    
 
 });
-*/
 
 // Check for local or production environment
 var os = require('os');
@@ -188,13 +187,6 @@ mongoose.connect(dburl); // Connect to local MongoDB instance. A remoteUrl is al
 //mongoose.connect(dbuserurl); // User login
 
 var db = mongoose.connection;
-
-var serverOptions = {
-    poolsize: 100,
-    socketOptions: {
-        socketTimeoutMS: 1000
-    }
-};
 //db.on('error', console.error.bind(console, 'connection error:'));
 //db.once('open', function() {
 //console.log('mongoose open');
@@ -223,7 +215,7 @@ db.on('disconnecting', function() {
 });
 db.on('disconnected', function() {
     console.log('MongoDB disconnected!');
-    mongoose.connect(dburl, { server: { auto_reconnect: true, socketOptions:{socketTimeoutMS: 1000} } });
+    mongoose.connect(dburl, { server: { auto_reconnect: true } });
 });
 
 
