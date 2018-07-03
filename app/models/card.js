@@ -37,7 +37,7 @@ cardSchema.pre('find', function() {
 cardSchema.post('find', function(result) {
   console.log(this instanceof mongoose.Query); // true
   // prints returned documents
-  console.log('find() returned ' + JSON.stringify(result));
+  //console.log('find() returned ' + JSON.stringify(result));
   // prints number of milliseconds the query took
   console.log('find() took ' + (Date.now() - this.start) + ' millis');
 });
