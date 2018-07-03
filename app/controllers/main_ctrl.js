@@ -60,7 +60,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', 'socket', 'pr
     	console.log('start foc');
         $window.onfocus = function() {
             console.log('foc');
-            UserData.checkDataUpdate();
+            //UserData.checkDataUpdate();
         };
     }
 
