@@ -114,6 +114,7 @@ console.log(req.principal.isAuthenticated);
 // route middleware to ensure user is logged in
 function isLoggedIn(req, res, next) {
     var token = req.headers['x-access-token'];
+    console.log(token);
     if (token) {
         try {
             var decoded = jwt.verify(token, configAuth.tokenAuth.token.secret);
@@ -124,7 +125,7 @@ function isLoggedIn(req, res, next) {
             // Authenticated, continue.
             return next();
         } catch (err) {
-            //console.log('ERROR when parsing access token.', err);
+            console.log('ERROR when parsing access token.', err);
         }
     }
     return res.status(401).json({ error: 'Invalid access token!' });
