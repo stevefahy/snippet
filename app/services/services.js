@@ -3,9 +3,6 @@
 
 cardApp.factory('Cards', ['$http', function($http) {
     return {
-        logout: function() {
-            return $http.get("/api/logout");
-        },
         create_card: function() {
             return $http.get("/create_card");
         },
@@ -176,12 +173,11 @@ cardApp.factory('Conversations', ['$http', function($http) {
 cardApp.factory('socket', function($rootScope, $window) {
 
     var socket;
-    //socket = io();
-    //Test
-    socket = io({transports: ['websocket']});
+
+    socket = io({ transports: ['websocket'] });
 
     return {
-        // called by index_ctrl once when the app loads 
+        // called by core.js - UserData once when the app loads 
         connect: function(id) {
             //console.log('connect: ' + socket.id + ' : ' + id);
             // Connected, request unique namespace to be created
@@ -203,13 +199,13 @@ cardApp.factory('socket', function($rootScope, $window) {
             });
             // namespace disconnected by server
             socket.on('disconnect', function(reason) {
-                console.log('CLIENT NS disconnected by server: ' + reason);
+                //console.log('CLIENT NS disconnected by server: ' + reason);
             });
         },
         delete: function() {
             socket.emit('delete');
         },
-        disconnect: function(){
+        disconnect: function() {
             //socket.disconnect(true);
             socket.emit('disconnect');
         },
@@ -219,7 +215,7 @@ cardApp.factory('socket', function($rootScope, $window) {
         setId: function(value) {
             property = value;
         },
-        isConnected: function(){
+        isConnected: function() {
             return socket.connected;
         },
         on: function(eventName, callback) {

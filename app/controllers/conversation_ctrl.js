@@ -47,7 +47,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // Loading conversation directly should not animate.
     $animate.enabled($rootScope.animate_pages);
 
-    //FGeneral.keyBoardListenStart();
+    General.keyBoardListenStart();
 
     // Add custom class for Android scrollbar
     if (ua.indexOf('AndroidApp') >= 0) {
@@ -86,14 +86,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     });
 
-    $scope.$on('$destroy', function() {
-        // leaving controller.
-        console.log('destroy');
-        $window.onfocus = null;
-    });
-
-    setFocus = function() {
-        console.log('focus');
+    getCards = function() {
         $timeout(function() {
             findConversationId(function(result) {
                 UserData.getCardsModelById(result)
@@ -106,46 +99,16 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         });
     };
 
-    wOnFocus = function(){
-        console.log('wOnFocus');
-        this.setFocus();
-    };
-
-    // start watching onfocus and onblur
-    watchFocus = function() {
-        // only check focus on web version
-        if (ua.indexOf('AndroidApp') < 0) {
-            console.log('watchFocus');
-
-            //$window.onfocus = wOnFocus;
-            //$window.onblur = onBlur; 
-            
-            //$window.onfocus = function() {
-                //console.log('foc');
-                //this.setFocus();
-            //};
-            
-            $window.onblur = function() {
-                console.log('blur');
-            };
-            setFocus();
-        } else {
-            setFocus();
-        }
-    };
-
     if (principal.isValid()) {
         UserData.checkUser().then(function(result) {
             $scope.currentUser = UserData.getUser();
-            // Start watching onfocus and onblur, then load the conversation for the first time.
-            watchFocus();
+            // Logged in.Load the conversation for the first time.
+            getCards();
         });
     } else {
-        // Public route
-        watchFocus();
+        // Public route (Does not need to be logged in).
+        getCards();
     }
-    // Start watching onfocus and onblur, then load the conversation for the first time.
-    //watchFocus();
 
     $scope.changePathGroup = function() {
         $rootScope.nav = { from: 'conv', to: 'group' };

@@ -74,6 +74,7 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
             $scope.uploadFile();
         }
     };
+
     // Check that the cecard_create was the last focused element
     $scope.checkFocus = function() {
         if ($scope.focused) {
@@ -112,25 +113,5 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
             $scope.input = false;
         }
     };
-
-    setFocus = function() {
-        $timeout(function() {
-            var element = $window.document.getElementById('cecard_create');
-            if (element) {
-                element.focus();
-                $rootScope.$broadcast('CONV_CHECK');
-            }
-        });
-    };
-
-    // only check focus on web version
-    if (ua.indexOf('AndroidApp') < 0) {
-        console.log('cc');
-        //$window.onfocus = function() {
-            // this.setFocus();
-        //};
-        $window.focus();
-        setFocus();
-    }
 
 }]);

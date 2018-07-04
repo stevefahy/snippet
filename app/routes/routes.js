@@ -61,13 +61,15 @@ function createPublicConversation(user, callback) {
         done: false
     }, function(err, conversation) {
         if (err) {
-            console.log('error: ' + err);
+            //console.log('error: ' + err);
             res.send(err);
         }
         // return the created conversation
         callback(conversation);
     });
 }
+
+// TODO - check routes for isMember and isLoggedIn sufficent. e.g. only current user should be able to change own avatar.
 
 // route middleware to ensure user is logged in and is a member of the conversation
 function isMember(req, res, next) {
@@ -85,7 +87,7 @@ function isMember(req, res, next) {
             req.principal.isAuthenticated = false;
         }
     }
-console.log(req.principal.isAuthenticated);
+
     if (req.principal.isAuthenticated) {
         // get the members of this conversation
         var query = getConversationId(req.params.id);
@@ -122,10 +124,9 @@ function isLoggedIn(req, res, next) {
                 _id: decoded.data.user._id
             };
             // Authenticated, continue.
-            console.log('isLoggedIn');
             return next();
         } catch (err) {
-            console.log('ERROR when parsing access token.', err);
+            //console.log('ERROR when parsing access token.', err);
         }
     }
     return res.status(401).json({ error: 'Invalid access token!' });
@@ -148,7 +149,7 @@ module.exports = function(app, passport) {
         } else {
             User.findById({ _id: req.principal._id }, function(err, user) {
                 if (err) {
-                    console.log('err: ' + err);
+                    //console.log('err: ' + err);
                     res.send(err);
                 } else {
                     res.json({
@@ -502,7 +503,7 @@ module.exports = function(app, passport) {
         // get the position of this contact within the contacts array and delete it
         User.findById({ _id: req.principal._id }, function(err, user) {
             if (err) {
-                console.log(err);
+                //console.log(err);
                 res.json(err);
             }
             var index = user.contacts.indexOf(req.params.id);
@@ -522,7 +523,7 @@ module.exports = function(app, passport) {
         var arr = req.body.contacts;
         User.findById({ _id: req.principal._id }, function(err, user) {
             if (err) {
-                console.log(err);
+                //console.log(err);
                 res.json(err);
             }
             // get the position of this contact within the contacts array and delete it
@@ -567,7 +568,7 @@ module.exports = function(app, passport) {
         // get the users contact array
         User.findById({ _id: req.principal._id }, function(err, user) {
             if (err) {
-                console.log('err: ' + err);
+                //console.log('err: ' + err);
                 res.send(err);
             } else {
                 // add the id to the users contacts if it is not already there
@@ -593,7 +594,7 @@ module.exports = function(app, passport) {
         var options = req.body;
         request(options, function(err, response, body) {
             if (err) {
-                console.log('err: ' + err);
+                //console.log('err: ' + err);
                 throw err;
             } else {
                 res.status(200).send('ok');
@@ -644,7 +645,7 @@ module.exports = function(app, passport) {
                     data.operation = "create";
                     request(options, function(err, response, body) {
                         if (err) {
-                            console.log('err: ' + err);
+                            //console.log('err: ' + err);
                             throw err;
                         } else {
                             var notification_key = body.notification_key;
@@ -655,7 +656,7 @@ module.exports = function(app, passport) {
                             updateuser.tokens.push({ _id: req.body.id, token: reg_id });
                             updateuser.save(function(err, user) {
                                 if (err) {
-                                    console.log(err);
+                                    //console.log(err);
                                     res.send(err);
                                 } else {
                                     res.json(user);
@@ -677,7 +678,7 @@ module.exports = function(app, passport) {
                             new_user.tokens[id_pos].token = req.body.refreshedToken;
                             new_user.save(function(err, user) {
                                 if (err) {
-                                    console.log(err);
+                                    //console.log(err);
                                     res.send(err);
                                 } else {
                                     res.json(user);
@@ -691,7 +692,7 @@ module.exports = function(app, passport) {
                             data.registration_ids = token_array;
                             request(options, function(err, response, body) {
                                 if (err) {
-                                    console.log(err);
+                                    //console.log(err);
                                     throw err;
                                 } else {
                                     //console.log(body);
@@ -718,7 +719,7 @@ module.exports = function(app, passport) {
                         data.registration_ids = token_array;
                         request(options, function(err, response, body) {
                             if (err) {
-                                console.log(err);
+                                //console.log(err);
                                 throw err;
                             } else {
                                 //console.log(body);
@@ -792,7 +793,7 @@ module.exports = function(app, passport) {
             done: false
         }, function(err, card) {
             if (err) {
-                console.log('err: ' + err);
+                //console.log('err: ' + err);
                 res.send(err);
             }
             // return the created card
@@ -889,7 +890,7 @@ module.exports = function(app, passport) {
         };
         transporter.sendMail(mailOptions, function(error, info) {
             if (error) {
-                console.log(error);
+                //console.log(error);
             } else {
                 res.sendStatus(200);
             }
@@ -921,7 +922,7 @@ module.exports = function(app, passport) {
             done: false
         }, function(err, conversation) {
             if (err) {
-                console.log('error: ' + err);
+                //console.log('error: ' + err);
                 res.send(err);
             }
             // return the created conversation
@@ -934,7 +935,7 @@ module.exports = function(app, passport) {
     app.put('/chat/update_conversation/:conversation_id', isLoggedIn, function(req, res) {
         Conversation.findById({ _id: req.params.conversation_id }, function(err, conversation) {
             if (err) {
-                console.log(err);
+                //console.log(err);
                 res.send(err);
             }
             var toupdate = req.body.conversation;
@@ -965,7 +966,7 @@ module.exports = function(app, passport) {
             var updateConversation = new Conversation(conversation);
             updateConversation.save(function(err, conversation_update) {
                 if (err) {
-                    console.log(err);
+                    //console.log(err);
                     res.send(err);
                 } else {
                     res.json(conversation_update);
@@ -980,14 +981,14 @@ module.exports = function(app, passport) {
     app.put('/chat/conversation_time/:id', isLoggedIn, function(req, res) {
         Conversation.findById({ _id: req.params.id }, function(err, conversation) {
             if (err) {
-                console.log('err: ' + err);
+                //console.log('err: ' + err);
                 res.send(err);
             }
             var new_conversation = new Conversation(conversation);
             new_conversation.updatedAt = new Date().toISOString();
             new_conversation.save(function(err, conversation) {
                 if (err) {
-                    console.log('err: ' + err);
+                    //console.log('err: ' + err);
                     res.send(err);
                 } else {
                     res.json(conversation);
@@ -1008,7 +1009,7 @@ module.exports = function(app, passport) {
             },
             function(err, conversation) {
                 if (err) {
-                    console.log('err: ' + err);
+                    //console.log('err: ' + err);
                     res.send(err);
                 }
                 res.json(conversation);
@@ -1019,7 +1020,7 @@ module.exports = function(app, passport) {
     app.put('/chat/conversation_viewed_remove/:id/:user_id/:card_id', isLoggedIn, function(req, res) {
         Conversation.findById({ _id: req.params.id }, function(err, conversation) {
             if (err) {
-                console.log('err: ' + err);
+                //console.log('err: ' + err);
                 return res.send(err);
             }
             // Convert the conversation model to JSON so that findWithAttr functions.
@@ -1039,7 +1040,7 @@ module.exports = function(app, passport) {
             var updated_conversation = new Conversation(conversation);
             updated_conversation.save(function(err, conversation) {
                 if (err) {
-                    console.log('err: ' + err);
+                    //console.log('err: ' + err);
                     res.send(err);
                 } else {
                     res.send(conversation);
@@ -1052,7 +1053,7 @@ module.exports = function(app, passport) {
     app.put('/chat/conversation_avatar/:id', isLoggedIn, function(req, res) {
         Conversation.findById({ _id: req.params.id }, function(err, conversation) {
             if (err) {
-                console.log('err: ' + err);
+                //console.log('err: ' + err);
                 return res.send(err);
             }
             conversation.conversation_avatar = req.body.avatar;
@@ -1060,7 +1061,7 @@ module.exports = function(app, passport) {
             var updated_conversation = new Conversation(conversation);
             updated_conversation.save(function(err, conversation) {
                 if (err) {
-                    console.log('err: ' + err);
+                    //console.log('err: ' + err);
                     res.send(err);
                 } else {
                     res.json(conversation);
@@ -1124,7 +1125,7 @@ module.exports = function(app, passport) {
         // Get the user id associated with this name
         User.findOne({ 'google.name': req.params.username }, function(error, user) {
             if (error) {
-                console.log('error: ' + error);
+                //console.log('error: ' + error);
                 res.json(error);
             } else if (user === null) {
                 // no user found
@@ -1133,7 +1134,7 @@ module.exports = function(app, passport) {
                 // Get the public conversation for this user id
                 Conversation.findOne({ 'participants._id': user._id, 'conversation_type': 'public' }, function(err, conversation) {
                     if (err) {
-                        console.log('err: ' + err);
+                        //console.log('err: ' + err);
                         return done(err);
                     }
                     // Get and return cards for this conversation
@@ -1165,7 +1166,7 @@ module.exports = function(app, passport) {
         // Get the user id associated with this name
         User.findOne({ 'google.name': req.params.username }, function(error, user) {
             if (error) {
-                console.log('error: ' + error);
+                //console.log('error: ' + error);
                 res.json(error);
             } else if (user === null) {
                 // no user found
@@ -1174,7 +1175,7 @@ module.exports = function(app, passport) {
                 // Get the public conversation for this user id
                 Conversation.findOne({ 'participants._id': user._id, 'conversation_type': 'public' }, function(err, conversation) {
                     if (err) {
-                        console.log('err: ' + err);
+                        //console.log('err: ' + err);
                         res.json({ 'error': 'not found' });
                     }
                     res.json(conversation);
@@ -1211,7 +1212,7 @@ module.exports = function(app, passport) {
                 if (conversation.conversation_type === 'public') {
                     Card.find({ 'conversationId': req.params.id }, function(err, cards) {
                         if (err) {
-                            console.log('err: ' + err);
+                            //console.log('err: ' + err);
                         }
                         res.json(cards);
                     });
