@@ -27,6 +27,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', 'UserData', '
             // and request that a unique namespace be created for this user with their user id
             //socket.setId(UserData.getUser()._id);
             //socket.connect(socket.getId());
+            window.location.reload(true); 
         }
     };
 
