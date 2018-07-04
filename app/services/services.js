@@ -174,11 +174,15 @@ cardApp.factory('socket', function($rootScope, $window) {
 
     var socket;
 
+    var sessionid;
+
     socket = io({ transports: ['websocket'] });
 
     return {
         // called by core.js - UserData once when the app loads 
         connect: function(id) {
+            console.log(socket.id);
+            sessionid = socket.id;
             console.log('connect: ' + socket.id + ' : ' + id);
             // Connected, request unique namespace to be created
             socket.emit('create_ns', id);
@@ -214,6 +218,9 @@ cardApp.factory('socket', function($rootScope, $window) {
         },
         setId: function(value) {
             property = value;
+        },
+        getSocketId: function(){
+            return sessionid;
         },
         isConnected: function() {
             console.log(socket.id);
