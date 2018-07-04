@@ -77,11 +77,11 @@ io.on('connection', function(socket) {
 
             // on namespace disconnect
             socket.on('disconnect', function(sockets) {
-                //console.log('SERVER NS DISCONNECT: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+                console.log('SERVER NS DISCONNECT: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
             });
             // close socket connection and delete nsmespace from io.nsps array
             socket.on('delete', function(sockets) {
-                //console.log('SERVER NS DELETE: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+                console.log('SERVER NS DELETE: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
                 delete io.nsps['/' + nspn];
                 socket.disconnect('unauthorized');
                 socket.removeAllListeners('connection');
