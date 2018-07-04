@@ -205,6 +205,33 @@ cardApp.factory('socket', function($rootScope, $window) {
             socket.on('disconnect', function(reason) {
                 console.log('CLIENT NS disconnected by server: ' + reason);
             });
+            socket.on('connect_error', function(error) {
+                console.log('connect_error: ' + error);
+            });
+            socket.on('connect_timeout', function() {
+                console.log('connect_timeout');
+            });
+            socket.on('reconnect', function(attempt) {
+                console.log('reconnect: ' + attempt);
+            });
+            socket.on('reconnecting', function(attempt) {
+                console.log('reconnecting: ' + attempt);
+            });
+            socket.on('reconnect_attempt', function() {
+                console.log('reconnect_attempt');
+            });
+            socket.on('reconnect_error', function(error) {
+                console.log('reconnect_error: ' + error);
+            });
+            socket.on('reconnect_failed', function() {
+                console.log('reconnect_failed');
+            });
+            socket.on('ping', function() {
+                console.log('ping');
+            });
+            socket.on('pong', function(ms) {
+                console.log('pong: ' + ms);
+            });
         },
         delete: function() {
             socket.emit('delete');
