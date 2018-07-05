@@ -2098,7 +2098,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
 
     UserData.checkDataUpdate = function() {
         console.log('checkDataUpdate');
-        console.log(updateinprogress);
+        console.log(update_inprogress);
         if (!update_inprogress) {
             update_inprogress = true;
             // Sets the  keepalive_timeout 0; in the NGINX /etc/nginx/sites-available/ file.
@@ -2129,6 +2129,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                                     var msg = { conversation_id: key._id };
                                     notification(msg);
                                 } else if (convs_same) {
+                                    console.log('convs_same');
                                     // Compare the LM with the DB conversation cards model.
                                     Conversations.getConversationById(key._id)
                                         .then(function(result) {
@@ -2145,6 +2146,8 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                                                             update_inprogress = false;
                                                             var msg = { conversation_id: res._id };
                                                             notification(msg);
+                                                        } else {
+                                                            console.log('conv_same');
                                                         }
                                                     });
                                             }
