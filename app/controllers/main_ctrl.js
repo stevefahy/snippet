@@ -27,7 +27,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', 'UserData', '
             // and request that a unique namespace be created for this user with their user id
             //socket.setId(UserData.getUser()._id);
             //socket.connect(socket.getId());
-            window.location.reload(true); 
+           // window.location.reload(true); 
         }
     };
 
@@ -75,5 +75,11 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', 'UserData', '
         }
 
     }
+
+    // Broadcast by UserData after it has processed the notification. (card has been created, updated or deleted by another user to this user).
+    $scope.$on('SOCKET_RECONNECT', function(event) {
+        console.log('SOCKET_RECONNECT');
+        UserData.checkDataUpdate();
+    });
 
 }]);
