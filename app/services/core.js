@@ -2097,6 +2097,8 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     // Check for updates
 
     UserData.checkDataUpdate = function() {
+        console.log('checkDataUpdate');
+        console.log(updateinprogress);
         if (!update_inprogress) {
             update_inprogress = true;
             // Sets the  keepalive_timeout 0; in the NGINX /etc/nginx/sites-available/ file.
@@ -2122,6 +2124,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                                     }
                                 }
                                 if (!convs_same) {
+                                    console.log('update!');
                                     update_inprogress = false;
                                     var msg = { conversation_id: key._id };
                                     notification(msg);
@@ -2138,6 +2141,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                                                             }
                                                         }
                                                         if (!conv_same) {
+                                                            console.log('update!');
                                                             update_inprogress = false;
                                                             var msg = { conversation_id: res._id };
                                                             notification(msg);
