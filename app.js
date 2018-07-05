@@ -41,14 +41,14 @@ io.on('connection', function(socket) {
     // namespace sent by client
     var ns;
     socket.on('create_ns', function(ns) {
-        //console.log('create ns: ' + ns);
+        console.log('create ns: ' + ns);
         // create unique namespace requested by client
         socket = io.of('/' + ns);
         // namespace name
         var nspn;
         // namespace connection made
         socket.on('connection', function(socket) {
-            //console.log('connection');
+            console.log('connection');
             socket.setMaxListeners(0);
             // store the namespace name
             nspn = ns;
@@ -56,7 +56,7 @@ io.on('connection', function(socket) {
             socket.emit('joined_ns', socket.id);
             // emited by cardcreate_ctrl when card has been created
             socket.on('card_posted', function(data) {
-                //console.log('card_posted, conv id: ' + data.conversation_id + ' , participants: ' + data.participants);
+                console.log('card_posted, conv id: ' + data.conversation_id + ' , participants: ' + data.participants);
                 // notify relevant namespace(s) of the cards creation
                 for (var i in data.participants) {
                     // dont emit to the user which sent the card
@@ -65,9 +65,11 @@ io.on('connection', function(socket) {
                     } else {
                         for (var y in Object.keys(io.nsps)) {
                             // if the namespace exists on the server
+                            console.log(Object.keys(io.nsps)[y]);
                             if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.participants[i]._id) {
                                 // emit to the participant
                                 var nsp_new = io.of('/' + data.participants[i]._id);
+                                console.log('emit notify_users: ' + data.participants[i]._id);
                                 nsp_new.emit('notify_users', { conversation_id: data.conversation_id, participants: data.participants });
                             }
                         }
