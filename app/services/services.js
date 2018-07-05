@@ -174,23 +174,11 @@ cardApp.factory('socket', function($rootScope, $window) {
 
     var socket;
 
-    var sessionid;
-
     socket = io({ transports: ['websocket'] });
 
     return {
         // called by core.js - UserData once when the app loads 
         connect: function(id) {
-            console.log(socket.id);
-            console.log(sessionid);
-            if(sessionid != undefined){
-                // Reconnection after first connection
-                // check for updates.
-                //UserData.checkDataUpdate();
-                console.log('sessionid reconnect');
-                $rootScope.$broadcast('SOCKET_RECONNECT');
-            }
-            sessionid = socket.id;
             console.log('connect: ' + socket.id + ' : ' + id);
             // Connected, request unique namespace to be created
             socket.emit('create_ns', id);
@@ -255,11 +243,10 @@ cardApp.factory('socket', function($rootScope, $window) {
         setId: function(value) {
             property = value;
         },
-        getSocketId: function(){
+        getSocketId: function() {
             return sessionid;
         },
         isConnected: function() {
-            console.log(socket.id);
             return socket.connected;
         },
         on: function(eventName, callback) {

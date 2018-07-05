@@ -114,4 +114,27 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
         }
     };
 
+    setFocus = function() {
+        $timeout(function() {
+            var element = $window.document.getElementById('cecard_create');
+            if (element) {
+                element.focus();
+            }
+        });
+    };
+
+    // only check focus on web version
+    if (ua.indexOf('AndroidApp') < 0) {
+        $window.onfocus = function() {
+            this.setFocus();
+        };
+        $window.focus();
+        setFocus();
+    }
+
+    $scope.$on('$destroy', function() {
+        // leaving controller.
+        $window.onfocus = null;
+    });
+
 }]);

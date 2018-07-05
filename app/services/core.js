@@ -2097,14 +2097,8 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     // Check for updates
 
     UserData.checkDataUpdate = function() {
-        console.log('checkDataUpdate');
-        console.log(update_inprogress);
         if (!update_inprogress) {
             update_inprogress = true;
-            // Sets the  keepalive_timeout 0; in the NGINX /etc/nginx/sites-available/ file.
-            // Otherwise there is a 65 second delay before a dropped network connection reconnects.
-            $http.get("/ip/").then(function(result) {});
-
             var toUpdate = [];
             // Find the conversations for current user
             var user_id = UserData.getUser()._id;
@@ -2124,12 +2118,10 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                                     }
                                 }
                                 if (!convs_same) {
-                                    console.log('update!');
                                     update_inprogress = false;
                                     var msg = { conversation_id: key._id };
                                     notification(msg);
                                 } else if (convs_same) {
-                                    console.log('convs_same');
                                     // Compare the LM with the DB conversation cards model.
                                     Conversations.getConversationById(key._id)
                                         .then(function(result) {
@@ -2142,12 +2134,9 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                                                             }
                                                         }
                                                         if (!conv_same) {
-                                                            console.log('update!');
                                                             update_inprogress = false;
                                                             var msg = { conversation_id: res._id };
                                                             notification(msg);
-                                                        } else {
-                                                            console.log('conv_same');
                                                         }
                                                     });
                                             }
