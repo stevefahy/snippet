@@ -2018,10 +2018,11 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     networkChange = function(status) {
         if (status == "connected") {
             $timeout(function() {
-                UserData.checkDataUpdate();
+                //UserData.checkDataUpdate();
+                console.log('connected');
             });
         } else if (status == "disconnected") {
-            //console.log('disconnected');
+            console.log('disconnected');
         }
     };
 
