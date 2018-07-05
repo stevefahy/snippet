@@ -1,7 +1,7 @@
 <div class="container_cnv">
     <div class="header_container" ng-include="'/views/header.html'"></div>
     <div class="content_cnv">
-        <div ng-repeat="conversation in conversations | orderBy :'updatedAt' : true">
+        <div ng-repeat="conversation in conversations | orderBy :'updatedAt' : true track by $index">
             <div id="conv_div" ng-click="(conversation.conversation_type == 'private') ? chat(conversation._id, conversation,  $index) : chatPublic(conversation.admin, conversation, $index)">
                 <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
                     <div class="convs_container">
@@ -14,10 +14,14 @@
                             <div class="convs_d" id="convs_msg" ng-bind-html="conversation.latest_card"></div>
                         </div>
                         <div class="convs_col_b">
-                            <div class="convs_c badge" id="conversations_badge" ng-if="conversation.new_messages > 0">{{conversation.new_messages}}</div>
+                            <div class="convs_c badge" id="conversations_badge" ng-show="conversation.new_messages > 0">{{conversation.new_messages}}</div>
+                            <!--
+                                <div class="convs_c badge" id="conversations_badge" ng-show="conversation.new_messages > 0">{{conversation.new_messages}}</div>
+                            -->
                             <div class="convs_e">
                                 <time am-time-ago="conversation.updatedAt" id="time"></time>
                             </div>
+
                         </div>
                     </div>
                 </li>
