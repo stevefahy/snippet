@@ -1786,6 +1786,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
     // CREATE CARD
     this.createCard = function(id, card_create, currentUser) {
+        console.log('createCard');
         var promises = [];
         card_create.user = currentUser.google.name;
         // Get the Conversation in which this card is being created.
@@ -1802,6 +1803,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         var card_content = card_create.content;
         Cards.create(card_create)
             .then(function(response) {
+                console.log('card created');
                 var card_id = response.data._id;
                 var card_response = response.data;
                 // notify conversation_ctrl and cardcreate_ctrl that the conversation has been updated
@@ -1811,6 +1813,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 // Update the Conversation updateAt time.
                 Conversations.updateTime(current_conversation_id)
                     .then(function(response) {
+                        console.log('updateTime');
                         var notification = self.setNotification(response.data, currentUser, card_content);
                         notification_title = notification.title;
                         notification_body = notification.body;
@@ -1824,12 +1827,14 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                 // Find the other user(s)
                                 promises.push(UserData.getConversationsUser(response.data.participants[i]._id)
                                     .then(function(result) {
+                                        console.log('user');
                                         // Get the participants notification key
                                         // Set the message title and body
                                         if (result.notification_key !== undefined) {
                                             var dataObj = new createData(result.notification_key, notification_title, sent_content, response.data._id);
                                             var optionsObj = new createOptions(headersObj.headers, dataObj.data);
                                             // Send the notification
+                                            console.log('send_notification');
                                             Users.send_notification(optionsObj.options)
                                                 .then(function(res) {
                                                     //console.log(res);
@@ -1844,11 +1849,13 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                 Conversations.updateViewed(current_conversation_id, viewed_users[x]._id, card_id)
                                 .then(function(res) {
                                     //console.log(res);
+                                    console.log('updateviewed');
                                 })
                             );
                         }
                         // All Conversation participants unviewed arrays updated
                         $q.all(promises).then(function() {
+                            console.log('all promises - emit card_posted');
                             // update other paticipants in the conversation via socket.
                             socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: current_conversation_id, participants: viewed_users });
                         });
