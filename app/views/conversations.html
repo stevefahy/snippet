@@ -15,11 +15,8 @@
                         </div>
                         <div class="convs_col_b">
                             <div class="convs_c badge" id="conversations_badge" ng-show="conversation.new_messages > 0">{{conversation.new_messages}}</div>
-                            <!--
-                                <div class="convs_c badge" id="conversations_badge" ng-show="conversation.new_messages > 0">{{conversation.new_messages}}</div>
-                            -->
                             <div class="convs_e">
-                                <time am-time-ago="conversation.updatedAt" id="time"></time>
+                                <time moment-time="conversation.updatedAt" id="time"></time>
                             </div>
 
                         </div>

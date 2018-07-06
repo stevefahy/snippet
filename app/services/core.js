@@ -1952,6 +1952,50 @@ cardApp.filter("emptyToEnd", function() {
     };
 });
 
+cardApp.filter("momentFilter", function() {
+    return function(value, format) {
+        var today = moment();
+        if (today.isSame(value, 'd')) {
+           //return moment(value).fromNow() + ' : ' + moment(value).format("YYYY-MM-DD HH:mm:ss");
+            //return moment(value).fromNow() + ' : ' + moment(value).format("HH:mm");
+            return moment(value).fromNow();
+        } else {
+            return moment(value).calendar();
+        }
+    };
+});
+
+cardApp.directive('momentTime', ['$interval', '$filter', function($interval, $filter) {
+
+    function link(scope, element, attrs) {
+        var format,
+            timeoutId;
+            momentFilter = $filter('momentFilter');
+
+        function updateTime() {
+            element.text((new Date(), momentFilter(format)));
+        }
+
+        scope.$watch(attrs.momentTime, function(value) {
+            format = value;
+            updateTime();
+        });
+
+        element.on('$destroy', function() {
+            $interval.cancel(timeoutId);
+        });
+
+        // start the UI update process; save the timeoutId for canceling
+        timeoutId = $interval(function() {
+            updateTime(); // update DOM
+        }, 1000);
+    }
+
+    return {
+        link: link
+    };
+}]);
+
 //
 // principal Factory
 //

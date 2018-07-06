@@ -1021,10 +1021,12 @@ li.list-group-item.d-flex.justify-content-between.align-items-center.ng-binding 
 }
 
 #time {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 11px;
-    color: darkslategray;
-    font-weight: 500;
+    color: #9E9E9E;
+    font-weight: 600;
+
+    width: 100%;
+    text-align: right;
 }
 
 #conv_div {
@@ -1053,8 +1055,8 @@ li.list-group-item.d-flex.justify-content-between.align-items-center.ng-binding 
 
 #convs_name {
     font-weight: 600;
-    margin-bottom: 2px;
-    margin-top: 2px;
+    /*margin-bottom: 2px;
+    margin-top: 2px;*/
 }
 
 #invite_name {
@@ -1154,12 +1156,15 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 
     overflow-y: hidden;
     overflow-x: hidden;
+    line-height: normal;
 }
 
 .convs_col_b {
     margin-right: auto;
     text-align: right;
-    align-self: center;
+    /*align-self: center;*/
+    margin-bottom: auto;
+    margin-top: auto;
 }
 
 .convs_col_c {
@@ -1186,10 +1191,10 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 }
 
 .convs_b {
-    grid-column: 2;
+    /*grid-column: 2;
     grid-row: 1;
     padding-bottom: 3px;
-    margin-top: -1px;
+    margin-top: -1px;*/
 
     white-space: nowrap;
 }
@@ -1203,9 +1208,11 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 }
 
 .convs_d {
-    grid-column: 2;
-    grid-row: 2;
-    color: #9E9E9E;
+    /*grid-column: 2;
+    grid-row: 2;*/
+    color: #5d5d5d;
+    font-weight: 400;
+    font-size: 13px;
 
     white-space: nowrap;
 }
@@ -1213,8 +1220,8 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 .convs_e {
     /*grid-column: 3;
     grid-row: 2;
-    margin-left: auto;*/
-    margin-bottom: 3px;
+    margin-left: auto;
+    margin-bottom: 3px;*/
 }
 
 .create_container {

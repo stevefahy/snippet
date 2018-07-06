@@ -64,7 +64,40 @@
     <!-- Moment -->
     <script src="/js/moment.min.js"></script>
     <script>
-    moment().format();
+    //moment().format();
+    moment().format("ddd, hA");
+    moment.updateLocale('en', {
+        relativeTime: {
+            future: "in %s",
+            past: "%s ago",
+            s: 'seconds',
+            ss: '%d seconds',
+            m: "a minute",
+            mm: "%d minutes",
+            /*mm: function (number, withoutSuffix, key, isFuture){
+                console.log(key);
+                return '00:' + (number<10 ? '0':'') + number + ' minutes';
+            },*/
+            h: "an hour",
+            hh: "%d hours",
+            d: "a day",
+            dd: "%d days",
+            M: "a month",
+            MM: "%d months",
+            y: "a year",
+            yy: "%d years"
+        },
+        calendar: {
+            lastDay: '[Yesterday at] HH:mm',
+            sameDay: '[Today at] HH:mm',
+            nextDay: '[Tomorrow at] HH:mm',
+            //lastWeek: '[last] dddd [at] HH:mm',
+            lastWeek: 'DD/MM/YY [at] HH:mm',
+            nextWeek: 'dddd [at] HH:mm',
+            sameElse: 'L'
+            //sameElse: '[last] DD/MM/YY [at] HH:mm'
+        }
+    });
     </script>
     <script src="/js/angular_moment.js"></script>
     <!-- exifjs For reading exif data from images -->
