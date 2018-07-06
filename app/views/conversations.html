@@ -15,9 +15,10 @@
                                     <time moment-time="conversation.updatedAt" id="time" class="time" ng-class="{'time_new': conversation.new_messages > 0}"></time>
                                 </div>
                             </div>
-                            <div class="convs_d" id="convs_msg" ng-bind-html="conversation.latest_card"></div>
-                            <div class="convs_c">
-                                <div class=" badge" id="conversations_badge" ng-show="conversation.new_messages > 0">{{conversation.new_messages}}</div>
+                            <div class="convs_d" id="convs_msg" >{{conversation.latest_card}}
+                                <div class="time_wrapper_badge">
+                                    <div class=" badge" id="conversations_badge" ng-show="conversation.new_messages > 0">{{conversation.new_messages}}</div>
+                                </div>
                             </div>
                         </div>
                         <!--
@@ -27,7 +28,7 @@
                             </div>
                            <div class="convs_c badge" id="conversations_badge" ng-show="conversation.new_messages > 0">{{conversation.new_messages}}</div>
                         </div>
-                        --?
+                        -->
                     </div>
                 </li>
             </div>
