@@ -2047,7 +2047,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     var conversations;
     var conversationsLatestCard = [];
     var conversationsUsers = [];
-    var sent_content_length = 20;
+    var sent_content_length = 28;
     // Final conversations model for display.
     var conversations_model = [];
     // Final cards model for display.

@@ -1020,13 +1020,24 @@ li.list-group-item.d-flex.justify-content-between.align-items-center.ng-binding 
     border-width: 1px;
 }
 
+.time{
+    color: #9E9E9E;
+}
+
+.time_new{
+    color: olivedrab;
+}
+
 #time {
     font-size: 11px;
-    color: #9E9E9E;
     font-weight: 600;
 
     width: 100%;
     text-align: right;
+}
+
+.time_wrapper {
+    float: right;
 }
 
 #conv_div {
@@ -1157,14 +1168,18 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     overflow-y: hidden;
     overflow-x: hidden;
     line-height: normal;
+    margin-top: 3px;
 }
 
 .convs_col_b {
     margin-right: auto;
     text-align: right;
-    /*align-self: center;*/
+    /*align-self: center;
     margin-bottom: auto;
-    margin-top: auto;
+    margin-top: auto;*/
+
+    line-height: normal;
+    margin-top: 3px;
 }
 
 .convs_col_c {
@@ -1205,6 +1220,11 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     grid-row: 1;
     margin-left: auto;
     */
+    position: relative;
+    top: -22px;
+    /* margin-left: auto; */
+    /* margin-right: auto; */
+    text-align: right;
 }
 
 .convs_d {

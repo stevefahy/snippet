@@ -10,16 +10,24 @@
                             <img ng-if="conversation.avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="convs_avatar" />
                         </div>
                         <div class="convs_col_a">
-                            <div class="convs_b" id="convs_name">{{conversation.name}}</div>
-                            <div class="convs_d" id="convs_msg" ng-bind-html="conversation.latest_card"></div>
-                        </div>
-                        <div class="convs_col_b">
-                            <div class="convs_c badge" id="conversations_badge" ng-show="conversation.new_messages > 0">{{conversation.new_messages}}</div>
-                            <div class="convs_e">
-                                <time moment-time="conversation.updatedAt" id="time"></time>
+                            <div class="convs_b" id="convs_name">{{conversation.name}}
+                                <div class="time_wrapper">
+                                    <time moment-time="conversation.updatedAt" id="time" class="time" ng-class="{'time_new': conversation.new_messages > 0}"></time>
+                                </div>
                             </div>
-
+                            <div class="convs_d" id="convs_msg" ng-bind-html="conversation.latest_card"></div>
+                            <div class="convs_c">
+                                <div class=" badge" id="conversations_badge" ng-show="conversation.new_messages > 0">{{conversation.new_messages}}</div>
+                            </div>
                         </div>
+                        <!--
+                        <div class="convs_col_b">
+                            <div class="convs_e">
+                                <time moment-time="conversation.updatedAt" id="time" class="time" ng-class="{'time_new': conversation.new_messages > 0}"></time>
+                            </div>
+                           <div class="convs_c badge" id="conversations_badge" ng-show="conversation.new_messages > 0">{{conversation.new_messages}}</div>
+                        </div>
+                        --?
                     </div>
                 </li>
             </div>
