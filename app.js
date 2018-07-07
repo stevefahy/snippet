@@ -81,6 +81,8 @@ io.on('connection', function(socket) {
             // on namespace disconnect
             socket.on('disconnect', function(sockets) {
                 console.log('SERVER NS DISCONNECT: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+            
+                socket.removeAllListeners('connection');
             });
             // close socket connection and delete nsmespace from io.nsps array
             socket.on('delete', function(sockets) {
