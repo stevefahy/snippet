@@ -180,6 +180,8 @@ cardApp.factory('socket', function($rootScope, $window) {
         // called by core.js - UserData once when the app loads 
         connect: function(id) {
             console.log('connect: ' + socket.id + ' : ' + id);
+            this.getSocket().removeAllListeners();
+            console.log(this.getSocket());
             // Connected, request unique namespace to be created
             socket.emit('create_ns', id);
             // create the unique namespace on the client
@@ -200,6 +202,8 @@ cardApp.factory('socket', function($rootScope, $window) {
             // namespace disconnected by server
             socket.on('disconnect', function(reason) {
                 console.log('CLIENT NS disconnected by server: ' + reason);
+                //socket.removeAllListeners('connect');
+                this.getSocket().removeAllListeners();
             });
             socket.on('connect_error', function(error) {
                 console.log('connect_error: ' + error);
@@ -243,8 +247,8 @@ cardApp.factory('socket', function($rootScope, $window) {
         setId: function(value) {
             property = value;
         },
-        getSocketId: function() {
-            return sessionid;
+        getSocket: function() {
+            return socket;
         },
         isConnected: function() {
             return socket.connected;
