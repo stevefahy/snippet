@@ -36,16 +36,45 @@ io.sockets.setMaxListeners(0);
 // 04/07/18
 io.set('transports', ['websocket']);
 
+var nspn;
+
+cardPosted = function(data) {
+    console.log('card_posted, conv id: ' + data.conversation_id + ' , participants: ' + data.participants);
+    console.log('namespace: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    // notify relevant namespace(s) of the cards creation
+    for (var i in data.participants) {
+        // dont emit to the user which sent the card
+        if (data.participants[i]._id === nspn.substring(1, nspn.length)) {
+            //
+        } else {
+            for (var y in Object.keys(io.nsps)) {
+                // if the namespace exists on the server
+                console.log(Object.keys(io.nsps)[y]);
+                if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.participants[i]._id) {
+                    // emit to the participant
+                    var nsp_new = io.of('/' + data.participants[i]._id);
+                    console.log('emit notify_users: ' + data.participants[i]._id);
+                    nsp_new.emit('notify_users', { conversation_id: data.conversation_id, participants: data.participants });
+                }
+            }
+        }
+    }
+};
+
+
 io.on('connection', function(socket) {
     console.log('SERVER CONNECTION: ' + socket.id + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     // namespace sent by client
     var ns;
+
+
+
     socket.on('create_ns', function(ns) {
         console.log('create ns: ' + ns);
         // create unique namespace requested by client
         socket = io.of('/' + ns);
         // namespace name
-        var nspn;
+        //var nspn;
         // namespace connection made
         socket.on('connection', function(socket) {
             console.log('connection');
@@ -54,6 +83,9 @@ io.on('connection', function(socket) {
             nspn = ns;
             // confirm that namespace has been created to client
             socket.emit('joined_ns', socket.id);
+
+            socket.on('card_posted', cardPosted);
+            /*
             // emited by cardcreate_ctrl when card has been created
             socket.on('card_posted', function(data) {
                 console.log('card_posted, conv id: ' + data.conversation_id + ' , participants: ' + data.participants);
@@ -77,12 +109,14 @@ io.on('connection', function(socket) {
                     }
                 }
             });
+            */
 
             // on namespace disconnect
             socket.on('disconnect', function(sockets) {
                 console.log('SERVER NS DISCONNECT: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
-            
-                socket.removeAllListeners('connection');
+
+                //socket.removeAllListeners('connection');
+                socket.removeListener('card_posted', cardPosted);
             });
             // close socket connection and delete nsmespace from io.nsps array
             socket.on('delete', function(sockets) {
