@@ -177,11 +177,16 @@ cardApp.factory('socket', function($rootScope, $window) {
 
     socket = io({ transports: ['websocket'] });
 
+    notifyUsers = function(msg) {
+        console.log('notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
+        $rootScope.$broadcast('NOTIFICATION', msg);
+    };
+
     return {
         // called by core.js - UserData once when the app loads 
         connect: function(id) {
             console.log('connect: ' + socket.id + ' : ' + id);
-            this.getSocket().removeAllListeners();
+            //this.getSocket().removeAllListeners();
             console.log(this.getSocket());
             // Connected, request unique namespace to be created
             socket.emit('create_ns', id);
@@ -197,17 +202,22 @@ cardApp.factory('socket', function($rootScope, $window) {
             socket.on('joined_ns', function(id) {
                 console.log('CLIENT joined_ns: ' + socket.id);
             });
+            /*
             // server notifying users by namespace of update
             socket.on('notify_users', function(msg) {
                 console.log('notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
                 $rootScope.$broadcast('NOTIFICATION', msg);
             });
+            */
+            // server notifying users by namespace of update
+            socket.on('notify_users', notifyUsers);
             // namespace disconnected by server
             socket.on('disconnect', function(reason) {
                 console.log('CLIENT NS disconnected by server: ' + reason);
                 //socket.removeAllListeners('connect');
                 console.log(socket);
-                socket.removeAllListeners();
+                //socket.removeAllListeners();
+                socket.removeListener('notify_users', notifyUsers);
             });
             socket.on('connect_error', function(error) {
                 console.log('connect_error: ' + error);
