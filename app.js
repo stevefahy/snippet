@@ -116,7 +116,7 @@ io.on('connection', function(socket) {
                 console.log('SERVER NS DISCONNECT: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
 
                 //socket.removeAllListeners('connection');
-                socket.removeListener('card_posted', cardPosted);
+                //socket.removeListener('card_posted', cardPosted);
             });
             // close socket connection and delete nsmespace from io.nsps array
             socket.on('delete', function(sockets) {
