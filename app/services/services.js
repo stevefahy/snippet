@@ -173,6 +173,7 @@ cardApp.factory('Conversations', ['$http', function($http) {
 cardApp.factory('socket', function($rootScope, $window) {
 
     var socket;
+    var self = this;
 
     socket = io({ transports: ['websocket'] });
 
@@ -188,6 +189,8 @@ cardApp.factory('socket', function($rootScope, $window) {
             socket = io('/' + id);
             // namespace connect
             socket.on('connect', function() {
+                //socket.removeAllListeners();
+                console.log(socket);
                 console.log('CLIENT NS connect: ' + socket.id);
             });
             // server confirming that the namespace has been created
@@ -203,7 +206,8 @@ cardApp.factory('socket', function($rootScope, $window) {
             socket.on('disconnect', function(reason) {
                 console.log('CLIENT NS disconnected by server: ' + reason);
                 //socket.removeAllListeners('connect');
-                this.getSocket().removeAllListeners();
+                console.log(socket);
+                socket.removeAllListeners();
             });
             socket.on('connect_error', function(error) {
                 console.log('connect_error: ' + error);
