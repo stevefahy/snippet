@@ -217,7 +217,7 @@ cardApp.factory('socket', function($rootScope, $window) {
                 //socket.removeAllListeners('connect');
                 console.log(socket);
                 //socket.removeAllListeners();
-                //socket.removeListener('notify_users', notifyUsers);
+                socket.removeListener('notify_users', notifyUsers);
 
             });
             socket.on('connect_error', function(error) {
