@@ -173,7 +173,6 @@ cardApp.factory('Conversations', ['$http', function($http) {
 cardApp.factory('socket', function($rootScope, $window) {
 
     var socket;
-    var self = this;
 
     socket = io({ transports: ['websocket'] });
 
@@ -186,39 +185,24 @@ cardApp.factory('socket', function($rootScope, $window) {
         // called by core.js - UserData once when the app loads 
         connect: function(id) {
             console.log('connect: ' + socket.id + ' : ' + id);
-            //this.getSocket().removeAllListeners();
-            console.log(this.getSocket());
             // Connected, request unique namespace to be created
             socket.emit('create_ns', id);
             // create the unique namespace on the client
             socket = io('/' + id);
             // namespace connect
             socket.on('connect', function() {
-                //socket.removeAllListeners();
-                console.log(socket);
                 console.log('CLIENT NS connect: ' + socket.id);
             });
             // server confirming that the namespace has been created
             socket.on('joined_ns', function(id) {
                 console.log('CLIENT joined_ns: ' + socket.id);
             });
-            /*
-            // server notifying users by namespace of update
-            socket.on('notify_users', function(msg) {
-                console.log('notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
-                $rootScope.$broadcast('NOTIFICATION', msg);
-            });
-            */
             // server notifying users by namespace of update
             socket.on('notify_users', notifyUsers);
+            console.log('add notifyUsers listeners');
             // namespace disconnected by server
             socket.on('disconnect', function(reason) {
                 console.log('CLIENT NS disconnected by server: ' + reason);
-                //socket.removeAllListeners('connect');
-                console.log(socket);
-                //socket.removeAllListeners();
-                socket.removeListener('notify_users', notifyUsers);
-
             });
             socket.on('connect_error', function(error) {
                 console.log('connect_error: ' + error);

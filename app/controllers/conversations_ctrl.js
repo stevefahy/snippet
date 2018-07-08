@@ -17,7 +17,6 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
 
     // Broadcast by socket service when a  card has been created, updated or deleted by another user to this user
     $scope.$on('NOTIFICATION', function(event, msg) {
-        console.log('convs notif');
         var id = Conversations.getConversationId();
         // Update the conversations.
         $scope.conversations = UserData.getConversationModel();
@@ -45,7 +44,6 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
         // Find the username then redirect to the conversation.
         UserData.getConversationsUser(admin[0])
             .then(function(result) {
-                //$rootScope.nav = { from: 'convs', to: 'conv' };
                 $location.path("/" + result.google.name);
             });
     };
