@@ -2054,19 +2054,32 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     $window.androidToken = this.androidToken;
     $window.mobileNotification = this.mobileNotification;
     $window.networkChange = this.networkChange;
+    $window.onResume = this.onResume;
+    $window.onRestart = this.onRestart;
 
     var update_inprogress = false;
 
     // Android called functions.
 
+    onResume = function() {
+        console.log('onResume');
+        console.log($rootScope.loaded);
+        console.log($rootScope.dataLoading);
+    };
+
+    onRestart = function() {
+        console.log('onRestart');
+        console.log($rootScope.loaded);
+        console.log($rootScope.dataLoading);
+    };
+
     networkChange = function(status) {
         if (status == "connected") {
             $timeout(function() {
-                //UserData.checkDataUpdate();
-                console.log('connected');
+                //console.log('connected');
             });
         } else if (status == "disconnected") {
-            console.log('disconnected');
+            //console.log('disconnected');
         }
     };
 
@@ -2141,6 +2154,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     // Check for updates
 
     UserData.checkDataUpdate = function() {
+        console.log('checkDataUpdate');
         if (!update_inprogress) {
             update_inprogress = true;
             var toUpdate = [];
@@ -3134,6 +3148,9 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     //
 
     UserData.loadUserData = function() {
+        console.log('loadUserData');
+        console.log($rootScope.dataLoading);
+        console.log($rootScope.loaded);
         var self = this;
         isLoading = true;
         var deferred = $q.defer();
@@ -3196,7 +3213,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     UserData.checkUser = function() {
         var deferred = $q.defer();
         if (isLoading) {
-            //console.log('already loading...wait');
+            console.log('already loading...wait');
             $rootScope.$watch('loaded', function(n) {
                 if (n) {
                     // loaded!
@@ -3204,7 +3221,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                 }
             });
         } else {
-            //console.log('not loading...get');
+            console.log('not loading...get');
             // Check whether the user data has already been retrieved.
             if (UserData.getUser() != undefined) {
                 //console.log('CALL VAR /api/user_data');
