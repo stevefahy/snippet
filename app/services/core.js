@@ -2054,13 +2054,21 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     $window.androidToken = this.androidToken;
     $window.mobileNotification = this.mobileNotification;
     $window.networkChange = this.networkChange;
+
     $window.onResume = this.onResume;
     $window.onRestart = this.onRestart;
+    $window.restoreState = this.restoreState;
 
     var update_inprogress = false;
 
     // Android called functions.
 
+    restoreState = function() {
+        console.log('restoreState');
+        console.log($rootScope.loaded);
+        console.log($rootScope.dataLoading);
+    };
+    
     onResume = function() {
         console.log('onResume');
         console.log($rootScope.loaded);
