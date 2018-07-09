@@ -2068,7 +2068,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
         console.log($rootScope.loaded);
         console.log($rootScope.dataLoading);
     };
-    
+
     onResume = function() {
         console.log('onResume');
         console.log($rootScope.loaded);
@@ -3211,7 +3211,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
             $rootScope.loaded = true;
             $rootScope.dataLoading = false;
             isLoading = false;
-            //console.log('FIN loadUserData');
+            console.log('FIN loadUserData');
             deferred.resolve();
         });
         return deferred.promise;

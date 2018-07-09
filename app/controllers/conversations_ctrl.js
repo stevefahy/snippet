@@ -50,6 +50,7 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
 
     // Check logged in.
     if (principal.isValid()) {
+        console.log('conversations loaded again');
         // Check whether the users data has loaded.
         UserData.checkUser().then(function(result) {
             if (result != undefined) {
