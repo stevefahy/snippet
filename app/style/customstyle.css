@@ -1031,19 +1031,15 @@ li.list-group-item.d-flex.justify-content-between.align-items-center.ng-binding 
 #time {
     font-size: 11px;
     font-weight: 600;
-
-    width: 100%;
-    text-align: right;
 }
 
 .time_wrapper {
-    float: right;
 }
 
 .time_wrapper_badge {
     float: right;
     position: relative;
-    top: -2px;
+    /*top: -2px;*/
 }
 
 #conv_div {
@@ -1072,8 +1068,6 @@ li.list-group-item.d-flex.justify-content-between.align-items-center.ng-binding 
 
 #convs_name {
     font-weight: 600;
-    /*margin-bottom: 2px;
-    margin-top: 2px;*/
 }
 
 #invite_name {
@@ -1109,7 +1103,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 .convs_container {
     width: 100%;
     display: flex;
-    grid-gap: 0px;
+    /*grid-gap: 0px;
     grid-template-columns: max-content auto max-content;
     grid-auto-columns: min-content;
     grid-auto-columns: max-content;
@@ -1117,7 +1111,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     grid-auto-columns: fit-content(100%);
     grid-auto-rows: min-content;
     grid-auto-rows: max-content;
-    grid-auto-rows: auto;
+    grid-auto-rows: auto;*/
     height: 50px;
 }
 
@@ -1200,8 +1194,8 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 }
 
 .convs_a {
-    grid-column: 1;
-    grid-row-end: span 2;
+    /*grid-column: 1;
+    grid-row-end: span 2;*/
     margin-top: -4px;
 }
 
@@ -2755,4 +2749,52 @@ span#scroll_image_latest {
     100% {
         transform: translateX(0);
     }
+}
+
+.convs_data {
+    width: 100%;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.convs_data_top {
+    position: relative;
+    line-height: normal;
+    overflow: hidden;
+}
+
+.convs_data_bottom {
+    position: relative;
+    /*float: left;
+    width: 100%;*/
+    margin-top: 3px;
+    min-height: 20px;
+    line-height: normal;
+}
+
+.convs_data_tl {
+    float: left;
+    position: absolute;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.convs_data_tr {
+    position: relative;
+    float: right;
+    background-color: white;
+    white-space: nowrap;
+}
+
+.convs_data_bl {
+    position: absolute;
+    /*text-overflow: clip;
+    float: left;*/
+    white-space: nowrap;
+    max-width: 80%;
+    overflow: hidden;
+}
+
+.convs_data_br {
+    /*float: right;*/
 }
