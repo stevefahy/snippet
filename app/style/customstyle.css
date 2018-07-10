@@ -2798,3 +2798,8 @@ span#scroll_image_latest {
 .convs_data_br {
     /*float: right;*/
 }
+
+.convs_data h1, .convs_data h2, .convs_data h3, .convs_data h4, .convs_data h5, .convs_data h6 {
+    display: inline;
+    margin-right: 7px;
+}
