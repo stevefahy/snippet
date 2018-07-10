@@ -2785,38 +2785,42 @@ span#scroll_image_latest {
     /*float: left;
     width: 100%;*/
     margin-top: 3px;
-     min-height: 18px; 
+    min-height: 18px;
     /* line-height: normal; */
     /* bottom: 0px; */
     /* overflow: hidden; */
     /* height: auto; */
-    /* width: auto; */
+    width: 100%;
     /* overflow: hidden; */
+    /* overflow-x: hidden; */
+    /* overflow-y: hidden; */
 }
 
 .convs_data_tl {
     float: left;
-    /* position: absolute; */
+    position: absolute;
     white-space: nowrap;
     overflow: hidden;
 }
 
 .convs_data_tr {
+    /* top: -20px; */
     position: relative;
     float: right;
     background-color: white;
     white-space: nowrap;
+    /* z-index: 1000; */
 }
 
 .convs_data_bl {
-    position: relative;
+    position: absolute;
     /*text-overflow: clip;
     float: left;*/
     white-space: nowrap;
     /* max-width: 80%; */
     overflow: hidden;
     /* display: unset; */
-    /* width: 30%; */
+    width: 100%;
 }
 
 .convs_data_br {
@@ -2825,6 +2829,7 @@ span#scroll_image_latest {
     top: 0px;
     /* float: right; */
     right: 0px;
+    /* height: 20px; */
     /* overflow: visible; */
 }
 
