@@ -1085,7 +1085,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center.ng-binding 
 li.list-group-item.d-flex.justify-content-between.align-items-center {
     border-color: #e6e6e6;
     border-width: 1px;
-    border-width:;
+    border-width: ;
     margin-bottom: -1px;
     overflow: hidden;
 }
@@ -1101,7 +1101,6 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 }
 
 .convs_container {
-    /* position: relative; */
     width: 100%;
     display: flex;
     /*grid-gap: 0px;
@@ -1114,9 +1113,6 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     grid-auto-rows: max-content;
     grid-auto-rows: auto;*/
     height: 50px;
-    /* margin-top: auto; */
-    /* margin-bottom: auto; */
-    /* vertical-align: middle; */
 }
 
 .convs_container .convs_a {
@@ -2756,28 +2752,15 @@ span#scroll_image_latest {
 }
 
 .convs_data {
-    position: relative;
-    /* display: table-column; */
-    /* height: 100%; */
     width: 100%;
     margin-top: auto;
     margin-bottom: auto;
-    /* justify-content: center; */
-    line-height: normal;
-    /* margin-top: 8px; */
-    /* top: 10%; */
-    /* bottom: 50%; */
-    /* margin: 0; */
 }
 
 .convs_data_top {
     position: relative;
-    /* line-height: normal; */
+    line-height: normal;
     overflow: hidden;
-    /* margin-bottom: auto; */
-    /* margin-top: auto; */
-    /* right: 0px; */
-    /* width: 100%; */
 }
 
 .convs_data_bottom {
@@ -2785,18 +2768,14 @@ span#scroll_image_latest {
     /*float: left;
     width: 100%;*/
     margin-top: 3px;
-     min-height: 18px; 
-    /* line-height: normal; */
-    /* bottom: 0px; */
-    /* overflow: hidden; */
-    /* height: auto; */
-    /* width: auto; */
-    /* overflow: hidden; */
+    min-height: 20px;
+    line-height: normal;
+    overflow: hidden;
 }
 
 .convs_data_tl {
     float: left;
-    /* position: absolute; */
+    position: absolute;
     white-space: nowrap;
     overflow: hidden;
 }
@@ -2809,37 +2788,19 @@ span#scroll_image_latest {
 }
 
 .convs_data_bl {
-    position: relative;
+    position: absolute;
     /*text-overflow: clip;
     float: left;*/
     white-space: nowrap;
-    /* max-width: 80%; */
+    /*max-width: 80%;*/
     overflow: hidden;
-    /* display: unset; */
-    /* width: 30%; */
 }
 
 .convs_data_br {
-    /* height: 57px; */
-    position: absolute;
-    top: 0px;
-    /* float: right; */
-    right: 0px;
-    /* overflow: visible; */
+    /*float: right;*/
 }
 
 .convs_data h1, .convs_data h2, .convs_data h3, .convs_data h4, .convs_data h5, .convs_data h6 {
-    /* display: inline-block; */
-    /* overflow: unset; */
-    /* margin-right: 7px; */
-    /* font-weight: normal; */
-    /* display: block; */
-    /* font-size: 0.9em; */
-    /* margin-top: -20px; */
-    /* margin-bottom: -20px; */
-    /* margin-left: 111px; */
-    /* margin-right: 0; */
-    /* font-weight: bold; */
-    /* margin: 0; */
-    /* padding: 0; */
+    display: inline;
+    margin-right: 7px;
 }
