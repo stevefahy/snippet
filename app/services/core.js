@@ -148,32 +148,23 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     }, {
         charstring: 'z1',
         html: 'h1',
-        attribute: '',
+        attribute: 'class="header_1"',
+        span_start: '<span id="header" >',
+        span_end: '</span>',
         close: true
     }, {
         charstring: 'z2',
         html: 'h2',
-        attribute: '',
+        attribute: 'class="header_2"',
+        span_start: '<span id="header" >',
+        span_end: '</span>',
         close: true
     }, {
         charstring: 'z3',
-        html: 'h3',
-        attribute: '',
-        close: true
-    }, {
-        charstring: 'z4',
-        html: 'h4',
-        attribute: '',
-        close: true
-    }, {
-        charstring: 'z5',
-        html: 'h5',
-        attribute: '',
-        close: true
-    }, {
-        charstring: 'z6',
-        html: 'h6',
-        attribute: '',
+        html: 'h2',
+        attribute: 'class="header_3"',
+        span_start: '<span id="header" >',
+        span_end: '</span>',
         close: true
     }, {
         charstring: 'zr',
@@ -679,6 +670,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     }
 
     function moveCaretInto(id) {
+        console.log(id);
         // Causing bug in cecreate_card when enter is pressed following data is deleted.
         //self.removeDeleteIds();
         $("#" + id).html('&#x200b');
@@ -838,6 +830,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                         if (close_tag) {
                             updateChars += "</" + marky_array[ma].html + ">";
                         }
+                        replaceTags.removeSpaces(elem);
                         // Use timeout to fix bug on Galaxy S6 (Chrome, FF, Canary)
                         $timeout(function() {
                                 self.selectText(elem, currentChars);
@@ -1246,6 +1239,36 @@ cardApp.service('replaceTags', function() {
             str = str.html();
             return str;
         }
+    };
+
+    this.removeSpaces = function(elem) {
+        console.log(elem);
+        //var orig = $('#cecard_create').innerHTML;
+        var orig = document.getElementById(elem).innerHTML;
+        console.log(orig);
+        console.log(orig.indexOf('&#8203'));
+        console.log(orig.indexOf('&#x200b'));
+        console.log(orig.indexOf('/\u200B'));
+        var spaces_removed = orig.replace(/\u200B/g,'');
+        document.getElementById(elem).innerHTML = spaces_removed;
+        //&#8203;
+        //$window.document.getElementById("cecard_create").innerHTML;
+        //someVariable = someVariable.replace('-', '');
+
+        /*
+        str = $("<div>" + str + "</div>");
+        $('span#focus', str).each(function(e) {
+            $(this).replaceWith($(this).html());
+        });
+        // check if any remain
+        if ($(str).find('span#focus').length > 0) {
+            str = str.html();
+            return self.removeFocusIds(str);
+        } else {
+            str = str.html();
+            return str;
+        }
+        */
     };
 
     this.removeFocusIds = function(str) {
