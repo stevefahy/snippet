@@ -2951,7 +2951,7 @@ header1:after {
 .convs_data_bl .header_3 {
     display: inline;
     font-size: unset;
-    font-weight: 400;
+    /*font-weight: 400;*/
 }
 
 
@@ -2987,6 +2987,7 @@ span#header b.header_3 {
 }
 */
 
+/*
 .convs_data_bl b.header_1:before, .convs_data_bl b.header_2:before, .convs_data_bl b.header_3:before {
     content: "\a";
 }
@@ -2995,7 +2996,7 @@ span#header b.header_3 {
 .convs_data_bl b.header_1:after, .convs_data_bl b.header_2:after, .convs_data_bl b.header_3:after  {
     content: "~\a";
 }
-
+*/
 
 .convs_data_bl .header_1:before, .convs_data_bl .header_2:before, .convs_data_bl .header_3:before {
     content: "\a";
@@ -3003,7 +3004,7 @@ span#header b.header_3 {
 
 
 .convs_data_bl .header_1:after, .convs_data_bl .header_2:after, .convs_data_bl .header_3:after  {
-    content: "~\a";
+    content: " ~\a";
 }
 
 /*
