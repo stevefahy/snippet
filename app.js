@@ -180,6 +180,7 @@ app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse applica
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
+
 // configuration ===============================================================
 //mongoose.set('debug', true);
 mongoose.connect(dburl); // Connect to local MongoDB instance. A remoteUrl is also available (modulus.io)

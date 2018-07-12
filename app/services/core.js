@@ -77,6 +77,7 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
         requireBase: false,
         rewriteLinks: false
     });
+
 });
 
 //
@@ -91,7 +92,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     var tag_count_previous;
     var paste_in_progress = false;
     var marky_started_array = [];
-    var initial_key = 'z';
+    var INITIAL_KEY = 'z';
     var secondkey_array = [];
     var within_pre = false;
     var start_key = false;
@@ -114,6 +115,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     if (location.hostname === 'localhost') {
         // TODO should this not have /upload then route_folder for both would just be / in upload_app route.js
         serverUrl = 'http://localhost:8060/upload';
+        //serverUrl = 'http://localhost:8060/';
     } else {
         serverUrl = 'https://www.snipbee.com/upload';
     }
@@ -124,60 +126,60 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     // Array to dynamically set marky chars to html tags
     var marky_array = [{
-        charstring: 'zb',
+        charstring: INITIAL_KEY+'b',
         html: 'b',
         attribute: '',
         close: true
     }, {
-        charstring: 'zi',
+        charstring: INITIAL_KEY+'i',
         html: 'i',
         attribute: '',
         close: true
     }, {
-        charstring: 'zp',
+        charstring: INITIAL_KEY+'p',
         html: 'pre',
         attribute: '',
         close: true
     }, {
-        charstring: 'zc',
+        charstring: INITIAL_KEY+'c',
         html: 'input',
         attribute: 'type="checkbox" onclick="checkBoxChanged(this)" onmouseover="checkBoxMouseover(this)" onmouseout="checkBoxMouseout(this)" ',
         span_start: '<span id="checkbox_edit" >',
         span_end: '</span>',
         close: false
     }, {
-        charstring: 'z1',
+        charstring: INITIAL_KEY+'1',
         html: 'h1',
         attribute: 'class="header_1"',
         span_start: '<span id="header" >',
         span_end: '</span>',
         close: true
     }, {
-        charstring: 'z2',
+        charstring: INITIAL_KEY+'2',
         html: 'h2',
         attribute: 'class="header_2"',
         span_start: '<span id="header" >',
         span_end: '</span>',
         close: true
     }, {
-        charstring: 'z3',
+        charstring: INITIAL_KEY+'3',
         html: 'h2',
         attribute: 'class="header_3"',
         span_start: '<span id="header" >',
         span_end: '</span>',
         close: true
     }, {
-        charstring: 'zr',
+        charstring: INITIAL_KEY+'r',
         html: 'hr',
         attribute: '',
         close: false
     }, {
-        charstring: 'zq',
+        charstring: INITIAL_KEY+'q',
         html: 'q',
         attribute: '',
         close: true
     }, {
-        charstring: 'zm',
+        charstring: INITIAL_KEY+'m',
         html: '',
         attribute: '',
         script: 'getImage',
@@ -502,7 +504,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     findMarky = function(content) {
         var marky_found = false;
         for (var i = 0; i < secondkey_array.length; i++) {
-            if (content.indexOf(initial_key + secondkey_array[i]) >= 0) {
+            if (content.indexOf(INITIAL_KEY + secondkey_array[i]) >= 0) {
                 marky_found = true;
             }
         }
@@ -670,7 +672,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     }
 
     function moveCaretInto(id) {
-        console.log(id);
         // Causing bug in cecreate_card when enter is pressed following data is deleted.
         //self.removeDeleteIds();
         $("#" + id).html('&#x200b');
@@ -753,6 +754,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         node_content = node_content_before + node_content_after;
         $(node).html(node_content);
         $(node.attr('id', 'marky'));
+        //
+        $(node.removeClass('in_progress'));
         return marky_started_array;
     }
 
@@ -825,7 +828,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                         if (marky_array[ma].span_start != undefined) {
                             updateChars = currentChars.replace(char_watch, marky_array[ma].span_start + "<" + marky_array[ma].html + " " + marky_array[ma].attribute + " class='scroll_latest' id='marky'>" + marky_array[ma].span_end);
                         } else {
-                            updateChars = currentChars.replace(char_watch, "<" + marky_array[ma].html + " " + marky_array[ma].attribute + " class='scroll_latest' id='marky'>");
+                            updateChars = currentChars.replace(char_watch, "<" + marky_array[ma].html + " " + marky_array[ma].attribute + " class='scroll_latest in_progress' id='marky'>");
                         }
                         if (close_tag) {
                             updateChars += "</" + marky_array[ma].html + ">";
@@ -1101,6 +1104,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         }
     };
 
+
     this.keyListen = function(elem) {
         var getKeyCode = function() {
             var editableEl = document.getElementById(elem);
@@ -1108,9 +1112,71 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             var a = getCharacterPrecedingCaret(editableEl);
             return a;
         };
+
+        var getSelectionStart = function() {
+            var node = document.getSelection().anchorNode;
+            //console.log(node.parentNode);
+            return node;
+        };
+
+        var observeDOM = (function() {
+            var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+            return function(obj, callback) {
+                if (!obj || !obj.nodeType === 1) return; // validation
+                if (MutationObserver) {
+                    // define a new observer
+                    var obs = new MutationObserver(function(mutations, observer) {
+                        if (mutations[0].addedNodes.length || mutations[0].removedNodes.length)
+                            callback(mutations[0]);
+                    });
+                    // have the observer observe foo for changes in children
+                    obs.observe(obj, { childList: true, subtree: true });
+                } else if (window.addEventListener) {
+                    obj.addEventListener('DOMNodeInserted', callback, false);
+                    obj.addEventListener('DOMNodeRemoved', callback, false);
+                }
+            };
+        })();
+
+        // Observe a specific DOM element:
+        observeDOM(document.querySelector("#" + elem), function(m) {
+            if (m.addedNodes.length == 0 && m.removedNodes.length > 0) {
+                if (m.removedNodes[0].className == 'in_progress') {
+                    // Removed an in prgress node.
+                    // Inject the General Service
+                    var General = $injector.get('General');
+                    // Get the position of this HTML element in the marky_array.
+                    var index = General.findWithAttr(marky_array, 'html', m.removedNodes[0].nodeName.toLowerCase());
+                    // If this tag exists in the marky_started_array thrn remove it.
+                    var del = marky_started_array.indexOf(marky_array[index].charstring);
+                    if (del >= 0) {
+                        marky_started_array.splice(del, 1);
+                    }
+                }
+            }
+        });
+        
         document.getElementById(elem).onkeyup = function(e) {
             var kc = getKeyCode();
-            if (kc == initial_key) {
+            // Listen for backspace
+            if (e.keyCode == 8) {
+                //console.log($(getSelectionStart().parentNode));
+                if ($(getSelectionStart()).attr("class") != undefined) {
+                    var prev_class = $(getSelectionStart()).attr("class");
+                    var prev_elem = $(getSelectionStart());
+                    var parent = $(getSelectionStart()).parent().attr("id");
+                    //console.log(prev_class);
+                    //console.log(prev_elem);
+                    // If this is a header then delete the header elements and remove from the marky_started_array if it exists.
+                    if (prev_class.indexOf('header') >= 0 && parent == 'header') {
+                        $(getSelectionStart()).parent().remove();
+                        var del = marky_started_array.indexOf(INITIAL_KEY + prev_class.substr(7, 1));
+                        marky_started_array.splice(del, 1);
+                    }
+                }
+            }
+
+            if (kc == INITIAL_KEY) {
                 start_key = true;
             } else if (start_key) {
                 start_key = false;
@@ -1132,7 +1198,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         } else {
             within_pre = false;
         }
-        if (marky_started_array.indexOf('zp') >= 0) {
+        if (marky_started_array.indexOf(INITIAL_KEY+'p') >= 0) {
             within_pre = true;
         }
         // Move focus to the hidden input field so that editing is stopped.
@@ -1242,14 +1308,14 @@ cardApp.service('replaceTags', function() {
     };
 
     this.removeSpaces = function(elem) {
-        console.log(elem);
+        //console.log(elem);
         //var orig = $('#cecard_create').innerHTML;
         var orig = document.getElementById(elem).innerHTML;
-        console.log(orig);
-        console.log(orig.indexOf('&#8203'));
-        console.log(orig.indexOf('&#x200b'));
-        console.log(orig.indexOf('/\u200B'));
-        var spaces_removed = orig.replace(/\u200B/g,'');
+        //console.log(orig);
+        //console.log(orig.indexOf('&#8203'));
+        //console.log(orig.indexOf('&#x200b'));
+        //console.log(orig.indexOf('/\u200B'));
+        var spaces_removed = orig.replace(/\u200B/g, '');
         document.getElementById(elem).innerHTML = spaces_removed;
         //&#8203;
         //$window.document.getElementById("cecard_create").innerHTML;
@@ -1986,7 +2052,7 @@ cardApp.directive('momentTime', ['$interval', '$filter', function($interval, $fi
     function link(scope, element, attrs) {
         var format,
             timeoutId;
-            momentFilter = $filter('momentFilter');
+        momentFilter = $filter('momentFilter');
 
         function updateTime() {
             element.text((new Date(), momentFilter(format)));
