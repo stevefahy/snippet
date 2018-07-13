@@ -1699,7 +1699,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
     var self = this;
 
     var updateinprogress = false;
-    var sent_content_length = 28;
+    var sent_content_length = 200;
 
     var card_create = {
         _id: 'card_create',
@@ -2129,7 +2129,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     var conversations;
     var conversationsLatestCard = [];
     var conversationsUsers = [];
-    var sent_content_length = 60;
+    var sent_content_length = 200;
     // Final conversations model for display.
     var conversations_model = [];
     // Final cards model for display.

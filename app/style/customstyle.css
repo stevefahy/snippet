@@ -2846,6 +2846,10 @@ span#scroll_image_latest {
     text-overflow: ellipsis;
 }
 
+.convs_data_bl_msgs {
+    width: calc(100% - 25px);
+}
+
 .convs_data_br {
     /* height: 57px; */
     position: absolute;
