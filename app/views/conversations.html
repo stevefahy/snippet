@@ -19,7 +19,7 @@
                                 </div>
                             </div>
                             <div class="convs_data_bottom">
-                                <div class="convs_data_bl" ng-class="{'convs_data_bl_msgs_1': conversation.new_messages > 0,'convs_data_bl_msgs_10': conversation.new_messages >= 10',convs_data_bl_msgs_100': conversation.new_messages >= 100,convs_data_bl_msgs_1000': conversation.new_messages >= 1000}}" id="convs_msg" ng-bind-html="conversation.latest_card"></div>
+                                <div class="convs_data_bl" ng-class="{'convs_data_bl_msgs_1': conversation.new_messages > 0,'convs_data_bl_msgs_10': conversation.new_messages >= 10, 'convs_data_bl_msgs_100': conversation.new_messages >= 100, 'convs_data_bl_msgs_1000': conversation.new_messages >= 1000}" id="convs_msg" ng-bind-html="conversation.latest_card"></div>
                                 <div class="convs_data_br">
                                     <div class="time_wrapper_badge">
                                         <div class=" badge" id="conversations_badge" ng-show="conversation.new_messages > 0">{{conversation.new_messages}}</div>
