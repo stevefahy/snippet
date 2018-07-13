@@ -2860,8 +2860,20 @@ span#scroll_image_latest {
     color: #4e4e4e;
 }
 
-.convs_data_bl_msgs {
+.convs_data_bl_msgs_1 {
     width: calc(100% - 25px);
+}
+
+.convs_data_bl_msgs_10 {
+    width: calc(100% - 30px);
+}
+
+.convs_data_bl_msgs_100 {
+    width: calc(100% - 35px);
+}
+
+.convs_data_bl_msgs_1000 {
+    width: calc(100% - 40px);
 }
 
 .convs_data_br {
