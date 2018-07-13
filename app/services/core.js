@@ -1391,7 +1391,7 @@ cardApp.service('Edit', function() {
 // FormatHTML Service
 //
 
-cardApp.service('FormatHTML', ['Format', function(Format) {
+cardApp.service('FormatHTML', ['Format', 'General', function(Format, General) {
 
     this.stripHtml = function(html) {
         var div = document.createElement("div");
@@ -2129,7 +2129,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     var conversations;
     var conversationsLatestCard = [];
     var conversationsUsers = [];
-    var sent_content_length = 28;
+    var sent_content_length = 60;
     // Final conversations model for display.
     var conversations_model = [];
     // Final cards model for display.
@@ -2234,6 +2234,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
 
     // Broadcast by Database createCard service when a new card has been created
     $rootScope.$on('CARD_CREATED', function(event, data) {
+        console.log(data);
         UserData.conversationsLatestCardAdd(data.conversationId, data)
             .then(function(res) {
                 UserData.getConversationModelById(data.conversationId)
@@ -2246,6 +2247,25 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                             });
                     });
             });
+    });
+
+    // Broadcast by Database createCard service when a new card has been created
+    $rootScope.$on('CARD_UPDATED', function(event, data) {
+        console.log(data);
+        
+        UserData.conversationsLatestCardAdd(data.conversationId, data)
+            .then(function(res) {
+                UserData.getConversationModelById(data.conversationId)
+                    .then(function(result) {
+                        var key = result;
+                        UserData.formatLatestCard(data, key)
+                            .then(function(result) {
+                                // Add this conversation to the conversations model
+                                UserData.addConversationModel(result);
+                            });
+                    });
+            });
+            
     });
 
     // Check for updates

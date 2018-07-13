@@ -2843,6 +2843,7 @@ span#scroll_image_latest {
     overflow: hidden;
     /* display: unset; */
     width: 100%;
+    text-overflow: ellipsis;
 }
 
 .convs_data_br {
