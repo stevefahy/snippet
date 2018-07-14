@@ -1129,7 +1129,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     grid-auto-rows: max-content;
     grid-auto-rows: auto;*/
     /* align-items: center; */
-    justify-content: center;
+    /*justify-content: center;*/
     height: 50px;
     margin-top: auto;
     margin-bottom: auto;
@@ -1181,6 +1181,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     height: 25px;
 }
 
+/*
 .convs_col_a {
     flex: 1;
     margin-bottom: auto;
@@ -1191,6 +1192,19 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     line-height: normal;
     margin-top: 3px;
 }
+*/
+
+.convs_col_a {
+    flex: 1;
+    margin-bottom: auto;
+    margin-top: auto;
+
+    overflow-y: hidden;
+    overflow-x: hidden;
+    line-height: normal;
+    /*/margin-top: 3px;*/
+}
+
 
 .convs_col_b {
     margin-right: auto;
@@ -1787,8 +1801,8 @@ span#scroll_image_latest {
     position: relative;
     margin-right: 10px;
     color: #000000;
-    font-size: 14px;
-    font-weight: 500;
+    /*font-size: 14px;*/
+    font-weight: 600;
 }
 
 .contacts_search_header_off {
@@ -2157,10 +2171,24 @@ span#scroll_image_latest {
     margin-top: 17px;
 }
 
-.contacts_invite_container .convs_col_a {
-    flex: none;
-    width: 130px;
-    margin-top: 17px;
+.contacts_invite_container .convs_col_a, .contacts_search_container .convs_col_a {
+    /*flex: none;*/
+    /*width: 130px;*/
+    /*margin-top: auto;
+    margin-bottom: auto;*/
+    margin-bottom: unset;
+    margin-top: 15px;
+}
+
+.content_conv_search .contacts_search_container .convs_col_a {
+    margin-bottom: auto;
+    margin-top: auto;
+}
+
+.contacts_invite_container_on .convs_col_a {
+    /*flex: none;*/
+    /*width: 130px;*/
+    /*margin-top: 15px;*/
 }
 
 .content_import_scroll .contact_div .convs_col_a {
@@ -2176,7 +2204,7 @@ span#scroll_image_latest {
 .contact_div .convs_col_b {
     position: absolute;
     width: 100%;
-    top: 78px;
+    top: 74px;
 }
 
 .contact_div .convs_col_b_on {
@@ -2200,7 +2228,7 @@ span#scroll_image_latest {
 .invite_div .convs_col_b {
     position: absolute;
     width: 100%;
-    top: 78px;
+    top: 83px;
 }
 
 .invite_div .convs_col_b_on {

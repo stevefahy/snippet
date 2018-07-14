@@ -38,6 +38,8 @@ cardApp.controller("headerCtrl", ['Profile', 'Conversations', '$scope', '$rootSc
     });
 
     $scope.changePath = function(path) {
+        // Resets contacts
+        $scope.pageAnimationStart();
         $location.path(path);
     };
 
