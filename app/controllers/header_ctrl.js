@@ -38,14 +38,18 @@ cardApp.controller("headerCtrl", ['Profile', 'Conversations', '$scope', '$rootSc
     });
 
     $scope.changePath = function(path) {
-        // Resets contacts
-        $scope.pageAnimationStart();
         $location.path(path);
     };
 
     $scope.changePathConversation = function() {
         var id = Conversations.getConversationId();
         $location.path('chat/conversation/' + id);
+    };
+
+    $scope.changePathContacts = function(path) {
+        // Resets contacts
+        $scope.pageAnimationStart();
+        $location.path(path);
     };
 
 }]);
