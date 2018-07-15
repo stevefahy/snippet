@@ -1,4 +1,4 @@
-var cardApp = angular.module("cardApp", ['ngSanitize', 'ngRoute', 'angularMoment', 'ngAnimate', 'ngImgCrop', 'ngCookies', 'angular-jwt', 'luegg.directives']);
+var cardApp = angular.module("cardApp", ['ngSanitize', 'ngRoute', 'angularMoment', 'ngAnimate', 'ngImgCrop', 'ngCookies', 'angular-jwt', 'luegg.directives', 'ngSlimScroll']);
 
 // Prefix for loading a snip id
 var prefix = '/s/';
