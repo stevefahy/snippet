@@ -114,7 +114,7 @@ angular.module('ngSlimScroll', [])
             $document.bind('mousemove', moveScroll);
             $document.bind('mouseup', endScroll);
 
-            values.offsetTop = getTop(wrapperDomElement);
+            values.offsetTop = 50;//getTop(wrapperDomElement);
 
             values.firstY = e.pageY || event.clientY;
             if (!values.reposition)

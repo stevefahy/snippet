@@ -17,6 +17,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.isMember = false;
     $scope.totalDisplayed = -6;
 
+    $scope.options = {};
+
     // Use the urls id param from the route to load the conversation.
     var id = $routeParams.id;
     // Use the urls username param from the route to load the conversation.
@@ -24,6 +26,30 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Detect device user agent 
     var ua = navigator.userAgent;
+/*
+    $(function(){
+    $('.scroll-body').slimScroll({
+        height: '100%',
+        start: 'bottom',
+        alwaysVisible: true
+    });
+});
+*/
+
+// Hook document ready event
+$('document').ready(function(){
+    // Initialise slimScroll
+    $('.scroll-body').slimScroll({
+        height: '100%',
+        start: 'top',
+        size: '4px',
+         color: '#9e9e9e',
+    });
+
+
+
+
+});
 
     // Default navigation
     viewAnimationsService.setEnterAnimation('page-conversation');
@@ -439,6 +465,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $scope.$apply(function() {
                     // Load the rest of the cards.
                     $scope.totalDisplayed = -1000;
+
+
+
                 }, 0);
             });
         }
