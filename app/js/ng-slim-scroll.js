@@ -46,6 +46,7 @@ angular.module('ngSlimScroll', [])
         //insert to dom
         element.append(scrollbarContainerElement);
         scrollbarContainerElement.append(scrollbarElement);
+        console.log('SCROLL');
 
         //functions
         var values = {},

@@ -36,20 +36,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 });
 */
 
-// Hook document ready event
-$('document').ready(function(){
-    // Initialise slimScroll
-    $('.scroll-body').slimScroll({
-        height: '100%',
-        start: 'top',
-        size: '4px',
-         color: '#9e9e9e',
-    });
-
-
-
-
-});
 
     // Default navigation
     viewAnimationsService.setEnterAnimation('page-conversation');
