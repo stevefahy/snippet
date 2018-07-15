@@ -2047,6 +2047,19 @@ cardApp.filter("momentFilter", function() {
     };
 });
 
+cardApp.filter("momentFilterConv", function() {
+    return function(value, format) {
+        var today = moment();
+        if (today.isSame(value, 'd')) {
+            //return moment(value).fromNow() + ' : ' + moment(value).format("HH:mm");
+            return moment(value).fromNow();
+        } else {
+            //return moment(value).calendar();
+            return moment(value).format("DD/MM/YY HH:mm");
+        }
+    };
+});
+
 cardApp.directive('momentTime', ['$interval', '$filter', function($interval, $filter) {
 
     function link(scope, element, attrs) {
@@ -2059,6 +2072,38 @@ cardApp.directive('momentTime', ['$interval', '$filter', function($interval, $fi
         }
 
         scope.$watch(attrs.momentTime, function(value) {
+            format = value;
+            updateTime();
+        });
+
+        element.on('$destroy', function() {
+            $interval.cancel(timeoutId);
+        });
+
+        // start the UI update process; save the timeoutId for canceling
+        timeoutId = $interval(function() {
+            updateTime(); // update DOM
+        }, 1000);
+    }
+
+    return {
+        link: link
+    };
+}]);
+
+
+cardApp.directive('momentTimeConv', ['$interval', '$filter', function($interval, $filter) {
+
+    function link(scope, element, attrs) {
+        var format,
+            timeoutId;
+        momentFilter = $filter('momentFilterConv');
+
+        function updateTime() {
+            element.text((new Date(), momentFilter(format)));
+        }
+
+        scope.$watch(attrs.momentTimeConv, function(value) {
             format = value;
             updateTime();
         });
