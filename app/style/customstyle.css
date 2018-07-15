@@ -1033,6 +1033,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center.ng-binding 
     border-style: solid;
     border-color: #e6e6e6;
     border-width: 1px;
+    width: calc(100vw);
 }
 
 .time {
