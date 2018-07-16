@@ -2885,11 +2885,12 @@ span#scroll_image_latest {
 
 .convs_data_tr {
     /* top: -20px; */
-    position: relative;
+    /*position: relative;*/
+    position: absolute;;
     float: right;
     background-color: white;
     white-space: nowrap;
-    /* right: 0px; */
+    right: 0px;
     /* z-index: 1000; */
 }
 
