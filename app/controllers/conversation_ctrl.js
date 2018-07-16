@@ -63,7 +63,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Add custom class for Android scrollbar
     if (ua.indexOf('AndroidApp') >= 0) {
-        //$('.content_cnv').addClass('content_cnv_android');
+        $('.content_cnv').addClass('content_cnv_android');
     }
 
     // Broadcast by UserData after it has processed the notification. (card has been created, updated or deleted by another user to this user).
