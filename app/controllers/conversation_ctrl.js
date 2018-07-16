@@ -26,15 +26,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Detect device user agent 
     var ua = navigator.userAgent;
-/*
-    $(function(){
-    $('.scroll-body').slimScroll({
-        height: '100%',
-        start: 'bottom',
-        alwaysVisible: true
+    /*
+        $(function(){
+        $('.scroll-body').slimScroll({
+            height: '100%',
+            start: 'bottom',
+            alwaysVisible: true
+        });
     });
-});
-*/
+    */
 
 
     // Default navigation
@@ -442,6 +442,19 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
         $rootScope.pageLoading = false;
+
+        //var myDiv = $('.content_cnv');
+        // console.log(myDiv);
+        /*
+        $timeout(function() {
+            console.log('scroll');
+            console.log($('.content_cnv').offset().top);
+            var amt = 85;
+            $('.content_cnv').scrollTop(amt);
+            console.log($('.content_cnv').offset().top);
+            
+        }, 2000);
+        */
     });
 
     // Listen for the end of the view transition.

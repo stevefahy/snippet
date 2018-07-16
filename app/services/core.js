@@ -126,60 +126,60 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     // Array to dynamically set marky chars to html tags
     var marky_array = [{
-        charstring: INITIAL_KEY+'b',
+        charstring: INITIAL_KEY + 'b',
         html: 'b',
         attribute: '',
         close: true
     }, {
-        charstring: INITIAL_KEY+'i',
+        charstring: INITIAL_KEY + 'i',
         html: 'i',
         attribute: '',
         close: true
     }, {
-        charstring: INITIAL_KEY+'p',
+        charstring: INITIAL_KEY + 'p',
         html: 'pre',
         attribute: '',
         close: true
     }, {
-        charstring: INITIAL_KEY+'c',
+        charstring: INITIAL_KEY + 'c',
         html: 'input',
         attribute: 'type="checkbox" onclick="checkBoxChanged(this)" onmouseover="checkBoxMouseover(this)" onmouseout="checkBoxMouseout(this)" ',
         span_start: '<span id="checkbox_edit" >',
         span_end: '</span>',
         close: false
     }, {
-        charstring: INITIAL_KEY+'1',
+        charstring: INITIAL_KEY + '1',
         html: 'h1',
         attribute: 'class="header_1"',
         span_start: '<span id="header" >',
         span_end: '</span>',
         close: true
     }, {
-        charstring: INITIAL_KEY+'2',
+        charstring: INITIAL_KEY + '2',
         html: 'h2',
         attribute: 'class="header_2"',
         span_start: '<span id="header" >',
         span_end: '</span>',
         close: true
     }, {
-        charstring: INITIAL_KEY+'3',
+        charstring: INITIAL_KEY + '3',
         html: 'h2',
         attribute: 'class="header_3"',
         span_start: '<span id="header" >',
         span_end: '</span>',
         close: true
     }, {
-        charstring: INITIAL_KEY+'r',
+        charstring: INITIAL_KEY + 'r',
         html: 'hr',
         attribute: '',
         close: false
     }, {
-        charstring: INITIAL_KEY+'q',
+        charstring: INITIAL_KEY + 'q',
         html: 'q',
         attribute: '',
         close: true
     }, {
-        charstring: INITIAL_KEY+'m',
+        charstring: INITIAL_KEY + 'm',
         html: '',
         attribute: '',
         script: 'getImage',
@@ -1155,7 +1155,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 }
             }
         });
-        
+
         document.getElementById(elem).onkeyup = function(e) {
             var kc = getKeyCode();
             // Listen for backspace
@@ -1198,7 +1198,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         } else {
             within_pre = false;
         }
-        if (marky_started_array.indexOf(INITIAL_KEY+'p') >= 0) {
+        if (marky_started_array.indexOf(INITIAL_KEY + 'p') >= 0) {
             within_pre = true;
         }
         // Move focus to the hidden input field so that editing is stopped.
@@ -2297,7 +2297,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     // Broadcast by Database createCard service when a new card has been created
     $rootScope.$on('CARD_UPDATED', function(event, data) {
         console.log(data);
-        
+
         UserData.conversationsLatestCardAdd(data.conversationId, data)
             .then(function(res) {
                 UserData.getConversationModelById(data.conversationId)
@@ -2310,7 +2310,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                             });
                     });
             });
-            
+
     });
 
     // Check for updates
@@ -3515,3 +3515,343 @@ cardApp.directive('viewAnimations', function(viewAnimationsService, $rootScope) 
         }
     };
 });
+
+
+
+cardApp.directive('simpleScroll', ['$window', '$document', '$timeout', function($window, $document, $timeout) {
+    'use strict';
+    //var init_attribute = "data-slim-scroll-init";
+    var defaults = {
+        minHeight: 25,
+        delay: 100,
+        wrapperClass: 'slim-scroll-wrapper',
+        scrollbarContainerClass: 'slim-scroll-scrollbar-container',
+        scrollbarClass: 'slim-scroll-scrollbar',
+        specialClass: 'animate'
+    };
+    return {
+        restrict: 'A',
+        transclude: true,
+        replace: true,
+        scope: {
+            options: '='
+        },
+        //template: '<div><div class="slim-scroll-wrapper" data-ng-transclude></div></div>',
+        template: '<div data-ng-transclude></div>',
+        link: function($scope, element) {
+
+            var options = angular.extend({}, defaults, $scope.options);
+
+            $timeout(function() {
+                console.log(element[0].offsetHeight);
+                console.log($(element.parent()).height());
+                // var height = angular.element(element).parent().height();
+                //console.log(height); //height should be accurate
+            });
+
+            //console.log(element[0].offsetHeight);
+            //console.log(element.parent().height());
+
+            angular.element($window).bind('resize', function() { $timeout(assignValues, options.delay); });
+
+            $scope.$watch(function() {
+                //return {offset:element[0].offsetHeight, parent:$(element.parent()).height()};
+                return element[0].offsetHeight;
+                //return wrapperDomElement.scrollHeight;
+            }, function(newValue, oldValue) {
+                console.log(newValue);
+                assignValues();
+            }, true);
+            var scrollbarElement = element.children()[1];
+            var wrapperParentElement = element.parent();
+            var wrapperDomElement = element;
+
+            var values = {},
+                getTop = function(el) {
+                    console.log(el);
+                    var t = document.documentElement.scrollTop;
+                    return $(el).getBoundingClientRect().top + (t ? t : document.body.scrollTop);
+                },
+                assignValues = function() {
+                    console.log('assign');
+                    console.log(element[0].offsetHeight);
+                    console.log($(element.parent()).height());
+
+
+                    //values.height = element[0].offsetHeight;
+                    values.height = $(element.parent()).height();
+                    console.log(values.height);
+                    values.scrollHeight = element[0].scrollHeight;
+                    console.log(values.scrollHeight);
+
+                    values.position = (values.height / values.scrollHeight) * 100;
+                    values.scrollbarHeight = values.scrollHeight * values.height / 100;
+                    console.log(values.position);
+                    /*
+                    values.scrollPosition = options.fixedHeight ?
+                        (options.fixedHeight / values.height * 100) :
+                        (values.scrollbarHeight < options.minHeight ?
+                            options.minHeight / values.height * 100 :
+                            values.position);
+                            */
+
+values.scrollPosition = values.scrollbarHeight / values.height;
+                    console.log(values.scrollPosition);
+
+
+                    values.remainder = 100 - values.scrollPosition;
+                    values.x = (values.scrollHeight - values.height) * ((values.scrollPosition - values.position) / (100 - values.position));
+                    values.heightRate = Math.abs((values.x / values.remainder) + (values.scrollHeight / 100));
+console.log(values.x);
+                    //console.log(element.children()[0].clientHeight);
+                    //scrollbarElement = element.children()[0];
+                    scrollbarElement.style.height = values.scrollPosition + '%';
+
+                    // 276
+                    scrollbarElement.style.top = values.scrollPosition + '%';
+
+                    values.reposition = getReposition(values.height);
+                    console.log(values.reposition);
+                    console.log(wrapperParentElement);
+                    console.log(wrapperParentElement.scrollTop);
+                    //wrapperParentElement.scrollTop = 50;
+
+
+                },
+                getReposition = function(h) {
+                    var x = parseInt(scrollbarElement.style.top.replace('%', '')) * h / 100;
+                    return x ? x : 0;
+                },
+                beginScroll = function(e) {
+                    console.log('begin');
+                    wrapperParentElement.scrollTop = 50;
+                    var sel = $window.getSelection ? $window.getSelection() : $window.document.selection;
+                    if (sel) {
+                        if (sel.removeAllRanges) sel.removeAllRanges();
+                        else if (sel.empty) sel.empty();
+                    }
+                    e = e || event;
+                    var el = e.currentTarget || e.srcElement;
+
+                    $document.bind('mousemove', moveScroll);
+                    $document.bind('mouseup', endScroll);
+
+                    values.offsetTop = getTop(wrapperDomElement);
+
+                    values.firstY = e.pageY || event.clientY;
+                    console.log(values.firstY);
+                    if (!values.reposition)
+                        values.reposition = getReposition(values.height);
+
+                    wrapperElement.addClass('unselectable');
+                },
+
+                moveScroll = function(e) {
+                    e = e || event;
+                    var eY = e.pageY || e.clientY,
+                        top = (values.reposition + eY - values.firstY) / values.height * 100;
+
+                    if (values.remainder < top) top = values.remainder;
+                    if (!values.previousTop) values.previousTop = top + 1;
+                    var blnThreshold = top >= 0 && values.firstY > values.offsetTop;
+                    if ((values.previousTop > top && blnThreshold) || (blnThreshold && (wrapperDomElement.scrollTop + values.height !== values.scrollHeight))) {
+                        scrollbarElement[0].style.top = top + '%';
+                        values.previousTop = top;
+                        wrapperDomElement.scrollTop = top * values.heightRate;
+                    }
+                    scrollbarContainerElement.removeClass(options.specialClass);
+                },
+                endScroll = function(e) {
+
+                    $document.unbind('mousemove', moveScroll);
+                    $document.unbind('mouseup', endScroll);
+
+                    values.reposition = 0;
+                    wrapperElement.removeClass('unselectable');
+                    scrollbarContainerElement.addClass(options.specialClass);
+                },
+                doScroll = function(e) {
+                    // console.log('DO SCROLL');
+                    if (!values) return;
+                    scrollbarContainerElement.removeClass(options.specialClass);
+                    scrollbarElement[0].style.top = wrapperDomElement.scrollTop / values.heightRate + '%';
+                    scrollbarContainerElement.addClass(options.specialClass);
+                };
+
+            console.log(scrollbarElement);
+            $(scrollbarElement).bind('mousedown', beginScroll);
+
+            //$timeout(function() {
+            /*
+                        element.removeAttr(init_attribute);
+
+                        var options = angular.extend({}, defaults, $scope.options);
+
+                        var wrapperDomElement = element.children()[0],
+                            wrapperElement = angular.element(wrapperDomElement);
+                        element.attr(init_attribute, '1');
+                        wrapperElement.addClass(options.wrapperClass);
+
+                        //create scrollbar container
+                        var scrollbarContainerElement = angular.element($window.document.createElement('div'));
+                        scrollbarContainerElement.addClass(options.scrollbarContainerClass);
+
+
+                        //create scrollbar
+                        var scrollbarElement = angular.element($window.document.createElement('div'));
+                        scrollbarElement.addClass(options.scrollbarClass);
+
+                        //insert to dom
+                        element.append(scrollbarContainerElement);
+                        scrollbarContainerElement.append(scrollbarElement);
+                        console.log('SCROLL');
+
+                        //functions
+                        var values = {},
+                            getTop = function(el) {
+                                var t = document.documentElement.scrollTop;
+                                return el.getBoundingClientRect().top + (t ? t : document.body.scrollTop);
+                            },
+                            getReposition = function(h) {
+                                var x = parseInt(scrollbarElement[0].style.top.replace('%', '')) * h / 100;
+                                return x ? x : 0;
+                            },
+                            assignValues = function() {
+                                console.log('assign');
+                                if (wrapperDomElement.offsetHeight < wrapperDomElement.scrollHeight) {
+                                    wrapperElement.css('right', '-18px');
+                                    wrapperElement.css('padding-right', '8px');
+
+
+                                    //wrapperElement.css('margin-bottom', '-18px');
+                                    //wrapperElement.css('margin-top', '18px');
+
+                                    scrollbarElement.removeClass('hide');
+                                } else {
+                                    wrapperElement.css('right', '0');
+                                    wrapperElement.css('padding-right', '0');
+                                    scrollbarElement.addClass('hide');
+                                }
+
+                                values.height = scrollbarContainerElement[0].offsetHeight;
+                                console.log(values.height);
+                                values.scrollHeight = wrapperDomElement.scrollHeight;
+                                console.log(values.scrollHeight);
+                                values.position = (values.height / values.scrollHeight) * 100;
+                                values.scrollbarHeight = values.scrollHeight * values.height / 100;
+
+                                values.scrollPosition = options.fixedHeight ?
+                                    (options.fixedHeight / values.height * 100) :
+                                    (values.scrollbarHeight < options.minHeight ?
+                                        options.minHeight / values.height * 100 :
+                                        values.position);
+
+                                values.remainder = 100 - values.scrollPosition;
+                                values.x = (values.scrollHeight - values.height) * ((values.scrollPosition - values.position) / (100 - values.position));
+                                values.heightRate = Math.abs((values.x / values.remainder) + (values.scrollHeight / 100));
+                                scrollbarElement[0].style.height = values.scrollPosition + '%';
+
+                                values.reposition = getReposition(values.height);
+                            },
+                            setScroll = function(e) {
+                                e = e || event;
+                                var el = e.target || event.srcElement,
+                                    p = el.parentElement || el.parentNode;
+
+                                if (!values || p === scrollbarContainerElement[0]) return;
+
+                                var eY = e.pageY || event.clientY,
+                                    top = ((eY - getTop(wrapperDomElement.parentElement || wrapperDomElement.parentNode)) / values.height * 100) - values.scrollPosition / 2;
+                                if (top > values.remainder) top = values.remainder;
+                                else if (top < 0) top = 0;
+                                scrollbarElement[0].style.top = top + '%';
+                                wrapperDomElement.scrollTop = top * values.heightRate;
+                                scrollbarContainerElement.addClass(options.specialClass);
+                            },
+                            beginScroll = function(e) {
+                                console.log('begin');
+                                var sel = $window.getSelection ? $window.getSelection() : $window.document.selection;
+                                if (sel) {
+                                    if (sel.removeAllRanges) sel.removeAllRanges();
+                                    else if (sel.empty) sel.empty();
+                                }
+                                e = e || event;
+                                var el = e.currentTarget || e.srcElement;
+
+                                $document.bind('mousemove', moveScroll);
+                                $document.bind('mouseup', endScroll);
+
+                                values.offsetTop = getTop(wrapperDomElement);
+
+                                values.firstY = e.pageY || event.clientY;
+                                console.log(values.firstY);
+                                if (!values.reposition)
+                                    values.reposition = getReposition(values.height);
+
+                                wrapperElement.addClass('unselectable');
+                            },
+                            moveScroll = function(e) {
+                                e = e || event;
+                                var eY = e.pageY || e.clientY,
+                                    top = (values.reposition + eY - values.firstY) / values.height * 100;
+
+                                if (values.remainder < top) top = values.remainder;
+                                if (!values.previousTop) values.previousTop = top + 1;
+                                var blnThreshold = top >= 0 && values.firstY > values.offsetTop;
+                                if ((values.previousTop > top && blnThreshold) || (blnThreshold && (wrapperDomElement.scrollTop + values.height !== values.scrollHeight))) {
+                                    scrollbarElement[0].style.top = top + '%';
+                                    values.previousTop = top;
+                                    wrapperDomElement.scrollTop = top * values.heightRate;
+                                }
+                                scrollbarContainerElement.removeClass(options.specialClass);
+                            },
+                            endScroll = function(e) {
+
+                                $document.unbind('mousemove', moveScroll);
+                                $document.unbind('mouseup', endScroll);
+
+                                values.reposition = 0;
+                                wrapperElement.removeClass('unselectable');
+                                scrollbarContainerElement.addClass(options.specialClass);
+                            },
+                            doScroll = function(e) {
+                                // console.log('DO SCROLL');
+                                if (!values) return;
+                                scrollbarContainerElement.removeClass(options.specialClass);
+                                scrollbarElement[0].style.top = wrapperDomElement.scrollTop / values.heightRate + '%';
+                                scrollbarContainerElement.addClass(options.specialClass);
+                            };
+
+                        if (options.keepFocus) {
+                            wrapperElement.attr('tabindex', '-1');
+                            wrapperDomElement.focus();
+                        }
+
+                        scrollbarElement.bind('mousedown', beginScroll);
+                        scrollbarContainerElement.bind('click', setScroll);
+                        wrapperElement.bind('scroll', doScroll);
+                        angular.element($window).bind('resize', function() { $timeout(assignValues, options.delay); });
+                        $scope.$watch(function() {
+                            return wrapperDomElement.scrollHeight;
+                        }, function(newValue, oldValue) {
+                            assignValues();
+                        }, true);
+                        $timeout(assignValues, options.delay);
+
+                        $scope.$on('$destroy', function() {
+                            scrollbarElement.unbind('mousedown');
+                            scrollbarContainerElement.unbind('click');
+                            wrapperElement.unbind('scroll');
+                            angular.element($window).unbind('resize', assignValues);
+                        });
+
+                        //},5000);
+            */
+
+        }
+
+
+    };
+
+
+}]);

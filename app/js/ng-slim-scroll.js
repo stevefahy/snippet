@@ -24,7 +24,11 @@ angular.module('ngSlimScroll', [])
         options: '='
       },
       template: '<div><div class="slim-scroll-wrapper" data-ng-transclude></div></div>',
+      //template: '<div data-ng-transclude></div>',
       link: function($scope, element) {
+
+        //$timeout(function() {
+
         element.removeAttr(init_attribute);
 
         var options = angular.extend({}, defaults, $scope.options);
@@ -35,6 +39,7 @@ angular.module('ngSlimScroll', [])
           wrapperElement.addClass(options.wrapperClass);
 
         //create scrollbar container
+        
         var scrollbarContainerElement = angular.element($window.document.createElement('div'));
         scrollbarContainerElement.addClass(options.scrollbarContainerClass);
 
@@ -43,9 +48,11 @@ angular.module('ngSlimScroll', [])
         var scrollbarElement = angular.element($window.document.createElement('div'));
         scrollbarElement.addClass(options.scrollbarClass);
 
+
         //insert to dom
         element.append(scrollbarContainerElement);
         scrollbarContainerElement.append(scrollbarElement);
+        
         console.log('SCROLL');
 
         //functions
@@ -59,9 +66,15 @@ angular.module('ngSlimScroll', [])
             return x ? x : 0;
           },
           assignValues = function() {
+            console.log('assign');
             if (wrapperDomElement.offsetHeight < wrapperDomElement.scrollHeight) {
               wrapperElement.css('right', '-18px');
               wrapperElement.css('padding-right', '8px');
+
+
+              //wrapperElement.css('margin-bottom', '-18px');
+             //wrapperElement.css('margin-top', '18px');
+        
               scrollbarElement.removeClass('hide');
             } else {
               wrapperElement.css('right', '0');
@@ -70,8 +83,9 @@ angular.module('ngSlimScroll', [])
             }
 
             values.height = scrollbarContainerElement[0].offsetHeight;
+            console.log(values.height);
             values.scrollHeight = wrapperDomElement.scrollHeight;
-
+            console.log(values.scrollHeight);
             values.position = (values.height / values.scrollHeight) * 100;
             values.scrollbarHeight = values.scrollHeight * values.height / 100;
 
@@ -104,6 +118,7 @@ angular.module('ngSlimScroll', [])
             scrollbarContainerElement.addClass(options.specialClass);
           },
           beginScroll = function(e) {
+            console.log('begin');
             var sel = $window.getSelection ? $window.getSelection() : $window.document.selection;
             if (sel) {
               if (sel.removeAllRanges) sel.removeAllRanges();
@@ -115,9 +130,10 @@ angular.module('ngSlimScroll', [])
             $document.bind('mousemove', moveScroll);
             $document.bind('mouseup', endScroll);
 
-            values.offsetTop = 50;//getTop(wrapperDomElement);
+            values.offsetTop = getTop(wrapperDomElement);
 
             values.firstY = e.pageY || event.clientY;
+            console.log(values.firstY);
             if (!values.reposition)
               values.reposition = getReposition(values.height);
 
@@ -148,6 +164,7 @@ angular.module('ngSlimScroll', [])
             scrollbarContainerElement.addClass(options.specialClass);
           },
           doScroll = function(e) {
+           // console.log('DO SCROLL');
             if (!values) return;
             scrollbarContainerElement.removeClass(options.specialClass);
             scrollbarElement[0].style.top = wrapperDomElement.scrollTop / values.heightRate + '%';
@@ -176,6 +193,14 @@ angular.module('ngSlimScroll', [])
           wrapperElement.unbind('scroll');
           angular.element($window).unbind('resize', assignValues);
         });
+
+        //},5000);
+
+
       }
+
+
     };
+
+
   }]);

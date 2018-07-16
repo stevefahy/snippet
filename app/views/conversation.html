@@ -3,7 +3,15 @@
     <div ng-if="$root.pageLoading" class="loading_screen">
         <div ng-include="'/views/spinner.html'"></div>
     </div>
-    <div class="content_cnv" ng-class="{ 'content_conv_off': $root.pageLoading}"  slim-scroll  scroll-glue>
+    <div class="content_cnv" ng-class="{ 'content_conv_off': $root.pageLoading}"    slim-scroll>
+<!--
+    scroll-glue
+<div class="scroller" simple-scroll>
+    <div class="scrollcontainer">
+    <div class="scrollthumb"></div>
+</div>
+-->
+
         <div id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : false | limitTo:totalDisplayed" on-finish-render="ngRepeatFinished">
             <div class=" resize-container" id="conversation_part" ng-init="disableCheckboxes(card._id)">
                 <form class="form-horizontal">
@@ -29,6 +37,9 @@
         </div>
         <div id="bottom"></div>
     </div>
+
+<!--</div>-->
+
     <div class="card_create_container" ng-if="isMember" ng-include src="'/views/card_create.html'"></div>
     <div ng-include src="'/views/footer.html'"></div>
 </div>
