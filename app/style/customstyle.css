@@ -2647,6 +2647,7 @@ span#scroll_image_latest {
     top: 0;
     position: absolute;
     width: 100%;
+    overflow-x:hidden;
 }
 
 .page-conversation {
