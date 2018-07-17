@@ -1051,7 +1051,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center.ng-binding 
 }
 
 .time {
-    color: #7b7b7b;
+    color: #8f8f8f;
 }
 
 .time_new {
@@ -2935,7 +2935,7 @@ span#scroll_image_latest {
     text-overflow: ellipsis;
     margin-top: 2px;
     font-size: 0.95rem;
-    color: #4e4e4e;
+    color: #797979;
 }
 
 .convs_data_bl_msgs_1 {

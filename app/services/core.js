@@ -2040,7 +2040,8 @@ cardApp.filter("momentFilter", function() {
         var today = moment();
         if (today.isSame(value, 'd')) {
             //return moment(value).fromNow() + ' : ' + moment(value).format("HH:mm");
-            return moment(value).fromNow();
+            //return moment(value).fromNow();
+            return moment(value).format("HH:mm");
         } else {
             return moment(value).calendar();
         }
@@ -2052,7 +2053,8 @@ cardApp.filter("momentFilterConv", function() {
         var today = moment();
         if (today.isSame(value, 'd')) {
             //return moment(value).fromNow() + ' : ' + moment(value).format("HH:mm");
-            return moment(value).fromNow();
+            //return moment(value).fromNow();
+            return moment(value).format("HH:mm");
         } else {
             //return moment(value).calendar();
             return moment(value).format("DD/MM/YY HH:mm");
