@@ -2680,10 +2680,12 @@ span#scroll_image_latest {
 
 .pause.ng-leave {
     -webkit-animation: .5s conversations-leave;
+    overflow-x:hidden;
 }
 
 .pause.ng-enter {
     -webkit-animation: .5s conversations-leave;
+    overflow-x:hidden;
 }
 
 
@@ -2770,6 +2772,7 @@ span#scroll_image_latest {
 
 .page-conversations.ng-leave {
     -webkit-animation: .5s conversations-leave;
+    overflow-x:hidden;
 }
 
 .page-conversations.ng-enter {}
@@ -2777,6 +2780,7 @@ span#scroll_image_latest {
 @keyframes conversations-leave {
     {
         transform: translateX(100%);
+        overflow-x:hidden;
     }
 }
 
