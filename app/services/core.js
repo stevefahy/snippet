@@ -163,7 +163,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         close: true
     }, {
         charstring: INITIAL_KEY + '3',
-        html: 'h2',
+        html: 'h3',
         attribute: 'class="header_3"',
         span_start: '<span id="header" >',
         span_end: '</span>',
