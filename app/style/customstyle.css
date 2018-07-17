@@ -2988,7 +2988,7 @@ b.header_3 {
     display: inline-block;
     font-weight: 700;
     line-height: 1;
-    font-size: 1.8rem;
+    font-size: 1.4rem;
     width: 100%;
 }
 
@@ -2996,15 +2996,15 @@ b.header_3 {
     display: inline-block;
     font-weight: 700;
     line-height: 1;
-    font-size: 1.6rem;
+    font-size: 1.3rem;
     width: 100%;
 }
 
 .header_3 {
     display: inline-block;
-    font-weight: 500;
+    font-weight: 600;
     line-height: 1;
-    font-size: 1.3rem;
+    font-size: 1.1rem;
     width: 100%;
 }
 
@@ -3033,9 +3033,16 @@ header1:after {
 .convs_data_bl .header_3 {
     display: inline;
     font-size: unset;
-    /*font-weight: 400;*/
+    font-weight: unset;
 }
 
+.convs_data_bl b {
+    font-weight: unset;
+}
+
+.convs_data_bl i {
+    font-style: unset;
+}
 
 /*
 span#delete {
