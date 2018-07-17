@@ -2647,7 +2647,6 @@ span#scroll_image_latest {
     top: 0;
     position: absolute;
     width: 100%;
-    overflow-x:hidden;
 }
 
 .page-conversation {
@@ -2680,12 +2679,10 @@ span#scroll_image_latest {
 
 .pause.ng-leave {
     -webkit-animation: .5s conversations-leave;
-    overflow-x:hidden;
 }
 
 .pause.ng-enter {
     -webkit-animation: .5s conversations-leave;
-    overflow-x:hidden;
 }
 
 
@@ -2772,7 +2769,6 @@ span#scroll_image_latest {
 
 .page-conversations.ng-leave {
     -webkit-animation: .5s conversations-leave;
-    overflow-x:hidden;
 }
 
 .page-conversations.ng-enter {}
@@ -2780,7 +2776,6 @@ span#scroll_image_latest {
 @keyframes conversations-leave {
     {
         transform: translateX(100%);
-        overflow-x:hidden;
     }
 }
 
@@ -2831,7 +2826,8 @@ span#scroll_image_latest {
 }
 
 .page-conversation.ng-enter {
-    -webkit-animation: slide-in .5s forwards;
+    /*-webkit-animation: slide-in .5s forwards;*/
+    -webkit-animation: slide-iny 5s forwards;
 }
 
 .page-conversation.ng-enter.ng-enter-active .content_cnv {
@@ -2859,6 +2855,18 @@ span#scroll_image_latest {
     }
     100% {
         transform: translateX(0);
+    }
+}
+
+@keyframes slide-iny {
+    0% {
+        transform: translateY(100%);
+    }
+    50% {
+        transform: translateY(50%);
+    }
+    100% {
+        transform: translateY(0);
     }
 }
 
