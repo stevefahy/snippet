@@ -59,6 +59,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // Loading conversation directly should not animate.
     $animate.enabled($rootScope.animate_pages);
 
+    // Load the rest of the cards if page loaded directly without animation.
+    if(!$rootScope.animate_pages){
+        $scope.totalDisplayed = -1000;
+    }
+
     General.keyBoardListenStart();
 
     // Add custom class for Android scrollbar
@@ -464,9 +469,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $scope.$apply(function() {
                     // Load the rest of the cards.
                     $scope.totalDisplayed = -1000;
-
-
-
                 }, 0);
             });
         }
