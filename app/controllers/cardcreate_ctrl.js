@@ -128,8 +128,8 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
         $window.onfocus = function() {
             //setFocus();
         };
-        $window.focus();
-        setFocus();
+        //$window.focus();
+        //setFocus();
     }
 
     $scope.$on('$destroy', function() {

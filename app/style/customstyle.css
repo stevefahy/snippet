@@ -2827,7 +2827,7 @@ span#scroll_image_latest {
 
 .page-conversation.ng-enter {
     /*-webkit-animation: slide-in .5s forwards;*/
-    -webkit-animation: slide-iny 5s forwards;
+    -webkit-animation: slide-in .5s forwards;
 }
 
 .page-conversation.ng-enter.ng-enter-active .content_cnv {
@@ -2841,29 +2841,26 @@ span#scroll_image_latest {
 
 @keyframes slideOutRight {
     0% {
-        transform: translateX(0);
+        transform: translateY(0);
     }
 
     100% {
-        transform: translateX(100%);
+        transform: translateY(100%);
     }
 }
 
 @keyframes slide-in {
     0% {
-        transform: translateX(100%);
+        transform: translateY(100%);
     }
     100% {
-        transform: translateX(0);
+        transform: translateY(0);
     }
 }
 
 @keyframes slide-iny {
     0% {
         transform: translateY(100%);
-    }
-    50% {
-        transform: translateY(50%);
     }
     100% {
         transform: translateY(0);
