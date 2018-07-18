@@ -1,5 +1,7 @@
 html,
-body {}
+body {
+    overflow:hidden;
+}
 
 html {
     touch-action: manipulation;
