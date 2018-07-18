@@ -2779,7 +2779,7 @@ span#scroll_image_latest {
 
 .page-conversations.ng-enter .content_cnv {
     overflow-y: hidden;
-    visibility: hidden;
+    /*visibility: hidden;*/
 }
 
 
