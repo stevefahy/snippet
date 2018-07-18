@@ -2810,7 +2810,7 @@ span#scroll_image_latest {
 }
 
 .page-conversation.ng-leave {
-    -webkit-animation: slideOutRight .5s forwards;
+    -webkit-animation: slideOutRight .5s backwards;
 }
 /*
 .page-conversation.ng-leave .content_cnv {
