@@ -2829,12 +2829,12 @@ span#scroll_image_latest {
 }
 
 .page-conversation.ng-enter {
-    -webkit-animation: slide-in .5s forwards;
+    -webkit-animation: slide-in .5s ease-out;
 }
 
 .page-conversation.ng-enter.ng-enter-active .content_cnv {
     overflow-y: hidden;
-    
+
 }
 
 /* page-conversation entering */
