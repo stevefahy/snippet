@@ -2829,7 +2829,7 @@ span#scroll_image_latest {
 }
 
 .page-conversation.ng-enter {
-    -webkit-animation: slide-in .5s ease-out;
+    -webkit-animation: slide-in .5s ease-in;
 }
 
 .page-conversation.ng-enter.ng-enter-active .content_cnv {
