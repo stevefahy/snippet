@@ -2771,13 +2771,18 @@ span#scroll_image_latest {
     -webkit-animation: .5s conversations-leave;
 }
 
-.page-conversations.ng-enter {}
-
-@keyframes conversations-leave {
-    {
-        /*transform: translateX(100%);*/
-    }
+.page-conversations.ng-enter {
+   /*-webkit-animation: slide-in .5s forwards;*/
+   -webkit-animation: .5s conversations-leave;
+   
 }
+
+.page-conversations.ng-enter .content_cnv {
+    overflow-y: hidden;
+    visibility: hidden;
+}
+
+
 
 
 
@@ -2844,7 +2849,11 @@ span#scroll_image_latest {
 
 
 
-
+@keyframes conversations-leave {
+    {
+        /*transform: translateX(100%);*/
+    }
+}
 
 /* slide out from the right */
 

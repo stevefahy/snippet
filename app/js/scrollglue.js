@@ -83,7 +83,7 @@ if(typeof module === "object" && module.exports){
                         activationState.setValue(direction.isAttached(el));
                     }
 
-                    $timeout(scrollIfGlued, 0, false);
+                    //$timeout(scrollIfGlued, 0, false);
 
                     if (!$el[0].hasAttribute('force-glue')) {
                       $el.on('scroll', onScroll);
