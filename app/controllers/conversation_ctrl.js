@@ -463,6 +463,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     });
 
     // Listen for the end of the view transition.
+    /*
     $(".page").on("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend", function(e) {
         if (e.originalEvent.animationName == "slide-in") {
             $timeout(function() {
@@ -473,5 +474,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             });
         }
     });
+    */
 
 }]);
