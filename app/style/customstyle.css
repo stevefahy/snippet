@@ -2834,7 +2834,7 @@ span#scroll_image_latest {
 
 .page-conversation.ng-enter.ng-enter-active .content_cnv {
     overflow-y: hidden;
-    visibility: hidden;
+    
 }
 
 /* page-conversation entering */
