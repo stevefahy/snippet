@@ -2041,8 +2041,10 @@ cardApp.filter("momentFilter", function() {
         if (today.isSame(value, 'd')) {
             //return moment(value).fromNow() + ' : ' + moment(value).format("HH:mm");
             //return moment(value).fromNow();
+            console.log('day');
             return moment(value).format("HH:mm");
         } else {
+            console.log('calender');
             return moment(value).calendar();
         }
     };
@@ -2070,6 +2072,7 @@ cardApp.directive('momentTime', ['$interval', '$filter', function($interval, $fi
         momentFilter = $filter('momentFilter');
 
         function updateTime() {
+            console.log('update: ' + momentFilter(format));
             element.text((new Date(), momentFilter(format)));
         }
 
@@ -2079,13 +2082,14 @@ cardApp.directive('momentTime', ['$interval', '$filter', function($interval, $fi
         });
 
         element.on('$destroy', function() {
+            console.log('destroy time convs');
             $interval.cancel(timeoutId);
         });
 
         // start the UI update process; save the timeoutId for canceling
         timeoutId = $interval(function() {
             updateTime(); // update DOM
-        }, 1000);
+        }, 10000);
     }
 
     return {
@@ -2099,10 +2103,10 @@ cardApp.directive('momentTimeConv', ['$interval', '$filter', function($interval,
     function link(scope, element, attrs) {
         var format,
             timeoutId;
-        momentFilter = $filter('momentFilterConv');
+        momentFilterConv = $filter('momentFilterConv');
 
         function updateTime() {
-            element.text((new Date(), momentFilter(format)));
+            element.text((new Date(), momentFilterConv(format)));
         }
 
         scope.$watch(attrs.momentTimeConv, function(value) {
@@ -2111,13 +2115,14 @@ cardApp.directive('momentTimeConv', ['$interval', '$filter', function($interval,
         });
 
         element.on('$destroy', function() {
+            console.log('destroy time conv');
             $interval.cancel(timeoutId);
         });
 
         // start the UI update process; save the timeoutId for canceling
         timeoutId = $interval(function() {
             updateTime(); // update DOM
-        }, 1000);
+        }, 10000);
     }
 
     return {

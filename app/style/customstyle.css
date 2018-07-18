@@ -2809,21 +2809,17 @@ span#scroll_image_latest {
     -webkit-animation: .5s conversations-leave;
 }
 
+
+
 .page-conversation.ng-leave {
     -webkit-animation: slideOutRight .5s backwards;
 }
-/*
-.page-conversation.ng-leave .content_cnv {
-    overflow-y: hidden;
-}
-*/
 
 .page-conversation.ng-leave.ng-leave-active .content_cnv {
     overflow-y: hidden;
 }
 
 .page-conversation.ng-enter {
-    /*-webkit-animation: slide-in .5s forwards;*/
     -webkit-animation: slide-in .5s forwards;
 }
 
@@ -2831,13 +2827,19 @@ span#scroll_image_latest {
     overflow-y: hidden;
 }
 
-.page-conversation-static.ng-enter {
-    -webkit-animation: .5s conversations-leave;
-}
-
+/* page-conversation entering */
 .page-conversation-static.ng-leave {
     -webkit-animation: .5s conversations-leave;
 }
+
+/* page-conversation leaving */
+/*
+.page-conversation-static.ng-enter {
+    -webkit-animation: .5s conversations-leave;
+}
+*/
+
+
 
 
 
