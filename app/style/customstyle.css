@@ -2772,7 +2772,6 @@ span#scroll_image_latest {
 }
 
 .page-conversations.ng-enter {
-   /*-webkit-animation: slide-in .5s forwards;*/
    -webkit-animation: .5s conversations-leave;
    
 }
@@ -2782,7 +2781,11 @@ span#scroll_image_latest {
     visibility: hidden;
 }
 
-
+@keyframes conversations-leave {
+    {
+        /*transform: translateX(100%);*/
+    }
+}
 
 
 
@@ -2830,7 +2833,6 @@ span#scroll_image_latest {
 
 .page-conversation.ng-enter.ng-enter-active .content_cnv {
     overflow-y: hidden;
-visibility: hidden;
 }
 
 /* page-conversation entering */
@@ -2850,11 +2852,7 @@ visibility: hidden;
 
 
 
-@keyframes conversations-leave {
-    {
-        /*transform: translateX(100%);*/
-    }
-}
+
 
 /* slide out from the right */
 
