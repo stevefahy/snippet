@@ -2775,7 +2775,7 @@ span#scroll_image_latest {
 
 @keyframes conversations-leave {
     {
-        transform: translateX(100%);
+        /*transform: translateX(100%);*/
     }
 }
 
@@ -2784,7 +2784,7 @@ span#scroll_image_latest {
 
 
 /* conversation ---------------------- */
-
+/*
 .left-to-right.ng-leave {
     -webkit-animation: slideOutRight 5s forwards;
 }
@@ -2800,7 +2800,7 @@ span#scroll_image_latest {
 .static.ng-enter {
     -webkit-animation: 5s conversations-leave;
 }
-
+*/
 .page-conversation_group.ng-leave {
     -webkit-animation: .5s conversations-leave;
 }
@@ -2832,11 +2832,11 @@ span#scroll_image_latest {
 }
 
 .page-conversation-static.ng-enter {
-    -webkit-animation: 5s conversations-leave;
+    -webkit-animation: .5s conversations-leave;
 }
 
 .page-conversation-static.ng-leave {
-    -webkit-animation: 5s conversations-leave;
+    -webkit-animation: .5s conversations-leave;
 }
 
 
