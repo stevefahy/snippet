@@ -1,5 +1,13 @@
 cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', '$animate', 'viewAnimationsService', function($scope, $rootScope, $location, $http, $window, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, $animate, viewAnimationsService) {
 
+    // Detect device user agent 
+    var ua = navigator.userAgent;
+    
+    // Add custom class for Android scrollbar
+    if (ua.indexOf('AndroidApp') >= 0) {
+        $('.content_cnv').addClass('content_cnv_android');
+    }
+
     $rootScope.pageLoading = true;
 
     $scope.getFocus = Format.getFocus;
@@ -24,8 +32,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // Use the urls username param from the route to load the conversation.
     var username = $routeParams.username;
 
-    // Detect device user agent 
-    var ua = navigator.userAgent;
+
     /*
         $(function(){
         $('.scroll-body').slimScroll({
@@ -79,10 +86,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     General.keyBoardListenStart();
 
-    // Add custom class for Android scrollbar
-    if (ua.indexOf('AndroidApp') >= 0) {
-        //$('.content_cnv').addClass('content_cnv_android');
-    }
+
 
     // Broadcast by UserData after it has processed the notification. (card has been created, updated or deleted by another user to this user).
     $scope.$on('CONV_NOTIFICATION', function(event, msg) {
