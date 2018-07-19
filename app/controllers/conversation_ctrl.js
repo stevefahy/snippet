@@ -2,10 +2,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Detect device user agent 
     var ua = navigator.userAgent;
-
+    
     // Add custom class for Android scrollbar
     if (ua.indexOf('AndroidApp') >= 0) {
-        //$('.content_cnv').addClass('content_cnv_android');
+        $('.content_cnv').addClass('content_cnv_android');
     }
 
     $rootScope.pageLoading = true;
