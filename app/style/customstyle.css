@@ -157,7 +157,11 @@ input[type="checkbox"] {
     border-bottom-color: rgb(230, 230, 230);
     border-bottom-width: 1px;
     */
-    width: 100%;
+    margin-bottom: 12px;
+    margin-top: 12px;
+    max-width: calc(100% + 2.7em);
+    position: relative;
+    left: -1.35em;
 }
 
 .resize-container {
@@ -2833,11 +2837,11 @@ span#scroll_image_latest {
 
 .page-conversation.ng-leave.ng-leave-active .content_cnv {
     overflow-y: hidden;
-    visibility: hidden;
+    /*visibility: hidden;*/
 }
 
 .page-conversation.ng-enter {
-    -webkit-animation: slide-in .5s ease-out;
+    -webkit-animation: slide-in .3s ease-out;
 }
 
 .page-conversation.ng-enter.ng-enter-active .content_cnv {
@@ -2847,7 +2851,7 @@ span#scroll_image_latest {
 
 /* page-conversation entering */
 .page-conversation-static.ng-leave {
-    -webkit-animation: .5s conversations-leave;
+    -webkit-animation: .3s conversations-leave;
 }
 
 /* page-conversation leaving */
