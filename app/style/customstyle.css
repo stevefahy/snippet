@@ -142,6 +142,7 @@ input[type="checkbox"] {
 }
 
 .resize-drag {
+    /*
     vspace: 20px;
     margin-bottom: 12px;
     margin-top: 12px;
@@ -155,6 +156,8 @@ input[type="checkbox"] {
     border-bottom-style: solid;
     border-bottom-color: rgb(230, 230, 230);
     border-bottom-width: 1px;
+    */
+    width: 100%;
 }
 
 .resize-container {
