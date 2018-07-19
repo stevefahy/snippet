@@ -36,7 +36,7 @@ angular.module('ngSlimScroll', [])
                   */
 
                 //$timeout(function() {
-                //$scope.$on('attachScroll', function(event, data) {
+                $scope.$on('attachScroll', function(event, data) {
                 console.log('attach');
                 element.removeAttr(init_attribute);
 
@@ -204,7 +204,7 @@ angular.module('ngSlimScroll', [])
                 });
 
 //$compile(element)($scope);
-                //});
+                });
 
             }
 

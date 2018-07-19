@@ -40,7 +40,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         //attach();
         //$scope.clicky();
         //$rootScope.$broadcast('clicky');
-       // $rootScope.$broadcast('attachScroll');
+        $rootScope.$broadcast('attachScroll');
        //slim-scroll
 
        //$('.content_cnv').attr('slim-scroll', '');
