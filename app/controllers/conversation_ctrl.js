@@ -36,6 +36,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     });
     */
 
+    $timeout(function() {
+        //attach();
+        //$scope.clicky();
+        $rootScope.$broadcast('clicky');
+        $rootScope.$broadcast('attachScroll');
+    },2000);
 
     // Default navigation
     viewAnimationsService.setEnterAnimation('page-conversation');
