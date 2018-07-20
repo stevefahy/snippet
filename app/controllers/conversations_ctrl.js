@@ -24,7 +24,7 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
 
     // Detect device user agent 
     var ua = navigator.userAgent;
-    
+
     // Continue chat
     $scope.chat = function(conversation_id, conversation, index) {
         // Set profile change for the conversation.
@@ -33,10 +33,13 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
         profile_obj.avatar = conversation.avatar;
         Profile.setConvProfile(profile_obj);
         // redirect to the chat
-        $location.path("/chat/conversation/" + conversation_id);
+        //$location.path("/chat/conversation/" + conversation_id);
         //
         if (ua.indexOf('AndroidApp') >= 0) {
             Android.showConversation(conversation_id);
+        } else {
+            // redirect to the chat
+            $location.path("/chat/conversation/" + conversation_id);
         }
     };
 
