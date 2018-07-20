@@ -3523,6 +3523,7 @@ cardApp.directive('viewAnimations', function(viewAnimationsService, $rootScope) 
     };
 });
 
+/*
 cardApp.directive('addSlimScroll', ['$window', '$document', '$timeout', '$compile', function($window, $document, $timeout, $compile) {
     return {
         transclude: false,
@@ -3542,6 +3543,7 @@ cardApp.directive('addSlimScroll', ['$window', '$document', '$timeout', '$compil
         }
     };
 }]);
+*/
 
 /*
 cardApp.directive('simpleScroll', ['$window', '$document', '$timeout', function($window, $document, $timeout) {

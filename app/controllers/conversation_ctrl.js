@@ -2,7 +2,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Detect device user agent 
     var ua = navigator.userAgent;
-    
+
     // Add custom class for Android scrollbar
     if (ua.indexOf('AndroidApp') >= 0) {
         $('.content_cnv').addClass('content_cnv_android');
@@ -354,6 +354,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     getPublicConversation = function(id, name) {
+        console.log('call worker');
+        w.postMessage(id);
+        /*
         Conversations.getPublicConversationById(id)
             .then(function(result) {
                 $scope.cards = result.data;
@@ -372,6 +375,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             .catch(function(error) {
                 console.log('error: ' + error);
             });
+            */
     };
 
     // Get the conversation by id

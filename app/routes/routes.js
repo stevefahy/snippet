@@ -19,6 +19,8 @@ var jwt = require('jsonwebtoken');
 // load the auth variables
 var configAuth = require('../configs/auth'); // use this one for testing
 
+
+
 function getConversationId(id) {
     var query = Conversation.findOne({ '_id': id });
     return query;
@@ -1200,6 +1202,9 @@ module.exports = function(app, passport) {
     // Get all cards for a PUBLIC conversation by conversation id.
     // Does not need to be a member or logged in because it is a public chat.
     // getPublicConversationById(id);
+
+
+    
     app.get('/chat/get_public_conversation/:id', function(req, res) {
         // Ensure the conversation id is a public conversation
         Conversation.findOne({ '_id': req.params.id, 'conversation_type': 'public' }, function(err, conversation) {
@@ -1223,6 +1228,16 @@ module.exports = function(app, passport) {
         });
 
     });
+    
+/*
+    app.get('/chat/get_public_conversation/:id', function(req, res) {
+        // Ensure the conversation id is a public conversation
+        //console.log('call worker');
+        //w.postMessage('hello');
+        //console.log('Message posted to worker');
+
+    });
+    */
 
     // get latest card for a conversation by conversation id
     app.get('/chat/get_conversation_latest_card/:id', isLoggedIn, function(req, res) {
