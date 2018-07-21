@@ -37,6 +37,7 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
         //
         if (ua.indexOf('AndroidApp') >= 0) {
             Android.showConversation(conversation_id);
+            $location.path("/chat/conversation/" + conversation_id);
         } else {
             // redirect to the chat
             $location.path("/chat/conversation/" + conversation_id);
