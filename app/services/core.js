@@ -2207,6 +2207,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     // Android called functions.
 
     changeUrl = function(conversation_id){
+        console.log('changeUrl');
         console.log('changeUrl: ' + conversation_id);
         $location.path("/chat/conversation/" + conversation_id);
     };
