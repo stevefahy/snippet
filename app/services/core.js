@@ -2206,10 +2206,11 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
 
     // Android called functions.
 
-    changeUrl = function(conversation_id){
-        console.log('changeUrl');
-        console.log('changeUrl: ' + conversation_id);
-        $location.path("/chat/conversation/" + conversation_id);
+    changeUrl = function(new_url){
+        //console.log('changeUrl');
+        console.log('changeUrl: ' + new_url);
+        //$location.path("/chat/conversation/" + conversation_id);
+        $location.path(new_url);
     };
 
     restoreState = function() {
