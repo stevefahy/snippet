@@ -2211,7 +2211,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
         //console.log('changeUrl');
         console.log('changeUrl: ' + new_url);
         //$location.path("/chat/conversation/" + conversation_id);
-        $location.path(new_url);
+        //$location.path(new_url);
     };
 
     restoreState = function() {
