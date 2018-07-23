@@ -46,7 +46,7 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
         //$location.path("/chat/conversation/" + conversation_id);
         //
         if (ua.indexOf('AndroidApp') >= 0) {
-            Android.showConversation(conversation_id);
+            Android.showConversation();
             $location.path("/chat/conversation/" + conversation_id);
         } else {
             // redirect to the chat
@@ -64,7 +64,12 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
         // Find the username then redirect to the conversation.
         UserData.getConversationsUser(admin[0])
             .then(function(result) {
-                $location.path("/" + result.google.name);
+                if (ua.indexOf('AndroidApp') >= 0) {
+                    Android.showConversation();
+                    $location.path("/" + result.google.name);
+                } else {
+                    $location.path("/" + result.google.name);
+                }
             });
     };
 
