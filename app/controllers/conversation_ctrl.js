@@ -5,8 +5,43 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Add custom class for Android scrollbar
     if (ua.indexOf('AndroidApp') >= 0) {
-        $('.content_cnv').addClass('content_cnv_android');
+        //$('.content_cnv').addClass('content_cnv_android');
+        // variable to turn on animation of view chage. Loading conversation directly should not animate.
+        //$rootScope.animate_pages = false;
+    } else {
+        // Default navigation
+        viewAnimationsService.setEnterAnimation('page-conversation');
+        viewAnimationsService.setLeaveAnimation('page-conversation-static');
+
+        if ($rootScope.nav) {
+            if ($rootScope.nav.from == 'group') {
+                viewAnimationsService.setEnterAnimation('page-conversation-static');
+                viewAnimationsService.setLeaveAnimation('page-group');
+            } else if ($rootScope.nav.from == 'contacts') {
+                $rootScope.nav = { from: 'conv', to: 'contacts' };
+                viewAnimationsService.setEnterAnimation('page-conversation');
+                viewAnimationsService.setLeaveAnimation('page-contacts-static');
+            } else {
+                $rootScope.nav = { from: 'conv', to: 'convs' };
+            }
+        } else {
+            $rootScope.nav = { from: 'conv', to: 'convs' };
+        }
+
+        // Loading conversation directly should not animate.
+        $animate.enabled($rootScope.animate_pages);
+
+        // Load the rest of the cards if page loaded directly without animation.
+        if (!$rootScope.animate_pages) {
+            $scope.totalDisplayed = -1000;
+        }
     }
+
+
+
+
+
+
 
     $rootScope.pageLoading = true;
 
@@ -48,41 +83,16 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         //$scope.clicky();
         //$rootScope.$broadcast('clicky');
         //$rootScope.$broadcast('attachScroll');
-       //slim-scroll
+        //slim-scroll
 
-       //$('.content_cnv').attr('slim-scroll', '');
+        //$('.content_cnv').attr('slim-scroll', '');
 
-       //$rootScope.$broadcast('attachScroll');
-    },2000);
+        //$rootScope.$broadcast('attachScroll');
+    }, 2000);
 
 
 
-    // Default navigation
-    viewAnimationsService.setEnterAnimation('page-conversation');
-    viewAnimationsService.setLeaveAnimation('page-conversation-static');
 
-    if ($rootScope.nav) {
-        if ($rootScope.nav.from == 'group') {
-            viewAnimationsService.setEnterAnimation('page-conversation-static');
-            viewAnimationsService.setLeaveAnimation('page-group');
-        } else if ($rootScope.nav.from == 'contacts') {
-            $rootScope.nav = { from: 'conv', to: 'contacts' };
-            viewAnimationsService.setEnterAnimation('page-conversation');
-            viewAnimationsService.setLeaveAnimation('page-contacts-static');
-        } else {
-            $rootScope.nav = { from: 'conv', to: 'convs' };
-        }
-    } else {
-        $rootScope.nav = { from: 'conv', to: 'convs' };
-    }
-
-    // Loading conversation directly should not animate.
-    $animate.enabled($rootScope.animate_pages);
-
-    // Load the rest of the cards if page loaded directly without animation.
-    if(!$rootScope.animate_pages){
-        $scope.totalDisplayed = -1000;
-    }
 
     General.keyBoardListenStart();
 

@@ -38,7 +38,16 @@ cardApp.controller("headerCtrl", ['Profile', 'Conversations', '$scope', '$rootSc
     });
 
     $scope.changePath = function(path) {
-        $location.path(path);
+        // Detect device user agent 
+        var ua = navigator.userAgent;
+
+        // Add custom class for Android scrollbar
+        if (ua.indexOf('AndroidApp') >= 0) {
+            Android.animationBack();
+            $location.path(path);
+        } else {
+            $location.path(path);
+        }
     };
 
     $scope.changePathConversation = function() {

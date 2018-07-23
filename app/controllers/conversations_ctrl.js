@@ -1,17 +1,28 @@
 cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$http', 'Invites', 'Email', 'Users', 'Conversations', '$q', 'FormatHTML', 'General', 'Profile', '$cookies', '$timeout', 'principal', 'UserData', 'viewAnimationsService', function($scope, $rootScope, $location, $http, Invites, Email, Users, Conversations, $q, FormatHTML, General, Profile, $cookies, $timeout, principal, UserData, viewAnimationsService) {
 
-    // Animation
-    if ($rootScope.nav) {
-        $('#page-system').removeClass("page-conversation-static");
-        $('#page-system').removeClass("page-contacts");
-        $('#page-system').addClass("page-conversation");
-        viewAnimationsService.setEnterAnimation('page-conversations');
-        viewAnimationsService.setLeaveAnimation('page-conversation');
+    // Detect device user agent 
+    var ua = navigator.userAgent;
+
+    if (ua.indexOf('AndroidApp') >= 0) {
+        // variable to turn on animation of view chage. Loading conversation directly should not animate.
+        $rootScope.animate_pages = false;
+    } else {
+        // variable to turn on animation of view chage. Loading conversation directly should not animate.
+        $rootScope.animate_pages = true;
+        // Animation
+        if ($rootScope.nav) {
+            $('#page-system').removeClass("page-conversation-static");
+            $('#page-system').removeClass("page-contacts");
+            $('#page-system').addClass("page-conversation");
+            viewAnimationsService.setEnterAnimation('page-conversations');
+            viewAnimationsService.setLeaveAnimation('page-conversation');
+        }
+
+        $rootScope.nav = { from: 'convs', to: 'conv' };
     }
 
-    $rootScope.nav = { from: 'convs', to: 'conv' };
-    // variable to turn on animation of view chage. Loading conversation directly should not animate.
-    $rootScope.animate_pages = true;
+
+
     // array of conversations
     $scope.conversations = [];
 
@@ -22,8 +33,7 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
         $scope.conversations = UserData.getConversationModel();
     });
 
-    // Detect device user agent 
-    var ua = navigator.userAgent;
+
 
     // Continue chat
     $scope.chat = function(conversation_id, conversation, index) {
