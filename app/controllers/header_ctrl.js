@@ -44,7 +44,7 @@ cardApp.controller("headerCtrl", ['Profile', 'Conversations', '$scope', '$rootSc
         // Add custom class for Android scrollbar
         if (ua.indexOf('AndroidApp') >= 0) {
             Android.animationBack();
-            $location.path(path);
+            //$location.path(path);
         } else {
             $location.path(path);
         }
