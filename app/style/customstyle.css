@@ -2663,34 +2663,44 @@ span#scroll_image_latest {
     top: 0;
     position: absolute;
     width: 100%;
+
+    /*transform: translate3d(0, 0, 0);*/
+    transform: rotateZ(360deg);
 }
 
 .page-conversation {
     z-index: 5000;
+ 
 }
 
 .page-conversation-static {
     z-index: 5000;
+    
 }
 
 .page-conversations {
     z-index: 1;
+   
 }
 
 .page-user_setting {
     z-index: 2000;
+ 
 }
 
 .page-contacts {
     z-index: 4000;
+  
 }
 
 .page-contacts-static {
     z-index: 4000;
+    
 }
 
 .page-group {
     z-index: 6000;
+
 }
 
 .pause.ng-leave {
@@ -2837,8 +2847,7 @@ span#scroll_image_latest {
 
 .page-conversation.ng-leave {
     /*-webkit-animation: slideOutRight .5s ease-out;*/
-    -webkit-animation: translateZ(0);
-    will-change: transform;
+
 -webkit-animation: slideOutRight .7s cubic-bezier(0.19, 1, 0.22, 1);
 
 }
@@ -2849,7 +2858,7 @@ span#scroll_image_latest {
 }
 
 .page-conversation.ng-enter {
-        -webkit-animation: translateZ(0);
+    
     will-change: transform;
     -webkit-animation: slide-in .7s cubic-bezier(0.19, 1, 0.22, 1);
 }
