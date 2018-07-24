@@ -2837,6 +2837,8 @@ span#scroll_image_latest {
 
 .page-conversation.ng-leave {
     /*-webkit-animation: slideOutRight .5s ease-out;*/
+    -webkit-animation: translateZ(0);
+    will-change: transform;
 -webkit-animation: slideOutRight .7s cubic-bezier(0.19, 1, 0.22, 1);
 
 }
@@ -2847,6 +2849,8 @@ span#scroll_image_latest {
 }
 
 .page-conversation.ng-enter {
+        -webkit-animation: translateZ(0);
+    will-change: transform;
     -webkit-animation: slide-in .7s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
