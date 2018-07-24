@@ -2200,19 +2200,9 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     $window.onRestart = this.onRestart;
     $window.restoreState = this.restoreState;
 
-    $window.changeUrl = this.changeUrl;
-
     var update_inprogress = false;
 
     // Android called functions.
-
-    changeUrl = function(new_url){
-        //$rootScope.animate_pages = false;
-        //console.log('changeUrl');
-        console.log('changeUrl: ' + new_url);
-        //$location.path("/chat/conversation/" + conversation_id);
-        $location.path(new_url);
-    };
 
     restoreState = function() {
         console.log('restoreState');
