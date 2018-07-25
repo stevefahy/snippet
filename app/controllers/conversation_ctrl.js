@@ -4,9 +4,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var ua = navigator.userAgent;
 
     // Add custom class for Android scrollbar
-    if (ua.indexOf('AndroidApp') >= 0) {
+    //if (ua.indexOf('AndroidApp') >= 0) {
         $('.content_cnv').addClass('content_cnv_android');
-    }
+    //}
 
     $rootScope.pageLoading = true;
 

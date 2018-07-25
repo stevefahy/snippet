@@ -1530,9 +1530,9 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 
 .content_cnv {
     width: 100vw;
-    overflow-y: auto;
+    overflow-y: overlay;
     /* DANGER added x 01/04/18 */
-    overflow-x: hidden;
+    /*overflow-x: hidden;*/
     height: calc(100%);
     border-radius: 1px;
     background-color: #FFFFFF;
@@ -1712,12 +1712,16 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     margin-left: calc(100vw - 100%);
 }
 
-.content_cnv_android::-webkit-scrollbar {}
+.content_cnv_android::-webkit-scrollbar {
+    width:1px;
+}
 
 .content_cnv_android::-webkit-scrollbar-thumb {
     background-color: #D3D3D3;
     border-radius: 1px;
 }
+
+.content_cnv_android::-webkit-scrollbar-track {background: transparent}
 
 .reset_height {
     height: 0px;
