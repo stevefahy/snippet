@@ -240,6 +240,7 @@ hr {
 
 
 
+
 /* HEADER */
 
 .header {
@@ -306,6 +307,7 @@ hr {
     box-shadow: rgba(0, 0, 0, 0.14) 0px 4px 5px 0px, ;
     box-shadow: rgba(0, 0, 0, 0.14) 0px 4px 5px 0px, rgba(0, 0, 0, 0.12) 0px 1px 10px 0px, rgba(0, 0, 0, 0.2) 0px 2px 4px -1px;
 }
+
 
 
 
@@ -441,6 +443,7 @@ hr {
 
 
 
+
 /* HEADER CONV */
 
 .header_conv_name {
@@ -463,6 +466,7 @@ hr {
     padding: 5px;
     margin: -5px;
 }
+
 
 
 
@@ -491,6 +495,7 @@ hr {
 }
 
 .header_search {}
+
 
 
 
@@ -560,6 +565,7 @@ hr {
 .material-icons.md-36 {
     font-size: 36px;
 }
+
 
 
 
@@ -704,6 +710,7 @@ hr {
     margin-left: auto;
     left: 90px;
 }
+
 
 
 
@@ -888,6 +895,7 @@ div#user {
 
 
 
+
 /* EDIT MENU */
 
 
@@ -902,10 +910,12 @@ div#user {
 
 
 
+
 /* Dropdown button on hover & focus */
 
 .dropbtn:hover,
 .dropbtn:focus {}
+
 
 
 
@@ -916,6 +926,7 @@ div#user {
     position: relative;
     display: inline-block;
 }
+
 
 
 
@@ -943,6 +954,7 @@ div#user {
 
 
 
+
 /* Links inside the dropdown */
 
 .dropdown-content div {
@@ -956,11 +968,13 @@ div#user {
 
 
 
+
 /* Change color of dropdown links on hover */
 
 .dropdown-content a:hover {
     background-color: #f1f1f1
 }
+
 
 
 
@@ -1210,6 +1224,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     grid-auto-rows: auto;
     height: 25px;
 }
+
 
 
 /*
@@ -1713,7 +1728,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 }
 
 .content_cnv_android::-webkit-scrollbar {
-    width:3px;
+    width: 3px;
 }
 
 .content_cnv_android::-webkit-scrollbar-thumb {
@@ -1721,7 +1736,9 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     border-radius: 1px;
 }
 
-.content_cnv_android::-webkit-scrollbar-track {background: transparent}
+.content_cnv_android::-webkit-scrollbar-track {
+    background: transparent
+}
 
 .reset_height {
     height: 0px;
@@ -1755,6 +1772,7 @@ span#scroll_image_latest {
     display: inline-block;
     width: 0px;
 }
+
 
 
 
@@ -2325,6 +2343,7 @@ span#scroll_image_latest {
 
 
 
+
 /* SEARCH CONTACTS */
 
 .contacts_result_container {
@@ -2374,6 +2393,7 @@ span#scroll_image_latest {
     cursor: pointer;
     color: #444;
 }
+
 
 
 
@@ -2477,6 +2497,7 @@ span#scroll_image_latest {
     z-index: 2000;
     background-color: white;
 }
+
 
 
 
@@ -2658,6 +2679,7 @@ span#scroll_image_latest {
 
 
 
+
 /* ANIMATIONS
 ============================================================================= 
 */
@@ -2673,37 +2695,30 @@ span#scroll_image_latest {
 
 .page-conversation {
     z-index: 5000;
- 
 }
 
 .page-conversation-static {
     z-index: 5000;
-    
 }
 
 .page-conversations {
     z-index: 1;
-   
 }
 
 .page-user_setting {
     z-index: 2000;
- 
 }
 
 .page-contacts {
     z-index: 4000;
-  
 }
 
 .page-contacts-static {
     z-index: 4000;
-    
 }
 
 .page-group {
     z-index: 6000;
-
 }
 
 .pause.ng-leave {
@@ -2713,6 +2728,7 @@ span#scroll_image_latest {
 .pause.ng-enter {
     -webkit-animation: .5s conversations-leave;
 }
+
 
 
 
@@ -2739,6 +2755,7 @@ span#scroll_image_latest {
 .page-group.ng-enter.ng-enter-active .content_cnv {
     overflow-y: hidden;
 }
+
 
 
 
@@ -2773,6 +2790,7 @@ span#scroll_image_latest {
 
 
 
+
 /* page-user_setting */
 
 .page-user_setting.ng-leave {
@@ -2794,6 +2812,7 @@ span#scroll_image_latest {
 
 
 
+
 /* conversations ---------------------- */
 
 .page-conversations.ng-leave {
@@ -2801,8 +2820,7 @@ span#scroll_image_latest {
 }
 
 .page-conversations.ng-enter {
-   -webkit-animation: .5s conversations-leave;
-   
+    -webkit-animation: .5s conversations-leave;
 }
 
 .page-conversations.ng-enter .content_cnv {
@@ -2820,7 +2838,10 @@ span#scroll_image_latest {
 
 
 
+
 /* conversation ---------------------- */
+
+
 /*
 .left-to-right.ng-leave {
     -webkit-animation: slideOutRight 5s forwards;
@@ -2838,6 +2859,7 @@ span#scroll_image_latest {
     -webkit-animation: 5s conversations-leave;
 }
 */
+
 .page-conversation_group.ng-leave {
     -webkit-animation: .5s conversations-leave;
 }
@@ -2850,9 +2872,7 @@ span#scroll_image_latest {
 
 .page-conversation.ng-leave {
     /*-webkit-animation: slideOutRight .5s ease-out;*/
-
--webkit-animation: slideOutRight .7s cubic-bezier(0.19, 1, 0.22, 1);
-
+    -webkit-animation: slideOutRight .7s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .page-conversation.ng-leave.ng-leave-active .content_cnv {
@@ -2861,33 +2881,31 @@ span#scroll_image_latest {
 }
 
 .page-conversation.ng-enter {
-    
+
     will-change: transform;
     -webkit-animation: slide-in .7s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .page-conversation.ng-enter.ng-enter-active .content_cnv {
     overflow-y: hidden;
-
 }
 
+
 /* page-conversation entering */
+
 .page-conversation-static.ng-leave {
     -webkit-animation: .3s conversations-leave;
 }
 
+
 /* page-conversation leaving */
+
+
 /*
 .page-conversation-static.ng-enter {
     -webkit-animation: .5s conversations-leave;
 }
 */
-
-
-
-
-
-
 
 
 /* slide out from the right */
@@ -3099,6 +3117,7 @@ b.header_3 {
 }
 
 
+
 /*
 b.header1:after {
   content:"\a";
@@ -3136,6 +3155,7 @@ header1:after {
 }
 
 
+
 /*
 span#delete {
     display: block;
@@ -3159,6 +3179,7 @@ span#header b.header_3 {
 .header_3 {
     display: block;
 }
+
 
 
 /*
@@ -3195,6 +3216,7 @@ span#header b.header_3 {
 }
 
 
+
 /*
 .header_1 span, .header_2 span, .header_3 span {
     font-size: initial;
@@ -3202,3 +3224,27 @@ span#header b.header_3 {
     display: block;
 }
 */
+
+.progress-container {
+    /*
+    width: 10px;
+    height: calc(100vh - 50px);
+    z-index: 1000;
+    position: fixed;
+    background-color: rgba(255, 0, 0, 0.2);
+    */
+    width: 10px;
+    top: 55px;
+    height: 446.83px;
+
+        right: 0px;
+    z-index: 1000;
+    position: absolute;
+    background-color: rgba(255, 0, 0, 0.2);
+}
+
+.progress-bar {
+    position: relative;
+    height: 20px;
+    background-color: rgba(0, 255, 0, 0.2);
+}

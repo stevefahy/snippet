@@ -33,27 +33,39 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var username = $routeParams.username;
 
 
-    /*
-        $(function(){
-        $('.scroll-body').slimScroll({
-            height: '100%',
-            start: 'bottom',
-            alwaysVisible: true
-        });
-    });
-    */
+    //scroll
+    document.getElementById("content_cnv_scroll").onscroll = function() {myFunction()};
 
-    $timeout(function() {
-        //attach();
-        //$scope.clicky();
-        //$rootScope.$broadcast('clicky');
-        //$rootScope.$broadcast('attachScroll');
-       //slim-scroll
+    function myFunction() {
+ 
+        var winScroll = document.getElementById("content_cnv_scroll").scrollTop;
+        var height = document.getElementById("content_cnv_scroll").scrollHeight - document.getElementById("content_cnv_scroll").clientHeight;
+    
+        var content_div_height = $('#content_cnv_scroll').height();
+        var content_height = document.getElementById("content_cnv_scroll").scrollHeight;
+        
+        var scroll_thumb_height = (100 / (((content_height /content_div_height) * 100 )/100));
+        
 
-       //$('.content_cnv').attr('slim-scroll', '');
+        var scrolled_max = 100 - scroll_thumb_height ;
 
-       //$rootScope.$broadcast('attachScroll');
-    },2000);
+        var scrolled = (winScroll / (height)*100);
+
+        scrolled = (scrolled * scrolled_max)/100;
+
+
+        console.log('content div height: ' + content_div_height);
+        console.log('content_height: ' + content_height);
+        console.log('scroll_thumb_height : ' + scroll_thumb_height );
+        console.log('winScroll: ' + winScroll);
+        console.log('height: ' + height);
+        console.log('scrolled: ' + scrolled);
+
+        document.getElementById("myBar").style.height = scroll_thumb_height  + "%";
+
+        document.getElementById("myBar").style.top = scrolled + "%";
+
+    }
 
 
 

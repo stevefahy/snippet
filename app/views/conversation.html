@@ -4,7 +4,11 @@
         <div ng-include="'/views/spinner.html'"></div>
     </div>
     <!--<div class="content_cnv" ng-class="{ 'content_conv_off': $root.pageLoading}"    scroll-glue>-->
-    <div class="content_cnv" >
+            <div class="progress-container">
+        <div class="progress-bar" id="myBar"></div>
+    </div>
+    <div class="content_cnv" id="content_cnv_scroll">
+
         <div id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : false | limitTo:totalDisplayed" on-finish-render="ngRepeatFinished">
             <div class=" resize-container" id="conversation_part" ng-init="disableCheckboxes(card._id)">
                 <form class="form-horizontal">
