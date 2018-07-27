@@ -3577,6 +3577,8 @@ cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$comp
                     var content_position = $(wrapperDomElement).position();
                     var content_height = $(wrapperDomElement).height();
                     // Top
+                    console.log('TOP: ' + content_position.top);
+                    console.log('HEIGHT: ' + content_height);
                     $('.' + options.progress_container_class).css({ top: content_position.top });
                     // Height
                     $('.' + options.progress_container_class).css({ height: content_height });
