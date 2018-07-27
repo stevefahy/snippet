@@ -2907,7 +2907,19 @@ span#scroll_image_latest {
 }
 */
 
+.fade_in {
+    -webkit-animation: fade-in 1s linear forwards;
+}
 
+@keyframes fade-in {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
 /* slide out from the right */
 
 @keyframes slideOutRight {
@@ -3248,5 +3260,5 @@ span#header b.header_3 {
     position: relative;
     height: 20px;
     background-color: rgba(90, 90, 90, .5);
-    visibility: hidden;
+    opacity: 0;
 }

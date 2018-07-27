@@ -3613,7 +3613,9 @@ cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$comp
                         $(progressBar[0]).css('height', thumb_height + "%");
                         // Set the progress thumb visible.
                         $timeout(function() {
-                            $(progressBar[0]).css('visibility', 'visible');
+                            //$(progressBar[0]).css('visibility', 'visible');
+                            $(progressBar[0]).addClass('fade_in');
+
                         }, options.start_delay);
                         // Set scrolled max value.
                         values.scrolled_max = 100 - thumb_height;
