@@ -2041,10 +2041,10 @@ cardApp.filter("momentFilter", function() {
         if (today.isSame(value, 'd')) {
             //return moment(value).fromNow() + ' : ' + moment(value).format("HH:mm");
             //return moment(value).fromNow();
-            console.log('day');
+            //console.log('day');
             return moment(value).format("HH:mm");
         } else {
-            console.log('calender');
+            //console.log('calender');
             return moment(value).calendar();
         }
     };
@@ -2072,7 +2072,7 @@ cardApp.directive('momentTime', ['$interval', '$filter', function($interval, $fi
         momentFilter = $filter('momentFilter');
 
         function updateTime() {
-            console.log('update: ' + momentFilter(format));
+            //console.log('update: ' + momentFilter(format));
             element.text((new Date(), momentFilter(format)));
         }
 
@@ -2082,7 +2082,7 @@ cardApp.directive('momentTime', ['$interval', '$filter', function($interval, $fi
         });
 
         element.on('$destroy', function() {
-            console.log('destroy time convs');
+            //console.log('destroy time convs');
             $interval.cancel(timeoutId);
         });
 
@@ -3523,6 +3523,139 @@ cardApp.directive('viewAnimations', function(viewAnimationsService, $rootScope) 
     };
 });
 
+// TODO - add global ua detection
+// TODO - add ng show or conditional option for this directive
+// TODO - set top and height for the progress-container from within the container
+
+cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$compile', function($window, $document, $timeout, $compile) {
+    var defaults = {
+        delay: 100,
+        start_delay: 1000,
+        thumb_min_height: 3,
+        element_id: 'scroll_indicator_scroll',
+        progress_container_class: 'progress-container',
+        progress_bar_class: 'progress-bar',
+        progress_thumb_id: 'progress-thumb'
+        //scrollbarContainerClass: 'slim-scroll-scrollbar-container',
+        //scrollbarClass: 'slim-scroll-scrollbar',
+        //specialClass: 'animate'
+    };
+    return {
+        restrict: 'A',
+        transclude: false,
+        replace: false,
+        scope: {
+            options: '='
+        },
+        link: function($scope, element) {
+
+            var options = angular.extend({}, defaults, $scope.options);
+
+            var wrapperParentElement = element.parent()[0];
+            var wrapperDomElement = element;
+
+            element.attr('id', options.element_id);
+
+            // create progress-container
+            var progressContainer = angular.element($window.document.createElement('div'));
+            progressContainer.addClass(options.progress_container_class);
+            // create progress-bar
+            //var progress_thumb = 'progress-thumb';
+            var progressBar = angular.element('<div id="' + options.progress_thumb_id + '"></div>');
+            progressBar.addClass(options.progress_bar_class);
+            // Add the progress-bar to the progress-container
+            progressContainer.append(progressBar);
+            // Attach to the DOM
+            wrapperParentElement.insertBefore(progressContainer[0], wrapperParentElement.children[0]);
+
+
+            //Methods
+            var values = {},
+                assignValues = function() {
+                    console.log('assign values');
+                    // Position of scroll indicator 
+                    var content_position = $(wrapperDomElement).position();
+                    var content_height = $(wrapperDomElement).height();
+                    // Top
+                    $('.' + options.progress_container_class).css({ top: content_position.top });
+                    // Height
+                    $('.' + options.progress_container_class).css({ height: content_height });
+                    //
+                    //values.height = document.getElementById(options.element_id).scrollHeight - document.getElementById(options.element_id).clientHeight;
+                    values.height = element[0].scrollHeight - element[0].clientHeight;
+                    console.log(values.height);
+                    values.content_div_height = $('#' + options.element_id).height();
+                    console.log(values.content_div_height);
+                    //values.content_height = document.getElementById(options.element_id).scrollHeight;
+                    values.content_height = element[0].scrollHeight;
+                    console.log(values.content_height);
+                    values.scroll_thumb_height = (100 / (((values.content_height / values.content_div_height) * 100) / 100));
+                    console.log(values.scroll_thumb_height);
+                    //values.scrolled_max = 100 - values.scroll_thumb_height;
+                    //console.log(values.scrolled_max);
+
+                    // Check for minimum height.
+                    var thumb_height = options.thumb_min_height;
+                    if (values.scroll_thumb_height > options.thumb_min_height) {
+                        thumb_height = values.scroll_thumb_height;
+                    }
+                    // Set the progress thumb height.
+                    $(progressBar[0]).css('height', thumb_height + "%");
+                    // Set the progress thumb visible.
+                    $timeout(function() {
+                        $(progressBar[0]).css('visibility', 'visible');
+                    }, options.start_delay);
+                    // Set scrolled max value.
+                    values.scrolled_max = 100 - thumb_height;
+                    console.log(values.scrolled_max);
+                };
+
+            // bind scroll
+            wrapperDomElement.bind('scroll', doScroll);
+            //
+            angular.element($window).bind('resize', function() { $timeout(assignValues, options.delay); });
+
+            $scope.$watch(function() {
+                return element[0].scrollHeight;
+            }, function(newValue, oldValue) {
+                assignValues();
+            }, true);
+
+            $timeout(assignValues, options.delay);
+
+
+            function doScroll() {
+                var winScroll = document.getElementById(options.element_id).scrollTop;
+                //var height = document.getElementById(options.element_id).scrollHeight - document.getElementById(options.element_id).clientHeight;
+
+                //var content_div_height = $('#' + options.element_id).height();
+                //var content_height = document.getElementById(options.element_id).scrollHeight;
+
+                //var scroll_thumb_height = (100 / (((values.content_height / values.content_div_height) * 100) / 100));
+
+
+                //var scrolled_max = 100 - values.scroll_thumb_height;
+
+                var scrolled = (winScroll / (values.height) * 100);
+
+                scrolled = (scrolled * values.scrolled_max) / 100;
+
+                //document.getElementById(options.progress_thumb_id).style.height = values.scroll_thumb_height + "%";
+
+                document.getElementById(options.progress_thumb_id).style.top = scrolled + "%";
+
+                console.log('winScroll : ' + winScroll);
+                console.log('height : ' + values.height);
+                console.log('content_div_height : ' + values.content_div_height);
+                console.log('content_height : ' + values.content_height);
+                console.log('scroll_thumb_height : ' + values.scroll_thumb_height);
+                console.log('scrolled_max : ' + values.scrolled_max);
+                console.log('scrolled : ' + scrolled);
+            }
+
+        }
+    };
+}]);
 /*
 cardApp.directive('addSlimScroll', ['$window', '$document', '$timeout', '$compile', function($window, $document, $timeout, $compile) {
     return {
