@@ -3463,13 +3463,14 @@ cardApp.config(['$httpProvider', function($httpProvider) {
 }]);
 
 
-cardApp.directive('onFinishRender', function($timeout) {
+cardApp.directive('onFinishRender', function($timeout, $rootScope) {
     return {
         restrict: 'A',
         link: function(scope, element, attr) {
             if (scope.$last === true) {
                 $timeout(function() {
-                    scope.$emit('ngRepeatFinished');
+                    //scope.$emit('ngRepeatFinished');
+                    $rootScope.$broadcast("ngRepeatFinished", { temp: "some value" });
                 });
             }
         }
@@ -3527,7 +3528,7 @@ cardApp.directive('viewAnimations', function(viewAnimationsService, $rootScope) 
 // TODO - add ng show or conditional option for this directive
 // TODO - set top and height for the progress-container from within the container
 
-cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$compile', function($window, $document, $timeout, $compile) {
+cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$compile', '$rootScope', function($window, $document, $timeout, $compile, $rootScope) {
     var defaults = {
         delay: 100,
         start_delay: 1000,
@@ -3583,46 +3584,90 @@ cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$comp
                     // Height
                     $('.' + options.progress_container_class).css({ height: content_height });
                     //
-                    //values.height = document.getElementById(options.element_id).scrollHeight - document.getElementById(options.element_id).clientHeight;
-                    values.height = element[0].scrollHeight - element[0].clientHeight;
-                    console.log(values.height);
-                    values.content_div_height = $('#' + options.element_id).height();
-                    console.log(values.content_div_height);
-                    //values.content_height = document.getElementById(options.element_id).scrollHeight;
-                    values.content_height = element[0].scrollHeight;
-                    console.log(values.content_height);
-                    values.scroll_thumb_height = (100 / (((values.content_height / values.content_div_height) * 100) / 100));
-                    console.log(values.scroll_thumb_height);
-                    //values.scrolled_max = 100 - values.scroll_thumb_height;
-                    //console.log(values.scrolled_max);
 
-                    // Check for minimum height.
-                    var thumb_height = options.thumb_min_height;
-                    if (values.scroll_thumb_height > options.thumb_min_height) {
-                        thumb_height = values.scroll_thumb_height;
+
+
+                    values.content_div_height = $('#' + options.element_id).height();
+                    console.log('content_div_height: ' + values.content_div_height);
+                    values.content_height = element[0].scrollHeight;
+                    console.log('content_height: ' + values.content_height);
+
+                    if (values.content_height > values.content_div_height) {
+
+                        //values.height = document.getElementById(options.element_id).scrollHeight - document.getElementById(options.element_id).clientHeight;
+                        values.height = element[0].scrollHeight - element[0].clientHeight;
+                        console.log('height: ' + values.height);
+                        //values.content_height = document.getElementById(options.element_id).scrollHeight;
+
+                        values.scroll_thumb_height = (100 / (((values.content_height / values.content_div_height) * 100) / 100));
+                        console.log(values.scroll_thumb_height);
+                        //values.scrolled_max = 100 - values.scroll_thumb_height;
+                        //console.log(values.scrolled_max);
+
+                        // Check for minimum height.
+                        var thumb_height = options.thumb_min_height;
+                        if (values.scroll_thumb_height > options.thumb_min_height) {
+                            thumb_height = values.scroll_thumb_height;
+                        }
+                        // Set the progress thumb height.
+                        $(progressBar[0]).css('height', thumb_height + "%");
+                        // Set the progress thumb visible.
+                        $timeout(function() {
+                            $(progressBar[0]).css('visibility', 'visible');
+                        }, options.start_delay);
+                        // Set scrolled max value.
+                        values.scrolled_max = 100 - thumb_height;
+                        console.log(values.scrolled_max);
+
+                        // set the intial scroll position
+                        doScroll();
+
+                        // bind scroll
+                        wrapperDomElement.bind('scroll', doScroll);
                     }
-                    // Set the progress thumb height.
-                    $(progressBar[0]).css('height', thumb_height + "%");
-                    // Set the progress thumb visible.
-                    $timeout(function() {
-                        $(progressBar[0]).css('visibility', 'visible');
-                    }, options.start_delay);
-                    // Set scrolled max value.
-                    values.scrolled_max = 100 - thumb_height;
-                    console.log(values.scrolled_max);
                 };
 
             // bind scroll
-            wrapperDomElement.bind('scroll', doScroll);
+            //wrapperDomElement.bind('scroll', doScroll);
             //
             angular.element($window).bind('resize', function() { $timeout(assignValues, options.delay); });
-
-            $scope.$watch(function() {
-                return element[0].scrollHeight;
-            }, function(newValue, oldValue) {
+            //
+            // listen for directive div resize
+/*
+            $rootScope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
+                console.log('repeat finished');
                 assignValues();
-            }, true);
+            });
+            */
+            //
+            /*
+                        $scope.$watch(function() {
+                            return element[0].scrollHeight;
+                        }, function(newValue, oldValue) {
+                            assignValues();
+                        }, true);
 
+                        $scope.$watch(getElementHeight, function(newValue) {
+                            //$scope[scopeVariableName] = newValue;
+                            console.log('directive height changed');
+                            assignValues();
+                        });
+                        */
+
+            $scope.$watchGroup([getElementHeight, getElementScrollHeight], function(newValues, oldValues, scope) {
+                console.log('client or scroll height changed');
+                assignValues();
+            });
+
+            function getElementHeight() {
+                return element[0].clientHeight;
+            }
+
+            function getElementScrollHeight() {
+                return element[0].scrollHeight;
+            }
+
+           
             $timeout(assignValues, options.delay);
 
             $scope.$on('$destroy', function() {
@@ -3632,7 +3677,7 @@ cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$comp
             });
 
 
-            function doScroll() {
+            doScroll = function() {
                 var winScroll = document.getElementById(options.element_id).scrollTop;
                 //var height = document.getElementById(options.element_id).scrollHeight - document.getElementById(options.element_id).clientHeight;
 
@@ -3659,7 +3704,7 @@ cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$comp
                 console.log('scroll_thumb_height : ' + values.scroll_thumb_height);
                 console.log('scrolled_max : ' + values.scrolled_max);
                 console.log('scrolled : ' + scrolled);
-            }
+            };
 
         }
     };
