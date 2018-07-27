@@ -3623,6 +3623,12 @@ cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$comp
 
             $timeout(assignValues, options.delay);
 
+            $scope.$on('$destroy', function() {
+                console.log('destroy scroller');
+                wrapperDomElement.unbind('scroll');
+                angular.element($window).unbind('resize', assignValues);
+            });
+
 
             function doScroll() {
                 var winScroll = document.getElementById(options.element_id).scrollTop;
