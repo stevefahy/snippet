@@ -12,6 +12,8 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
     $rootScope.nav = { from: 'convs', to: 'conv' };
     // variable to turn on animation of view chage. Loading conversation directly should not animate.
     $rootScope.animate_pages = true;
+
+    $scope.scroll_indicator_options = {disable:!$rootScope.is_mobile};
     // array of conversations
     $scope.conversations = [];
 

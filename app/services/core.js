@@ -3527,6 +3527,23 @@ cardApp.directive('viewAnimations', function(viewAnimationsService, $rootScope) 
 // TODO - add global ua detection
 // TODO - add ng show or conditional option for this directive
 // TODO - set top and height for the progress-container from within the container
+// TODO - only init if required.
+
+cardApp.directive('test', function() {
+    return {
+        restrict: 'A',
+        scope: {
+            myId: '@'
+        },
+        link: function(scope, iElement, iAttrs) {
+
+            iAttrs.$observe('myId', function(value) {
+                console.log('TEST: ' + value);
+            });
+        }
+    };
+});
+
 
 cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$compile', '$rootScope', function($window, $document, $timeout, $compile, $rootScope) {
     var defaults = {
@@ -3536,21 +3553,43 @@ cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$comp
         element_id: 'scroll_indicator_scroll',
         progress_container_class: 'progress-container',
         progress_bar_class: 'progress-bar',
-        progress_thumb_id: 'progress-thumb'
-        //scrollbarContainerClass: 'slim-scroll-scrollbar-container',
-        //scrollbarClass: 'slim-scroll-scrollbar',
-        //specialClass: 'animate'
+        progress_thumb_id: 'progress-thumb',
+        disable: 'false'
+
     };
     return {
         restrict: 'A',
-        transclude: false,
-        replace: false,
+        //transclude: false,
+        //replace: false,
         scope: {
-            options: '='
+            //options: '=',
+            //scrollIndicator: '@',
+            //pahn: '=scrollIndicator'
+            scrollIndicator: '='
         },
-        link: function($scope, element) {
+        link: function($scope, element, attrs) {
+/*
+           attrs.$observe('scrollIndicator', function(value) {
+                console.log('scrollIndicator: ' + $scope.scrollIndicator);
+                console.log($scope.scrollIndicator);
+            });
+            */
+console.log($scope.scrollIndicator);
+            //var options = angular.extend({}, defaults, $scope.options);
+            var options = angular.extend({}, defaults, $scope.scrollIndicator);
+            //var test = angular.extend({}, $scope.test);
+            console.log('steves');
+            console.log(attrs);
+            //console.log($scope.scrollIndicator); //games
+            //console.log($scope.pahn);
 
-            var options = angular.extend({}, defaults, $scope.options);
+
+            console.log('options');
+            console.log(options);
+            //console.log($scope.myAttribute);
+            //var value = $parse(attr.scrollIndicator)($scope);
+
+            if(!options.disable){
 
             var wrapperParentElement = element.parent()[0];
             var wrapperDomElement = element;
@@ -3635,27 +3674,6 @@ cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$comp
             angular.element($window).bind('resize', function() { $timeout(assignValues, options.delay); });
             //
             // listen for directive div resize
-/*
-            $rootScope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
-                console.log('repeat finished');
-                assignValues();
-            });
-            */
-            //
-            /*
-                        $scope.$watch(function() {
-                            return element[0].scrollHeight;
-                        }, function(newValue, oldValue) {
-                            assignValues();
-                        }, true);
-
-                        $scope.$watch(getElementHeight, function(newValue) {
-                            //$scope[scopeVariableName] = newValue;
-                            console.log('directive height changed');
-                            assignValues();
-                        });
-                        */
-
             $scope.$watchGroup([getElementHeight, getElementScrollHeight], function(newValues, oldValues, scope) {
                 console.log('client or scroll height changed');
                 assignValues();
@@ -3669,11 +3687,12 @@ cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$comp
                 return element[0].scrollHeight;
             }
 
-           
+
             $timeout(assignValues, options.delay);
 
             $scope.$on('$destroy', function() {
                 console.log('destroy scroller');
+                $(progressBar[0]).css('visibility', 'hidden');
                 wrapperDomElement.unbind('scroll');
                 angular.element($window).unbind('resize', assignValues);
             });
@@ -3681,21 +3700,10 @@ cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$comp
 
             doScroll = function() {
                 var winScroll = document.getElementById(options.element_id).scrollTop;
-                //var height = document.getElementById(options.element_id).scrollHeight - document.getElementById(options.element_id).clientHeight;
-
-                //var content_div_height = $('#' + options.element_id).height();
-                //var content_height = document.getElementById(options.element_id).scrollHeight;
-
-                //var scroll_thumb_height = (100 / (((values.content_height / values.content_div_height) * 100) / 100));
-
-
-                //var scrolled_max = 100 - values.scroll_thumb_height;
 
                 var scrolled = (winScroll / (values.height) * 100);
 
                 scrolled = (scrolled * values.scrolled_max) / 100;
-
-                //document.getElementById(options.progress_thumb_id).style.height = values.scroll_thumb_height + "%";
 
                 document.getElementById(options.progress_thumb_id).style.top = scrolled + "%";
 
@@ -3707,8 +3715,9 @@ cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$comp
                 console.log('scrolled_max : ' + values.scrolled_max);
                 console.log('scrolled : ' + scrolled);
             };
-
+}
         }
+
     };
 }]);
 /*

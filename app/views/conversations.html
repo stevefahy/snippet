@@ -1,6 +1,6 @@
 <div class="container_cnv">
     <div class="header_container" ng-include="'/views/header.html'"></div>
-    <div class="content_cnv" scroll-indicator>
+    <div class="content_cnv"  scroll-indicator="scroll_indicator_options" scroll-glue>
         <div ng-repeat="conversation in conversations | orderBy :'updatedAt' : true track by $index">
             <div id="conv_div" ng-click="(conversation.conversation_type == 'private') ? chat(conversation._id, conversation,  $index) : chatPublic(conversation.admin, conversation, $index)">
                 <li class="list-group-item d-flex justify-content-between align-items-center convs_list">

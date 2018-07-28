@@ -8,6 +8,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
        // $('.content_cnv').addClass('content_cnv_android');
     }
 
+    $scope.options = {'test':true};
+
     $rootScope.pageLoading = true;
 
     $scope.getFocus = Format.getFocus;
