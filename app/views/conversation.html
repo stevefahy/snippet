@@ -9,7 +9,7 @@
         <div class="progress-bar" id="myBar"></div>
     </div>
 -->
-    <div class="content_cnv"  scroll-indicator >
+    <div class="content_cnv"  scroll-indicator="scroll_indicator_options" scroll-glue>
         <div id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : false | limitTo:totalDisplayed" on-finish-render="ngRepeatFinished">
             <div class=" resize-container" id="conversation_part" ng-init="disableCheckboxes(card._id)">
                 <form class="form-horizontal">

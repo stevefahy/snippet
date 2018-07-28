@@ -3588,8 +3588,9 @@ console.log($scope.scrollIndicator);
             console.log(options);
             //console.log($scope.myAttribute);
             //var value = $parse(attr.scrollIndicator)($scope);
-
-            if(!options.disable){
+console.log(options.disable);
+console.log(!options.disable);
+            if(options.disable !== true){
 
             var wrapperParentElement = element.parent()[0];
             var wrapperDomElement = element;

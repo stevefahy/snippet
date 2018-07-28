@@ -8,6 +8,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
        // $('.content_cnv').addClass('content_cnv_android');
     }
 
+    // Enable scroll indicator if mobile.
+    $scope.scroll_indicator_options = {disable:!$rootScope.is_mobile};
+
     $scope.options = {'test':true};
 
     $rootScope.pageLoading = true;
