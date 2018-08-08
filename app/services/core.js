@@ -3549,6 +3549,8 @@ cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$comp
     var defaults = {
         delay: 100,
         start_delay: 1000,
+        init_scroll_delay: 3000,
+        scroll_delay: 1000,
         thumb_min_height: 3,
         element_id: 'scroll_indicator_scroll',
         progress_container_class: 'progress-container',
@@ -3568,13 +3570,13 @@ cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$comp
             scrollIndicator: '='
         },
         link: function($scope, element, attrs) {
-/*
-           attrs.$observe('scrollIndicator', function(value) {
-                console.log('scrollIndicator: ' + $scope.scrollIndicator);
-                console.log($scope.scrollIndicator);
-            });
-            */
-console.log($scope.scrollIndicator);
+            /*
+                       attrs.$observe('scrollIndicator', function(value) {
+                            console.log('scrollIndicator: ' + $scope.scrollIndicator);
+                            console.log($scope.scrollIndicator);
+                        });
+                        */
+            console.log($scope.scrollIndicator);
             //var options = angular.extend({}, defaults, $scope.options);
             var options = angular.extend({}, defaults, $scope.scrollIndicator);
             //var test = angular.extend({}, $scope.test);
@@ -3588,135 +3590,208 @@ console.log($scope.scrollIndicator);
             console.log(options);
             //console.log($scope.myAttribute);
             //var value = $parse(attr.scrollIndicator)($scope);
-console.log(options.disable);
-console.log(!options.disable);
-            if(options.disable !== true){
+            console.log(options.disable);
+            console.log(!options.disable);
+            if (options.disable !== true) {
 
-            var wrapperParentElement = element.parent()[0];
-            var wrapperDomElement = element;
+                var wrapperParentElement = element.parent()[0];
+                var wrapperDomElement = element;
 
-            element.attr('id', options.element_id);
+                element.attr('id', options.element_id);
 
-            // create progress-container
-            var progressContainer = angular.element($window.document.createElement('div'));
-            progressContainer.addClass(options.progress_container_class);
-            // create progress-bar
-            //var progress_thumb = 'progress-thumb';
-            var progressBar = angular.element('<div id="' + options.progress_thumb_id + '"></div>');
-            progressBar.addClass(options.progress_bar_class);
-            // Add the progress-bar to the progress-container
-            progressContainer.append(progressBar);
-            // Attach to the DOM
-            wrapperParentElement.insertBefore(progressContainer[0], wrapperParentElement.children[0]);
+                // create progress-container
+                var progressContainer = angular.element($window.document.createElement('div'));
+                progressContainer.addClass(options.progress_container_class);
+                // create progress-bar
+                //var progress_thumb = 'progress-thumb';
+                var progressBar = angular.element('<div id="' + options.progress_thumb_id + '"></div>');
+                progressBar.addClass(options.progress_bar_class);
+                // Add the progress-bar to the progress-container
+                progressContainer.append(progressBar);
+                // Attach to the DOM
+                wrapperParentElement.insertBefore(progressContainer[0], wrapperParentElement.children[0]);
 
-
-            //Methods
-            var values = {},
-                assignValues = function() {
-                    console.log('assign values');
-                    // Position of scroll indicator 
-                    var content_position = $(wrapperDomElement).position();
-                    var content_height = $(wrapperDomElement).height();
-                    // Top
-                    console.log('TOP: ' + content_position.top);
-                    console.log('HEIGHT: ' + content_height);
-                    $('.' + options.progress_container_class).css({ top: content_position.top });
-                    // Height
-                    $('.' + options.progress_container_class).css({ height: content_height });
-                    //
+                //var is_scrolling = false;
+                var scrollpromise;
+                var initial_scroll;
 
 
+                   $(progressBar[0]).css('visibility', 'hidden');
+                    //$(progressBar[0]).removeClass('fade_out');
+                    //$(progressBar[0]).removeClass('fade_in');
 
-                    values.content_div_height = $('#' + options.element_id).height();
-                    console.log('content_div_height: ' + values.content_div_height);
-                    values.content_height = element[0].scrollHeight;
-                    console.log('content_height: ' + values.content_height);
+                 var delay_val = options.init_scroll_delay;
+                   console.log('INITIALIZE');
 
-                    if (values.content_height > values.content_div_height) {
+                //Methods
+                var values = {},
+                    assignValues = function() {
+                        console.log('assign values');
+                        // Position of scroll indicator 
+                        var content_position = $(wrapperDomElement).position();
+                        var content_height = $(wrapperDomElement).height();
+                        // Top
+                        console.log('TOP: ' + content_position.top);
+                        console.log('HEIGHT: ' + content_height);
+                        $('.' + options.progress_container_class).css({ top: content_position.top });
+                        // Height
+                        $('.' + options.progress_container_class).css({ height: content_height });
+                        //
 
-                        //values.height = document.getElementById(options.element_id).scrollHeight - document.getElementById(options.element_id).clientHeight;
-                        values.height = element[0].scrollHeight - element[0].clientHeight;
-                        console.log('height: ' + values.height);
-                        //values.content_height = document.getElementById(options.element_id).scrollHeight;
 
-                        values.scroll_thumb_height = (100 / (((values.content_height / values.content_div_height) * 100) / 100));
-                        console.log(values.scroll_thumb_height);
-                        //values.scrolled_max = 100 - values.scroll_thumb_height;
-                        //console.log(values.scrolled_max);
 
-                        // Check for minimum height.
-                        var thumb_height = options.thumb_min_height;
-                        if (values.scroll_thumb_height > options.thumb_min_height) {
-                            thumb_height = values.scroll_thumb_height;
+                        values.content_div_height = $('#' + options.element_id).height();
+                        console.log('content_div_height: ' + values.content_div_height);
+                        values.content_height = element[0].scrollHeight;
+                        console.log('content_height: ' + values.content_height);
+
+                        if (values.content_height > values.content_div_height) {
+
+                            //values.height = document.getElementById(options.element_id).scrollHeight - document.getElementById(options.element_id).clientHeight;
+                            values.height = element[0].scrollHeight - element[0].clientHeight;
+                            console.log('height: ' + values.height);
+                            //values.content_height = document.getElementById(options.element_id).scrollHeight;
+
+                            values.scroll_thumb_height = (100 / (((values.content_height / values.content_div_height) * 100) / 100));
+                            console.log(values.scroll_thumb_height);
+                            //values.scrolled_max = 100 - values.scroll_thumb_height;
+                            //console.log(values.scrolled_max);
+
+                            // Check for minimum height.
+                            var thumb_height = options.thumb_min_height;
+                            if (values.scroll_thumb_height > options.thumb_min_height) {
+                                thumb_height = values.scroll_thumb_height;
+                            }
+                            // Set the progress thumb height.
+                            $(progressBar[0]).css('height', thumb_height + "%");
+                            // Set the progress thumb visible.
+                            /*
+                            $timeout(function() {
+                                //$(progressBar[0]).css('visibility', 'visible');
+                                $(progressBar[0]).addClass('fade_in');
+
+                            }, options.start_delay);
+                            */
+                            // Set scrolled max value.
+                            values.scrolled_max = 100 - thumb_height;
+                            console.log(values.scrolled_max);
+/*
+                            // set the intial scroll position
+                            initial_scroll = $timeout(function() {
+                                console.log('INITIAL');
+                                doScroll();
+                            }, options.start_delay);
+                            */
+
+                            // bind scroll
+                            //wrapperDomElement.bind('scroll', doScroll);
                         }
-                        // Set the progress thumb height.
-                        $(progressBar[0]).css('height', thumb_height + "%");
-                        // Set the progress thumb visible.
-                        $timeout(function() {
-                            //$(progressBar[0]).css('visibility', 'visible');
-                            $(progressBar[0]).addClass('fade_in');
+                    };
 
-                        }, options.start_delay);
-                        // Set scrolled max value.
-                        values.scrolled_max = 100 - thumb_height;
-                        console.log(values.scrolled_max);
+                 // set the intial scroll position
+                            $timeout(function() {
+                                console.log('INITIAL');
+                                 $(progressBar[0]).css('visibility', 'visible');
+                                
+                                // bind scroll
+                            wrapperDomElement.bind('scroll', doScroll);
 
-                        // set the intial scroll position
-                        doScroll();
+                            doScroll();
+                            }, options.start_delay);
+                // bind scroll
+                //wrapperDomElement.bind('scroll', doScroll);
+                //
+                angular.element($window).bind('resize', function() { $timeout(assignValues, options.delay); });
+                //
+                // listen for directive div resize
+                $scope.$watchGroup([getElementHeight, getElementScrollHeight], function(newValues, oldValues, scope) {
+                    console.log('client or scroll height changed');
+                    assignValues();
+                });
 
-                        // bind scroll
-                        wrapperDomElement.bind('scroll', doScroll);
-                    }
+                function getElementHeight() {
+                    return element[0].clientHeight;
+                }
+
+                function getElementScrollHeight() {
+                    return element[0].scrollHeight;
+                }
+
+
+                $timeout(assignValues, options.delay);
+
+                $scope.$on('$destroy', function() {
+                    console.log('destroy scroller');
+                    $timeout.cancel(scrollpromise);
+                    $(progressBar[0]).css('visibility', 'hidden');
+                    $(progressBar[0]).removeClass('fade_out');
+                    $(progressBar[0]).removeClass('fade_in');
+                    wrapperDomElement.unbind('scroll');
+                    angular.element($window).unbind('resize', assignValues);
+                });
+
+                //var initial_scroll = true;
+                //var delay_val;
+                //if(initial_scroll){
+                   //var delay_val = options.init_scroll_delay;
+                   //console.log(delay_val);
+                //} else {
+                    //delay_val = options.scroll_delay;
+                //}
+                doScroll = function() {
+                   // $timeout.cancel(initial_scroll);
+//initial_scroll = false;
+                    /*
+                    clearTimeout(timeout);
+                    timeout = setTimeout(function() {
+                        console.log('scrolling stopped');
+                    }, options.scroll_delay);
+                    */
+//console.log(is_scrolling);
+                    // Stop the pending timeout
+                    //if (!is_scrolling) {
+                        $(progressBar[0]).removeClass('fade_out');
+                        $(progressBar[0]).addClass('fade_in');
+                        //is_scrolling = true;
+                        console.log('LISTEN');
+             
+
+
+                   // } else {
+                        //is_scrolling = false;
+                        //$timeout.cancel(scrollpromise);
+                       //console.log('STOP LISTEN');
+                                  $timeout.cancel(scrollpromise);
+                        // Start a timeout
+                        scrollpromise = $timeout(function() {
+                            console.log('scrolling stopped');
+                            delay_val = options.scroll_delay;
+                            //is_scrolling = false;
+                            $(progressBar[0]).removeClass('fade_in');
+                            $(progressBar[0]).addClass('fade_out');
+                        }, delay_val);
+                        
+                   // }
+
+
+
+                    var winScroll = document.getElementById(options.element_id).scrollTop;
+
+                    var scrolled = (winScroll / (values.height) * 100);
+
+                    scrolled = (scrolled * values.scrolled_max) / 100;
+
+                    document.getElementById(options.progress_thumb_id).style.top = scrolled + "%";
+
+                    console.log('winScroll : ' + winScroll);
+                    console.log('height : ' + values.height);
+                    console.log('content_div_height : ' + values.content_div_height);
+                    console.log('content_height : ' + values.content_height);
+                    console.log('scroll_thumb_height : ' + values.scroll_thumb_height);
+                    console.log('scrolled_max : ' + values.scrolled_max);
+                    console.log('scrolled : ' + scrolled);
                 };
-
-            // bind scroll
-            //wrapperDomElement.bind('scroll', doScroll);
-            //
-            angular.element($window).bind('resize', function() { $timeout(assignValues, options.delay); });
-            //
-            // listen for directive div resize
-            $scope.$watchGroup([getElementHeight, getElementScrollHeight], function(newValues, oldValues, scope) {
-                console.log('client or scroll height changed');
-                assignValues();
-            });
-
-            function getElementHeight() {
-                return element[0].clientHeight;
             }
-
-            function getElementScrollHeight() {
-                return element[0].scrollHeight;
-            }
-
-
-            $timeout(assignValues, options.delay);
-
-            $scope.$on('$destroy', function() {
-                console.log('destroy scroller');
-                $(progressBar[0]).css('visibility', 'hidden');
-                wrapperDomElement.unbind('scroll');
-                angular.element($window).unbind('resize', assignValues);
-            });
-
-
-            doScroll = function() {
-                var winScroll = document.getElementById(options.element_id).scrollTop;
-
-                var scrolled = (winScroll / (values.height) * 100);
-
-                scrolled = (scrolled * values.scrolled_max) / 100;
-
-                document.getElementById(options.progress_thumb_id).style.top = scrolled + "%";
-
-                console.log('winScroll : ' + winScroll);
-                console.log('height : ' + values.height);
-                console.log('content_div_height : ' + values.content_div_height);
-                console.log('content_height : ' + values.content_height);
-                console.log('scroll_thumb_height : ' + values.scroll_thumb_height);
-                console.log('scrolled_max : ' + values.scrolled_max);
-                console.log('scrolled : ' + scrolled);
-            };
-}
         }
 
     };

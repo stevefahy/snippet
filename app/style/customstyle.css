@@ -2908,7 +2908,11 @@ span#scroll_image_latest {
 */
 
 .fade_in {
-    -webkit-animation: fade-in 1s linear forwards;
+    -webkit-animation: fade-in .5s linear forwards;
+}
+
+.fade_out {
+    -webkit-animation: fade-out 1s linear forwards;
 }
 
 @keyframes fade-in {
@@ -2918,6 +2922,16 @@ span#scroll_image_latest {
 
     100% {
         opacity: 1;
+    }
+}
+
+@keyframes fade-out {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
     }
 }
 /* slide out from the right */
