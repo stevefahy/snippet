@@ -1,4 +1,4 @@
-var cardApp = angular.module("cardApp", ['ngSanitize', 'ngRoute', 'angularMoment', 'ngAnimate', 'ngImgCrop', 'ngCookies', 'angular-jwt', 'luegg.directives', 'ngSlimScroll']);
+var cardApp = angular.module("cardApp", ['ngSanitize', 'ngRoute', 'angularMoment', 'ngAnimate', 'ngImgCrop', 'ngCookies', 'angular-jwt', 'luegg.directives']);
 
 // Prefix for loading a snip id
 var prefix = '/s/';
@@ -3576,22 +3576,22 @@ cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$comp
                             console.log($scope.scrollIndicator);
                         });
                         */
-            console.log($scope.scrollIndicator);
+            //console.log($scope.scrollIndicator);
             //var options = angular.extend({}, defaults, $scope.options);
             var options = angular.extend({}, defaults, $scope.scrollIndicator);
             //var test = angular.extend({}, $scope.test);
-            console.log('steves');
-            console.log(attrs);
+            //console.log('steves');
+            //console.log(attrs);
             //console.log($scope.scrollIndicator); //games
             //console.log($scope.pahn);
 
 
-            console.log('options');
-            console.log(options);
+            //console.log('options');
+            //console.log(options);
             //console.log($scope.myAttribute);
             //var value = $parse(attr.scrollIndicator)($scope);
-            console.log(options.disable);
-            console.log(!options.disable);
+            //console.log(options.disable);
+            //console.log(!options.disable);
             if (options.disable !== true) {
 
                 var wrapperParentElement = element.parent()[0];
@@ -3616,12 +3616,12 @@ cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$comp
                 var initial_scroll;
 
 
-                   $(progressBar[0]).css('visibility', 'hidden');
-                    //$(progressBar[0]).removeClass('fade_out');
-                    //$(progressBar[0]).removeClass('fade_in');
+                $(progressBar[0]).css('visibility', 'hidden');
+                //$(progressBar[0]).removeClass('fade_out');
+                //$(progressBar[0]).removeClass('fade_in');
 
-                 var delay_val = options.init_scroll_delay;
-                   console.log('INITIALIZE');
+                var delay_val = options.init_scroll_delay;
+                console.log('INITIALIZE');
 
                 //Methods
                 var values = {},
@@ -3631,8 +3631,8 @@ cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$comp
                         var content_position = $(wrapperDomElement).position();
                         var content_height = $(wrapperDomElement).height();
                         // Top
-                        console.log('TOP: ' + content_position.top);
-                        console.log('HEIGHT: ' + content_height);
+                        //console.log('TOP: ' + content_position.top);
+                        //console.log('HEIGHT: ' + content_height);
                         $('.' + options.progress_container_class).css({ top: content_position.top });
                         // Height
                         $('.' + options.progress_container_class).css({ height: content_height });
@@ -3641,19 +3641,19 @@ cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$comp
 
 
                         values.content_div_height = $('#' + options.element_id).height();
-                        console.log('content_div_height: ' + values.content_div_height);
+                        //console.log('content_div_height: ' + values.content_div_height);
                         values.content_height = element[0].scrollHeight;
-                        console.log('content_height: ' + values.content_height);
+                        //console.log('content_height: ' + values.content_height);
 
                         if (values.content_height > values.content_div_height) {
 
                             //values.height = document.getElementById(options.element_id).scrollHeight - document.getElementById(options.element_id).clientHeight;
                             values.height = element[0].scrollHeight - element[0].clientHeight;
-                            console.log('height: ' + values.height);
+                            //console.log('height: ' + values.height);
                             //values.content_height = document.getElementById(options.element_id).scrollHeight;
 
                             values.scroll_thumb_height = (100 / (((values.content_height / values.content_div_height) * 100) / 100));
-                            console.log(values.scroll_thumb_height);
+                            //console.log(values.scroll_thumb_height);
                             //values.scrolled_max = 100 - values.scroll_thumb_height;
                             //console.log(values.scrolled_max);
 
@@ -3674,30 +3674,33 @@ cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$comp
                             */
                             // Set scrolled max value.
                             values.scrolled_max = 100 - thumb_height;
-                            console.log(values.scrolled_max);
-/*
-                            // set the intial scroll position
-                            initial_scroll = $timeout(function() {
-                                console.log('INITIAL');
-                                doScroll();
-                            }, options.start_delay);
-                            */
+                            //console.log(values.scrolled_max);
+                            /*
+                                                        // set the intial scroll position
+                                                        initial_scroll = $timeout(function() {
+                                                            console.log('INITIAL');
+                                                            doScroll();
+                                                        }, options.start_delay);
+                                                        */
 
                             // bind scroll
                             //wrapperDomElement.bind('scroll', doScroll);
+
+                                            // set the intial scroll position
+                $timeout(function() {
+                    console.log('INITIAL');
+                    $(progressBar[0]).css('visibility', 'visible');
+
+                    // bind scroll
+                    wrapperDomElement.bind('scroll', doScroll);
+
+                    doScroll();
+                }, options.start_delay);
+                
                         }
                     };
 
-                 // set the intial scroll position
-                            $timeout(function() {
-                                console.log('INITIAL');
-                                 $(progressBar[0]).css('visibility', 'visible');
-                                
-                                // bind scroll
-                            wrapperDomElement.bind('scroll', doScroll);
 
-                            doScroll();
-                            }, options.start_delay);
                 // bind scroll
                 //wrapperDomElement.bind('scroll', doScroll);
                 //
@@ -3733,45 +3736,45 @@ cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$comp
                 //var initial_scroll = true;
                 //var delay_val;
                 //if(initial_scroll){
-                   //var delay_val = options.init_scroll_delay;
-                   //console.log(delay_val);
+                //var delay_val = options.init_scroll_delay;
+                //console.log(delay_val);
                 //} else {
-                    //delay_val = options.scroll_delay;
+                //delay_val = options.scroll_delay;
                 //}
                 doScroll = function() {
-                   // $timeout.cancel(initial_scroll);
-//initial_scroll = false;
+                    // $timeout.cancel(initial_scroll);
+                    //initial_scroll = false;
                     /*
                     clearTimeout(timeout);
                     timeout = setTimeout(function() {
                         console.log('scrolling stopped');
                     }, options.scroll_delay);
                     */
-//console.log(is_scrolling);
+                    //console.log(is_scrolling);
                     // Stop the pending timeout
                     //if (!is_scrolling) {
-                        $(progressBar[0]).removeClass('fade_out');
-                        $(progressBar[0]).addClass('fade_in');
-                        //is_scrolling = true;
-                        console.log('LISTEN');
-             
+                    $(progressBar[0]).removeClass('fade_out');
+                    $(progressBar[0]).addClass('fade_in');
+                    //is_scrolling = true;
+                    //console.log('LISTEN');
 
 
-                   // } else {
+
+                    // } else {
+                    //is_scrolling = false;
+                    //$timeout.cancel(scrollpromise);
+                    //console.log('STOP LISTEN');
+                    $timeout.cancel(scrollpromise);
+                    // Start a timeout
+                    scrollpromise = $timeout(function() {
+                        console.log('scrolling stopped');
+                        delay_val = options.scroll_delay;
                         //is_scrolling = false;
-                        //$timeout.cancel(scrollpromise);
-                       //console.log('STOP LISTEN');
-                                  $timeout.cancel(scrollpromise);
-                        // Start a timeout
-                        scrollpromise = $timeout(function() {
-                            console.log('scrolling stopped');
-                            delay_val = options.scroll_delay;
-                            //is_scrolling = false;
-                            $(progressBar[0]).removeClass('fade_in');
-                            $(progressBar[0]).addClass('fade_out');
-                        }, delay_val);
-                        
-                   // }
+                        $(progressBar[0]).removeClass('fade_in');
+                        $(progressBar[0]).addClass('fade_out');
+                    }, delay_val);
+
+                    // }
 
 
 
@@ -3782,14 +3785,15 @@ cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$comp
                     scrolled = (scrolled * values.scrolled_max) / 100;
 
                     document.getElementById(options.progress_thumb_id).style.top = scrolled + "%";
-
-                    console.log('winScroll : ' + winScroll);
-                    console.log('height : ' + values.height);
-                    console.log('content_div_height : ' + values.content_div_height);
-                    console.log('content_height : ' + values.content_height);
-                    console.log('scroll_thumb_height : ' + values.scroll_thumb_height);
-                    console.log('scrolled_max : ' + values.scrolled_max);
-                    console.log('scrolled : ' + scrolled);
+                    /*
+                                        console.log('winScroll : ' + winScroll);
+                                        console.log('height : ' + values.height);
+                                        console.log('content_div_height : ' + values.content_div_height);
+                                        console.log('content_height : ' + values.content_height);
+                                        console.log('scroll_thumb_height : ' + values.scroll_thumb_height);
+                                        console.log('scrolled_max : ' + values.scrolled_max);
+                                        console.log('scrolled : ' + scrolled);
+                                        */
                 };
             }
         }

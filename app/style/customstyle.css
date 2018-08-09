@@ -3273,6 +3273,6 @@ span#header b.header_3 {
 .progress-bar {
     position: relative;
     height: 20px;
-    background-color: rgba(90, 90, 90, .5);
+    background-color: rgba(90, 90, 90, .4);
     opacity: 0;
 }

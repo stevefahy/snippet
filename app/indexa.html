@@ -25,7 +25,6 @@
     </script>
     <!-- META -->
     <meta charset="utf-8">
-    <!--<meta name="viewport" content="width=device-width, height=device-height initial-scale=1 minimum-scale=1, maximum-scale=1">-->
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Snipbee</title>
     <!-- Load Fonts -->
@@ -56,7 +55,6 @@
     <!-- Custom Styles -->
     <link rel="stylesheet" href="/style/customstyle.css">
     <link rel="stylesheet" href="/style/ng-img-crop.css">
-    <link rel="stylesheet" href="/style/ng-slim-scroll.css">
     <!-- Sanitize -->
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-sanitize.js"></script>
     <!-- Angular Cookies -->
@@ -100,10 +98,6 @@
     <script src="/js/exif.js"></script>
     <!-- scrollintoviewifneed -->
     <script src="/js/scrollintoviewifneeded.js"></script>
-    <!-- scrollintoviewifneed -->
-    <script src="/js/ng-slim-scroll.js"></script>
-    <!--<script type="text/javascript" src="/js/jquery.slimscroll.min.js"></script>-->
-    <!--<script src="/js/angular-slimscroll.js"></script>-->
     <!-- ngImgCrop -->
     <script src="/js/ng-img-crop.js"></script>
     <!-- scrollglue -->
@@ -127,35 +121,6 @@
     <script src="/services/services.js"></script>
     <!-- socket.io -->
     <script src="/socket.io/socket.io.js"></script>
-
-    <!-- Web worker -->
-    <script>
-    var w;
-
-    function startWorker() {
-        console.log('SW');
-        if (typeof(Worker) !== "undefined") {
-            if (typeof(w) == "undefined") {
-                console.log('load worker');
-                w = new Worker("../js/public_conversation.js");
-            }
-            w.onmessage = function(event) {
-                console.log(event);
-                //document.getElementById("result").innerHTML = event.data;
-            };
-        } else {
-            console.log("Sorry! No Web Worker support.");
-            //document.getElementById("result").innerHTML = "Sorry! No Web Worker support.";
-        }
-    }
-
-    function stopWorker() {
-        w.terminate();
-        w = undefined;
-    }
-
-    startWorker();
-    </script>
 </head>
 
 <body>
