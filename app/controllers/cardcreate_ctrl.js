@@ -17,7 +17,6 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
     $scope.input = false;
     var isFocused = false;
 
-
     if (principal.isValid()) {
         UserData.checkUser().then(function(result) {
             $scope.currentUser = UserData.getUser();

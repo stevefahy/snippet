@@ -3,6 +3,8 @@ var cardApp = angular.module("cardApp", ['ngSanitize', 'ngRoute', 'angularMoment
 // Prefix for loading a snip id
 var prefix = '/s/';
 
+// CONFIG
+
 //
 // ROUTES
 //
@@ -79,6 +81,29 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
     });
 
 });
+
+// Add the access token to every request to the server.
+cardApp.config(['$httpProvider', function($httpProvider) {
+    var interceptor = [
+        '$q',
+        '$rootScope',
+        'principal',
+        function($q, $rootScope, principal) {
+            var service = {
+                // run this function before making requests
+                'request': function(config) {
+                    //Add your header to the request here
+                    if (principal.token != undefined) {
+                        config.headers['x-access-token'] = principal.token;
+                    }
+                    return config;
+                }
+            };
+            return service;
+        }
+    ];
+    $httpProvider.interceptors.push(interceptor);
+}]);
 
 //
 // SERVICES
@@ -306,13 +331,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             var newBlob = new Blob([ia], { type: mimeString });
             resolve(newBlob);
         });
-    };
-
-    // Scroll to the bottom of the list
-    scrollToBottom = function(speed) {
-        $('html, body').animate({
-            scrollTop: $('#bottom').offset().top
-        }, speed, function() {});
     };
 
     this.removeDeleteIds = function() {
@@ -1308,33 +1326,9 @@ cardApp.service('replaceTags', function() {
     };
 
     this.removeSpaces = function(elem) {
-        //console.log(elem);
-        //var orig = $('#cecard_create').innerHTML;
         var orig = document.getElementById(elem).innerHTML;
-        //console.log(orig);
-        //console.log(orig.indexOf('&#8203'));
-        //console.log(orig.indexOf('&#x200b'));
-        //console.log(orig.indexOf('/\u200B'));
         var spaces_removed = orig.replace(/\u200B/g, '');
         document.getElementById(elem).innerHTML = spaces_removed;
-        //&#8203;
-        //$window.document.getElementById("cecard_create").innerHTML;
-        //someVariable = someVariable.replace('-', '');
-
-        /*
-        str = $("<div>" + str + "</div>");
-        $('span#focus', str).each(function(e) {
-            $(this).replaceWith($(this).html());
-        });
-        // check if any remain
-        if ($(str).find('span#focus').length > 0) {
-            str = str.html();
-            return self.removeFocusIds(str);
-        } else {
-            str = str.html();
-            return str;
-        }
-        */
     };
 
     this.removeFocusIds = function(str) {
@@ -1995,140 +1989,8 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 }]);
 
 //
-// contenteditable directive
+// FACTORIES
 //
-
-cardApp.directive("contenteditable", function() {
-    return {
-        require: "ngModel",
-        link: function(scope, element, attrs, ngModel) {
-            function read() {
-                ngModel.$setViewValue(element.html());
-            }
-            ngModel.$render = function() {
-                element.html(ngModel.$viewValue || "");
-            };
-            element.bind("blur keyup change", function(event) {
-                // WARNING added - if (!scope.$$phase) { 31/01/18
-                if (!scope.$$phase) {
-                    scope.$apply(read);
-                }
-            });
-        }
-    };
-});
-
-//
-// emtpyToEnd Filter
-//
-
-// Filter to put empty values to the end of an array.
-cardApp.filter("emptyToEnd", function() {
-    return function(array, key) {
-        var present = array.filter(function(item) {
-            return item[key];
-        });
-        var empty = array.filter(function(item) {
-            return !item[key];
-        });
-        return present.concat(empty);
-    };
-});
-
-cardApp.filter("momentFilter", function() {
-    return function(value, format) {
-        var today = moment();
-        if (today.isSame(value, 'd')) {
-            //return moment(value).fromNow() + ' : ' + moment(value).format("HH:mm");
-            //return moment(value).fromNow();
-            //console.log('day');
-            return moment(value).format("HH:mm");
-        } else {
-            //console.log('calender');
-            return moment(value).calendar();
-        }
-    };
-});
-
-cardApp.filter("momentFilterConv", function() {
-    return function(value, format) {
-        var today = moment();
-        if (today.isSame(value, 'd')) {
-            //return moment(value).fromNow() + ' : ' + moment(value).format("HH:mm");
-            //return moment(value).fromNow();
-            return moment(value).format("HH:mm");
-        } else {
-            //return moment(value).calendar();
-            return moment(value).format("DD/MM/YY HH:mm");
-        }
-    };
-});
-
-cardApp.directive('momentTime', ['$interval', '$filter', function($interval, $filter) {
-
-    function link(scope, element, attrs) {
-        var format,
-            timeoutId;
-        momentFilter = $filter('momentFilter');
-
-        function updateTime() {
-            //console.log('update: ' + momentFilter(format));
-            element.text((new Date(), momentFilter(format)));
-        }
-
-        scope.$watch(attrs.momentTime, function(value) {
-            format = value;
-            updateTime();
-        });
-
-        element.on('$destroy', function() {
-            //console.log('destroy time convs');
-            $interval.cancel(timeoutId);
-        });
-
-        // start the UI update process; save the timeoutId for canceling
-        timeoutId = $interval(function() {
-            updateTime(); // update DOM
-        }, 10000);
-    }
-
-    return {
-        link: link
-    };
-}]);
-
-
-cardApp.directive('momentTimeConv', ['$interval', '$filter', function($interval, $filter) {
-
-    function link(scope, element, attrs) {
-        var format,
-            timeoutId;
-        momentFilterConv = $filter('momentFilterConv');
-
-        function updateTime() {
-            element.text((new Date(), momentFilterConv(format)));
-        }
-
-        scope.$watch(attrs.momentTimeConv, function(value) {
-            format = value;
-            updateTime();
-        });
-
-        element.on('$destroy', function() {
-            console.log('destroy time conv');
-            $interval.cancel(timeoutId);
-        });
-
-        // start the UI update process; save the timeoutId for canceling
-        timeoutId = $interval(function() {
-            updateTime(); // update DOM
-        }, 10000);
-    }
-
-    return {
-        link: link
-    };
-}]);
 
 //
 // principal Factory
@@ -2146,7 +2008,7 @@ cardApp.factory('principal', function($cookies, jwtHelper, $q, $rootScope) {
             principal.token = token;
         }
     } catch (e) {
-        console.log('ERROR while parsing principal cookie.' + e);
+        //console.log('ERROR while parsing principal cookie.' + e);
     }
 
     principal.logOut = function() {
@@ -2205,21 +2067,27 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     // Android called functions.
 
     restoreState = function() {
+        /*
         console.log('restoreState');
         console.log($rootScope.loaded);
         console.log($rootScope.dataLoading);
+        */
     };
 
     onResume = function() {
+        /*
         console.log('onResume');
         console.log($rootScope.loaded);
         console.log($rootScope.dataLoading);
+        */
     };
 
     onRestart = function() {
+        /*
         console.log('onRestart');
         console.log($rootScope.loaded);
         console.log($rootScope.dataLoading);
+        */
     };
 
     networkChange = function(status) {
@@ -2286,7 +2154,6 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
 
     // Broadcast by Database createCard service when a new card has been created
     $rootScope.$on('CARD_CREATED', function(event, data) {
-        console.log(data);
         UserData.conversationsLatestCardAdd(data.conversationId, data)
             .then(function(res) {
                 UserData.getConversationModelById(data.conversationId)
@@ -2303,8 +2170,6 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
 
     // Broadcast by Database createCard service when a new card has been created
     $rootScope.$on('CARD_UPDATED', function(event, data) {
-        console.log(data);
-
         UserData.conversationsLatestCardAdd(data.conversationId, data)
             .then(function(res) {
                 UserData.getConversationModelById(data.conversationId)
@@ -2323,7 +2188,6 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     // Check for updates
 
     UserData.checkDataUpdate = function() {
-        console.log('checkDataUpdate');
         if (!update_inprogress) {
             update_inprogress = true;
             var toUpdate = [];
@@ -3317,9 +3181,6 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     //
 
     UserData.loadUserData = function() {
-        console.log('loadUserData');
-        console.log($rootScope.dataLoading);
-        console.log($rootScope.loaded);
         var self = this;
         isLoading = true;
         var deferred = $q.defer();
@@ -3372,7 +3233,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
             $rootScope.loaded = true;
             $rootScope.dataLoading = false;
             isLoading = false;
-            console.log('FIN loadUserData');
+            //console.log('FIN loadUserData');
             deferred.resolve();
         });
         return deferred.promise;
@@ -3382,7 +3243,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     UserData.checkUser = function() {
         var deferred = $q.defer();
         if (isLoading) {
-            console.log('already loading...wait');
+            //console.log('already loading...wait');
             $rootScope.$watch('loaded', function(n) {
                 if (n) {
                     // loaded!
@@ -3390,7 +3251,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                 }
             });
         } else {
-            console.log('not loading...get');
+            //console.log('not loading...get');
             // Check whether the user data has already been retrieved.
             if (UserData.getUser() != undefined) {
                 //console.log('CALL VAR /api/user_data');
@@ -3439,45 +3300,6 @@ cardApp.factory('Profile', function($rootScope, $window) {
     };
 });
 
-// Add the access token to every request to the server.
-cardApp.config(['$httpProvider', function($httpProvider) {
-    var interceptor = [
-        '$q',
-        '$rootScope',
-        'principal',
-        function($q, $rootScope, principal) {
-            var service = {
-                // run this function before making requests
-                'request': function(config) {
-                    //Add your header to the request here
-                    if (principal.token != undefined) {
-                        config.headers['x-access-token'] = principal.token;
-                    }
-                    return config;
-                }
-            };
-            return service;
-        }
-    ];
-    $httpProvider.interceptors.push(interceptor);
-}]);
-
-
-cardApp.directive('onFinishRender', function($timeout, $rootScope) {
-    return {
-        restrict: 'A',
-        link: function(scope, element, attr) {
-            if (scope.$last === true) {
-                $timeout(function() {
-                    //scope.$emit('ngRepeatFinished');
-                    $rootScope.$broadcast("ngRepeatFinished", { temp: "some value" });
-                });
-            }
-        }
-    };
-});
-
-
 cardApp.factory('viewAnimationsService', function($rootScope) {
 
     var enterAnimation;
@@ -3498,6 +3320,156 @@ cardApp.factory('viewAnimationsService', function($rootScope) {
         getEnterAnimation: getEnterAnimation,
         setEnterAnimation: setEnterAnimation,
         setLeaveAnimation: setLeaveAnimation
+    };
+});
+
+
+//
+// FILTERS
+//
+
+//
+// emtpyToEnd Filter
+//
+
+// Filter to put empty values to the end of an array.
+cardApp.filter("emptyToEnd", function() {
+    return function(array, key) {
+        var present = array.filter(function(item) {
+            return item[key];
+        });
+        var empty = array.filter(function(item) {
+            return !item[key];
+        });
+        return present.concat(empty);
+    };
+});
+
+cardApp.filter("momentFilter", function() {
+    return function(value, format) {
+        var today = moment();
+        if (today.isSame(value, 'd')) {
+            return moment(value).format("HH:mm");
+        } else {
+            return moment(value).calendar();
+        }
+    };
+});
+
+cardApp.filter("momentFilterConv", function() {
+    return function(value, format) {
+        var today = moment();
+        if (today.isSame(value, 'd')) {
+            return moment(value).format("HH:mm");
+        } else {
+            return moment(value).format("DD/MM/YY HH:mm");
+        }
+    };
+});
+
+//
+// DIRECTIVES
+//
+//
+
+// contenteditable directive
+//
+
+cardApp.directive("contenteditable", function() {
+    return {
+        require: "ngModel",
+        link: function(scope, element, attrs, ngModel) {
+            function read() {
+                ngModel.$setViewValue(element.html());
+            }
+            ngModel.$render = function() {
+                element.html(ngModel.$viewValue || "");
+            };
+            element.bind("blur keyup change", function(event) {
+                // WARNING added - if (!scope.$$phase) { 31/01/18
+                if (!scope.$$phase) {
+                    scope.$apply(read);
+                }
+            });
+        }
+    };
+});
+
+
+cardApp.directive('momentTime', ['$interval', '$filter', function($interval, $filter) {
+
+    function link(scope, element, attrs) {
+        var format,
+            timeoutId;
+        momentFilter = $filter('momentFilter');
+
+        function updateTime() {
+            element.text((new Date(), momentFilter(format)));
+        }
+
+        scope.$watch(attrs.momentTime, function(value) {
+            format = value;
+            updateTime();
+        });
+
+        element.on('$destroy', function() {
+            $interval.cancel(timeoutId);
+        });
+
+        // start the UI update process; save the timeoutId for canceling
+        timeoutId = $interval(function() {
+            updateTime(); // update DOM
+        }, 10000);
+    }
+
+    return {
+        link: link
+    };
+}]);
+
+
+cardApp.directive('momentTimeConv', ['$interval', '$filter', function($interval, $filter) {
+
+    function link(scope, element, attrs) {
+        var format,
+            timeoutId;
+        momentFilterConv = $filter('momentFilterConv');
+
+        function updateTime() {
+            element.text((new Date(), momentFilterConv(format)));
+        }
+
+        scope.$watch(attrs.momentTimeConv, function(value) {
+            format = value;
+            updateTime();
+        });
+
+        element.on('$destroy', function() {
+            $interval.cancel(timeoutId);
+        });
+
+        // start the UI update process; save the timeoutId for canceling
+        timeoutId = $interval(function() {
+            updateTime(); // update DOM
+        }, 10000);
+    }
+
+    return {
+        link: link
+    };
+}]);
+
+cardApp.directive('onFinishRender', function($timeout, $rootScope) {
+    return {
+        restrict: 'A',
+        link: function(scope, element, attr) {
+            if (scope.$last === true) {
+                $timeout(function() {
+                    //scope.$emit('ngRepeatFinished');
+                    $rootScope.$broadcast("ngRepeatFinished", { temp: "some value" });
+                });
+            }
+        }
     };
 });
 
@@ -3524,27 +3496,8 @@ cardApp.directive('viewAnimations', function(viewAnimationsService, $rootScope) 
     };
 });
 
-// TODO - add global ua detection
-// TODO - add ng show or conditional option for this directive
-// TODO - set top and height for the progress-container from within the container
-// TODO - only init if required.
 
-cardApp.directive('test', function() {
-    return {
-        restrict: 'A',
-        scope: {
-            myId: '@'
-        },
-        link: function(scope, iElement, iAttrs) {
-
-            iAttrs.$observe('myId', function(value) {
-                console.log('TEST: ' + value);
-            });
-        }
-    };
-});
-
-
+// scrollIndicator directive
 cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$compile', '$rootScope', function($window, $document, $timeout, $compile, $rootScope) {
     var defaults = {
         delay: 100,
@@ -3557,106 +3510,49 @@ cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$comp
         progress_bar_class: 'progress-bar',
         progress_thumb_id: 'progress-thumb',
         disable: 'false'
-
     };
     return {
         restrict: 'A',
-        //transclude: false,
-        //replace: false,
         scope: {
-            //options: '=',
-            //scrollIndicator: '@',
-            //pahn: '=scrollIndicator'
             scrollIndicator: '='
         },
         link: function($scope, element, attrs) {
-            /*
-                       attrs.$observe('scrollIndicator', function(value) {
-                            console.log('scrollIndicator: ' + $scope.scrollIndicator);
-                            console.log($scope.scrollIndicator);
-                        });
-                        */
-            //console.log($scope.scrollIndicator);
-            //var options = angular.extend({}, defaults, $scope.options);
             var options = angular.extend({}, defaults, $scope.scrollIndicator);
-            //var test = angular.extend({}, $scope.test);
-            //console.log('steves');
-            //console.log(attrs);
-            //console.log($scope.scrollIndicator); //games
-            //console.log($scope.pahn);
-
-
-            //console.log('options');
-            //console.log(options);
-            //console.log($scope.myAttribute);
-            //var value = $parse(attr.scrollIndicator)($scope);
-            //console.log(options.disable);
-            //console.log(!options.disable);
             if (options.disable !== true) {
-
                 var wrapperParentElement = element.parent()[0];
                 var wrapperDomElement = element;
-
                 element.attr('id', options.element_id);
-
                 // create progress-container
                 var progressContainer = angular.element($window.document.createElement('div'));
                 progressContainer.addClass(options.progress_container_class);
                 // create progress-bar
-                //var progress_thumb = 'progress-thumb';
                 var progressBar = angular.element('<div id="' + options.progress_thumb_id + '"></div>');
                 progressBar.addClass(options.progress_bar_class);
                 // Add the progress-bar to the progress-container
                 progressContainer.append(progressBar);
                 // Attach to the DOM
                 wrapperParentElement.insertBefore(progressContainer[0], wrapperParentElement.children[0]);
-
-                //var is_scrolling = false;
                 var scrollpromise;
-                var initial_scroll;
-
-
+                // hide the scroll thumb initially
                 $(progressBar[0]).css('visibility', 'hidden');
-                //$(progressBar[0]).removeClass('fade_out');
-                //$(progressBar[0]).removeClass('fade_in');
-
+                // set the delay val to the init_scroll_delay initially.
                 var delay_val = options.init_scroll_delay;
-                console.log('INITIALIZE');
-
                 //Methods
                 var values = {},
                     assignValues = function() {
-                        console.log('assign values');
                         // Position of scroll indicator 
                         var content_position = $(wrapperDomElement).position();
                         var content_height = $(wrapperDomElement).height();
                         // Top
-                        //console.log('TOP: ' + content_position.top);
-                        //console.log('HEIGHT: ' + content_height);
                         $('.' + options.progress_container_class).css({ top: content_position.top });
                         // Height
                         $('.' + options.progress_container_class).css({ height: content_height });
                         //
-
-
-
                         values.content_div_height = $('#' + options.element_id).height();
-                        //console.log('content_div_height: ' + values.content_div_height);
                         values.content_height = element[0].scrollHeight;
-                        //console.log('content_height: ' + values.content_height);
-
                         if (values.content_height > values.content_div_height) {
-
-                            //values.height = document.getElementById(options.element_id).scrollHeight - document.getElementById(options.element_id).clientHeight;
                             values.height = element[0].scrollHeight - element[0].clientHeight;
-                            //console.log('height: ' + values.height);
-                            //values.content_height = document.getElementById(options.element_id).scrollHeight;
-
                             values.scroll_thumb_height = (100 / (((values.content_height / values.content_div_height) * 100) / 100));
-                            //console.log(values.scroll_thumb_height);
-                            //values.scrolled_max = 100 - values.scroll_thumb_height;
-                            //console.log(values.scrolled_max);
-
                             // Check for minimum height.
                             var thumb_height = options.thumb_min_height;
                             if (values.scroll_thumb_height > options.thumb_min_height) {
@@ -3664,51 +3560,22 @@ cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$comp
                             }
                             // Set the progress thumb height.
                             $(progressBar[0]).css('height', thumb_height + "%");
-                            // Set the progress thumb visible.
-                            /*
-                            $timeout(function() {
-                                //$(progressBar[0]).css('visibility', 'visible');
-                                $(progressBar[0]).addClass('fade_in');
-
-                            }, options.start_delay);
-                            */
                             // Set scrolled max value.
                             values.scrolled_max = 100 - thumb_height;
-                            //console.log(values.scrolled_max);
-                            /*
-                                                        // set the intial scroll position
-                                                        initial_scroll = $timeout(function() {
-                                                            console.log('INITIAL');
-                                                            doScroll();
-                                                        }, options.start_delay);
-                                                        */
-
-                            // bind scroll
-                            //wrapperDomElement.bind('scroll', doScroll);
-
-                                            // set the intial scroll position
-                $timeout(function() {
-                    console.log('INITIAL');
-                    $(progressBar[0]).css('visibility', 'visible');
-
-                    // bind scroll
-                    wrapperDomElement.bind('scroll', doScroll);
-
-                    doScroll();
-                }, options.start_delay);
-                
+                            // set the intial scroll position
+                            $timeout(function() {
+                                $(progressBar[0]).css('visibility', 'visible');
+                                // bind scroll
+                                wrapperDomElement.bind('scroll', doScroll);
+                                doScroll();
+                            }, options.start_delay);
                         }
                     };
-
-
-                // bind scroll
-                //wrapperDomElement.bind('scroll', doScroll);
-                //
+                // bind resize
                 angular.element($window).bind('resize', function() { $timeout(assignValues, options.delay); });
                 //
                 // listen for directive div resize
                 $scope.$watchGroup([getElementHeight, getElementScrollHeight], function(newValues, oldValues, scope) {
-                    console.log('client or scroll height changed');
                     assignValues();
                 });
 
@@ -3720,11 +3587,9 @@ cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$comp
                     return element[0].scrollHeight;
                 }
 
-
                 $timeout(assignValues, options.delay);
 
                 $scope.$on('$destroy', function() {
-                    console.log('destroy scroller');
                     $timeout.cancel(scrollpromise);
                     $(progressBar[0]).css('visibility', 'hidden');
                     $(progressBar[0]).removeClass('fade_out');
@@ -3733,253 +3598,25 @@ cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$comp
                     angular.element($window).unbind('resize', assignValues);
                 });
 
-                //var initial_scroll = true;
-                //var delay_val;
-                //if(initial_scroll){
-                //var delay_val = options.init_scroll_delay;
-                //console.log(delay_val);
-                //} else {
-                //delay_val = options.scroll_delay;
-                //}
                 doScroll = function() {
-                    // $timeout.cancel(initial_scroll);
-                    //initial_scroll = false;
-                    /*
-                    clearTimeout(timeout);
-                    timeout = setTimeout(function() {
-                        console.log('scrolling stopped');
-                    }, options.scroll_delay);
-                    */
-                    //console.log(is_scrolling);
-                    // Stop the pending timeout
-                    //if (!is_scrolling) {
                     $(progressBar[0]).removeClass('fade_out');
                     $(progressBar[0]).addClass('fade_in');
-                    //is_scrolling = true;
-                    //console.log('LISTEN');
-
-
-
-                    // } else {
-                    //is_scrolling = false;
-                    //$timeout.cancel(scrollpromise);
-                    //console.log('STOP LISTEN');
+                    // Cancel timeout to check for scroll stop
                     $timeout.cancel(scrollpromise);
-                    // Start a timeout
+                    // Start timeout to check for scroll stop
                     scrollpromise = $timeout(function() {
-                        console.log('scrolling stopped');
+                        //console.log('scrolling stopped');
                         delay_val = options.scroll_delay;
-                        //is_scrolling = false;
                         $(progressBar[0]).removeClass('fade_in');
                         $(progressBar[0]).addClass('fade_out');
                     }, delay_val);
-
-                    // }
-
-
-
+                    // Calculate scroll
                     var winScroll = document.getElementById(options.element_id).scrollTop;
-
                     var scrolled = (winScroll / (values.height) * 100);
-
                     scrolled = (scrolled * values.scrolled_max) / 100;
-
                     document.getElementById(options.progress_thumb_id).style.top = scrolled + "%";
-                    /*
-                                        console.log('winScroll : ' + winScroll);
-                                        console.log('height : ' + values.height);
-                                        console.log('content_div_height : ' + values.content_div_height);
-                                        console.log('content_height : ' + values.content_height);
-                                        console.log('scroll_thumb_height : ' + values.scroll_thumb_height);
-                                        console.log('scrolled_max : ' + values.scrolled_max);
-                                        console.log('scrolled : ' + scrolled);
-                                        */
                 };
             }
         }
-
     };
 }]);
-/*
-cardApp.directive('addSlimScroll', ['$window', '$document', '$timeout', '$compile', function($window, $document, $timeout, $compile) {
-    return {
-        transclude: false,
-        link: function(scope, element, attributes) {
-            //scope.addDirective = function() {
-                // create the new directive element
-                //$newDirective = angular.element('<slim-scroll>');
-               //$newDirective = angular.attr('slim-scroll');
-               element.removeAttr('add-slim-scroll');
-               element.attr('slim-scroll','');
-                // Append it to the DOM
-                //element.append($newDirective);
-                //element..attr
-                // compile it and link it to the scope
-                $compile(element)(scope);
-            //};
-        }
-    };
-}]);
-*/
-
-/*
-cardApp.directive('simpleScroll', ['$window', '$document', '$timeout', function($window, $document, $timeout) {
-    'use strict';
-    //var init_attribute = "data-slim-scroll-init";
-    var defaults = {
-        minHeight: 25,
-        delay: 100,
-        wrapperClass: 'slim-scroll-wrapper',
-        scrollbarContainerClass: 'slim-scroll-scrollbar-container',
-        scrollbarClass: 'slim-scroll-scrollbar',
-        specialClass: 'animate'
-    };
-    return {
-        restrict: 'A',
-        transclude: true,
-        replace: true,
-        scope: {
-            options: '='
-        },
-        //template: '<div><div class="slim-scroll-wrapper" data-ng-transclude></div></div>',
-        template: '<div data-ng-transclude></div>',
-        link: function($scope, element) {
-
-            var options = angular.extend({}, defaults, $scope.options);
-
-            $timeout(function() {
-                console.log(element[0].offsetHeight);
-                console.log($(element.parent()).height());
-                // var height = angular.element(element).parent().height();
-                //console.log(height); //height should be accurate
-            });
-
-            //console.log(element[0].offsetHeight);
-            //console.log(element.parent().height());
-
-            angular.element($window).bind('resize', function() { $timeout(assignValues, options.delay); });
-
-            $scope.$watch(function() {
-                //return {offset:element[0].offsetHeight, parent:$(element.parent()).height()};
-                return element[0].offsetHeight;
-                //return wrapperDomElement.scrollHeight;
-            }, function(newValue, oldValue) {
-                console.log(newValue);
-                assignValues();
-            }, true);
-            var scrollbarElement = element.children()[1];
-            var wrapperParentElement = element.parent();
-            var wrapperDomElement = element;
-
-            var values = {},
-                getTop = function(el) {
-                    console.log(el);
-                    var t = document.documentElement.scrollTop;
-                    return $(el).getBoundingClientRect().top + (t ? t : document.body.scrollTop);
-                },
-                assignValues = function() {
-                    console.log('assign');
-                    console.log(element[0].offsetHeight);
-                    console.log($(element.parent()).height());
-
-
-                    //values.height = element[0].offsetHeight;
-                    values.height = $(element.parent()).height();
-                    console.log(values.height);
-                    values.scrollHeight = element[0].scrollHeight;
-                    console.log(values.scrollHeight);
-
-                    values.position = (values.height / values.scrollHeight) * 100;
-                    values.scrollbarHeight = values.scrollHeight * values.height / 100;
-                    console.log(values.position);
-               
-
-                    values.scrollPosition = values.scrollbarHeight / values.height;
-                    console.log(values.scrollPosition);
-
-
-                    values.remainder = 100 - values.scrollPosition;
-                    values.x = (values.scrollHeight - values.height) * ((values.scrollPosition - values.position) / (100 - values.position));
-                    values.heightRate = Math.abs((values.x / values.remainder) + (values.scrollHeight / 100));
-                    console.log(values.x);
-                    //console.log(element.children()[0].clientHeight);
-                    //scrollbarElement = element.children()[0];
-                    scrollbarElement.style.height = values.scrollPosition + '%';
-
-                    // 276
-                    scrollbarElement.style.top = values.scrollPosition + '%';
-
-                    values.reposition = getReposition(values.height);
-                    console.log(values.reposition);
-                    console.log(wrapperParentElement);
-                    console.log(wrapperParentElement.scrollTop);
-                    //wrapperParentElement.scrollTop = 50;
-
-
-                },
-                getReposition = function(h) {
-                    var x = parseInt(scrollbarElement.style.top.replace('%', '')) * h / 100;
-                    return x ? x : 0;
-                },
-                beginScroll = function(e) {
-                    console.log('begin');
-                    wrapperParentElement.scrollTop = 50;
-                    var sel = $window.getSelection ? $window.getSelection() : $window.document.selection;
-                    if (sel) {
-                        if (sel.removeAllRanges) sel.removeAllRanges();
-                        else if (sel.empty) sel.empty();
-                    }
-                    e = e || event;
-                    var el = e.currentTarget || e.srcElement;
-
-                    $document.bind('mousemove', moveScroll);
-                    $document.bind('mouseup', endScroll);
-
-                    values.offsetTop = getTop(wrapperDomElement);
-
-                    values.firstY = e.pageY || event.clientY;
-                    console.log(values.firstY);
-                    if (!values.reposition)
-                        values.reposition = getReposition(values.height);
-
-                    wrapperElement.addClass('unselectable');
-                },
-
-                moveScroll = function(e) {
-                    e = e || event;
-                    var eY = e.pageY || e.clientY,
-                        top = (values.reposition + eY - values.firstY) / values.height * 100;
-
-                    if (values.remainder < top) top = values.remainder;
-                    if (!values.previousTop) values.previousTop = top + 1;
-                    var blnThreshold = top >= 0 && values.firstY > values.offsetTop;
-                    if ((values.previousTop > top && blnThreshold) || (blnThreshold && (wrapperDomElement.scrollTop + values.height !== values.scrollHeight))) {
-                        scrollbarElement[0].style.top = top + '%';
-                        values.previousTop = top;
-                        wrapperDomElement.scrollTop = top * values.heightRate;
-                    }
-                    scrollbarContainerElement.removeClass(options.specialClass);
-                },
-                endScroll = function(e) {
-
-                    $document.unbind('mousemove', moveScroll);
-                    $document.unbind('mouseup', endScroll);
-
-                    values.reposition = 0;
-                    wrapperElement.removeClass('unselectable');
-                    scrollbarContainerElement.addClass(options.specialClass);
-                },
-                doScroll = function(e) {
-                    // console.log('DO SCROLL');
-                    if (!values) return;
-                    scrollbarContainerElement.removeClass(options.specialClass);
-                    scrollbarElement[0].style.top = wrapperDomElement.scrollTop / values.heightRate + '%';
-                    scrollbarContainerElement.addClass(options.specialClass);
-                };
-
-            console.log(scrollbarElement);
-            $(scrollbarElement).bind('mousedown', beginScroll);
-        }
-    };
-}]);
-*/

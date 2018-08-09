@@ -13,8 +13,8 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
     // variable to turn on animation of view chage. Loading conversation directly should not animate.
     $rootScope.animate_pages = true;
     // Enable scroll indicator if mobile.
-    //$scope.scroll_indicator_options = {disable:!$rootScope.is_mobile};
-    $scope.scroll_indicator_options = false;
+    $scope.scroll_indicator_options = { disable: !$rootScope.is_mobile };
+    //$scope.scroll_indicator_options = false;
     // array of conversations
     $scope.conversations = [];
 
@@ -36,8 +36,6 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
         profile_obj.avatar = conversation.avatar;
         Profile.setConvProfile(profile_obj);
         // redirect to the chat
-        //$location.path("/chat/conversation/" + conversation_id);
-        //
         if (ua.indexOf('AndroidApp') >= 0) {
             //Android.showConversation(conversation_id);
             $location.path("/chat/conversation/" + conversation_id);
@@ -63,7 +61,6 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
 
     // Check logged in.
     if (principal.isValid()) {
-        console.log('conversations loaded again');
         // Check whether the users data has loaded.
         UserData.checkUser().then(function(result) {
             if (result != undefined) {

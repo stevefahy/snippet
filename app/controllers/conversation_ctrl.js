@@ -3,16 +3,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // Detect device user agent 
     var ua = navigator.userAgent;
 
-    // Add custom class for Android scrollbar
-    if (ua.indexOf('AndroidApp') >= 0) {
-       // $('.content_cnv').addClass('content_cnv_android');
-    }
-
     // Enable scroll indicator if mobile.
-    //$scope.scroll_indicator_options = {disable:!$rootScope.is_mobile};
-    $scope.scroll_indicator_options = {disable:false};
-
-    $scope.options = {'test':true};
+    $scope.scroll_indicator_options = { disable: !$rootScope.is_mobile };
+    //$scope.scroll_indicator_options = {disable:false};
 
     $rootScope.pageLoading = true;
 
@@ -31,17 +24,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.isMember = false;
     $scope.totalDisplayed = -6;
 
-    $scope.options = {};
-
     // Use the urls id param from the route to load the conversation.
     var id = $routeParams.id;
     // Use the urls username param from the route to load the conversation.
     var username = $routeParams.username;
-
-
-    
-
-
 
     // Default navigation
     viewAnimationsService.setEnterAnimation('page-conversation');
@@ -66,13 +52,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $animate.enabled($rootScope.animate_pages);
 
     // Load the rest of the cards if page loaded directly without animation.
-    if(!$rootScope.animate_pages){
+    if (!$rootScope.animate_pages) {
         $scope.totalDisplayed = -1000;
     }
 
     General.keyBoardListenStart();
-
-
 
     // Broadcast by UserData after it has processed the notification. (card has been created, updated or deleted by another user to this user).
     $scope.$on('CONV_NOTIFICATION', function(event, msg) {
@@ -342,7 +326,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     getPublicConversation = function(id, name) {
         //console.log('call worker');
         //w.postMessage(id);
-        
+
         Conversations.getPublicConversationById(id)
             .then(function(result) {
                 $scope.cards = result.data;
@@ -361,7 +345,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             .catch(function(error) {
                 console.log('error: ' + error);
             });
-            
+
     };
 
     // Get the conversation by id
@@ -454,34 +438,19 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
         $rootScope.pageLoading = false;
-
-        //var myDiv = $('.content_cnv');
-        // console.log(myDiv);
-        /*
-        $timeout(function() {
-            console.log('scroll');
-            console.log($('.content_cnv').offset().top);
-            var amt = 85;
-            $('.content_cnv').scrollTop(amt);
-            console.log($('.content_cnv').offset().top);
-            
-        }, 2000);
-        */
     });
 
     // Listen for the end of the view transition.
-    
+
     $(".page").on("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend", function(e) {
         if (e.originalEvent.animationName == "slide-in") {
             $timeout(function() {
                 $scope.$apply(function() {
                     // Load the rest of the cards.
-                    console.log('new cards');
                     $scope.totalDisplayed = -1000;
                 }, 0);
             });
         }
     });
-    
 
 }]);

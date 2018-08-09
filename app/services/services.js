@@ -177,60 +177,60 @@ cardApp.factory('socket', function($rootScope, $window) {
     socket = io({ transports: ['websocket'] });
 
     notifyUsers = function(msg) {
-        console.log('notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
+        //console.log('notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
         $rootScope.$broadcast('NOTIFICATION', msg);
     };
 
     return {
         // called by core.js - UserData once when the app loads 
         connect: function(id) {
-            console.log('connect: ' + socket.id + ' : ' + id);
+            //console.log('connect: ' + socket.id + ' : ' + id);
             // Connected, request unique namespace to be created
             socket.emit('create_ns', id);
             // create the unique namespace on the client
             socket = io('/' + id);
             // namespace connect
             socket.on('connect', function() {
-                console.log('CLIENT NS connect: ' + socket.id);
+                //console.log('CLIENT NS connect: ' + socket.id);
             });
             // server confirming that the namespace has been created
             socket.on('joined_ns', function(id) {
-                console.log('CLIENT joined_ns: ' + socket.id);
+                //console.log('CLIENT joined_ns: ' + socket.id);
             });
             // server notifying users by namespace of update
             socket.on('notify_users', notifyUsers);
-            console.log('add notifyUsers listeners');
+            //console.log('add notifyUsers listeners');
             // namespace disconnected by server
             socket.on('disconnect', function(reason) {
-                console.log('CLIENT NS disconnected by server: ' + reason);
+                //console.log('CLIENT NS disconnected by server: ' + reason);
             });
             socket.on('connect_error', function(error) {
-                console.log('connect_error: ' + error);
+                //console.log('connect_error: ' + error);
             });
             socket.on('connect_timeout', function() {
-                console.log('connect_timeout');
+                //console.log('connect_timeout');
             });
             socket.on('reconnect', function(attempt) {
-                console.log('reconnect: ' + attempt);
+                //console.log('reconnect: ' + attempt);
                 $rootScope.$broadcast('SOCKET_RECONNECT');
             });
             socket.on('reconnecting', function(attempt) {
-                console.log('reconnecting: ' + attempt);
+                //console.log('reconnecting: ' + attempt);
             });
             socket.on('reconnect_attempt', function() {
-                console.log('reconnect_attempt');
+                //console.log('reconnect_attempt');
             });
             socket.on('reconnect_error', function(error) {
-                console.log('reconnect_error: ' + error);
+                //console.log('reconnect_error: ' + error);
             });
             socket.on('reconnect_failed', function() {
-                console.log('reconnect_failed');
+                //console.log('reconnect_failed');
             });
             socket.on('ping', function() {
-                console.log('ping');
+                //console.log('ping');
             });
             socket.on('pong', function(ms) {
-                console.log('pong: ' + ms);
+                //console.log('pong: ' + ms);
             });
         },
         delete: function() {
