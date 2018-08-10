@@ -2541,16 +2541,13 @@ span#header b.header_3 {
 /* page-group */
 
 .page-group-leave.ng-leave {
-    /*-webkit-animation: .5s conversations-leave;*/
 }
 
 .page-group.ng-leave {
-    /*-webkit-animation: slideOutRight .5s;*/
    -webkit-animation: slideOutRight .7s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .page-group-direct.ng-leave {
-    /*-webkit-animation: slideOutRight .5s;*/
    -webkit-animation: slideOutRight .7s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
@@ -2625,7 +2622,6 @@ span#header b.header_3 {
 
 .page-conversations.ng-enter .content_cnv {
     overflow-y: hidden;
-    /*visibility: hidden;*/
 }
 
 @keyframes conversations-leave {

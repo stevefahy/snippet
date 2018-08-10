@@ -92,7 +92,7 @@ cardApp.factory('Users', ['$http', function($http) {
 }]);
 
 cardApp.factory('Conversations', ['$http', function($http) {
-    
+
     var id_property;
 
     return {
@@ -153,11 +153,9 @@ cardApp.factory('Conversations', ['$http', function($http) {
                 });
         },
         getConversationId: function() {
-            console.log(id_property);
             return id_property;
         },
         setConversationId: function(value) {
-            console.log(value);
             id_property = value;
         },
         updateTime: function(id) {
