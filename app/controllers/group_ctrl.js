@@ -2,10 +2,27 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams
 
     // Animation
     $rootScope.nav = { from: 'group', to: 'conv' };
-    viewAnimationsService.setEnterAnimation('page-group');
+    // Default navigation
+    if ($rootScope.animate_pages) {
+        // Loading conversation directly should not animate.
+        viewAnimationsService.setEnterAnimation('page-group');
+        console.log('CONT');
+        //viewAnimationsService.setLeaveAnimation('page-group-direct');
+    } else {
+        console.log('DIRECT');
+        $rootScope.animate_pages = true;
+        //viewAnimationsService.setEnterAnimation('page-group-static');
+        //viewAnimationsService.setEnterAnimation('page-conversation-static');
+        //$('.page').addClass('page-conversation-static');
+           // viewAnimationsService.setEnterAnimation('page-group');
+           $rootScope.nav = { from: 'group-direct', to: 'conv' };
+        viewAnimationsService.setLeaveAnimation('page-group-direct');
+        //viewAnimationsService.setLeaveAnimation('page-group');
+        
+    }
     viewAnimationsService.setLeaveAnimation('page-group');
     // Loading conversation directly should not animate.
-    $animate.enabled($rootScope.animate_pages);
+    //$animate.enabled($rootScope.animate_pages);
     // turn on animation.
     $scope.contact_back = false;
     $scope.$on('$routeChangeStart', function($event, next, current) {
@@ -14,6 +31,9 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams
 
     // Use the urls id param from the route to load the conversation.
     var id = $routeParams.id;
+    // Set the conversation id in case this page was loaded directly.
+    Conversations.setConversationId(id);
+
     // Stop listening for Mobile soft keyboard.
     General.keyBoardListenStop();
     $scope.animating = true;

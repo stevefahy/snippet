@@ -26,17 +26,27 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Use the urls id param from the route to load the conversation.
     var id = $routeParams.id;
+    console.log(id);
     // Use the urls username param from the route to load the conversation.
     var username = $routeParams.username;
 
     // Default navigation
-    viewAnimationsService.setEnterAnimation('page-conversation');
+    if ($rootScope.animate_pages) {
+        // Loading conversation directly should not animate.
+        viewAnimationsService.setEnterAnimation('page-conversation');
+    }
     viewAnimationsService.setLeaveAnimation('page-conversation-static');
 
+console.log($rootScope.nav);
     if ($rootScope.nav) {
         if ($rootScope.nav.from == 'group') {
+            console.log('from cont');
             viewAnimationsService.setEnterAnimation('page-conversation-static');
             viewAnimationsService.setLeaveAnimation('page-group');
+        } else if ($rootScope.nav.from == 'group-direct') {
+            console.log('from direct');
+            viewAnimationsService.setEnterAnimation('page-conversation-static');
+            viewAnimationsService.setLeaveAnimation('page-group-direct');
         } else if ($rootScope.nav.from == 'contacts') {
             $rootScope.nav = { from: 'conv', to: 'contacts' };
             viewAnimationsService.setEnterAnimation('page-conversation');
@@ -47,9 +57,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     } else {
         $rootScope.nav = { from: 'conv', to: 'convs' };
     }
-
-    // Loading conversation directly should not animate.
-    $animate.enabled($rootScope.animate_pages);
 
     // Load the rest of the cards if page loaded directly without animation.
     if (!$rootScope.animate_pages) {
@@ -244,6 +251,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             // get the public conversation id for this username
                             var public_id = res.data._id;
                             // Set the conversation id so that it can be retrieved by cardcreate_ctrl
+                            console.log('public');
                             Conversations.setConversationId(public_id);
                             // Check the users permission for this conversation. (logged in and participant)
                             checkPermission(public_id, function(result) {
@@ -258,6 +266,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     });
             }
         } else {
+            console.log('not public');
             Conversations.setConversationId(id);
             // Check the users permission for this conversation. (logged in and participant)
             checkPermission(id, function(result) {
@@ -278,6 +287,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     checkPermission = function(conversation_id, callback) {
         // If looged in
         if ($scope.currentUser) {
+            console.log(conversation_id);
             UserData.getConversationModelById(conversation_id)
                 .then(function(res) {
                     if (res) {

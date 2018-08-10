@@ -51,6 +51,7 @@ cardApp.controller("headerCtrl", ['Profile', 'Conversations', '$scope', '$rootSc
 
     $scope.changePathConversation = function() {
         var id = Conversations.getConversationId();
+        console.log(id);
         $location.path('chat/conversation/' + id);
     };
 
