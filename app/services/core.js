@@ -353,7 +353,10 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     insertImage = function(data) {
         if (data.response === 'saved') {
-            var new_image = "<img class='resize-drag' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'><span class='scroll_image_latest' id='delete'>&#x200b</span>";
+            console.log(data);
+            data.file_name = data.file.substring(0, data.file.indexOf('.'));
+            //var new_image = "<img class='resize-drag' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'><span class='scroll_image_latest' id='delete'>&#x200b</span>";
+            var new_image = "<button type='button' onclick='openCrop(\"" +  data.file_name + "\")'>Crop</button><button type='button' onclick='setCrop(\"" +  data.file_name + "\")'>Set Crop</button><div class='cropper_cont' id='cropper_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'></div><span class='scroll_image_latest' id='delete'>&#x200b</span>";
             self.pasteHtmlAtCaret(new_image);
             // commented out because it causes an issue with onblur which is used to update card.
             /*

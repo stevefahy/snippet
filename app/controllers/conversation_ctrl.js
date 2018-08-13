@@ -1,5 +1,190 @@
 cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', '$animate', 'viewAnimationsService', function($scope, $rootScope, $location, $http, $window, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, $animate, viewAnimationsService) {
 
+
+    //document.getElementById('test').onload = function(){
+    //   console.log('test loaded');
+    //};
+    var cropper;
+    var image;
+
+    openCrop = function(id) {
+
+        var options = {
+            //aspectRatio: 16 / 9,
+            zoomable: false
+        };
+
+        console.log('openCrop: ' + id);
+
+        /*
+                        $('.' + id).attr('id', 'image_' + id);
+                id = 'image_' + id;
+                image = document.getElementById(id);
+                console.log(image);
+                */
+
+        // Check for stored crop data
+        var stored = $("#image_" + id).attr('crop-data');
+        console.log(stored);
+        //JSON.parse(str);
+        if (stored != undefined) {
+            console.log(JSON.parse(stored));
+
+            options.data = JSON.parse(stored);
+
+                        cropper = new Cropper(image, options, {
+                crop(event) {
+                    console.log(event.detail.x);
+                    console.log(event.detail.y);
+                    console.log(event.detail.width);
+                    console.log(event.detail.height);
+                    console.log(event.detail.rotate);
+                    console.log(event.detail.scaleX);
+                    console.log(event.detail.scaleY);
+                },
+            });
+
+            //cropper.setData(JSON.parse(stored));
+        } else {
+
+            $('.' + id).attr('id', 'image_' + id);
+            id = 'image_' + id;
+            image = document.getElementById(id);
+            console.log(image);
+
+            cropper = new Cropper(image, options, {
+                crop(event) {
+                    console.log(event.detail.x);
+                    console.log(event.detail.y);
+                    console.log(event.detail.width);
+                    console.log(event.detail.height);
+                    console.log(event.detail.rotate);
+                    console.log(event.detail.scaleX);
+                    console.log(event.detail.scaleY);
+                },
+            });
+        }
+
+        //var image = document.getElementById('test2');
+        //var image = $('.'+id);
+
+
+
+
+
+
+
+
+
+    };
+
+    setCrop = function(id) {
+        console.log('setCrop: ' + id);
+
+
+        getData = function() {
+            console.log('data');
+
+            var stored_data = cropper.getData();
+            console.log(stored_data);
+
+            //$( "#image_" + id ).data( "bar", { myType: "test", count: 40 } );
+            //image_abstract_3d_4-wallpaper-1920x1080
+            //$( "#image_abstract_3d_4-wallpaper-1920x1080" ).data( "bar", { myType: "test", count: 40 } );
+
+            // div= document.getElementById('nav');
+            //image.potato = ['lemons', 3];
+            //div.setAttribute("data-json", JSON.stringify(json));
+            $("#image_" + id).attr('crop-data', JSON.stringify(stored_data));
+
+
+            var gcd = cropper.getCanvasData();
+            console.log(cropper.getData());
+            console.log(cropper.getImageData());
+            console.log(gcd);
+            var gcbd = cropper.getCropBoxData();
+            console.log(gcbd);
+
+            console.log(image.naturalWidth + ' : ' + image.naturalHeight);
+            console.log(image.width + ' : ' + image.height);
+
+            // Set the height of the container
+            var wrapper = document.getElementById('cropper_' + id);
+            wrapper.style.height = gcd.height + 'px';
+
+            image.style.position = "absolute";
+            console.log("rect(" + gcbd.top + "px " + (gcbd.width + gcbd.left) + "px " + (gcbd.height + gcbd.top) + "px " + gcbd.left + "px)");
+            image.style.clip = "rect(" + gcbd.top + "px " + (gcbd.width + gcbd.left) + "px " + (gcbd.height + gcbd.top) + "px " + gcbd.left + "px)";
+
+            image.style.width = gcd.width + 'px';
+            image.style.left = (gcbd.left * -1) + 'px';
+
+
+            //[(403.33 - 322.66) / 322.66] × 100% = 0.2500154961879376 × 100% = 25.00154961879376%
+
+            var zoom_amount = (((gcd.width - gcbd.width) / gcbd.width) * 100) + 100;
+            console.log(zoom_amount);
+            image.style.zoom = (zoom_amount / 100);
+
+            image.style.maxWidth = 'unset';
+
+        };
+
+        //$timeout(function() {
+
+        getData();
+
+        cropper.destroy();
+
+        //},1000);
+    };
+
+    /*
+        ready = function() {
+
+            $timeout(function() {
+                console.log('ready');
+
+                var image = document.getElementById('test2');
+
+                var options = {
+                    //aspectRatio: 16 / 9,
+                    zoomable: false
+                };
+
+                var cropper = new Cropper(image, options, {
+                    crop(event) {
+                        console.log(event.detail.x);
+                        console.log(event.detail.y);
+                        console.log(event.detail.width);
+                        console.log(event.detail.height);
+                        console.log(event.detail.rotate);
+                        console.log(event.detail.scaleX);
+                        console.log(event.detail.scaleY);
+                    },
+                });
+
+                getData = function() {
+                    console.log('data');
+                    console.log(cropper.getData());
+                    console.log(cropper.getImageData());
+                    console.log(cropper.getCanvasData());
+                    console.log(cropper.getCropBoxData());
+
+                    console.log(image.naturalWidth + ' : ' + image.naturalHeight);
+                    console.log(image.width + ' : ' + image.height);
+                };
+
+                $timeout(function() {
+                    var contData = cropper.getContainerData(); //Get container data
+                    //cropper.zoomTo(1);
+                    console.log(contData);
+                }, 1000);
+            }, 5000);
+
+        };
+    */
+
     // Detect device user agent 
     var ua = navigator.userAgent;
 

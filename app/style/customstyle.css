@@ -24,6 +24,11 @@ body {
     overflow: hidden;
 }
 
+/* Limit image width to avoid overflow the container */
+img {
+  max-width: 100%; /* This rule is very important, please do not ignore this! */
+}
+
 .editable {
     display: block;
     max-width: 200px;
@@ -141,11 +146,57 @@ input[type="checkbox"] {
 }
 
 .resize-drag {
+    /*
     margin-bottom: 12px;
     margin-top: 12px;
     max-width: calc(100% + 2.7em);
     position: relative;
     left: -1.35em;
+    */
+}
+
+
+/* clip */
+
+img.resize-drag.clip {
+    position: absolute;
+    max-width: unset;
+    zoom: 1.33;
+    left: -36px;
+    width: 375px;
+    top: -21px;
+    clip: rect(23px,339px,202px,35px);
+    /* height: 200px; */
+}
+
+.cropper_cont.clip {
+    height: 242px;
+}
+
+
+
+
+
+.cropper_cont {
+    display: inline-block;
+    /* position: relative; */
+    width: calc(100% + 1.7em);
+    /* max-width: calc(110% + 3em); */
+    position: relative;
+    left: -1.34em;
+    /* height: 200px; */
+}
+
+.cropper_cont{
+    /*
+    max-width: calc(100% + 2.7em);
+    position: relative;
+    left: -1.35em;
+    */
+        width: calc(100% + 1.7em);
+    /* max-width: calc(110% + 3em); */
+    position: relative;
+    left: -1.34em;
 }
 
 .resize-container {
