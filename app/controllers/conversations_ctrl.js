@@ -1,5 +1,8 @@
 cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$http', 'Invites', 'Email', 'Users', 'Conversations', '$q', 'FormatHTML', 'General', 'Profile', '$cookies', '$timeout', 'principal', 'UserData', 'viewAnimationsService', function($scope, $rootScope, $location, $http, Invites, Email, Users, Conversations, $q, FormatHTML, General, Profile, $cookies, $timeout, principal, UserData, viewAnimationsService) {
 
+
+
+
     // Animation
     if ($rootScope.nav) {
         $('#page-system').removeClass("page-conversation-static");
@@ -20,6 +23,7 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
 
     // Broadcast by socket service when a  card has been created, updated or deleted by another user to this user
     $scope.$on('NOTIFICATION', function(event, msg) {
+        console.log('not');
         var id = Conversations.getConversationId();
         // Update the conversations.
         $scope.conversations = UserData.getConversationModel();

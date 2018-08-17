@@ -9,6 +9,10 @@ var prefix = '/s/';
 // ROUTES
 //
 
+//var crop_started = false;
+var crop_finished = false;
+
+
 cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
     $routeProvider
         .when('/', {
@@ -216,6 +220,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         secondkey_array.push(marky_array[i].charstring.charAt(1));
     }
 
+    function getDate() {
+        var today = new Date();
+        var time = today.getTime();
+        return time;
+    }
+
     function createImageElement() {
         return $q(function(resolve, reject) {
             var img = document.createElement("img");
@@ -334,10 +344,15 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.removeDeleteIds = function() {
+
         $('#cecard_create').html($('#cecard_create').html().replace(/<span id="delete">/g, ""));
         $('#cecard_create').html($('#cecard_create').html().replace(/<\/span>/g, ""));
-        $('#cecard_create').html($('#cecard_create').html().replace(/\u200B/g, ""));
+        //$('#cecard_create').html($('#cecard_create').html().replace(/\u200B/g, ""));
+        // Put back in space after images
+
+        //$('#cecard_create .after_image').html('&#x200b'); 
         return $('#cecard_create').html();
+
     };
 
     // Added for update. Ensures focus is called after an image is inserted.
@@ -356,7 +371,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             console.log(data);
             data.file_name = data.file.substring(0, data.file.indexOf('.'));
             //var new_image = "<img class='resize-drag' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'><span class='scroll_image_latest' id='delete'>&#x200b</span>";
-            var new_image = "<button type='button' onclick='openCrop(\"" +  data.file_name + "\")'>Crop</button><button type='button' onclick='setCrop(\"" +  data.file_name + "\")'>Set Crop</button><div class='cropper_cont' id='cropper_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'></div><span class='scroll_image_latest' id='delete'>&#x200b</span>";
+            var new_image = "<button type='button' onclick='openCrop(\"" + data.file_name + "\")'>Crop</button><button type='button' onclick='setCrop(\"" + data.file_name + "\")'>Set Crop</button><button type='button' onclick='deleteCrop(\"" + data.file_name + "\")'>Delete Crop</button><div class='cropper_cont' id='cropper_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'></div><span class='after_image'>&#x200b</span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
             self.pasteHtmlAtCaret(new_image);
             // commented out because it causes an issue with onblur which is used to update card.
             /*
@@ -424,7 +439,10 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 }).then(function(dataurl) {
                     return dataURItoBlob(dataurl);
                 }).then(function(blob) {
-                    self.formData.append('uploads[]', blob, file.name);
+                    // Unique file name
+                    file_name = getDate() + '_' + file.name;
+                    //self.formData.append('uploads[]', blob, file.name);
+                    self.formData.append('uploads[]', blob, file_name);
                 })
             );
         });
@@ -444,6 +462,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     // Save the card while a image is being taken (Android bug)
     this.saveCard = function(id, card, currentUser) {
+        console.log('save');
         // check the content has changed.
         if (card.content != card.original_content) {
             // Inject the Database Service
@@ -558,17 +577,61 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.getBlur = function(id, card, currentUser) {
+        console.log('blur');
+        // active = $(document.activeElement).closest("div").attr('id');
+
+
+
+
         // Add slight delay so that document.activeElement works
         setTimeout(function() {
             // Get the element currently in focus
             var active = $(document.activeElement).closest("div").attr('id');
+            var active2 = $(document.activeElement);
+            console.log(id);
+            console.log(active);
+            console.log(active2);
             // If the blurred card is not the current card or the hidden input.
-            if ('ce' + card._id != active && (active != 'hidden_input_container')) {
+            console.log(crop_finished);
+            if (('ce' + card._id != active && (active != 'hidden_input_container')) || crop_finished == true) {
+
                 // Check if there is a marky in progress
                 // zm launching image capture should not trigger an update. It causes error.
                 found_marky = findMarky(card.content);
                 // check the content has changed and not currently mid marky
-                if (card.content != card.original_content && (found_marky == false)) {
+                console.log('blur?');
+                console.log(found_marky);
+                //console.log(card.content);
+                //console.log(card.original_content);
+                //
+
+
+
+                if ((card.content != card.original_content && (found_marky == false)) || crop_finished == true) {
+                    console.log('yes blur');
+
+                    // Only do this if not in current card?
+                    console.log($('.cropper-container').length);
+                    if ($('.cropper-container').length > 0) {
+                        $('.cropper-container').remove();
+
+                        //Cropp.removeCrop();
+                        //var Cropp = $injector.get('Cropp');
+                        //Cropp.destroyCrop();
+
+                        console.log(card);
+                        console.log($('#ce' + card._id).html());
+                        card.content = $('#ce' + card._id).html();
+                        console.log(card);
+                    }
+                    if (crop_finished) {
+                        card.content = $('#ce' + card._id).html();
+                        console.log(card);
+                    }
+                    crop_finished = false;
+                    //$('.cropper-container').remove();
+
+
                     // Inject the Database Service
                     var Database = $injector.get('Database');
                     // Update the card
@@ -692,6 +755,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         return;
     }
 
+    //this.moveCaretInto = function(id) {
     function moveCaretInto(id) {
         // Causing bug in cecreate_card when enter is pressed following data is deleted.
         //self.removeDeleteIds();
@@ -1349,6 +1413,23 @@ cardApp.service('replaceTags', function() {
         }
     };
 
+    this.removeCropper = function(str) {
+        console.log('removeCropper');
+        str = $("<div>" + str + "</div>");
+        $('.cropper-container', str).each(function(e) {
+            $(this).replaceWith($(this).html());
+        });
+        str = str.html();
+        return str;
+        //cropper-container
+        //var orig = document.getElementById(elem).innerHTML;
+        //var spaces_removed = orig.replace(/\u200B/g, '');
+        //document.getElementById(elem).innerHTML = spaces_removed;
+        //$('.cropper-container').remove();
+
+    };
+
+
 });
 
 //
@@ -1688,10 +1769,225 @@ cardApp.service('General', ['Users', 'Format', function(Users, Format) {
 }]);
 
 //
+// Cropper Service
+//
+
+cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', 'General', 'UserData', 'principal', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML, General, UserData, principal) {
+
+
+    var cropper;
+    var image;
+    var crop_in_progress;
+
+    if (cropper != undefined) {
+        cropper.destroy();
+    }
+    //var reset;
+
+    this.destroyCrop = function() {
+        console.log('Cropp destroyCrop');
+        if (crop_in_progress != undefined) {
+            var id = crop_in_progress;
+            // reSet the height of the container
+            var cont_height = $("#image_" + id).attr('container-data');
+            var wrapper = document.getElementById('cropper_' + id);
+            wrapper.style.height = cont_height + 'px';
+        }
+        //cropper.reset();
+        //cropper.clear();
+        if (cropper != undefined) {
+            cropper.destroy();
+        }
+        console.log(cropper);
+        //cropper = null;
+        console.log(cropper);
+    };
+
+    this.deleteCrop = function(id) {
+        console.log('deleteCrop');
+        cropper.destroy();
+    };
+    //var wrapper_in_progress;
+    this.openCrop = function(id) {
+
+        var stored_image = $("#image_" + id).attr('image-data');
+        if (stored_image != undefined) {
+            console.log(stored_image);
+            stored_image = JSON.parse(stored_image);
+            // Set the height of the container
+            var wrapper = document.getElementById('cropper_' + id);
+            crop_in_progress = id;
+            console.log(wrapper);
+            console.log('set wrapper: ' + stored_image.height);
+            wrapper.style.height = stored_image.height + 'px';
+
+            //wrapper.style.width = stored_image.width;
+            //wrapper.style.height = '';
+        }
+
+        //$timeout(function() {
+
+        var options = {
+            //aspectRatio: 16 / 9,
+            zoomable: false
+            //autoCrop: true
+        };
+
+        console.log('openCrop: ' + id);
+
+        // Check for stored crop data
+        var stored = $("#image_" + id).attr('crop-data');
+        console.log(stored);
+
+        if (stored != undefined) {
+            console.log(JSON.parse(stored));
+
+            options.data = JSON.parse(stored);
+
+            id = 'image_' + id;
+            image = document.getElementById(id);
+            console.log(image);
+
+            cropper = new Cropper(image, options, {
+                crop(event) {
+                    console.log(event.detail.x);
+                    console.log(event.detail.y);
+                    console.log(event.detail.width);
+                    console.log(event.detail.height);
+                    console.log(event.detail.rotate);
+                    console.log(event.detail.scaleX);
+                    console.log(event.detail.scaleY);
+                },
+            });
+            //cropper.reset();
+        } else {
+            // New Crop
+            $('.' + id).attr('id', 'image_' + id);
+            // Add class to show that this image has been cropped
+            // Add class to show that this image has been cropped
+            //$("#image_" + image_id).addClass("cropped");
+            //$('.' + id).
+            id = 'image_' + id;
+            image = document.getElementById(id);
+            console.log(image);
+
+            cropper = new Cropper(image, options, {
+                crop(event) {
+                    console.log(event.detail.x);
+                    console.log(event.detail.y);
+                    console.log(event.detail.width);
+                    console.log(event.detail.height);
+                    console.log(event.detail.rotate);
+                    console.log(event.detail.scaleX);
+                    console.log(event.detail.scaleY);
+                },
+            });
+        }
+
+        //}, 5000);
+
+    };
+
+    this.setCrop = function(image_id) {
+        console.log('setCrop: ' + image_id);
+
+        getData = function() {
+            console.log('data');
+
+            var stored_image_data = cropper.getImageData();
+            console.log(stored_image_data);
+            var stored_data = cropper.getData();
+            console.log(stored_data);
+
+            $("#image_" + image_id).attr('crop-data', JSON.stringify(stored_data));
+
+            $("#image_" + image_id).attr('image-data', JSON.stringify(stored_image_data));
+
+            var gcd = cropper.getCanvasData();
+            console.log(cropper.getData());
+            console.log(cropper.getImageData());
+            console.log(gcd);
+            var gcbd = cropper.getCropBoxData();
+            console.log(gcbd);
+
+            console.log(image.naturalWidth + ' : ' + image.naturalHeight);
+            console.log(image.width + ' : ' + image.height);
+
+            // Set the height of the container
+            var wrapper = document.getElementById('cropper_' + image_id);
+            //wrapper.style.height = gcd.height + 'px';
+            //reset = gcd.height + 'px';
+
+            image.style.position = "absolute";
+            console.log("rect(" + gcbd.top + "px " + (gcbd.width + gcbd.left) + "px " + (gcbd.height + gcbd.top) + "px " + gcbd.left + "px)");
+            image.style.clip = "rect(" + gcbd.top + "px " + (gcbd.width + gcbd.left) + "px " + (gcbd.height + gcbd.top) + "px " + gcbd.left + "px)";
+
+            image.style.width = gcd.width + 'px';
+            image.style.left = (gcbd.left * -1) + 'px';
+
+            image.style.marginTop = (gcbd.top * -1) + 'px';
+
+            var zoom_amount = (((gcd.width - gcbd.width) / gcbd.width) * 100) + 100;
+            console.log(zoom_amount);
+            image.style.zoom = (zoom_amount / 100);
+            console.log((gcbd.height * (zoom_amount / 100)) + 'px');
+            var cont_height = (gcbd.height * (zoom_amount / 100));
+            wrapper.style.height = cont_height + 'px';
+
+            $("#image_" + image_id).attr('container-data', cont_height);
+            image.style.maxWidth = 'unset';
+
+
+            // Add class to show that this image has been cropped
+            $("#image_" + image_id).addClass("cropped");
+
+        };
+        getData();
+        cropper.destroy();
+
+        //$('#hidden_input').focus();  
+
+        //$( "<div class='scroll_latest' id='enter_focus'>Test</div>" ).insertAfter( '#cropper_' + image_id );
+
+        $timeout(function() {
+            console.log('after_image');
+            crop_finished = true;
+            console.log(UserData.getUser());
+            //var wrapper = document.getElementById('cropper_' + image_id);
+            var card_id = $('#cropper_' + image_id).parent().attr('id');
+            card_id = card_id.substring(2, card_id.length);
+            console.log(card_id);
+
+            $('#hidden_input').focus();
+            //getcards();
+            //console.log($scope.cards);
+            //$rootScope.$broadcast('getCards', card_id);
+
+            //$('#after_image').focus(); 
+            //Format.pasteHtmlAtCaret()
+            //Format.moveCaretInto('enter_focus');
+
+            // Scroll into view if necessary
+            //Format.scrollLatest('scroll_latest');
+        }, 1000);
+
+
+
+        // Inject the Database Service
+        //var Database = $injector.get('Database');
+        // Update the card
+        //Database.updateCard(id, card, currentUser);
+        //card._id, card, currentUser
+    };
+
+}]);
+
+
+//
 // Database Service
 //
 
-cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', 'General', 'UserData', 'principal', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML, General, UserData, principal) {
+cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', 'General', 'UserData', 'principal', 'Cropp', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML, General, UserData, principal, Cropp) {
 
     var self = this;
 
@@ -1775,6 +2071,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
     // SAVE CARD (Android image bug. Temporarily save the updated card but do not send notificstion.)
     this.saveTempCard = function(card_id, card, currentUser) {
+        console.log('stc');
         if (!updateinprogress) {
             updateinprogress = true;
             setTimeout(function() {
@@ -1798,6 +2095,8 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
     // MERGE  Conversations.updateTime(card.conversationId) & Conversations.updateViewed(card.conversationId, viewed_users[x]._id, card_id)
     // UPDATE CARD
     this.updateCard = function(card_id, card, currentUser) {
+        console.log('uc');
+        console.log(currentUser);
         if (!updateinprogress) {
             updateinprogress = true;
             setTimeout(function() {
@@ -1807,6 +2106,18 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 // DANGER These had been removed for android image save bug
                 card.content = replaceTags.removeDeleteId(card.content);
                 card.content = replaceTags.removeFocusIds(card.content);
+                //
+                console.log('update card');
+                //Cropp.destroyCrop();
+                console.log(card);
+                console.log(card.content);
+                //card.content = replaceTags.removeCropper(card.content);
+                // console.log(card.content);
+                //cropper-container
+
+
+
+                //cropper.destroy();
                 var sent_content;
                 var notification_title;
                 var notification_body;
@@ -2038,7 +2349,7 @@ cardApp.factory('principal', function($cookies, jwtHelper, $q, $rootScope) {
 //
 // UserData Factory
 //
-
+var cards_model;
 cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $http, $cookies, $location, jwtHelper, $q, principal, Users, Conversations, FormatHTML, General, socket, $filter) {
     var user;
     var contacts = [];
@@ -2050,7 +2361,9 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     // Final conversations model for display.
     var conversations_model = [];
     // Final cards model for display.
-    var cards_model = [];
+    cards_model = [];
+
+
     var UserData = { isAuthenticated: false, isLoaded: false, isLoading: false };
     $rootScope.loaded = false;
     var isLoading = false;
@@ -2066,6 +2379,11 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     $window.restoreState = this.restoreState;
 
     var update_inprogress = false;
+
+    UserData.show = function() {
+        console.log(cards_model);
+    };
+
 
     // Android called functions.
 
@@ -2173,6 +2491,8 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
 
     // Broadcast by Database createCard service when a new card has been created
     $rootScope.$on('CARD_UPDATED', function(event, data) {
+        console.log('model updated');
+        console.log(data);
         UserData.conversationsLatestCardAdd(data.conversationId, data)
             .then(function(res) {
                 UserData.getConversationModelById(data.conversationId)
@@ -2191,6 +2511,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     // Check for updates
 
     UserData.checkDataUpdate = function() {
+        console.log('CDU');
         if (!update_inprogress) {
             update_inprogress = true;
             var toUpdate = [];
@@ -2250,7 +2571,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     notification = function(msg) {
 
         // CONVERSATIONS
-
+        console.log(msg);
         if (!update_inprogress) {
             // Find the conversations for current user
             var user_id = UserData.getUser()._id;
@@ -2342,9 +2663,11 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                     // get all cards for a conversation by conversation id
                     Conversations.getConversationById(msg.conversation_id)
                         .then(function(result) {
+                            console.log(result);
                             //Cards model
                             UserData.getCardsModelById(msg.conversation_id)
                                 .then(function(res) {
+                                    console.log(res);
                                     var conversation_length;
                                     if (res != undefined) {
                                         // get the number of cards in the existing conversation
@@ -2372,7 +2695,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                                                 });
                                         });
                                     } else if (conversation_length == result.data.length) {
-                                        //console.log('update existing card');
+                                        console.log('update existing card');
                                         var local_updated = General.findDifference(result.data, res.data, 'content');
                                         var db_updated = General.findDifference(res.data, result.data, 'content');
                                         if (local_updated.length > 0) {
@@ -2650,6 +2973,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     };
 
     UserData.addConversationModel = function(conv) {
+        console.log('ACM');
         var deferred = $q.defer();
         // Only add if the conversation does not already exist otherwise update.
         var index = General.findWithAttr(conversations_model, '_id', conv._id);
@@ -2666,6 +2990,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     };
 
     UserData.findPublicConversation = function() {
+        console.log('FCM');
         var deferred = $q.defer();
         var index = General.findWithAttr(conversations_model, 'conversation_type', 'public');
         deferred.resolve(conversations_model[index]);
@@ -2673,6 +2998,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     };
 
     UserData.updateConversationById = function(id, conv) {
+        console.log('UD1');
         var deferred = $q.defer();
         var index = General.findWithAttr(conversations, '_id', id);
         // Only update the conversation if it exists, otherwise return false.
@@ -2686,6 +3012,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     };
 
     UserData.updateConversationViewed = function(id) {
+        console.log('VIEWED');
         // Update the DB
         var user_id = UserData.getUser()._id;
         Conversations.clearViewed(id, user_id)
@@ -2895,6 +3222,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     };
 
     UserData.addCardsModelById = function(id) {
+        console.log('UD2');
         var deferred = $q.defer();
         var index = General.findWithAttr(cards_model, '_id', id);
         if (index < 0) {
@@ -2919,6 +3247,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     };
 
     UserData.addCardsModel = function(id, data) {
+        console.log('UD3');
         var deferred = $q.defer();
         var index = General.findWithAttr(cards_model, '_id', id);
         if (index < 0) {
@@ -2947,6 +3276,8 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
         var deferred = $q.defer();
         var promises = [];
         cards_model = [];
+
+        console.log('build');
         var convs = UserData.getConversationsBuild();
         // Map all conversations.
         promises.push(convs.map(function(key, array) {
@@ -2986,6 +3317,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     //
 
     UserData.conversationsLatestCardAdd = function(id, data) {
+        console.log('UD4');
         var deferred = $q.defer();
         var index = General.findWithAttr(conversationsLatestCard, '_id', id);
         // Add if conversationsLatestCard for with this id doesnt exist. otherwise update
@@ -3018,6 +3350,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     // Get the latest card posted to each conversation
     // TODO - replace with function to get latest card from loaded conversation?
     UserData.getConversationsLatestCard = function() {
+        console.log('GCLC');
         var deferred = $q.defer();
         var promises = [];
         var result = UserData.getConversations()
@@ -3043,6 +3376,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     };
 
     UserData.formatLatestCard = function(data, key) {
+        console.log('UD5');
         var deferred = $q.defer();
         var promises = [];
         if (data != null) {
@@ -3139,6 +3473,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     };
 
     UserData.buildConversations = function() {
+        //console.log('build');
         conversations_model = [];
         var deferred = $q.defer();
         var promises = [];

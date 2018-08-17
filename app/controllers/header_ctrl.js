@@ -1,4 +1,4 @@
-cardApp.controller("headerCtrl", ['Profile', 'Conversations', '$scope', '$rootScope', '$location', '$http', 'viewAnimationsService', function(Profile, Conversations, $scope, $rootScope, $location, $http, viewAnimationsService) {
+cardApp.controller("headerCtrl", ['Profile', 'Conversations', '$scope', '$rootScope', '$location', '$http', 'viewAnimationsService', 'Cropp', function(Profile, Conversations, $scope, $rootScope, $location, $http, viewAnimationsService, Cropp) {
 
     displayProfile = function() {
         var user;
@@ -40,6 +40,8 @@ cardApp.controller("headerCtrl", ['Profile', 'Conversations', '$scope', '$rootSc
     $scope.changePath = function(path) {
         // Detect device user agent 
         var ua = navigator.userAgent;
+        console.log('DEST');
+        Cropp.destroyCrop();
         // Add custom class for Android scrollbar
         if (ua.indexOf('AndroidApp') >= 0) {
             //Android.animationBack();

@@ -1,189 +1,30 @@
-cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', '$animate', 'viewAnimationsService', function($scope, $rootScope, $location, $http, $window, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, $animate, viewAnimationsService) {
+cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', '$animate', 'viewAnimationsService', 'Cropp', function($scope, $rootScope, $location, $http, $window, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, $animate, viewAnimationsService, Cropp) {
 
-
-    //document.getElementById('test').onload = function(){
-    //   console.log('test loaded');
-    //};
-    var cropper;
-    var image;
-
-    openCrop = function(id) {
-
-        var options = {
-            //aspectRatio: 16 / 9,
-            zoomable: false
-        };
-
-        console.log('openCrop: ' + id);
-
-        /*
-                        $('.' + id).attr('id', 'image_' + id);
-                id = 'image_' + id;
-                image = document.getElementById(id);
-                console.log(image);
-                */
-
-        // Check for stored crop data
-        var stored = $("#image_" + id).attr('crop-data');
-        console.log(stored);
-        //JSON.parse(str);
-        if (stored != undefined) {
-            console.log(JSON.parse(stored));
-
-            options.data = JSON.parse(stored);
-
-                        cropper = new Cropper(image, options, {
-                crop(event) {
-                    console.log(event.detail.x);
-                    console.log(event.detail.y);
-                    console.log(event.detail.width);
-                    console.log(event.detail.height);
-                    console.log(event.detail.rotate);
-                    console.log(event.detail.scaleX);
-                    console.log(event.detail.scaleY);
-                },
-            });
-
-            //cropper.setData(JSON.parse(stored));
-        } else {
-
-            $('.' + id).attr('id', 'image_' + id);
-            id = 'image_' + id;
-            image = document.getElementById(id);
-            console.log(image);
-
-            cropper = new Cropper(image, options, {
-                crop(event) {
-                    console.log(event.detail.x);
-                    console.log(event.detail.y);
-                    console.log(event.detail.width);
-                    console.log(event.detail.height);
-                    console.log(event.detail.rotate);
-                    console.log(event.detail.scaleX);
-                    console.log(event.detail.scaleY);
-                },
-            });
-        }
-
-        //var image = document.getElementById('test2');
-        //var image = $('.'+id);
-
-
-
-
-
-
-
-
-
+    show = function() {
+        UserData.show();
+        cmod = UserData.cards_model;
     };
 
-    setCrop = function(id) {
-        console.log('setCrop: ' + id);
+    openCrop = Cropp.openCrop;
+    setCrop = Cropp.setCrop;
+    deleteCrop = Cropp.deleteCrop;
 
 
-        getData = function() {
-            console.log('data');
-
-            var stored_data = cropper.getData();
-            console.log(stored_data);
-
-            //$( "#image_" + id ).data( "bar", { myType: "test", count: 40 } );
-            //image_abstract_3d_4-wallpaper-1920x1080
-            //$( "#image_abstract_3d_4-wallpaper-1920x1080" ).data( "bar", { myType: "test", count: 40 } );
-
-            // div= document.getElementById('nav');
-            //image.potato = ['lemons', 3];
-            //div.setAttribute("data-json", JSON.stringify(json));
-            $("#image_" + id).attr('crop-data', JSON.stringify(stored_data));
+    $scope.$on('$destroy', function() {
+        //leaving controller.
+        Cropp.destroyCrop();
+    });
 
 
-            var gcd = cropper.getCanvasData();
-            console.log(cropper.getData());
-            console.log(cropper.getImageData());
-            console.log(gcd);
-            var gcbd = cropper.getCropBoxData();
-            console.log(gcbd);
 
-            console.log(image.naturalWidth + ' : ' + image.naturalHeight);
-            console.log(image.width + ' : ' + image.height);
-
-            // Set the height of the container
-            var wrapper = document.getElementById('cropper_' + id);
-            wrapper.style.height = gcd.height + 'px';
-
-            image.style.position = "absolute";
-            console.log("rect(" + gcbd.top + "px " + (gcbd.width + gcbd.left) + "px " + (gcbd.height + gcbd.top) + "px " + gcbd.left + "px)");
-            image.style.clip = "rect(" + gcbd.top + "px " + (gcbd.width + gcbd.left) + "px " + (gcbd.height + gcbd.top) + "px " + gcbd.left + "px)";
-
-            image.style.width = gcd.width + 'px';
-            image.style.left = (gcbd.left * -1) + 'px';
+    $scope.$on('getCards', function(event, data) {
+        //$scope.someFunction();
+        console.log(data);
+        console.log($scope.cards);
+        //Cropp.
+    });
 
 
-            //[(403.33 - 322.66) / 322.66] × 100% = 0.2500154961879376 × 100% = 25.00154961879376%
-
-            var zoom_amount = (((gcd.width - gcbd.width) / gcbd.width) * 100) + 100;
-            console.log(zoom_amount);
-            image.style.zoom = (zoom_amount / 100);
-
-            image.style.maxWidth = 'unset';
-
-        };
-
-        //$timeout(function() {
-
-        getData();
-
-        cropper.destroy();
-
-        //},1000);
-    };
-
-    /*
-        ready = function() {
-
-            $timeout(function() {
-                console.log('ready');
-
-                var image = document.getElementById('test2');
-
-                var options = {
-                    //aspectRatio: 16 / 9,
-                    zoomable: false
-                };
-
-                var cropper = new Cropper(image, options, {
-                    crop(event) {
-                        console.log(event.detail.x);
-                        console.log(event.detail.y);
-                        console.log(event.detail.width);
-                        console.log(event.detail.height);
-                        console.log(event.detail.rotate);
-                        console.log(event.detail.scaleX);
-                        console.log(event.detail.scaleY);
-                    },
-                });
-
-                getData = function() {
-                    console.log('data');
-                    console.log(cropper.getData());
-                    console.log(cropper.getImageData());
-                    console.log(cropper.getCanvasData());
-                    console.log(cropper.getCropBoxData());
-
-                    console.log(image.naturalWidth + ' : ' + image.naturalHeight);
-                    console.log(image.width + ' : ' + image.height);
-                };
-
-                $timeout(function() {
-                    var contData = cropper.getContainerData(); //Get container data
-                    //cropper.zoomTo(1);
-                    console.log(contData);
-                }, 1000);
-            }, 5000);
-
-        };
-    */
 
     // Detect device user agent 
     var ua = navigator.userAgent;
@@ -248,6 +89,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Broadcast by UserData after it has processed the notification. (card has been created, updated or deleted by another user to this user).
     $scope.$on('CONV_NOTIFICATION', function(event, msg) {
+        console.log('NITIFY');
         // only update the conversation if the user is currently in that conversation
         if (id === msg.conversation_id) {
             updateConversationViewed(id);
@@ -261,6 +103,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Broadcast by Database updateCard service when a card has been updated.
     $scope.$on('CARD_UPDATED', function(event, data) {
+        console.log('MESSY');
         var card_pos = General.findWithAttr($scope.cards, '_id', data._id);
         if (card_pos >= 0) {
             $scope.cards[card_pos].updatedAt = data.updatedAt;
@@ -285,6 +128,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     .then(function(result) {
                         if (result != undefined) {
                             $scope.cards = result.data;
+                            console.log($scope.cards);
                         }
                     });
             });
@@ -325,7 +169,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }, 0);
     };
 
-    // TODO - check if compatibel with General version.
+    // TODO - check if compatible with General version.
     function comparer(otherArray) {
         return function(current) {
             return otherArray.filter(function(other) {
@@ -464,6 +308,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // If the user is logged in and a participant of the conversation the $scope.isMember=true.
     // card_create.html is added to the conversation if $scope.isMember=true.
     checkPermission = function(conversation_id, callback) {
+        console.log('checkperm');
         // If looged in
         if ($scope.currentUser) {
             UserData.getConversationModelById(conversation_id)
@@ -489,12 +334,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                 if (user_pos >= 0) {
                                     // user found in the participants array.
                                     // Add this conversation to the local model.
+                                    console.log(res[conv_pos]);
                                     UserData.addConversationModel(res[conv_pos])
                                         .then(function(result) {
                                             // If this is the first card in a new conversation then create the cards model for this conversation.
                                             UserData.addCardsModelById(res[conv_pos]._id)
                                                 .then(function(res) {
-                                                    //console.log(res);
+                                                    console.log(res);
                                                 });
                                         });
                                     callback(true);
@@ -598,11 +444,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // clear the participants unviewed array by conversation id
     updateConversationViewed = function(id) {
+        console.log('u');
         UserData.updateConversationViewed(id);
     };
 
     // update the conversation with the new card data
     updateConversation = function(data) {
+        console.log('HERE');
         // Get the user name for the user id
         // TODO dont repeat if user id already retreived
         UserData.getConversationsUser(data.user)
@@ -626,6 +474,24 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
         $rootScope.pageLoading = false;
+        if ($('.cropper-container').length > 0) {
+            console.log('manually remove');
+            $('.cropper-container').remove();
+            $('.cropper-hidden').removeClass('cropper-hidden');
+
+
+        }
+        console.log('CHECK CROPPED');
+        // reset crop container height (setCrop may not have had setCrop applied)
+        $(".cropped").each(function (index, value) {
+            //console.log($(this).attr('oontainer-data'));
+            //console.log(this,$(this).attr('oontainer-data'));
+            console.log($(value).attr('container-data'));
+            console.log($(value).attr('container-data').length);
+            if($(value).attr('container-data').length > 0){
+                $(value).parent().css('height', $(value).attr('container-data') + 'px');
+            }
+        });
     });
 
     // Listen for the end of the view transition.

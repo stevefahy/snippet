@@ -185,6 +185,7 @@ img.resize-drag.clip {
     position: relative;
     left: -1.34em;
     /* height: 200px; */
+        overflow: hidden;
 }
 
 .cropper_cont{
