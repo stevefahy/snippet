@@ -188,16 +188,24 @@ img.resize-drag.clip {
         overflow: hidden;
 }
 
+
+
 .cropper_cont{
     /*
     max-width: calc(100% + 2.7em);
     position: relative;
     left: -1.35em;
     */
-        width: calc(100% + 1.7em);
+       /* width: calc(100% + 1.7em);*/
+    /* max-width: calc(110% + 3em); */
+   /* position: relative;
+    left: -1.34em;*/
+
+
+    width: calc(100% + 2.7em);
     /* max-width: calc(110% + 3em); */
     position: relative;
-    left: -1.34em;
+    left: -1.35em;
 }
 
 .resize-container {
