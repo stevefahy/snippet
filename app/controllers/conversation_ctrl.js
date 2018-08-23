@@ -472,6 +472,53 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         updateConversationViewed(data.conversationId);
     };
 
+    adjustCropped = function(){
+        console.log('adjustCropped');
+        var win_width = $(window).width();
+        console.log(win_width);
+        $(".cropped").each(function (index, value) {
+
+            //var zoom_amount = (((gcd.width - gcbd.width) / gcbd.width) * 100) + 100;
+                //console.log($(value).width());
+                //var init_width = $(value).width();
+               // console.log('init_width: ' + init_width);
+                console.log('win_width: ' + win_width);
+                // % increase = Increase ÷ Original Number × 100.
+                //var zoom = init_width / win_width;
+                //console.log('zoom: ' + zoom);
+
+                var stored = $(value).attr('cbd-data');
+
+                if(stored){
+                    stored = JSON.parse(stored);
+                console.log(stored);
+                console.log(stored.right);
+                var zoom = win_width / (stored.right - stored.left);
+                console.log(zoom);
+                $(value).css( "zoom", zoom );
+
+                var height = (stored.bottom - stored.top) * zoom;
+//$(this).parent()
+                $(value).parent().css( "height", height );  
+                }              
+                //var rect = $(value).css( "zoom" );
+                // divide img zoomby this  and apply to image
+                //var current_zoom = $(value).css( "zoom" );
+                //var new_zoom = current_zoom / increase_amount;
+               // console.log('new_zoom: ' + new_zoom);
+                //$(value).css( "zoom", new_zoom );
+                //divide cont height by this and apply to cont
+
+        });
+    };
+
+    $window.addEventListener('resize', adjustCropped, false);
+
+    $window.addEventListener('load', adjustCropped, false);
+
+
+    
+
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
         $rootScope.pageLoading = false;
         if ($('.cropper-container').length > 0) {
@@ -483,6 +530,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
         console.log('CHECK CROPPED');
         // reset crop container height (setCrop may not have had setCrop applied)
+        adjustCropped();
+        /*
         $(".cropped").each(function (index, value) {
             //console.log($(this).attr('oontainer-data'));
             //console.log(this,$(this).attr('oontainer-data'));
@@ -492,6 +541,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $(value).parent().css('height', $(value).attr('container-data') + 'px');
             }
         });
+        */
     });
 
     // Listen for the end of the view transition.

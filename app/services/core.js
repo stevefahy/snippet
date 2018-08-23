@@ -1778,6 +1778,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     var cropper;
     var image;
     var crop_in_progress;
+    var reduce_height = false;
+    var decrease_percent = 0;
 
     if (cropper != undefined) {
         cropper.destroy();
@@ -1807,8 +1809,47 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         console.log('deleteCrop');
         cropper.destroy();
     };
+
+    resetContainer = function(id) {
+        console.log('reset');
+        // Work out the available height.
+        console.log($('.header').height());
+        console.log($('.create_container').height());
+        console.log($('.footer').height());
+        console.log($(window).height());
+        var avail_height = $(window).height() - ($('.header').height() + $('.create_container').height() + $('.footer').height());
+        console.log(avail_height);
+        console.log($('.' + id).height());
+
+        if (avail_height < $('.' + id).height()) {
+            console.log('resize');
+            // work out the proportionate width needed to fit the height
+            // % Decrease = Decrease ÷ Original Number × 100
+            // % increase = Increase ÷ Original Number × 100.
+            decrease_percent = (avail_height / $('.' + id).height());
+            console.log(decrease_percent);
+
+            var decreased_width = ($('.' + id).width() * decrease_percent);
+
+            // Set the height of the container
+            var wrapper = document.getElementById('cropper_' + id);
+            //wrapper.style.width = '400px';
+            wrapper.style.width = decreased_width + 'px';
+            reduce_height = true;
+
+            var cont_data = {'height': 0, 'width': decreased_width};
+            //$("#image_" + image_id).attr('container-data', cont_height);
+            $("." + id).attr('reduce-data', JSON.stringify(cont_data));
+        }
+
+    };
+
     //var wrapper_in_progress;
     this.openCrop = function(id) {
+
+        // First reset container and manually set its width and height.
+        //resetContainer(id);
+        //resetContainer(id);
 
         var stored_image = $("#image_" + id).attr('image-data');
         if (stored_image != undefined) {
@@ -1819,10 +1860,30 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             crop_in_progress = id;
             console.log(wrapper);
             console.log('set wrapper: ' + stored_image.height);
-            wrapper.style.height = stored_image.height + 'px';
+            //wrapper.style.height = stored_image.height + 'px';
+
+            var win_width = $(window).width();
+            var img_width = stored_image.width;
+            var inc = win_width / img_width;
+            console.log(stored_image.height * inc);
+            wrapper.style.height = (stored_image.height * inc) + 'px';
+
+            var avail_height = $(window).height() - ($('.header').height() + $('.create_container').height() + $('.footer').height());
+            // get the actual screen height from the scaled width.
+            var current_height = (stored_image.height * inc) ;
+            if (avail_height < current_height) {
+                
+            console.log('resize2');
+            decrease_percent = (avail_height / $('.' + id).height());
+            var decreased_height = ($('.' + id).height() * decrease_percent);
+            console.log(decreased_height);
+            wrapper.style.height = decreased_height + 'px';
+            
+            }
 
             //wrapper.style.width = stored_image.width;
             //wrapper.style.height = '';
+            //wrapper.style.width = '';
         }
 
         //$timeout(function() {
@@ -1838,6 +1899,19 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         // Check for stored crop data
         var stored = $("#image_" + id).attr('crop-data');
         console.log(stored);
+
+        var reduced = $("#image_" + id).attr('reduce-data');
+
+        if(reduced != undefined){
+                        // Set the height of the container
+            var wrapper = document.getElementById('cropper_' + id);
+            //wrapper.style.width = '400px';
+            var d = JSON.parse(reduced);
+             var decreased_width = d.width;
+console.log(decreased_width);
+            wrapper.style.width = decreased_width + 'px';
+            reduce_height = true;
+        }
 
         if (stored != undefined) {
             console.log(JSON.parse(stored));
@@ -1862,13 +1936,17 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             //cropper.reset();
         } else {
             // New Crop
+
+            resetContainer(id);
+            //reduce_height = false;
+
             $('.' + id).attr('id', 'image_' + id);
             // Add class to show that this image has been cropped
             // Add class to show that this image has been cropped
             //$("#image_" + image_id).addClass("cropped");
             //$('.' + id).
-            id = 'image_' + id;
-            image = document.getElementById(id);
+            //id = 'image_' + id;
+            image = document.getElementById('image_' + id);
             console.log(image);
 
             cropper = new Cropper(image, options, {
@@ -1880,8 +1958,16 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                     console.log(event.detail.rotate);
                     console.log(event.detail.scaleX);
                     console.log(event.detail.scaleY);
+
+
+                     var wrapper = document.getElementById('cropper_' + id);
+            //wrapper.style.width = '400px';
+            wrapper.style.width = '';
                 },
             });
+
+           
+
         }
 
         //}, 5000);
@@ -1923,18 +2009,43 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             image.style.clip = "rect(" + gcbd.top + "px " + (gcbd.width + gcbd.left) + "px " + (gcbd.height + gcbd.top) + "px " + gcbd.left + "px)";
 
             image.style.width = gcd.width + 'px';
+            //image.style.width = (gcbd.width + gcbd.left) + 'px';
             image.style.left = (gcbd.left * -1) + 'px';
 
             image.style.marginTop = (gcbd.top * -1) + 'px';
 
-            var zoom_amount = (((gcd.width - gcbd.width) / gcbd.width) * 100) + 100;
+            //var zoom_amount = (((gcd.width - gcbd.width) / gcbd.width)  * 100) + 100;
+            var zoom_amount = ((((gcd.width - gcbd.width) / gcbd.width)  * 100) + 100) /100;
             console.log(zoom_amount);
-            image.style.zoom = (zoom_amount / 100);
-            console.log((gcbd.height * (zoom_amount / 100)) + 'px');
-            var cont_height = (gcbd.height * (zoom_amount / 100));
-            wrapper.style.height = cont_height + 'px';
 
-            $("#image_" + image_id).attr('container-data', cont_height);
+            var cbd = {'top': gcbd.top, 'right': (gcbd.width + gcbd.left), 'bottom': (gcbd.height + gcbd.top), 'left': gcbd.left};
+            $("#image_" + image_id).attr('cbd-data', JSON.stringify(cbd));
+
+            if(reduce_height){
+                var win_width = $(window).width();
+                //zoom_amount = zoom_amount / decrease_percent;
+                zoom_amount = win_width / (cbd.right - cbd.left);
+            }
+console.log(zoom_amount);
+            //image.style.zoom = (zoom_amount / 100);
+             image.style.zoom = (zoom_amount);
+            console.log((gcbd.height * (zoom_amount / 100)) + 'px');
+            //var cont_height = (gcbd.height * (zoom_amount / 100));
+
+            
+console.log('reduce_height: ' + reduce_height);
+            if(reduce_height){
+                cont_height = (cbd.bottom - cbd.top) * zoom_amount;
+                //cont_height = cont_height / decrease_percent;
+                //cont_height = cont_height / decrease_percent;
+                wrapper.style.width = '';
+            }
+
+            wrapper.style.height = cont_height + 'px';
+            console.log($('#cropper_' + image_id).width());
+            var cont_data = {'height': cont_height, 'width': $('#cropper_' + image_id).width()};
+            //$("#image_" + image_id).attr('container-data', cont_height);
+            $("#image_" + image_id).attr('container-data', JSON.stringify(cont_data));
             image.style.maxWidth = 'unset';
 
 
