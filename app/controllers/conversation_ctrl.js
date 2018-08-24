@@ -472,42 +472,55 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         updateConversationViewed(data.conversationId);
     };
 
-    adjustCropped = function(){
+    adjustCropped = function() {
         console.log('adjustCropped');
         var win_width = $(window).width();
         console.log(win_width);
-        $(".cropped").each(function (index, value) {
+        $(".cropped").each(function(index, value) {
 
             //var zoom_amount = (((gcd.width - gcbd.width) / gcbd.width) * 100) + 100;
-                //console.log($(value).width());
-                //var init_width = $(value).width();
-               // console.log('init_width: ' + init_width);
-                console.log('win_width: ' + win_width);
-                // % increase = Increase ÷ Original Number × 100.
-                //var zoom = init_width / win_width;
-                //console.log('zoom: ' + zoom);
+            //console.log($(value).width());
+            //var init_width = $(value).width();
+            // console.log('init_width: ' + init_width);
+            console.log('win_width: ' + win_width);
+            // % increase = Increase ÷ Original Number × 100.
+            //var zoom = init_width / win_width;
+            //console.log('zoom: ' + zoom);
 
-                var stored = $(value).attr('cbd-data');
-
-                if(stored){
-                    stored = JSON.parse(stored);
+            var stored = $(value).attr('cbd-data');
+            var stored_image = $(value).attr('image-data');
+            stored_image = JSON.parse(stored_image);
+            if (stored) {
+                stored = JSON.parse(stored);
                 console.log(stored);
                 console.log(stored.right);
-                var zoom = win_width / (stored.right - stored.left);
-                console.log(zoom);
-                $(value).css( "zoom", zoom );
 
-                var height = (stored.bottom - stored.top) * zoom;
-//$(this).parent()
-                $(value).parent().css( "height", height );  
-                }              
-                //var rect = $(value).css( "zoom" );
-                // divide img zoomby this  and apply to image
-                //var current_zoom = $(value).css( "zoom" );
-                //var new_zoom = current_zoom / increase_amount;
-               // console.log('new_zoom: ' + new_zoom);
-                //$(value).css( "zoom", new_zoom );
-                //divide cont height by this and apply to cont
+                if (stored_image.naturalWidth < win_width) {
+                    $(value).parent().css("height", stored_image.height);
+                    $(value).parent().css("width", stored_image.naturalWidth);
+                    //wrapper.style.height = stored_image.height + 'px';
+                    //wrapper.style.width = stored_image.width + 'px';
+                        var zoom = stored_image.naturalWidth / (stored.right - stored.left);
+                    console.log(zoom);
+                    $(value).css("zoom", zoom);
+                } else {
+                    var zoom = win_width / (stored.right - stored.left);
+                    console.log(zoom);
+                    $(value).css("zoom", zoom);
+
+                    var height = (stored.bottom - stored.top) * zoom;
+                    //$(this).parent()
+
+                    $(value).parent().css("height", height);
+                }
+            }
+            //var rect = $(value).css( "zoom" );
+            // divide img zoomby this  and apply to image
+            //var current_zoom = $(value).css( "zoom" );
+            //var new_zoom = current_zoom / increase_amount;
+            // console.log('new_zoom: ' + new_zoom);
+            //$(value).css( "zoom", new_zoom );
+            //divide cont height by this and apply to cont
 
         });
     };
@@ -517,7 +530,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $window.addEventListener('load', adjustCropped, false);
 
 
-    
+
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
         $rootScope.pageLoading = false;

@@ -1837,7 +1837,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             wrapper.style.width = decreased_width + 'px';
             reduce_height = true;
 
-            var cont_data = {'height': 0, 'width': decreased_width};
+            var cont_data = { 'height': 0, 'width': decreased_width };
             //$("#image_" + image_id).attr('container-data', cont_height);
             $("." + id).attr('reduce-data', JSON.stringify(cont_data));
         }
@@ -1850,7 +1850,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         // First reset container and manually set its width and height.
         //resetContainer(id);
         //resetContainer(id);
-
+var win_width = $(window).width();
         var stored_image = $("#image_" + id).attr('image-data');
         if (stored_image != undefined) {
             console.log(stored_image);
@@ -1862,7 +1862,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             console.log('set wrapper: ' + stored_image.height);
             //wrapper.style.height = stored_image.height + 'px';
 
-            var win_width = $(window).width();
+//var win_width = $(window).width();
             var img_width = stored_image.width;
             var inc = win_width / img_width;
             console.log(stored_image.height * inc);
@@ -1870,27 +1870,34 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
             var avail_height = $(window).height() - ($('.header').height() + $('.create_container').height() + $('.footer').height());
             // get the actual screen height from the scaled width.
-            var current_height = (stored_image.height * inc) ;
+            var current_height = (stored_image.height * inc);
             if (avail_height < current_height) {
-                
-            console.log('resize2');
-            decrease_percent = (avail_height / $('.' + id).height());
-            var decreased_height = ($('.' + id).height() * decrease_percent);
-            console.log(decreased_height);
-            wrapper.style.height = decreased_height + 'px';
-            
+
+                console.log('resize2');
+                decrease_percent = (avail_height / $('.' + id).height());
+                var decreased_height = ($('.' + id).height() * decrease_percent);
+                console.log(decreased_height);
+                wrapper.style.height = decreased_height + 'px';
+
             }
 
+
+            if(stored_image.width < win_width){
+wrapper.style.height = stored_image.height + 'px';
+wrapper.style.width = stored_image.width + 'px';
+            }
             //wrapper.style.width = stored_image.width;
             //wrapper.style.height = '';
             //wrapper.style.width = '';
         }
 
         //$timeout(function() {
-
+// TODO - do not enable crop if image less than min
         var options = {
             //aspectRatio: 16 / 9,
-            zoomable: false
+            zoomable: false,
+            minContainerWidth: 100,
+            minContainerHeight:100
             //autoCrop: true
         };
 
@@ -1902,13 +1909,13 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
         var reduced = $("#image_" + id).attr('reduce-data');
 
-        if(reduced != undefined){
-                        // Set the height of the container
+        if (reduced != undefined) {
+            // Set the height of the container
             var wrapper = document.getElementById('cropper_' + id);
             //wrapper.style.width = '400px';
             var d = JSON.parse(reduced);
-             var decreased_width = d.width;
-console.log(decreased_width);
+            var decreased_width = d.width;
+            console.log(decreased_width);
             wrapper.style.width = decreased_width + 'px';
             reduce_height = true;
         }
@@ -1949,6 +1956,17 @@ console.log(decreased_width);
             image = document.getElementById('image_' + id);
             console.log(image);
 
+            var init_img_width = $('#image_' + id).width();
+            console.log(init_img_width);
+            // If image smaller than screen width then reduce container width
+            if(init_img_width < win_width){
+                console.log('reduce width');
+                $('#cropper_' + id).css('width', init_img_width);
+                //$('#cropper_' + id).css('height', $('#image_' + id).height());
+            }
+
+//$timeout(function() {
+
             cropper = new Cropper(image, options, {
                 crop(event) {
                     console.log(event.detail.x);
@@ -1960,13 +1978,13 @@ console.log(decreased_width);
                     console.log(event.detail.scaleY);
 
 
-                     var wrapper = document.getElementById('cropper_' + id);
-            //wrapper.style.width = '400px';
-            wrapper.style.width = '';
+                    var wrapper = document.getElementById('cropper_' + id);
+                    //wrapper.style.width = '400px';
+                    wrapper.style.width = '';
                 },
             });
+//},1000);
 
-           
 
         }
 
@@ -2015,37 +2033,43 @@ console.log(decreased_width);
             image.style.marginTop = (gcbd.top * -1) + 'px';
 
             //var zoom_amount = (((gcd.width - gcbd.width) / gcbd.width)  * 100) + 100;
-            var zoom_amount = ((((gcd.width - gcbd.width) / gcbd.width)  * 100) + 100) /100;
+            var zoom_amount = ((((gcd.width - gcbd.width) / gcbd.width) * 100) + 100) / 100;
             console.log(zoom_amount);
 
-            var cbd = {'top': gcbd.top, 'right': (gcbd.width + gcbd.left), 'bottom': (gcbd.height + gcbd.top), 'left': gcbd.left};
+            var cbd = { 'top': gcbd.top, 'right': (gcbd.width + gcbd.left), 'bottom': (gcbd.height + gcbd.top), 'left': gcbd.left };
             $("#image_" + image_id).attr('cbd-data', JSON.stringify(cbd));
-
-            if(reduce_height){
-                var win_width = $(window).width();
+var win_width = $(window).width();
+            if (reduce_height) {
+                //var win_width = $(window).width();
                 //zoom_amount = zoom_amount / decrease_percent;
                 zoom_amount = win_width / (cbd.right - cbd.left);
             }
-console.log(zoom_amount);
+            console.log(zoom_amount);
             //image.style.zoom = (zoom_amount / 100);
-             image.style.zoom = (zoom_amount);
+            image.style.zoom = (zoom_amount);
             console.log((gcbd.height * (zoom_amount / 100)) + 'px');
             //var cont_height = (gcbd.height * (zoom_amount / 100));
 
-            
-console.log('reduce_height: ' + reduce_height);
-            if(reduce_height){
+
+            console.log('reduce_height: ' + reduce_height);
+wrapper.style.width = '';
+            if (reduce_height) {
                 cont_height = (cbd.bottom - cbd.top) * zoom_amount;
                 //cont_height = cont_height / decrease_percent;
                 //cont_height = cont_height / decrease_percent;
-                wrapper.style.width = '';
+//wrapper.style.width = '';
+                wrapper.style.height = cont_height + 'px';
             }
 
-            wrapper.style.height = cont_height + 'px';
+            if(stored_image_data.width < win_width){
+wrapper.style.height = stored_image_data.height + 'px';
+            }
+
+            //wrapper.style.height = cont_height + 'px';
             console.log($('#cropper_' + image_id).width());
-            var cont_data = {'height': cont_height, 'width': $('#cropper_' + image_id).width()};
+            //var cont_data = {'height': cont_height, 'width': $('#cropper_' + image_id).width()};
             //$("#image_" + image_id).attr('container-data', cont_height);
-            $("#image_" + image_id).attr('container-data', JSON.stringify(cont_data));
+            //$("#image_" + image_id).attr('container-data', JSON.stringify(cont_data));
             image.style.maxWidth = 'unset';
 
 
