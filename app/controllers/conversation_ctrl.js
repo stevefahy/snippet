@@ -474,6 +474,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     adjustCropped = function() {
         console.log('adjustCropped');
+        if(!$rootScope.crop_on){
+            console.log('do crop');
         var win_width = $(window).width();
         console.log(win_width);
         $(".cropped").each(function(index, value) {
@@ -523,6 +525,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             //divide cont height by this and apply to cont
 
         });
+    }
     };
 
     $window.addEventListener('resize', adjustCropped, false);

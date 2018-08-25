@@ -1843,10 +1843,10 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         }
 
     };
-
+$rootScope.crop_on = false;
     //var wrapper_in_progress;
     this.openCrop = function(id) {
-
+$rootScope.crop_on = true;
         // First reset container and manually set its width and height.
         //resetContainer(id);
         //resetContainer(id);
@@ -2107,6 +2107,7 @@ var win_width = $(window).width();
         };
         getData();
         cropper.destroy();
+        $rootScope.crop_on = false;
 
         //$('#hidden_input').focus();  
 
