@@ -13,6 +13,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.$on('$destroy', function() {
         //leaving controller.
         Cropp.destroyCrop();
+
+            $window.removeEventListener("resize", adjustCropped);
+
+    $window.removeEventListener("load", adjustCropped);
     });
 
 
@@ -528,9 +532,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     }
     };
 
-    $window.addEventListener('resize', adjustCropped, false);
 
-    $window.addEventListener('load', adjustCropped, false);
+
+
 
 
 
@@ -568,6 +572,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $scope.$apply(function() {
                     // Load the rest of the cards.
                     $scope.totalDisplayed = -1000;
+
+
+                        $window.addEventListener('resize', adjustCropped);
+
+    $window.addEventListener('load', adjustCropped);
                 }, 0);
             });
         }
