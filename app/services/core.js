@@ -2058,9 +2058,10 @@ var win_width = $(window).width();
                     console.log(zoom_amount);
                    // $(value).css("zoom", zoom);
                    //image.style.zoom = (zoom_amount);
+
                 } else {
                     //wrapper.style.height =  stored_image_data.height + 'px';
-                    //wrapper.style.width = '';
+                    wrapper.style.width = '';
                     zoom_amount = win_width / (cbd.right - cbd.left);
                     console.log(zoom_amount);
                     //$(value).css("zoom", zoom_amount);
