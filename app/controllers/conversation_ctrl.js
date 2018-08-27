@@ -475,12 +475,16 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         // Clear the cards unviewed arrary for this participant of this conversation.
         updateConversationViewed(data.conversationId);
     };
-
+$rootScope.last_win_width;
     adjustCropped = function() {
         console.log('adjustCropped');
         if(!$rootScope.crop_on){
             console.log('do crop');
         var win_width = $(window).width();
+        console.log($rootScope.last_win_width);
+        if($rootScope.last_win_width != win_width){
+            console.log('DO ADJUST');
+        last_win_width = win_width;
         console.log(win_width);
         $(".cropped").each(function(index, value) {
 
@@ -530,6 +534,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
         });
     }
+    }
     };
 
 
@@ -550,7 +555,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
         console.log('CHECK CROPPED');
         // reset crop container height (setCrop may not have had setCrop applied)
-        adjustCropped();
+        //adjustCropped();
         /*
         $(".cropped").each(function (index, value) {
             //console.log($(this).attr('oontainer-data'));
@@ -574,9 +579,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     $scope.totalDisplayed = -1000;
 
 
-                        $window.addEventListener('resize', adjustCropped);
+                        //$window.addEventListener('resize', adjustCropped);
 
-    $window.addEventListener('load', adjustCropped);
+    //$window.addEventListener('load', adjustCropped);
                 }, 0);
             });
         }

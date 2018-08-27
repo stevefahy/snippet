@@ -2008,8 +2008,7 @@ wrapper.style.width = stored_image.width + 'px';
             $("#image_" + image_id).attr('image-data', JSON.stringify(stored_image_data));
 
             var gcd = cropper.getCanvasData();
-            var gd = cropper.getData();
-            console.log(gd);
+            console.log(cropper.getData());
             console.log(cropper.getImageData());
             console.log(gcd);
             var gcbd = cropper.getCropBoxData();
@@ -2023,54 +2022,22 @@ wrapper.style.width = stored_image.width + 'px';
             //wrapper.style.height = gcd.height + 'px';
             //reset = gcd.height + 'px';
 
-            image.style.position = "relative";
+            image.style.position = "absolute";
             console.log("rect(" + gcbd.top + "px " + (gcbd.width + gcbd.left) + "px " + (gcbd.height + gcbd.top) + "px " + gcbd.left + "px)");
-            //image.style.clip = "rect(" + gcbd.top + "px " + (gcbd.width + gcbd.left) + "px " + (gcbd.height + gcbd.top) + "px " + gcbd.left + "px)";
-            
+            image.style.clip = "rect(" + gcbd.top + "px " + (gcbd.width + gcbd.left) + "px " + (gcbd.height + gcbd.top) + "px " + gcbd.left + "px)";
 
-            // TOP RIGHT BOTTOM LEFT
-            // top as percent of gcd H and W
-
-            //% increase = Increase ÷ Original Number × 100.
-            // 10 as percent of 100
-            // (10 / 100) * 100
-            console.log(gcbd.top + ' / ' + gcd.height);
-            var per_top = (gcbd.top / gcd.height) * 100;
-            var per_right = ((gcd.width - gcbd.width - gcbd.left) / gcd.width) *100;
-            console.log(gcbd.height + ' + ' + gcbd.top + ' / ' + gcd.height);
-            var per_bottom = ( (gcd.height -  (gcbd.height + gcbd.top)) / gcd.height ) * 100;
-            var per_left = (gcbd.left / gcd.width) * 100;
-
-            var per_top_margin = (gcbd.top / gcd.width) * 100;
-            var per_bottom_margin = (( gcd.height - (gcbd.top + gcbd.height) ) / gcd.width) * 100;
-
-            image.style.clipPath = "inset(" + per_top + "% " + per_right + "% " + per_bottom + "% " + per_left + "%)";
-
-            var zoom_amount = ((((gcd.width - gcbd.width) / gcbd.width) * 100) + 100) ;
-            console.log(zoom_amount);
-
-            image.style.maxWidth = zoom_amount + '%';
-            image.style.width = zoom_amount + '%';
-
-            image.style.left = ((per_left * (zoom_amount / 100)) * -1) + '%';
-            image.style.marginTop = ((per_top_margin * (zoom_amount / 100)) * -1) + '%';
-            image.style.marginBottom = ((per_bottom_margin  * (zoom_amount / 100)) *-1) + '%';
-            //image.style.width = gcd.width + 'px';
+            image.style.width = gcd.width + 'px';
             //image.style.width = (gcbd.width + gcbd.left) + 'px';
-            //image.style.left = (gcbd.left * -1) + 'px';
+            image.style.left = (gcbd.left * -1) + 'px';
 
-            //image.style.marginTop = (gcbd.top * -1) + 'px';
+            image.style.marginTop = (gcbd.top * -1) + 'px';
 
-            wrapper.style.maxWidth = gd.width + 'px';
 
-            wrapper.style.width = '';
 
 
             //var zoom_amount = (((gcd.width - gcbd.width) / gcbd.width)  * 100) + 100;
-            //var zoom_amount = ((((gcd.width - gcbd.width) / gcbd.width) * 100) + 100) / 100;
-            //console.log(zoom_amount);
-
-
+            var zoom_amount = ((((gcd.width - gcbd.width) / gcbd.width) * 100) + 100) / 100;
+            console.log(zoom_amount);
 
             var cbd = { 'top': gcbd.top, 'right': (gcbd.width + gcbd.left), 'bottom': (gcbd.height + gcbd.top), 'left': gcbd.left };
             $("#image_" + image_id).attr('cbd-data', JSON.stringify(cbd));
@@ -2083,8 +2050,8 @@ var win_width = $(window).width();
             }
             */
                 if (stored_image_data.naturalWidth < win_width) {
-//wrapper.style.height =  stored_image_data.height + 'px';
-//wrapper.style.width =  stored_image_data.naturalWidth + 'px';
+                    wrapper.style.height =  stored_image_data.height + 'px';
+                    wrapper.style.width =  stored_image_data.naturalWidth + 'px';
                     //wrapper.style.height = stored_image.height + 'px';
                     //wrapper.style.width = stored_image.width + 'px';
                         zoom_amount = stored_image_data.naturalWidth / (cbd.right - cbd.left);
@@ -2094,19 +2061,19 @@ var win_width = $(window).width();
 
                 } else {
                     //wrapper.style.height =  stored_image_data.height + 'px';
-//wrapper.style.width = '';
+                    wrapper.style.width = '';
                     zoom_amount = win_width / (cbd.right - cbd.left);
                     console.log(zoom_amount);
                     //$(value).css("zoom", zoom_amount);
 
                     var height = (cbd.bottom - cbd.top) * zoom_amount;
                     console.log(height);
-                   // wrapper.style.height =  height + 'px';
+                    wrapper.style.height =  height + 'px';
                 }
 
             console.log(zoom_amount);
             //image.style.zoom = (zoom_amount / 100);
-            //image.style.zoom = (zoom_amount);
+            image.style.zoom = (zoom_amount);
             console.log((gcbd.height * (zoom_amount / 100)) + 'px');
             //var cont_height = (gcbd.height * (zoom_amount / 100));
 
@@ -2118,7 +2085,7 @@ var win_width = $(window).width();
                 cont_height = (cbd.bottom - cbd.top) * zoom_amount;
                 //cont_height = cont_height / decrease_percent;
                 //cont_height = cont_height / decrease_percent;
-wrapper.style.width = '';
+//wrapper.style.width = '';
                 wrapper.style.height = cont_height + 'px';
             }
             */
@@ -2132,7 +2099,7 @@ wrapper.style.width = '';
             //var cont_data = {'height': cont_height, 'width': $('#cropper_' + image_id).width()};
             //$("#image_" + image_id).attr('container-data', cont_height);
             //$("#image_" + image_id).attr('container-data', JSON.stringify(cont_data));
-            //image.style.maxWidth = 'unset';
+            image.style.maxWidth = 'unset';
 
 
             // Add class to show that this image has been cropped
