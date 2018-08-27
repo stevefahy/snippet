@@ -14,9 +14,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         //leaving controller.
         Cropp.destroyCrop();
 
-            $window.removeEventListener("resize", adjustCropped);
+            //$window.removeEventListener("resize", adjustCropped);
 
-    $window.removeEventListener("load", adjustCropped);
+    //$window.removeEventListener("load", adjustCropped);
     });
 
 

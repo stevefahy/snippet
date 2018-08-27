@@ -2063,7 +2063,9 @@ wrapper.style.width = stored_image.width + 'px';
 
             wrapper.style.maxWidth = gd.width + 'px';
 
+            // reset the wrapper width and height.
             wrapper.style.width = '';
+            wrapper.style.height = '';
 
 
             //var zoom_amount = (((gcd.width - gcbd.width) / gcbd.width)  * 100) + 100;
