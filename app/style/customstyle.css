@@ -180,11 +180,11 @@ img.resize-drag.clip {
 .cropper_cont {
     /*display: inline-block;*/
     /* position: relative; */
-    width: calc(100% + 1.7em);
+/*width: calc(100% + 1.7em);*/
     /* max-width: calc(110% + 3em); */
-    position: relative;
+/*position: relative;*/
     /*left: -1.34em;*/
-    left: -21px;
+/*left: -21px;*/
     /* height: 200px; */
         overflow: hidden;
 }
@@ -202,11 +202,11 @@ img.resize-drag.clip {
    /* position: relative;
     left: -1.34em;*/
 
-
-    width: calc(100% + 2.7em);
+position: relative;
+    width: calc(100% + 2.8em);
     /* max-width: calc(110% + 3em); */
     position: relative;
-    left: -1.35em;
+    left: -1.38em;
 }
 
 .resize-container {
