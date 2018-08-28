@@ -371,7 +371,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             console.log(data);
             data.file_name = data.file.substring(0, data.file.indexOf('.'));
             //var new_image = "<img class='resize-drag' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'><span class='scroll_image_latest' id='delete'>&#x200b</span>";
-            var new_image = "<button type='button' onclick='openCrop(\"" + data.file_name + "\")'>Crop</button><button type='button' onclick='setCrop(\"" + data.file_name + "\")'>Set Crop</button><button type='button' onclick='deleteCrop(\"" + data.file_name + "\")'>Delete Crop</button><div class='cropper_cont' id='cropper_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'></div><span class='after_image'>&#x200b</span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
+            var new_image = "<button type='button' onclick='openCrop(\"" + data.file_name + "\")'>Crop</button><button type='button' onclick='setCrop(\"" + data.file_name + "\")' contenteditable='false'>Set Crop</button><button type='button' onclick='deleteCrop(\"" + data.file_name + "\")'>Delete Crop</button><div class='cropper_cont' id='cropper_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'></div><span class='after_image'>&#x200b</span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
             self.pasteHtmlAtCaret(new_image);
             // commented out because it causes an issue with onblur which is used to update card.
             /*
@@ -2172,7 +2172,8 @@ wrapper.style.width = '';
             var card_id = $('#cropper_' + image_id).parent().attr('id');
             card_id = card_id.substring(2, card_id.length);
             console.log(card_id);
-
+var active_el = document.activeElement;
+console.log(active_el);
             //$('#hidden_input').focus();
             //getcards();
             //console.log($scope.cards);
