@@ -608,6 +608,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
 
                 if ((card.content != card.original_content && (found_marky == false)) || crop_finished == true) {
+                //if ((card.content != card.original_content && (found_marky == false)) && crop_finished == true) {
                     console.log('yes blur');
 
                     // Only do this if not in current card?
@@ -2159,7 +2160,7 @@ wrapper.style.width = '';
         getData();
         cropper.destroy();
         $rootScope.crop_on = false;
-
+//crop_finished = true;
         //$('#hidden_input').focus();  
 
         //$( "<div class='scroll_latest' id='enter_focus'>Test</div>" ).insertAfter( '#cropper_' + image_id );
@@ -2170,11 +2171,13 @@ wrapper.style.width = '';
             console.log(UserData.getUser());
             //var wrapper = document.getElementById('cropper_' + image_id);
             var card_id = $('#cropper_' + image_id).parent().attr('id');
-            card_id = card_id.substring(2, card_id.length);
+            //card_id = card_id.substring(2, card_id.length);
             console.log(card_id);
 var active_el = document.activeElement;
 console.log(active_el);
             //$('#hidden_input').focus();
+             $('#' + card_id).focus();
+             document.activeElement.blur();
             //getcards();
             //console.log($scope.cards);
             //$rootScope.$broadcast('getCards', card_id);
