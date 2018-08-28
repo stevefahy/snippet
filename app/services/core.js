@@ -1847,6 +1847,15 @@ $rootScope.crop_on = false;
     //var wrapper_in_progress;
     this.openCrop = function(id) {
 $rootScope.crop_on = true;
+ var wrapper = document.getElementById('cropper_' + id);
+        // Turn off contenteditable for this card
+        //$(card).attr('contenteditable');
+       
+
+        var card = $(wrapper).parent().closest('div').attr('id');
+         console.log(card);
+         $('#'+card).attr('contenteditable', 'false');
+
         // First reset container and manually set its width and height.
         //resetContainer(id);
         //resetContainer(id);
@@ -1856,7 +1865,7 @@ var win_width = $(window).width();
             console.log(stored_image);
             stored_image = JSON.parse(stored_image);
             // Set the height of the container
-            var wrapper = document.getElementById('cropper_' + id);
+            //var wrapper = document.getElementById('cropper_' + id);
             crop_in_progress = id;
             console.log(wrapper);
             console.log('set wrapper: ' + stored_image.height);
@@ -2048,7 +2057,7 @@ wrapper.style.width = stored_image.width + 'px';
 
             var zoom_amount = ((((gcd.width - gcbd.width) / gcbd.width) * 100) + 100) ;
             console.log(zoom_amount);
-
+//zoom_amount = zoom_amount * 2;
             image.style.maxWidth = zoom_amount + '%';
             image.style.width = zoom_amount + '%';
 
@@ -2139,6 +2148,12 @@ wrapper.style.width = '';
 
             // Add class to show that this image has been cropped
             $("#image_" + image_id).addClass("cropped");
+
+            
+             var card = $(wrapper).parent().closest('div').attr('id');
+         console.log(card);
+         $('#'+card).attr('contenteditable', 'true');
+
 
         };
         getData();
