@@ -1890,7 +1890,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 if (stored_image.naturalWidth > stored_image.naturalHeight) {
                     image_scale = avail_height / stored_image.naturalHeight;
                 } else {
-                    image_scale = win_width / stored_image.naturalWidth;
+                    image_scale = avail_height / stored_image.naturalHeight;
+                    //image_scale = win_width / stored_image.naturalWidth;
                 }
             }
             var scaled_height = stored_image.naturalHeight * image_scale;
