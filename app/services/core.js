@@ -1876,11 +1876,22 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             console.log(stored_image.naturalWidth);
             var image_scale;
             //var image_scale = win_width / stored_image.naturalWidth;
-            if(stored_image.naturalWidth > stored_image.naturalHeight){
 
-                image_scale = win_width / stored_image.naturalWidth;
+            
+            if (win_width < avail_height) {
+                // Portrait
+                if (stored_image.naturalWidth > stored_image.naturalHeight) {
+                    image_scale = win_width / stored_image.naturalWidth;
+                } else {
+                    image_scale = avail_height / stored_image.naturalHeight;
+                }
             } else {
-                image_scale = avail_height / stored_image.naturalHeight;
+                // Landscape
+                if (stored_image.naturalWidth > stored_image.naturalHeight) {
+                    image_scale = avail_height / stored_image.naturalHeight;
+                } else {
+                    image_scale = win_width / stored_image.naturalWidth;
+                }
             }
             var scaled_height = stored_image.naturalHeight * image_scale;
             var scaled_width = stored_image.naturalWidth * image_scale;
@@ -1921,10 +1932,10 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             //wrapper.style.width = stored_image.width;
             //wrapper.style.height = '';
             //wrapper.style.width = '';
- wrapper.style.maxWidth = '';
-                  wrapper.style.height = scaled_height + 'px';
-                //wrapper.style.height = '200px';
-                wrapper.style.width = scaled_width + 'px';
+            wrapper.style.maxWidth = '';
+            wrapper.style.height = scaled_height + 'px';
+            //wrapper.style.height = '200px';
+            wrapper.style.width = scaled_width + 'px';
         }
 
         //$timeout(function() {
