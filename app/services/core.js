@@ -2149,7 +2149,7 @@ wrapper.style.width = '';
             // Add class to show that this image has been cropped
             $("#image_" + image_id).addClass("cropped");
 
-            
+
              var card = $(wrapper).parent().closest('div').attr('id');
          console.log(card);
          $('#'+card).attr('contenteditable', 'true');
@@ -2173,7 +2173,7 @@ wrapper.style.width = '';
             card_id = card_id.substring(2, card_id.length);
             console.log(card_id);
 
-            $('#hidden_input').focus();
+            //$('#hidden_input').focus();
             //getcards();
             //console.log($scope.cards);
             //$rootScope.$broadcast('getCards', card_id);
