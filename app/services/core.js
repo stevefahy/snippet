@@ -608,7 +608,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
 
                 if ((card.content != card.original_content && (found_marky == false)) || crop_finished == true) {
-                //if ((card.content != card.original_content && (found_marky == false)) && crop_finished == true) {
+                    //if ((card.content != card.original_content && (found_marky == false)) && crop_finished == true) {
                     console.log('yes blur');
 
                     // Only do this if not in current card?
@@ -1844,27 +1844,47 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         }
 
     };
-$rootScope.crop_on = false;
+    $rootScope.crop_on = false;
     //var wrapper_in_progress;
     this.openCrop = function(id) {
-$rootScope.crop_on = true;
- var wrapper = document.getElementById('cropper_' + id);
+        $rootScope.crop_on = true;
+        var wrapper = document.getElementById('cropper_' + id);
         // Turn off contenteditable for this card
         //$(card).attr('contenteditable');
-       
+
 
         var card = $(wrapper).parent().closest('div').attr('id');
-         console.log(card);
-         $('#'+card).attr('contenteditable', 'false');
+        console.log(card);
+        $('#' + card).attr('contenteditable', 'false');
 
         // First reset container and manually set its width and height.
         //resetContainer(id);
         //resetContainer(id);
-var win_width = $(window).width();
+        var win_width = $(window).width();
         var stored_image = $("#image_" + id).attr('image-data');
+        var avail_height = $(window).height() - ($('.header').height() + $('.create_container').height() + $('.footer').height());
+
+
+        //var stored_crop = $("#image_" + id).attr('crop-data');
+
         if (stored_image != undefined) {
             console.log(stored_image);
+
             stored_image = JSON.parse(stored_image);
+
+            console.log(stored_image.naturalHeight);
+            console.log(stored_image.naturalWidth);
+            var image_scale;
+            //var image_scale = win_width / stored_image.naturalWidth;
+            if(stored_image.naturalWidth > stored_image.naturalHeight){
+
+                image_scale = win_width / stored_image.naturalWidth;
+            } else {
+                image_scale = avail_height / stored_image.naturalHeight;
+            }
+            var scaled_height = stored_image.naturalHeight * image_scale;
+            var scaled_width = stored_image.naturalWidth * image_scale;
+
             // Set the height of the container
             //var wrapper = document.getElementById('cropper_' + id);
             crop_in_progress = id;
@@ -1872,13 +1892,14 @@ var win_width = $(window).width();
             console.log('set wrapper: ' + stored_image.height);
             //wrapper.style.height = stored_image.height + 'px';
 
-//var win_width = $(window).width();
+            //var win_width = $(window).width();
             var img_width = stored_image.width;
             var inc = win_width / img_width;
             console.log(stored_image.height * inc);
-            wrapper.style.height = (stored_image.height * inc) + 'px';
+            //wrapper.style.height = (stored_image.height * inc) + 'px';
+            wrapper.style.height = '200px';
 
-            var avail_height = $(window).height() - ($('.header').height() + $('.create_container').height() + $('.footer').height());
+            //var avail_height = $(window).height() - ($('.header').height() + $('.create_container').height() + $('.footer').height());
             // get the actual screen height from the scaled width.
             var current_height = (stored_image.height * inc);
             if (avail_height < current_height) {
@@ -1892,22 +1913,27 @@ var win_width = $(window).width();
             }
 
 
-            if(stored_image.width < win_width){
-wrapper.style.height = stored_image.height + 'px';
-wrapper.style.width = stored_image.width + 'px';
+            if (stored_image.width < win_width) {
+                wrapper.style.height = stored_image.height + 'px';
+                //wrapper.style.height = '200px';
+                wrapper.style.width = stored_image.width + 'px';
             }
             //wrapper.style.width = stored_image.width;
             //wrapper.style.height = '';
             //wrapper.style.width = '';
+ wrapper.style.maxWidth = '';
+                  wrapper.style.height = scaled_height + 'px';
+                //wrapper.style.height = '200px';
+                wrapper.style.width = scaled_width + 'px';
         }
 
         //$timeout(function() {
-// TODO - do not enable crop if image less than min
+        // TODO - do not enable crop if image less than min
         var options = {
             //aspectRatio: 16 / 9,
             zoomable: false,
             minContainerWidth: 100,
-            minContainerHeight:100
+            minContainerHeight: 100
             //autoCrop: true
         };
 
@@ -1969,13 +1995,13 @@ wrapper.style.width = stored_image.width + 'px';
             var init_img_width = $('#image_' + id).width();
             console.log(init_img_width);
             // If image smaller than screen width then reduce container width
-            if(init_img_width < win_width){
+            if (init_img_width < win_width) {
                 console.log('reduce width');
                 $('#cropper_' + id).css('width', init_img_width);
                 //$('#cropper_' + id).css('height', $('#image_' + id).height());
             }
 
-//$timeout(function() {
+            //$timeout(function() {
 
             cropper = new Cropper(image, options, {
                 crop(event) {
@@ -1993,7 +2019,7 @@ wrapper.style.width = stored_image.width + 'px';
                     wrapper.style.width = '';
                 },
             });
-//},1000);
+            //},1000);
 
 
         }
@@ -2036,7 +2062,7 @@ wrapper.style.width = stored_image.width + 'px';
             image.style.position = "relative";
             console.log("rect(" + gcbd.top + "px " + (gcbd.width + gcbd.left) + "px " + (gcbd.height + gcbd.top) + "px " + gcbd.left + "px)");
             //image.style.clip = "rect(" + gcbd.top + "px " + (gcbd.width + gcbd.left) + "px " + (gcbd.height + gcbd.top) + "px " + gcbd.left + "px)";
-            
+
 
             // TOP RIGHT BOTTOM LEFT
             // top as percent of gcd H and W
@@ -2046,25 +2072,25 @@ wrapper.style.width = stored_image.width + 'px';
             // (10 / 100) * 100
             console.log(gcbd.top + ' / ' + gcd.height);
             var per_top = (gcbd.top / gcd.height) * 100;
-            var per_right = ((gcd.width - gcbd.width - gcbd.left) / gcd.width) *100;
+            var per_right = ((gcd.width - gcbd.width - gcbd.left) / gcd.width) * 100;
             console.log(gcbd.height + ' + ' + gcbd.top + ' / ' + gcd.height);
-            var per_bottom = ( (gcd.height -  (gcbd.height + gcbd.top)) / gcd.height ) * 100;
+            var per_bottom = ((gcd.height - (gcbd.height + gcbd.top)) / gcd.height) * 100;
             var per_left = (gcbd.left / gcd.width) * 100;
 
             var per_top_margin = (gcbd.top / gcd.width) * 100;
-            var per_bottom_margin = (( gcd.height - (gcbd.top + gcbd.height) ) / gcd.width) * 100;
+            var per_bottom_margin = ((gcd.height - (gcbd.top + gcbd.height)) / gcd.width) * 100;
 
             image.style.clipPath = "inset(" + per_top + "% " + per_right + "% " + per_bottom + "% " + per_left + "%)";
 
-            var zoom_amount = ((((gcd.width - gcbd.width) / gcbd.width) * 100) + 100) ;
+            var zoom_amount = ((((gcd.width - gcbd.width) / gcbd.width) * 100) + 100);
             console.log(zoom_amount);
-//zoom_amount = zoom_amount * 2;
+            //zoom_amount = zoom_amount * 2;
             image.style.maxWidth = zoom_amount + '%';
             image.style.width = zoom_amount + '%';
 
             image.style.left = ((per_left * (zoom_amount / 100)) * -1) + '%';
             image.style.marginTop = ((per_top_margin * (zoom_amount / 100)) * -1) + '%';
-            image.style.marginBottom = ((per_bottom_margin  * (zoom_amount / 100)) *-1) + '%';
+            image.style.marginBottom = ((per_bottom_margin * (zoom_amount / 100)) * -1) + '%';
             //image.style.width = gcd.width + 'px';
             //image.style.width = (gcbd.width + gcbd.left) + 'px';
             //image.style.left = (gcbd.left * -1) + 'px';
@@ -2086,35 +2112,35 @@ wrapper.style.width = stored_image.width + 'px';
 
             var cbd = { 'top': gcbd.top, 'right': (gcbd.width + gcbd.left), 'bottom': (gcbd.height + gcbd.top), 'left': gcbd.left };
             $("#image_" + image_id).attr('cbd-data', JSON.stringify(cbd));
-var win_width = $(window).width();
-/*
-            if (reduce_height) {
-                //var win_width = $(window).width();
-                //zoom_amount = zoom_amount / decrease_percent;
+            var win_width = $(window).width();
+            /*
+                        if (reduce_height) {
+                            //var win_width = $(window).width();
+                            //zoom_amount = zoom_amount / decrease_percent;
+                            zoom_amount = win_width / (cbd.right - cbd.left);
+                        }
+                        */
+            if (stored_image_data.naturalWidth < win_width) {
+                //wrapper.style.height =  stored_image_data.height + 'px';
+                //wrapper.style.width =  stored_image_data.naturalWidth + 'px';
+                //wrapper.style.height = stored_image.height + 'px';
+                //wrapper.style.width = stored_image.width + 'px';
+                zoom_amount = stored_image_data.naturalWidth / (cbd.right - cbd.left);
+                console.log(zoom_amount);
+                // $(value).css("zoom", zoom);
+                //image.style.zoom = (zoom_amount);
+
+            } else {
+                //wrapper.style.height =  stored_image_data.height + 'px';
+                //wrapper.style.width = '';
                 zoom_amount = win_width / (cbd.right - cbd.left);
+                console.log(zoom_amount);
+                //$(value).css("zoom", zoom_amount);
+
+                var height = (cbd.bottom - cbd.top) * zoom_amount;
+                console.log(height);
+                // wrapper.style.height =  height + 'px';
             }
-            */
-                if (stored_image_data.naturalWidth < win_width) {
-//wrapper.style.height =  stored_image_data.height + 'px';
-//wrapper.style.width =  stored_image_data.naturalWidth + 'px';
-                    //wrapper.style.height = stored_image.height + 'px';
-                    //wrapper.style.width = stored_image.width + 'px';
-                        zoom_amount = stored_image_data.naturalWidth / (cbd.right - cbd.left);
-                    console.log(zoom_amount);
-                   // $(value).css("zoom", zoom);
-                   //image.style.zoom = (zoom_amount);
-
-                } else {
-                    //wrapper.style.height =  stored_image_data.height + 'px';
-//wrapper.style.width = '';
-                    zoom_amount = win_width / (cbd.right - cbd.left);
-                    console.log(zoom_amount);
-                    //$(value).css("zoom", zoom_amount);
-
-                    var height = (cbd.bottom - cbd.top) * zoom_amount;
-                    console.log(height);
-                   // wrapper.style.height =  height + 'px';
-                }
 
             console.log(zoom_amount);
             //image.style.zoom = (zoom_amount / 100);
@@ -2125,18 +2151,18 @@ var win_width = $(window).width();
 
             console.log('reduce_height: ' + reduce_height);
 
-/*
-            if (reduce_height) {
-                cont_height = (cbd.bottom - cbd.top) * zoom_amount;
-                //cont_height = cont_height / decrease_percent;
-                //cont_height = cont_height / decrease_percent;
-wrapper.style.width = '';
-                wrapper.style.height = cont_height + 'px';
-            }
-            */
+            /*
+                        if (reduce_height) {
+                            cont_height = (cbd.bottom - cbd.top) * zoom_amount;
+                            //cont_height = cont_height / decrease_percent;
+                            //cont_height = cont_height / decrease_percent;
+            wrapper.style.width = '';
+                            wrapper.style.height = cont_height + 'px';
+                        }
+                        */
 
-            if(stored_image_data.width < win_width){
-//wrapper.style.height = stored_image_data.height + 'px';
+            if (stored_image_data.width < win_width) {
+                //wrapper.style.height = stored_image_data.height + 'px';
             }
 
             //wrapper.style.height = cont_height + 'px';
@@ -2151,16 +2177,16 @@ wrapper.style.width = '';
             $("#image_" + image_id).addClass("cropped");
 
 
-             var card = $(wrapper).parent().closest('div').attr('id');
-         console.log(card);
-         $('#'+card).attr('contenteditable', 'true');
+            var card = $(wrapper).parent().closest('div').attr('id');
+            console.log(card);
+            $('#' + card).attr('contenteditable', 'true');
 
 
         };
         getData();
         cropper.destroy();
         $rootScope.crop_on = false;
-//crop_finished = true;
+        //crop_finished = true;
         //$('#hidden_input').focus();  
 
         //$( "<div class='scroll_latest' id='enter_focus'>Test</div>" ).insertAfter( '#cropper_' + image_id );
@@ -2173,11 +2199,17 @@ wrapper.style.width = '';
             var card_id = $('#cropper_' + image_id).parent().attr('id');
             //card_id = card_id.substring(2, card_id.length);
             console.log(card_id);
-var active_el = document.activeElement;
-console.log(active_el);
+            var active_el = document.activeElement;
+            console.log(active_el);
             //$('#hidden_input').focus();
-             $('#' + card_id).focus();
-             document.activeElement.blur();
+            $('#' + card_id).focus();
+            //$('#' + card_id).scrollIntoView();
+
+            //$('.content_cnv').scrollTop();
+            $('.content_cnv').scrollTop($('.content_cnv')[0].scrollHeight);
+            //var scroll_latest = $('#' + card_id);
+            //scrollIntoViewIfNeeded(scroll_latest, { duration: 200, offset: { bottom: 30 } });
+            document.activeElement.blur();
             //getcards();
             //console.log($scope.cards);
             //$rootScope.$broadcast('getCards', card_id);
@@ -2188,7 +2220,7 @@ console.log(active_el);
 
             // Scroll into view if necessary
             //Format.scrollLatest('scroll_latest');
-        }, 1000);
+        }, 0);
 
 
 
