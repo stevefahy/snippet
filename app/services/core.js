@@ -1964,7 +1964,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             var d = JSON.parse(reduced);
             var decreased_width = d.width;
             console.log(decreased_width);
-            wrapper.style.width = decreased_width + 'px';
+//wrapper.style.width = decreased_width + 'px';
             reduce_height = true;
         }
 
