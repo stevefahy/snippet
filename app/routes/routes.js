@@ -804,6 +804,7 @@ module.exports = function(app, passport) {
     });
 
     // update a card by id
+    // TODO - Check that user has permission to update this card.
     app.put('/api/cards/:card_id', isLoggedIn, function(req, res) {
         Card.findById({ _id: req.params.card_id }, function(err, card) {
             if (err) {

@@ -1,4 +1,4 @@
-cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', '$animate', 'viewAnimationsService', 'Cropp', function($scope, $rootScope, $location, $http, $window, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, $animate, viewAnimationsService, Cropp) {
+cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', '$animate', 'viewAnimationsService', 'Cropp', '$compile', function($scope, $rootScope, $location, $http, $window, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, $animate, viewAnimationsService, Cropp, $compile) {
 
     show = function() {
         UserData.show();
@@ -7,7 +7,19 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     openCrop = Cropp.openCrop;
     setCrop = Cropp.setCrop;
-    deleteCrop = Cropp.deleteCrop;
+    //deleteCrop = Cropp.deleteCrop;
+    cloneCrop = Cropp.cloneCrop;
+
+    editImage = Cropp.editImage;
+    closeEdit = Cropp.closeEdit;
+
+
+    $scope.testclick = function(){
+        console.log('scope testclick');
+    };
+
+
+
 
 
     $scope.$on('$destroy', function() {
@@ -554,6 +566,9 @@ $rootScope.last_win_width;
 
         }
         console.log('CHECK CROPPED');
+
+        //$compile(cancel_img)($scope);
+       
         // reset crop container height (setCrop may not have had setCrop applied)
         //adjustCropped();
         /*

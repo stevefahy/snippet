@@ -237,14 +237,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         return $q(function(resolve, reject) {
             var reader = new FileReader();
             reader.addEventListener("load", function() {
-
-                img.onload = function() {
-                    console.log(img.naturalWidth); // image is loaded; sizes are available
-                };
-
                 img.src = reader.result;
-
-
                 resolve(img);
             }, false);
             reader.readAsDataURL(file);
@@ -371,23 +364,15 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         active_el.focus();
         // Scroll the image into view.
         self.scrollLatest('scroll_image_latest');
-
-        console.log(new_image.naturalWidth);
-        console.log(new_image.className.split(' ')[1]);
-        $('#cropper_' + new_image.className.split(' ')[1]).css('maxWidth', new_image.naturalWidth);
-        $('#cropper_' + new_image.className.split(' ')[1]).css('cssFloat', 'left');
     };
 
     insertImage = function(data) {
         if (data.response === 'saved') {
+            console.log(data);
             data.file_name = data.file.substring(0, data.file.indexOf('.'));
-            //var unique_id = data.file_name + '_' + General.getDate();
             //var new_image = "<img class='resize-drag' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'><span class='scroll_image_latest' id='delete'>&#x200b</span>";
-            //&#x200b
-            var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'></div><span class='after_image'>&#x200b;&#10;</span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
+            var new_image = "<button type='button' onclick='openCrop(\"" + data.file_name + "\")'>Crop</button><button type='button' onclick='setCrop(\"" + data.file_name + "\")' contenteditable='false'>Set Crop</button><button type='button' onclick='deleteCrop(\"" + data.file_name + "\")'>Delete Crop</button><div class='cropper_cont' id='cropper_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'></div><span class='after_image'>&#x200b</span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
             self.pasteHtmlAtCaret(new_image);
-
-
             // commented out because it causes an issue with onblur which is used to update card.
             /*
             // remove zero width space above image if it exists 
@@ -1820,16 +1805,10 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         //cropper = null;
         console.log(cropper);
     };
-    /*
+
     this.deleteCrop = function(id) {
         console.log('deleteCrop');
         cropper.destroy();
-    };
-    */
-
-    this.cloneCrop = function(id) {
-        console.log('clone: ' + id);
-        $('#cropper_' + id).clone().appendTo('.image_adjust');
     };
 
     resetContainer = function(id) {
@@ -1868,17 +1847,12 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     $rootScope.crop_on = false;
     //var wrapper_in_progress;
     this.openCrop = function(id) {
-        $('.image_edit_btns').css('display', 'none');
-        $('.crop_edit').css('display', 'flex');
         $rootScope.crop_on = true;
         var wrapper = document.getElementById('cropper_' + id);
         // Turn off contenteditable for this card
         //$(card).attr('contenteditable');
-        wrapper.style.maxWidth = '';
-        wrapper.style.cssFloat = 'none';
 
-        //$timeout(function() {
-        //var wrapper = document.getElementById('cropper_' + id);
+
         var card = $(wrapper).parent().closest('div').attr('id');
         console.log(card);
         $('#' + card).attr('contenteditable', 'false');
@@ -1903,10 +1877,9 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             var image_scale;
             //var image_scale = win_width / stored_image.naturalWidth;
 
-
+            
             if (win_width < avail_height) {
                 // Portrait
-                console.log('portrait');
                 if (stored_image.naturalWidth > stored_image.naturalHeight) {
                     image_scale = win_width / stored_image.naturalWidth;
                 } else {
@@ -1914,17 +1887,9 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 }
             } else {
                 // Landscape
-                console.log('landscape');
                 if (stored_image.naturalWidth > stored_image.naturalHeight) {
-                    console.log('1');
-
-                    //image_scale = avail_height / stored_image.naturalHeight;
-                    image_scale = win_width / stored_image.naturalWidth;
-                    if (stored_image.naturalHeight * image_scale > avail_height) {
-                        image_scale = avail_height / stored_image.naturalHeight;
-                    }
+                    image_scale = avail_height / stored_image.naturalHeight;
                 } else {
-                    console.log('2');
                     image_scale = avail_height / stored_image.naturalHeight;
                     //image_scale = win_width / stored_image.naturalWidth;
                 }
@@ -1999,7 +1964,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             var d = JSON.parse(reduced);
             var decreased_width = d.width;
             console.log(decreased_width);
-            //wrapper.style.width = decreased_width + 'px';
+//wrapper.style.width = decreased_width + 'px';
             reduce_height = true;
         }
 
@@ -2071,58 +2036,9 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
         }
 
-        //});
+        //}, 5000);
 
     };
-
-
-
-    this.closeEdit = function(e){
-        console.log('closeEdit');
-        if(e){
-        e.stopPropagation();
-    }
-
-        $('.image_adjust_on').remove();
-
-    };
-
-    this.editImage = function(scope, id) {
-        console.log('testclick: ' + id);
-
-        if (principal.isValid()) {
-            UserData.checkUser().then(function(result) {
-                // Logged in.
-                // Get the editable attibute for this card (for this user).
-                console.log($(scope).parent().attr('id'));
-                console.log($(scope).parent().attr('editable'));
-                // check user has permision to edit.
-                //if ($(scope).parent().attr('editable') == 'true') {
-                if ($(scope).closest('div.ce').attr('editable') == 'true') {
-                    
-                    console.log('can edit');
-                    console.log($('#cropper_' + id + ' .image_adjust').length);
-                    // Only open editing if not already open.
-                    //if (this.editing != true) {
-                    if($('#cropper_' + id + ' .image_adjust').length <= 0){
-                        //this.editing = true;
-                        //$('#cropper_' + id).clone().appendTo('.image_adjust');
-                        $('.image_adjust').clone().insertBefore('.' + id);
-                        $('#cropper_' + id + ' .image_adjust').css('visibility', 'visible');
-
-                        var edit_btns = "<div class='image_edit_btns'><div class='' onclick='openCrop(\"" + id + "\")'><i class='material-icons image_edit' id='ie_crop' >crop</i></div><div class='close_image_edit' onclick='closeEdit(event)'><i class='material-icons image_edit' id='ie_close'>&#xE14C;</i></div></div><div class='crop_edit'><div class='set_crop' onclick='setCrop(\"" + id + "\")'><i class='material-icons image_edit' id='ie_accept'>&#xe876;</i></div></div></div>";
-                        // set this to active
-                        $('#cropper_' + id + ' .image_adjust').addClass('image_adjust_on');
-                        $('#cropper_' + id + ' .image_adjust').append(edit_btns);
-
-                        console.log($('#cropper_' + id + ' .image_adjust').length);
-                    }
-                }
-            });
-        }
-    };
-
-
 
     this.setCrop = function(image_id) {
         console.log('setCrop: ' + image_id);
@@ -2152,9 +2068,6 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
             // Set the height of the container
             var wrapper = document.getElementById('cropper_' + image_id);
-
-            wrapper.style.cssFloat = 'left';
-
             //wrapper.style.height = gcd.height + 'px';
             //reset = gcd.height + 'px';
 
@@ -2279,7 +2192,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             var card = $(wrapper).parent().closest('div').attr('id');
             console.log(card);
             $('#' + card).attr('contenteditable', 'true');
-            closeEdit(event);
+
 
         };
         getData();
