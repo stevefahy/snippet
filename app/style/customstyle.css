@@ -2866,8 +2866,16 @@ span#header b.header_3 {
     /* background-blend-mode: soft-light; */
     /* background-color: antiquewhite; */
     z-index: 900;
-    background-image: linear-gradient(#9e9e9e, #ffffffb8);
+    /*background-image: linear-gradient(#9e9e9e, #ffffffb8);*/
+
+    background: -webkit-linear-gradient(top, #9e9e9e 0%,rgba(255,255,255,0.3) 100%);
+    /*background: -webkit-linear-gradient(top, #9e9e9e 0%,rgba(255,255,255,0.5) 100%);*/
     
+
+    /*background: -moz-linear-gradient(top, rgba(22,56,63,1) 0%, rgba(255,255,255,0.5) 100%);*/ /* FF3.6-15 */
+    /*background: -webkit-linear-gradient(top, rgba(22,56,63,1) 0%,rgba(255,255,255,0.5) 100%);*/ /* Chrome10-25,Safari5.1-6 */
+    /*background: linear-gradient(to bottom, rgba(22,56,63,1) 0%,rgba(255,255,255,0.5) 100%);*/ /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    /*filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#16383f', endColorstr='#80ffffff',GradientType=0 );*/ /* IE6-9 */
 }
 
 .image_edit_btns {

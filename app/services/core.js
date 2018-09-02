@@ -2100,6 +2100,10 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 //if ($(scope).parent().attr('editable') == 'true') {
                 if ($(scope).closest('div.ce').attr('editable') == 'true') {
                     
+                          //var card = $(wrapper).parent().closest('div').attr('id');
+        //console.log(card);
+                    $(scope).closest('div.ce').attr('contenteditable', 'false');
+
                     console.log('can edit');
                     console.log($('#cropper_' + id + ' .image_adjust').length);
                     // Only open editing if not already open.
