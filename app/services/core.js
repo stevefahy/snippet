@@ -2079,10 +2079,12 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
     this.closeEdit = function(e){
         console.log('closeEdit');
-        if(e){
+        //if(e){
         e.stopPropagation();
-    }
-
+        //}
+        //console.log(e.target.id);
+        //console.log($(e.target.id).closest('div.ce'));
+        $('#'+e.target.id).closest('div.ce').attr('contenteditable', 'true');
         $('.image_adjust_on').remove();
 
     };
@@ -2114,7 +2116,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                         $('.image_adjust').clone().insertBefore('.' + id);
                         $('#cropper_' + id + ' .image_adjust').css('visibility', 'visible');
 
-                        var edit_btns = "<div class='image_edit_btns'><div class='' onclick='openCrop(\"" + id + "\")'><i class='material-icons image_edit' id='ie_crop' >crop</i></div><div class='close_image_edit' onclick='closeEdit(event)'><i class='material-icons image_edit' id='ie_close'>&#xE14C;</i></div></div><div class='crop_edit'><div class='set_crop' onclick='setCrop(\"" + id + "\")'><i class='material-icons image_edit' id='ie_accept'>&#xe876;</i></div></div></div>";
+                        var edit_btns = "<div class='image_editor'><div class='image_edit_btns'><div class=''><i class='material-icons image_edit' id='ie_tune'>tune</i></div><div class=''><i class='material-icons image_edit' id='ie_filter'>filter</i></div><div class='' onclick='openCrop(\"" + id + "\")'><i class='material-icons image_edit' id='ie_crop' >crop</i></div><div class='close_image_edit' onclick='closeEdit(event)'><i class='material-icons image_edit' id='ie_close'>&#xE14C;</i></div></div><div class='crop_edit'><div class='set_crop' onclick='setCrop(\"" + id + "\")'><i class='material-icons image_edit' id='ie_accept'>&#xe876;</i></div></div></div>";
                         // set this to active
                         $('#cropper_' + id + ' .image_adjust').addClass('image_adjust_on');
                         $('#cropper_' + id + ' .image_adjust').append(edit_btns);
