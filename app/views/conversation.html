@@ -20,8 +20,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class='ce' ng-attr-id="{{ 'ce' + card._id }}" ng-attr-contenteditable="{{card.user == currentUser._id}}"
-                    ng-attr-editable="{{card.user == currentUser._id}}" ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id);" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce'+card._id);" ng-blur="getBlur(card._id, card, currentUser)" ng-model="card.content" ng-model-options="{ debounce: 1000 }"></div>
+                    <div class='ce' ng-attr-id="{{ 'ce' + card._id }}" ng-attr-contenteditable="{{card.user == currentUser._id}}" ng-attr-editable="{{card.user == currentUser._id}}" ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id);" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce'+card._id);" ng-blur="getBlur(card._id, card, currentUser)" ng-model="card.content" ng-model-options="{ debounce: 1000 }"></div>
                     <div moment-time-conv="card.updatedAt" id="time"></div>
                     <input id="upload-input" type="file" name="uploads[]" multiple="multiple">
                     <button ng-attr-id="{{ 'upload-triggerce' + card._id }}" class="btn btn-sm upload-btn upload-trigger" type="button" ng-click="uploadFile(card._id, card, currentUser)">Upload File</button>
@@ -32,4 +31,15 @@
     <div class="card_create_container" ng-if="isMember" ng-include src="'/views/card_create.html'"></div>
     <div ng-include src="'/views/footer.html'"></div>
     <div class="image_adjust"></div>
+
+    <div class="filters_div">
+        <div class='close_filters' onclick='closeFilters(event)'><i class='material-icons image_edit' id='ie_close'>&#xE14C;</i></div>
+        <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
+            <div class="filters_container">
+                <div class="convs_a">
+                </div>
+            </div>
+        </li>
+    </div>
+
 </div>

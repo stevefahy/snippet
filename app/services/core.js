@@ -2074,17 +2074,38 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         //});
 
     };
+    $scope.filter_image = false;
+    this.filterImage = function(e, id) {
+        
+        console.log('filterImage');
+        //$scope.filter_image = true;
+        $('.filters_div').css('visibility', 'visible');
+        $('.image_adjust_on').remove();
+        e.stopPropagation();
+    };
 
+    this.closeFilters = function(e) {
+        console.log('closeFilters');
+        $('.filters_div').css('visibility', 'hidden');
+        //if(e){
+        e.stopPropagation();
+        //}
+        //console.log(e.target.id);
+        //console.log($(e.target.id).closest('div.ce'));
+        //$('#' + e.target.id).closest('div.ce').attr('contenteditable', 'true');
+        //$('.image_adjust_on').remove();
+        //$scope.filter_image = false;
 
+    };
 
-    this.closeEdit = function(e){
+    this.closeEdit = function(e) {
         console.log('closeEdit');
         //if(e){
         e.stopPropagation();
         //}
         //console.log(e.target.id);
         //console.log($(e.target.id).closest('div.ce'));
-        $('#'+e.target.id).closest('div.ce').attr('contenteditable', 'true');
+        $('#' + e.target.id).closest('div.ce').attr('contenteditable', 'true');
         $('.image_adjust_on').remove();
 
     };
@@ -2101,22 +2122,22 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 // check user has permision to edit.
                 //if ($(scope).parent().attr('editable') == 'true') {
                 if ($(scope).closest('div.ce').attr('editable') == 'true') {
-                    
-                          //var card = $(wrapper).parent().closest('div').attr('id');
-        //console.log(card);
+
+                    //var card = $(wrapper).parent().closest('div').attr('id');
+                    //console.log(card);
                     $(scope).closest('div.ce').attr('contenteditable', 'false');
 
                     console.log('can edit');
                     console.log($('#cropper_' + id + ' .image_adjust').length);
                     // Only open editing if not already open.
                     //if (this.editing != true) {
-                    if($('#cropper_' + id + ' .image_adjust').length <= 0){
+                    if ($('#cropper_' + id + ' .image_adjust').length <= 0) {
                         //this.editing = true;
                         //$('#cropper_' + id).clone().appendTo('.image_adjust');
                         $('.image_adjust').clone().insertBefore('.' + id);
                         $('#cropper_' + id + ' .image_adjust').css('visibility', 'visible');
 
-                        var edit_btns = "<div class='image_editor'><div class='image_edit_btns'><div class=''><i class='material-icons image_edit' id='ie_tune'>tune</i></div><div class=''><i class='material-icons image_edit' id='ie_filter'>filter</i></div><div class='' onclick='openCrop(\"" + id + "\")'><i class='material-icons image_edit' id='ie_crop' >crop</i></div><div class='close_image_edit' onclick='closeEdit(event)'><i class='material-icons image_edit' id='ie_close'>&#xE14C;</i></div></div><div class='crop_edit'><div class='set_crop' onclick='setCrop(\"" + id + "\")'><i class='material-icons image_edit' id='ie_accept'>&#xe876;</i></div></div></div>";
+                        var edit_btns = "<div class='image_editor'><div class='image_edit_btns'><div class=''><i class='material-icons image_edit' id='ie_tune'>tune</i></div><div class='' onclick='filterImage(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_filter'>filter</i></div><div class='' onclick='openCrop(\"" + id + "\")'><i class='material-icons image_edit' id='ie_crop' >crop</i></div><div class='close_image_edit' onclick='closeEdit(event)'><i class='material-icons image_edit' id='ie_close'>&#xE14C;</i></div></div><div class='crop_edit'><div class='set_crop' onclick='setCrop(\"" + id + "\")'><i class='material-icons image_edit' id='ie_accept'>&#xe876;</i></div></div></div>";
                         // set this to active
                         $('#cropper_' + id + ' .image_adjust').addClass('image_adjust_on');
                         $('#cropper_' + id + ' .image_adjust').append(edit_btns);
