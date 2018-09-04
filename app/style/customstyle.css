@@ -2920,6 +2920,8 @@ div.after_image:empty {
 
 #ie_close {
     font-size: 34px;
+    margin: 0;
+    padding: 0;
 }
 
 #ie_crop {
@@ -2951,19 +2953,64 @@ div.after_image:empty {
 
 .filters_div {
     width: 100%;
-    height: 100px;
-    visibility: hidden; 
+    /* height: auto; */
+    visibility: hidden;
     position: absolute;
-    background-color: bisque;
-    overflow-y: hidden;
-    overflow-x: auto;
+    background-color: #000000b5;
+    /* overflow-y: hidden; */
+    /* overflow-x: auto; */
     /* height: 0px; */
     cursor: auto;
     bottom: 0px;
     z-index: 100;
+    /* overflow-y: hidden; */
+    /* overflow-x: auto; */
 }
 
 
+.filter_list {
+    /* width: 100%; */
+    display: flex;
+    flex-direction: row;
+    /* height: 70px; */
+    margin-top: auto;
+    margin-bottom: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.filter_thumb {
+    min-width: 105px;
+    padding: 10px;
+    /* height: fit-content; */
+}
+
+
+.close_filters {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: max-content;
+    margin-left: auto;
+    padding-right: 21px;
+    margin-bottom: -10px;
+    /* margin-bottom: -23px; */
+    z-index: 1;
+}
+
+/*
+.temp:first-of-type {
+    margin-left: 30px;
+}
+
+.temp:last-of-type {
+    margin-right: 30px;
+}
+*/
+
+.temp:first-child {     margin-left: 30px !important;}
+
+.temp:last-child {     margin-right: 30px !important;}
 
 /*
   .ce .cropper_cont[style*="max-width:"] {

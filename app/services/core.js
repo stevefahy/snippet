@@ -2074,19 +2074,59 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         //});
 
     };
-    
+
     this.filterImage = function(e, id) {
-        
+
         console.log('filterImage');
         //$scope.filter_image = true;
-        $('.filters_div').css('visibility', 'visible');
+        //$('.filters_div').css('visibility', 'visible');
+        //$('#cropper_' + id).clone().appendTo('.filters_div');
         $('.image_adjust_on').remove();
+
+        if ($('#cropper_' + id + ' .filters_div').length <= 0) {
+            //this.editing = true;
+            //$('#cropper_' + id).clone().appendTo('.image_adjust');
+            
+
+            //$('#cropper_' + id).clone().appendTo('#cropper_' + id + ' .filters_div .filter_list');
+            var temp = $('#cropper_' + id).clone();
+            //$(temp + ' .filters_active').remove();
+            temp.addClass('temp');
+
+            $('.filters_div').clone().insertBefore('.' + id);
+            $('#cropper_' + id + ' .filters_div').addClass('filters_active');
+            $('#cropper_' + id + ' .filters_div').css('visibility', 'visible');
+
+/*
+for (var i = 0; i < number; i++) {
+    $(dot).appendTo('.m-slide-ctrl');
+}
+*/
+//temp.appendTo('#cropper_' + id + ' .filters_div .filter_list');
+//temp = "<div class='red'>red</div>";
+            for(var i=0; i<20; i++){
+console.log(i);
+//$('.screens-duplicate:first').clone().appendTo('.another');
+    var current = temp.clone().appendTo('#cropper_' + id + ' .filters_div .filter_list');
+          //var current = $(temp).appendTo('#cropper_' + id + ' .filters_div .filter_list');
+            //$(current).css('min-width', '100px');
+            $(current).addClass('filter_thumb');
+            //$('#cropper_' + id + ' .filters_div .filter_list #cropper_' + id ).clone().appendTo('#cropper_' + id + ' .filters_div .filter_list');
+            }
+
+            //$('.temp').find('.filters_active').remove();
+            //$('.filters_active').remove();
+            //$('#cropper_' + id + ' .filters_div .filters_container .filter_list' + '#cropper_' + id + ' .filters_div').remove();
+        }
+
+        
         e.stopPropagation();
     };
 
     this.closeFilters = function(e) {
         console.log('closeFilters');
-        $('.filters_div').css('visibility', 'hidden');
+        $('.filters_active').remove();
+        //$('.filters_div').css('visibility', 'hidden');
         //if(e){
         e.stopPropagation();
         //}
