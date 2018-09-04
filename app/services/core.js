@@ -2074,7 +2074,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         //});
 
     };
-    $scope.filter_image = false;
+    
     this.filterImage = function(e, id) {
         
         console.log('filterImage');
