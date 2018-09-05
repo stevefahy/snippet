@@ -2183,10 +2183,16 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
 
             //$('.filters_div').clone().insertBefore('.' + id);
-            $('.filters_div').clone().insertBefore('#a_filter_' + id);
+            //$('.filters_div').clone().insertBefore('#a_filter_' + id);
 
-            $('#cropper_' + id + ' .filters_div').addClass('filters_active');
-            $('#cropper_' + id + ' .filters_div').css('visibility', 'visible');
+            var filt = $('.filters_div').clone().insertAfter('#cropper_' + id);
+            filt.attr('id', 'filters_' + id);
+            filt.css('position', 'relative');
+            //$('#cropper_' + id + ' .filters_div').addClass('filters_active');
+            //$('#cropper_' + id + ' .filters_div').css('visibility', 'visible');
+
+            filt.addClass('filters_active');
+            filt.css('visibility', 'visible');
 
             //$(temp).click(function(){ console.log('deleted') });
             $(temp).removeAttr('onclick');
@@ -2207,7 +2213,9 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 //var current = temp.clone().appendTo('#cropper_' + id + ' .filters_div .filter_list');
                 //var current = $(temp).appendTo('#cropper_' + id + ' .filters_div .filter_list');
                 //$(current).css('min-width', '100px');
-                var current = temp.clone().appendTo('#cropper_' + id + ' .filters_div .filters_container .filter_list');
+                //var current = temp.clone().appendTo('#cropper_' + id + ' .filters_div .filters_container .filter_list');
+
+                var current = temp.clone().appendTo('#filters_' + id + ' .filters_container .filter_list');
 
                 //$(current + '.filter_div').remove();
 
