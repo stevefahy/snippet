@@ -14,6 +14,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     closeEdit = Cropp.closeEdit;
     filterImage = Cropp.filterImage;
     closeFilters = Cropp.closeFilters;
+    filterClick = Cropp.filterClick;
 
 
     $scope.testclick = function(){

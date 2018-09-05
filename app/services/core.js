@@ -384,7 +384,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             //var unique_id = data.file_name + '_' + General.getDate();
             //var new_image = "<img class='resize-drag' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'><span class='scroll_image_latest' id='delete'>&#x200b</span>";
             //&#x200b
-            var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'></div><span class='after_image'>&#x200b;&#10;</span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
+            var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><div class='filter_div' id='a_filter_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'></div></div><span class='after_image'>&#x200b;&#10;</span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
             self.pasteHtmlAtCaret(new_image);
 
 
@@ -2075,6 +2075,83 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
     };
 
+
+        // Array to dynamically set marky chars to html tags
+    var filter_array = [{
+        filter_css_name: 'ig-original'
+    },
+    {
+        filter_css_name: 'ig-xpro2'
+    },
+    {
+        filter_css_name: 'ig-willow'
+    },
+    {
+        filter_css_name: 'ig-walden'
+    },
+    {
+        filter_css_name: 'ig-valencia'
+    },
+    {
+        filter_css_name: 'ig-toaster'
+    },
+    {
+        filter_css_name: 'ig-sutro'
+    },
+    {
+        filter_css_name: 'ig-sierra'
+    },
+    {
+        filter_css_name: 'ig-rise'
+    },
+    {
+        filter_css_name: 'ig-nashville'
+    },
+    {
+        filter_css_name: 'ig-mayfair'
+    },
+    {
+        filter_css_name: 'ig-lofi'
+    },
+    {
+        filter_css_name: 'ig-kelvin'
+    },
+    {
+        filter_css_name: 'ig-inkwell'
+    },
+    {
+        filter_css_name: 'ig-hudson'
+    },
+    {
+        filter_css_name: 'ig-hefe'
+    },
+    {
+        filter_css_name: 'ig-earlybird'
+    },
+    {
+        filter_css_name: 'ig-brannan'
+    },
+    {
+        filter_css_name: 'ig-amaro'
+    },
+    {
+        filter_css_name: 'ig-1977'
+    }
+    ];
+
+    this.filterClick = function(e, button, id, filter){
+        console.log('filterClick');
+        console.log($(button));
+        console.log(id);
+        console.log(filter);
+
+        var last_filter = $('#a_filter_' + id).attr('class').split(' ')[1];
+        console.log('remove: ' + last_filter);
+        $('#a_filter_' + id).removeClass(last_filter);
+        $('#a_filter_' + id).addClass(filter);
+        e.stopPropagation();
+    };
+
     this.filterImage = function(e, id) {
 
         console.log('filterImage');
@@ -2086,32 +2163,60 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         if ($('#cropper_' + id + ' .filters_div').length <= 0) {
             //this.editing = true;
             //$('#cropper_' + id).clone().appendTo('.image_adjust');
-            
+
 
             //$('#cropper_' + id).clone().appendTo('#cropper_' + id + ' .filters_div .filter_list');
             var temp = $('#cropper_' + id).clone();
-            //$(temp + ' .filters_active').remove();
+            
             temp.addClass('temp');
 
-            $('.filters_div').clone().insertBefore('.' + id);
+
+            //temp.find('.filter_div').remove();
+
+            //temp.find('.filter_div').removeAttr('id');
+
+            temp.find('.filter_div img').unwrap();
+
+            //$('.wrapper img').unwrap();
+
+            // Remove any existing filter!
+
+
+            //$('.filters_div').clone().insertBefore('.' + id);
+            $('.filters_div').clone().insertBefore('#a_filter_' + id);
+
             $('#cropper_' + id + ' .filters_div').addClass('filters_active');
             $('#cropper_' + id + ' .filters_div').css('visibility', 'visible');
 
-/*
-for (var i = 0; i < number; i++) {
-    $(dot).appendTo('.m-slide-ctrl');
-}
-*/
-//temp.appendTo('#cropper_' + id + ' .filters_div .filter_list');
-//temp = "<div class='red'>red</div>";
-            for(var i=0; i<20; i++){
-console.log(i);
-//$('.screens-duplicate:first').clone().appendTo('.another');
-    var current = temp.clone().appendTo('#cropper_' + id + ' .filters_div .filter_list');
-          //var current = $(temp).appendTo('#cropper_' + id + ' .filters_div .filter_list');
-            //$(current).css('min-width', '100px');
-            $(current).addClass('filter_thumb');
-            //$('#cropper_' + id + ' .filters_div .filter_list #cropper_' + id ).clone().appendTo('#cropper_' + id + ' .filters_div .filter_list');
+            //$(temp).click(function(){ console.log('deleted') });
+            $(temp).removeAttr('onclick');
+            $(temp).removeAttr('id');
+            //$(temp).attr('onClick', 'filterClick(event, this, "' + id +'")');
+            //$(temp).attr('onClick', "function(){ console.log('deleted') }");
+            /*
+            for (var i = 0; i < number; i++) {
+                $(dot).appendTo('.m-slide-ctrl');
+            }
+            */
+            //temp.appendTo('#cropper_' + id + ' .filters_div .filter_list');
+            //temp = "<div class='red'>red</div>";
+            //for (var i = 0; i < 20; i++) {
+            for (var i in filter_array) {
+                console.log(i);
+                //$('.screens-duplicate:first').clone().appendTo('.another');
+                //var current = temp.clone().appendTo('#cropper_' + id + ' .filters_div .filter_list');
+                //var current = $(temp).appendTo('#cropper_' + id + ' .filters_div .filter_list');
+                //$(current).css('min-width', '100px');
+                var current = temp.clone().appendTo('#cropper_' + id + ' .filters_div .filters_container .filter_list');
+
+                //$(current + '.filter_div').remove();
+
+                $(current).addClass('filter_thumb');
+
+                $(current).addClass(filter_array[i].filter_css_name);
+
+                 $(current).attr('onClick', 'filterClick(event, this, "' + id +'", "' + filter_array[i].filter_css_name + '")');
+                //$('#cropper_' + id + ' .filters_div .filter_list #cropper_' + id ).clone().appendTo('#cropper_' + id + ' .filters_div .filter_list');
             }
 
             //$('.temp').find('.filters_active').remove();
@@ -2119,15 +2224,19 @@ console.log(i);
             //$('#cropper_' + id + ' .filters_div .filters_container .filter_list' + '#cropper_' + id + ' .filters_div').remove();
         }
 
-        
+
         e.stopPropagation();
     };
 
     this.closeFilters = function(e) {
         console.log('closeFilters');
-        $('.filters_active').remove();
+        console.log($('#' + e.target.id).closest('div.ce'));
+        
+        $('#' + e.target.id).closest('div.ce').attr('contenteditable', 'true');
         //$('.filters_div').css('visibility', 'hidden');
         //if(e){
+            $('.filters_active').remove();
+
         e.stopPropagation();
         //}
         //console.log(e.target.id);
@@ -2174,7 +2283,8 @@ console.log(i);
                     if ($('#cropper_' + id + ' .image_adjust').length <= 0) {
                         //this.editing = true;
                         //$('#cropper_' + id).clone().appendTo('.image_adjust');
-                        $('.image_adjust').clone().insertBefore('.' + id);
+                        //$('.image_adjust').clone().insertBefore('.' + id);
+                        $('.image_adjust').clone().insertBefore('#a_filter_' + id);
                         $('#cropper_' + id + ' .image_adjust').css('visibility', 'visible');
 
                         var edit_btns = "<div class='image_editor'><div class='image_edit_btns'><div class=''><i class='material-icons image_edit' id='ie_tune'>tune</i></div><div class='' onclick='filterImage(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_filter'>filter</i></div><div class='' onclick='openCrop(\"" + id + "\")'><i class='material-icons image_edit' id='ie_crop' >crop</i></div><div class='close_image_edit' onclick='closeEdit(event)'><i class='material-icons image_edit' id='ie_close'>&#xE14C;</i></div></div><div class='crop_edit'><div class='set_crop' onclick='setCrop(\"" + id + "\")'><i class='material-icons image_edit' id='ie_accept'>&#xe876;</i></div></div></div>";
