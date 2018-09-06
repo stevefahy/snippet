@@ -384,7 +384,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             //var unique_id = data.file_name + '_' + General.getDate();
             //var new_image = "<img class='resize-drag' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'><span class='scroll_image_latest' id='delete'>&#x200b</span>";
             //&#x200b
-            var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><div class='filter_div' id='a_filter_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'></div></div><span class='after_image'>&#x200b;&#10;</span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
+            //var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><div class='filter_div' id='a_filter_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'></div></div><span class='after_image'>&#x200b;&#10;</span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
+            var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'></div><span class='after_image'>&#x200b;&#10;</span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
             self.pasteHtmlAtCaret(new_image);
 
 
@@ -1868,10 +1869,16 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     $rootScope.crop_on = false;
     //var wrapper_in_progress;
     this.openCrop = function(id) {
+
+        
+
+
         $('.image_edit_btns').css('display', 'none');
         $('.crop_edit').css('display', 'flex');
         $rootScope.crop_on = true;
         var wrapper = document.getElementById('cropper_' + id);
+
+        //$(wrapper).find('.filter_div img').unwrap();
         // Turn off contenteditable for this card
         //$(card).attr('contenteditable');
         wrapper.style.maxWidth = '';
@@ -2145,10 +2152,18 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         console.log(id);
         console.log(filter);
 
-        var last_filter = $('#a_filter_' + id).attr('class').split(' ')[1];
+        //var last_filter = $('#a_filter_' + id).attr('class').split(' ')[1];
+        //var last_filter = $('#cropper_' + id + ' img').attr('class').split(' ').pop();
+        var last_filter = $('#cropper_' + id).attr('class').split(' ').pop();
         console.log('remove: ' + last_filter);
-        $('#a_filter_' + id).removeClass(last_filter);
-        $('#a_filter_' + id).addClass(filter);
+        //$('#a_filter_' + id).removeClass(last_filter);
+        //$('#a_filter_' + id).addClass(filter);
+        if(last_filter.indexOf('ig-') >= 0){
+        //$('#cropper_' + id + ' img').removeClass(last_filter);
+        $('#cropper_' + id).removeClass(last_filter);
+    }
+       // $('#cropper_' + id + ' img').addClass(filter);
+         $('#cropper_' + id).addClass(filter);
         e.stopPropagation();
     };
 
@@ -2169,6 +2184,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             var temp = $('#cropper_' + id).clone();
             
             temp.addClass('temp');
+
+
 
 
             //temp.find('.filter_div').remove();
@@ -2197,6 +2214,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             //$(temp).click(function(){ console.log('deleted') });
             $(temp).removeAttr('onclick');
             $(temp).removeAttr('id');
+            //$(temp + ' img').removeAttr('class');
+            
             //$(temp).attr('onClick', 'filterClick(event, this, "' + id +'")');
             //$(temp).attr('onClick', "function(){ console.log('deleted') }");
             /*
@@ -2218,6 +2237,15 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 var current = temp.clone().appendTo('#filters_' + id + ' .filters_container .filter_list');
 
                 //$(current + '.filter_div').remove();
+
+                
+
+                //$(current + ' img').removeAttr('class');
+                //current.find('img').removeAttr('class');
+                $(current).removeAttr('class');
+                $(current).addClass('cropper_cont');
+                //var last_filter = $('#cropper_' + id).attr('class').split(' ').pop();
+                //$(current).attr('class').split(' ').pop();
 
                 $(current).addClass('filter_thumb');
 
@@ -2288,17 +2316,25 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                     console.log($('#cropper_' + id + ' .image_adjust').length);
                     // Only open editing if not already open.
                     //if (this.editing != true) {
-                    if ($('#cropper_' + id + ' .image_adjust').length <= 0) {
+                    //if ($('#cropper_' + id + ' .image_adjust').length <= 0) {
+                    if ($('#image_adjust_' + id).length <= 0) {
+                        console.log('ADD EDIT');
                         //this.editing = true;
                         //$('#cropper_' + id).clone().appendTo('.image_adjust');
                         //$('.image_adjust').clone().insertBefore('.' + id);
-                        $('.image_adjust').clone().insertBefore('#a_filter_' + id);
-                        $('#cropper_' + id + ' .image_adjust').css('visibility', 'visible');
-
+                        //$('.image_adjust').clone().insertBefore('.' + id);
+                        $('.image_adjust').clone().attr('id', 'image_adjust_' + id).insertBefore('#cropper_' + id);
+                        //$('.image_adjust').clone().insertBefore('#a_filter_' + id);
+                        //$('#cropper_' + id + ' .image_adjust').css('visibility', 'visible');
+                        $('#image_adjust_' + id).css('visibility', 'visible');
+                        $('#image_adjust_' + id).css('position', 'relative');
                         var edit_btns = "<div class='image_editor'><div class='image_edit_btns'><div class=''><i class='material-icons image_edit' id='ie_tune'>tune</i></div><div class='' onclick='filterImage(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_filter'>filter</i></div><div class='' onclick='openCrop(\"" + id + "\")'><i class='material-icons image_edit' id='ie_crop' >crop</i></div><div class='close_image_edit' onclick='closeEdit(event)'><i class='material-icons image_edit' id='ie_close'>&#xE14C;</i></div></div><div class='crop_edit'><div class='set_crop' onclick='setCrop(\"" + id + "\")'><i class='material-icons image_edit' id='ie_accept'>&#xe876;</i></div></div></div>";
                         // set this to active
-                        $('#cropper_' + id + ' .image_adjust').addClass('image_adjust_on');
-                        $('#cropper_' + id + ' .image_adjust').append(edit_btns);
+                        //$('#cropper_' + id + ' .image_adjust').addClass('image_adjust_on');
+                        //$('#cropper_' + id + ' .image_adjust').append(edit_btns);
+
+                        $('#image_adjust_' + id).addClass('image_adjust_on');
+                        $('#image_adjust_' + id).append(edit_btns);
 
                         console.log($('#cropper_' + id + ' .image_adjust').length);
                     }
