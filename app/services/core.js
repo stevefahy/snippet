@@ -2323,7 +2323,10 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                         //$('#cropper_' + id).clone().appendTo('.image_adjust');
                         //$('.image_adjust').clone().insertBefore('.' + id);
                         //$('.image_adjust').clone().insertBefore('.' + id);
-                        var ia = $('.image_adjust').clone().insertBefore('#cropper_' + id);
+
+                        var ia = $('.image_adjust').clone();
+                        ia.insertBefore('#cropper_' + id);
+                        //var ia = $('.image_adjust').clone().insertBefore('#cropper_' + id);
 
                         $(ia).attr('id', 'image_adjust_' + id);
                         //$('.image_adjust').clone().insertBefore('#a_filter_' + id);
