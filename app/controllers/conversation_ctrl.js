@@ -28,7 +28,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.$on('$destroy', function() {
         //leaving controller.
         Cropp.destroyCrop();
-
+        $('.image_adjust_on').remove();
             //$window.removeEventListener("resize", adjustCropped);
 
     //$window.removeEventListener("load", adjustCropped);

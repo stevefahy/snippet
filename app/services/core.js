@@ -2318,13 +2318,17 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                     //if (this.editing != true) {
                     //if ($('#cropper_' + id + ' .image_adjust').length <= 0) {
                     if ($('#image_adjust_' + id).length <= 0) {
+                        // Close existing
+                        $('.image_adjust_on').remove();
+                        $('.filters_active').remove();
                         console.log('ADD EDIT');
                         //this.editing = true;
                         //$('#cropper_' + id).clone().appendTo('.image_adjust');
                         //$('.image_adjust').clone().insertBefore('.' + id);
                         //$('.image_adjust').clone().insertBefore('.' + id);
-
+//$("div").clone().text('cloned div').appendTo("body");
                         var ia = $('.image_adjust').clone();
+                        console.log(ia);
                         ia.insertBefore('#cropper_' + id);
                         //var ia = $('.image_adjust').clone().insertBefore('#cropper_' + id);
 
