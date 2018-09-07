@@ -2986,7 +2986,7 @@ div.after_image:empty {
 */
 
 .image_filt_div {
-        clear: both;
+clear: both;
     /* width: 100%; */
     /* height: 166px; */
     visibility: hidden;
@@ -3000,8 +3000,9 @@ div.after_image:empty {
     z-index: 100;
     /* overflow-y: hidden; */
     /* overflow-x: auto; */
-    left: -1.83em;
-    width: calc(100% + 2.8em);
+    left: -1.35em;
+    width: calc(100% + 2.7em);
+    top: -1px;
 }
 
 
@@ -3027,6 +3028,10 @@ div.after_image:empty {
     /* height: fit-content; */
 }
 
+.filters_container {
+    padding-left: 15px;
+    padding-right: 15px;
+}
 
 .close_filters {
     display: flex;
