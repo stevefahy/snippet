@@ -2420,8 +2420,17 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         $('#' + e.target.id).closest('div.ce').attr('contenteditable', 'true');
         //$('.filters_div').css('visibility', 'hidden');
         //if(e){
-        $('.filters_active').remove();
+        
 
+        //$('#hidden_input').focus();
+        crop_finished = true;
+        $('#' + e.target.id).closest('div.ce').focus();
+        console.log($('#' + e.target.id).closest('div.ce').find('.after_image'));
+        //$('#' + card_id).focus();
+console.log(document.activeElement);
+        //document.activeElement.blur();
+$('#' + e.target.id).closest('div.ce').blur();
+$('.filters_active').remove();
         e.stopPropagation();
         //}
         //console.log(e.target.id);
