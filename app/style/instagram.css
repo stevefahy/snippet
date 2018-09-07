@@ -4,13 +4,13 @@
 }
 
 [class*="filter"]::before {
-  display: block;
-  height: 100%;
-  left: 0;
-  position: absolute;
-  top: 0;
-  width: 100%;
-  z-index: 1;
+display: block;
+    height: 99%;
+    left: 0;
+    position: absolute;
+    top: .5px;
+    width: 100%;
+    z-index: 1;
 }
 
 .cropping[class*="filter"]::before {

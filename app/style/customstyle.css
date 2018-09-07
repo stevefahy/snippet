@@ -2985,7 +2985,25 @@ div.after_image:empty {
 }
 */
 
-.image_filt_div {clear: both;/* width: 100%; *//* height: 166px; */visibility: hidden;position: absolute;background-color: rgba(0, 0, 0, 1);/* overflow-y: hidden; *//* overflow-x: auto; *//* height: 0px; */cursor: auto;/* bottom: -366px; */z-index: 100;/* overflow-y: hidden; *//* overflow-x: auto; */left: -1.37em;width: calc(100% + 2.7em);top: -1px;}
+.image_filt_div {
+        clear: both;
+    /* width: 100%; */
+    /* height: 166px; */
+    visibility: hidden;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 1);
+    /* overflow-y: hidden; */
+    /* overflow-x: auto; */
+    /* height: 0px; */
+    cursor: auto;
+    /* bottom: -366px; */
+    z-index: 100;
+    /* overflow-y: hidden; */
+    /* overflow-x: auto; */
+    left: -1.38em;
+    width: calc(100% + 2.8em);
+    top: -1px;
+}
 
 
 .filter_list {
