@@ -1810,8 +1810,10 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             // reSet the height of the container
             var cont_height = $("#image_" + id).attr('container-data');
             var wrapper = document.getElementById('cropper_' + id);
+            if(wrapper != undefined){
             wrapper.style.height = cont_height + 'px';
             $(wrapper).removeClass('cropping');
+        }
         }
         //cropper.reset();
         //cropper.clear();
