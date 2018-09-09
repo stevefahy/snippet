@@ -567,8 +567,13 @@ $rootScope.last_win_width;
             $('.cropper-hidden').removeClass('cropper-hidden');
 
 
+
+
         }
         console.log('CHECK CROPPED');
+
+        // TEST
+        $('.resize-drag').css('clip-path', 'unset');
 
         //$compile(cancel_img)($scope);
        
