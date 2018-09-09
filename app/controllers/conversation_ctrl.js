@@ -574,12 +574,14 @@ $rootScope.last_win_width;
 
         // TEST
        // $('.resize-drag').css('clip-path', 'unset');
+       /*
          $('.resize-drag').css('width', 'unset');
           $('.resize-drag').css('margin-bottom', 'unset');
           $('.resize-drag').css('margin-top', 'unset');
           $('.resize-drag').css('max-width', '');
           $('.resize-drag').css('left', 'unset');
          $('.resize-drag').css('transform', 'scale(2)');
+         */
          //transform: scale(.5);
 
         //$compile(cancel_img)($scope);
