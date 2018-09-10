@@ -19,7 +19,13 @@ display: block;
 
 .scrolling .cropper_cont[class*="filter"]::before {
   /*content: unset;*/
-      background: rgba(0,0,0,.45);
+      /*background: rgba(0,0,0,.45);*/
+}
+
+.scrolling .cropper_cont .resize-drag {
+  /*content: unset;*/
+      /*background: rgba(0,0,0,.45);*/
+      mix-blend-mode: unset;
 }
 
 .filter-1977 {
