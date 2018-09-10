@@ -444,6 +444,7 @@ display: block;
   filter: sepia(.45) contrast(1.25) brightness(1.75) saturate(1.3) hue-rotate(-5deg);
 }
 
+/*
 .filter-xpro-ii::before {
   background: rgba(0,0,0,.45);
   background: radial-gradient(circle closest-corner, rgba(0, 91, 154, .35) 0, rgba(0, 0, 0, .65) 100%);
@@ -453,3 +454,4 @@ display: block;
   content: "";
   mix-blend-mode: multiply;
 }
+*/
