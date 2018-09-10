@@ -585,11 +585,11 @@ var isScrolling;
     // Clear our timeout throughout the scroll
     window.clearTimeout( isScrolling );
 
-   // $(this).addClass('scrolling');
+    $(this).addClass('scrolling');
 
     // Set a timeout to run after scrolling ends
     isScrolling = setTimeout(function() {
-//$('.content_cnv').removeClass('scrolling');
+$('.content_cnv').removeClass('scrolling');
         // Run the callback
         console.log( 'Scrolling has stopped.' );
 
