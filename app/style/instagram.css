@@ -445,6 +445,7 @@ display: block;
 }
 
 .filter-xpro-ii::before {
+  background: rgba(0,0,0,.45);
   background: radial-gradient(circle closest-corner, rgba(0, 91, 154, .35) 0, rgba(0, 0, 0, .65) 100%);
   background: -o-radial-gradient(circle closest-corner, rgba(0, 91, 154, .35) 0, rgba(0, 0, 0, .65) 100%);
   background: -moz-radial-gradient(circle closest-corner, rgba(0, 91, 154, .35) 0, rgba(0, 0, 0, .65) 100%);
