@@ -444,36 +444,32 @@ display: block;
   filter: sepia(.45) contrast(1.25) brightness(1.75) saturate(1.3) hue-rotate(-5deg);
 }
 
-
-.filter-xpro-ii::before {
-  /*background: url(/style/test.svg) !important;*/
-  background-image: url(/style/grad_1.png);
-    background-size: contain;
-    background-repeat: no-repeat;
-
-    
-    
-    background-position: center top;
-    background-size: cover;
-    
-    height: 100%;
-    left: 0;
-    position: fixed;
-    top: 0;
-    width: 100%;
-    will-change: transform;
-   
-
-    /*background: radial-gradient(circle closest-corner, rgba(0, 91, 154, .35) 0, rgba(0, 0, 0, .65) 100%);*/
 /*
+.filter-xpro-ii::before {
   background: rgba(0,0,0,.45);
   background: radial-gradient(circle closest-corner, rgba(0, 91, 154, .35) 0, rgba(0, 0, 0, .65) 100%);
   background: -o-radial-gradient(circle closest-corner, rgba(0, 91, 154, .35) 0, rgba(0, 0, 0, .65) 100%);
   background: -moz-radial-gradient(circle closest-corner, rgba(0, 91, 154, .35) 0, rgba(0, 0, 0, .65) 100%);
   background: -webkit-radial-gradient(circle closest-corner, rgba(0, 91, 154, .35) 0, rgba(0, 0, 0, .65) 100%);
-  */
   content:'';
-  /*content: "<svg height='150' width='500'><defs><radialGradient id='grad1' cx='50%' cy='50%' r='50%' fx='50%' fy='50%'><stop offset='0%' style='stop-color:rgb(255,255,255); stop-opacity:0' /><stop offset='100%' style='stop-color:rgb(0,0,255);stop-opacity:1' /></radialGradient></defs><ellipse cx='200' cy='70' rx='85' ry='55' fill='url(#grad1)' /></svg>";*/
   mix-blend-mode: multiply;
 }
+*/
+
+/*
+.filter-xpro-ii::before {
+  background-image: url(/style/grad_1.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center top;
+    background-size: cover;
+    height: 100%;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+  content:'';
+  mix-blend-mode: multiply;
+}
+*/
 
