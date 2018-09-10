@@ -25,6 +25,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
 
 
+
     $scope.$on('$destroy', function() {
         //leaving controller.
         Cropp.destroyCrop();
@@ -571,6 +572,46 @@ $rootScope.last_win_width;
 
         }
         console.log('CHECK CROPPED');
+
+
+        // Setup isScrolling variable
+var isScrolling;
+
+// Listen for scroll events
+ $('.content_cnv').bind('scroll', function(){
+     // alert('scrolling is cool!');
+
+      console.log('scrolling');
+    // Clear our timeout throughout the scroll
+    window.clearTimeout( isScrolling );
+
+    $(this).addClass('scrolling');
+
+    // Set a timeout to run after scrolling ends
+    isScrolling = setTimeout(function() {
+$('.content_cnv').removeClass('scrolling');
+        // Run the callback
+        console.log( 'Scrolling has stopped.' );
+
+    }, 100);
+
+    });
+/*
+window.addEventListener('scroll', function ( event ) {
+console.log('add scroll listener');
+    // Clear our timeout throughout the scroll
+    window.clearTimeout( isScrolling );
+
+    // Set a timeout to run after scrolling ends
+    isScrolling = setTimeout(function() {
+
+        // Run the callback
+        console.log( 'Scrolling has stopped.' );
+
+    }, 66);
+
+}, false);
+*/
 
         // TEST
        // $('.resize-drag').css('clip-path', 'unset');

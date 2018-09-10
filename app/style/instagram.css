@@ -17,6 +17,10 @@ display: block;
   height: unset;
 }
 
+.scrolling .cropper_cont[class*="filter"]::before {
+  content: unset;
+}
+
 .filter-1977 {
   -webkit-filter: sepia(.5) hue-rotate(-30deg) saturate(1.4);
   filter: sepia(.5) hue-rotate(-30deg) saturate(1.4);
