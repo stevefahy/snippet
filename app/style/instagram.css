@@ -20,9 +20,9 @@ display: block;
 .scrolling .cropper_cont[class*="filter"]::before {
   /*content: unset;*/
       /*background: rgba(0,0,0,.45);*/
-      /*mix-blend-mode: unset;*/
-
-          background: rgba(0,0,0,.45) !important;
+      mix-blend-mode: unset;
+background: unset !important;
+          /*background: rgba(0,0,0,.45) !important;*/
 }
 
 /*
