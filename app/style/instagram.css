@@ -450,5 +450,5 @@ display: block;
   background: -webkit-radial-gradient(circle closest-corner, rgba(0, 91, 154, .35) 0, rgba(0, 0, 0, .65) 100%);
   content: "";
   mix-blend-mode: multiply;
-  will-change: auto;
+   transform: translate3d(0, 0, 0);
 }
