@@ -463,6 +463,9 @@ background: unset !important;
   mix-blend-mode: multiply;
 }
 
+.filter-xpro-iii {
+      filter: contrast(1.5) brightness(1.1) sepia(0.45) saturate(1.3) hue-rotate(-5deg);
+}
 
 /*
 .filter-xpro-ii::before {
