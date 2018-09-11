@@ -2293,6 +2293,9 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         },
         {
             filter_css_name: 'filter-xpro-ii'
+        },
+        {
+            filter_css_name: 'filter-xpro-iii'
         }
     ];
 
