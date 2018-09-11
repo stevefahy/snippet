@@ -25,11 +25,11 @@ background: unset !important;
           /*background: rgba(0,0,0,.45) !important;*/
 }
 
-/*
+
 .scrolling .cropper_cont .resize-drag {
       mix-blend-mode: unset;
 }
-*/
+
 
 .filter-1977 {
   -webkit-filter: sepia(.5) hue-rotate(-30deg) saturate(1.4);
