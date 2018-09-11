@@ -26,6 +26,14 @@ background: unset !important;
           filter: contrast(1.5) brightness(1.1) sepia(0.45) saturate(1.3) hue-rotate(10deg) !important;
 }
 
+.scrolling .cropper_cont .filter-xpro-iii {
+  /*content: unset;*/
+      /*background: rgba(0,0,0,.45);*/
+
+          /*background: rgba(0,0,0,.45) !important;*/
+          filter: contrast(1.5) brightness(1.1) sepia(0.45) saturate(1.3) hue-rotate(10deg) !important;
+}
+
 
 .scrolling .cropper_cont .resize-drag {
       mix-blend-mode: unset;
