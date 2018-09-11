@@ -3094,7 +3094,7 @@ div.after_image:empty {
 
 }
 
-.image_fltr {
+.filter-xpro-ii .image_fltr {
      background-image: url(/style/grad_1.png);
     /* background-size: contain; */
     /* background-size: contain; */
@@ -3109,7 +3109,7 @@ div.after_image:empty {
     /* height: 100%; */
 }
 
-.image_fltr img {
+.filter-xpro-ii .image_fltr img {
     mix-blend-mode: multiply;
 }
 /*
