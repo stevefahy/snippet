@@ -573,7 +573,7 @@ $rootScope.last_win_width;
         }
         console.log('CHECK CROPPED');
 
-
+/*
         // Setup isScrolling variable
 var isScrolling;
 
@@ -596,7 +596,7 @@ $('.content_cnv').removeClass('scrolling');
     }, 100);
 
     });
-    
+    */
 /*
 window.addEventListener('scroll', function ( event ) {
 console.log('add scroll listener');
