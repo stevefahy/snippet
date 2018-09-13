@@ -573,6 +573,11 @@ $rootScope.last_win_width;
         }
         console.log('CHECK CROPPED');
 
+        $timeout(function() { 
+tempD();
+},1000);
+
+
 /*
         // Setup isScrolling variable
 var isScrolling;
@@ -586,6 +591,7 @@ var isScrolling;
     window.clearTimeout( isScrolling );
 
     $(this).addClass('scrolling');
+    //tempD();
 
     // Set a timeout to run after scrolling ends
     isScrolling = setTimeout(function() {
@@ -641,7 +647,25 @@ console.log('add scroll listener');
             }
         });
         */
+
+
+             //   var btn = document.getElementById("button");
+//btn._onclick = btn.onclick;
+//btn.onclick = function(){ return false; };
+
+
+
     });
+
+    tempD = function(){
+                $(".cropper_cont").each(function (index, value) {
+             console.log($(this).parent().attr('contenteditable'));
+             value._ce = $(this).parent().attr('contenteditable');
+             $(this).parent().attr('contenteditable', 'false');
+            value._onclick = value.onclick;
+            value.onclick = function(){ return false; };
+        });
+            };
 
     // Listen for the end of the view transition.
 
@@ -656,6 +680,8 @@ console.log('add scroll listener');
                         //$window.addEventListener('resize', adjustCropped);
 
     //$window.addEventListener('load', adjustCropped);
+    //$window.addEventListener('load', tempD );
+     
                 }, 0);
             });
         }
