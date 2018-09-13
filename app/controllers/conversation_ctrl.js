@@ -554,7 +554,16 @@ $rootScope.last_win_width;
     };
 
 
-
+$scope.lineInView = function (data, id) {
+    console.log(data + ' : ' + id);
+    if(data){
+    //$('#ce'+id).addClass('inview');
+    $('#ce'+id).removeClass('outview');
+} else {
+     //$('#ce'+id).removeClass('inview');
+     $('#ce'+id).addClass('outview');
+}
+};
 
 
 
@@ -572,10 +581,11 @@ $rootScope.last_win_width;
 
         }
         console.log('CHECK CROPPED');
-
+/*
         $timeout(function() { 
 tempD();
 },1000);
+*/
 
 
 /*
