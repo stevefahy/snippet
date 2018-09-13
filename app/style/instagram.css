@@ -17,7 +17,11 @@ display: block;
   height: unset;
 }
 
-.outview .cropper_cont[class*="filter"]::before {
+.outview .cropper_cont img{
+  display: none;
+}
+
+.outviewz .cropper_cont[class*="filter"]::before {
   /*content: unset;*/
       /*background: rgba(0,0,0,.45);*/
       mix-blend-mode: unset;
