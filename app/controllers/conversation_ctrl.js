@@ -561,6 +561,15 @@ $scope.lineInView = function (data, id) {
     if(data){
     //$('#ce'+id).addClass('inview');
     $('#ce'+id).removeClass('outview');
+
+            $('#ce' + id + ' .cropper_cont').each(function (index, value) {
+            //console.log($(this).find("img").height());
+           // var a = $(this).find("img");
+            //console.log(a);
+            $(this).css('height', 'unset');
+          
+        });
+
 } else {
      //$('#ce'+id).removeClass('inview');
      $('#ce'+id).addClass('outview');
@@ -569,7 +578,7 @@ $scope.lineInView = function (data, id) {
             //console.log($(this).find("img").height());
            // var a = $(this).find("img");
             //console.log(a);
-            $(this).attr('height', $(this).find("img").height());
+            $(this).css('height', $(this).find("img").height());
           
         });
 }
