@@ -5,7 +5,7 @@
     </div>
     <!--<div class="content_cnv" ng-class="{ 'content_cnv_off': $root.pageLoading}" scroll-indicator="scroll_indicator_options" scroll-glue>-->
 <div class="content_cnv" ng-class="{ 'content_cnv_off': $root.pageLoading}" scroll-glue in-view-container>
-        <div id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : false | limitTo:totalDisplayed" on-finish-render="ngRepeatFinished" in-view="lineInView($inview, card._id)">
+        <div id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : false | limitTo:totalDisplayed" on-finish-render="ngRepeatFinished" in-view="lineInView($inview, card._id)" in-view-options="inviewoptions">
             <div class=" resize-container" id="conversation_part" ng-init="disableCheckboxes(card._id)">
                 <form class="form-horizontal">
                     <div id="user">
