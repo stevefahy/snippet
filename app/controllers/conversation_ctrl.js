@@ -564,6 +564,14 @@ $scope.lineInView = function (data, id) {
 } else {
      //$('#ce'+id).removeClass('inview');
      $('#ce'+id).addClass('outview');
+
+        $('#ce' + id + ' .cropper_cont').each(function (index, value) {
+            //console.log($(this).find("img").height());
+           // var a = $(this).find("img");
+            //console.log(a);
+            $(this).attr('height', $(this).find("img").height());
+          
+        });
 }
 };
 
@@ -583,10 +591,11 @@ $scope.lineInView = function (data, id) {
 
         }
         console.log('CHECK CROPPED');
-
+/*
         $timeout(function() { 
 tempE();
 },1000);
+*/
 
 
 
