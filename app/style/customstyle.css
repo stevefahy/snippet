@@ -211,6 +211,8 @@ position: relative;
         /*float: left;*/
         overflow: hidden;
 
+        transform: translate3d(0, 0, 0);
+
 /*
             background-image: url(/style/grad_1.png);
     background-size: cover;
@@ -1440,6 +1442,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     background-color: #FFFFFF;
 
     transform: translate3d(0, 0, 0);
+
 
 }
 
