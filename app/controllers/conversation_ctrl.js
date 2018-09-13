@@ -583,11 +583,11 @@ $scope.lineInView = function (data, id) {
 
         }
         console.log('CHECK CROPPED');
-/*
+
         $timeout(function() { 
-tempD();
+tempE();
 },1000);
-*/
+
 
 
 /*
@@ -669,6 +669,21 @@ console.log('add scroll listener');
 
     });
 
+        tempE = function(){
+                $(".cropper_cont").each(function (index, value) {
+                    console.log($(this).find("img").height());
+
+                    $(this).attr('height', $(this).find("img").height());
+                    /*
+             console.log($(this).parent().attr('contenteditable'));
+             value._ce = $(this).parent().attr('contenteditable');
+             $(this).parent().attr('contenteditable', 'false');
+            value._onclick = value.onclick;
+            value.onclick = function(){ return false; };
+            */
+        });
+            };
+
     tempD = function(){
                 $(".cropper_cont").each(function (index, value) {
              console.log($(this).parent().attr('contenteditable'));
@@ -692,7 +707,7 @@ console.log('add scroll listener');
                         //$window.addEventListener('resize', adjustCropped);
 
     //$window.addEventListener('load', adjustCropped);
-    //$window.addEventListener('load', tempD );
+    //$window.addEventListener('load', tempE );
      
                 }, 0);
             });

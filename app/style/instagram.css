@@ -21,13 +21,15 @@ display: block;
   display: none;
 }
 
-.outviewz .cropper_cont[class*="filter"]::before {
-  /*content: unset;*/
-      /*background: rgba(0,0,0,.45);*/
+.outview .cropper_cont[class*="filter"]::before {
+  content: unset;
+  /*
+      
       mix-blend-mode: unset;
 background: unset !important;
-          /*background: rgba(0,0,0,.45) !important;*/
+          
           filter: contrast(1.5) brightness(1.1) sepia(0.45) saturate(1.3) hue-rotate(10deg) !important;
+*/
 }
 
 .scrolling .filter-xpro-ii {
