@@ -16,10 +16,11 @@ display: block;
 .cropping[class*="filter"]::before {
   height: unset;
 }
-
+/*
 .outview .cropper_cont img{
   display: none;
 }
+*/
 
 .outview .cropper_cont[class*="filter"]::before {
   content: unset;
