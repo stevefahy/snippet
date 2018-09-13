@@ -553,7 +553,7 @@ $rootScope.last_win_width;
     }
     };
 
-$scope.inviewoptions = {offset:[1000, 0, 1000, 0]};
+$scope.inviewoptions = {offset:[5000, 0, 5000, 0]};
 
 
 $scope.lineInView = function (data, id) {
