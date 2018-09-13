@@ -573,7 +573,7 @@ $rootScope.last_win_width;
         }
         console.log('CHECK CROPPED');
 
-/*
+
         // Setup isScrolling variable
 var isScrolling;
 
@@ -581,7 +581,7 @@ var isScrolling;
  $('.content_cnv').bind('scroll', function(){
      // alert('scrolling is cool!');
 
-      console.log('scrolling');
+      //console.log('scrolling');
     // Clear our timeout throughout the scroll
     window.clearTimeout( isScrolling );
 
@@ -591,12 +591,12 @@ var isScrolling;
     isScrolling = setTimeout(function() {
 $('.content_cnv').removeClass('scrolling');
         // Run the callback
-        console.log( 'Scrolling has stopped.' );
+        //console.log( 'Scrolling has stopped.' );
 
     }, 100);
 
     });
-    */
+    
 /*
 window.addEventListener('scroll', function ( event ) {
 console.log('add scroll listener');

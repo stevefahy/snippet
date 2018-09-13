@@ -211,7 +211,7 @@ position: relative;
         /*float: left;*/
         overflow: hidden;
 
-        transform: translate3d(0, 0, 0);
+
 
 /*
             background-image: url(/style/grad_1.png);
@@ -1441,7 +1441,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     border-radius: 1px;
     background-color: #FFFFFF;
 
-    transform: translate3d(0, 0, 0);
+    
 
 
 }
