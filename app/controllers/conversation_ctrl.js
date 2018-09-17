@@ -557,7 +557,7 @@ $scope.inviewoptions = {offset:[100, 0, 100, 0]};
 
 
 $scope.lineInView = function (data, id) {
-    console.log(data + ' : ' + id);
+    //console.log(data + ' : ' + id);
     if(data){
     //$('#ce'+id).addClass('inview');
     $('#ce'+id).removeClass('outview');

@@ -23,7 +23,7 @@ display: block;
 */
 
 .outview .cropper_cont[class*="filter"]::before {
-  content: unset;
+ /* content: unset;*/
   /*
       
       mix-blend-mode: unset;

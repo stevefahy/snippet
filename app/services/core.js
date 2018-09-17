@@ -1811,10 +1811,10 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             // reSet the height of the container
             var cont_height = $("#image_" + id).attr('container-data');
             var wrapper = document.getElementById('cropper_' + id);
-            if(wrapper != undefined){
-            wrapper.style.height = cont_height + 'px';
-            $(wrapper).removeClass('cropping');
-        }
+            if (wrapper != undefined) {
+                wrapper.style.height = cont_height + 'px';
+                $(wrapper).removeClass('cropping');
+            }
         }
         //cropper.reset();
         //cropper.clear();
@@ -1877,6 +1877,9 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         //[class*="filter"]::before {
         //$( "input[name^='news']" ).css('height', '');
         //$('#element').addClass('some-class');
+
+        $('#image_filtered_'+ id).css('display', 'none');
+        $('#image_'+ id).css('display', 'unset');
 
         $('.image_edit_btns').css('display', 'none');
         $('.crop_edit').css('display', 'flex');
@@ -2317,8 +2320,85 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             //$('#cropper_' + id + ' img').removeClass(last_filter);
             $('#cropper_' + id).removeClass(last_filter);
         }
-        // $('#cropper_' + id + ' img').addClass(filter);
+        //$('#cropper_' + id + ' img').addClass(filter);
         $('#cropper_' + id).addClass(filter);
+
+
+        $('.' + id).attr('id', 'image_' + id);
+        //"#image_" + image_id
+        //var canvas = convertImageToCanvas(document.getElementById('image_' + id), id);
+        //console.log(canvas);
+        //image_1536954243853_abstract_2_00-wallpaper-1920x1080
+        //convertImageToCanvas(document.getElementById('image_' + id), id).then(function(canvas) {
+        convertImageToCanvas(document.getElementById('image_' + id), document.getElementById('image_1536954243853_abstract_2_00-wallpaper-1920x1080'), id).then(function(canvas) {
+            console.log(canvas);
+            var dataUrl = canvas.toDataURL();
+            var img = document.createElement('img');
+            /*
+            var div = document.createElement('div');
+            div.setAttribute('id', 'stevee');
+            div.setAttribute('class', 'filter-xpro-iix');
+            */
+            img.setAttribute('src', dataUrl);
+            //img.setAttribute('id', dataUrl);
+            var cropper = document.getElementById('cropper_' + id);
+            var cssFilter = getComputedStyle(cropper).filter;
+            console.log(cssFilter);
+
+            img.onload = function() {
+                //document.body.appendChild(img);
+
+
+                var img3 = this;
+                var canvas3 = document.createElement('canvas');
+                canvas3.setAttribute('id', 'image_filtered_' + id);
+                canvas3.width = img3.width;
+                canvas3.height = img3.height;
+                var ctx = canvas3.getContext('2d');
+                //ctx.filter = "blur(0px)";
+                ctx.filter = cssFilter;
+                ctx.drawImage(img3, 0, 0, img3.width, img3.height);
+
+                var dataUrl = canvas3.toDataURL();
+                var img4 = document.createElement('img');
+                img4.setAttribute('src', dataUrl);
+                img4.setAttribute('id', 'image_filtered_' + id);
+                img4.setAttribute('class', 'resize-drag');
+                //$(canvas3).insertBefore('#cropper_' + id);
+                //var filtered_img = document.getElementById('image_filtered_' + id);
+                //$(div).insertBefore('#cropper_' + id);
+                //$(div).insertBefore('#cropper_' + id);
+                //$(img).appendTo('#stevee');
+                img4.onload = function() {
+                    $(this).insertBefore('#image_' + id);
+                    $('#image_' + id).css('display', 'none');
+
+                    //DUPE
+                    var last_filter = $('#cropper_' + id).attr('class').split(' ').pop();
+                    //console.log('remove: ' + last_filter);
+                    //$('#a_filter_' + id).removeClass(last_filter);
+                    //$('#a_filter_' + id).addClass(filter);
+                    //console.log(last_filter.indexOf('cropper_cont'));
+                    if (last_filter.indexOf('cropper_cont') < 0) {
+                        //$('#cropper_' + id + ' img').removeClass(last_filter);
+                        $('#cropper_' + id).removeClass(last_filter);
+                    }
+
+                };
+
+            };
+
+
+
+            //$(canvas).insertBefore('#cropper_' + id);
+        });
+
+        //document.getElementById('cropper_' + id).appendChild(canvas);
+        //$(canvas).insertBefore('#cropper_' + id);
+        //$('.filters_div').clone().insertBefore('.' + id);
+        //document.getElementById('cropper_' + id).insertBefore('cropper_' + id);
+
+
         e.stopPropagation();
     };
 
@@ -2426,17 +2506,17 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         $('#' + e.target.id).closest('div.ce').attr('contenteditable', 'true');
         //$('.filters_div').css('visibility', 'hidden');
         //if(e){
-        
+
 
         //$('#hidden_input').focus();
         crop_finished = true;
         $('#' + e.target.id).closest('div.ce').focus();
         console.log($('#' + e.target.id).closest('div.ce').find('.after_image'));
         //$('#' + card_id).focus();
-console.log(document.activeElement);
+        console.log(document.activeElement);
         //document.activeElement.blur();
-$('#' + e.target.id).closest('div.ce').blur();
-$('.filters_active').remove();
+        $('#' + e.target.id).closest('div.ce').blur();
+        $('.filters_active').remove();
         e.stopPropagation();
         //}
         //console.log(e.target.id);
@@ -2460,7 +2540,7 @@ $('.filters_active').remove();
 
 
         //$('#' + e.target.id).closest('.cropper_cont').removeClass('cropping');
-         $('#cropper_'+ id).removeClass('cropping');
+        $('#cropper_' + id).removeClass('cropping');
     };
 
     this.editImage = function(scope, id) {
@@ -2520,10 +2600,230 @@ $('.filters_active').remove();
         }
     };
 
+    // Converts image to canvas; returns new canvas element
+    /*
+    function convertImageToCanvas(image, id) {
+        var canvas = document.createElement("canvas");
+        canvas.width = image.width;
+        canvas.height = image.height;
+    var cropper = document.getElementById('cropper_' + id);
+        var cssFilter = getComputedStyle(cropper).filter;
+        var cssFilterBefore = getComputedStyle(cropper, ':before').getPropertyValue("background-image");
+    var ctx = canvas.getContext("2d");
+    ctx.globalAlpha = 1;
+    var grd=ctx.createRadialGradient((image.width/2),(image.height/2),(image.width/20),(image.width/2),(image.height/2),(image.width/3));
+    grd.addColorStop(0, "rgba(0,91,154, 0.35)");
+    grd.addColorStop(1, "rgba(0,0,0, 0.65)");
+    // Fill with gradient
+    ctx.fillStyle=grd;
+    ctx.fillRect(0,0,image.width,image.height);
+    ctx.filter = cssFilter;
+    ctx.drawImage(image, 0, 0, image.width, image.height);
+    ctx.globalCompositeOperation="multiply";
+        return canvas;
+    }
+    */
+
+    function applyBlending(bottomImageData, topImageData, image, id) {
+        var deferred = $q.defer();
+        var cropper = document.getElementById('cropper_' + id);
+        var cssFilter = getComputedStyle(cropper).filter;
+        console.log(cssFilter);
+        // create the canvas
+        var canvas = document.createElement('canvas');
+        canvas.setAttribute('id', 'stevex');
+        canvas.width = image.width;
+        canvas.height = image.height;
+        var ctx = canvas.getContext('2d');
+        //ctx.filter = "blur(10px) grayscale(100%)";
+        //ctx.filter = 'blur(5px)';
+        // get the pixel data as array
+        var bottomData = bottomImageData.data;
+        var topData = topImageData.data;
+
+        // first, create a new ImageData to contain our pixels
+        //var imgData = ctx.createImageData(image.width, image.width); // width x height
+        // create a new pixel array
+        //var imageData = ctx.createImageData(image.width, image.height);
+        // loop each pixel data, calculate the new pixel value and assign it directly
+        // to the topData (to save memory)
+        // if you want to keep the original data, don't do this. instead create a new
+        // image data object
+        //imageData = topData;
+        /*
+        for (var i = 0; i < topData.length; i += 4) {
+            topData[i] = 1 - (1 - topData[i]) * (1 - bottomData[i]);
+            topData[i + 1] = 1 - (1 - topData[i + 1]) * (1 - bottomData[i + 1]);
+            topData[i + 2] = 1 - (1 - topData[i + 2]) * (1 - bottomData[i + 2]);
+        }
+        */
+        // multiply
+
+        for (var i = 0; i < topData.length; i += 4) {
+            topData[i] = topData[i] * (bottomData[i]) / 255;
+            topData[i + 1] = topData[i + 1] * (bottomData[i + 1]) / 255;
+            topData[i + 2] = topData[i + 2] * (bottomData[i + 2]) / 255;
+            //topData[i + 3] = 1 - ((1-topData[i + 3]) + (1-bottomData[i + 3]));
+        }
+
+
+        // screen 
+        //return 255 - (((255 - a) * (255 - b)) >> 8);
+        /*
+        for (var i = 0; i < topData.length; i += 4) {
+            topData[i] = 255 - (((255-topData[i]) * (255 - bottomData[i])) >> 8);
+            topData[i+1] = 255 - (((255-topData[i+1]) * (255 - bottomData[i+1])) >> 8);
+            topData[i+2] = 255 - (((255-topData[i+2]) * (255 - bottomData[i+2])) >> 8);
+            //topData[i + 3] = 1 - ((1-topData[i + 3]) + (1-bottomData[i + 3]));
+        }
+        */
+        /*
+        for (var i = 0; i < topData.length; i += 4) {
+            topData[i] = topData[i] * bottomData[i] / 255;
+            topData[i + 1] = topData[i + 1] * bottomData[i + 1] / 255;
+            topData[i + 2] = topData[i + 2] * bottomData[i + 2] / 255;
+        }
+        */
+        /*
+        for (var i = 0; i < topData.length; i += 4) {
+            topData[i] =  bottomData[i] * topData[i] / 255;
+            topData[i + 1] = bottomData[i + 1] * topData[i + 1] / 255;
+            topData[i + 2] = bottomData[i + 2] * topData[i + 2] / 255;
+        }
+        */
+
+        /*
+var d = topData;
+        for (var i=0; i<d.length; i+=4) {
+    var r = d[i];
+    var g = d[i+1];
+    var b = d[i+2];
+    // CIE luminance for the RGB
+    // The human eye is bad at seeing red and blue, so we de-emphasize them.
+    var v = 0.2126*r + 0.7152*g + 0.0722*b;
+    d[i] = d[i+1] = d[i+2] = v;
+  }
+  */
+
+        ctx.putImageData(topImageData, 0, 0);
+
+        //ctx.filter = cssFilter;
+        // draw it on the canvas with the size 500, 500
+        //ctx.putImageData(topImageData, image.width, image.height);
+        //ctx.putImageData(imageData, image.width, image.height);
+        // export image, discussed in the next part
+        //exportImage(canvas);
+        /*
+                // create the canvas
+        var canvasb = document.createElement('canvas');
+        canvasb.width = image.width;
+        canvasb.height = image.height;
+        var ctxb = canvasb.getContext('2d');
+        var canvas2 = document.createElement('canvas');
+        canvas2.width = image.width;
+        canvas2.height = image.height;
+        var ctx2 = canvas2.getContext('2d');
+        ctx2.globalAlpha = 1;
+        var grd = ctx2.createRadialGradient((image.width / 2), (image.height / 2), (image.width / 20), (image.width / 2), (image.height / 2), (image.width / 3));
+        grd.addColorStop(0, "rgba(0,91,154, 0.35)");
+        grd.addColorStop(1, "rgba(0,0,0, 0.65)");
+        // Fill with gradient
+        ctx2.fillStyle = grd;
+        ctx2.fillRect(0, 0, image.width, image.height);
+         var imgData = ctx2.getImageData(0, 0, image.width, image.height);
+        console.log(imgData);
+        ctxb.putImageData(imgData, 0, 0);
+        */
+
+        deferred.resolve(canvas);
+        console.log(canvas);
+        return deferred.promise;
+
+    }
+
+    function convertImageToCanvas(image1, image2, id) {
+
+        var deferred = $q.defer();
+        console.log(image);
+        image = image1;
+
+        var canvas2 = document.createElement('canvas');
+
+        canvas2.width = image.width;
+        canvas2.height = image.height;
+        var ctx2 = canvas2.getContext('2d');
+        ctx2.globalAlpha = .5;
+        var grd = ctx2.createRadialGradient((image.width / 2), (image.height / 2), (image.width / 100), (image.width / 2), (image.height / 2), (image.width));
+        //grd.addColorStop(0, "rgba(0,91,154, 0.35)");
+        grd.addColorStop(0, "rgba(183,209,226, 1)");
+        //grd.addColorStop(0, "rgba(255,255,255, 1)");
+        grd.addColorStop(1, "rgba(0,0,0, 1)");
+        // Fill with gradient
+        ctx2.fillStyle = grd;
+        ctx2.fillRect(0, 0, image.width, image.height);
+        //var imgData = ctx2.getImageData(0, 0, image.width, image.height);
+        //console.log(imgData);
+
+
+        topImage = image1;
+        bottomImage = canvas2;
+        //var photo = new Image();
+        //var image = image;
+        //var canvas = document.getElementById('canvas');
+        var bottomCanvas = document.createElement("canvas");
+        var topCanvas = document.createElement("canvas");
+        bottomCanvas.width = image.width;
+        bottomCanvas.height = image.height;
+        topCanvas.width = image.width;
+        topCanvas.height = image.height;
+
+        // get the 2d context to draw
+        var bottomCtx = bottomCanvas.getContext('2d');
+        var topCtx = topCanvas.getContext('2d');
+
+        /*
+        bottomCtx.globalAlpha = 1;
+        var grd = bottomCtx.createRadialGradient((image.width / 2), (image.height / 2), (image.width / 20), (image.width / 2), (image.height / 2), (image.width / 3));
+        grd.addColorStop(0, "rgba(0,91,154, 0.35)");
+        grd.addColorStop(1, "rgba(0,0,0, 0.65)");
+        // Fill with gradient
+        bottomCtx.fillStyle = grd;
+        bottomCtx.fillRect(0, 0, image.width, image.height);
+        */
+
+        // draw the image to top and bottom canvas, from the position x, y (0, 0) and
+        // with the size 500, 500 pixels
+        bottomCtx.drawImage(bottomImage, 0, 0, image.width, image.height);
+        topCtx.drawImage(topImage, 0, 0, image.width, image.height);
+
+        // get the pixel data of the 2 canvas, from the position x, y (0, 0) and
+        // with the size 500, 500 pixels
+        var bottomImageData = bottomCtx.getImageData(0, 0, image.width, image.height);
+        var topImageData = topCtx.getImageData(0, 0, image.width, image.height);
+
+        // apply blending, will be discussed in the next section
+
+        applyBlending(bottomImageData, topImageData, image, id).then(function(result) {
+            console.log(result);
+
+
+            deferred.resolve(result);
+            //deferred.resolve(canvas);
+        });
+
+        //deferred.resolve(bottomCanvas);
+
+        return deferred.promise;
+
+
+
+    }
 
 
     this.setCrop = function(image_id) {
         console.log('setCrop: ' + image_id);
+
+
 
         getData = function() {
             console.log('data');
