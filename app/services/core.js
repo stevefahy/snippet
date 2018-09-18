@@ -1878,8 +1878,11 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         //$( "input[name^='news']" ).css('height', '');
         //$('#element').addClass('some-class');
 
+        /*
+        // For canvas image method
         $('#image_filtered_'+ id).css('display', 'none');
         $('#image_'+ id).css('display', 'unset');
+        */
 
         $('.image_edit_btns').css('display', 'none');
         $('.crop_edit').css('display', 'flex');
@@ -2330,15 +2333,15 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         //console.log(canvas);
         //image_1536954243853_abstract_2_00-wallpaper-1920x1080
         //convertImageToCanvas(document.getElementById('image_' + id), id).then(function(canvas) {
+        
+
+        /* 
+        // Canvas method
         convertImageToCanvas(document.getElementById('image_' + id), document.getElementById('image_1536954243853_abstract_2_00-wallpaper-1920x1080'), id).then(function(canvas) {
             console.log(canvas);
             var dataUrl = canvas.toDataURL();
             var img = document.createElement('img');
-            /*
-            var div = document.createElement('div');
-            div.setAttribute('id', 'stevee');
-            div.setAttribute('class', 'filter-xpro-iix');
-            */
+
             img.setAttribute('src', dataUrl);
             //img.setAttribute('id', dataUrl);
             var cropper = document.getElementById('cropper_' + id);
@@ -2392,6 +2395,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
             //$(canvas).insertBefore('#cropper_' + id);
         });
+        */
 
         //document.getElementById('cropper_' + id).appendChild(canvas);
         //$(canvas).insertBefore('#cropper_' + id);
