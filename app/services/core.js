@@ -329,15 +329,19 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         });
     }
 
-    dataURItoBlob = function(dataURI) {
+    this.dataURItoBlob = function(dataURI) {
         return $q(function(resolve, reject) {
+            console.log(dataURI);
             // convert base64/URLEncoded data component to raw binary data held in a string
             var byteString;
             if (dataURI.split(',')[0].indexOf('base64') >= 0) {
+                console.log('1');
                 byteString = atob(dataURI.split(',')[1]);
             } else {
+                console.log('2');
                 byteString = unescape(dataURI.split(',')[1]);
             }
+            console.log(byteString);
             // separate out the mime component
             var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
             // write the bytes of the string to a typed array
@@ -379,6 +383,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     insertImage = function(data) {
+        console.log(data);
         if (data.response === 'saved') {
             data.file_name = data.file.substring(0, data.file.indexOf('.'));
             //var unique_id = data.file_name + '_' + General.getDate();
@@ -442,7 +447,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         });
     };
 
-    this.prepareImage = function(files, callback) {
+    this.prepImage = function(files, callback) {
+        console.log('prepImage');
+        console.log(files);
         var promises = [];
         self.formData = new FormData();
         angular.forEach(files, function(file, key) {
@@ -454,10 +461,44 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 }).then(function(obj) {
                     return resizeImage(obj.image, obj.exif);
                 }).then(function(dataurl) {
-                    return dataURItoBlob(dataurl);
+                    return self.dataURItoBlob(dataurl);
                 }).then(function(blob) {
                     // Unique file name
-                    file_name = getDate() + '_' + file.name;
+                    file_name = file.name;
+                    //self.formData.append('uploads[]', blob, file.name);
+                    self.formData.append('uploads[]', blob, file_name);
+                })
+            );
+        });
+
+        $q.all(promises).then(function(formData) {
+            // Image processing of ALL images complete. Upload form
+            self.uploadImages(self.formData, callback);
+        });
+    };
+
+    this.prepareImage = function(files, callback) {
+        console.log('prepareImage');
+        console.log(files);
+        var promises = [];
+        self.formData = new FormData();
+        angular.forEach(files, function(file, key) {
+            promises.push(
+                createImageElement().then(function(img) {
+                    return loadFileReader(img, file);
+                }).then(function(img) {
+                    return loadExifReader(img, file);
+                }).then(function(obj) {
+                    return resizeImage(obj.image, obj.exif);
+                }).then(function(dataurl) {
+                    return self.dataURItoBlob(dataurl);
+                }).then(function(blob) {
+                    // Unique file name
+                    if(!file.renamed){
+                        file_name = getDate() + '_' + file.name;
+                    } else {
+                        file_name = file.name;
+                    }
                     //self.formData.append('uploads[]', blob, file.name);
                     self.formData.append('uploads[]', blob, file_name);
                 })
@@ -2306,6 +2347,30 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         }
     ];
 
+    function b64toBlob(b64Data, contentType, sliceSize) {
+        contentType = contentType || '';
+        sliceSize = sliceSize || 512;
+
+        var byteCharacters = atob(b64Data);
+        var byteArrays = [];
+
+        for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+            var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+            var byteNumbers = new Array(slice.length);
+            for (var i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+            }
+
+            var byteArray = new Uint8Array(byteNumbers);
+
+            byteArrays.push(byteArray);
+        }
+
+        var blob = new Blob(byteArrays, { type: contentType });
+        return blob;
+    }
+
     this.filterClick = function(e, button, id, filter) {
         console.log('filterClick');
         console.log($(button));
@@ -2333,9 +2398,9 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         //console.log(canvas);
         //image_1536954243853_abstract_2_00-wallpaper-1920x1080
         //convertImageToCanvas(document.getElementById('image_' + id), id).then(function(canvas) {
-        
 
-        /* 
+
+
         // Canvas method
         convertImageToCanvas(document.getElementById('image_' + id), document.getElementById('image_1536954243853_abstract_2_00-wallpaper-1920x1080'), id).then(function(canvas) {
             console.log(canvas);
@@ -2373,7 +2438,39 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 //$(div).insertBefore('#cropper_' + id);
                 //$(img).appendTo('#stevee');
                 img4.onload = function() {
-                    $(this).insertBefore('#image_' + id);
+
+                    /*
+                                        var contentType = 'image/jpg';
+                                        var b64Data = this.src;
+                                        var blob = b64toBlob(b64Data, contentType);
+                                        console.log(blob);
+                                        */
+
+                    Format.dataURItoBlob(this.src).then(function(blob) {
+                        console.log(blob);
+                        blob.name = 'image_filtered_' + id + '.jpg';
+                        blob.renamed = true;
+                        Format.prepareImage([blob], function(result) {
+                            console.log(result);
+
+                            var img = document.createElement("img");
+                            img.src = 'fileuploads/images/' + result.file;
+                            $(img).insertBefore('#image_' + id);
+                        });
+
+                    });
+
+
+
+
+                    //Format.prepareImage([{ file: this.src, name: 'image_filtered_' + id }], function(result) {
+                     //   console.log(result);
+                    //});
+
+                    //Format.prepareImage([file], function(result) {
+                    //profile.avatar = 'fileuploads/images/' + result.file;
+
+                    //$(this).insertBefore('#image_' + id);
                     $('#image_' + id).css('display', 'none');
 
                     //DUPE
@@ -2395,7 +2492,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
             //$(canvas).insertBefore('#cropper_' + id);
         });
-        */
+
 
         //document.getElementById('cropper_' + id).appendChild(canvas);
         //$(canvas).insertBefore('#cropper_' + id);
