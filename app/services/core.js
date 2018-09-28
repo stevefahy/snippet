@@ -453,21 +453,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         var promises = [];
         self.formData = new FormData();
         angular.forEach(files, function(file, key) {
+            console.log(file);
             promises.push(
-                createImageElement().then(function(img) {
-                    return loadFileReader(img, file);
-                }).then(function(img) {
-                    return loadExifReader(img, file);
-                }).then(function(obj) {
-                    return resizeImage(obj.image, obj.exif);
-                }).then(function(dataurl) {
-                    return self.dataURItoBlob(dataurl);
-                }).then(function(blob) {
-                    // Unique file name
-                    file_name = file.name;
-                    //self.formData.append('uploads[]', blob, file.name);
-                    self.formData.append('uploads[]', blob, file_name);
-                })
+                self.formData.append('uploads[]', file, file.name)
             );
         });
 
@@ -494,7 +482,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     return self.dataURItoBlob(dataurl);
                 }).then(function(blob) {
                     // Unique file name
-                    if(!file.renamed){
+                    if (!file.renamed) {
                         file_name = getDate() + '_' + file.name;
                     } else {
                         file_name = file.name;
@@ -1914,6 +1902,13 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     $rootScope.crop_on = false;
     //var wrapper_in_progress;
     this.openCrop = function(id) {
+        // If filtered image exists
+        if ($('#cropper_' + id + ' img.filter').length > 0) {
+            console.log('fltered already');
+            //$('#cropper_' + id + ' img.filter').remove();
+            $('#cropper_' + id + ' img.filter').css('display', 'none');
+            $('#cropper_' + id + ' img#image_' + id).css('display', 'unset');
+        }
 
         //[class*="filter"]::before {
         //$( "input[name^='news']" ).css('height', '');
@@ -2383,16 +2378,21 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         console.log('remove: ' + last_filter);
         //$('#a_filter_' + id).removeClass(last_filter);
         //$('#a_filter_' + id).addClass(filter);
+        $('.' + id).attr('id', 'image_' + id);
         console.log(last_filter.indexOf('cropper_cont'));
         if (last_filter.indexOf('cropper_cont') < 0) {
             //$('#cropper_' + id + ' img').removeClass(last_filter);
             $('#cropper_' + id).removeClass(last_filter);
+
         }
         //$('#cropper_' + id + ' img').addClass(filter);
         $('#cropper_' + id).addClass(filter);
+        $('#image_' + id).attr('filter-data', filter);
 
 
-        $('.' + id).attr('id', 'image_' + id);
+
+
+
         //"#image_" + image_id
         //var canvas = convertImageToCanvas(document.getElementById('image_' + id), id);
         //console.log(canvas);
@@ -2450,12 +2450,51 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                         console.log(blob);
                         blob.name = 'image_filtered_' + id + '.jpg';
                         blob.renamed = true;
-                        Format.prepareImage([blob], function(result) {
+                        //Format.prepareImage([blob], function(result) {
+                        Format.prepImage([blob], function(result) {
                             console.log(result);
 
-                            var img = document.createElement("img");
-                            img.src = 'fileuploads/images/' + result.file;
-                            $(img).insertBefore('#image_' + id);
+                            var img5 = document.createElement("img");
+                            img5.src = 'fileuploads/images/' + result.file;
+                            img5.className = 'filter';
+
+
+                            //$(img5).insertBefore('#image_' + id);
+
+                            img5.onload = function() {
+                                console.log('img5 loaded');
+                                // check if filtered image already exists
+                                //if ($('#cropper_' + id + ' .image_filt_div').length <= 0) {
+                                console.log($('#cropper_' + id + ' img.filter').length);
+                                if ($('#cropper_' + id + ' img.filter').length > 0) {
+                                    console.log('fltered already');
+                                    $('#cropper_' + id + ' img.filter').remove();
+                                }
+                                //var cssStyle = getComputedStyle($('#image_' + id));
+                                //this.style = document.getElementById('image_' + id).style;
+                                //console.log(this.style);
+                                //var image_style = document.getElementById('image_' + id);
+                                //var cssStyle = getComputedStyle(image_style);
+                                var cssStyle = $('#image_' + id).attr("style");
+                                console.log(cssStyle);
+                                $('#image_' + id).css('display', 'none');
+                                //$("#image_" + image_id).attr('crop-data', JSON.stringify(stored_data));
+                                //$(this).attr('filter-data', last_filter);
+
+                                $(this).attr("style", cssStyle);
+                                $(this).insertBefore('#image_' + id);
+
+
+                                // Save
+                                crop_finished = true;
+                                $('#image_' + id).closest('div.ce').focus();
+                                //console.log($('#' + e.target.id).closest('div.ce').find('.after_image'));
+                                //$('#' + card_id).focus();
+                                //console.log(document.activeElement);
+                                //document.activeElement.blur();
+                                $('#image_' + id).closest('div.ce').blur();
+
+                            };
                         });
 
                     });
@@ -2464,14 +2503,14 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
 
                     //Format.prepareImage([{ file: this.src, name: 'image_filtered_' + id }], function(result) {
-                     //   console.log(result);
+                    //   console.log(result);
                     //});
 
                     //Format.prepareImage([file], function(result) {
                     //profile.avatar = 'fileuploads/images/' + result.file;
 
                     //$(this).insertBefore('#image_' + id);
-                    $('#image_' + id).css('display', 'none');
+                    //$('#image_' + id).css('display', 'none');
 
                     //DUPE
                     var last_filter = $('#cropper_' + id).attr('class').split(' ').pop();
@@ -2485,6 +2524,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                     }
 
                 };
+
+
 
             };
 
@@ -3085,6 +3126,15 @@ var d = topData;
         getData();
         cropper.destroy();
         $rootScope.crop_on = false;
+
+        // Re-apply filter
+        // this.filterClick = function(e, button, id, filter)
+        var cur_filter = $("#image_" + image_id).attr('filter-data');
+        console.log(cur_filter);
+        if (cur_filter != undefined) {
+            filterClick('e', 'button', image_id, cur_filter);
+        }
+
         //crop_finished = true;
         //$('#hidden_input').focus();  
 
