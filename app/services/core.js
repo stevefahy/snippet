@@ -1532,6 +1532,8 @@ cardApp.service('FormatHTML', ['Format', 'General', function(Format, General) {
     };
 
     this.prepSentContent = function(content, length) {
+        console.log(content);
+        console.log(length);
         var string_count = length;
         var temp_content = Format.checkForImage(content);
         // Remove unwanted HTML
@@ -1910,16 +1912,16 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             //$('#image_' + id).css('display','inline');
             //console.log($('#image_' + id).css('display'));
             //var img_height = $('.' + id).height();
-            
+
             //$('#cropper_' + id + ' img.filter').remove();
             $('#cropper_' + id + ' img.filter').css('display', 'none');
             console.log($('#cropper_' + id + ' img.filter').css('display'));
             //$('#cropper_' + id + ' img#image_' + id).css('display', 'unset');
             //$('#cropper_' + id + ' img#image_' + id).css('display', 'inline');
 
-$('#image_' + id).css('display', 'inline');
-var img_height = $('#image_' + id).height();
-console.log($('#image_' + id).css('display'));
+            $('#image_' + id).css('display', 'inline');
+            var img_height = $('#image_' + id).height();
+            console.log($('#image_' + id).css('display'));
             console.log(img_height);
 
             // Get the filter and set it to cropper
@@ -2062,16 +2064,16 @@ console.log($('#image_' + id).css('display'));
             minContainerWidth: 100,
             minContainerHeight: 100,
 
-               ready: function() {
-        //generatePreview();
-        console.log('cropper loaded');
-        console.log(id);
-        console.log(filter);
+            ready: function() {
+                //generatePreview();
+                console.log('cropper loaded');
+                console.log(id);
+                console.log(filter);
                 //$('#cropper_' + id + ' .cropper-container').addClass(filter);
                 $('#cropper_' + id + ' .cropper-canvas').addClass(filter);
-               //$('.cropper-canvas').addClass(filter);
+                //$('.cropper-canvas').addClass(filter);
                 $('#cropper_' + id + ' .cropper-view-box').addClass(filter);
-    }
+            }
             //autoCrop: true
         };
 
@@ -2100,7 +2102,7 @@ console.log($('#image_' + id).css('display'));
             options.data = JSON.parse(stored);
 
             //id = 'image_' + id;
-            image = document.getElementById('image_' +id);
+            image = document.getElementById('image_' + id);
             console.log(image);
 
 
@@ -2115,7 +2117,7 @@ console.log($('#image_' + id).css('display'));
                     console.log(event.detail.rotate);
                     console.log(event.detail.scaleX);
                     console.log(event.detail.scaleY);
-                    
+
                 },
 
             });
@@ -2422,11 +2424,13 @@ console.log($('#image_' + id).css('display'));
         //$('#a_filter_' + id).addClass(filter);
         $('.' + id).attr('id', 'image_' + id);
         console.log(last_filter.indexOf('cropper_cont'));
+        /*
         if (last_filter.indexOf('cropper_cont') < 0) {
             //$('#cropper_' + id + ' img').removeClass(last_filter);
             $('#cropper_' + id).removeClass(last_filter);
 
         }
+        */
         //$('#cropper_' + id + ' img').addClass(filter);
         //$('#cropper_' + id).addClass(filter);
         $('#image_' + id).attr('filter-data', filter);
@@ -2444,6 +2448,8 @@ console.log($('#image_' + id).css('display'));
 
 
         // Canvas method
+        console.log('image_' + id);
+        console.log('image_1536954243853_abstract_2_00-wallpaper-1920x1080');
         convertImageToCanvas(document.getElementById('image_' + id), document.getElementById('image_1536954243853_abstract_2_00-wallpaper-1920x1080'), id).then(function(canvas) {
             console.log(canvas);
             var dataUrl = canvas.toDataURL();
@@ -2454,7 +2460,7 @@ console.log($('#image_' + id).css('display'));
             var cropper = document.getElementById('cropper_' + id);
             $('#cropper_' + id).addClass(filter);
             var cssFilter = getComputedStyle(cropper).filter;
-            $('#cropper_' + id).removeClass(filter);
+            //$('#cropper_' + id).removeClass(filter);
             console.log(cssFilter);
 
             img.onload = function() {
@@ -2483,12 +2489,7 @@ console.log($('#image_' + id).css('display'));
                 //$(img).appendTo('#stevee');
                 img4.onload = function() {
 
-                    /*
-                                        var contentType = 'image/jpg';
-                                        var b64Data = this.src;
-                                        var blob = b64toBlob(b64Data, contentType);
-                                        console.log(blob);
-                                        */
+                
 
                     Format.dataURItoBlob(this.src).then(function(blob) {
                         console.log(blob);
@@ -2543,20 +2544,27 @@ console.log($('#image_' + id).css('display'));
 
                                 $(this).insertBefore('#image_' + id);
 
+                                //if (last_filter.indexOf('cropper_cont') < 0) {
+                                    //$('#cropper_' + id + ' img').removeClass(last_filter);
+                                    $('#cropper_' + id).removeClass(filter);
 
+                                //}
+
+                                
                                 // Save
                                 crop_finished = true;
-                                $('#image_' + id).closest('div.ce').focus();
+                                //$('#image_' + id).closest('div.ce').focus();
                                 //console.log($('#' + e.target.id).closest('div.ce').find('.after_image'));
                                 //$('#' + card_id).focus();
                                 //console.log(document.activeElement);
                                 //document.activeElement.blur();
-                                $('#image_' + id).closest('div.ce').blur();
-
+                                //$('#image_' + id).closest('div.ce').blur();
+                                
                             };
                         });
 
                     });
+
 
 
 
@@ -2572,6 +2580,7 @@ console.log($('#image_' + id).css('display'));
                     //$('#image_' + id).css('display', 'none');
 
                     //DUPE
+                    /*
                     var last_filter = $('#cropper_' + id).attr('class').split(' ').pop();
                     //console.log('remove: ' + last_filter);
                     //$('#a_filter_' + id).removeClass(last_filter);
@@ -2581,6 +2590,8 @@ console.log($('#image_' + id).css('display'));
                         //$('#cropper_' + id + ' img').removeClass(last_filter);
                         $('#cropper_' + id).removeClass(last_filter);
                     }
+                    */
+                    
 
                 };
 
@@ -2594,13 +2605,15 @@ console.log($('#image_' + id).css('display'));
         });
 
 
+
         //document.getElementById('cropper_' + id).appendChild(canvas);
         //$(canvas).insertBefore('#cropper_' + id);
         //$('.filters_div').clone().insertBefore('.' + id);
         //document.getElementById('cropper_' + id).insertBefore('cropper_' + id);
 
-
-        e.stopPropagation();
+        if (button != 'button') {
+            e.stopPropagation();
+        }
     };
 
     this.filterImage = function(e, id) {
@@ -3026,6 +3039,22 @@ var d = topData;
 
 
 
+
+        var cur_filter = $("#image_" + image_id).attr('filter-data');
+        console.log(cur_filter);
+
+
+
+        //$timeout(function() {
+        console.log(cur_filter);
+        if (cur_filter != undefined) {
+            // Temporarily apply filter to crop
+            $("#cropper_" + image_id).addClass(cur_filter);
+           filterClick('e', 'button', image_id, cur_filter);
+        }
+        // },1000);
+
+
         getData = function() {
             console.log('data');
 
@@ -3041,8 +3070,7 @@ var d = topData;
             $("#image_" + image_id).attr('image-data', JSON.stringify(stored_image_data));
 
 
-            var cur_filter = $("#image_" + image_id).attr('filter-data');
-            console.log(cur_filter);
+
 
             var gcd = cropper.getCanvasData();
             var gd = cropper.getData();
@@ -3188,12 +3216,7 @@ var d = topData;
             $('#' + card).attr('contenteditable', 'true');
             closeEdit(event, image_id);
 
-$timeout(function() {
-            console.log(cur_filter);
-                    if (cur_filter != undefined) {
-            filterClick('e', 'button', image_id, cur_filter);
-        }
-    },0);
+
 
 
         };
@@ -3206,7 +3229,7 @@ $timeout(function() {
         //var cur_filter = $("#image_" + image_id).attr('filter-data');
         //console.log(cur_filter);
         //if (cur_filter != undefined) {
-         //   filterClick('e', 'button', image_id, cur_filter);
+        //   filterClick('e', 'button', image_id, cur_filter);
         //}
 
         //crop_finished = true;
@@ -3225,14 +3248,14 @@ $timeout(function() {
             var active_el = document.activeElement;
             console.log(active_el);
             //$('#hidden_input').focus();
-            $('#' + card_id).focus();
+            //$('#' + card_id).focus();
             //$('#' + card_id).scrollIntoView();
 
             //$('.content_cnv').scrollTop();
             $('.content_cnv').scrollTop($('.content_cnv')[0].scrollHeight);
             //var scroll_latest = $('#' + card_id);
             //scrollIntoViewIfNeeded(scroll_latest, { duration: 200, offset: { bottom: 30 } });
-            document.activeElement.blur();
+            //document.activeElement.blur();
             //getcards();
             //console.log($scope.cards);
             //$rootScope.$broadcast('getCards', card_id);
@@ -3371,6 +3394,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
     this.updateCard = function(card_id, card, currentUser) {
         console.log('uc');
         console.log(currentUser);
+        console.log('updateinprogress: ' + updateinprogress);
         if (!updateinprogress) {
             updateinprogress = true;
             setTimeout(function() {
@@ -3405,48 +3429,54 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                         // Update the Conversation updateAt time.
                         Conversations.updateTime(card.conversationId)
                             .then(function(response) {
-                                var notification = self.setNotification(response.data, currentUser, card_content);
-                                notification_title = notification.title;
-                                notification_body = notification.body;
-                                sent_content = FormatHTML.prepSentContent(notification_body, sent_content_length);
-                                // Send notifications
-                                for (var i in response.data.participants) {
-                                    // dont emit to the user which sent the card
-                                    if (response.data.participants[i]._id !== currentUser._id) {
-                                        // Add this users id to the viewed_users array.
-                                        viewed_users.push({ "_id": response.data.participants[i]._id });
-                                        // Find the other user(s)
-                                        General.findUser(response.data.participants[i]._id, function(result) {
-                                            // Get the participants notification key
-                                            // Set the message title and body
-                                            if (result.notification_key !== undefined) {
-                                                // Send the notification
-                                                var dataObj = new createData(result.notification_key, notification_title, sent_content, response.data._id);
-                                                var optionsObj = new createOptions(headersObj.headers, dataObj.data);
-                                                Users.send_notification(optionsObj.options)
-                                                    .then(function(res) {
-                                                        //console.log(res);
-                                                    });
-                                            }
-                                        });
+                                console.log(response);
+                                // Only send notifications if there are other participants.
+                                if (response.data.participants.length > 1) {
+                                    var notification = self.setNotification(response.data, currentUser, card_content);
+                                    console.log(notification);
+                                    notification_title = notification.title;
+                                    notification_body = notification.body;
+                                    sent_content = FormatHTML.prepSentContent(notification_body, sent_content_length);
+                                    // Send notifications
+                                    for (var i in response.data.participants) {
+                                        // dont emit to the user which sent the card
+                                        if (response.data.participants[i]._id !== currentUser._id) {
+                                            // Add this users id to the viewed_users array.
+                                            viewed_users.push({ "_id": response.data.participants[i]._id });
+                                            // Find the other user(s)
+                                            General.findUser(response.data.participants[i]._id, function(result) {
+                                                // Get the participants notification key
+                                                // Set the message title and body
+                                                if (result.notification_key !== undefined) {
+                                                    // Send the notification
+                                                    var dataObj = new createData(result.notification_key, notification_title, sent_content, response.data._id);
+                                                    var optionsObj = new createOptions(headersObj.headers, dataObj.data);
+                                                    Users.send_notification(optionsObj.options)
+                                                        .then(function(res) {
+                                                            //console.log(res);
+                                                        });
+                                                }
+                                            });
+                                        }
                                     }
+                                    // Update the unviewed arrary for all participants.
+                                    for (var x = 0; x < viewed_users.length; x++) {
+                                        promises.push(
+                                            Conversations.updateViewed(card.conversationId, viewed_users[x]._id, card_id)
+                                            .then(function(res) {
+                                                //console.log(res);
+                                            })
+                                        );
+                                    }
+                                    // All Conversation participants unviewed arrays updated
+                                    $q.all(promises).then(function() {
+                                        // update other paticipants in the conversation via socket.
+                                        socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: card.conversationId, participants: viewed_users });
+                                        updateinprogress = false;
+                                    });
                                 }
-                                // Update the unviewed arrary for all participants.
-                                for (var x = 0; x < viewed_users.length; x++) {
-                                    promises.push(
-                                        Conversations.updateViewed(card.conversationId, viewed_users[x]._id, card_id)
-                                        .then(function(res) {
-                                            //console.log(res);
-                                        })
-                                    );
-                                }
-                                // All Conversation participants unviewed arrays updated
-                                $q.all(promises).then(function() {
-                                    // update other paticipants in the conversation via socket.
-                                    socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: card.conversationId, participants: viewed_users });
-                                    updateinprogress = false;
-                                });
                             });
+
                     })
                     .catch(function(error) {
                         console.log('error: ' + error);
@@ -3482,48 +3512,52 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 // Update the Conversation updateAt time.
                 Conversations.updateTime(current_conversation_id)
                     .then(function(response) {
-                        var notification = self.setNotification(response.data, currentUser, card_content);
-                        notification_title = notification.title;
-                        notification_body = notification.body;
-                        sent_content = FormatHTML.prepSentContent(notification_body, sent_content_length);
-                        // Send notifications
-                        for (var i in response.data.participants) {
-                            // dont emit to the user which sent the card
-                            if (response.data.participants[i]._id !== currentUser._id) {
-                                // Add this users id to the viewed_users array.
-                                viewed_users.push({ "_id": response.data.participants[i]._id });
-                                // Find the other user(s)
-                                promises.push(UserData.getConversationsUser(response.data.participants[i]._id)
-                                    .then(function(result) {
-                                        // Get the participants notification key
-                                        // Set the message title and body
-                                        if (result.notification_key !== undefined) {
-                                            var dataObj = new createData(result.notification_key, notification_title, sent_content, response.data._id);
-                                            var optionsObj = new createOptions(headersObj.headers, dataObj.data);
-                                            // Send the notification
-                                            Users.send_notification(optionsObj.options)
-                                                .then(function(res) {
-                                                    //console.log(res);
-                                                });
-                                        }
-                                    }));
+                        // Only send notifications if there are other participants.
+                        if (response.data.participants.length > 1) {
+                            var notification = self.setNotification(response.data, currentUser, card_content);
+                            console.log(notification);
+                            notification_title = notification.title;
+                            notification_body = notification.body;
+                            sent_content = FormatHTML.prepSentContent(notification_body, sent_content_length);
+                            // Send notifications
+                            for (var i in response.data.participants) {
+                                // dont emit to the user which sent the card
+                                if (response.data.participants[i]._id !== currentUser._id) {
+                                    // Add this users id to the viewed_users array.
+                                    viewed_users.push({ "_id": response.data.participants[i]._id });
+                                    // Find the other user(s)
+                                    promises.push(UserData.getConversationsUser(response.data.participants[i]._id)
+                                        .then(function(result) {
+                                            // Get the participants notification key
+                                            // Set the message title and body
+                                            if (result.notification_key !== undefined) {
+                                                var dataObj = new createData(result.notification_key, notification_title, sent_content, response.data._id);
+                                                var optionsObj = new createOptions(headersObj.headers, dataObj.data);
+                                                // Send the notification
+                                                Users.send_notification(optionsObj.options)
+                                                    .then(function(res) {
+                                                        //console.log(res);
+                                                    });
+                                            }
+                                        }));
+                                }
                             }
+                            // Update the unviewed array for all participants.
+                            for (var x = 0; x < viewed_users.length; x++) {
+                                promises.push(
+                                    Conversations.updateViewed(current_conversation_id, viewed_users[x]._id, card_id)
+                                    .then(function(res) {
+                                        //console.log(res);
+                                    })
+                                );
+                            }
+                            // All Conversation participants unviewed arrays updated
+                            $q.all(promises).then(function() {
+                                //console.log('all promises - emit card_posted');
+                                // update other paticipants in the conversation via socket.
+                                socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: current_conversation_id, participants: viewed_users });
+                            });
                         }
-                        // Update the unviewed array for all participants.
-                        for (var x = 0; x < viewed_users.length; x++) {
-                            promises.push(
-                                Conversations.updateViewed(current_conversation_id, viewed_users[x]._id, card_id)
-                                .then(function(res) {
-                                    //console.log(res);
-                                })
-                            );
-                        }
-                        // All Conversation participants unviewed arrays updated
-                        $q.all(promises).then(function() {
-                            //console.log('all promises - emit card_posted');
-                            // update other paticipants in the conversation via socket.
-                            socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: current_conversation_id, participants: viewed_users });
-                        });
                     });
             });
     };
