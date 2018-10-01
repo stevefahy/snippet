@@ -3050,7 +3050,7 @@ var d = topData;
         if (cur_filter != undefined) {
             // Temporarily apply filter to crop
             //$("#cropper_" + image_id).addClass(cur_filter);
-           filterClick('e', 'button', image_id, cur_filter);
+           //filterClick('e', 'button', image_id, cur_filter);
         }
         // },1000);
 
