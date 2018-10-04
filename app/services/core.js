@@ -2256,22 +2256,39 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     */
 
     var filter_array = [{
-            filter_css_name: 'filter-original'
+            filter_css_name: 'filter-original',
+            filter_name: 'original',
         },
         {
-            filter_css_name: 'filter-1977'
+            filter_css_name: 'filter-1977',
+            filter_name: '1977'
         },
         {
-            filter_css_name: 'filter-aden'
+            filter_css_name: 'filter-aden',
+            filter_name: 'aden',
+            gradient: 'radial',
+            gradient_stops: [[242,240,232,1], [242,240,232,1]],
+            //gradient_stops: [[253,253,251,1]],
+            blend: 'multiply'
         },
         {
-            filter_css_name: 'filter-amaro'
+            filter_css_name: 'filter-amaro',
+            filter_name: 'amaro',
+            gradient: 'radial',
+            gradient_stops: [[229,225,209,1], [229,225,209,1]],
+            blend: 'overlay'
+
         },
         {
-            filter_css_name: 'filter-ashby'
+            filter_css_name: 'filter-ashby',
+            filter_name: 'ashby',
+            gradient: 'radial',
+            gradient_stops: [[210,203,174,1], [210,203,174,1]],
+            blend: 'lighten'
         },
         {
-            filter_css_name: 'filter-brannan'
+            filter_css_name: 'filter-brannan',
+            filter_name: 'brannan'
         },
         {
             filter_css_name: 'filter-brooklyn'
@@ -2289,7 +2306,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             filter_css_name: 'filter-dogpatch'
         },
         {
-            filter_css_name: 'filter-esrlybird'
+            filter_css_name: 'filter-earlybird'
         },
         {
             filter_css_name: 'filter-gingham'
@@ -2313,7 +2330,13 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             filter_css_name: 'filter-juno'
         },
         {
-            filter_css_name: 'filter-kelvin'
+            filter_css_name: 'filter-kelvin',
+            filter_name: 'kelvin',
+            gradient: 'radial',
+            //gradient_stops: [[128,78,15,0.25], [128,78,15,0.5]],
+            //gradient_stops: [[223,211,195,1],[192,167,135,1]],
+            gradient_stops: [[223,211,195,1],[221,129,11,1]],
+            blend: 'overlay'
         },
         {
             filter_css_name: 'filter-lark'
@@ -2379,7 +2402,10 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             filter_css_name: 'filter-willow'
         },
         {
-            filter_css_name: 'filter-xpro-ii'
+            filter_css_name: 'filter-xpro-ii',
+            gradient: 'radial',
+            gradient_stops: [[166,198,220,1],[89,89,89,1]],
+            blend: 'multiply'
         },
         {
             filter_css_name: 'filter-xpro-iii'
@@ -2448,9 +2474,10 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
 
         // Canvas method
-        console.log('image_' + id);
-        console.log('image_1536954243853_abstract_2_00-wallpaper-1920x1080');
-        convertImageToCanvas(document.getElementById('image_' + id), document.getElementById('image_1536954243853_abstract_2_00-wallpaper-1920x1080'), id).then(function(canvas) {
+        //console.log('image_' + id);
+        //console.log('image_1536954243853_abstract_2_00-wallpaper-1920x1080');
+        //convertImageToCanvas(document.getElementById('image_' + id), document.getElementById('image_1536954243853_abstract_2_00-wallpaper-1920x1080'), id).then(function(canvas) {
+        convertImageToCanvas(document.getElementById('image_' + id), filter, id).then(function(canvas) {
             console.log(canvas);
             var dataUrl = canvas.toDataURL();
             var img = document.createElement('img');
@@ -2489,7 +2516,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 //$(img).appendTo('#stevee');
                 img4.onload = function() {
 
-                
+
 
                     Format.dataURItoBlob(this.src).then(function(blob) {
                         console.log(blob);
@@ -2500,7 +2527,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                             console.log(result);
 
                             var img5 = document.createElement("img");
-                            img5.src = 'fileuploads/images/' + result.file;
+                            img5.src = 'fileuploads/images/' + result.file + '?' + new Date();
                             img5.className = 'filter';
 
 
@@ -2545,12 +2572,12 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                                 $(this).insertBefore('#image_' + id);
 
                                 //if (last_filter.indexOf('cropper_cont') < 0) {
-                                    //$('#cropper_' + id + ' img').removeClass(last_filter);
-                                    $('#cropper_' + id).removeClass(filter);
+                                //$('#cropper_' + id + ' img').removeClass(last_filter);
+                                $('#cropper_' + id).removeClass(filter);
 
                                 //}
 
-                                
+
                                 // Save
                                 crop_finished = true;
                                 //$('#image_' + id).closest('div.ce').focus();
@@ -2559,7 +2586,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                                 //console.log(document.activeElement);
                                 //document.activeElement.blur();
                                 //$('#image_' + id).closest('div.ce').blur();
-                                
+
                             };
                         });
 
@@ -2591,7 +2618,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                         $('#cropper_' + id).removeClass(last_filter);
                     }
                     */
-                    
+
 
                 };
 
@@ -2631,6 +2658,13 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
             //$('#cropper_' + id).clone().appendTo('#cropper_' + id + ' .filters_div .filter_list');
             var temp = $('#cropper_' + id).clone();
+            // If there is a filtered image then remove it.
+            if ($('#cropper_' + id + ' .filter').length >= 0) {
+                
+            //$('.filter').remove($(temp));
+            temp.find('img.filter').remove();
+            temp.find('img').css('display', 'unset');
+        }
 
             temp.addClass('temp');
 
@@ -2682,11 +2716,19 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 //var current = $(temp).appendTo('#cropper_' + id + ' .filters_div .filter_list');
                 //$(current).css('min-width', '100px');
                 //var current = temp.clone().appendTo('#cropper_' + id + ' .filters_div .filters_container .filter_list');
-
-                var current = temp.clone().appendTo('#filters_' + id + ' .filters_container .filter_list');
+                var outer = document.createElement('div');
+                $(outer).appendTo('#filters_' + id + ' .filters_container .filter_list');
+                $(outer).addClass('filter_container');
+                //var current = temp.clone().appendTo('#filters_' + id + ' .filters_container .filter_list');
+                var current = temp.clone();
+                $(current).appendTo($(outer));
 
                 //$(current + '.filter_div').remove();
-
+                var title = document.createElement('div');
+                $(title).addClass('filter_title');
+                $(title).html(filter_array[i].filter_name);
+                //$(title).appendTo($(current));
+                $(title).appendTo($(outer));
 
 
                 //$(current + ' img').removeAttr('class');
@@ -2838,17 +2880,19 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     }
     */
 
-    function applyBlending(bottomImageData, topImageData, image, id) {
+    function applyBlending(bottomImageData, topImageData, image, id, type) {
         var deferred = $q.defer();
         var cropper = document.getElementById('cropper_' + id);
-        var cssFilter = getComputedStyle(cropper).filter;
-        console.log(cssFilter);
+        //var cssFilter = getComputedStyle(cropper).filter;
+        //console.log(cssFilter);
         // create the canvas
         var canvas = document.createElement('canvas');
         canvas.setAttribute('id', 'stevex');
         canvas.width = image.width;
         canvas.height = image.height;
         var ctx = canvas.getContext('2d');
+        ctx.globalAlpha=0.2;
+        ctx.globalCompositeOperation='source-over';
         //ctx.filter = "blur(10px) grayscale(100%)";
         //ctx.filter = 'blur(5px)';
         // get the pixel data as array
@@ -2871,15 +2915,81 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             topData[i + 2] = 1 - (1 - topData[i + 2]) * (1 - bottomData[i + 2]);
         }
         */
-        // multiply
 
-        for (var i = 0; i < topData.length; i += 4) {
-            topData[i] = topData[i] * (bottomData[i]) / 255;
-            topData[i + 1] = topData[i + 1] * (bottomData[i + 1]) / 255;
-            topData[i + 2] = topData[i + 2] * (bottomData[i + 2]) / 255;
-            //topData[i + 3] = 1 - ((1-topData[i + 3]) + (1-bottomData[i + 3]));
+
+        console.log(type);
+        // multiply
+        /*
+        multiply: function(a, b) {
+            return (a * b) / 255;
+        }
+        */
+        if (type == 'multiply') {
+            console.log('multiply!');
+            for (var i = 0; i < topData.length; i += 4) {
+
+
+                topData[i] = topData[i] * (bottomData[i]) / 255;
+                topData[i + 1] = topData[i + 1] * (bottomData[i + 1]) / 255;
+                topData[i + 2] = topData[i + 2] * (bottomData[i + 2]) / 255;
+
+                topData[i + 3] = topData[i + 3] * (bottomData[i + 3]) / 255;
+            }
+        }
+        // overlay
+        /*
+        overlay: function(a, b) {
+            return b < 128
+                ? (2 * a * b / 255)
+                : (255 - 2 * (255 - a) * (255 - b) / 255);
+        }
+        */
+        if (type == 'overlay') {
+            console.log('overlay!');
+            for (var i = 0; i < topData.length; i += 4) {
+
+                bottomData[i] /= 2;
+                bottomData[i+1] /= 2;
+                bottomData[i+2] /= 2;
+
+                topData[i] = topData[i] < 128 ? (2 * topData[i] * bottomData[i] / 255) : (255 - 2 * (255 - topData[i]) * (255 - bottomData[i]) / 255 );
+                topData[i+1] = topData[i+1] < 128 ? (2 * topData[i+1] * bottomData[i+1] / 255) : (255 - 2 * (255 - topData[i+1]) * (255 - bottomData[i+1]) / 255 );
+                topData[i+2] = topData[i+2] < 128 ? (2 * topData[i+2] * bottomData[i+2] / 255) : (255 - 2 * (255 - topData[i+2]) * (255 - bottomData[i+2]) / 255 );
+
+
+                //topData[i+3] = topData[i+3] < 128 ? (2 * topData[i+3] * bottomData[i+3] / 255) : (255 - 2 * (255 - topData[i+3]) * (255 - bottomData[i+3]) / 255 );
+
+                //topData[i+3] = bottomData[i+3] + topData[i+3] - bottomData[i+3] * topData[i+3];
+                //alpha = bottomData[i+3];
+            }
         }
 
+/*
+    lighten: function(a, b) {
+        return (b > a) ? b : a;
+    },
+    */
+        if (type == 'lighten') {
+            console.log('lighten!');
+            for (var i = 0; i < topData.length; i += 4) {
+
+                                bottomData[i] /= 4;
+                bottomData[i+1] /= 4;
+                bottomData[i+2] /= 4;
+
+
+                topData[i] =  (bottomData[i] > topData[i]) ? bottomData[i] : topData[i];
+                topData[i+1] =  (bottomData[i+1] > topData[i+1]) ? bottomData[i+1] : topData[i+1];
+                topData[i+2] =  (bottomData[i+2] > topData[i+2]) ? bottomData[i+2] : topData[i+2];
+                //topData[i+3] =  (bottomData[i+3] > topData[i+3]) ? bottomData[i+3] : topData[i+3];
+         /*
+                topData[i] =  (topData[i] > bottomData[i]) ? topData[i] : bottomData[i];
+                topData[i+1] =  (topData[i+1] > bottomData[i+1]) ? topData[i+1] : bottomData[i+1];
+                topData[i+2] =  (topData[i+2] > bottomData[i+2]) ? topData[i+2] : bottomData[i+2];
+           */
+            }
+        }
+//alpha_final = alpha_bg + alpha_fg - alpha_bg * alpha_fg
 
         // screen 
         //return 255 - (((255 - a) * (255 - b)) >> 8);
@@ -2955,60 +3065,192 @@ var d = topData;
 
     }
 
-    function convertImageToCanvas(image1, image2, id) {
+    function rgba2rgb(RGB_background, RGBA_color) {
+     /*
+        var alpha = 1 - RGBA_color[3];
+
+        var r = Math.round((1 - alpha) * RGB_background[0] + alpha * RGBA_color[0]);
+        var g = Math.round((1 - alpha) * RGB_background[1] + alpha * RGBA_color[1]);
+        var b = Math.round((1 - alpha) * RGB_background[2] + alpha * RGBA_color[2]);
+        */
+        var adjust = 0;
+            //var alpha = 1 - ((Number(RGBA_color[3]) - Number(adjust/100)));
+        var alpha = 1 - RGBA_color[3];
+            //alpha+=.10;
+            //alpha = 1;
+
+        var r = Math.round((1 - alpha) * RGB_background[0] + alpha * RGBA_color[0] +10);
+        var g = Math.round((1 - alpha) * RGB_background[1] + alpha * RGBA_color[1] +10);
+        var b = Math.round((1 - alpha) * RGB_background[2] + alpha * RGBA_color[2] +10);
+        
+
+        r+=adjust;
+        g+=adjust;
+        b+=adjust;
+        
+        
+        /*
+        r-=adjust;
+        g-=adjust;
+        b-=adjust;
+        */
+
+        return [r, g, b];
+    }
+
+
+
+
+    function getFilter(filter){
+        console.log(filter);
+        
+        var result = [];
+        var index = General.findWithAttr(filter_array, 'filter_css_name', filter);
+        console.log(index);
+        console.log(filter_array[index]);
+        if(index>=0){
+            result= filter_array[index];
+        } else {
+            result = -1;
+        }
+        return result;
+        //var index = General.arrayObjectIndexOfValue(UserData.getContacts(), key.email, 'google', 'email');
+        //var index = arrayObjectIndexOfValue(filter_array, filter, property, value);
+/*
+        filter_array
+          filter_css_name: 'filter-kelvin',
+            filter_bg: [[255,255,255], [0,0,0]],
+            filter_blend: 'overlay'
+            */
+
+
+
+    };
+
+    function getBackground(bg) {
+        console.log(bg);
+        var result = [];
+        // Radial gradient (two colors)
+        if (bg.indexOf('radial-gradient') >= 0) {
+            var grad = bg.indexOf('radial-gradient');
+            var grad_str = bg.substr(grad, bg.length);
+            console.log(grad_str);
+            var grad_rgb = grad_str.indexOf('rgba');
+            var grad_rgb_str = grad_str.substr(grad_rgb, grad_str.length);
+            console.log(grad_rgb_str);
+
+            var cols = grad_rgb_str.split('rgba').filter(function(el) { return el.length != 0 });;
+            console.log(cols);
+
+            for (var i in cols) {
+                var col_start = cols[i].indexOf('(');
+                var col_end = cols[i].indexOf(')');
+                var col = cols[i].substr(col_start + 1, col_end - 1);
+                RGBA_color = col.split(',');
+                console.log(RGBA_color);
+                RGB_background = [255, 255, 255];
+                var rgb = rgba2rgb(RGB_background, RGBA_color);
+                console.log(rgb);
+                result.push(rgb);
+
+            }
+            return result;
+            //var rbga_1 = bg
+        }
+    }
+
+    function convertImageToCanvas(image, filter, id) {
 
         var deferred = $q.defer();
-        console.log(image);
-        image = image1;
+        //console.log(image);
+        //image = image1;
 
-        var canvas2 = document.createElement('canvas');
+        // Create filter gradient image.
+        //var canvas2 = createGradient(filter);
+        var cropper = document.getElementById('cropper_' + id);
+        $('#cropper_' + id).addClass(filter);
+        //var cssFilter = getComputedStyle(cropper).filter;
+        var cssFilterBg = getComputedStyle(cropper, ':before').background;
+        var cssFilterBlend = getComputedStyle(cropper, ':before').mixBlendMode;
+        // mix-blend-mode
+        // var a = window.getComputedStyle(document.querySelector('#one'), ':before');
+        $('#cropper_' + id).removeClass(filter);
+        console.log(cssFilterBg);
+        console.log(cssFilterBlend);
+
+        //if(cssFilterBg)
+        //var bg_rgb = getBackground(cssFilterBg);
+        var filter_data = getFilter(filter);
+        console.log(filter_data);
+
+
+
+
+        var topImage = image;
+        var topCanvas = document.createElement("canvas");
+        topCanvas.width = image.width;
+        topCanvas.height = image.height;
+        var topCtx = topCanvas.getContext('2d');
+        topCtx.drawImage(topImage, 0, 0, image.width, image.height);
+
+        if(filter_data.blend != undefined){
+console.log('BLEND');
+                   var canvas2 = document.createElement('canvas');
 
         canvas2.width = image.width;
         canvas2.height = image.height;
         var ctx2 = canvas2.getContext('2d');
-        ctx2.globalAlpha = .5;
-        var grd = ctx2.createRadialGradient((image.width / 2), (image.height / 2), (image.width / 100), (image.width / 2), (image.height / 2), (image.width));
-        //grd.addColorStop(0, "rgba(0,91,154, 0.35)");
-        grd.addColorStop(0, "rgba(183,209,226, 1)");
-        //grd.addColorStop(0, "rgba(255,255,255, 1)");
-        grd.addColorStop(1, "rgba(0,0,0, 1)");
+
+        if (filter_data.gradient == 'radial') {
+            // radial gradient
+            var grd = ctx2.createRadialGradient((image.width / 2), (image.height / 2), (image.width / 200), (image.width / 2), (image.height / 2), image.width);
+            console.log(filter_data.gradient_stops[0]);
+            console.log(filter_data.gradient_stops[1]);
+            grd.addColorStop(0, "rgba(" + filter_data.gradient_stops[0][0] + "," + filter_data.gradient_stops[0][1] + "," + filter_data.gradient_stops[0][2] + "," + filter_data.gradient_stops[0][3] + ")");
+            grd.addColorStop(1, "rgba(" + filter_data.gradient_stops[1][0] + "," + filter_data.gradient_stops[1][1] + "," + filter_data.gradient_stops[1][2] + "," + filter_data.gradient_stops[1][3] + ")");
+            // Fill with gradient
+            ctx2.fillStyle = grd;
+            ctx2.fillRect(0, 0, image.width, image.height);
+        }
+
+        if (filter_data.gradient == 'solid') {
+
+            // Fill with colour
+             ctx2.fillStyle = 'rgba(125,105,24,0.1)';
+            //ctx2.fillStyle =  "'rgba(" + filter_data.gradient_stops[0][0] + "," + filter_data.gradient_stops[0][1] + "," + filter_data.gradient_stops[0][2] + "," + filter_data.gradient_stops[0][3] + ")'";
+            ctx2.fillRect(0, 0, image.width, image.height);
+        }
+
+
+/*
+        var grd = ctx2.createRadialGradient((image.width / 2), (image.height / 2), (image.width / 100), (image.width / 2), (image.height / 2), image.width);
+        grd.addColorStop(0, "rgb(166,198,220)");
+        grd.addColorStop(1, "rgb(89,89,89)");
         // Fill with gradient
         ctx2.fillStyle = grd;
         ctx2.fillRect(0, 0, image.width, image.height);
-        //var imgData = ctx2.getImageData(0, 0, image.width, image.height);
-        //console.log(imgData);
+*/
 
-
-        topImage = image1;
+        //topImage = image;
         bottomImage = canvas2;
         //var photo = new Image();
         //var image = image;
         //var canvas = document.getElementById('canvas');
         var bottomCanvas = document.createElement("canvas");
-        var topCanvas = document.createElement("canvas");
+        //var topCanvas = document.createElement("canvas");
         bottomCanvas.width = image.width;
         bottomCanvas.height = image.height;
-        topCanvas.width = image.width;
-        topCanvas.height = image.height;
+        //topCanvas.width = image.width;
+        //topCanvas.height = image.height;
 
         // get the 2d context to draw
         var bottomCtx = bottomCanvas.getContext('2d');
-        var topCtx = topCanvas.getContext('2d');
-
-        /*
-        bottomCtx.globalAlpha = 1;
-        var grd = bottomCtx.createRadialGradient((image.width / 2), (image.height / 2), (image.width / 20), (image.width / 2), (image.height / 2), (image.width / 3));
-        grd.addColorStop(0, "rgba(0,91,154, 0.35)");
-        grd.addColorStop(1, "rgba(0,0,0, 0.65)");
-        // Fill with gradient
-        bottomCtx.fillStyle = grd;
-        bottomCtx.fillRect(0, 0, image.width, image.height);
-        */
+        //var topCtx = topCanvas.getContext('2d');
 
         // draw the image to top and bottom canvas, from the position x, y (0, 0) and
         // with the size 500, 500 pixels
         bottomCtx.drawImage(bottomImage, 0, 0, image.width, image.height);
-        topCtx.drawImage(topImage, 0, 0, image.width, image.height);
+        //topCtx.drawImage(topImage, 0, 0, image.width, image.height);
 
         // get the pixel data of the 2 canvas, from the position x, y (0, 0) and
         // with the size 500, 500 pixels
@@ -3016,45 +3258,33 @@ var d = topData;
         var topImageData = topCtx.getImageData(0, 0, image.width, image.height);
 
         // apply blending, will be discussed in the next section
-
-        applyBlending(bottomImageData, topImageData, image, id).then(function(result) {
-            console.log(result);
-
-
+        //cssFilterBlend = 'multiply';
+        applyBlending(bottomImageData, topImageData, image, id, cssFilterBlend).then(function(result) {
             deferred.resolve(result);
-            //deferred.resolve(canvas);
         });
 
-        //deferred.resolve(bottomCanvas);
+    } else {
+        //topCtx.drawImage(topImage, 0, 0, image.width, image.height);
+        deferred.resolve(topCanvas);
+    }
 
         return deferred.promise;
-
-
-
+    
     }
 
 
     this.setCrop = function(image_id) {
         console.log('setCrop: ' + image_id);
-
-
-
-
         var cur_filter = $("#image_" + image_id).attr('filter-data');
         console.log(cur_filter);
-
-
-
         //$timeout(function() {
         console.log(cur_filter);
         if (cur_filter != undefined) {
             // Temporarily apply filter to crop
-            //$("#cropper_" + image_id).addClass(cur_filter);
-           //filterClick('e', 'button', image_id, cur_filter);
+            $("#cropper_" + image_id).addClass(cur_filter);
+            filterClick('e', 'button', image_id, cur_filter);
         }
         // },1000);
-
-
         getData = function() {
             console.log('data');
 
