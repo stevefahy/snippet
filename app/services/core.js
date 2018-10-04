@@ -548,6 +548,19 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         }
     };
 
+    this.removeTempFiltered = function(content) {
+        var content_less_pre;
+        if (content !== undefined) {
+            var reg_pre = /(<img src="data:image.*?>)(.*?)(>)/ig;
+            content_less_pre = content;
+            var pre_match = content_less_pre.match(reg_pre);
+            for (var v in pre_match) {
+                content_less_pre = content_less_pre.replace(pre_match[v], '');
+            }
+        }
+        return content_less_pre;
+    };
+
     this.removePreTag = function(content) {
         var content_less_pre;
         if (content !== undefined) {
@@ -929,6 +942,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         } else {
             content_to_match = content;
         }
+        // Ignore Canvas Images (which may contain chars from markey_array).
+        content_less_temp = self.removeTempFiltered(content);
+        content_to_match = content_less_temp;
+        
+
         for (var ma = 0; ma < marky_array.length; ma++) {
             var mark_list_current;
             var reg2_str = "(" + marky_array[ma].charstring + ")";
@@ -2400,12 +2418,15 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 var img4 = document.createElement('img');
                 img4.setAttribute('src', dataUrl);
                 img4.setAttribute('id', 'temp_image_filtered_' + id);
-                img4.setAttribute('class', 'resize-drag');
+                img4.setAttribute('class', 'resize-drag temp_image_filtered');
 
                 img4.onload = function() {
                     //$('#image_' + id).css('display', 'none');
-                    $('#cropper_' + id + ' #temp_image_filtered_' + id).remove();
-                    $('#cropper_' + id + ' .filter').css('display', 'none');
+                    if($('#cropper_' + id + ' #temp_image_filtered_' + id).length >= 0){
+                        $('#cropper_' + id + ' #temp_image_filtered_' + id).remove();
+                    }
+                    //$('#cropper_' + id + ' .filter').css('display', 'none');
+                    $('#cropper_' + id + ' #image_' + id).css('display', 'none');
                     $(this).insertBefore('#image_' + id);
                 };
                 /*
@@ -2460,6 +2481,10 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             if ($('#cropper_' + id + ' .filter').length >= 0) {
                 temp.find('img.filter').remove();
                 temp.find('img').css('display', 'unset');
+            }
+            // If there are temp_image_filtered then remove.
+            if ($('#cropper_' + id + ' .temp_image_filtered').length >= 0) {
+                temp.find('img.temp_image_filtered').remove();
             }
             temp.addClass('temp');
             temp.find('.filter_div img').unwrap();
@@ -3016,6 +3041,8 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
             setTimeout(function() {
                 card.content = Format.setMediaSize(card_id, card);
                 card.content = replaceTags.replace(card.content);
+                // Remove any temp filtered images
+                card.content = Format.removeTempFiltered(card.content);
                 var pms = { 'id': card_id, 'card': card };
                 // call the update function from our service (returns a promise object)
                 Cards.update(pms)
@@ -3046,6 +3073,8 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 // DANGER These had been removed for android image save bug
                 card.content = replaceTags.removeDeleteId(card.content);
                 card.content = replaceTags.removeFocusIds(card.content);
+                // Remove any temp filtered images
+                card.content = Format.removeTempFiltered(card.content);
                 //
                 console.log('update card');
                 //Cropp.destroyCrop();
@@ -3139,6 +3168,8 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         card_create.content = Format.removeDeleteIds();
         card_create.content = replaceTags.removeDeleteId(card_create.content);
         card_create.content = replaceTags.removeFocusIds(card_create.content);
+        // Remove any temp filtered images
+        card_create.content = Format.removeTempFiltered(card_create.content);
         var sent_content;
         var notification_title;
         var notification_body;
