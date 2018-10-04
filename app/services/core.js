@@ -2399,9 +2399,16 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 var dataUrl = canvas3.toDataURL();
                 var img4 = document.createElement('img');
                 img4.setAttribute('src', dataUrl);
-                img4.setAttribute('id', 'image_filtered_' + id);
+                img4.setAttribute('id', 'temp_image_filtered_' + id);
                 img4.setAttribute('class', 'resize-drag');
 
+                img4.onload = function() {
+                    //$('#image_' + id).css('display', 'none');
+                    $('#cropper_' + id + ' #temp_image_filtered_' + id).remove();
+                    $('#cropper_' + id + ' .filter').css('display', 'none');
+                    $(this).insertBefore('#image_' + id);
+                };
+                /*
                 img4.onload = function() {
                     Format.dataURItoBlob(this.src).then(function(blob) {
                         blob.name = 'image_filtered_' + id + '.jpg';
@@ -2435,6 +2442,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                         });
                     });
                 };
+                */
             };
         });
         if (button != 'button') {

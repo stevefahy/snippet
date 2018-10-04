@@ -984,17 +984,16 @@ module.exports = function(app, passport) {
     app.put('/chat/conversation_time/:id', isLoggedIn, function(req, res) {
         Conversation.findById({ _id: req.params.id }, function(err, conversation) {
             if (err) {
-                console.log('err: ' + err);
+                //console.log('err: ' + err);
                 res.send(err);
             }
             var new_conversation = new Conversation(conversation);
             new_conversation.updatedAt = new Date().toISOString();
             new_conversation.save(function(err, conversation) {
                 if (err) {
-                    console.log('err: ' + err);
+                    //console.log('err: ' + err);
                     res.send(err);
                 } else {
-                    console.log(conversation);
                     res.json(conversation);
                 }
             });
