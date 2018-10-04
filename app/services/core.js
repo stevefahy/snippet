@@ -335,10 +335,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             // convert base64/URLEncoded data component to raw binary data held in a string
             var byteString;
             if (dataURI.split(',')[0].indexOf('base64') >= 0) {
-                console.log('1');
                 byteString = atob(dataURI.split(',')[1]);
             } else {
-                console.log('2');
                 byteString = unescape(dataURI.split(',')[1]);
             }
             //console.log(byteString);
@@ -448,12 +446,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.prepImage = function(files, callback) {
-        console.log('prepImage');
-        console.log(files);
         var promises = [];
         self.formData = new FormData();
         angular.forEach(files, function(file, key) {
-            console.log(file);
             promises.push(
                 self.formData.append('uploads[]', file, file.name)
             );
@@ -2175,85 +2170,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     };
 
 
-    // Array to dynamically set marky chars to html tags
-    /*
-    var filter_array = [{
-        filter_css_name: 'ig-original'
-    },
-    {
-        filter_css_name: 'ig-xpro2'
-    },
-    {
-        filter_css_name: 'ig-xpro2a'
-    },
-    {
-        filter_css_name: 'ig-willow'
-    },
-    {
-        filter_css_name: 'ig-walden'
-    },
-    {
-        filter_css_name: 'ig-valencia'
-    },
-    {
-        filter_css_name: 'ig-toaster'
-    },
-    {
-        filter_css_name: 'ig-sutro'
-    },
-    {
-        filter_css_name: 'ig-sierra'
-    },
-    {
-        filter_css_name: 'ig-rise'
-    },
-    {
-        filter_css_name: 'ig-nashville'
-    },
-    {
-        filter_css_name: 'ig-mayfair'
-    },
-    {
-        filter_css_name: 'ig-lofi'
-    },
-    {
-        filter_css_name: 'ig-kelvin'
-    },
-    {
-        filter_css_name: 'ig-inkwell'
-    },
-    {
-        filter_css_name: 'ig-hudson'
-    },
-    {
-        filter_css_name: 'ig-hefe'
-    },
-    {
-        filter_css_name: 'ig-earlybird'
-    },
-    {
-        filter_css_name: 'ig-brannan'
-    },
-    {
-        filter_css_name: 'ig-amaro'
-    },
-    {
-        filter_css_name: 'ig-1977'
-    },
-    {
-        filter_css_name: 'ig-hard-light'
-    },
-    {
-        filter_css_name: 'ig-difference'
-    },
-    {
-        filter_css_name: 'ig-luminosity'
-    },
-    {
-        filter_css_name: 'ig-invert'
-    }
-    ];
-    */
+
 
     var filter_array = [{
             filter_css_name: 'filter-original',
@@ -2261,13 +2178,18 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         },
         {
             filter_css_name: 'filter-1977',
-            filter_name: '1977'
+            filter_name: '1977',
+            filter: 'sepia(.5) hue-rotate(-30deg) saturate(1.4)'
         },
         {
             filter_css_name: 'filter-aden',
             filter_name: 'aden',
             gradient: 'radial',
-            gradient_stops: [[242,240,232,1], [242,240,232,1]],
+            gradient_stops: [
+                [242, 240, 232, 1],
+                [242, 240, 232, 1]
+            ],
+            filter: 'sepia(.2) brightness(1.15) saturate(1.4)',
             //gradient_stops: [[253,253,251,1]],
             blend: 'multiply'
         },
@@ -2275,7 +2197,11 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             filter_css_name: 'filter-amaro',
             filter_name: 'amaro',
             gradient: 'radial',
-            gradient_stops: [[229,225,209,1], [229,225,209,1]],
+            gradient_stops: [
+                [229, 225, 209, 1],
+                [229, 225, 209, 1]
+            ],
+            filter: 'sepia(.35) contrast(1.1) brightness(1.2) saturate(1.3)',
             blend: 'overlay'
 
         },
@@ -2283,7 +2209,11 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             filter_css_name: 'filter-ashby',
             filter_name: 'ashby',
             gradient: 'radial',
-            gradient_stops: [[210,203,174,1], [210,203,174,1]],
+            gradient_stops: [
+                [210, 203, 174, 1],
+                [210, 203, 174, 1]
+            ],
+            filter: 'sepia(.5) contrast(1.2) saturate(1.8)',
             blend: 'lighten'
         },
         {
@@ -2335,7 +2265,11 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             gradient: 'radial',
             //gradient_stops: [[128,78,15,0.25], [128,78,15,0.5]],
             //gradient_stops: [[223,211,195,1],[192,167,135,1]],
-            gradient_stops: [[223,211,195,1],[221,129,11,1]],
+            gradient_stops: [
+                [223, 211, 195, 1],
+                [221, 129, 11, 1]
+            ],
+            filter: 'sepia(0.15) contrast(1.5) brightness(1.1) hue-rotate(-10deg)',
             blend: 'overlay'
         },
         {
@@ -2404,7 +2338,10 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         {
             filter_css_name: 'filter-xpro-ii',
             gradient: 'radial',
-            gradient_stops: [[166,198,220,1],[89,89,89,1]],
+            gradient_stops: [
+                [166, 198, 220, 1],
+                [89, 89, 89, 1]
+            ],
             blend: 'multiply'
         },
         {
@@ -2437,71 +2374,26 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     }
 
     this.filterClick = function(e, button, id, filter) {
-        console.log('filterClick');
-        console.log($(button));
-        console.log(id);
-        console.log(filter);
 
-        //var last_filter = $('#a_filter_' + id).attr('class').split(' ')[1];
-        //var last_filter = $('#cropper_' + id + ' img').attr('class').split(' ').pop();
-        var last_filter = $('#cropper_' + id).attr('class').split(' ').pop();
-        console.log('remove: ' + last_filter);
-        //$('#a_filter_' + id).removeClass(last_filter);
-        //$('#a_filter_' + id).addClass(filter);
         $('.' + id).attr('id', 'image_' + id);
-        console.log(last_filter.indexOf('cropper_cont'));
-        /*
-        if (last_filter.indexOf('cropper_cont') < 0) {
-            //$('#cropper_' + id + ' img').removeClass(last_filter);
-            $('#cropper_' + id).removeClass(last_filter);
-
-        }
-        */
-        //$('#cropper_' + id + ' img').addClass(filter);
-        //$('#cropper_' + id).addClass(filter);
         $('#image_' + id).attr('filter-data', filter);
 
-
-
-
-
-        //"#image_" + image_id
-        //var canvas = convertImageToCanvas(document.getElementById('image_' + id), id);
-        //console.log(canvas);
-        //image_1536954243853_abstract_2_00-wallpaper-1920x1080
-        //convertImageToCanvas(document.getElementById('image_' + id), id).then(function(canvas) {
-
-
-
-        // Canvas method
-        //console.log('image_' + id);
-        //console.log('image_1536954243853_abstract_2_00-wallpaper-1920x1080');
-        //convertImageToCanvas(document.getElementById('image_' + id), document.getElementById('image_1536954243853_abstract_2_00-wallpaper-1920x1080'), id).then(function(canvas) {
         convertImageToCanvas(document.getElementById('image_' + id), filter, id).then(function(canvas) {
-            console.log(canvas);
             var dataUrl = canvas.toDataURL();
             var img = document.createElement('img');
-
             img.setAttribute('src', dataUrl);
-            //img.setAttribute('id', dataUrl);
-            var cropper = document.getElementById('cropper_' + id);
-            $('#cropper_' + id).addClass(filter);
-            var cssFilter = getComputedStyle(cropper).filter;
-            //$('#cropper_' + id).removeClass(filter);
-            console.log(cssFilter);
+            var filter_data = getFilter(filter);
 
             img.onload = function() {
-                //document.body.appendChild(img);
-
-
                 var img3 = this;
                 var canvas3 = document.createElement('canvas');
                 canvas3.setAttribute('id', 'image_filtered_' + id);
                 canvas3.width = img3.width;
                 canvas3.height = img3.height;
                 var ctx = canvas3.getContext('2d');
-                //ctx.filter = "blur(0px)";
-                ctx.filter = cssFilter;
+                if (filter_data.filter != undefined) {
+                    ctx.filter = filter_data.filter;
+                }
                 ctx.drawImage(img3, 0, 0, img3.width, img3.height);
 
                 var dataUrl = canvas3.toDataURL();
@@ -2509,46 +2401,21 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 img4.setAttribute('src', dataUrl);
                 img4.setAttribute('id', 'image_filtered_' + id);
                 img4.setAttribute('class', 'resize-drag');
-                //$(canvas3).insertBefore('#cropper_' + id);
-                //var filtered_img = document.getElementById('image_filtered_' + id);
-                //$(div).insertBefore('#cropper_' + id);
-                //$(div).insertBefore('#cropper_' + id);
-                //$(img).appendTo('#stevee');
+
                 img4.onload = function() {
-
-
-
                     Format.dataURItoBlob(this.src).then(function(blob) {
-                        console.log(blob);
                         blob.name = 'image_filtered_' + id + '.jpg';
                         blob.renamed = true;
-                        //Format.prepareImage([blob], function(result) {
                         Format.prepImage([blob], function(result) {
-                            console.log(result);
-
                             var img5 = document.createElement("img");
                             img5.src = 'fileuploads/images/' + result.file + '?' + new Date();
                             img5.className = 'filter';
-
-
-                            //$(img5).insertBefore('#image_' + id);
-
                             img5.onload = function() {
-                                console.log('img5 loaded');
-                                // check if filtered image already exists
-                                //if ($('#cropper_' + id + ' .image_filt_div').length <= 0) {
-                                console.log($('#cropper_' + id + ' img.filter').length);
+                                // Remove current filter.
                                 if ($('#cropper_' + id + ' img.filter').length > 0) {
-                                    console.log('filtered already');
                                     $('#cropper_' + id + ' img.filter').remove();
                                 }
-                                //var cssStyle = getComputedStyle($('#image_' + id));
-                                //this.style = document.getElementById('image_' + id).style;
-                                //console.log(this.style);
-                                //var image_style = document.getElementById('image_' + id);
-                                //var cssStyle = getComputedStyle(image_style);
                                 var cssStyle = $('#image_' + id).attr("style");
-                                console.log('cssStyle' + cssStyle);
                                 if (cssStyle != undefined) {
                                     // Parse the inline styles to remove the display style
                                     var cssStyleParsed = "";
@@ -2558,86 +2425,18 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                                             cssStyleParsed += style_arr[i] + ';';
                                         }
                                     }
-                                    console.log(cssStyle);
-                                    console.log(cssStyleParsed);
                                     $(this).attr("style", cssStyleParsed);
                                 }
                                 $('#image_' + id).css('display', 'none');
-
-                                //$('#image_' + id).removeClass('cropper-hidden');
-                                //$("#image_" + image_id).attr('crop-data', JSON.stringify(stored_data));
-                                //$(this).attr('filter-data', last_filter);
-
-
                                 $(this).insertBefore('#image_' + id);
-
-                                //if (last_filter.indexOf('cropper_cont') < 0) {
-                                //$('#cropper_' + id + ' img').removeClass(last_filter);
-                                $('#cropper_' + id).removeClass(filter);
-
-                                //}
-
-
                                 // Save
                                 crop_finished = true;
-                                //$('#image_' + id).closest('div.ce').focus();
-                                //console.log($('#' + e.target.id).closest('div.ce').find('.after_image'));
-                                //$('#' + card_id).focus();
-                                //console.log(document.activeElement);
-                                //document.activeElement.blur();
-                                //$('#image_' + id).closest('div.ce').blur();
-
                             };
                         });
-
                     });
-
-
-
-
-
-                    //Format.prepareImage([{ file: this.src, name: 'image_filtered_' + id }], function(result) {
-                    //   console.log(result);
-                    //});
-
-                    //Format.prepareImage([file], function(result) {
-                    //profile.avatar = 'fileuploads/images/' + result.file;
-
-                    //$(this).insertBefore('#image_' + id);
-                    //$('#image_' + id).css('display', 'none');
-
-                    //DUPE
-                    /*
-                    var last_filter = $('#cropper_' + id).attr('class').split(' ').pop();
-                    //console.log('remove: ' + last_filter);
-                    //$('#a_filter_' + id).removeClass(last_filter);
-                    //$('#a_filter_' + id).addClass(filter);
-                    //console.log(last_filter.indexOf('cropper_cont'));
-                    if (last_filter.indexOf('cropper_cont') < 0) {
-                        //$('#cropper_' + id + ' img').removeClass(last_filter);
-                        $('#cropper_' + id).removeClass(last_filter);
-                    }
-                    */
-
-
                 };
-
-
-
             };
-
-
-
-            //$(canvas).insertBefore('#cropper_' + id);
         });
-
-
-
-        //document.getElementById('cropper_' + id).appendChild(canvas);
-        //$(canvas).insertBefore('#cropper_' + id);
-        //$('.filters_div').clone().insertBefore('.' + id);
-        //document.getElementById('cropper_' + id).insertBefore('cropper_' + id);
-
         if (button != 'button') {
             e.stopPropagation();
         }
@@ -2645,163 +2444,63 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
     this.filterImage = function(e, id) {
 
-        console.log('filterImage');
-        //$scope.filter_image = true;
-        //$('.filters_div').css('visibility', 'visible');
-        //$('#cropper_' + id).clone().appendTo('.filters_div');
         $('.image_adjust_on').remove();
 
         if ($('#cropper_' + id + ' .image_filt_div').length <= 0) {
-            //this.editing = true;
-            //$('#cropper_' + id).clone().appendTo('.image_adjust');
-
-
-            //$('#cropper_' + id).clone().appendTo('#cropper_' + id + ' .filters_div .filter_list');
             var temp = $('#cropper_' + id).clone();
             // If there is a filtered image then remove it.
             if ($('#cropper_' + id + ' .filter').length >= 0) {
-                
-            //$('.filter').remove($(temp));
-            temp.find('img.filter').remove();
-            temp.find('img').css('display', 'unset');
-        }
-
+                temp.find('img.filter').remove();
+                temp.find('img').css('display', 'unset');
+            }
             temp.addClass('temp');
-
-
-
-
-            //temp.find('.filter_div').remove();
-
-            //temp.find('.filter_div').removeAttr('id');
-
             temp.find('.filter_div img').unwrap();
-
-            //$('.wrapper img').unwrap();
-
-            // Remove any existing filter!
-
-
-            //$('.filters_div').clone().insertBefore('.' + id);
-            //$('.filters_div').clone().insertBefore('#a_filter_' + id);
-
             var filt = $('.image_filt_div').clone().insertAfter('#cropper_' + id);
             filt.attr('id', 'filters_' + id);
             filt.css('position', 'relative');
-            //$('#cropper_' + id + ' .filters_div').addClass('filters_active');
-            //$('#cropper_' + id + ' .filters_div').css('visibility', 'visible');
-
             filt.addClass('filters_active');
             filt.css('visibility', 'visible');
-
-            //$(temp).click(function(){ console.log('deleted') });
             $(temp).removeAttr('onclick');
             $(temp).removeAttr('id');
-            //$(temp + ' img').removeAttr('class');
-
-            //$(temp).attr('onClick', 'filterClick(event, this, "' + id +'")');
-            //$(temp).attr('onClick', "function(){ console.log('deleted') }");
-            /*
-            for (var i = 0; i < number; i++) {
-                $(dot).appendTo('.m-slide-ctrl');
-            }
-            */
-            //temp.appendTo('#cropper_' + id + ' .filters_div .filter_list');
-            //temp = "<div class='red'>red</div>";
-            //for (var i = 0; i < 20; i++) {
+          
             for (var i in filter_array) {
-                console.log(i);
-                //$('.screens-duplicate:first').clone().appendTo('.another');
-                //var current = temp.clone().appendTo('#cropper_' + id + ' .filters_div .filter_list');
-                //var current = $(temp).appendTo('#cropper_' + id + ' .filters_div .filter_list');
-                //$(current).css('min-width', '100px');
-                //var current = temp.clone().appendTo('#cropper_' + id + ' .filters_div .filters_container .filter_list');
                 var outer = document.createElement('div');
                 $(outer).appendTo('#filters_' + id + ' .filters_container .filter_list');
                 $(outer).addClass('filter_container');
-                //var current = temp.clone().appendTo('#filters_' + id + ' .filters_container .filter_list');
                 var current = temp.clone();
                 $(current).appendTo($(outer));
-
-                //$(current + '.filter_div').remove();
                 var title = document.createElement('div');
                 $(title).addClass('filter_title');
                 $(title).html(filter_array[i].filter_name);
-                //$(title).appendTo($(current));
                 $(title).appendTo($(outer));
-
-
-                //$(current + ' img').removeAttr('class');
-                //current.find('img').removeAttr('class');
                 $(current).removeAttr('class');
                 $(current).addClass('cropper_cont');
-                //var last_filter = $('#cropper_' + id).attr('class').split(' ').pop();
-                //$(current).attr('class').split(' ').pop();
-
                 $(current).addClass('filter_thumb');
-
                 $(current).addClass(filter_array[i].filter_css_name);
-
                 $(current).attr('onClick', 'filterClick(event, this, "' + id + '", "' + filter_array[i].filter_css_name + '")');
-                //$('#cropper_' + id + ' .filters_div .filter_list #cropper_' + id ).clone().appendTo('#cropper_' + id + ' .filters_div .filter_list');
             }
-
-            //$('.temp').find('.filters_active').remove();
-            //$('.filters_active').remove();
-            //$('#cropper_' + id + ' .filters_div .filters_container .filter_list' + '#cropper_' + id + ' .filters_div').remove();
         }
-
-
         e.stopPropagation();
     };
 
     this.closeFilters = function(e) {
-        console.log('closeFilters');
-        console.log($('#' + e.target.id).closest('div.ce'));
-
         $('#' + e.target.id).closest('div.ce').attr('contenteditable', 'true');
-        //$('.filters_div').css('visibility', 'hidden');
-        //if(e){
-
-
-        //$('#hidden_input').focus();
         crop_finished = true;
+        // SAVE
         $('#' + e.target.id).closest('div.ce').focus();
-        console.log($('#' + e.target.id).closest('div.ce').find('.after_image'));
-        //$('#' + card_id).focus();
-        console.log(document.activeElement);
-        //document.activeElement.blur();
         $('#' + e.target.id).closest('div.ce').blur();
         $('.filters_active').remove();
         e.stopPropagation();
-        //}
-        //console.log(e.target.id);
-        //console.log($(e.target.id).closest('div.ce'));
-        //$('#' + e.target.id).closest('div.ce').attr('contenteditable', 'true');
-        //$('.image_adjust_on').remove();
-        //$scope.filter_image = false;
-
     };
 
     this.closeEdit = function(e, id) {
-        console.log('closeEdit');
-        console.log(e.target.id);
-        //if(e){
         e.stopPropagation();
-        //}
-        //console.log(e.target.id);
-        //console.log($(e.target.id).closest('div.ce'));
         $('#' + e.target.id).closest('div.ce').attr('contenteditable', 'true');
         $('.image_adjust_on').remove();
-
-
-        //$('#' + e.target.id).closest('.cropper_cont').removeClass('cropping');
         $('#cropper_' + id).removeClass('cropping');
     };
 
     this.editImage = function(scope, id) {
-        console.log('testclick: ' + id);
-
         if (principal.isValid()) {
             UserData.checkUser().then(function(result) {
                 // Logged in.
@@ -2856,79 +2555,20 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         }
     };
 
-    // Converts image to canvas; returns new canvas element
-    /*
-    function convertImageToCanvas(image, id) {
-        var canvas = document.createElement("canvas");
-        canvas.width = image.width;
-        canvas.height = image.height;
-    var cropper = document.getElementById('cropper_' + id);
-        var cssFilter = getComputedStyle(cropper).filter;
-        var cssFilterBefore = getComputedStyle(cropper, ':before').getPropertyValue("background-image");
-    var ctx = canvas.getContext("2d");
-    ctx.globalAlpha = 1;
-    var grd=ctx.createRadialGradient((image.width/2),(image.height/2),(image.width/20),(image.width/2),(image.height/2),(image.width/3));
-    grd.addColorStop(0, "rgba(0,91,154, 0.35)");
-    grd.addColorStop(1, "rgba(0,0,0, 0.65)");
-    // Fill with gradient
-    ctx.fillStyle=grd;
-    ctx.fillRect(0,0,image.width,image.height);
-    ctx.filter = cssFilter;
-    ctx.drawImage(image, 0, 0, image.width, image.height);
-    ctx.globalCompositeOperation="multiply";
-        return canvas;
-    }
-    */
-
     function applyBlending(bottomImageData, topImageData, image, id, type) {
         var deferred = $q.defer();
-        var cropper = document.getElementById('cropper_' + id);
-        //var cssFilter = getComputedStyle(cropper).filter;
-        //console.log(cssFilter);
         // create the canvas
         var canvas = document.createElement('canvas');
-        canvas.setAttribute('id', 'stevex');
         canvas.width = image.width;
         canvas.height = image.height;
         var ctx = canvas.getContext('2d');
-        ctx.globalAlpha=0.2;
-        ctx.globalCompositeOperation='source-over';
-        //ctx.filter = "blur(10px) grayscale(100%)";
-        //ctx.filter = 'blur(5px)';
         // get the pixel data as array
         var bottomData = bottomImageData.data;
         var topData = topImageData.data;
 
-        // first, create a new ImageData to contain our pixels
-        //var imgData = ctx.createImageData(image.width, image.width); // width x height
-        // create a new pixel array
-        //var imageData = ctx.createImageData(image.width, image.height);
-        // loop each pixel data, calculate the new pixel value and assign it directly
-        // to the topData (to save memory)
-        // if you want to keep the original data, don't do this. instead create a new
-        // image data object
-        //imageData = topData;
-        /*
-        for (var i = 0; i < topData.length; i += 4) {
-            topData[i] = 1 - (1 - topData[i]) * (1 - bottomData[i]);
-            topData[i + 1] = 1 - (1 - topData[i + 1]) * (1 - bottomData[i + 1]);
-            topData[i + 2] = 1 - (1 - topData[i + 2]) * (1 - bottomData[i + 2]);
-        }
-        */
-
-
-        console.log(type);
-        // multiply
-        /*
-        multiply: function(a, b) {
-            return (a * b) / 255;
-        }
-        */
+        // Multiply
         if (type == 'multiply') {
-            console.log('multiply!');
             for (var i = 0; i < topData.length; i += 4) {
-
-
                 topData[i] = topData[i] * (bottomData[i]) / 255;
                 topData[i + 1] = topData[i + 1] * (bottomData[i + 1]) / 255;
                 topData[i + 2] = topData[i + 2] * (bottomData[i + 2]) / 255;
@@ -2936,340 +2576,104 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 topData[i + 3] = topData[i + 3] * (bottomData[i + 3]) / 255;
             }
         }
-        // overlay
-        /*
-        overlay: function(a, b) {
-            return b < 128
-                ? (2 * a * b / 255)
-                : (255 - 2 * (255 - a) * (255 - b) / 255);
-        }
-        */
+
+        // Overlay
         if (type == 'overlay') {
-            console.log('overlay!');
             for (var i = 0; i < topData.length; i += 4) {
 
                 bottomData[i] /= 2;
-                bottomData[i+1] /= 2;
-                bottomData[i+2] /= 2;
+                bottomData[i + 1] /= 2;
+                bottomData[i + 2] /= 2;
 
-                topData[i] = topData[i] < 128 ? (2 * topData[i] * bottomData[i] / 255) : (255 - 2 * (255 - topData[i]) * (255 - bottomData[i]) / 255 );
-                topData[i+1] = topData[i+1] < 128 ? (2 * topData[i+1] * bottomData[i+1] / 255) : (255 - 2 * (255 - topData[i+1]) * (255 - bottomData[i+1]) / 255 );
-                topData[i+2] = topData[i+2] < 128 ? (2 * topData[i+2] * bottomData[i+2] / 255) : (255 - 2 * (255 - topData[i+2]) * (255 - bottomData[i+2]) / 255 );
-
-
-                //topData[i+3] = topData[i+3] < 128 ? (2 * topData[i+3] * bottomData[i+3] / 255) : (255 - 2 * (255 - topData[i+3]) * (255 - bottomData[i+3]) / 255 );
-
-                //topData[i+3] = bottomData[i+3] + topData[i+3] - bottomData[i+3] * topData[i+3];
-                //alpha = bottomData[i+3];
+                topData[i] = topData[i] < 128 ? (2 * topData[i] * bottomData[i] / 255) : (255 - 2 * (255 - topData[i]) * (255 - bottomData[i]) / 255);
+                topData[i + 1] = topData[i + 1] < 128 ? (2 * topData[i + 1] * bottomData[i + 1] / 255) : (255 - 2 * (255 - topData[i + 1]) * (255 - bottomData[i + 1]) / 255);
+                topData[i + 2] = topData[i + 2] < 128 ? (2 * topData[i + 2] * bottomData[i + 2] / 255) : (255 - 2 * (255 - topData[i + 2]) * (255 - bottomData[i + 2]) / 255);
             }
         }
 
-/*
-    lighten: function(a, b) {
-        return (b > a) ? b : a;
-    },
-    */
+        // Lighten
         if (type == 'lighten') {
-            console.log('lighten!');
             for (var i = 0; i < topData.length; i += 4) {
 
-                                bottomData[i] /= 4;
-                bottomData[i+1] /= 4;
-                bottomData[i+2] /= 4;
+                bottomData[i] /= 4;
+                bottomData[i + 1] /= 4;
+                bottomData[i + 2] /= 4;
 
 
-                topData[i] =  (bottomData[i] > topData[i]) ? bottomData[i] : topData[i];
-                topData[i+1] =  (bottomData[i+1] > topData[i+1]) ? bottomData[i+1] : topData[i+1];
-                topData[i+2] =  (bottomData[i+2] > topData[i+2]) ? bottomData[i+2] : topData[i+2];
-                //topData[i+3] =  (bottomData[i+3] > topData[i+3]) ? bottomData[i+3] : topData[i+3];
-         /*
-                topData[i] =  (topData[i] > bottomData[i]) ? topData[i] : bottomData[i];
-                topData[i+1] =  (topData[i+1] > bottomData[i+1]) ? topData[i+1] : bottomData[i+1];
-                topData[i+2] =  (topData[i+2] > bottomData[i+2]) ? topData[i+2] : bottomData[i+2];
-           */
+                topData[i] = (bottomData[i] > topData[i]) ? bottomData[i] : topData[i];
+                topData[i + 1] = (bottomData[i + 1] > topData[i + 1]) ? bottomData[i + 1] : topData[i + 1];
+                topData[i + 2] = (bottomData[i + 2] > topData[i + 2]) ? bottomData[i + 2] : topData[i + 2];
             }
         }
-//alpha_final = alpha_bg + alpha_fg - alpha_bg * alpha_fg
-
-        // screen 
-        //return 255 - (((255 - a) * (255 - b)) >> 8);
-        /*
-        for (var i = 0; i < topData.length; i += 4) {
-            topData[i] = 255 - (((255-topData[i]) * (255 - bottomData[i])) >> 8);
-            topData[i+1] = 255 - (((255-topData[i+1]) * (255 - bottomData[i+1])) >> 8);
-            topData[i+2] = 255 - (((255-topData[i+2]) * (255 - bottomData[i+2])) >> 8);
-            //topData[i + 3] = 1 - ((1-topData[i + 3]) + (1-bottomData[i + 3]));
-        }
-        */
-        /*
-        for (var i = 0; i < topData.length; i += 4) {
-            topData[i] = topData[i] * bottomData[i] / 255;
-            topData[i + 1] = topData[i + 1] * bottomData[i + 1] / 255;
-            topData[i + 2] = topData[i + 2] * bottomData[i + 2] / 255;
-        }
-        */
-        /*
-        for (var i = 0; i < topData.length; i += 4) {
-            topData[i] =  bottomData[i] * topData[i] / 255;
-            topData[i + 1] = bottomData[i + 1] * topData[i + 1] / 255;
-            topData[i + 2] = bottomData[i + 2] * topData[i + 2] / 255;
-        }
-        */
-
-        /*
-var d = topData;
-        for (var i=0; i<d.length; i+=4) {
-    var r = d[i];
-    var g = d[i+1];
-    var b = d[i+2];
-    // CIE luminance for the RGB
-    // The human eye is bad at seeing red and blue, so we de-emphasize them.
-    var v = 0.2126*r + 0.7152*g + 0.0722*b;
-    d[i] = d[i+1] = d[i+2] = v;
-  }
-  */
-
+        
         ctx.putImageData(topImageData, 0, 0);
-
-        //ctx.filter = cssFilter;
-        // draw it on the canvas with the size 500, 500
-        //ctx.putImageData(topImageData, image.width, image.height);
-        //ctx.putImageData(imageData, image.width, image.height);
-        // export image, discussed in the next part
-        //exportImage(canvas);
-        /*
-                // create the canvas
-        var canvasb = document.createElement('canvas');
-        canvasb.width = image.width;
-        canvasb.height = image.height;
-        var ctxb = canvasb.getContext('2d');
-        var canvas2 = document.createElement('canvas');
-        canvas2.width = image.width;
-        canvas2.height = image.height;
-        var ctx2 = canvas2.getContext('2d');
-        ctx2.globalAlpha = 1;
-        var grd = ctx2.createRadialGradient((image.width / 2), (image.height / 2), (image.width / 20), (image.width / 2), (image.height / 2), (image.width / 3));
-        grd.addColorStop(0, "rgba(0,91,154, 0.35)");
-        grd.addColorStop(1, "rgba(0,0,0, 0.65)");
-        // Fill with gradient
-        ctx2.fillStyle = grd;
-        ctx2.fillRect(0, 0, image.width, image.height);
-         var imgData = ctx2.getImageData(0, 0, image.width, image.height);
-        console.log(imgData);
-        ctxb.putImageData(imgData, 0, 0);
-        */
-
         deferred.resolve(canvas);
-        console.log(canvas);
         return deferred.promise;
-
     }
 
-    function rgba2rgb(RGB_background, RGBA_color) {
-     /*
-        var alpha = 1 - RGBA_color[3];
-
-        var r = Math.round((1 - alpha) * RGB_background[0] + alpha * RGBA_color[0]);
-        var g = Math.round((1 - alpha) * RGB_background[1] + alpha * RGBA_color[1]);
-        var b = Math.round((1 - alpha) * RGB_background[2] + alpha * RGBA_color[2]);
-        */
-        var adjust = 0;
-            //var alpha = 1 - ((Number(RGBA_color[3]) - Number(adjust/100)));
-        var alpha = 1 - RGBA_color[3];
-            //alpha+=.10;
-            //alpha = 1;
-
-        var r = Math.round((1 - alpha) * RGB_background[0] + alpha * RGBA_color[0] +10);
-        var g = Math.round((1 - alpha) * RGB_background[1] + alpha * RGBA_color[1] +10);
-        var b = Math.round((1 - alpha) * RGB_background[2] + alpha * RGBA_color[2] +10);
-        
-
-        r+=adjust;
-        g+=adjust;
-        b+=adjust;
-        
-        
-        /*
-        r-=adjust;
-        g-=adjust;
-        b-=adjust;
-        */
-
-        return [r, g, b];
-    }
-
-
-
-
-    function getFilter(filter){
-        console.log(filter);
-        
+    function getFilter(filter) {
         var result = [];
         var index = General.findWithAttr(filter_array, 'filter_css_name', filter);
-        console.log(index);
-        console.log(filter_array[index]);
-        if(index>=0){
-            result= filter_array[index];
+        if (index >= 0) {
+            result = filter_array[index];
         } else {
             result = -1;
         }
         return result;
-        //var index = General.arrayObjectIndexOfValue(UserData.getContacts(), key.email, 'google', 'email');
-        //var index = arrayObjectIndexOfValue(filter_array, filter, property, value);
-/*
-        filter_array
-          filter_css_name: 'filter-kelvin',
-            filter_bg: [[255,255,255], [0,0,0]],
-            filter_blend: 'overlay'
-            */
-
-
-
-    };
-
-    function getBackground(bg) {
-        console.log(bg);
-        var result = [];
-        // Radial gradient (two colors)
-        if (bg.indexOf('radial-gradient') >= 0) {
-            var grad = bg.indexOf('radial-gradient');
-            var grad_str = bg.substr(grad, bg.length);
-            console.log(grad_str);
-            var grad_rgb = grad_str.indexOf('rgba');
-            var grad_rgb_str = grad_str.substr(grad_rgb, grad_str.length);
-            console.log(grad_rgb_str);
-
-            var cols = grad_rgb_str.split('rgba').filter(function(el) { return el.length != 0 });;
-            console.log(cols);
-
-            for (var i in cols) {
-                var col_start = cols[i].indexOf('(');
-                var col_end = cols[i].indexOf(')');
-                var col = cols[i].substr(col_start + 1, col_end - 1);
-                RGBA_color = col.split(',');
-                console.log(RGBA_color);
-                RGB_background = [255, 255, 255];
-                var rgb = rgba2rgb(RGB_background, RGBA_color);
-                console.log(rgb);
-                result.push(rgb);
-
-            }
-            return result;
-            //var rbga_1 = bg
-        }
     }
 
     function convertImageToCanvas(image, filter, id) {
-
         var deferred = $q.defer();
-        //console.log(image);
-        //image = image1;
-
-        // Create filter gradient image.
-        //var canvas2 = createGradient(filter);
-        var cropper = document.getElementById('cropper_' + id);
-        $('#cropper_' + id).addClass(filter);
-        //var cssFilter = getComputedStyle(cropper).filter;
-        var cssFilterBg = getComputedStyle(cropper, ':before').background;
-        var cssFilterBlend = getComputedStyle(cropper, ':before').mixBlendMode;
-        // mix-blend-mode
-        // var a = window.getComputedStyle(document.querySelector('#one'), ':before');
-        $('#cropper_' + id).removeClass(filter);
-        console.log(cssFilterBg);
-        console.log(cssFilterBlend);
-
-        //if(cssFilterBg)
-        //var bg_rgb = getBackground(cssFilterBg);
         var filter_data = getFilter(filter);
-        console.log(filter_data);
-
-
-
-
+        // Convert image to canvas
         var topImage = image;
         var topCanvas = document.createElement("canvas");
         topCanvas.width = image.width;
         topCanvas.height = image.height;
         var topCtx = topCanvas.getContext('2d');
         topCtx.drawImage(topImage, 0, 0, image.width, image.height);
+        // If there is a blend to be applied.
+        if (filter_data.blend != undefined) {
+            var canvas2 = document.createElement('canvas');
+            canvas2.width = image.width;
+            canvas2.height = image.height;
+            var ctx2 = canvas2.getContext('2d');
 
-        if(filter_data.blend != undefined){
-console.log('BLEND');
-                   var canvas2 = document.createElement('canvas');
+            if (filter_data.gradient == 'radial') {
+                // radial gradient
+                var grd = ctx2.createRadialGradient((image.width / 2), (image.height / 2), (image.width / 200), (image.width / 2), (image.height / 2), image.width);
+                grd.addColorStop(0, "rgba(" + filter_data.gradient_stops[0][0] + "," + filter_data.gradient_stops[0][1] + "," + filter_data.gradient_stops[0][2] + "," + filter_data.gradient_stops[0][3] + ")");
+                grd.addColorStop(1, "rgba(" + filter_data.gradient_stops[1][0] + "," + filter_data.gradient_stops[1][1] + "," + filter_data.gradient_stops[1][2] + "," + filter_data.gradient_stops[1][3] + ")");
+                // Fill with gradient
+                ctx2.fillStyle = grd;
+                ctx2.fillRect(0, 0, image.width, image.height);
+            }
+            // Not used?
+            if (filter_data.gradient == 'solid') {
+                // Fill with colour
+                ctx2.fillStyle = 'rgba(125,105,24,0.1)';
+                //ctx2.fillStyle =  "'rgba(" + filter_data.gradient_stops[0][0] + "," + filter_data.gradient_stops[0][1] + "," + filter_data.gradient_stops[0][2] + "," + filter_data.gradient_stops[0][3] + ")'";
+                ctx2.fillRect(0, 0, image.width, image.height);
+            }
 
-        canvas2.width = image.width;
-        canvas2.height = image.height;
-        var ctx2 = canvas2.getContext('2d');
+            bottomImage = canvas2;
+            var bottomCanvas = document.createElement("canvas");
+            bottomCanvas.width = image.width;
+            bottomCanvas.height = image.height;
+            // get the 2d context to draw
+            var bottomCtx = bottomCanvas.getContext('2d');
+            bottomCtx.drawImage(bottomImage, 0, 0, image.width, image.height);
+            var bottomImageData = bottomCtx.getImageData(0, 0, image.width, image.height);
+            var topImageData = topCtx.getImageData(0, 0, image.width, image.height);
+            // apply blending.
+            applyBlending(bottomImageData, topImageData, image, id, filter_data.blend).then(function(result) {
+                deferred.resolve(result);
+            });
 
-        if (filter_data.gradient == 'radial') {
-            // radial gradient
-            var grd = ctx2.createRadialGradient((image.width / 2), (image.height / 2), (image.width / 200), (image.width / 2), (image.height / 2), image.width);
-            console.log(filter_data.gradient_stops[0]);
-            console.log(filter_data.gradient_stops[1]);
-            grd.addColorStop(0, "rgba(" + filter_data.gradient_stops[0][0] + "," + filter_data.gradient_stops[0][1] + "," + filter_data.gradient_stops[0][2] + "," + filter_data.gradient_stops[0][3] + ")");
-            grd.addColorStop(1, "rgba(" + filter_data.gradient_stops[1][0] + "," + filter_data.gradient_stops[1][1] + "," + filter_data.gradient_stops[1][2] + "," + filter_data.gradient_stops[1][3] + ")");
-            // Fill with gradient
-            ctx2.fillStyle = grd;
-            ctx2.fillRect(0, 0, image.width, image.height);
+        } else {
+            deferred.resolve(topCanvas);
         }
-
-        if (filter_data.gradient == 'solid') {
-
-            // Fill with colour
-             ctx2.fillStyle = 'rgba(125,105,24,0.1)';
-            //ctx2.fillStyle =  "'rgba(" + filter_data.gradient_stops[0][0] + "," + filter_data.gradient_stops[0][1] + "," + filter_data.gradient_stops[0][2] + "," + filter_data.gradient_stops[0][3] + ")'";
-            ctx2.fillRect(0, 0, image.width, image.height);
-        }
-
-
-/*
-        var grd = ctx2.createRadialGradient((image.width / 2), (image.height / 2), (image.width / 100), (image.width / 2), (image.height / 2), image.width);
-        grd.addColorStop(0, "rgb(166,198,220)");
-        grd.addColorStop(1, "rgb(89,89,89)");
-        // Fill with gradient
-        ctx2.fillStyle = grd;
-        ctx2.fillRect(0, 0, image.width, image.height);
-*/
-
-        //topImage = image;
-        bottomImage = canvas2;
-        //var photo = new Image();
-        //var image = image;
-        //var canvas = document.getElementById('canvas');
-        var bottomCanvas = document.createElement("canvas");
-        //var topCanvas = document.createElement("canvas");
-        bottomCanvas.width = image.width;
-        bottomCanvas.height = image.height;
-        //topCanvas.width = image.width;
-        //topCanvas.height = image.height;
-
-        // get the 2d context to draw
-        var bottomCtx = bottomCanvas.getContext('2d');
-        //var topCtx = topCanvas.getContext('2d');
-
-        // draw the image to top and bottom canvas, from the position x, y (0, 0) and
-        // with the size 500, 500 pixels
-        bottomCtx.drawImage(bottomImage, 0, 0, image.width, image.height);
-        //topCtx.drawImage(topImage, 0, 0, image.width, image.height);
-
-        // get the pixel data of the 2 canvas, from the position x, y (0, 0) and
-        // with the size 500, 500 pixels
-        var bottomImageData = bottomCtx.getImageData(0, 0, image.width, image.height);
-        var topImageData = topCtx.getImageData(0, 0, image.width, image.height);
-
-        // apply blending, will be discussed in the next section
-        //cssFilterBlend = 'multiply';
-        applyBlending(bottomImageData, topImageData, image, id, cssFilterBlend).then(function(result) {
-            deferred.resolve(result);
-        });
-
-    } else {
-        //topCtx.drawImage(topImage, 0, 0, image.width, image.height);
-        deferred.resolve(topCanvas);
-    }
-
         return deferred.promise;
-    
     }
 
 
