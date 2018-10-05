@@ -945,7 +945,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         // Ignore Canvas Images (which may contain chars from markey_array).
         content_less_temp = self.removeTempFiltered(content);
         content_to_match = content_less_temp;
-        
+
 
         for (var ma = 0; ma < marky_array.length; ma++) {
             var mark_list_current;
@@ -2202,22 +2202,19 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         {
             filter_css_name: 'filter-aden',
             filter_name: 'aden',
-            gradient: 'radial',
+            gradient: 'solid',
             gradient_stops: [
-                [242, 240, 232, 1],
-                [242, 240, 232, 1]
+                [125, 105, 24, 0.1]
             ],
             filter: 'sepia(.2) brightness(1.15) saturate(1.4)',
-            //gradient_stops: [[253,253,251,1]],
             blend: 'multiply'
         },
         {
             filter_css_name: 'filter-amaro',
             filter_name: 'amaro',
-            gradient: 'radial',
+            gradient: 'solid',
             gradient_stops: [
-                [229, 225, 209, 1],
-                [229, 225, 209, 1]
+                [125, 105, 24, 0.2]
             ],
             filter: 'sepia(.35) contrast(1.1) brightness(1.2) saturate(1.3)',
             blend: 'overlay'
@@ -2226,23 +2223,37 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         {
             filter_css_name: 'filter-ashby',
             filter_name: 'ashby',
-            gradient: 'radial',
+            gradient: 'solid',
             gradient_stops: [
-                [210, 203, 174, 1],
-                [210, 203, 174, 1]
+                [125, 105, 24, .35]
             ],
             filter: 'sepia(.5) contrast(1.2) saturate(1.8)',
             blend: 'lighten'
         },
         {
             filter_css_name: 'filter-brannan',
-            filter_name: 'brannan'
+            filter_name: 'brannan',
+            filter: 'sepia(.4) contrast(1.25) brightness(1.1) saturate(.9) hue-rotate(-2deg)'
         },
         {
-            filter_css_name: 'filter-brooklyn'
+            filter_css_name: 'filter-brooklyn',
+            filter_name: 'brooklyn',
+            gradient: 'solid',
+            gradient_stops: [
+                [127, 187, 227, 0.2]
+            ],
+            filter: 'sepia(.25) contrast(1.25) brightness(1.25) hue-rotate(5deg)',
+            blend: 'overlay'
         },
         {
-            filter_css_name: 'filter-charmes'
+            filter_css_name: 'filter-charmes',
+            filter_name: 'charmes',
+            gradient: 'solid',
+            gradient_stops: [
+                [125, 105, 24, 0.25]
+            ],
+            filter: 'sepia(.25) contrast(1.25) brightness(1.25) saturate(1.35) hue-rotate(-5deg)',
+            blend: 'darken'
         },
         {
             filter_css_name: 'filter-clarendon'
@@ -2281,11 +2292,9 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             filter_css_name: 'filter-kelvin',
             filter_name: 'kelvin',
             gradient: 'radial',
-            //gradient_stops: [[128,78,15,0.25], [128,78,15,0.5]],
-            //gradient_stops: [[223,211,195,1],[192,167,135,1]],
             gradient_stops: [
-                [223, 211, 195, 1],
-                [221, 129, 11, 1]
+                [128, 78, 15, 0.25],
+                [128, 78, 15, 0.50]
             ],
             filter: 'sepia(0.15) contrast(1.5) brightness(1.1) hue-rotate(-10deg)',
             blend: 'overlay'
@@ -2355,15 +2364,14 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         },
         {
             filter_css_name: 'filter-xpro-ii',
+            filter_name: 'xpro-ii',
             gradient: 'radial',
             gradient_stops: [
-                [166, 198, 220, 1],
-                [89, 89, 89, 1]
+                [0, 91, 154, 0.35],
+                [0, 0, 0, 0.65]
             ],
+            filter: 'sepia(.45) contrast(1.25) brightness(1.75) saturate(1.3) hue-rotate(-5deg)',
             blend: 'multiply'
-        },
-        {
-            filter_css_name: 'filter-xpro-iii'
         }
     ];
 
@@ -2422,10 +2430,21 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
                 img4.onload = function() {
                     //$('#image_' + id).css('display', 'none');
-                    if($('#cropper_' + id + ' #temp_image_filtered_' + id).length >= 0){
+                    if ($('#cropper_' + id + ' #temp_image_filtered_' + id).length >= 0) {
                         $('#cropper_' + id + ' #temp_image_filtered_' + id).remove();
                     }
-                    //$('#cropper_' + id + ' .filter').css('display', 'none');
+                    var cssStyle = $('#image_' + id).attr("style");
+                    if (cssStyle != undefined) {
+                        // Parse the inline styles to remove the display style
+                        var cssStyleParsed = "";
+                        style_arr = cssStyle.split(';');
+                        for (i = 0; i < style_arr.length - 1; i++) {
+                            if (style_arr[i].indexOf('display') < 0) {
+                                cssStyleParsed += style_arr[i] + ';';
+                            }
+                        }
+                        $(this).attr("style", cssStyleParsed);
+                    }
                     $('#cropper_' + id + ' #image_' + id).css('display', 'none');
                     $(this).insertBefore('#image_' + id);
                 };
@@ -2495,7 +2514,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             filt.css('visibility', 'visible');
             $(temp).removeAttr('onclick');
             $(temp).removeAttr('id');
-          
+
             for (var i in filter_array) {
                 var outer = document.createElement('div');
                 $(outer).appendTo('#filters_' + id + ' .filters_container .filter_list');
@@ -2588,58 +2607,114 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         }
     };
 
-    function applyBlending(bottomImageData, topImageData, image, id, type) {
+    /*
+        function applyBlending(bottomImageData, topImageData, image, id, type) {
+            var deferred = $q.defer();
+            // create the canvas
+            var canvas = document.createElement('canvas');
+            canvas.width = image.width;
+            canvas.height = image.height;
+            var ctx = canvas.getContext('2d');
+            // get the pixel data as array
+            var bottomData = bottomImageData.data;
+            var topData = topImageData.data;
+
+            // Multiply
+            if (type == 'multiply') {
+                for (var i = 0; i < topData.length; i += 4) {
+                    topData[i] = topData[i] * (bottomData[i]) / 255;
+                    topData[i + 1] = topData[i + 1] * (bottomData[i + 1]) / 255;
+                    topData[i + 2] = topData[i + 2] * (bottomData[i + 2]) / 255;
+
+                    topData[i + 3] = topData[i + 3] * (bottomData[i + 3]) / 255;
+                }
+            }
+
+            // Overlay
+            if (type == 'overlay') {
+                for (var i = 0; i < topData.length; i += 4) {
+
+                    bottomData[i] /= 2;
+                    bottomData[i + 1] /= 2;
+                    bottomData[i + 2] /= 2;
+
+                    topData[i] = topData[i] < 128 ? (2 * topData[i] * bottomData[i] / 255) : (255 - 2 * (255 - topData[i]) * (255 - bottomData[i]) / 255);
+                    topData[i + 1] = topData[i + 1] < 128 ? (2 * topData[i + 1] * bottomData[i + 1] / 255) : (255 - 2 * (255 - topData[i + 1]) * (255 - bottomData[i + 1]) / 255);
+                    topData[i + 2] = topData[i + 2] < 128 ? (2 * topData[i + 2] * bottomData[i + 2] / 255) : (255 - 2 * (255 - topData[i + 2]) * (255 - bottomData[i + 2]) / 255);
+                }
+            }
+
+            // Lighten
+            if (type == 'lighten') {
+                for (var i = 0; i < topData.length; i += 4) {
+
+                    bottomData[i] /= 4;
+                    bottomData[i + 1] /= 4;
+                    bottomData[i + 2] /= 4;
+
+
+                    topData[i] = (bottomData[i] > topData[i]) ? bottomData[i] : topData[i];
+                    topData[i + 1] = (bottomData[i + 1] > topData[i + 1]) ? bottomData[i + 1] : topData[i + 1];
+                    topData[i + 2] = (bottomData[i + 2] > topData[i + 2]) ? bottomData[i + 2] : topData[i + 2];
+                }
+            }
+
+            // Darken
+            if (type == 'darken') {
+                console.log('darken');
+                for (var i = 0; i < topData.length; i += 4) {
+
+                    bottomData[i] *= .5;
+                    bottomData[i + 1] *= .5;
+                    bottomData[i + 2] *= .5;
+                    
+                    topData[i] = (bottomData[i] > topData[i]) ? topData[i] : bottomData[i];
+                    topData[i + 1] = (bottomData[i + 1] > topData[i + 1]) ? topData[i + 1] : bottomData[i + 1];
+                    topData[i + 2] = (bottomData[i + 2] > topData[i + 2]) ? topData[i + 2] : bottomData[i + 2];  
+                }
+            }
+
+            ctx.putImageData(topImageData, 0, 0);
+            deferred.resolve(canvas);
+            return deferred.promise;
+        }
+        */
+
+    function applyBlending(bottomImage, topImage, image, id, type) {
         var deferred = $q.defer();
         // create the canvas
         var canvas = document.createElement('canvas');
         canvas.width = image.width;
         canvas.height = image.height;
         var ctx = canvas.getContext('2d');
-        // get the pixel data as array
-        var bottomData = bottomImageData.data;
-        var topData = topImageData.data;
-
         // Multiply
         if (type == 'multiply') {
-            for (var i = 0; i < topData.length; i += 4) {
-                topData[i] = topData[i] * (bottomData[i]) / 255;
-                topData[i + 1] = topData[i + 1] * (bottomData[i + 1]) / 255;
-                topData[i + 2] = topData[i + 2] * (bottomData[i + 2]) / 255;
-
-                topData[i + 3] = topData[i + 3] * (bottomData[i + 3]) / 255;
-            }
+            ctx.globalCompositeOperation = 'multiply';
+            ctx.drawImage(bottomImage, 0, 0, image.width, image.height);
+            ctx.drawImage(topImage, 0, 0, image.width, image.height);
         }
 
         // Overlay
         if (type == 'overlay') {
-            for (var i = 0; i < topData.length; i += 4) {
-
-                bottomData[i] /= 2;
-                bottomData[i + 1] /= 2;
-                bottomData[i + 2] /= 2;
-
-                topData[i] = topData[i] < 128 ? (2 * topData[i] * bottomData[i] / 255) : (255 - 2 * (255 - topData[i]) * (255 - bottomData[i]) / 255);
-                topData[i + 1] = topData[i + 1] < 128 ? (2 * topData[i + 1] * bottomData[i + 1] / 255) : (255 - 2 * (255 - topData[i + 1]) * (255 - bottomData[i + 1]) / 255);
-                topData[i + 2] = topData[i + 2] < 128 ? (2 * topData[i + 2] * bottomData[i + 2] / 255) : (255 - 2 * (255 - topData[i + 2]) * (255 - bottomData[i + 2]) / 255);
-            }
+            ctx.globalCompositeOperation = 'overlay';
+            ctx.drawImage(topImage, 0, 0, image.width, image.height);
+            ctx.drawImage(bottomImage, 0, 0, image.width, image.height);
         }
 
         // Lighten
         if (type == 'lighten') {
-            for (var i = 0; i < topData.length; i += 4) {
-
-                bottomData[i] /= 4;
-                bottomData[i + 1] /= 4;
-                bottomData[i + 2] /= 4;
-
-
-                topData[i] = (bottomData[i] > topData[i]) ? bottomData[i] : topData[i];
-                topData[i + 1] = (bottomData[i + 1] > topData[i + 1]) ? bottomData[i + 1] : topData[i + 1];
-                topData[i + 2] = (bottomData[i + 2] > topData[i + 2]) ? bottomData[i + 2] : topData[i + 2];
-            }
+            ctx.globalCompositeOperation = 'lighten';
+            ctx.drawImage(bottomImage, 0, 0, image.width, image.height);
+            ctx.drawImage(topImage, 0, 0, image.width, image.height);
         }
-        
-        ctx.putImageData(topImageData, 0, 0);
+
+        // Darken
+        if (type == 'darken') {
+            console.log('darken');
+            ctx.globalCompositeOperation = 'darken';
+            ctx.drawImage(bottomImage, 0, 0, image.width, image.height);
+            ctx.drawImage(topImage, 0, 0, image.width, image.height);
+        }
         deferred.resolve(canvas);
         return deferred.promise;
     }
@@ -2681,11 +2756,9 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 ctx2.fillStyle = grd;
                 ctx2.fillRect(0, 0, image.width, image.height);
             }
-            // Not used?
             if (filter_data.gradient == 'solid') {
                 // Fill with colour
-                ctx2.fillStyle = 'rgba(125,105,24,0.1)';
-                //ctx2.fillStyle =  "'rgba(" + filter_data.gradient_stops[0][0] + "," + filter_data.gradient_stops[0][1] + "," + filter_data.gradient_stops[0][2] + "," + filter_data.gradient_stops[0][3] + ")'";
+                ctx2.fillStyle = "rgba(" + filter_data.gradient_stops[0][0] + "," + filter_data.gradient_stops[0][1] + "," + filter_data.gradient_stops[0][2] + "," + filter_data.gradient_stops[0][3] + ")";
                 ctx2.fillRect(0, 0, image.width, image.height);
             }
 
@@ -2696,10 +2769,16 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             // get the 2d context to draw
             var bottomCtx = bottomCanvas.getContext('2d');
             bottomCtx.drawImage(bottomImage, 0, 0, image.width, image.height);
+            
+            /*
             var bottomImageData = bottomCtx.getImageData(0, 0, image.width, image.height);
             var topImageData = topCtx.getImageData(0, 0, image.width, image.height);
-            // apply blending.
-            applyBlending(bottomImageData, topImageData, image, id, filter_data.blend).then(function(result) {
+             apply blending.
+                applyBlending(bottomImageData, topImageData, image, id, filter_data.blend).then(function(result) {
+                deferred.resolve(result);
+            });
+            */
+            applyBlending(bottomImage, topImage, image, id, filter_data.blend).then(function(result) {
                 deferred.resolve(result);
             });
 
