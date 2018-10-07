@@ -2635,8 +2635,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
 
             //var dataUrl = canvas.toDataURL();
-            var img = document.createElement('img');
-            img.setAttribute('src', dataUrl);
+            //var img = document.createElement('img');
+            //img.setAttribute('src', dataUrl);
             //var filter_data = getFilter(filter);
 
             $('#cropper_' + id + ' #image_' + id).css('display', 'none');
@@ -2645,6 +2645,19 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             }
             canvasFilter.setAttribute('id', 'temp_image_filtered_' + id);
             canvasFilter.setAttribute('class', 'resize-drag');
+
+            var cssStyle = $('#image_' + id).attr("style");
+            if (cssStyle != undefined) {
+                // Parse the inline styles to remove the display style
+                var cssStyleParsed = "";
+                style_arr = cssStyle.split(';');
+                for (i = 0; i < style_arr.length - 1; i++) {
+                    if (style_arr[i].indexOf('display') < 0) {
+                        cssStyleParsed += style_arr[i] + ';';
+                    }
+                }
+                $(canvasFilter).attr("style", cssStyleParsed);
+            }
             $(canvasFilter).insertBefore('#image_' + id);
 
             /*
