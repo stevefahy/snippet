@@ -2644,6 +2644,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 $('#cropper_' + id + ' #temp_image_filtered_' + id).remove();
             }
             canvasFilter.setAttribute('id', 'temp_image_filtered_' + id);
+            canvasFilter.setAttribute('class', 'resize-drag temp_image_filtered');
             $(canvasFilter).insertBefore('#image_' + id);
 
             /*
