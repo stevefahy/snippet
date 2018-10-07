@@ -2416,7 +2416,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             gradient: 'radial',
             gradient_stops: [
                 [0, 175, 105, 24, 0],
-                [1, 175, 105, 24, 0.5] 
+                [1, 175, 105, 24, 0.5]
             ],
             filter: 'contrast(1.1) brightness(1.15) saturate(1.1)',
             blend: 'multiply'
@@ -2453,7 +2453,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             filter_css_name: 'filter-poprocket',
             filter_name: 'poprocket',
             gradient: 'radial',
-            gradient_percent:[0,40,80,100],
+            gradient_percent: [0, 40, 80, 100],
             gradient_stops: [
                 [0, 206, 39, 70, 0.75],
                 [0.4, 206, 39, 70, 0.75],
@@ -2521,7 +2521,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             filter_css_name: 'filter-sutro',
             filter_name: 'sutro',
             gradient: 'radial',
-            gradient_percent:[0,50,90,100],
+            gradient_percent: [0, 50, 90, 100],
             gradient_stops: [
                 [0, 0, 0, 0, 0],
                 [0.5, 0, 0, 0, 0],
@@ -2639,57 +2639,36 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             img.setAttribute('src', dataUrl);
             //var filter_data = getFilter(filter);
 
-            img.onload = function() {
-                var img3 = this;
-                var canvas3 = document.createElement('canvas');
-                canvas3.setAttribute('id', 'image_filtered_' + id);
-                canvas3.width = img3.width;
-                canvas3.height = img3.height;
-                var ctx = canvas3.getContext('2d');
-                //if (filter_data.filter != undefined) {
-                //    ctx.filter = filter_data.filter;
-                //}
-                ctx.drawImage(img3, 0, 0, img3.width, img3.height);
+            $('#cropper_' + id + ' #image_' + id).css('display', 'none');
+            if ($('#cropper_' + id + ' #temp_image_filtered_' + id).length >= 0) {
+                $('#cropper_' + id + ' #temp_image_filtered_' + id).remove();
+            }
+            canvasFilter.setAttribute('id', 'temp_image_filtered_' + id);
+            $(canvasFilter).insertBefore('#image_' + id);
 
-                var dataUrl = canvas3.toDataURL();
-                var img4 = document.createElement('img');
-                img4.setAttribute('src', dataUrl);
-                img4.setAttribute('id', 'temp_image_filtered_' + id);
-                img4.setAttribute('class', 'resize-drag temp_image_filtered');
+            /*
+                        img.onload = function() {
+                            var img3 = this;
+                            var canvas3 = document.createElement('canvas');
+                            canvas3.setAttribute('id', 'image_filtered_' + id);
+                            canvas3.width = img3.width;
+                            canvas3.height = img3.height;
+                            var ctx = canvas3.getContext('2d');
+                            //if (filter_data.filter != undefined) {
+                            //    ctx.filter = filter_data.filter;
+                            //}
+                            ctx.drawImage(img3, 0, 0, img3.width, img3.height);
 
-                img4.onload = function() {
-                    //$('#image_' + id).css('display', 'none');
-                    if ($('#cropper_' + id + ' #temp_image_filtered_' + id).length >= 0) {
-                        $('#cropper_' + id + ' #temp_image_filtered_' + id).remove();
-                    }
-                    var cssStyle = $('#image_' + id).attr("style");
-                    if (cssStyle != undefined) {
-                        // Parse the inline styles to remove the display style
-                        var cssStyleParsed = "";
-                        style_arr = cssStyle.split(';');
-                        for (i = 0; i < style_arr.length - 1; i++) {
-                            if (style_arr[i].indexOf('display') < 0) {
-                                cssStyleParsed += style_arr[i] + ';';
-                            }
-                        }
-                        $(this).attr("style", cssStyleParsed);
-                    }
-                    $('#cropper_' + id + ' #image_' + id).css('display', 'none');
-                    $(this).insertBefore('#image_' + id);
-                };
-                /*
-                img4.onload = function() {
-                    Format.dataURItoBlob(this.src).then(function(blob) {
-                        blob.name = 'image_filtered_' + id + '.jpg';
-                        blob.renamed = true;
-                        Format.prepImage([blob], function(result) {
-                            var img5 = document.createElement("img");
-                            img5.src = 'fileuploads/images/' + result.file + '?' + new Date();
-                            img5.className = 'filter';
-                            img5.onload = function() {
-                                // Remove current filter.
-                                if ($('#cropper_' + id + ' img.filter').length > 0) {
-                                    $('#cropper_' + id + ' img.filter').remove();
+                            var dataUrl = canvas3.toDataURL();
+                            var img4 = document.createElement('img');
+                            img4.setAttribute('src', dataUrl);
+                            img4.setAttribute('id', 'temp_image_filtered_' + id);
+                            img4.setAttribute('class', 'resize-drag temp_image_filtered');
+
+                            img4.onload = function() {
+                                //$('#image_' + id).css('display', 'none');
+                                if ($('#cropper_' + id + ' #temp_image_filtered_' + id).length >= 0) {
+                                    $('#cropper_' + id + ' #temp_image_filtered_' + id).remove();
                                 }
                                 var cssStyle = $('#image_' + id).attr("style");
                                 if (cssStyle != undefined) {
@@ -2703,16 +2682,45 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                                     }
                                     $(this).attr("style", cssStyleParsed);
                                 }
-                                $('#image_' + id).css('display', 'none');
+                                $('#cropper_' + id + ' #image_' + id).css('display', 'none');
                                 $(this).insertBefore('#image_' + id);
-                                // Save
-                                crop_finished = true;
                             };
-                        });
-                    });
-                };
-                */
-            };
+                            /*
+                            img4.onload = function() {
+                                Format.dataURItoBlob(this.src).then(function(blob) {
+                                    blob.name = 'image_filtered_' + id + '.jpg';
+                                    blob.renamed = true;
+                                    Format.prepImage([blob], function(result) {
+                                        var img5 = document.createElement("img");
+                                        img5.src = 'fileuploads/images/' + result.file + '?' + new Date();
+                                        img5.className = 'filter';
+                                        img5.onload = function() {
+                                            // Remove current filter.
+                                            if ($('#cropper_' + id + ' img.filter').length > 0) {
+                                                $('#cropper_' + id + ' img.filter').remove();
+                                            }
+                                            var cssStyle = $('#image_' + id).attr("style");
+                                            if (cssStyle != undefined) {
+                                                // Parse the inline styles to remove the display style
+                                                var cssStyleParsed = "";
+                                                style_arr = cssStyle.split(';');
+                                                for (i = 0; i < style_arr.length - 1; i++) {
+                                                    if (style_arr[i].indexOf('display') < 0) {
+                                                        cssStyleParsed += style_arr[i] + ';';
+                                                    }
+                                                }
+                                                $(this).attr("style", cssStyleParsed);
+                                            }
+                                            $('#image_' + id).css('display', 'none');
+                                            $(this).insertBefore('#image_' + id);
+                                            // Save
+                                            crop_finished = true;
+                                        };
+                                    });
+                                });
+                            };
+                            */
+            //};
         });
         if (button != 'button') {
             e.stopPropagation();
@@ -2998,23 +3006,23 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 console.log('radial');
                 // radial gradient
                 // gradient_percent
-                if(filter_data.gradient_percent != undefined){
+                if (filter_data.gradient_percent != undefined) {
                     // [0,40,80,100]
-                    console.log(filter_data.gradient_percent.length-2);
-                    var penultimate_percent = filter_data.gradient_percent[filter_data.gradient_percent.length-2];
+                    console.log(filter_data.gradient_percent.length - 2);
+                    var penultimate_percent = filter_data.gradient_percent[filter_data.gradient_percent.length - 2];
                     var final_radius = image.width * (penultimate_percent / 100);
                     console.log(final_radius);
                     var grd = ctx2.createRadialGradient((image.width / 2), (image.height / 2), 0, (image.width / 2), (image.height / 2), final_radius);
                 } else {
                     var grd = ctx2.createRadialGradient((image.width / 2), (image.height / 2), (image.width / 100), (image.width / 2), (image.height / 2), image.width);
                 }
-                
-                
-                for(var i=0; i< filter_data.gradient_stops.length; i++){
+
+
+                for (var i = 0; i < filter_data.gradient_stops.length; i++) {
                     grd.addColorStop(filter_data.gradient_stops[i][0], "rgba(" + filter_data.gradient_stops[i][1] + "," + filter_data.gradient_stops[i][2] + "," + filter_data.gradient_stops[i][3] + "," + filter_data.gradient_stops[i][4] + ")");
                 }
 
-                
+
                 //grd.addColorStop(0, "rgba(" + filter_data.gradient_stops[0][0] + "," + filter_data.gradient_stops[0][1] + "," + filter_data.gradient_stops[0][2] + "," + filter_data.gradient_stops[0][3] + ")");
                 //grd.addColorStop(1, "rgba(" + filter_data.gradient_stops[1][0] + "," + filter_data.gradient_stops[1][1] + "," + filter_data.gradient_stops[1][2] + "," + filter_data.gradient_stops[1][3] + ")");
                 // Fill with gradient
@@ -3030,7 +3038,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 console.log('linear');
                 // radial gradient
                 var grd = ctx2.createLinearGradient(0, 0, 0, image.width);
-                for(var i=0; i< filter_data.gradient_stops.length; i++){
+                for (var i = 0; i < filter_data.gradient_stops.length; i++) {
                     grd.addColorStop(filter_data.gradient_stops[i][0], "rgba(" + filter_data.gradient_stops[i][1] + "," + filter_data.gradient_stops[i][2] + "," + filter_data.gradient_stops[i][3] + "," + filter_data.gradient_stops[i][4] + ")");
                 }
                 //grd.addColorStop(0, "rgba(" + filter_data.gradient_stops[0][0] + "," + filter_data.gradient_stops[0][1] + "," + filter_data.gradient_stops[0][2] + "," + filter_data.gradient_stops[0][3] + ")");
