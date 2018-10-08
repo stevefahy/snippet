@@ -2621,11 +2621,14 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         var image_to_save = document.getElementById('temp_image_filtered_' + id);
 
         //Format.dataURItoBlob(this.src).then(function(blob) {
-            Format.dataURItoBlob(image_to_save.src).then(function(blob) {
+        Format.dataURItoBlob(image_to_save.src).then(function(blob) {
             blob.name = 'image_filtered_' + id + '.jpg';
             blob.renamed = true;
             Format.prepImage([blob], function(result) {
-                var img5 = document.createElement("img");
+
+                //var img5 = document.createElement("img");
+                var img5 = new Image();
+
                 img5.src = 'fileuploads/images/' + result.file + '?' + new Date();
                 img5.className = 'filter';
                 img5.onload = function() {
@@ -2672,135 +2675,153 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             if (filter_data.filter != undefined) {
                 ctx.filter = filter_data.filter;
             }
+
             ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height);
-            var dataUrl = canvasFilter.toDataURL();
 
 
-            //var dataUrl = canvas.toDataURL();
-            var img = document.createElement('img');
-            img.setAttribute('src', dataUrl);
-            //var filter_data = getFilter(filter);
-
-            ////
-            //var img4 = document.createElement('img');
-            //img4.setAttribute('src', dataUrl);
-            img.setAttribute('id', 'temp_image_filtered_' + id);
-            img.setAttribute('class', 'resize-drag temp_image_filtered');
-
-            img.onload = function() {
-
-                if ($('#cropper_' + id + ' #temp_image_filtered_' + id).length >= 0) {
-                    $('#cropper_' + id + ' #temp_image_filtered_' + id).remove();
-                }
-
-
-
-
-                var img3 = this;
-                var canvas3 = document.createElement('canvas');
-                canvas3.setAttribute('id', 'image_filtered_' + id);
-                canvas3.width = img3.width;
-                canvas3.height = img3.height;
-                var ctx = canvas3.getContext('2d');
-                //if (filter_data.filter != undefined) {
-                //    ctx.filter = filter_data.filter;
-                //}
-                ctx.drawImage(img3, 0, 0, img3.width, img3.height);
-
-                var dataUrl = canvas3.toDataURL();
-
-                /*
-                var img4 = document.createElement('img');
-                img4.setAttribute('src', dataUrl);
-                img4.setAttribute('id', 'temp_image_filtered_' + id);
-                img4.setAttribute('class', 'resize-drag temp_image_filtered');
-                */
-
-
-
-                var cssStyle = $('#image_' + id).attr("style");
-                if (cssStyle != undefined) {
-                    // Parse the inline styles to remove the display style
-                    var cssStyleParsed = "";
-                    style_arr = cssStyle.split(';');
-                    for (i = 0; i < style_arr.length - 1; i++) {
-                        if (style_arr[i].indexOf('display') < 0) {
-                            cssStyleParsed += style_arr[i] + ';';
-                        }
+            // Canvas
+            
+            var cssStyle = $('#image_' + id).attr("style");
+            if (cssStyle != undefined) {
+                // Parse the inline styles to remove the display style
+                var cssStyleParsed = "";
+                style_arr = cssStyle.split(';');
+                for (i = 0; i < style_arr.length - 1; i++) {
+                    if (style_arr[i].indexOf('display') < 0) {
+                        cssStyleParsed += style_arr[i] + ';';
                     }
-                    $(this).attr("style", cssStyleParsed);
                 }
+                $(canvasFilter).attr("style", cssStyleParsed);
+            }
+            canvasFilter.setAttribute('id', 'temp_image_filtered_' + id);
+            canvasFilter.setAttribute('class', 'resize-drag temp_image_filtered');
 
-                $('#cropper_' + id + ' #image_' + id).css('display', 'none');
+            if ($('#cropper_' + id + ' #temp_image_filtered_' + id).length >= 0) {
+                $('#cropper_' + id + ' #temp_image_filtered_' + id).remove();
+            }
 
-                               // Remove current filter.
-                    if ($('#cropper_' + id + ' img.filter').length > 0) {
-                        $('#cropper_' + id + ' img.filter').remove();
-                    }
+            $('#cropper_' + id + ' #image_' + id).css('display', 'none');
+            $(canvasFilter).insertBefore('#image_' + id);
 
-                $(this).insertBefore('#image_' + id);
+            //ctx.font = "40pt Calibri";
+            //ctx.fillText("TEMP", 40, 40);
+            /*
+                        var dataUrl = canvasFilter.toDataURL();
 
-                
-                self.saveImage(id);
+                        var img = document.createElement('img');
+                        img.setAttribute('src', dataUrl);
+                        //var filter_data = getFilter(filter);
 
-                /*
-                                img4.onload = function() {
-                                    //$('#image_' + id).css('display', 'none');
-                                    if ($('#cropper_' + id + ' #temp_image_filtered_' + id).length >= 0) {
-                                        $('#cropper_' + id + ' #temp_image_filtered_' + id).remove();
+                        ////
+                        //var img4 = document.createElement('img');
+                        //img4.setAttribute('src', dataUrl);
+                        img.setAttribute('id', 'temp_image_filtered_' + id);
+                        img.setAttribute('class', 'resize-drag temp_image_filtered');
+
+                        img.onload = function() {
+
+                            if ($('#cropper_' + id + ' #temp_image_filtered_' + id).length >= 0) {
+                                $('#cropper_' + id + ' #temp_image_filtered_' + id).remove();
+                            }
+
+                            var img3 = this;
+                            var canvas3 = document.createElement('canvas');
+                            canvas3.setAttribute('id', 'image_filtered_' + id);
+                            canvas3.width = img3.width;
+                            canvas3.height = img3.height;
+                            var ctx = canvas3.getContext('2d');
+                            //if (filter_data.filter != undefined) {
+                            //    ctx.filter = filter_data.filter;
+                            //}
+                            ctx.drawImage(img3, 0, 0, img3.width, img3.height);
+
+                            var dataUrl = canvas3.toDataURL();
+
+
+
+                            var cssStyle = $('#image_' + id).attr("style");
+                            if (cssStyle != undefined) {
+                                // Parse the inline styles to remove the display style
+                                var cssStyleParsed = "";
+                                style_arr = cssStyle.split(';');
+                                for (i = 0; i < style_arr.length - 1; i++) {
+                                    if (style_arr[i].indexOf('display') < 0) {
+                                        cssStyleParsed += style_arr[i] + ';';
                                     }
-                                    var cssStyle = $('#image_' + id).attr("style");
-                                    if (cssStyle != undefined) {
-                                        // Parse the inline styles to remove the display style
-                                        var cssStyleParsed = "";
-                                        style_arr = cssStyle.split(';');
-                                        for (i = 0; i < style_arr.length - 1; i++) {
-                                            if (style_arr[i].indexOf('display') < 0) {
-                                                cssStyleParsed += style_arr[i] + ';';
-                                            }
-                                        }
-                                        $(this).attr("style", cssStyleParsed);
-                                    }
-                                    $('#cropper_' + id + ' #image_' + id).css('display', 'none');
-                                    $(this).insertBefore('#image_' + id);
-                                };
-                                */
-                /*
-                img4.onload = function() {
-                    Format.dataURItoBlob(this.src).then(function(blob) {
-                        blob.name = 'image_filtered_' + id + '.jpg';
-                        blob.renamed = true;
-                        Format.prepImage([blob], function(result) {
-                            var img5 = document.createElement("img");
-                            img5.src = 'fileuploads/images/' + result.file + '?' + new Date();
-                            img5.className = 'filter';
-                            img5.onload = function() {
-                                // Remove current filter.
+                                }
+                                $(this).attr("style", cssStyleParsed);
+                            }
+
+                            $('#cropper_' + id + ' #image_' + id).css('display', 'none');
+
+                                           // Remove current filter.
                                 if ($('#cropper_' + id + ' img.filter').length > 0) {
                                     $('#cropper_' + id + ' img.filter').remove();
                                 }
-                                var cssStyle = $('#image_' + id).attr("style");
-                                if (cssStyle != undefined) {
-                                    // Parse the inline styles to remove the display style
-                                    var cssStyleParsed = "";
-                                    style_arr = cssStyle.split(';');
-                                    for (i = 0; i < style_arr.length - 1; i++) {
-                                        if (style_arr[i].indexOf('display') < 0) {
-                                            cssStyleParsed += style_arr[i] + ';';
-                                        }
+
+                            $(this).insertBefore('#image_' + id);
+
+                            
+                            self.saveImage(id);
+
+                            /*
+                                            img4.onload = function() {
+                                                //$('#image_' + id).css('display', 'none');
+                                                if ($('#cropper_' + id + ' #temp_image_filtered_' + id).length >= 0) {
+                                                    $('#cropper_' + id + ' #temp_image_filtered_' + id).remove();
+                                                }
+                                                var cssStyle = $('#image_' + id).attr("style");
+                                                if (cssStyle != undefined) {
+                                                    // Parse the inline styles to remove the display style
+                                                    var cssStyleParsed = "";
+                                                    style_arr = cssStyle.split(';');
+                                                    for (i = 0; i < style_arr.length - 1; i++) {
+                                                        if (style_arr[i].indexOf('display') < 0) {
+                                                            cssStyleParsed += style_arr[i] + ';';
+                                                        }
+                                                    }
+                                                    $(this).attr("style", cssStyleParsed);
+                                                }
+                                                $('#cropper_' + id + ' #image_' + id).css('display', 'none');
+                                                $(this).insertBefore('#image_' + id);
+                                            };
+                                            */
+            /*
+            img4.onload = function() {
+                Format.dataURItoBlob(this.src).then(function(blob) {
+                    blob.name = 'image_filtered_' + id + '.jpg';
+                    blob.renamed = true;
+                    Format.prepImage([blob], function(result) {
+                        var img5 = document.createElement("img");
+                        img5.src = 'fileuploads/images/' + result.file + '?' + new Date();
+                        img5.className = 'filter';
+                        img5.onload = function() {
+                            // Remove current filter.
+                            if ($('#cropper_' + id + ' img.filter').length > 0) {
+                                $('#cropper_' + id + ' img.filter').remove();
+                            }
+                            var cssStyle = $('#image_' + id).attr("style");
+                            if (cssStyle != undefined) {
+                                // Parse the inline styles to remove the display style
+                                var cssStyleParsed = "";
+                                style_arr = cssStyle.split(';');
+                                for (i = 0; i < style_arr.length - 1; i++) {
+                                    if (style_arr[i].indexOf('display') < 0) {
+                                        cssStyleParsed += style_arr[i] + ';';
                                     }
-                                    $(this).attr("style", cssStyleParsed);
                                 }
-                                $('#image_' + id).css('display', 'none');
-                                $(this).insertBefore('#image_' + id);
-                                // Save
-                                crop_finished = true;
-                            };
-                        });
+                                $(this).attr("style", cssStyleParsed);
+                            }
+                            $('#image_' + id).css('display', 'none');
+                            $(this).insertBefore('#image_' + id);
+                            // Save
+                            crop_finished = true;
+                        };
                     });
-                };
-                */
+                });
             };
+            */
+            //};
         });
         if (button != 'button') {
             e.stopPropagation();
