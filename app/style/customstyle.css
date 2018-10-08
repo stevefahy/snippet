@@ -3096,6 +3096,10 @@ div.after_image:empty {
 }
 */
 
+.temp_image_filtered {
+    width: 100%;
+}
+
 .filter_title {
  color: white;
     font-size: inherit;
