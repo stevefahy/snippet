@@ -3096,7 +3096,7 @@ div.after_image:empty {
 }
 */
 
-.temp_image_filtered {
+.temp_canvas_filtered {
     width: 100%;
 }
 
