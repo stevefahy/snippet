@@ -2670,6 +2670,10 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                     $(this).insertBefore('#image_' + id);
                     // Save
                     crop_finished = true;
+                    // SAVE
+                    console.log($('#cropper_' + id).closest('div.ce'));
+                    $('#cropper_' + id).closest('div.ce').focus();
+                    $('#cropper_' + id).closest('div.ce').blur();
                 };
             });
         });
@@ -2716,7 +2720,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             }
 
             // Remove last filter
-            if ($('#cropper_' + id + ' .filtered').length >= 0) {
+            if ($('#cropper_' + id + ' .filter').length >= 0) {
                 $('#cropper_' + id + ' .filter').remove();
             }
 
@@ -2897,14 +2901,14 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
     this.closeFilters = function(e) {
         $('#' + e.target.id).closest('div.ce').attr('contenteditable', 'true');
-        crop_finished = true;
+        //crop_finished = true;
 
         // Save the canvas to image
         self.saveImage();
 
         // SAVE
-        $('#' + e.target.id).closest('div.ce').focus();
-        $('#' + e.target.id).closest('div.ce').blur();
+        //$('#' + e.target.id).closest('div.ce').focus();
+        //$('#' + e.target.id).closest('div.ce').blur();
         $('.filters_active').remove();
         e.stopPropagation();
     };
