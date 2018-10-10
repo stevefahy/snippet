@@ -1919,7 +1919,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     //var wrapper_in_progress;
     this.openCrop = function(id) {
         // If filtered image exists
-        if ($('#cropper_' + id + ' img.filter').length > 0) {
+        if ($('#cropper_' + id + ' img.adjusted').length > 0) {
             console.log('fltered already');
             // Store the height before setting dispaly none
             //console.log($('#image_' + id).css('display'));
@@ -1928,8 +1928,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             //var img_height = $('.' + id).height();
 
             //$('#cropper_' + id + ' img.filter').remove();
-            $('#cropper_' + id + ' img.filter').css('display', 'none');
-            console.log($('#cropper_' + id + ' img.filter').css('display'));
+            $('#cropper_' + id + ' img.adjusted').css('display', 'none');
+            console.log($('#cropper_' + id + ' img.adjusted').css('display'));
             //$('#cropper_' + id + ' img#image_' + id).css('display', 'unset');
             //$('#cropper_' + id + ' img#image_' + id).css('display', 'inline');
 
@@ -2644,13 +2644,13 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 var img5 = new Image();
 
                 img5.src = 'fileuploads/images/' + result.file + '?' + new Date();
-                img5.className = 'filter';
+                img5.className = 'adjusted';
                 img5.onload = function() {
                     //$('#temp_image_filtered_' + id).css('display', 'none');
                     $('#temp_canvas_filtered_' + id).remove();
                     // Remove current filter.
-                    if ($('#cropper_' + id + ' img.filter').length > 0) {
-                        $('#cropper_' + id + ' img.filter').remove();
+                    if ($('#cropper_' + id + ' img.adjusted').length > 0) {
+                        $('#cropper_' + id + ' img.adjusted').remove();
                     }
                     var cssStyle = $('#image_' + id).attr("style");
                     if (cssStyle != undefined) {
@@ -2720,8 +2720,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             }
 
             // Remove last filter
-            if ($('#cropper_' + id + ' .filter').length >= 0) {
-                $('#cropper_' + id + ' .filter').remove();
+            if ($('#cropper_' + id + ' .adjusted').length >= 0) {
+                $('#cropper_' + id + ' .adjusted').remove();
             }
 
             $('#cropper_' + id + ' #image_' + id).css('display', 'none');
@@ -2861,8 +2861,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         if ($('#cropper_' + id + ' .image_filt_div').length <= 0) {
             var temp = $('#cropper_' + id).clone();
             // If there is a filtered image then remove it.
-            if ($('#cropper_' + id + ' .filter').length >= 0) {
-                temp.find('img.filter').remove();
+            if ($('#cropper_' + id + ' .adjusted').length >= 0) {
+                temp.find('img.adjusted').remove();
                 temp.find('img').css('display', 'unset');
             }
             // If there are temp_image_filtered then remove.
@@ -3214,8 +3214,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         console.log(cur_filter);
         if (cur_filter != undefined) {
             // Temporarily apply filter to crop
-            $("#cropper_" + image_id).addClass(cur_filter);
-            filterClick('e', 'button', image_id, cur_filter);
+            //$("#cropper_" + image_id).addClass(cur_filter);
+            //filterClick('e', 'button', image_id, cur_filter);
         }
         // },1000);
         getData = function() {
@@ -3377,6 +3377,32 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             var card = $(wrapper).parent().closest('div').attr('id');
             console.log(card);
             $('#' + card).attr('contenteditable', 'true');
+
+
+            // If Adjusted exists Get its Style.
+            if($('#cropper_' + image_id + ' .adjusted').length >= 0){
+
+            var cssStyle = $('#image_' + image_id).attr("style");
+            if (cssStyle != undefined) {
+                // Parse the inline styles to remove the display style
+                var cssStyleParsed = "";
+                style_arr = cssStyle.split(';');
+                for (i = 0; i < style_arr.length - 1; i++) {
+                    if (style_arr[i].indexOf('display') < 0) {
+                        cssStyleParsed += style_arr[i] + ';';
+                    }
+                }
+                // If Adjusted exists apply original style to adjusted.
+                $('#cropper_' + image_id + ' .adjusted').attr("style", cssStyleParsed);
+            }
+
+            
+
+            // If Adjusted exists hide original.
+            $("#image_" + image_id).css('display', 'none');
+
+        }
+
             closeEdit(event, image_id);
 
 
