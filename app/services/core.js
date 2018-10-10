@@ -1941,6 +1941,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             // Get the filter and set it to cropper
             var filter = $('#image_' + id).attr('filter-data');
             console.log(filter);
+
+            $('#cropper_' + id).addClass(filter);
             //$('#cropper_' + id).addClass(filter);
             //cropper-container
             //$('#cropper_' + id + ' .cropper-container').addClass(filter);
@@ -2087,6 +2089,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 $('#cropper_' + id + ' .cropper-canvas').addClass(filter);
                 //$('.cropper-canvas').addClass(filter);
                 $('#cropper_' + id + ' .cropper-view-box').addClass(filter);
+
+                $('#cropper_' + id).removeClass(filter);
             }
             //autoCrop: true
         };
@@ -2902,14 +2906,14 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     this.closeFilters = function(e) {
         $('#' + e.target.id).closest('div.ce').attr('contenteditable', 'true');
         //crop_finished = true;
-
+$('.filters_active').remove();
         // Save the canvas to image
         self.saveImage();
 
         // SAVE
         //$('#' + e.target.id).closest('div.ce').focus();
         //$('#' + e.target.id).closest('div.ce').blur();
-        $('.filters_active').remove();
+        //$('.filters_active').remove();
         e.stopPropagation();
     };
 
@@ -2918,6 +2922,13 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         $('#' + e.target.id).closest('div.ce').attr('contenteditable', 'true');
         $('.image_adjust_on').remove();
         $('#cropper_' + id).removeClass('cropping');
+
+                  // Save
+                    crop_finished = true;
+                    // SAVE
+                    console.log($('#cropper_' + id).closest('div.ce'));
+                    $('#cropper_' + id).closest('div.ce').focus();
+                    $('#cropper_' + id).closest('div.ce').blur();
     };
 
     this.editImage = function(scope, id) {
@@ -3403,6 +3414,9 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
         }
 
+ cropper.destroy();
+        $rootScope.crop_on = false;
+
             closeEdit(event, image_id);
 
 
@@ -3410,8 +3424,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
         };
         getData();
-        cropper.destroy();
-        $rootScope.crop_on = false;
+        //cropper.destroy();
+        //$rootScope.crop_on = false;
 
         // Re-apply filter
         // this.filterClick = function(e, button, id, filter)
