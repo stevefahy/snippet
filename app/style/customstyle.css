@@ -29,6 +29,11 @@ img {
   max-width: 100%; /* This rule is very important, please do not ignore this! */
 }
 
+canvas {
+    vertical-align: middle;
+    border-style: none;
+}
+
 .editable {
     display: block;
     max-width: 200px;
