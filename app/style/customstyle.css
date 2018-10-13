@@ -3002,7 +3002,7 @@ div.after_image:empty {
 }
 */
 
-.image_filt_div {
+.image_filt_div, .image_adjust_div {
         clear: both;
     /* width: 100%; */
     /* height: 166px; */

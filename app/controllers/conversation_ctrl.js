@@ -1,4 +1,4 @@
-cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', '$animate', 'viewAnimationsService', 'Cropp', '$compile', function($scope, $rootScope, $location, $http, $window, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, $animate, viewAnimationsService, Cropp, $compile) {
+cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', '$animate', 'viewAnimationsService', 'Cropp', '$compile', 'FilterImage', function($scope, $rootScope, $location, $http, $window, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, $animate, viewAnimationsService, Cropp, $compile, FilterImage) {
 
     show = function() {
         UserData.show();
@@ -16,6 +16,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     closeFilters = Cropp.closeFilters;
     filterClick = Cropp.filterClick;
     settingsImage = Cropp.settingsImage;
+    adjustImage = Cropp.adjustImage;
 
 
     $scope.testclick = function(){
@@ -24,7 +25,18 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
 
 
+   $scope.adjust = {
+      sharpen: 5
+    };
 
+    $scope.sliderChange = function(){
+        console.log(FilterImage.getImageId());
+        console.log($scope.adjust.sharpen);
+
+        //var source = FilterImage.createTemp(FilterImage.getImageId());
+
+        FilterImage.setSharpen(FilterImage.getImageId(), FilterImage.getSource(), $scope.adjust.sharpen);
+    };
 
 
     $scope.$on('$destroy', function() {
