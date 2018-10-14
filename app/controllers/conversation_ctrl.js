@@ -19,17 +19,34 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     adjustImage = Cropp.adjustImage;
 
 
-    $scope.testclick = function(){
+    $scope.testclick = function() {
         console.log('scope testclick');
     };
 
 
 
-   $scope.adjust = {
-      sharpen: 5
+    $scope.adjust = {
+        sharpen: 0,
+        options: {
+            floor: 0,
+            ceil: 20,
+            step: 0.1,
+            precision: 1,
+            id: 'slider-id',
+            onStart: function(sharpen) {
+                console.log('on start ' + $scope.adjust.sharpen); // logs 'on start slider-id'
+            },
+            onChange: function(id) {
+                console.log('on change ' + $scope.adjust.sharpen); // logs 'on change slider-id'
+                FilterImage.setSharpen(FilterImage.getImageId(), FilterImage.getSource(), $scope.adjust.sharpen);
+            },
+            onEnd: function(id) {
+                console.log('on end ' + $scope.adjust.sharpen); // logs 'on end slider-id'
+            }
+        }
     };
 
-    $scope.sliderChange = function(){
+    $scope.sliderChange = function() {
         console.log(FilterImage.getImageId());
         console.log($scope.adjust.sharpen);
 
@@ -43,9 +60,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         //leaving controller.
         Cropp.destroyCrop();
         $('.image_adjust_on').remove();
-            //$window.removeEventListener("resize", adjustCropped);
+        //$window.removeEventListener("resize", adjustCropped);
 
-    //$window.removeEventListener("load", adjustCropped);
+        //$window.removeEventListener("load", adjustCropped);
     });
 
 
@@ -504,100 +521,100 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         // Clear the cards unviewed arrary for this participant of this conversation.
         updateConversationViewed(data.conversationId);
     };
-$rootScope.last_win_width;
+    $rootScope.last_win_width;
     adjustCropped = function() {
         console.log('adjustCropped');
-        if(!$rootScope.crop_on){
+        if (!$rootScope.crop_on) {
             console.log('do crop');
-        var win_width = $(window).width();
-        console.log($rootScope.last_win_width);
-        if($rootScope.last_win_width != win_width){
-            console.log('DO ADJUST');
-        last_win_width = win_width;
-        console.log(win_width);
-        $(".cropped").each(function(index, value) {
+            var win_width = $(window).width();
+            console.log($rootScope.last_win_width);
+            if ($rootScope.last_win_width != win_width) {
+                console.log('DO ADJUST');
+                last_win_width = win_width;
+                console.log(win_width);
+                $(".cropped").each(function(index, value) {
 
-            //var zoom_amount = (((gcd.width - gcbd.width) / gcbd.width) * 100) + 100;
-            //console.log($(value).width());
-            //var init_width = $(value).width();
-            // console.log('init_width: ' + init_width);
-            console.log('win_width: ' + win_width);
-            // % increase = Increase ÷ Original Number × 100.
-            //var zoom = init_width / win_width;
-            //console.log('zoom: ' + zoom);
+                    //var zoom_amount = (((gcd.width - gcbd.width) / gcbd.width) * 100) + 100;
+                    //console.log($(value).width());
+                    //var init_width = $(value).width();
+                    // console.log('init_width: ' + init_width);
+                    console.log('win_width: ' + win_width);
+                    // % increase = Increase ÷ Original Number × 100.
+                    //var zoom = init_width / win_width;
+                    //console.log('zoom: ' + zoom);
 
-            var stored = $(value).attr('cbd-data');
-            var stored_image = $(value).attr('image-data');
-            stored_image = JSON.parse(stored_image);
-            if (stored) {
-                stored = JSON.parse(stored);
-                console.log(stored);
-                console.log(stored.right);
+                    var stored = $(value).attr('cbd-data');
+                    var stored_image = $(value).attr('image-data');
+                    stored_image = JSON.parse(stored_image);
+                    if (stored) {
+                        stored = JSON.parse(stored);
+                        console.log(stored);
+                        console.log(stored.right);
 
-                if (stored_image.naturalWidth < win_width) {
-                    $(value).parent().css("height", stored_image.height);
-                    $(value).parent().css("width", stored_image.naturalWidth);
-                    //wrapper.style.height = stored_image.height + 'px';
-                    //wrapper.style.width = stored_image.width + 'px';
-                        var zoom = stored_image.naturalWidth / (stored.right - stored.left);
-                    console.log(zoom);
-                    $(value).css("zoom", zoom);
-                } else {
-                    var zoom = win_width / (stored.right - stored.left);
-                    console.log(zoom);
-                    $(value).css("zoom", zoom);
+                        if (stored_image.naturalWidth < win_width) {
+                            $(value).parent().css("height", stored_image.height);
+                            $(value).parent().css("width", stored_image.naturalWidth);
+                            //wrapper.style.height = stored_image.height + 'px';
+                            //wrapper.style.width = stored_image.width + 'px';
+                            var zoom = stored_image.naturalWidth / (stored.right - stored.left);
+                            console.log(zoom);
+                            $(value).css("zoom", zoom);
+                        } else {
+                            var zoom = win_width / (stored.right - stored.left);
+                            console.log(zoom);
+                            $(value).css("zoom", zoom);
 
-                    var height = (stored.bottom - stored.top) * zoom;
-                    //$(this).parent()
+                            var height = (stored.bottom - stored.top) * zoom;
+                            //$(this).parent()
 
-                    $(value).parent().css("height", height);
-                }
+                            $(value).parent().css("height", height);
+                        }
+                    }
+                    //var rect = $(value).css( "zoom" );
+                    // divide img zoomby this  and apply to image
+                    //var current_zoom = $(value).css( "zoom" );
+                    //var new_zoom = current_zoom / increase_amount;
+                    // console.log('new_zoom: ' + new_zoom);
+                    //$(value).css( "zoom", new_zoom );
+                    //divide cont height by this and apply to cont
+
+                });
             }
-            //var rect = $(value).css( "zoom" );
-            // divide img zoomby this  and apply to image
-            //var current_zoom = $(value).css( "zoom" );
-            //var new_zoom = current_zoom / increase_amount;
-            // console.log('new_zoom: ' + new_zoom);
-            //$(value).css( "zoom", new_zoom );
-            //divide cont height by this and apply to cont
-
-        });
-    }
-    }
+        }
     };
 
-$scope.inviewoptions = {offset:[100, 0, 100, 0]};
+    $scope.inviewoptions = { offset: [100, 0, 100, 0] };
 
 
-$scope.lineInView = function (data, id) {
-    //console.log(data + ' : ' + id);
-    if(data){
-    //$('#ce'+id).addClass('inview');
-    $('#ce'+id).removeClass('outview');
-/*
-            $('#ce' + id + ' .cropper_cont').each(function (index, value) {
-            //console.log($(this).find("img").height());
-           // var a = $(this).find("img");
-            //console.log(a);
-            $(this).css('height', 'unset');
-          
-        });
-        */
+    $scope.lineInView = function(data, id) {
+        //console.log(data + ' : ' + id);
+        if (data) {
+            //$('#ce'+id).addClass('inview');
+            $('#ce' + id).removeClass('outview');
+            /*
+                        $('#ce' + id + ' .cropper_cont').each(function (index, value) {
+                        //console.log($(this).find("img").height());
+                       // var a = $(this).find("img");
+                        //console.log(a);
+                        $(this).css('height', 'unset');
+                      
+                    });
+                    */
 
-} else {
-     //$('#ce'+id).removeClass('inview');
-     $('#ce'+id).addClass('outview');
-/*
-        $('#ce' + id + ' .cropper_cont').each(function (index, value) {
-            //console.log($(this).find("img").height());
-           // var a = $(this).find("img");
-            //console.log(a);
-            $(this).css('height', $(this).find("img").height());
-          
-        });
-        */
-}
-};
+        } else {
+            //$('#ce'+id).removeClass('inview');
+            $('#ce' + id).addClass('outview');
+            /*
+                    $('#ce' + id + ' .cropper_cont').each(function (index, value) {
+                        //console.log($(this).find("img").height());
+                       // var a = $(this).find("img");
+                        //console.log(a);
+                        $(this).css('height', $(this).find("img").height());
+                      
+                    });
+                    */
+        }
+    };
 
 
 
@@ -615,70 +632,70 @@ $scope.lineInView = function (data, id) {
 
         }
         console.log('CHECK CROPPED');
-/*
-        $timeout(function() { 
-tempE();
-},1000);
-*/
+        /*
+                $timeout(function() { 
+        tempE();
+        },1000);
+        */
 
 
 
-/*
-        // Setup isScrolling variable
-var isScrolling;
+        /*
+                // Setup isScrolling variable
+        var isScrolling;
 
-// Listen for scroll events
- $('.content_cnv').bind('scroll', function(){
-     // alert('scrolling is cool!');
+        // Listen for scroll events
+         $('.content_cnv').bind('scroll', function(){
+             // alert('scrolling is cool!');
 
-      //console.log('scrolling');
-    // Clear our timeout throughout the scroll
-    window.clearTimeout( isScrolling );
+              //console.log('scrolling');
+            // Clear our timeout throughout the scroll
+            window.clearTimeout( isScrolling );
 
-    $(this).addClass('scrolling');
-    //tempD();
+            $(this).addClass('scrolling');
+            //tempD();
 
-    // Set a timeout to run after scrolling ends
-    isScrolling = setTimeout(function() {
-$('.content_cnv').removeClass('scrolling');
-        // Run the callback
-        //console.log( 'Scrolling has stopped.' );
+            // Set a timeout to run after scrolling ends
+            isScrolling = setTimeout(function() {
+        $('.content_cnv').removeClass('scrolling');
+                // Run the callback
+                //console.log( 'Scrolling has stopped.' );
 
-    }, 100);
+            }, 100);
 
-    });
-    */
-/*
-window.addEventListener('scroll', function ( event ) {
-console.log('add scroll listener');
-    // Clear our timeout throughout the scroll
-    window.clearTimeout( isScrolling );
+            });
+            */
+        /*
+        window.addEventListener('scroll', function ( event ) {
+        console.log('add scroll listener');
+            // Clear our timeout throughout the scroll
+            window.clearTimeout( isScrolling );
 
-    // Set a timeout to run after scrolling ends
-    isScrolling = setTimeout(function() {
+            // Set a timeout to run after scrolling ends
+            isScrolling = setTimeout(function() {
 
-        // Run the callback
-        console.log( 'Scrolling has stopped.' );
+                // Run the callback
+                console.log( 'Scrolling has stopped.' );
 
-    }, 66);
+            }, 66);
 
-}, false);
-*/
+        }, false);
+        */
 
         // TEST
-       // $('.resize-drag').css('clip-path', 'unset');
-       /*
-         $('.resize-drag').css('width', 'unset');
-          $('.resize-drag').css('margin-bottom', 'unset');
-          $('.resize-drag').css('margin-top', 'unset');
-          $('.resize-drag').css('max-width', '');
-          $('.resize-drag').css('left', 'unset');
-         $('.resize-drag').css('transform', 'scale(2)');
-         */
-         //transform: scale(.5);
+        // $('.resize-drag').css('clip-path', 'unset');
+        /*
+          $('.resize-drag').css('width', 'unset');
+           $('.resize-drag').css('margin-bottom', 'unset');
+           $('.resize-drag').css('margin-top', 'unset');
+           $('.resize-drag').css('max-width', '');
+           $('.resize-drag').css('left', 'unset');
+          $('.resize-drag').css('transform', 'scale(2)');
+          */
+        //transform: scale(.5);
 
         //$compile(cancel_img)($scope);
-       
+
         // reset crop container height (setCrop may not have had setCrop applied)
         //adjustCropped();
         /*
@@ -694,20 +711,20 @@ console.log('add scroll listener');
         */
 
 
-             //   var btn = document.getElementById("button");
-//btn._onclick = btn.onclick;
-//btn.onclick = function(){ return false; };
+        //   var btn = document.getElementById("button");
+        //btn._onclick = btn.onclick;
+        //btn.onclick = function(){ return false; };
 
 
 
     });
 
-        tempE = function(){
-                $(".cropper_cont").each(function (index, value) {
-                    console.log($(this).find("img").height());
+    tempE = function() {
+        $(".cropper_cont").each(function(index, value) {
+            console.log($(this).find("img").height());
 
-                    $(this).attr('height', $(this).find("img").height());
-                    /*
+            $(this).attr('height', $(this).find("img").height());
+            /*
              console.log($(this).parent().attr('contenteditable'));
              value._ce = $(this).parent().attr('contenteditable');
              $(this).parent().attr('contenteditable', 'false');
@@ -715,17 +732,17 @@ console.log('add scroll listener');
             value.onclick = function(){ return false; };
             */
         });
-            };
+    };
 
-    tempD = function(){
-                $(".cropper_cont").each(function (index, value) {
-             console.log($(this).parent().attr('contenteditable'));
-             value._ce = $(this).parent().attr('contenteditable');
-             $(this).parent().attr('contenteditable', 'false');
+    tempD = function() {
+        $(".cropper_cont").each(function(index, value) {
+            console.log($(this).parent().attr('contenteditable'));
+            value._ce = $(this).parent().attr('contenteditable');
+            $(this).parent().attr('contenteditable', 'false');
             value._onclick = value.onclick;
-            value.onclick = function(){ return false; };
+            value.onclick = function() { return false; };
         });
-            };
+    };
 
     // Listen for the end of the view transition.
 
@@ -737,11 +754,11 @@ console.log('add scroll listener');
                     $scope.totalDisplayed = -1000;
 
 
-                        //$window.addEventListener('resize', adjustCropped);
+                    //$window.addEventListener('resize', adjustCropped);
 
-    //$window.addEventListener('load', adjustCropped);
-    //$window.addEventListener('load', tempE );
-     
+                    //$window.addEventListener('load', adjustCropped);
+                    //$window.addEventListener('load', tempE );
+
                 }, 0);
             });
         }
