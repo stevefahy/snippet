@@ -3158,6 +3158,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         $(canvas).insertBefore('#image_' + id);
         //
 
+// Source Canvas
         var image_id;
         // If adjusted exists get that.
         if ($('#image_filtered_' + id).length > 0) {
@@ -3172,6 +3173,12 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         source.height = image.height;
         var ctx = source.getContext('2d');
         ctx.drawImage(image, 0, 0, image.width, image.height);
+
+        source.setAttribute('class', 'resize-drag temp_canvas_filtered');
+ // Get image Styles
+        cssStyleParsed = getStyles(id);
+        // If Styles exist apply original style to canvas.
+        source.setAttribute("style", cssStyleParsed);
 
         FilterImage.setSource(source);
 
