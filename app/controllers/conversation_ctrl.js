@@ -52,10 +52,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             },
             onChange: function(id) {
                 console.log('on change ' + $scope.adjust.sharpen); // logs 'on change slider-id'
-                FilterImage.setSharpen(FilterImage.getImageId(), FilterImage.getSource(), $scope.adjust.sharpen);
+                //FilterImage.setSharpen(FilterImage.getImageId(), FilterImage.getSource(), $scope.adjust.sharpen);
             },
             onEnd: function(id) {
                 console.log('on end ' + $scope.adjust.sharpen); // logs 'on end slider-id'
+                FilterImage.setSharpen(FilterImage.getImageId(), FilterImage.getSource(), $scope.adjust.sharpen);
             }
         }
     };
