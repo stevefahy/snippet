@@ -23,7 +23,21 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log('scope testclick');
     };
 
+    $scope.refreshSlider = function () {
+        $timeout(function () {
+            $scope.$broadcast('rzSliderForceRender');
+        });
+    };
 
+    $scope.addSlider = function(id){
+        console.log(id);
+        
+        var $el = $('<rzslider rz-slider-model="adjust.sharpen" rz-slider-options="adjust.options"></rzslider>').appendTo('#adjust_' + id + ' .image_adjust_sharpen');
+        
+        $compile($el)($scope);
+        console.log('added');
+
+    };
 
     $scope.adjust = {
         sharpen: 0,
@@ -137,9 +151,16 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     General.keyBoardListenStart();
 
+    $scope.$on('rzSliderRender', function(event, data) {
+        console.log('rzSliderRender: ' + data.id);
+        $scope.addSlider(data.id);
+    });
+    
+
+
     // Broadcast by UserData after it has processed the notification. (card has been created, updated or deleted by another user to this user).
     $scope.$on('CONV_NOTIFICATION', function(event, msg) {
-        console.log('NITIFY');
+        console.log('NOTIFY');
         // only update the conversation if the user is currently in that conversation
         if (id === msg.conversation_id) {
             updateConversationViewed(id);

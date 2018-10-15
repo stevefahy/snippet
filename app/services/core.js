@@ -391,7 +391,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             //&#x200b
             //var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><div class='filter_div' id='a_filter_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'></div></div><span class='after_image'>&#x200b;&#10;</span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
             //var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><div class='image_fltr'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'></div></div><span class='after_image'>&#x200b;&#10;</span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
-            var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'></div><span class='after_image'>&#x200b;&#10;</span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
+            var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'></div><slider></slider><span class='after_image'>&#x200b;&#10;</span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
             self.pasteHtmlAtCaret(new_image);
 
 
@@ -2011,9 +2011,11 @@ cardApp.service('FilterImage', ['$window', '$rootScope', '$timeout', '$q', '$htt
 
     this.setSharpen = function(id, source, amount){
         console.log('setSharpen');
-        
+        console.log(source);
         var canvas = document.getElementById('temp_canvas_filtered_' + id);
-        
+        console.log(canvas.width);
+        canvas.width = source.width;
+        canvas.height = source.height;
         var sharpen = amount;
         var adjacent = (1 - sharpen) / 4;
         var matrix = [0, adjacent, 0, adjacent, sharpen, adjacent, 0, adjacent, 0];
@@ -3158,7 +3160,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         $(canvas).insertBefore('#image_' + id);
         //
 
-// Source Canvas
+        // Source Canvas
         var image_id;
         // If adjusted exists get that.
         if ($('#image_filtered_' + id).length > 0) {
@@ -3177,7 +3179,11 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         source.setAttribute('class', 'resize-drag temp_canvas_filtered');
  // Get image Styles
         cssStyleParsed = getStyles(id);
-        // If Styles exist apply original style to canvas.
+       
+
+        //$(source).insertBefore('#image_' + id);
+
+         // If Styles exist apply original style to canvas.
         source.setAttribute("style", cssStyleParsed);
 
         FilterImage.setSource(source);
@@ -3310,24 +3316,20 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     };
 
     this.adjustImage = function(e, id) {
-
         $('.image_adjust_on').remove();
-
         if ($('#cropper_' + id + ' .image_adjust_div').length <= 0) {
-     
-            var filt = $('.image_adjust_div').insertAfter('#cropper_' + id);
-            filt.attr('id', 'filters_' + id);
+            var filt = $('.image_adjust_div').clone().insertAfter('#cropper_' + id);
+            filt.attr('id', 'adjust_' + id);
             filt.css('position', 'relative');
             filt.addClass('filters_active');
             filt.css('visibility', 'visible');
-
             FilterImage.setImageId(id);
-            //$('#red-sliderx').attr('ng-change','sliderChange(' + id + ')');
+            //FilterImage.refreshSlider();
+            var data = {'id':id};
+             $rootScope.$broadcast('rzSliderRender', data);
             
-
-            
+            //$('#red-sliderx').attr('ng-change','sliderChange(' + id + ')');   
         }
-
         this.settingsImage(id);
         e.stopPropagation();
     };
@@ -5951,3 +5953,15 @@ cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$comp
         }
     };
 }]);
+
+cardApp.module('myApp').directive('slider', function($compile) {
+    return {
+        scope: {
+            item: '='
+        },
+        link: function(scope, element) {
+            var generatedTemplate = '<rzslider class="subSegmentsSlider" rz-slider-model="slider.value" rz-slider-options="slider.options"></rzslider>';
+            element.append($compile(generatedTemplate)(scope));
+        }
+    };
+});
