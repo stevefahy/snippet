@@ -2990,7 +2990,7 @@ ctx.drawImage(canvasFilter, 0, 0);
 
                 FilterImage.setSource(source);
                 */
-
+/*
 var source_image = document.getElementById('image_' + id);
   var source = document.createElement('canvas');
             source.width = source_image.width;
@@ -3002,9 +3002,10 @@ var source_image = document.getElementById('image_' + id);
             // Get image Styles
             cssStyleParsed = getStyles(id);
    source.setAttribute("style", cssStyleParsed);
-            
-
             FilterImage.setSource(source);
+            */
+            //var source_image = document.getElementById('image_' + id);
+            self.createSourceCanvas(id, canvasFilter);
                 self.applyAdjustments(id, ia);
             }
             
@@ -3142,6 +3143,20 @@ var source_image = document.getElementById('image_' + id);
         }
     };
 
+    this.createSourceCanvas = function(id, source_image){
+  var source = document.createElement('canvas');
+            source.width = source_image.width;
+            source.height = source_image.height;
+            var ctx = source.getContext('2d');
+            ctx.drawImage(source_image, 0, 0, source_image.width, source_image.height);
+            source.setAttribute('id', 'temp_canvas_source_' + id);
+            source.setAttribute('class', 'resize-drag temp_canvas_filtered');
+            // Get image Styles
+            cssStyleParsed = getStyles(id);
+   source.setAttribute("style", cssStyleParsed);
+            FilterImage.setSource(source);
+    };
+
     this.settingsImage = function(id) {
         console.log('settings: ' + id);
         // imageToCanvas
@@ -3195,13 +3210,33 @@ var source_image = document.getElementById('image_' + id);
                     self.applyAdjustments(id, ia);
                 });
             } else {
-                FilterImage.setSource(canvas);
+
+                var source_image = document.getElementById('image_' + id);
+                self.createSourceCanvas(id, source_image);
+
+                /*
+  var source = document.createElement('canvas');
+            source.width = source_image.width;
+            source.height = source_image.height;
+            var ctx = source.getContext('2d');
+            ctx.drawImage(source_image, 0, 0, source_image.width, source_image.height);
+            source.setAttribute('id', 'temp_canvas_source_' + id);
+            source.setAttribute('class', 'resize-drag temp_canvas_filtered');
+            // Get image Styles
+            cssStyleParsed = getStyles(id);
+   source.setAttribute("style", cssStyleParsed);
+            FilterImage.setSource(source);
+            */
+
+                //FilterImage.setSource(canvas);
                 self.applyAdjustments(id, ia);
             }
         } else {
             // Not previously adjusted.
             // Use the original image as the source.
             var source_image = document.getElementById('image_' + id);
+            self.createSourceCanvas(id, source_image);
+            /*
             var source = document.createElement('canvas');
             source.width = source_image.width;
             source.height = source_image.height;
@@ -3211,15 +3246,11 @@ var source_image = document.getElementById('image_' + id);
             source.setAttribute('class', 'resize-drag temp_canvas_filtered');
             // Get image Styles
             cssStyleParsed = getStyles(id);
-
-
             //$(source).insertBefore('#image_' + id);
-
             // If Styles exist apply original style to canvas.
             source.setAttribute("style", cssStyleParsed);
-            
-
             FilterImage.setSource(source);
+            */
         }
 
 
