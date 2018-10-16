@@ -29,10 +29,16 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         });
     };
 
-    $scope.addSlider = function(id){
-        console.log(id);
+    $scope.addSlider = function(data){
+        console.log(data.id);
+        if(data.last_position != undefined){
+            $scope.adjust.sharpen = data.last_position;
+        } else {
+            $scope.adjust.sharpen = 0;
+        }
         
-        var $el = $('<rzslider rz-slider-model="adjust.sharpen" rz-slider-options="adjust.options"></rzslider>').appendTo('#adjust_' + id + ' .image_adjust_sharpen');
+        
+        var $el = $('<rzslider rz-slider-model="adjust.sharpen" rz-slider-options="adjust.options"></rzslider>').appendTo('#adjust_' + data.id + ' .image_adjust_sharpen');
         
         $compile($el)($scope);
         console.log('added');
@@ -154,7 +160,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     $scope.$on('rzSliderRender', function(event, data) {
         console.log('rzSliderRender: ' + data.id);
-        $scope.addSlider(data.id);
+        //$scope.addSlider(data.id);
+        $scope.addSlider(data);
     });
     
 

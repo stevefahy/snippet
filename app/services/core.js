@@ -1838,24 +1838,46 @@ cardApp.service('General', ['Users', 'Format', function(Users, Format) {
 
 cardApp.service('FilterImage', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', 'General', 'UserData', 'principal', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML, General, UserData, principal) {
 
-//this.Filters = {};
+    //this.Filters = {};
     var self = this;
     var image_id;
     var source;
 
-    this.setImageId = function(id){
+
+
+    this.setImageAdjustment = function(id, name, value) {
+        var ia = this.getImageAdjustments(id);
+        if(ia == undefined){
+            ia = {};
+        }
+        ia[name] = value;
+        $('#image_' + id).attr('adjustment-data', JSON.stringify(ia));
+    };
+
+    this.getImageAdjustments = function(id) {
+        var adjustment_data;
+        var ia = $('#image_' + id).attr('adjustment-data');
+        if (ia != undefined) {
+            adjustment_data = JSON.parse(ia);
+        }
+        return adjustment_data;
+    };
+
+    this.setImageId = function(id) {
+        console.log('SET: ' + id);
         image_id = id;
     };
 
-    this.getImageId = function(id){
+    this.getImageId = function() {
+        console.log('GET: ' + image_id);
         return image_id;
     };
 
-    this.setSource = function(canvas){
+    this.setSource = function(canvas) {
         source = canvas;
     };
 
-    this.getSource = function(){
+    this.getSource = function() {
         return source;
     };
 
@@ -2002,15 +2024,15 @@ cardApp.service('FilterImage', ['$window', '$rootScope', '$timeout', '$q', '$htt
         return output;
     };
 
-    this.createTemp = function(id){
+    this.createTemp = function(id) {
         var source = $('temp_canvas_filtered_' + id).clone().appendTo('#cropper_' + id);
         $(source).removeAttr('id');
         $(source).attr('id', 'source');
         return source;
     };
 
-    this.setSharpen = function(id, source, amount){
-        console.log('setSharpen');
+    this.setSharpen = function(id, source, amount) {
+        console.log('setSharpen: ' + id + ' : ' + source + ' : ' + amount);
         console.log(source);
         var canvas = document.getElementById('temp_canvas_filtered_' + id);
         console.log(canvas.width);
@@ -2022,7 +2044,8 @@ cardApp.service('FilterImage', ['$window', '$rootScope', '$timeout', '$q', '$htt
         var res = self.filterImage(self.convolute, source, matrix);
         var ctx = canvas.getContext('2d');
         ctx.putImageData(res, 0, 0);
-        
+
+        this.setImageAdjustment(id, 'sharpen', amount);
     };
 }]);
 
@@ -2135,7 +2158,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             console.log(img_height);
 
             // Get the filter and set it to cropper
-            var filter = $('#image_' + id).attr('filter-data');
+            var filter = $('#image_' + id).attr('adjustment-data');
             console.log(filter);
 
             $('#cropper_' + id).addClass(filter);
@@ -2880,11 +2903,9 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         });
     };
 
-    this.filterClick = function(e, button, id, filter) {
-
-        $('.' + id).attr('id', 'image_' + id);
-        $('#image_' + id).attr('filter-data', filter);
-
+    this.createFilter = function(id, filter) {
+        var deferred = $q.defer();
+        console.log('createFilter');
         convertImageToCanvas(document.getElementById('image_' + id), filter, id).then(function(canvas) {
 
             var canvasFilter = document.createElement('canvas');
@@ -2916,6 +2937,36 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             canvasFilter.setAttribute('id', 'temp_canvas_filtered_' + id);
             canvasFilter.setAttribute('class', 'resize-drag temp_canvas_filtered');
 
+            deferred.resolve(canvasFilter);
+
+            /*
+                        if ($('#cropper_' + id + ' #temp_canvas_filtered_' + id).length >= 0) {
+                            $('#cropper_' + id + ' #temp_canvas_filtered_' + id).remove();
+                        }
+
+                        // Remove last filter
+                        if ($('#cropper_' + id + ' .adjusted').length >= 0) {
+                            $('#cropper_' + id + ' .adjusted').remove();
+                        }
+
+                        $('#cropper_' + id + ' #image_' + id).css('display', 'none');
+
+                        $(canvasFilter).insertBefore('#image_' + id);
+                        */
+
+        });
+        return deferred.promise;
+    };
+
+    this.filterClick = function(e, button, id, filter) {
+        // redundant?
+        $('.' + id).attr('id', 'image_' + id);
+        // setImageAdjustment and getImageAdjustment directly set and get adjustment-data using image id
+        FilterImage.setImageAdjustment(id, 'filter', filter);
+
+        self.createFilter(id, filter).then(function(canvasFilter) {
+            console.log(canvasFilter);
+
             if ($('#cropper_' + id + ' #temp_canvas_filtered_' + id).length >= 0) {
                 $('#cropper_' + id + ' #temp_canvas_filtered_' + id).remove();
             }
@@ -2928,128 +2979,40 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             $('#cropper_' + id + ' #image_' + id).css('display', 'none');
 
 
-            $(canvasFilter).insertBefore('#image_' + id);
+$(canvasFilter).insertBefore('#image_' + id);
 
-            //ctx.font = "40pt Calibri";
-            //ctx.fillText("TEMP", 40, 40);
-            /*
-                        var dataUrl = canvasFilter.toDataURL();
+            var ia = FilterImage.getImageAdjustments(id);
+            if(ia != undefined){
+/*
+var source = document.createElement('canvas');
+var ctx = source.getContext('2d');
+ctx.drawImage(canvasFilter, 0, 0);
 
-                        var img = document.createElement('img');
-                        img.setAttribute('src', dataUrl);
-                        //var filter_data = getFilter(filter);
+                FilterImage.setSource(source);
+                */
 
-                        ////
-                        //var img4 = document.createElement('img');
-                        //img4.setAttribute('src', dataUrl);
-                        img.setAttribute('id', 'temp_image_filtered_' + id);
-                        img.setAttribute('class', 'resize-drag temp_image_filtered');
+var source_image = document.getElementById('image_' + id);
+  var source = document.createElement('canvas');
+            source.width = source_image.width;
+            source.height = source_image.height;
+            var ctx = source.getContext('2d');
+            ctx.drawImage(canvasFilter, 0, 0, source_image.width, source_image.height);
+            source.setAttribute('id', 'temp_canvas_source_' + id);
+            source.setAttribute('class', 'resize-drag temp_canvas_filtered');
+            // Get image Styles
+            cssStyleParsed = getStyles(id);
+   source.setAttribute("style", cssStyleParsed);
+            
 
-                        img.onload = function() {
+            FilterImage.setSource(source);
+                self.applyAdjustments(id, ia);
+            }
+            
 
-                            if ($('#cropper_' + id + ' #temp_image_filtered_' + id).length >= 0) {
-                                $('#cropper_' + id + ' #temp_image_filtered_' + id).remove();
-                            }
+            
 
-                            var img3 = this;
-                            var canvas3 = document.createElement('canvas');
-                            canvas3.setAttribute('id', 'image_filtered_' + id);
-                            canvas3.width = img3.width;
-                            canvas3.height = img3.height;
-                            var ctx = canvas3.getContext('2d');
-                            //if (filter_data.filter != undefined) {
-                            //    ctx.filter = filter_data.filter;
-                            //}
-                            ctx.drawImage(img3, 0, 0, img3.width, img3.height);
-
-                            var dataUrl = canvas3.toDataURL();
-
-
-
-                            var cssStyle = $('#image_' + id).attr("style");
-                            if (cssStyle != undefined) {
-                                // Parse the inline styles to remove the display style
-                                var cssStyleParsed = "";
-                                style_arr = cssStyle.split(';');
-                                for (i = 0; i < style_arr.length - 1; i++) {
-                                    if (style_arr[i].indexOf('display') < 0) {
-                                        cssStyleParsed += style_arr[i] + ';';
-                                    }
-                                }
-                                $(this).attr("style", cssStyleParsed);
-                            }
-
-                            $('#cropper_' + id + ' #image_' + id).css('display', 'none');
-
-                                           // Remove current filter.
-                                if ($('#cropper_' + id + ' img.filter').length > 0) {
-                                    $('#cropper_' + id + ' img.filter').remove();
-                                }
-
-                            $(this).insertBefore('#image_' + id);
-
-                            
-                            self.saveImage(id);
-
-                            /*
-                                            img4.onload = function() {
-                                                //$('#image_' + id).css('display', 'none');
-                                                if ($('#cropper_' + id + ' #temp_image_filtered_' + id).length >= 0) {
-                                                    $('#cropper_' + id + ' #temp_image_filtered_' + id).remove();
-                                                }
-                                                var cssStyle = $('#image_' + id).attr("style");
-                                                if (cssStyle != undefined) {
-                                                    // Parse the inline styles to remove the display style
-                                                    var cssStyleParsed = "";
-                                                    style_arr = cssStyle.split(';');
-                                                    for (i = 0; i < style_arr.length - 1; i++) {
-                                                        if (style_arr[i].indexOf('display') < 0) {
-                                                            cssStyleParsed += style_arr[i] + ';';
-                                                        }
-                                                    }
-                                                    $(this).attr("style", cssStyleParsed);
-                                                }
-                                                $('#cropper_' + id + ' #image_' + id).css('display', 'none');
-                                                $(this).insertBefore('#image_' + id);
-                                            };
-                                            */
-            /*
-            img4.onload = function() {
-                Format.dataURItoBlob(this.src).then(function(blob) {
-                    blob.name = 'image_filtered_' + id + '.jpg';
-                    blob.renamed = true;
-                    Format.prepImage([blob], function(result) {
-                        var img5 = document.createElement("img");
-                        img5.src = 'fileuploads/images/' + result.file + '?' + new Date();
-                        img5.className = 'filter';
-                        img5.onload = function() {
-                            // Remove current filter.
-                            if ($('#cropper_' + id + ' img.filter').length > 0) {
-                                $('#cropper_' + id + ' img.filter').remove();
-                            }
-                            var cssStyle = $('#image_' + id).attr("style");
-                            if (cssStyle != undefined) {
-                                // Parse the inline styles to remove the display style
-                                var cssStyleParsed = "";
-                                style_arr = cssStyle.split(';');
-                                for (i = 0; i < style_arr.length - 1; i++) {
-                                    if (style_arr[i].indexOf('display') < 0) {
-                                        cssStyleParsed += style_arr[i] + ';';
-                                    }
-                                }
-                                $(this).attr("style", cssStyleParsed);
-                            }
-                            $('#image_' + id).css('display', 'none');
-                            $(this).insertBefore('#image_' + id);
-                            // Save
-                            crop_finished = true;
-                        };
-                    });
-                });
-            };
-            */
-            //};
         });
+
         if (button != 'button') {
             e.stopPropagation();
         }
@@ -3084,7 +3047,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
 
 
-    
+
 
     removeTempCanvas = function(id) {
         $('.temp_canvas_filtered').remove();
@@ -3129,6 +3092,9 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             // Otherwise get the original image
             image_id = 'image_' + id;
         }
+        // Use the original image
+        image_id = 'image_' + id;
+
         var image = document.getElementById(image_id);
         var canvas = document.createElement('canvas');
         canvas.width = image.width;
@@ -3140,6 +3106,40 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         // hide adjusted image
         $('#cropper_' + id + ' .adjusted').css('display', 'none');
         return canvas;
+    };
+
+    function cloneCanvas(oldCanvas) {
+
+        //create a new canvas
+        var newCanvas = document.createElement('canvas');
+        var context = newCanvas.getContext('2d');
+
+        //set dimensions
+        newCanvas.width = oldCanvas.width;
+        newCanvas.height = oldCanvas.height;
+
+        //apply the old canvas to the new one
+        context.drawImage(oldCanvas, 0, 0);
+
+        //return the new canvas
+        return newCanvas;
+    }
+
+    this.applyAdjustments = function(id, ia) {
+        // Apply any other image adjustments
+        for (var i in ia) {
+            console.log(i);
+            if (i != 'filter') {
+                if (i == 'sharpen') {
+                    //this.setImageAdjustment(id, 'sharpen', amount);
+
+                    //$timeout(function() {
+                    FilterImage.setSharpen(id, FilterImage.getSource(), ia[i]);
+                    // }, 1000);
+                }
+            }
+
+        }
     };
 
     this.settingsImage = function(id) {
@@ -3156,162 +3156,113 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         cssStyleParsed = getStyles(id);
         // If Styles exist apply original style to canvas.
         canvas.setAttribute("style", cssStyleParsed);
+
         // add Canvas
         $(canvas).insertBefore('#image_' + id);
-        //
+        // Re-apply image adjustments
+        // Get image-adjustments object
+        var ia = FilterImage.getImageAdjustments(id);
+        console.log(ia);
+        //var local_conversation_pos = General.findWithAttr(conversations_model, '_id', msg.conversation_id);
+        // If this image has any adjustments.
+        if (ia != undefined) {
+            //var filter_pos = General.findWithAttr(ia, 'filter', msg.conversation_id);
+            // If there is a filter applied.
+            if (ia.filter != undefined) {
+                self.createFilter(id, ia.filter).then(function(canvasFilter) {
+                    console.log(canvasFilter);
 
-        // Source Canvas
-        var image_id;
-        // If adjusted exists get that.
-        if ($('#image_filtered_' + id).length > 0) {
-            image_id = 'image_filtered_' + id;
+                    //if ($('#cropper_' + id + ' #temp_canvas_filtered_' + id).length >= 0) {
+                    //    $('#cropper_' + id + ' #temp_canvas_filtered_' + id).remove();
+                    //}
+
+                    // Remove last filter
+                    if ($('#cropper_' + id + ' .adjusted').length >= 0) {
+                        $('#cropper_' + id + ' .adjusted').remove();
+                    }
+
+                    $('#cropper_' + id + ' #image_' + id).css('display', 'none');
+
+                    canvasFilter.setAttribute('id', 'temp_canvas_source_' + id);
+                    //$(canvasFilter).insertBefore('#image_' + id);
+
+
+                    var ctx = canvas.getContext('2d');
+                    ctx.drawImage(canvasFilter, 0, 0);
+
+                    FilterImage.setSource(canvasFilter);
+
+                    self.applyAdjustments(id, ia);
+                });
+            } else {
+                FilterImage.setSource(canvas);
+                self.applyAdjustments(id, ia);
+            }
         } else {
-            // Otherwise get the original image
-            image_id = 'image_' + id;
+            // Not previously adjusted.
+            // Use the original image as the source.
+            var source_image = document.getElementById('image_' + id);
+            var source = document.createElement('canvas');
+            source.width = source_image.width;
+            source.height = source_image.height;
+            var ctx = source.getContext('2d');
+            ctx.drawImage(source_image, 0, 0, source_image.width, source_image.height);
+            source.setAttribute('id', 'temp_canvas_source_' + id);
+            source.setAttribute('class', 'resize-drag temp_canvas_filtered');
+            // Get image Styles
+            cssStyleParsed = getStyles(id);
+
+
+            //$(source).insertBefore('#image_' + id);
+
+            // If Styles exist apply original style to canvas.
+            source.setAttribute("style", cssStyleParsed);
+            
+
+            FilterImage.setSource(source);
         }
-        var image = document.getElementById(image_id);
-        var source = document.createElement('canvas');
-        source.width = image.width;
-        source.height = image.height;
-        var ctx = source.getContext('2d');
-        ctx.drawImage(image, 0, 0, image.width, image.height);
-
-        source.setAttribute('class', 'resize-drag temp_canvas_filtered');
- // Get image Styles
-        cssStyleParsed = getStyles(id);
-       
-
-        //$(source).insertBefore('#image_' + id);
-
-         // If Styles exist apply original style to canvas.
-        source.setAttribute("style", cssStyleParsed);
-
-        FilterImage.setSource(source);
 
 
 
-/*
-        var image = document.getElementById('temp_canvas_filtered_' + id);
-        var sharpen = 5;
-        var adjacent = (1 - sharpen) / 4;
-        var matrix = [0, adjacent, 0, adjacent, sharpen, adjacent, 0, adjacent, 0];
-        var res = FilterImage.filterImage(FilterImage.convolute, image, matrix);
-        var ctx = canvas.getContext('2d');
-        ctx.putImageData(res, 0, 0);
-        */
-        //var res = Filters.filterImage(Filters.grayscale, img);
 
-        // Sharpen
-        // To maintain the brightness of the image, the sum of the matrix values should be one.
+        //
         /*
-        var res = Filters.filterImage(Filters.convolute, image,
-            [0, -0.3, 0,
-            -0.3, 2.2, -0.3,
-            0, -0.3, 0
-            ]
-        );
-        */
-        /*
-                var res = Filters.filterImage(Filters.convolute, image,
-                    [0, -0.5, 0,
-                    -0.5, 3, -0.5,
-                    0, -0.5, 0
-                    ]
-                );
-                */
-
-
-        /*
-        var matrix = [0, -1, 0,
-            -1, 5, -1,
-            0, -1, 0
-            ];
-            */
-
-        //var res = this.Filters.filterImage(this.Filters.convolute, image, matrix);
-        
-        /*
-        var res = Filters.filterImage(Filters.convolute, image,
-            [0, -9, 0,
-            -9, 37, -9,
-            0, -9, 0
-            ]
-        );
-        */
-
-        // Blur
-        /*
-        var res = Filters.filterImage(Filters.convolute, image,
-          [ 1/9, 1/9, 1/9,
-            1/9, 1/9, 1/9,
-            1/9, 1/9, 1/9 ]
-        );
-        */
-
-        // Gausian Blur 3x3  (for /32 add up to 32)
-        /*
-        var res = Filters.filterImage(Filters.convolute, image,
-          [ 2/16, 8/16, 2/16,
-            8/16, -24/16, 8/16,
-            2/16, 8/16, 2/16 ]
-        );
-        */
-        /*
-        var res = Filters.filterImage(Filters.convolute, image,
-          [ 8/16, 16/16, 8/16,
-            16/16, -80/16, 16/16,
-            8/16, 16/16, 8/16 ]
-        );
-        */
-        // G
-        // Gausian Blur
-        /*
-        var res = Filters.filterImage(Filters.convoluteFloat32, image,
-            [0, 0, 0, 5, 0, 0, 0,
-            0, 5, 18, 32, 18, 5, 0,
-            0, 18, 64, 100, 64, 18, 0,
-            5, 32, 100, 100, 100, 32, 5,
-            0, 18, 64, 100, 64, 18, 0,
-            0, 5, 18, 32, 18, 5, 0,
-            0, 0, 0, 5, 0, 0, 0
-            ]
-        );
-*/
-
-
-        /*
-                var grayscale = Filters.filterImage(Filters.grayscale, image);
-                // Note that ImageData values are clamped between 0 and 255, so we need
-                // to use a Float32Array for the gradient values because they
-                // range between -255 and 255.
-                var vertical = Filters.convoluteFloat32(grayscale,
-                    [-1, 0, 1,
-                        -2, 0, 2,
-                        -1, 0, 1
-                    ]);
-                var horizontal = Filters.convoluteFloat32(grayscale,
-                    [-1, -2, -1,
-                        0, 0, 0,
-                        1, 2, 1
-                    ]);
-                var final_image = Filters.createImageData(vertical.width, vertical.height);
-                for (var i = 0; i < final_image.data.length; i += 4) {
-                    // make the vertical gradient red
-                    var v = Math.abs(vertical.data[i]);
-                    final_image.data[i] = v;
-                    // make the horizontal gradient green
-                    var h = Math.abs(horizontal.data[i]);
-                    final_image.data[i + 1] = h;
-                    // and mix in some blue for aesthetics
-                    final_image.data[i + 2] = (v + h) / 4;
-                    final_image.data[i + 3] = 255; // opaque alpha
+                // Source Canvas
+                var image_id;
+                // If adjusted exists get that.
+                if ($('#image_filtered_' + id).length > 0) {
+                    image_id = 'image_filtered_' + id;
+                } else {
+                    // Otherwise get the original image
+                    image_id = 'image_' + id;
                 }
-                res = final_image;
+                */
+        // use the original image
+        //image_id = 'image_' + id;
+
+        //var image = document.getElementById(image_id);
+
+        /*
+                var image = document.getElementById('temp_canvas_filtered_' + id);
+                
+                var source = document.createElement('canvas');
+                source.width = image.width;
+                source.height = image.height;
+                var ctx = source.getContext('2d');
+                ctx.drawImage(image, 0, 0, image.width, image.height);
+
+                source.setAttribute('class', 'resize-drag temp_canvas_filtered');
+                // Get image Styles
+                cssStyleParsed = getStyles(id);
+
+
+                //$(source).insertBefore('#image_' + id);
+
+                // If Styles exist apply original style to canvas.
+                source.setAttribute("style", cssStyleParsed);
                 */
 
-
-
-
+        //FilterImage.setSource(source);
 
     };
 
@@ -3323,11 +3274,19 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             filt.css('position', 'relative');
             filt.addClass('filters_active');
             filt.css('visibility', 'visible');
+
             FilterImage.setImageId(id);
             //FilterImage.refreshSlider();
-            var data = {'id':id};
-             $rootScope.$broadcast('rzSliderRender', data);
-            
+            var data = { 'id': id };
+            // Get the last position of the slider.
+            var ia = FilterImage.getImageAdjustments(id);
+            console.log(ia);
+            if(ia != undefined){
+                // TODO store as slider pos.
+                data.last_position = ia.sharpen;
+            }
+            $rootScope.$broadcast('rzSliderRender', data);
+
             //$('#red-sliderx').attr('ng-change','sliderChange(' + id + ')');   
         }
         this.settingsImage(id);
@@ -3697,7 +3656,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
     this.setCrop = function(image_id) {
         console.log('setCrop: ' + image_id);
-        var cur_filter = $("#image_" + image_id).attr('filter-data');
+        var cur_filter = $("#image_" + image_id).attr('adjustment-data');
         console.log(cur_filter);
         //$timeout(function() {
         console.log(cur_filter);
@@ -3907,7 +3866,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
         // Re-apply filter
         // this.filterClick = function(e, button, id, filter)
-        //var cur_filter = $("#image_" + image_id).attr('filter-data');
+        //var cur_filter = $("#image_" + image_id).attr('adjustment-data');
         //console.log(cur_filter);
         //if (cur_filter != undefined) {
         //   filterClick('e', 'button', image_id, cur_filter);
