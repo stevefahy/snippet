@@ -5973,15 +5973,3 @@ cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$comp
         }
     };
 }]);
-
-cardApp.module('myApp').directive('slider', function($compile) {
-    return {
-        scope: {
-            item: '='
-        },
-        link: function(scope, element) {
-            var generatedTemplate = '<rzslider class="subSegmentsSlider" rz-slider-model="slider.value" rz-slider-options="slider.options"></rzslider>';
-            element.append($compile(generatedTemplate)(scope));
-        }
-    };
-});
