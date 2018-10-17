@@ -62,7 +62,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             },
             onEnd: function(id) {
                 console.log('on end ' + $scope.adjust.sharpen); // logs 'on end slider-id'
-                FilterImage.setSharpen(FilterImage.getImageId(), FilterImage.getSource(), $scope.adjust.sharpen);
+                FilterImage.setSharpen(FilterImage.getImageId(), FilterImage.getTarget(), FilterImage.getSource(), $scope.adjust.sharpen);
             }
         }
     };
@@ -72,8 +72,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log($scope.adjust.sharpen);
 
         //var source = FilterImage.createTemp(FilterImage.getImageId());
-
-        FilterImage.setSharpen(FilterImage.getImageId(), FilterImage.getSource(), $scope.adjust.sharpen);
+//id, target, source, amount
+        FilterImage.setSharpen(FilterImage.getImageId(), FilterImage.getTarget(), FilterImage.getSource(), $scope.adjust.sharpen);
     };
 
 

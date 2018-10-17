@@ -1842,12 +1842,13 @@ cardApp.service('FilterImage', ['$window', '$rootScope', '$timeout', '$q', '$htt
     var self = this;
     var image_id;
     var source;
+    var target;
 
 
 
     this.setImageAdjustment = function(id, name, value) {
         var ia = this.getImageAdjustments(id);
-        if(ia == undefined){
+        if (ia == undefined) {
             ia = {};
         }
         ia[name] = value;
@@ -1879,6 +1880,14 @@ cardApp.service('FilterImage', ['$window', '$rootScope', '$timeout', '$q', '$htt
 
     this.getSource = function() {
         return source;
+    };
+
+    this.setTarget = function(canvas) {
+        target = canvas;
+    };
+
+    this.getTarget = function() {
+        return target;
     };
 
     this.getPixels = function(img) {
@@ -2031,10 +2040,11 @@ cardApp.service('FilterImage', ['$window', '$rootScope', '$timeout', '$q', '$htt
         return source;
     };
 
-    this.setSharpen = function(id, source, amount) {
+    this.setSharpen = function(id, target, source, amount) {
         console.log('setSharpen: ' + id + ' : ' + source + ' : ' + amount);
         console.log(source);
-        var canvas = document.getElementById('temp_canvas_filtered_' + id);
+        //var canvas = document.getElementById('temp_canvas_filtered_' + id);
+        var canvas = target;//document.getElementById('temp_canvas_filtered_' + id);
         console.log(canvas.width);
         canvas.width = source.width;
         canvas.height = source.height;
@@ -2979,38 +2989,39 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             $('#cropper_' + id + ' #image_' + id).css('display', 'none');
 
 
-$(canvasFilter).insertBefore('#image_' + id);
+            $(canvasFilter).insertBefore('#image_' + id);
 
             var ia = FilterImage.getImageAdjustments(id);
-            if(ia != undefined){
-/*
-var source = document.createElement('canvas');
-var ctx = source.getContext('2d');
-ctx.drawImage(canvasFilter, 0, 0);
+            if (ia != undefined) {
+                /*
+                var source = document.createElement('canvas');
+                var ctx = source.getContext('2d');
+                ctx.drawImage(canvasFilter, 0, 0);
 
-                FilterImage.setSource(source);
-                */
-/*
-var source_image = document.getElementById('image_' + id);
-  var source = document.createElement('canvas');
-            source.width = source_image.width;
-            source.height = source_image.height;
-            var ctx = source.getContext('2d');
-            ctx.drawImage(canvasFilter, 0, 0, source_image.width, source_image.height);
-            source.setAttribute('id', 'temp_canvas_source_' + id);
-            source.setAttribute('class', 'resize-drag temp_canvas_filtered');
-            // Get image Styles
-            cssStyleParsed = getStyles(id);
-   source.setAttribute("style", cssStyleParsed);
-            FilterImage.setSource(source);
-            */
-            //var source_image = document.getElementById('image_' + id);
-            self.createSourceCanvas(id, canvasFilter);
-                self.applyAdjustments(id, ia);
+                                FilterImage.setSource(source);
+                                */
+                /*
+                var source_image = document.getElementById('image_' + id);
+                  var source = document.createElement('canvas');
+                            source.width = source_image.width;
+                            source.height = source_image.height;
+                            var ctx = source.getContext('2d');
+                            ctx.drawImage(canvasFilter, 0, 0, source_image.width, source_image.height);
+                            source.setAttribute('id', 'temp_canvas_source_' + id);
+                            source.setAttribute('class', 'resize-drag temp_canvas_filtered');
+                            // Get image Styles
+                            cssStyleParsed = getStyles(id);
+                   source.setAttribute("style", cssStyleParsed);
+                            FilterImage.setSource(source);
+                            */
+                //var source_image = document.getElementById('image_' + id);
+                self.createSourceCanvas(id, canvasFilter);
+                var target = document.getElementById('temp_canvas_filtered_' + id);
+                self.applyAdjustments(id, target, ia);
             }
-            
 
-            
+
+
 
         });
 
@@ -3103,9 +3114,9 @@ var source_image = document.getElementById('image_' + id);
         var ctx = canvas.getContext('2d');
         ctx.drawImage(image, 0, 0, image.width, image.height);
         // hide original image
-        $('#image_' + id).css('display', 'none');
+        //$('#image_' + id).css('display', 'none');
         // hide adjusted image
-        $('#cropper_' + id + ' .adjusted').css('display', 'none');
+        //$('#cropper_' + id + ' .adjusted').css('display', 'none');
         return canvas;
     };
 
@@ -3126,7 +3137,8 @@ var source_image = document.getElementById('image_' + id);
         return newCanvas;
     }
 
-    this.applyAdjustments = function(id, ia) {
+    this.applyAdjustments = function(id, target, ia) {
+        var deferred = $q.defer();
         // Apply any other image adjustments
         for (var i in ia) {
             console.log(i);
@@ -3135,26 +3147,28 @@ var source_image = document.getElementById('image_' + id);
                     //this.setImageAdjustment(id, 'sharpen', amount);
 
                     //$timeout(function() {
-                    FilterImage.setSharpen(id, FilterImage.getSource(), ia[i]);
+                    FilterImage.setSharpen(id, target, FilterImage.getSource(), ia[i]);
                     // }, 1000);
+                    deferred.resolve();
                 }
             }
 
         }
+        return deferred.promise;
     };
 
-    this.createSourceCanvas = function(id, source_image){
-  var source = document.createElement('canvas');
-            source.width = source_image.width;
-            source.height = source_image.height;
-            var ctx = source.getContext('2d');
-            ctx.drawImage(source_image, 0, 0, source_image.width, source_image.height);
-            source.setAttribute('id', 'temp_canvas_source_' + id);
-            source.setAttribute('class', 'resize-drag temp_canvas_filtered');
-            // Get image Styles
-            cssStyleParsed = getStyles(id);
-   source.setAttribute("style", cssStyleParsed);
-            FilterImage.setSource(source);
+    this.createSourceCanvas = function(id, source_image) {
+        var source = document.createElement('canvas');
+        source.width = source_image.width;
+        source.height = source_image.height;
+        var ctx = source.getContext('2d');
+        ctx.drawImage(source_image, 0, 0, source_image.width, source_image.height);
+        source.setAttribute('id', 'temp_canvas_source_' + id);
+        source.setAttribute('class', 'resize-drag temp_canvas_filtered');
+        // Get image Styles
+        cssStyleParsed = getStyles(id);
+        source.setAttribute("style", cssStyleParsed);
+        FilterImage.setSource(source);
     };
 
     this.settingsImage = function(id) {
@@ -3165,7 +3179,7 @@ var source_image = document.getElementById('image_' + id);
         canvas.setAttribute('class', 'resize-drag temp_canvas_filtered');
         // Remove previous Canvas if it exists
         if ($('#cropper_' + id + ' #temp_canvas_filtered_' + id).length >= 0) {
-            $('#cropper_' + id + ' #temp_canvas_filtered_' + id).remove();
+            //$('#cropper_' + id + ' #temp_canvas_filtered_' + id).remove();
         }
         // Get image Styles
         cssStyleParsed = getStyles(id);
@@ -3173,7 +3187,8 @@ var source_image = document.getElementById('image_' + id);
         canvas.setAttribute("style", cssStyleParsed);
 
         // add Canvas
-        $(canvas).insertBefore('#image_' + id);
+        //$(canvas).insertBefore('#image_' + id);
+        //$(canvas).css('visibility','hidden');
         // Re-apply image adjustments
         // Get image-adjustments object
         var ia = FilterImage.getImageAdjustments(id);
@@ -3193,10 +3208,10 @@ var source_image = document.getElementById('image_' + id);
 
                     // Remove last filter
                     if ($('#cropper_' + id + ' .adjusted').length >= 0) {
-                        $('#cropper_' + id + ' .adjusted').remove();
+                        //$('#cropper_' + id + ' .adjusted').remove();
                     }
 
-                    $('#cropper_' + id + ' #image_' + id).css('display', 'none');
+                    //$('#cropper_' + id + ' #image_' + id).css('display', 'none');
 
                     canvasFilter.setAttribute('id', 'temp_canvas_source_' + id);
                     //$(canvasFilter).insertBefore('#image_' + id);
@@ -3204,10 +3219,20 @@ var source_image = document.getElementById('image_' + id);
 
                     var ctx = canvas.getContext('2d');
                     ctx.drawImage(canvasFilter, 0, 0);
-
                     FilterImage.setSource(canvasFilter);
+                    FilterImage.setTarget(canvas);
+          
+                    
+                    
+                    self.applyAdjustments(id, canvas, ia).then(function(result) {
+                console.log('adjustment finished');
+                $(canvas).insertBefore('#image_' + id);
+                //$('#cropper_' + id + ' #image_filtered_' + id).css('display', 'none');
+                $('#cropper_' + id + ' .adjusted').css('display', 'none');
+            });
 
-                    self.applyAdjustments(id, ia);
+
+                    //$(canvas).css('visibility','unset');
                 });
             } else {
 
@@ -3229,13 +3254,18 @@ var source_image = document.getElementById('image_' + id);
             */
 
                 //FilterImage.setSource(canvas);
-                self.applyAdjustments(id, ia);
+                self.applyAdjustments(id, canvas, ia);
             }
         } else {
             // Not previously adjusted.
             // Use the original image as the source.
+            $(canvas).insertBefore('#image_' + id);
+             $('#cropper_' + id + ' #image_' + id).css('display', 'none');
             var source_image = document.getElementById('image_' + id);
             self.createSourceCanvas(id, source_image);
+
+             FilterImage.setSource(source_image);
+                    FilterImage.setTarget(canvas);
             /*
             var source = document.createElement('canvas');
             source.width = source_image.width;
@@ -3312,7 +3342,7 @@ var source_image = document.getElementById('image_' + id);
             // Get the last position of the slider.
             var ia = FilterImage.getImageAdjustments(id);
             console.log(ia);
-            if(ia != undefined){
+            if (ia != undefined) {
                 // TODO store as slider pos.
                 data.last_position = ia.sharpen;
             }
