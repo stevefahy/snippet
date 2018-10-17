@@ -3,7 +3,6 @@
     <div ng-if="$root.pageLoading" class="loading_screen">
         <div ng-include="'/views/spinner.html'"></div>
     </div>
-    <!--<div class="content_cnv" ng-class="{ 'content_cnv_off': $root.pageLoading}" scroll-indicator="scroll_indicator_options" scroll-glue>-->
     <div class="content_cnv" ng-class="{ 'content_cnv_off': $root.pageLoading}" scroll-glue in-view-container>
         <div id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : false | limitTo:totalDisplayed" on-finish-render="ngRepeatFinished" in-view="lineInView($inview, card._id)" in-view-options="inviewoptions">
             <div class=" resize-container" id="conversation_part" ng-init="disableCheckboxes(card._id)">
@@ -44,7 +43,6 @@
     <div class="image_adjust_div">
         <div class='close_adjust' onclick='closeFilters(event)'><i class='material-icons image_edit' id='ie_close'>&#xE14C;</i></div>
         <div class="image_adjust_sharpen">
-            <!--<rzslider rz-slider-model="adjust.sharpen" rz-slider-options="adjust.options"></rzslider>-->
         </div>
     </div>
 </div>

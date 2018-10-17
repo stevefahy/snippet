@@ -131,11 +131,10 @@
 .rzslider .rz-pointer.rz-active {
   z-index: 4;
 }
-/*
+
 .rzslider .rz-pointer.rz-active:after {
   background-color: #451aff;
 }
-*/
 
 .rzslider .rz-bubble {
   bottom: 16px;

@@ -87,7 +87,6 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'Conversations', 'Users', 're
         } else {
             checkbox.removeAttribute("checked");
         }
-
     };
 
     // DELETE ==================================================================

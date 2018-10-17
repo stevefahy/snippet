@@ -7,9 +7,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     openCrop = Cropp.openCrop;
     setCrop = Cropp.setCrop;
-    //deleteCrop = Cropp.deleteCrop;
     cloneCrop = Cropp.cloneCrop;
-
     editImage = Cropp.editImage;
     closeEdit = Cropp.closeEdit;
     filterImage = Cropp.filterImage;
@@ -18,31 +16,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     settingsImage = Cropp.settingsImage;
     adjustImage = Cropp.adjustImage;
 
-
-    $scope.testclick = function() {
-        console.log('scope testclick');
-    };
-
-    $scope.refreshSlider = function () {
-        $timeout(function () {
-            $scope.$broadcast('rzSliderForceRender');
-        });
-    };
-
-    $scope.addSlider = function(data){
+    $scope.addSlider = function(data) {
         console.log(data.id);
-        if(data.last_position != undefined){
+        if (data.last_position != undefined) {
             $scope.adjust.sharpen = data.last_position;
         } else {
             $scope.adjust.sharpen = 0;
         }
-        
-        
         var $el = $('<rzslider rz-slider-model="adjust.sharpen" rz-slider-options="adjust.options"></rzslider>').appendTo('#adjust_' + data.id + ' .image_adjust_sharpen');
-        
         $compile($el)($scope);
-        console.log('added');
-
     };
 
     $scope.adjust = {
@@ -54,48 +36,25 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             precision: 1,
             id: 'slider-id',
             onStart: function(sharpen) {
-                console.log('on start ' + $scope.adjust.sharpen); // logs 'on start slider-id'
+                //console.log('on start ' + $scope.adjust.sharpen);
             },
             onChange: function(id) {
-                console.log('on change ' + $scope.adjust.sharpen); // logs 'on change slider-id'
-                //FilterImage.setSharpen(FilterImage.getImageId(), FilterImage.getSource(), $scope.adjust.sharpen);
+                //console.log('on change ' + $scope.adjust.sharpen);
             },
             onEnd: function(id) {
-                console.log('on end ' + $scope.adjust.sharpen); // logs 'on end slider-id'
+                //console.log('on end ' + $scope.adjust.sharpen);
                 FilterImage.setSharpen(FilterImage.getImageId(), FilterImage.getTarget(), FilterImage.getSource(), $scope.adjust.sharpen);
             }
         }
     };
 
-    $scope.sliderChange = function() {
-        console.log(FilterImage.getImageId());
-        console.log($scope.adjust.sharpen);
-
-        //var source = FilterImage.createTemp(FilterImage.getImageId());
-//id, target, source, amount
-        FilterImage.setSharpen(FilterImage.getImageId(), FilterImage.getTarget(), FilterImage.getSource(), $scope.adjust.sharpen);
-    };
-
-
     $scope.$on('$destroy', function() {
         //leaving controller.
         Cropp.destroyCrop();
         $('.image_adjust_on').remove();
-        //$window.removeEventListener("resize", adjustCropped);
-
-        //$window.removeEventListener("load", adjustCropped);
     });
 
-
-
-    $scope.$on('getCards', function(event, data) {
-        //$scope.someFunction();
-        console.log(data);
-        console.log($scope.cards);
-        //Cropp.
-    });
-
-
+    $scope.$on('getCards', function(event, data) {});
 
     // Detect device user agent 
     var ua = navigator.userAgent;
@@ -105,6 +64,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     //$scope.scroll_indicator_options = {disable:false};
 
     $rootScope.pageLoading = true;
+    $rootScope.last_win_width;
 
     $scope.getFocus = Format.getFocus;
     $scope.getBlur = Format.getBlur;
@@ -159,16 +119,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     General.keyBoardListenStart();
 
     $scope.$on('rzSliderRender', function(event, data) {
-        console.log('rzSliderRender: ' + data.id);
-        //$scope.addSlider(data.id);
         $scope.addSlider(data);
     });
-    
-
 
     // Broadcast by UserData after it has processed the notification. (card has been created, updated or deleted by another user to this user).
     $scope.$on('CONV_NOTIFICATION', function(event, msg) {
-        console.log('NOTIFY');
         // only update the conversation if the user is currently in that conversation
         if (id === msg.conversation_id) {
             updateConversationViewed(id);
@@ -182,7 +137,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Broadcast by Database updateCard service when a card has been updated.
     $scope.$on('CARD_UPDATED', function(event, data) {
-        console.log('MESSY');
         var card_pos = General.findWithAttr($scope.cards, '_id', data._id);
         if (card_pos >= 0) {
             $scope.cards[card_pos].updatedAt = data.updatedAt;
@@ -207,7 +161,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     .then(function(result) {
                         if (result != undefined) {
                             $scope.cards = result.data;
-                            console.log($scope.cards);
                         }
                     });
             });
@@ -387,7 +340,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // If the user is logged in and a participant of the conversation the $scope.isMember=true.
     // card_create.html is added to the conversation if $scope.isMember=true.
     checkPermission = function(conversation_id, callback) {
-        console.log('checkperm');
         // If looged in
         if ($scope.currentUser) {
             UserData.getConversationModelById(conversation_id)
@@ -413,7 +365,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                 if (user_pos >= 0) {
                                     // user found in the participants array.
                                     // Add this conversation to the local model.
-                                    console.log(res[conv_pos]);
                                     UserData.addConversationModel(res[conv_pos])
                                         .then(function(result) {
                                             // If this is the first card in a new conversation then create the cards model for this conversation.
@@ -437,9 +388,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     getPublicConversation = function(id, name) {
-        //console.log('call worker');
-        //w.postMessage(id);
-
         Conversations.getPublicConversationById(id)
             .then(function(result) {
                 $scope.cards = result.data;
@@ -523,13 +471,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // clear the participants unviewed array by conversation id
     updateConversationViewed = function(id) {
-        console.log('u');
         UserData.updateConversationViewed(id);
     };
 
     // update the conversation with the new card data
     updateConversation = function(data) {
-        console.log('HERE');
         // Get the user name for the user id
         // TODO dont repeat if user id already retreived
         UserData.getConversationsUser(data.user)
@@ -550,63 +496,30 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         // Clear the cards unviewed arrary for this participant of this conversation.
         updateConversationViewed(data.conversationId);
     };
-    $rootScope.last_win_width;
+
     adjustCropped = function() {
-        console.log('adjustCropped');
         if (!$rootScope.crop_on) {
-            console.log('do crop');
             var win_width = $(window).width();
-            console.log($rootScope.last_win_width);
             if ($rootScope.last_win_width != win_width) {
-                console.log('DO ADJUST');
                 last_win_width = win_width;
-                console.log(win_width);
                 $(".cropped").each(function(index, value) {
-
-                    //var zoom_amount = (((gcd.width - gcbd.width) / gcbd.width) * 100) + 100;
-                    //console.log($(value).width());
-                    //var init_width = $(value).width();
-                    // console.log('init_width: ' + init_width);
-                    console.log('win_width: ' + win_width);
-                    // % increase = Increase ÷ Original Number × 100.
-                    //var zoom = init_width / win_width;
-                    //console.log('zoom: ' + zoom);
-
                     var stored = $(value).attr('cbd-data');
                     var stored_image = $(value).attr('image-data');
                     stored_image = JSON.parse(stored_image);
                     if (stored) {
                         stored = JSON.parse(stored);
-                        console.log(stored);
-                        console.log(stored.right);
-
                         if (stored_image.naturalWidth < win_width) {
                             $(value).parent().css("height", stored_image.height);
                             $(value).parent().css("width", stored_image.naturalWidth);
-                            //wrapper.style.height = stored_image.height + 'px';
-                            //wrapper.style.width = stored_image.width + 'px';
                             var zoom = stored_image.naturalWidth / (stored.right - stored.left);
-                            console.log(zoom);
                             $(value).css("zoom", zoom);
                         } else {
                             var zoom = win_width / (stored.right - stored.left);
-                            console.log(zoom);
                             $(value).css("zoom", zoom);
-
                             var height = (stored.bottom - stored.top) * zoom;
-                            //$(this).parent()
-
                             $(value).parent().css("height", height);
                         }
                     }
-                    //var rect = $(value).css( "zoom" );
-                    // divide img zoomby this  and apply to image
-                    //var current_zoom = $(value).css( "zoom" );
-                    //var new_zoom = current_zoom / increase_amount;
-                    // console.log('new_zoom: ' + new_zoom);
-                    //$(value).css( "zoom", new_zoom );
-                    //divide cont height by this and apply to cont
-
                 });
             }
         }
@@ -616,156 +529,29 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
 
     $scope.lineInView = function(data, id) {
-        //console.log(data + ' : ' + id);
         if (data) {
-            //$('#ce'+id).addClass('inview');
             $('#ce' + id).removeClass('outview');
-            /*
-                        $('#ce' + id + ' .cropper_cont').each(function (index, value) {
-                        //console.log($(this).find("img").height());
-                       // var a = $(this).find("img");
-                        //console.log(a);
-                        $(this).css('height', 'unset');
-                      
-                    });
-                    */
-
         } else {
-            //$('#ce'+id).removeClass('inview');
             $('#ce' + id).addClass('outview');
-            /*
-                    $('#ce' + id + ' .cropper_cont').each(function (index, value) {
-                        //console.log($(this).find("img").height());
-                       // var a = $(this).find("img");
-                        //console.log(a);
-                        $(this).css('height', $(this).find("img").height());
-                      
-                    });
-                    */
         }
     };
-
-
-
-
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
         $rootScope.pageLoading = false;
         if ($('.cropper-container').length > 0) {
-            console.log('manually remove');
             $('.cropper-container').remove();
             $('.cropper-hidden').removeClass('cropper-hidden');
-
-
-
-
         }
-        console.log('CHECK CROPPED');
-        /*
-                $timeout(function() { 
-        tempE();
-        },1000);
-        */
-
-
-
-        /*
-                // Setup isScrolling variable
-        var isScrolling;
-
-        // Listen for scroll events
-         $('.content_cnv').bind('scroll', function(){
-             // alert('scrolling is cool!');
-
-              //console.log('scrolling');
-            // Clear our timeout throughout the scroll
-            window.clearTimeout( isScrolling );
-
-            $(this).addClass('scrolling');
-            //tempD();
-
-            // Set a timeout to run after scrolling ends
-            isScrolling = setTimeout(function() {
-        $('.content_cnv').removeClass('scrolling');
-                // Run the callback
-                //console.log( 'Scrolling has stopped.' );
-
-            }, 100);
-
-            });
-            */
-        /*
-        window.addEventListener('scroll', function ( event ) {
-        console.log('add scroll listener');
-            // Clear our timeout throughout the scroll
-            window.clearTimeout( isScrolling );
-
-            // Set a timeout to run after scrolling ends
-            isScrolling = setTimeout(function() {
-
-                // Run the callback
-                console.log( 'Scrolling has stopped.' );
-
-            }, 66);
-
-        }, false);
-        */
-
-        // TEST
-        // $('.resize-drag').css('clip-path', 'unset');
-        /*
-          $('.resize-drag').css('width', 'unset');
-           $('.resize-drag').css('margin-bottom', 'unset');
-           $('.resize-drag').css('margin-top', 'unset');
-           $('.resize-drag').css('max-width', '');
-           $('.resize-drag').css('left', 'unset');
-          $('.resize-drag').css('transform', 'scale(2)');
-          */
-        //transform: scale(.5);
-
-        //$compile(cancel_img)($scope);
-
-        // reset crop container height (setCrop may not have had setCrop applied)
-        //adjustCropped();
-        /*
-        $(".cropped").each(function (index, value) {
-            //console.log($(this).attr('oontainer-data'));
-            //console.log(this,$(this).attr('oontainer-data'));
-            console.log($(value).attr('container-data'));
-            console.log($(value).attr('container-data').length);
-            if($(value).attr('container-data').length > 0){
-                $(value).parent().css('height', $(value).attr('container-data') + 'px');
-            }
-        });
-        */
-
-
-        //   var btn = document.getElementById("button");
-        //btn._onclick = btn.onclick;
-        //btn.onclick = function(){ return false; };
-
-
-
     });
 
     tempE = function() {
         $(".cropper_cont").each(function(index, value) {
-            console.log($(this).find("img").height());
-
             $(this).attr('height', $(this).find("img").height());
-            /*
-             console.log($(this).parent().attr('contenteditable'));
-             value._ce = $(this).parent().attr('contenteditable');
-             $(this).parent().attr('contenteditable', 'false');
-            value._onclick = value.onclick;
-            value.onclick = function(){ return false; };
-            */
         });
     };
 
     tempD = function() {
         $(".cropper_cont").each(function(index, value) {
-            console.log($(this).parent().attr('contenteditable'));
             value._ce = $(this).parent().attr('contenteditable');
             $(this).parent().attr('contenteditable', 'false');
             value._onclick = value.onclick;
@@ -774,20 +560,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     // Listen for the end of the view transition.
-
     $(".page").on("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend", function(e) {
         if (e.originalEvent.animationName == "slide-in") {
             $timeout(function() {
                 $scope.$apply(function() {
                     // Load the rest of the cards.
                     $scope.totalDisplayed = -1000;
-
-
-                    //$window.addEventListener('resize', adjustCropped);
-
-                    //$window.addEventListener('load', adjustCropped);
-                    //$window.addEventListener('load', tempE );
-
                 }, 0);
             });
         }
