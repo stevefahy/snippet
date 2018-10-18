@@ -40,18 +40,18 @@
     <!-- Google Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- Angular -->
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-resource.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-animate.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js" defer></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-resource.min.js" defer></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js" defer></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-animate.js" defer></script>
     <!-- jQuery -->
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous" defer></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous" defer></script>
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous" defer></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous" defer></script>
     <!-- Custom Styles -->
     <link rel="stylesheet" href="/style/customstyle.css">
     <link rel="stylesheet" href="/style/ng-img-crop.css">
@@ -59,91 +59,63 @@
     <link rel="stylesheet" href="/style/instagram.css">
     <link rel="stylesheet" href="/style/rzslider.css">
     <!-- Cropper -->
-    <script type="text/javascript" src="/js/cropper.js"></script>
+    <script type="text/javascript" src="/js/cropper.js" defer></script>
     <!-- Sanitize -->
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-sanitize.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-sanitize.js" defer></script>
     <!-- Angular Cookies -->
-    <script type="text/javascript" src="/js/angular-cookies.min_1.6.9.js"></script>
+    <script type="text/javascript" src="/js/angular-cookies.min_1.6.9.js" defer></script>
     <!-- Angular JWT -->
-    <script type="text/javascript" src="/js/angular-jwt.js"></script>
+    <script type="text/javascript" src="/js/angular-jwt.js" defer></script>
     <!-- Moment -->
-    <script src="/js/moment.min.js"></script>
-    <script type="text/javascript" src="/js/angular-inview.js"></script>
-    <script>
-        //moment().format();
-    moment().format("ddd, hA");
-    moment.updateLocale('en', {
-        relativeTime: {
-            future: "in %s",
-            past: "%s ago",
-            s: 'seconds',
-            ss: '%d seconds',
-            m: "a minute",
-            mm: "%d minutes",
-            h: "an hour",
-            hh: "%d hours",
-            d: "a day",
-            dd: "%d days",
-            M: "a month",
-            MM: "%d months",
-            y: "a year",
-            yy: "%d years"
-        },
-        calendar: {
-            lastDay: '[YESTERDAY]',
-            sameDay: 'HH:mm',
-            nextDay: '[Tomorrow at] HH:mm',
-            lastWeek: 'DD/MM/YY',
-            nextWeek: 'dddd [at] HH:mm',
-            sameElse: 'L'
-        }
-    });
-    </script>
-    <script src="/js/angular_moment.js"></script>
+    <script src="/js/moment.min.js" defer></script>
+    <script src="/js/moment.config.js" defer></script>
+    <script type="text/javascript" src="/js/angular-inview.js" defer></script>
+    <script src="/js/angular_moment.js" defer></script>
     <!-- exifjs For reading exif data from images -->
-    <script src="/js/exif.js"></script>
+    <script src="/js/exif.js" defer></script>
     <!-- scrollintoviewifneed -->
-    <script src="/js/scrollintoviewifneeded.js"></script>
+    <script src="/js/scrollintoviewifneeded.js" defer></script>
     <!-- ngImgCrop -->
-    <script src="/js/ng-img-crop.js"></script>
+    <script src="/js/ng-img-crop.js" defer></script>
     <!-- scrollglue -->
-    <script src="/js/scrollglue.js"></script>
+    <script src="/js/scrollglue.js" defer></script>
     <!-- rzslider -->
-    <script src="/js/rzslider.js"></script>
+    <script src="/js/rzslider.js" defer></script>
 
     <!-- load our main application -->
-    <script src="/modules/app.js"></script>
+    <script src="/modules/app.js" defer></script>
     <!-- load services -->
-    <script src="/services/general.js"></script>
-    <script src="/services/format.js"></script>
-    <script src="/services/cropp.js"></script>
-    <script src="/services/image_adjustment.js"></script>
-    <script src="/services/database.js"></script>
-    <script src="/services/format_html.js"></script>
-    <script src="/services/edit.js"></script>
-    <script src="/services/replace_tags.js"></script>
+    <script src="/services/general.js" defer></script>
+    <script src="/services/format.js" defer></script>
+    <script src="/services/filters_config.js" defer></script>
+    <script src="/services/cropp.js" defer></script>
+    <script src="/services/image_adjustment.js" defer></script>
+    <script src="/services/database.js" defer></script>
+    <script src="/services/format_html.js" defer></script>
+    <script src="/services/edit.js" defer></script>
+    <script src="/services/replace_tags.js" defer></script>
     <!-- load filters -->
-    <script src="/filters/filters.js"></script>
+    <script src="/filters/filters.js" defer></script>
     <!-- load directives -->
-    <script src="/directives/directives.js"></script>
+    <script src="/directives/directives.js" defer></script>
     <!-- load factories -->
-    <script src="/factories/factories.js"></script>
+    <script src="/factories/factories.js" defer></script>
 
     <!-- load Controllers -->
-    <script src="/controllers/login_ctrl.js"></script>
-    <script src="/controllers/card_ctrl.js"></script>
-    <script src="/controllers/footer_ctrl.js"></script>
-    <script src="/controllers/header_ctrl.js"></script>
-    <script src="/controllers/cardcreate_ctrl.js"></script>
-    <script src="/controllers/contacts_ctrl.js"></script>
-    <script src="/controllers/join_ctrl.js"></script>
-    <script src="/controllers/usersetting_ctrl.js"></script>
-    <script src="/controllers/conversation_ctrl.js"></script>
-    <script src="/controllers/conversations_ctrl.js"></script>
-    <script src="/controllers/group_ctrl.js"></script>
-    <script src="/controllers/main_ctrl.js"></script>
+    <script src="/controllers/login_ctrl.js" defer></script>
+    <script src="/controllers/card_ctrl.js" defer></script>
+    <script src="/controllers/footer_ctrl.js" defer></script>
+    <script src="/controllers/header_ctrl.js" defer></script>
+    <script src="/controllers/cardcreate_ctrl.js" defer></script>
+    <script src="/controllers/contacts_ctrl.js" defer></script>
+    <script src="/controllers/join_ctrl.js" defer></script>
+    <script src="/controllers/usersetting_ctrl.js" defer></script>
+    <script src="/controllers/conversation_ctrl.js" defer></script>
+    <script src="/controllers/conversations_ctrl.js" defer></script>
+    <script src="/controllers/group_ctrl.js" defer></script>
+    <script src="/controllers/main_ctrl.js" defer></script>
     <!-- socket.io -->
-    <script src="/socket.io/socket.io.js"></script>
+    <script src="/socket.io/socket.io.js" defer></script>
 </head>
 
 <body>
