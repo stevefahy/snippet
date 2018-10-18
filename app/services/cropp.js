@@ -610,7 +610,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                     $('#temp_image_filtered_' + id).remove();
                     $(this).insertBefore('#image_' + id);
                     // SAVE
-                    crop_finished = true;
+                    image_edit_finished = true;
                     $('#cropper_' + id).closest('div.ce').focus();
                     $('#cropper_' + id).closest('div.ce').blur();
                 };
@@ -873,7 +873,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         $('#cropper_' + id).removeClass('cropping');
         removeTempCanvas(id);
         // SAVE
-        crop_finished = true;
+        image_edit_finished = true;
         $('#cropper_' + id).closest('div.ce').focus();
         $('#cropper_' + id).closest('div.ce').blur();
     };
@@ -1095,7 +1095,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
         $timeout(function() {
             // After image
-            crop_finished = true;
+            image_edit_finished = true;
             // CHECK - still needed?
             //var card_id = $('#cropper_' + image_id).parent().attr('id');
             //var active_el = document.activeElement;

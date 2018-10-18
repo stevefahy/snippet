@@ -498,21 +498,21 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             var active = $(document.activeElement).closest("div").attr('id');
             var active2 = $(document.activeElement);
             // If the blurred card is not the current card or the hidden input.
-            if (('ce' + card._id != active && (active != 'hidden_input_container')) || crop_finished == true) {
+            if (('ce' + card._id != active && (active != 'hidden_input_container')) || image_edit_finished == true) {
                 // Check if there is a marky in progress
                 // zm launching image capture should not trigger an update. It causes error.
                 found_marky = findMarky(card.content);
                 // check the content has changed and not currently mid marky
-                if ((card.content != card.original_content && (found_marky == false)) || crop_finished == true) {
+                if ((card.content != card.original_content && (found_marky == false)) || image_edit_finished == true) {
                     // Only do this if not in current card?
                     if ($('.cropper-container').length > 0) {
                         $('.cropper-container').remove();
                         card.content = $('#ce' + card._id).html();
                     }
-                    if (crop_finished) {
+                    if (image_edit_finished) {
                         card.content = $('#ce' + card._id).html();
                     }
-                    crop_finished = false;
+                    image_edit_finished = false;
                     // Inject the Database Service
                     var Database = $injector.get('Database');
                     // Update the card

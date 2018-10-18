@@ -1,5 +1,9 @@
 var cardApp = angular.module("cardApp", ['ngSanitize', 'ngRoute', 'angularMoment', 'ngAnimate', 'ngImgCrop', 'ngCookies', 'angular-jwt', 'luegg.directives', 'angular-inview', 'rzModule']);
 
+// Global value
+
+var image_edit_finished = true;
+
 //
 // ROUTES
 //
