@@ -17,7 +17,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     adjustImage = Cropp.adjustImage;
 
     $scope.addSlider = function(data) {
-        console.log(data.id);
         if (data.last_position != undefined) {
             $scope.adjust.sharpen = data.last_position;
         } else {

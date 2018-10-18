@@ -2697,10 +2697,11 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 // Apply any other image adjustments
                 if (i == 'sharpen') {
                     FilterImage.setSharpen(id, target, FilterImage.getSource(), ia[i]);
-                    deferred.resolve();
+                    
                 }
             }
         }
+        deferred.resolve();
         return deferred.promise;
     };
 
@@ -3222,6 +3223,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                         // Update the Conversation updateAt time.
                         Conversations.updateTime(card.conversationId)
                             .then(function(response) {
+                                updateinprogress = false;
                                 // Only send notifications if there are other participants.
                                 if (response.data.participants.length > 1) {
                                     var notification = self.setNotification(response.data, currentUser, card_content);
@@ -3263,7 +3265,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                     $q.all(promises).then(function() {
                                         // update other paticipants in the conversation via socket.
                                         socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: card.conversationId, participants: viewed_users });
-                                        updateinprogress = false;
+                                        //updateinprogress = false;
                                     });
                                 }
                             });
