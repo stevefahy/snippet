@@ -13,7 +13,7 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
     // variable to turn on animation of view chage. Loading conversation directly should not animate.
     $rootScope.animate_pages = true;
     // Enable scroll indicator if mobile.
-    $scope.scroll_indicator_options = { disable: !$rootScope.is_mobile };
+    //$scope.scroll_indicator_options = { disable: !$rootScope.is_mobile };
     //$scope.scroll_indicator_options = false;
     // array of conversations
     $scope.conversations = [];

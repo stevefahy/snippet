@@ -60,7 +60,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var ua = navigator.userAgent;
 
     // Enable scroll indicator if mobile.
-    $scope.scroll_indicator_options = { disable: !$rootScope.is_mobile };
+    //$scope.scroll_indicator_options = { disable: !$rootScope.is_mobile };
     //$scope.scroll_indicator_options = {disable:false};
 
     $rootScope.pageLoading = true;
