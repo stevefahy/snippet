@@ -141,6 +141,8 @@ module.exports = function(app, passport) {
     app.get('/api/logout', function(req, res) {
         req.logout();
         req.logOut();
+        // redirect to login
+        res.redirect('/api/login');
     });
 
     // Route to get user data.
