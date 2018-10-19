@@ -192,6 +192,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
     // CREATE CARD
     this.createCard = function(id, card_create, currentUser) {
+console.log('create');
         var promises = [];
         card_create.user = currentUser.google.name;
         // Get the Conversation in which this card is being created.
@@ -226,6 +227,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                             notification_body = notification.body;
                             sent_content = FormatHTML.prepSentContent(notification_body, sent_content_length);
                             // Send notifications
+console.log(response.data.participants);
                             for (var i in response.data.participants) {
                                 // dont emit to the user which sent the card
                                 if (response.data.participants[i]._id !== currentUser._id) {
@@ -237,12 +239,16 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                             // Get the participants notification key
                                             // Set the message title and body
                                             if (result.notification_key !== undefined) {
-                                                var dataObj = new createData(result.notification_key, notification_title, sent_content, response.data._id);
+                                                //var dataObj = new createData(result.notification_key, notification_title, sent_content, response.data._id);
+var dataObj = new createData(result.tokens[0].token, notification_title, sent_content, response.data._id);
+
                                                 var optionsObj = new createOptions(headersObj.headers, dataObj.data);
+console.log(dataObj);
+console.log(optionsObj);
                                                 // Send the notification
                                                 Users.send_notification(optionsObj.options)
                                                     .then(function(res) {
-                                                        //console.log(res);
+                                                        console.log(res);
                                                     });
                                             }
                                         }));

@@ -208,7 +208,7 @@ cardApp.factory('socket', function($rootScope, $window) {
     socket = io({ transports: ['websocket'] });
 
     notifyUsers = function(msg) {
-        //console.log('notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
+        console.log('notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
         $rootScope.$broadcast('NOTIFICATION', msg);
     };
 

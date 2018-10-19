@@ -649,10 +649,12 @@ module.exports = function(app, passport) {
                     data.operation = "create";
                     request(options, function(err, response, body) {
                         if (err) {
-                            //console.log('err: ' + err);
+                            console.log('err: ' + err);
                             throw err;
                         } else {
+                            console.log(response);
                             var notification_key = body.notification_key;
+                            console.log('notification_key: ' + notification_key);
                             // Save to DB
                             var updateuser = new User(user);
                             updateuser.notification_key_name = user._id;
