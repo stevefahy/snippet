@@ -620,8 +620,8 @@ module.exports = function(app, passport) {
         //}
         console.log('post /api/users/update_notification');
         console.log(req.body.id);
-        var device_id = req.body.notification_values.id;
-        var token = req.body.notification_values.token;
+        var device_id = req.body.id;
+        var token = req.body.token;
         User.findById({ '_id': req.principal._id }, function(error, user) {
             if (error) {
                 console.log(error);
