@@ -443,9 +443,10 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
         console.log('received token from android');
         console.log(data);
         notification_values = JSON.parse(data);
+        console.log(notification_values);
         if (notification_values.id != undefined && notification_values.token != undefined) {
             // get notifcation data and check if this needs to be updated or added
-            Users.update_notification(notification_values)
+            Users.update_notification(data)
                 .then(function(res) {
                     console.log(res);
                     console.log('notification updated');
