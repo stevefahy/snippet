@@ -220,6 +220,7 @@ console.log('create');
                 // Update the Conversation updateAt time.
                 Conversations.updateTime(current_conversation_id)
                     .then(function(response) {
+                        console.log(response.data);
                         // Only send notifications if there are other participants.
                         if (response.data.participants.length > 1) {
                             var notification = self.setNotification(response.data, currentUser, card_content);
@@ -238,8 +239,10 @@ console.log(response.data.participants);
                                         .then(function(result) {
                                             // Get the participants notification key
                                             // Set the message title and body
-                                            if (result.notification_key !== undefined) {
+                                            //if (result.notification_key !== undefined) {
+                                                if (result.notification_key_name !== undefined) {
                                                 //var dataObj = new createData(result.notification_key, notification_title, sent_content, response.data._id);
+// Send to all registered devices!
 var dataObj = new createData(result.tokens[0].token, notification_title, sent_content, response.data._id);
 
                                                 var optionsObj = new createOptions(headersObj.headers, dataObj.data);
