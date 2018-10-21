@@ -618,6 +618,7 @@ module.exports = function(app, passport) {
             // refreshedToken
             //reg_id = req.body.refreshedToken;
         //}
+        console.log('post /api/users/update_notification');
         console.log(req.body.notification_values);
         var device_id = req.body.notification_values.id;
         var token = req.body.notification_values.token;

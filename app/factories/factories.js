@@ -103,6 +103,8 @@ cardApp.factory('Users', ['$http', function($http) {
             return $http.put(theurl, contacts);
         },
         update_notification: function(notification_values) {
+            console.log('User.update_notification');
+            console.log(notification_values);
             return $http.post('api/users/update_notification', notification_values);
         },
         send_notification: function(notification_data) {
