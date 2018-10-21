@@ -371,6 +371,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     var ua = navigator.userAgent;
     //$window.androidTokenRefresh = this.androidTokenRefresh;
     $window.androidToken = this.androidToken;
+    $window.androidTokenUpdated = this.androidTokenUpdated;
     $window.mobileNotification = this.mobileNotification;
     $window.networkChange = this.networkChange;
 
@@ -439,6 +440,11 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     /*
     Android.getFCMToken
     */
+    androidTokenUpdated = function(){
+        console.log('androidTokenUpdated');
+        UserData.getFCMToken();
+    };
+
     androidToken = function(data) {
         console.log('received token from android');
         console.log(data);
@@ -456,6 +462,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     };
 
     UserData.getFCMToken = function() {
+        console.log('UserData.getFCMToken');
         var deferred = $q.defer();
         if (ua.indexOf('AndroidApp') >= 0) {
             Android.getFCMToken();

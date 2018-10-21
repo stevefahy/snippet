@@ -620,9 +620,8 @@ module.exports = function(app, passport) {
         //}
         console.log('post /api/users/update_notification');
         console.log(req.body.id);
-        console.log(req.body.token);
-        var device_id = req.body.id;
-        var token = req.body.token;
+        var device_id = req.body.notification_values.id;
+        var token = req.body.notification_values.token;
         User.findById({ '_id': req.principal._id }, function(error, user) {
             if (error) {
                 console.log(error);
@@ -675,7 +674,7 @@ module.exports = function(app, passport) {
                 */
                 // First time. Create notification key
                 
-                if (user.notification_key === undefined) {
+                if (user.notification_key_name === undefined) {
                     console.log('First time. Create notification key');
                     //var notification_key = body.notification_key;
                            // console.log('notification_key: ' + notification_key);
