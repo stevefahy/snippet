@@ -10,7 +10,7 @@ var userSchema = new Schema({
     contacts: [{ "type": Schema.Types.ObjectId, "ref": "User" }],
     imported_contacts: [],
     notification_key_name: String,
-    notification_key: String,
+    //notification_key: String,
     first_login: Boolean,
     user_name: String,
     avatar: String,

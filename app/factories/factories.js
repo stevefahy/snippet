@@ -102,8 +102,8 @@ cardApp.factory('Users', ['$http', function($http) {
             var theurl = 'api/users/delete_contacts/';
             return $http.put(theurl, contacts);
         },
-        update_notification: function(refreshedToken) {
-            return $http.post('api/users/update_notification', refreshedToken);
+        update_notification: function(notification_values) {
+            return $http.post('api/users/update_notification', notification_values);
         },
         send_notification: function(notification_data) {
             return $http.post('api/users/send_notification', notification_data);
@@ -367,7 +367,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     var isLoading = false;
     $rootScope.dataLoading = true;
     var ua = navigator.userAgent;
-    $window.androidTokenRefresh = this.androidTokenRefresh;
+    //$window.androidTokenRefresh = this.androidTokenRefresh;
     $window.androidToken = this.androidToken;
     $window.mobileNotification = this.mobileNotification;
     $window.networkChange = this.networkChange;
@@ -425,6 +425,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
         });
     };
 
+/*
     androidTokenRefresh = function(data) {
         refreshedToken = JSON.parse(data);
         if (refreshedToken.id != undefined && refreshedToken.refreshedToken != undefined) {
@@ -432,25 +433,45 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
             Users.update_notification(refreshedToken);
         }
     };
-
+    */
+    /*
+    Android.getFCMToken
+    */
     androidToken = function(data) {
-        token = JSON.parse(data);
-        if (token.id != undefined) {
+        notification_values = JSON.parse(data);
+        if (notification_values.id != undefined && notification_values.token != undefined) {
             // get notifcation data and check if this needs to be updated or added
-            Users.update_notification(token)
+            Users.update_notification(notification_values)
                 .then(function(res) {
-                    $rootScope.receivedToken = token;
+                    console.log(res);
+                    console.log('notification updated');
+                    //$rootScope.receivedToken = token;
                 });
         }
     };
 
+    UserData.getFCMToken = function() {
+        var deferred = $q.defer();
+        if (ua.indexOf('AndroidApp') >= 0) {
+            Android.getFCMToken();
+            deferred.resolve();
+        } else {
+            // Web
+            $timeout(function() {
+                deferred.resolve();
+            }, 100);
+        }
+        return deferred.promise;
+    };
+    /*
     UserData.checkFCMToken = function() {
         var deferred = $q.defer();
         if (ua.indexOf('AndroidApp') >= 0) {
             // check if exists in DB.
             if (UserData.getUser().notification_key_name != undefined) {
                 // Check for refresh token.
-                Android.checkFCMToken();
+                //Android.checkFCMToken();
+                Android.getFCMToken();
                 deferred.resolve();
             } else {
                 // Otherwise get token from Android (may have created account on Web).
@@ -470,6 +491,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
         }
         return deferred.promise;
     };
+    */
 
     // Broadcast by Database createCard service when a new card has been created
     $rootScope.$on('CARD_CREATED', function(event, data) {
@@ -1540,7 +1562,8 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
             return UserData.getConversation();
         }).then(function() {
             //console.log('GET 9 BC');
-            return UserData.checkFCMToken();
+            //return UserData.checkFCMToken();
+            return UserData.getFCMToken();
         }).then(function() {
             // connect to socket.io via socket service 
             // and request that a unique namespace be created for this user with their user id

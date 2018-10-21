@@ -35,7 +35,7 @@ function findWithAttr(array, attr, value) {
     }
     return -1;
 }
-
+/*
 function createTokenArray(arr) {
     var token_array = [];
     for (var i in arr) {
@@ -46,6 +46,7 @@ function createTokenArray(arr) {
     token_array.reverse();
     return token_array;
 }
+*/
 
 // Public conversation created when user first logs in.
 function createPublicConversation(user, callback) {
@@ -598,7 +599,7 @@ module.exports = function(app, passport) {
         var options = req.body;
         request(options, function(err, response, body) {
             if (err) {
-                //console.log('err: ' + err);
+                console.log('err: ' + err);
                 throw err;
             } else {
                 res.status(200).send('ok');
@@ -609,25 +610,30 @@ module.exports = function(app, passport) {
     // update user notification data
     app.post('/api/users/update_notification', isLoggedIn, function(req, res) {
         // Find the current users details
-        var reg_id;
-        if (req.body.refreshedToken == undefined) {
+        //var reg_id;
+        //if (req.body.refreshedToken == undefined) {
             // First time 
-            reg_id = req.body.token;
-        } else {
+            //reg_id = req.body.token;
+        //} else {
             // refreshedToken
-            reg_id = req.body.refreshedToken;
-        }
+            //reg_id = req.body.refreshedToken;
+        //}
+        console.log(req.body.notification_values);
+        var device_id = req.body.notification_values.id;
+        var token = req.body.notification_values.token;
         User.findById({ '_id': req.principal._id }, function(error, user) {
             if (error) {
-                //console.log('error');
+                console.log(error);
                 res.json(error);
             } else if (user === null) {
                 // no user found
-                //console.log('no user');
+                console.log('no user');
                 res.json({ 'error': 'null' });
             } else {
+                console.log('user found');
                 // User found
                 // Set the FCM data for the request
+                /*
                 var data = {
                     "operation": "",
                     "notification_key_name": req.principal._id,
@@ -644,9 +650,50 @@ module.exports = function(app, passport) {
                     headers: headers,
                     json: data
                 };
+                */
+                /*
+                var operation;
+                var data = {
+                    //"operation": "",
+                    "notification_key_name": req.principal._id,
+                    "registration_ids": [reg_id]
+                };
+                var headers = {
+                    'Authorization': 'key=' + fcm.firebaseserverkey,
+                    'Content-Type': 'application/json'
+                    //'project_id': fcm.project_id
+                };
+                var options = {
+                    //uri: 'https://android.googleapis.com/gcm/notification',
+                    uri: 'https://fcm.googleapis.com/fcm/send',
+                    method: 'POST',
+                    headers: headers,
+                    json: data
+                };
+                */
                 // First time. Create notification key
+                
                 if (user.notification_key === undefined) {
-                    data.operation = "create";
+                    console.log('First time. Create notification key');
+                    //var notification_key = body.notification_key;
+                           // console.log('notification_key: ' + notification_key);
+                            // Save to DB
+                            var updateuser = new User(user);
+                            updateuser.notification_key_name = user._id;
+                            //updateuser.notification_key = notification_key;
+                            updateuser.tokens.push({ _id: device_id, token: token });
+                            updateuser.save(function(err, user) {
+                                if (err) {
+                                    console.log(err);
+                                    res.send(err);
+                                } else {
+                                    console.log(user);
+                                    res.json(user);
+                                }
+                            });
+
+                    //operation = "create";
+                    /*
                     request(options, function(err, response, body) {
                         if (err) {
                             console.log('err: ' + err);
@@ -659,7 +706,7 @@ module.exports = function(app, passport) {
                             var updateuser = new User(user);
                             updateuser.notification_key_name = user._id;
                             updateuser.notification_key = notification_key;
-                            updateuser.tokens.push({ _id: req.body.id, token: reg_id });
+                            //updateuser.tokens.push({ _id: req.body.id, token: reg_id });
                             updateuser.save(function(err, user) {
                                 if (err) {
                                     //console.log(err);
@@ -670,30 +717,37 @@ module.exports = function(app, passport) {
                             });
                         }
                     });
+                    */
                 } else {
                     // User notification key already created. Update tokens if necessary.
                     // Find the Android device id
-                    var id_pos = findWithAttr(user.tokens, '_id', req.body.id);
+                    console.log('notification key already created. Update tokens if necessary.');
+                    var id_pos = findWithAttr(user.tokens, '_id', device_id);
                     var new_user = new User(user);
                     var token_array;
                     if (id_pos >= 0) {
+                        console.log('This device was already registered.  Check if the token has been changed');
                         // This device was already registered
                         // Check if the token has been changed
-                        if (user.tokens[id_pos].token != req.body.refreshedToken) {
+                        if (user.tokens[id_pos].token != token) {
+                            console.log(user.tokens[id_pos].token + ' != ' + token);
+                            console.log('token changed. save new token for this device.');
                             // The token has been changed. Update DB and FCM
-                            new_user.tokens[id_pos].token = req.body.refreshedToken;
+                            new_user.tokens[id_pos].token = token;
                             new_user.save(function(err, user) {
                                 if (err) {
-                                    //console.log(err);
+                                    console.log(err);
                                     res.send(err);
                                 } else {
+                                    console.log(user);
                                     res.json(user);
                                 }
                             });
+                            /*
                             // Get the updated array of tokens before updating FCM
                             token_array = createTokenArray(new_user.tokens);
                             // FCM Delete old token and add new token
-                            data.operation = "add";
+                            operation = "add";
                             data.notification_key = new_user.notification_key;
                             data.registration_ids = token_array;
                             request(options, function(err, response, body) {
@@ -704,12 +758,14 @@ module.exports = function(app, passport) {
                                     //console.log(body);
                                 }
                             });
+                            */
                         }
                     } else {
                         // User notification key already created.
                         // New Device.
                         // Update DB and FCM
-                        new_user.tokens.push({ _id: req.body.id, token: req.body.refreshedToken });
+                        console.log('User notification key already created. new device.');
+                        new_user.tokens.push({ _id: device_id, token: token });
                         new_user.save(function(err, user) {
                             if (err) {
                                 res.send(err);
@@ -717,11 +773,12 @@ module.exports = function(app, passport) {
                                 res.json(user);
                             }
                         });
+                        /*
                         // Get the updated array of tokens before updating FCM
                         token_array = createTokenArray(new_user.tokens);
                         // FCM add new token to the group
                         data.notification_key = new_user.notification_key;
-                        data.operation = "add";
+                        operation = "add";
                         data.registration_ids = token_array;
                         request(options, function(err, response, body) {
                             if (err) {
@@ -731,6 +788,7 @@ module.exports = function(app, passport) {
                                 //console.log(body);
                             }
                         });
+                        */
                     }
                 }
             }
