@@ -438,6 +438,8 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     Android.getFCMToken
     */
     androidToken = function(data) {
+        console.log('received token from android');
+        console.log(data);
         notification_values = JSON.parse(data);
         if (notification_values.id != undefined && notification_values.token != undefined) {
             // get notifcation data and check if this needs to be updated or added
