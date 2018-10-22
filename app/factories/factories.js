@@ -215,7 +215,7 @@ cardApp.factory('socket', function($rootScope, $window) {
     };
 
     updateData = function(msg) {
-        console.log('update_data: ' + msg + ', participants: ' + msg.participants);
+        console.log('update_data: ' + msg.update_values + ', user: ' + msg.user);
         $rootScope.$broadcast('UPDATE_DATA', msg);
     };
 
@@ -452,11 +452,11 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
         UserData.getFCMToken();
     };
 
-    notifyUsers = function(data, users) {
+    notifyUsers = function(data, user, users) {
         console.log(data);
         console.log(users);
         //Database.send_update(data, users);
-        socket.emit('data_change', { sender_id: socket.getId(), update: data, users: users });
+        socket.emit('data_change', { sender_id: socket.getId(), update: data, user:  user, users: users });
     };
 
     setNotificationData = function(data) {
@@ -488,7 +488,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                 // First time. Create notification key.
                 if (user.notification_key_name === undefined) {
                     setNotificationData(data);
-                    notifyUsers(data, user.contacts);
+                    notifyUsers(data, user._id, user.contacts);
                 } else {
                     // User notification key already created. Update tokens if necessary.
                     // Find the Android device id
@@ -503,14 +503,14 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                             console.log('token changed. save new token for this device.');
                             // The token has been changed.
                             setNotificationData(data);
-                            notifyUsers(data, user.contacts);
+                            notifyUsers(data, user._id, user.contacts);
                         }
                     } else {
                         // User notification key already created.
                         // New Device.
                         console.log('User notification key already created. new device.');
                         setNotificationData(data);
-                        notifyUsers(data, user.contacts);
+                        notifyUsers(data, user._id, user.contacts);
                     }
                 }
             }
