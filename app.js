@@ -67,16 +67,16 @@ dataChange = function(data) {
     // notify relevant namespace(s) of the cards creation
     for (var i in data.users) {
         // dont emit to the user which sent the card
-        if (data.users[i]._id === nspn.substring(1, nspn.length)) {
+        if (data.users[i] === nspn.substring(1, nspn.length)) {
             //
         } else {
             for (var y in Object.keys(io.nsps)) {
                 // if the namespace exists on the server
                 console.log(Object.keys(io.nsps)[y]);
-                if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.users[i]._id) {
+                if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.users[i]) {
                     // emit to the participant
-                    var nsp_new = io.of('/' + data.users[i]._id);
-                    console.log('emit update_data: ' + data.users[i]._id);
+                    var nsp_new = io.of('/' + data.users[i]);
+                    console.log('emit update_data: ' + data.users[i]);
                     nsp_new.emit('update_data', { update_values: data.update, user: data.user });
                 }
             }
