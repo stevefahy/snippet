@@ -358,6 +358,7 @@ cardApp.factory('principal', function($cookies, jwtHelper, $q, $rootScope) {
 //
 var cards_model;
 cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $http, $cookies, $location, jwtHelper, $q, principal, Users, Conversations, FormatHTML, General, socket, $filter) {
+    var self = this;
     var user;
     var contacts = [];
     var contacts_and_user = [];
@@ -452,7 +453,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
         UserData.getFCMToken();
     };
 
-    notifyUsers = function(data, user, users) {
+    this.notifyUsers = function(data, user, users) {
         console.log(data);
         console.log(users);
         //Database.send_update(data, users);
@@ -489,7 +490,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                 // First time. Create notification key.
                 if (user.notification_key_name === undefined) {
                     setNotificationData(data);
-                    notifyUsers(to_update, user._id, user.contacts);
+                    self.notifyUsers(to_update, user._id, user.contacts);
                 } else {
                     // User notification key already created. Update tokens if necessary.
                     // Find the Android device id
@@ -504,14 +505,14 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                             console.log('token changed. save new token for this device.');
                             // The token has been changed.
                             setNotificationData(data);
-                            notifyUsers(to_update, user._id, user.contacts);
+                            self.notifyUsers(to_update, user._id, user.contacts);
                         }
                     } else {
                         // User notification key already created.
                         // New Device.
                         console.log('User notification key already created. new device.');
                         setNotificationData(data);
-                        notifyUsers(to_update, user._id, user.contacts);
+                        self.notifyUsers(to_update, user._id, user.contacts);
                     }
                 }
             }

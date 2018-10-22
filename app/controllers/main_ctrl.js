@@ -18,9 +18,8 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', 'UserData', '
     $scope.$on('UPDATE_DATA', function(event, msg) {
         console.log('UPDATE_DATA recieved');
         console.log(msg);
-        //var id = Conversations.getConversationId();
-        // Update the conversations.
-        //$scope.conversations = UserData.getConversationModel();
+
+        
     });
 
 }]);
