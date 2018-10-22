@@ -485,7 +485,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                     // User notification key already created. Update tokens if necessary.
                     // Find the Android device id
                     console.log('notification key already created. Update tokens if necessary.');
-                    var id_pos = findWithAttr(user.tokens, '_id', device_id);
+                    var id_pos = General.findWithAttr(user.tokens, '_id', device_id);
                     if (id_pos >= 0) {
                         console.log('This device was already registered.  Check if the token has been changed');
                         // This device was already registered
