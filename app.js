@@ -39,8 +39,8 @@ io.set('transports', ['websocket']);
 var nspn;
 
 cardPosted = function(data) {
-    //console.log('card_posted, conv id: ' + data.conversation_id + ' , participants: ' + data.participants);
-    //console.log('namespace: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    console.log('card_posted, conv id: ' + data.conversation_id + ' , participants: ' + data.participants);
+    console.log('namespace: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     // notify relevant namespace(s) of the cards creation
     for (var i in data.participants) {
         // dont emit to the user which sent the card
@@ -55,6 +55,29 @@ cardPosted = function(data) {
                     var nsp_new = io.of('/' + data.participants[i]._id);
                     //console.log('emit notify_users: ' + data.participants[i]._id);
                     nsp_new.emit('notify_users', { conversation_id: data.conversation_id, participants: data.participants });
+                }
+            }
+        }
+    }
+};
+
+dataChange = function(data) {
+    console.log('data_change: ' + data + ' , participants: ' + data.participants);
+    console.log('namespace: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    // notify relevant namespace(s) of the cards creation
+    for (var i in data.participants) {
+        // dont emit to the user which sent the card
+        if (data.participants[i]._id === nspn.substring(1, nspn.length)) {
+            //
+        } else {
+            for (var y in Object.keys(io.nsps)) {
+                // if the namespace exists on the server
+                console.log(Object.keys(io.nsps)[y]);
+                if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.participants[i]._id) {
+                    // emit to the participant
+                    var nsp_new = io.of('/' + data.participants[i]._id);
+                    console.log('emit update_data: ' + data.participants[i]._id);
+                    nsp_new.emit('update_data', { conversation_id: data.conversation_id, participants: data.participants });
                 }
             }
         }
@@ -84,6 +107,13 @@ io.on('connection', function(socket) {
             socket.removeListener('card_posted', cardPosted);
             //console.log('ADD card_posted listener');
             socket.on('card_posted', cardPosted);
+
+            // Remove old data_change listener and create new one.
+            //console.log('REMOVE data_change listener');
+            socket.removeListener('data_change', dataChange);
+            //console.log('ADD data_change listener');
+            socket.on('data_change', dataChange);
+
             // on namespace disconnect
             socket.on('disconnect', function(sockets) {
                 //console.log('SERVER NS DISCONNECT: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));

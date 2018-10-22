@@ -59,6 +59,10 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         });
     }
 
+    this.send_update = function(data, users){
+        socket.emit('data_change', { sender_id: socket.getId(), update: data, users: users });
+    };
+
     this.setNotification = function(data, currentUser, card_content) {
         var notification_title;
         var notification_body;
@@ -83,6 +87,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         var notification = { title: notification_title, body: notification_body };
         return notification;
     };
+
 
     // SAVE CARD (Android image bug. Temporarily save the updated card but do not send notificstion.)
     this.saveTempCard = function(card_id, card, currentUser) {
@@ -192,7 +197,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
     // CREATE CARD
     this.createCard = function(id, card_create, currentUser) {
-console.log('create');
+        console.log('create');
         var promises = [];
         card_create.user = currentUser.google.name;
         // Get the Conversation in which this card is being created.
@@ -228,7 +233,7 @@ console.log('create');
                             notification_body = notification.body;
                             sent_content = FormatHTML.prepSentContent(notification_body, sent_content_length);
                             // Send notifications
-console.log(response.data.participants);
+                            console.log(response.data.participants);
                             for (var i in response.data.participants) {
                                 // dont emit to the user which sent the card
                                 if (response.data.participants[i]._id !== currentUser._id) {
@@ -240,14 +245,14 @@ console.log(response.data.participants);
                                             // Get the participants notification key
                                             // Set the message title and body
                                             //if (result.notification_key !== undefined) {
-                                                if (result.notification_key_name !== undefined) {
+                                            if (result.notification_key_name !== undefined) {
                                                 //var dataObj = new createData(result.notification_key, notification_title, sent_content, response.data._id);
-// Send to all registered devices!
-var dataObj = new createData(result.tokens[0].token, notification_title, sent_content, response.data._id);
+                                                // Send to all registered devices!
+                                                var dataObj = new createData(result.tokens[0].token, notification_title, sent_content, response.data._id);
 
                                                 var optionsObj = new createOptions(headersObj.headers, dataObj.data);
-console.log(dataObj);
-console.log(optionsObj);
+                                                console.log(dataObj);
+                                                console.log(optionsObj);
                                                 // Send the notification
                                                 Users.send_notification(optionsObj.options)
                                                     .then(function(res) {

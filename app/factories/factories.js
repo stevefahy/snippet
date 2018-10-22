@@ -214,6 +214,11 @@ cardApp.factory('socket', function($rootScope, $window) {
         $rootScope.$broadcast('NOTIFICATION', msg);
     };
 
+    updateData = function(msg) {
+        console.log('update_data: ' + msg + ', participants: ' + msg.participants);
+        $rootScope.$broadcast('UPDATE_DATA', msg);
+    };
+
     return {
         // called by core.js - UserData once when the app loads 
         connect: function(id) {
@@ -230,9 +235,11 @@ cardApp.factory('socket', function($rootScope, $window) {
             socket.on('joined_ns', function(id) {
                 //console.log('CLIENT joined_ns: ' + socket.id);
             });
-            // server notifying users by namespace of update
+            // server notifying users by namespace of content update
             socket.on('notify_users', notifyUsers);
             //console.log('add notifyUsers listeners');
+            // server notifying users by namespace of data update
+            socket.on('update_data', updateData);
             // namespace disconnected by server
             socket.on('disconnect', function(reason) {
                 //console.log('CLIENT NS disconnected by server: ' + reason);
@@ -350,7 +357,7 @@ cardApp.factory('principal', function($cookies, jwtHelper, $q, $rootScope) {
 // UserData Factory
 //
 var cards_model;
-cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $http, $cookies, $location, jwtHelper, $q, principal, Users, Conversations, FormatHTML, General, socket, $filter) {
+cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $http, $cookies, $location, jwtHelper, $q, principal, Users, Conversations, FormatHTML, General, socket, Database, $filter) {
     var user;
     var contacts = [];
     var contacts_and_user = [];
@@ -445,10 +452,10 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
         UserData.getFCMToken();
     };
 
-    notifyContacts = function(data, contacts){
+    notifyUsers = function(data, users) {
         console.log(data);
-        console.log(contacts);
-
+        console.log(users);
+        Database.send_update(data, users);
     };
 
     setNotificationData = function(data) {
@@ -480,7 +487,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                 // First time. Create notification key.
                 if (user.notification_key_name === undefined) {
                     setNotificationData(data);
-                    notifyContacts(data, user.contacts);
+                    notifyUsers(data, user.contacts);
                 } else {
                     // User notification key already created. Update tokens if necessary.
                     // Find the Android device id
@@ -495,14 +502,14 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                             console.log('token changed. save new token for this device.');
                             // The token has been changed.
                             setNotificationData(data);
-                            notifyContacts(data, user.contacts);
+                            notifyUsers(data, user.contacts);
                         }
                     } else {
                         // User notification key already created.
                         // New Device.
                         console.log('User notification key already created. new device.');
                         setNotificationData(data);
-                        notifyContacts(data, user.contacts);
+                        notifyUsers(data, user.contacts);
                     }
                 }
             }

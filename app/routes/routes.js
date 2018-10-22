@@ -594,7 +594,9 @@ module.exports = function(app, passport) {
         });
     });
 
-    // notify user
+
+
+    // send notification to user
     app.post('/api/users/send_notification', isLoggedIn, function(req, res) {
         var options = req.body;
         request(options, function(err, response, body) {
@@ -675,7 +677,7 @@ module.exports = function(app, passport) {
                 };
                 */
                 // When notifaction data updated or new device added then update data for this users contacts.
- 
+
                 // First time. Create notification key
                 if (user.notification_key_name === undefined) {
                     console.log('First time. Create notification key');

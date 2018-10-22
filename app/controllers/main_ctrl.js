@@ -14,4 +14,13 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', 'UserData', '
         UserData.checkDataUpdate();
     });
 
+    // Broadcast by socket service when data needs to be updated.
+    $scope.$on('UPDATE_DATA', function(event, msg) {
+        console.log('UPDATE_DATA recieved');
+        console.log(msg);
+        //var id = Conversations.getConversationId();
+        // Update the conversations.
+        //$scope.conversations = UserData.getConversationModel();
+    });
+
 }]);
