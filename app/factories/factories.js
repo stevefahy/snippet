@@ -450,7 +450,23 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
         console.log(data);
         notification_values = JSON.parse(data);
         console.log(notification_values);
+
+        // Check that the user has completed registration of their email address which creates their User data.
+        console.log(UserData.getUser());
+
         if (notification_values.id != undefined && notification_values.token != undefined) {
+            // Check if the token has changed.
+            console.log(UserData.getUser());
+            /*
+            if (UserData.getUser().notification_key_name === undefined) {
+
+            }
+
+            for(var i in UserData.getUser().tokens){
+                
+            }
+            */
+
             // get notifcation data and check if this needs to be updated or added
             Users.update_notification(data)
                 .then(function(res) {
@@ -458,6 +474,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                     console.log('notification updated');
                     //$rootScope.receivedToken = token;
                 });
+
         }
     };
 

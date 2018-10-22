@@ -609,6 +609,8 @@ module.exports = function(app, passport) {
 
     // update user notification data
     app.post('/api/users/update_notification', isLoggedIn, function(req, res) {
+        // When notifaction data updated or new device added then update data for this users contacts.
+
         // Find the current users details
         //var reg_id;
         //if (req.body.refreshedToken == undefined) {
