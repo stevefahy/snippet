@@ -428,21 +428,36 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
         });
     };
 
-/*
-    androidTokenRefresh = function(data) {
-        refreshedToken = JSON.parse(data);
-        if (refreshedToken.id != undefined && refreshedToken.refreshedToken != undefined) {
-            // get notifcation data and check if this needs to be updated or added
-            Users.update_notification(refreshedToken);
-        }
-    };
-    */
+    /*
+        androidTokenRefresh = function(data) {
+            refreshedToken = JSON.parse(data);
+            if (refreshedToken.id != undefined && refreshedToken.refreshedToken != undefined) {
+                // get notifcation data and check if this needs to be updated or added
+                Users.update_notification(refreshedToken);
+            }
+        };
+        */
     /*
     Android.getFCMToken
     */
-    androidTokenUpdated = function(){
+    androidTokenUpdated = function() {
         console.log('androidTokenUpdated');
         UserData.getFCMToken();
+    };
+
+    notifyContacts = function(data, contacts){
+        console.log(data);
+        console.log(contacts);
+
+    };
+
+    setNotificationData = function(data) {
+        // get notifcation data and check if this needs to be updated or added
+        Users.update_notification(data)
+            .then(function(res) {
+                console.log(res);
+                console.log('notification updated');
+            });
     };
 
     androidToken = function(data) {
@@ -453,30 +468,45 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
 
         // Check that the user has completed registration of their email address which creates their User data.
         console.log(UserData.getUser());
-        if(UserData.getUser() != undefined){
-        if (notification_values.id != undefined && notification_values.token != undefined) {
-            // Check if the token has changed.
-            console.log(UserData.getUser());
-            /*
-            if (UserData.getUser().notification_key_name === undefined) {
+        if (UserData.getUser() != undefined) {
 
+            var device_id = notification_values.id;
+            var token = notification_values.token;
+
+            if (device_id != undefined && token != undefined) {
+                // Check if the token has changed.
+                console.log(UserData.getUser());
+                var user = UserData.getUser();
+                // First time. Create notification key.
+                if (user.notification_key_name === undefined) {
+                    setNotificationData(data);
+                    notifyContacts(data, user.contacts);
+                } else {
+                    // User notification key already created. Update tokens if necessary.
+                    // Find the Android device id
+                    console.log('notification key already created. Update tokens if necessary.');
+                    var id_pos = findWithAttr(user.tokens, '_id', device_id);
+                    if (id_pos >= 0) {
+                        console.log('This device was already registered.  Check if the token has been changed');
+                        // This device was already registered
+                        // Check if the token has been changed
+                        if (user.tokens[id_pos].token != token) {
+                            console.log(user.tokens[id_pos].token + ' != ' + token);
+                            console.log('token changed. save new token for this device.');
+                            // The token has been changed.
+                            setNotificationData(data);
+                            notifyContacts(data, user.contacts);
+                        }
+                    } else {
+                        // User notification key already created.
+                        // New Device.
+                        console.log('User notification key already created. new device.');
+                        setNotificationData(data);
+                        notifyContacts(data, user.contacts);
+                    }
+                }
             }
-
-            for(var i in UserData.getUser().tokens){
-                
-            }
-            */
-
-            // get notifcation data and check if this needs to be updated or added
-            Users.update_notification(data)
-                .then(function(res) {
-                    console.log(res);
-                    console.log('notification updated');
-                    //$rootScope.receivedToken = token;
-                });
-
         }
-    }
     };
 
     UserData.getFCMToken = function() {

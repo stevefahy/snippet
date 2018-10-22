@@ -609,7 +609,7 @@ module.exports = function(app, passport) {
 
     // update user notification data
     app.post('/api/users/update_notification', isLoggedIn, function(req, res) {
-        // When notifaction data updated or new device added then update data for this users contacts.
+        
 
         // Find the current users details
         //var reg_id;
@@ -674,8 +674,9 @@ module.exports = function(app, passport) {
                     json: data
                 };
                 */
+                // When notifaction data updated or new device added then update data for this users contacts.
+ 
                 // First time. Create notification key
-                
                 if (user.notification_key_name === undefined) {
                     console.log('First time. Create notification key');
                     //var notification_key = body.notification_key;
