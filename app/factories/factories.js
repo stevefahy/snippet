@@ -357,7 +357,7 @@ cardApp.factory('principal', function($cookies, jwtHelper, $q, $rootScope) {
 // UserData Factory
 //
 var cards_model;
-cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $http, $cookies, $location, jwtHelper, $q, principal, Users, Conversations, FormatHTML, General, socket, Database, $filter) {
+cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $http, $cookies, $location, jwtHelper, $q, principal, Users, Conversations, FormatHTML, General, socket, $filter) {
     var user;
     var contacts = [];
     var contacts_and_user = [];
@@ -455,7 +455,8 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     notifyUsers = function(data, users) {
         console.log(data);
         console.log(users);
-        Database.send_update(data, users);
+        //Database.send_update(data, users);
+        socket.emit('data_change', { sender_id: socket.getId(), update: data, users: users });
     };
 
     setNotificationData = function(data) {

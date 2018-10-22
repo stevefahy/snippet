@@ -58,10 +58,11 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
             }
         });
     }
-
+/*
     this.send_update = function(data, users){
-        socket.emit('data_change', { sender_id: socket.getId(), update: data, users: users });
+
     };
+    */
 
     this.setNotification = function(data, currentUser, card_content) {
         var notification_title;
