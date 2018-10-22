@@ -453,7 +453,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
 
         // Check that the user has completed registration of their email address which creates their User data.
         console.log(UserData.getUser());
-
+        if(UserData.getUser() != undefined){
         if (notification_values.id != undefined && notification_values.token != undefined) {
             // Check if the token has changed.
             console.log(UserData.getUser());
@@ -476,6 +476,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                 });
 
         }
+    }
     };
 
     UserData.getFCMToken = function() {
