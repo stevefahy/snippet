@@ -23,7 +23,13 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', 'UserData', '
                 console.log('contact updated');
                 console.log(result);
             });
-        
+        UserData.updateConversationsUser(msg.update_values)
+            .then(function(result) {
+                console.log('conversation user updated');
+                console.log(result);
+            });
+
+
     });
 
 }]);

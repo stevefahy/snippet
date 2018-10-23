@@ -243,12 +243,14 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                     // Find the other user(s)
                                     promises.push(UserData.getConversationsUser(response.data.participants[i]._id)
                                         .then(function(result) {
+                                            console.log(result);
                                             // Get the participants notification key
                                             // Set the message title and body
                                             //if (result.notification_key !== undefined) {
                                             if (result.notification_key_name !== undefined) {
                                                 //var dataObj = new createData(result.notification_key, notification_title, sent_content, response.data._id);
                                                 // Send to all registered devices!
+                                                console.log(result.tokens[0].token);
                                                 var dataObj = new createData(result.tokens[0].token, notification_title, sent_content, response.data._id);
 
                                                 var optionsObj = new createOptions(headersObj.headers, dataObj.data);

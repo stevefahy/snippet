@@ -1205,6 +1205,42 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
         }
         return deferred.promise;
     };
+/*
+UserData.updateContact = function(val) {
+        console.log(val);
+        var deferred = $q.defer();
+        var index = General.findWithAttr(contacts, '_id', val._id);
+        // if contact found
+        console.log(contacts);
+        if (index >= 0) {
+            console.log('updating');
+            // Update.
+            contacts[index] = val;
+            console.log(contacts);
+            deferred.resolve(contacts[index]);
+        } else {
+            deferred.resolve('user not found');
+        }
+        return deferred.promise;
+    };
+    */
+    UserData.updateConversationsUser = function(user) {
+        console.log(user);
+        var deferred = $q.defer();
+        var index = General.findWithAttr(conversationsUsers, '_id', user._id);
+        // if contact found
+        console.log(conversationsUsers);
+        if (index >= 0) {
+            console.log('updating conv user');
+            // Update.
+            cconversationsUsers[index] = user;
+            console.log(conversationsUsers);
+            deferred.resolve(conversationsUsers[index]);
+        } else {
+            deferred.resolve('conv user not found');
+        }
+        return deferred.promise;
+    };
 
     UserData.addConversationsUsers = function(user_array) {
         var deferred = $q.defer();
