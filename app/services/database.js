@@ -141,6 +141,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                         // Update the Conversation updateAt time.
                         Conversations.updateTime(card.conversationId)
                             .then(function(response) {
+                                console.log(response);
                                 //updateinprogress = false;
                                 // Only send notifications if there are other participants.
                                 if (response.data.participants.length > 1) {
@@ -155,7 +156,11 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                             // Add this users id to the viewed_users array.
                                             viewed_users.push({ "_id": response.data.participants[i]._id });
                                             // Find the other user(s)
-                                            General.findUser(response.data.participants[i]._id, function(result) {
+                                            //General.findUser(response.data.participants[i]._id, function(result) {
+                                             // Find the other user(s)
+                                    promises.push(UserData.getConversationsUser(response.data.participants[i]._id)
+                                        .then(function(result) {
+                                            console.log(result);
                                                 // Get the participants notification key
                                                 // Set the message title and body
                                                 if (result.notification_key !== undefined) {
@@ -170,9 +175,11 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                                         });
                                                 }
                                             }
-                                            });
+                                             }));
+                                           // });
                                         }
                                     }
+
                                     // Update the unviewed arrary for all participants.
                                     for (var x = 0; x < viewed_users.length; x++) {
                                         promises.push(
@@ -316,7 +323,11 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                             // dont emit to the user which sent the card
                             if (response.data.participants[i]._id !== currentUser._id) {
                                 // Find the other user(s)
-                                General.findUser(response.data.participants[i]._id, function(result) {
+                                //General.findUser(response.data.participants[i]._id, function(result) {
+                                // Find the other user(s)
+                                    promises.push(UserData.getConversationsUser(response.data.participants[i]._id)
+                                        .then(function(result) {
+                                            console.log(result);
                                     // Get the participants notification key
                                     // set the message title and body
                                     if (result.notification_key !== undefined) {
@@ -331,7 +342,8 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                             });
                                     }
                                 }
-                                });
+                                //});
+                                }));
                             }
                         }
                         // socket.io emit the card posted to the server
