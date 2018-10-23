@@ -1233,7 +1233,7 @@ UserData.updateContact = function(val) {
         if (index >= 0) {
             console.log('updating conv user');
             // Update.
-            cconversationsUsers[index] = user;
+            conversationsUsers[index] = user;
             console.log(conversationsUsers);
             deferred.resolve(conversationsUsers[index]);
         } else {
