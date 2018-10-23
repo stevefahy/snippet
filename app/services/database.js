@@ -160,13 +160,16 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                                 // Set the message title and body
                                                 if (result.notification_key !== undefined) {
                                                     // Send the notification
-                                                    var dataObj = new createData(result.notification_key, notification_title, sent_content, response.data._id);
+                                                    //var dataObj = new createData(result.notification_key, notification_title, sent_content, response.data._id);
+                                                    for(var y in result.tokens){
+                                                    var dataObj = new createData(result.tokens[y].token, notification_title, sent_content, response.data._id);
                                                     var optionsObj = new createOptions(headersObj.headers, dataObj.data);
                                                     Users.send_notification(optionsObj.options)
                                                         .then(function(res) {
                                                             //console.log(res);
                                                         });
                                                 }
+                                            }
                                             });
                                         }
                                     }
@@ -181,6 +184,8 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                     }
                                     // All Conversation participants unviewed arrays updated
                                     $q.all(promises).then(function() {
+                                        // Add the current user to the participants being notified of update in case they have multiple devices.
+                                viewed_users.push({ "_id": currentUser._id });
                                         // update other paticipants in the conversation via socket.
                                         socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: card.conversationId, participants: viewed_users });
                                         updateinprogress = false;
@@ -252,7 +257,6 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                                 // Send to all registered devices!
                                                 
                                                 for(var y in result.tokens){
-                                                    console.log(result.tokens[y].token);
                                                 var dataObj = new createData(result.tokens[y].token, notification_title, sent_content, response.data._id);
 
                                                 var optionsObj = new createOptions(headersObj.headers, dataObj.data);
@@ -316,7 +320,9 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                     // Get the participants notification key
                                     // set the message title and body
                                     if (result.notification_key !== undefined) {
-                                        var dataObj = new createData(result.notification_key, notification_title, sent_content, response.data._id);
+                                        //var dataObj = new createData(result.notification_key, notification_title, sent_content, response.data._id);
+                                        for(var y in result.tokens){
+                                        var dataObj = new createData(result.tokens[y].token, notification_title, sent_content, response.data._id);
                                         var optionsObj = new createOptions(headersObj.headers, dataObj.data);
                                         // Send the notification
                                         Users.send_notification(optionsObj.options)
@@ -324,6 +330,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                                 //console.log(res);
                                             });
                                     }
+                                }
                                 });
                             }
                         }
