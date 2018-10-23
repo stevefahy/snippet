@@ -316,7 +316,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 // Apply any other image adjustments
                 if (i == 'sharpen') {
                     ImageAdjustment.setSharpen(id, target, ImageAdjustment.getSource(), ia[i]);
-                    
+
                 }
             }
         }
@@ -394,8 +394,6 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             filt.css('position', 'relative');
             filt.addClass('filters_active');
             filt.css('visibility', 'visible');
-
-
             // TODO - function to handle all adjustments minus filter.
             ImageAdjustment.setImageId(id);
             var data = { 'id': id };
@@ -407,8 +405,6 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             }
             $rootScope.$broadcast('rzSliderRender', data);
         }
-
-
         // TODO - function to handle all adjustments minus filter.
         this.settingsImage(id);
         e.stopPropagation();

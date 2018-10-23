@@ -122,7 +122,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             var reader = new FileReader();
             reader.addEventListener("load", function() {
                 img.onload = function() {
-                    
+
                 };
                 img.src = reader.result;
                 resolve(img);
@@ -496,7 +496,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         setTimeout(function() {
             // Get the element currently in focus
             var active = $(document.activeElement).closest("div").attr('id');
-            var active2 = $(document.activeElement);
             // If the blurred card is not the current card or the hidden input.
             if (('ce' + card._id != active && (active != 'hidden_input_container')) || image_edit_finished == true) {
                 // Check if there is a marky in progress
@@ -636,7 +635,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         return;
     }
 
-    //this.moveCaretInto = function(id) {
     function moveCaretInto(id) {
         // Causing bug in cecreate_card when enter is pressed following data is deleted.
         //self.removeDeleteIds();
