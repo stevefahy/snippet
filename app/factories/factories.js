@@ -460,12 +460,13 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
         socket.emit('data_change', { sender_id: socket.getId(), update: data, user:  user, users: users });
     };
 
-    setNotificationData = function(data) {
+    setNotificationData = function(data, user) {
         // get notifcation data and check if this needs to be updated or added
         Users.update_notification(data)
             .then(function(res) {
                 console.log(res);
                 console.log('notification updated');
+                self.notifyUsers(res.data, user._id, user.contacts);
             });
     };
 
@@ -481,7 +482,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
 
             var device_id = notification_values.id;
             var token = notification_values.token;
-            var to_update = {key: 'tokens', data: data};
+            //var to_update = {key: 'user', data: data};
 
             if (device_id != undefined && token != undefined) {
                 // Check if the token has changed.
@@ -489,8 +490,8 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                 var user = UserData.getUser();
                 // First time. Create notification key.
                 if (user.notification_key_name === undefined) {
-                    setNotificationData(data);
-                    self.notifyUsers(to_update, user._id, user.contacts);
+                    setNotificationData(data, user);
+                    //self.notifyUsers(to_update, user._id, user.contacts);
                 } else {
                     // User notification key already created. Update tokens if necessary.
                     // Find the Android device id
@@ -504,15 +505,15 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                             console.log(user.tokens[id_pos].token + ' != ' + token);
                             console.log('token changed. save new token for this device.');
                             // The token has been changed.
-                            setNotificationData(data);
-                            self.notifyUsers(to_update, user._id, user.contacts);
+                            setNotificationData(data, user);
+                            //self.notifyUsers(to_update, user._id, user.contacts);
                         }
                     } else {
                         // User notification key already created.
                         // New Device.
                         console.log('User notification key already created. new device.');
-                        setNotificationData(data);
-                        self.notifyUsers(to_update, user._id, user.contacts);
+                        setNotificationData(data, user);
+                        //self.notifyUsers(to_update, user._id, user.contacts);
                     }
                 }
             }
@@ -872,6 +873,18 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
             // Update.
             contacts[index] = val;
             deferred.resolve(contacts);
+        }
+        return deferred.promise;
+    };
+
+    UserData.updateContact = function(val) {
+        var deferred = $q.defer();
+        var index = General.findWithAttr(contacts, '_id', val._id);
+        // if contact found
+        if (index < 0) {
+            // Update.
+            contacts[index] = val;
+            deferred.resolve(contacts[index]);
         }
         return deferred.promise;
     };

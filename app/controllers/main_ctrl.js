@@ -18,7 +18,11 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', 'UserData', '
     $scope.$on('UPDATE_DATA', function(event, msg) {
         console.log('UPDATE_DATA recieved');
         console.log(msg);
-
+        UserData.updateContact(msg.update_values)
+            .then(function(result) {
+                console.log('contact updated');
+                console.log(result);
+            });
         
     });
 
