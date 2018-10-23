@@ -250,8 +250,10 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                             if (result.notification_key_name !== undefined) {
                                                 //var dataObj = new createData(result.notification_key, notification_title, sent_content, response.data._id);
                                                 // Send to all registered devices!
-                                                console.log(result.tokens[0].token);
-                                                var dataObj = new createData(result.tokens[0].token, notification_title, sent_content, response.data._id);
+                                                
+                                                for(var y in result.tokens){
+                                                    console.log(result.tokens[y].token);
+                                                var dataObj = new createData(result.tokens[y].token, notification_title, sent_content, response.data._id);
 
                                                 var optionsObj = new createOptions(headersObj.headers, dataObj.data);
                                                 console.log(dataObj);
@@ -261,6 +263,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                                     .then(function(res) {
                                                         console.log(res);
                                                     });
+                                                }
                                             }
                                         }));
                                 }
