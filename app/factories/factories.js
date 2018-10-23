@@ -887,6 +887,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
             console.log('updating');
             // Update.
             contacts[index] = val;
+            console.log(contacts);
             deferred.resolve(contacts[index]);
         } else {
             deferred.resolve('user not found');
