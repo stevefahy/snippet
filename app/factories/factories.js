@@ -453,7 +453,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
         UserData.getFCMToken();
     };
 
-    this.notifyUsers = function(data, user, users) {
+    this.updateUsers = function(data, user, users) {
         console.log(data);
         console.log(users);
         //Database.send_update(data, users);
@@ -466,7 +466,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
             .then(function(res) {
                 console.log(res);
                 console.log('notification updated');
-                self.notifyUsers(res.data, user._id, user.contacts);
+                self.updateUsers(res.data, user._id, user.contacts);
             });
     };
 
