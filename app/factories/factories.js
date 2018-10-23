@@ -878,10 +878,13 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     };
 
     UserData.updateContact = function(val) {
+        console.log(val);
         var deferred = $q.defer();
         var index = General.findWithAttr(contacts, '_id', val._id);
         // if contact found
+        console.log(contacts);
         if (index < 0) {
+            console.log('updating');
             // Update.
             contacts[index] = val;
             deferred.resolve(contacts[index]);
