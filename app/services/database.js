@@ -121,6 +121,8 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
             updateinprogress = true;
             setTimeout(function() {
                 var promises = [];
+                // Get the Conversation in which this card is being created.
+        var current_conversation_id = Conversations.getConversationId();
                 card.content = Format.setMediaSize(card_id, card);
                 card.content = replaceTags.replace(card.content);
                 // DANGER These had been removed for android image save bug
@@ -139,7 +141,8 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                         $rootScope.$broadcast('CARD_UPDATED', returned.data);
                         var viewed_users = [];
                         // Update the Conversation updateAt time.
-                        Conversations.updateTime(card.conversationId)
+                        //Conversations.updateTime(card.conversationId)
+                        Conversations.updateTime(current_conversation_id)
                             .then(function(response) {
                                 console.log(response);
                                 //updateinprogress = false;
@@ -303,15 +306,18 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
     // DELETE CARD
     this.deleteCard = function(card_id, conversation_id, currentUser) {
+        var promises = [];
         var sent_content;
         var notification_title;
         var notification_body;
         var card_content = 'Post deleted.';
+        var current_conversation_id = Conversations.getConversationId();
         Cards.delete(card_id)
             .then(function(response) {
                 // notify conversation_ctrl that the card has been deleted
                 $rootScope.$broadcast('CARD_DELETED', card_id);
                 // remove this Card from the unviewed array for all Conversation participants.
+                //Conversations.removeViewed(conversation_id, currentUser, card_id)
                 Conversations.removeViewed(conversation_id, currentUser, card_id)
                     .then(function(response) {
                         var notification = self.setNotification(response.data, currentUser, card_content);
@@ -325,7 +331,8 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                 // Find the other user(s)
                                 //General.findUser(response.data.participants[i]._id, function(result) {
                                 // Find the other user(s)
-                                    promises.push(UserData.getConversationsUser(response.data.participants[i]._id)
+                                   // promises.push(UserData.getConversationsUser(response.data.participants[i]._id)
+                                        UserData.getConversationsUser(response.data.participants[i]._id)
                                         .then(function(result) {
                                             console.log(result);
                                     // Get the participants notification key
@@ -342,8 +349,8 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                             });
                                     }
                                 }
-                                //});
-                                }));
+                                });
+                                //}));
                             }
                         }
                         // socket.io emit the card posted to the server
