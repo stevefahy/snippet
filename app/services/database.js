@@ -166,7 +166,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                                     var optionsObj = new createOptions(headersObj.headers, dataObj.data);
                                                     Users.send_notification(optionsObj.options)
                                                         .then(function(res) {
-                                                            //console.log(res);
+                                                            console.log(res);
                                                         });
                                                 }
                                             }
@@ -327,7 +327,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                         // Send the notification
                                         Users.send_notification(optionsObj.options)
                                             .then(function(res) {
-                                                //console.log(res);
+                                                console.log(res);
                                             });
                                     }
                                 }
