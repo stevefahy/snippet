@@ -166,7 +166,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                             console.log(result);
                                                 // Get the participants notification key
                                                 // Set the message title and body
-                                                if (result.notification_key !== undefined) {
+                                                if (result.notification_key_name !== undefined) {
                                                     // Send the notification
                                                     //var dataObj = new createData(result.notification_key, notification_title, sent_content, response.data._id);
                                                     for(var y in result.tokens){
@@ -337,7 +337,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                             console.log(result);
                                     // Get the participants notification key
                                     // set the message title and body
-                                    if (result.notification_key !== undefined) {
+                                    if (result.notification_key_name !== undefined) {
                                         //var dataObj = new createData(result.notification_key, notification_title, sent_content, response.data._id);
                                         for(var y in result.tokens){
                                         var dataObj = new createData(result.tokens[y].token, notification_title, sent_content, response.data._id);
