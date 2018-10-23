@@ -883,11 +883,13 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
         var index = General.findWithAttr(contacts, '_id', val._id);
         // if contact found
         console.log(contacts);
-        if (index < 0) {
+        if (index >= 0) {
             console.log('updating');
             // Update.
             contacts[index] = val;
             deferred.resolve(contacts[index]);
+        } else {
+            deferred.resolve('user not found');
         }
         return deferred.promise;
     };
