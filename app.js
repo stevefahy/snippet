@@ -39,8 +39,8 @@ io.set('transports', ['websocket']);
 var nspn;
 
 cardPosted = function(data) {
-    //console.log('card_posted, conv id: ' + data.conversation_id + ' , participants: ' + data.participants);
-    //console.log('namespace: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    console.log('card_posted, conv id: ' + data.conversation_id + ' , participants: ' + data.participants);
+    console.log('namespace: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     // notify relevant namespace(s) of the cards creation
     for (var i in data.participants) {
         // dont emit to the user which sent the card
@@ -49,11 +49,11 @@ cardPosted = function(data) {
         } else {
             for (var y in Object.keys(io.nsps)) {
                 // if the namespace exists on the server
-                //console.log(Object.keys(io.nsps)[y]);
+                console.log(Object.keys(io.nsps)[y]);
                 if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.participants[i]._id) {
                     // emit to the participant
                     var nsp_new = io.of('/' + data.participants[i]._id);
-                    //console.log('emit notify_users: ' + data.participants[i]._id);
+                    console.log('emit notify_users: ' + data.participants[i]._id);
                     nsp_new.emit('notify_users', { conversation_id: data.conversation_id, participants: data.participants });
                 }
             }

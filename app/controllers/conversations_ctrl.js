@@ -20,6 +20,8 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
 
     // Broadcast by socket service when a  card has been created, updated or deleted by another user to this user
     $scope.$on('NOTIFICATION', function(event, msg) {
+        console.log('NOTIFICATION');
+        console.log(msg);
         var id = Conversations.getConversationId();
         // Update the conversations.
         $scope.conversations = UserData.getConversationModel();
