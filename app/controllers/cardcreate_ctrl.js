@@ -14,6 +14,8 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
     $scope.restoreSelection = Format.restoreSelection;
     $scope.checkCursor = Format.checkCursor;
 
+    $window.androidToJS = Format.androidToJS;
+
     $scope.input = false;
     var isFocused = false;
 

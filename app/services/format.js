@@ -23,7 +23,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     var focused_user;
     var savedSelection;
 
-    $window.androidToJS = this.androidToJS;
+    $window.androidToJS = self.androidToJS;
 
     // Set serverUrl based upon current host (local or live)
     if (location.hostname === 'localhost') {
@@ -34,7 +34,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     }
 
     this.androidToJS = function(data) {
-        console.log(data);
         insertImage(data);
     };
 
@@ -255,7 +254,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     insertImage = function(data) {
-        console.log(data.response);
         if (data.response === 'saved') {
             data.file_name = data.file.substring(0, data.file.indexOf('.'));
             var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'></div><slider></slider><span class='after_image'>&#x200b;&#10;</span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
