@@ -223,8 +223,12 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         var deferred = $q.defer();
         convertImageToCanvas(document.getElementById('image_' + id), filter, id).then(function(canvas) {
             var canvasFilter = document.createElement('canvas');
+            console.log(canvas.width);
+            console.log(canvas.height);
             canvasFilter.width = canvas.width;
             canvasFilter.height = canvas.height;
+                      console.log(canvasFilter.width);
+            console.log(canvasFilter.height);
             var ctx = canvasFilter.getContext('2d');
             var filter_data = getFilter(filter);
             if (filter_data.filter != undefined) {
@@ -569,10 +573,15 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         // Convert image to canvas
         var topImage = image;
         var topCanvas = document.createElement("canvas");
-        topCanvas.width = image.width;
-        topCanvas.height = image.height;
+        topCanvas.width = image.naturalWidth;
+        topCanvas.height = image.naturalHeight;
+        console.log(topCanvas.width);
+        console.log(topCanvas.height);
         var topCtx = topCanvas.getContext('2d');
-        topCtx.drawImage(topImage, 0, 0, image.width, image.height);
+        //topCtx.drawImage(topImage, 0, 0, image.width, image.height);
+        console.log(image.naturalWidth);
+        console.log(image.naturalHeight);
+        topCtx.drawImage(topImage, 0, 0, image.naturalWidth, image.naturalHeight);
         // If there is a blend to be applied.
         if (filter_data.blend != 'none') {
             var grd;
