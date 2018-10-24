@@ -237,6 +237,8 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                             // Send notifications
                             for (var i in response.data.participants) {
                                 // dont emit to the user which sent the card
+                                console.log(response.data.participants[i]._id + ' !== ' + currentUser._id);
+                                console.log(response.data.participants[i]._id !== currentUser._id);
                                 if (response.data.participants[i]._id !== currentUser._id) {
                                     // Add this users id to the viewed_users array.
                                     viewed_users.push({ "_id": response.data.participants[i]._id });
