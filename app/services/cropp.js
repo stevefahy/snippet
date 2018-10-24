@@ -209,6 +209,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                     $('#temp_image_filtered_' + id).remove();
                     $(this).insertBefore('#image_' + id);
                     // SAVE
+                    console.log('save');
+                    console.log(image_edit_finished);
                     image_edit_finished = true;
                     $('#cropper_' + id).closest('div.ce').focus();
                     $('#cropper_' + id).closest('div.ce').blur();
@@ -477,6 +479,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         if (principal.isValid()) {
             UserData.checkUser().then(function(result) {
                 // Logged in.
+                // Turn off content saving.
+                image_edit_finished = false;
                 // Get the editable attibute for this card (for this user).
                 // check user has permision to edit.
                 if ($(scope).closest('div.ce').attr('editable') == 'true') {
