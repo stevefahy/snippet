@@ -14,7 +14,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     // Image resize max width or height
     var MAX_WIDTH = 1080;
     var MAX_HEIGHT = 1080;
-    var JPEG_COMPRESSION = 0.9;
+    var JPEG_COMPRESSION = 0.8;
     var IMAGES_URL = 'fileuploads/images/';
     var refreshedToken;
     var marky_found = false;

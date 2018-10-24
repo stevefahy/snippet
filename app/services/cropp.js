@@ -11,6 +11,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     var reduce_height = false;
     var decrease_percent = 0;
 
+    var JPEG_COMPRESSION = 0.8;
+
     $rootScope.crop_on = false;
 
     if (cropper != undefined) {
@@ -187,7 +189,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         var canv = $('canvas.temp_canvas_filtered').attr('id');
         id = canv.substr(21, canv.length - 20);
         var canvasFilter = document.getElementById('temp_canvas_filtered_' + id);
-        var dataUrl = canvasFilter.toDataURL();
+        //var dataUrl = canvasFilter.toDataURL();
+        var dataUrl = canvasFilter.toDataURL('image/jpeg', JPEG_COMPRESSION);
         Format.dataURItoBlob(dataUrl).then(function(blob) {
             blob.name = 'image_filtered_' + id + '.jpg';
             blob.renamed = true;
