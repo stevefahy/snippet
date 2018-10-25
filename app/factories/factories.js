@@ -436,6 +436,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     };
 
     this.updateUsers = function(data, user, users) {
+        console.log('updateUsers');
         socket.emit('data_change', { sender_id: socket.getId(), update: data, user: user, users: users });
     };
 

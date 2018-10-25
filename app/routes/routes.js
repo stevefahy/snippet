@@ -593,8 +593,8 @@ module.exports = function(app, passport) {
                 console.log('err: ' + err);
                 throw err;
             } else {
-                console.log(response);
-                console.log(body);
+                console.log(response.results);
+                console.log(body.results);
                 res.status(200).send('ok');
             }
         });
