@@ -547,7 +547,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
 
                // connect to socket.io via socket service 
             // and request that a unique namespace be created for this user with their user id
-            console.log('checkDataUpdate socket reconnect');
+            //console.log('checkDataUpdate socket reconnect');
 
             //socket.setId(UserData.getUser()._id);
             //socket.connect(socket.getId());

@@ -90,6 +90,8 @@ io.on('connection', function(socket) {
     // namespace sent by client
     var ns;
 
+
+
     socket.on('create_ns', function(ns) {
         console.log('create ns: ' + ns);
         // create unique namespace requested by client
