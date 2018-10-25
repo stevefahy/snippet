@@ -17,6 +17,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', 'UserData', '
     // Broadcast by socket service when data needs to be updated.
     $scope.$on('UPDATE_DATA', function(event, msg) {
         console.log('on UPDATE_DATA');
+        console.log(msg);
         UserData.updateContact(msg.update_values)
             .then(function(result) {
                 console.log(result);
