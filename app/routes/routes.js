@@ -595,7 +595,7 @@ module.exports = function(app, passport) {
             } else {
                 //console.log(response.results);
                 console.log(body.results);
-                if(body.results.error == "NotRegistered"){
+                if(body.results[0].error == "NotRegistered"){
                     res.json({ 'error': 'NotRegistered' });
                 } else {
                     res.status(200).send('ok');
