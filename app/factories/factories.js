@@ -250,7 +250,7 @@ cardApp.factory('socket', function($rootScope, $window) {
             });
             socket.on('reconnect', function(attempt) {
                 console.log('reconnect: ' + attempt);
-                
+
                 $rootScope.$broadcast('SOCKET_RECONNECT');
             });
             socket.on('reconnecting', function(attempt) {
@@ -542,6 +542,12 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
             var check_objects = ['admin', 'conversation_avatar', 'conversation_name', 'participants'];
             var convs_same = true;
             var conv_same = true;
+
+               // connect to socket.io via socket service 
+            // and request that a unique namespace be created for this user with their user id
+            console.log('checkDataUpdate socket reconnect');
+            socket.setId(UserData.getUser()._id);
+            socket.connect(socket.getId());
 
             Conversations.find_user_conversations(user_id)
                 .then(function(res) {
