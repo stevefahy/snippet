@@ -305,7 +305,7 @@ cardApp.factory('socket', function($rootScope, $window) {
             });
         },
         emit: function(eventName, data, callback) {
-            console.log('emit');
+            console.log('emity');
             socket.emit(eventName, data, function() {
                 var args = arguments;
                 $rootScope.$apply(function() {
