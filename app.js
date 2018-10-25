@@ -62,8 +62,8 @@ cardPosted = function(data) {
 };
 
 dataChange = function(data) {
-    //console.log('data_change, update: ' + data.update + ' , user: ' + data.user + ' , users: ' + data.users);
-    //console.log('namespace: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    console.log('data_change, update: ' + data.update + ' , user: ' + data.user + ' , users: ' + data.users);
+    console.log('namespace: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     // notify relevant namespace(s) of the data change.
     for (var i in data.users) {
         // dont emit to the user which sent the change.
@@ -72,11 +72,11 @@ dataChange = function(data) {
         } else {
             for (var y in Object.keys(io.nsps)) {
                 // if the namespace exists on the server
-                //console.log(Object.keys(io.nsps)[y]);
+                console.log(Object.keys(io.nsps)[y]);
                 if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.users[i]) {
                     // emit to the participant
                     var nsp_new = io.of('/' + data.users[i]);
-                    //console.log('emit update_data: ' + data.users[i]);
+                    console.log('emit update_data: ' + data.users[i]);
                     nsp_new.emit('update_data', { update_values: data.update, user: data.user });
                 }
             }
@@ -86,39 +86,39 @@ dataChange = function(data) {
 
 
 io.on('connection', function(socket) {
-    //console.log('SERVER CONNECTION: ' + socket.id + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    console.log('SERVER CONNECTION: ' + socket.id + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     // namespace sent by client
     var ns;
 
     socket.on('create_ns', function(ns) {
-        //console.log('create ns: ' + ns);
+        console.log('create ns: ' + ns);
         // create unique namespace requested by client
         socket = io.of('/' + ns);
         // namespace connection made
         socket.on('connection', function(socket) {
-            //console.log('connection');
+            console.log('connection');
             socket.setMaxListeners(0);
             // store the namespace name
             nspn = ns;
             // confirm that namespace has been created to client
             socket.emit('joined_ns', socket.id);
             // Remove old card_posted listener and create new one.
-            //console.log('REMOVE card_posted listener');
+            console.log('REMOVE card_posted listener');
             socket.removeListener('card_posted', cardPosted);
-            //console.log('ADD card_posted listener');
+            console.log('ADD card_posted listener');
             socket.on('card_posted', cardPosted);
             // Remove old data_change listener and create new one.
-            //console.log('REMOVE data_change listener');
+            console.log('REMOVE data_change listener');
             socket.removeListener('data_change', dataChange);
-            //console.log('ADD data_change listener');
+            console.log('ADD data_change listener');
             socket.on('data_change', dataChange);
             // on namespace disconnect
             socket.on('disconnect', function(sockets) {
-                //console.log('SERVER NS DISCONNECT: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+                console.log('SERVER NS DISCONNECT: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
             });
             // close socket connection and delete nsmespace from io.nsps array
             socket.on('delete', function(sockets) {
-                //console.log('SERVER NS DELETE: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+                console.log('SERVER NS DELETE: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
                 delete io.nsps['/' + nspn];
                 socket.disconnect('unauthorized');
                 socket.removeAllListeners('connection');
@@ -126,24 +126,24 @@ io.on('connection', function(socket) {
             // on reconnection, reset the transports option, as the Websocket
             // connection may have failed (caused by proxy, firewall, browser, ...)
             socket.on('reconnect_attempt', function(sockets) {
-                //console.log('socket reconnect attempt');
+                console.log('socket reconnect attempt');
                 socket.io.opts.transports = ['polling', 'websocket'];
             });
 
             socket.on('reconnect', function(sockets) {
-                //console.log('socket reconnect');
+                console.log('socket reconnect');
             });
 
             socket.on('reconnecting', function(sockets) {
-                //console.log('socket reconnecting');
+                console.log('socket reconnecting');
             });
 
             socket.on('reconnect_error', function(sockets) {
-                //console.log('reconnect_error');
+                console.log('reconnect_error');
             });
 
             socket.on('reconnect_failed', function(sockets) {
-                //console.log('reconnect_failed');
+                console.log('reconnect_failed');
             });
 
         });
@@ -151,7 +151,7 @@ io.on('connection', function(socket) {
 
     // on socket disconnect
     socket.on('disconnect', function(sockets) {
-        //console.log('SERVER DISCONNECT, clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+        console.log('SERVER DISCONNECT, clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     });
 
 });
