@@ -205,6 +205,8 @@ cardApp.factory('socket', function($rootScope, $window) {
 
     var socket;
 
+    var self = socket;
+
     socket = io({ transports: ['websocket'] });
 
     notifyUsers = function(msg) {
@@ -252,7 +254,8 @@ cardApp.factory('socket', function($rootScope, $window) {
                 console.log('reconnect: ' + attempt);
                 console.log(socket.id);
                 console.log(id);
-                socket.emit('create_ns', id);
+                console.log(self);
+                self.emit('create_ns', id);
                 $rootScope.$broadcast('SOCKET_RECONNECT');
             });
             socket.on('reconnecting', function(attempt) {
@@ -302,6 +305,7 @@ cardApp.factory('socket', function($rootScope, $window) {
             });
         },
         emit: function(eventName, data, callback) {
+            console.log('emit');
             socket.emit(eventName, data, function() {
                 var args = arguments;
                 $rootScope.$apply(function() {
@@ -548,7 +552,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                // connect to socket.io via socket service 
             // and request that a unique namespace be created for this user with their user id
             //console.log('checkDataUpdate socket reconnect');
-            
+
 
             //socket.setId(UserData.getUser()._id);
             //socket.connect(socket.getId());
