@@ -810,17 +810,6 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
         return deferred.promise;
     };
 
-    UserData.getContact = function(id) {
-        var deferred = $q.defer();
-        var index = General.findWithAttr(contacts, '_id', id);
-        if (index >= 0) {
-            deferred.resolve(contacts[index]);
-        } else {
-            deferred.resolve('user not found');
-        }
-        return deferred.promise;
-    };
-
     UserData.updateContact = function(val) {
         console.log(val);
         var deferred = $q.defer();

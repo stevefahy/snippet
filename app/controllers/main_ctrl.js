@@ -18,15 +18,6 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', 'UserData', '
     $scope.$on('UPDATE_DATA', function(event, msg) {
         console.log('on UPDATE_DATA');
         console.log(msg);
-/*
-       UserData.getContact(msg.user)
-            .then(function(result) {
-                console.log(result);
-                if(result != 'user not found'){
-
-                }
-            });
-            */
 
 
         UserData.updateContact(msg.update_values)
