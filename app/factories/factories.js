@@ -259,6 +259,7 @@ cardApp.factory('socket', function($rootScope, $window) {
                 console.log(id);
                 console.log(self);
                 //self.emit('create_ns', id);
+                
                 $rootScope.$broadcast('SOCKET_RECONNECT');
             });
             socket.on('reconnecting', function(attempt) {
