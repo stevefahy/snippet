@@ -258,6 +258,11 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                                     Users.send_notification(optionsObj.options)
                                                         .then(function(res) {
                                                             console.log(res);
+                                                            if (res.error) {
+                                                                console.log('UserData.checkDataUpdate');
+                                                                UserData.checkDataUpdate();
+
+                                                            }
                                                         });
                                                 }
                                             }

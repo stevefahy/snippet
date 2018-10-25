@@ -593,9 +593,14 @@ module.exports = function(app, passport) {
                 console.log('err: ' + err);
                 throw err;
             } else {
-                console.log(response.results);
+                //console.log(response.results);
                 console.log(body.results);
-                res.status(200).send('ok');
+                if(body.results.error == "NotRegistered"){
+                    res.json({ 'error': 'NotRegistered' });
+                } else {
+                    res.status(200).send('ok');
+                }
+                
             }
         });
     });
