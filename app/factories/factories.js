@@ -444,8 +444,9 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
         // get notifcation data and check if this needs to be updated or added
         Users.update_notification(data)
             .then(function(res) {
-                // Notification update. Notify this users contacts of the change.
-                //self.updateUsers(res.data, user._id, user.contacts);
+                console.log(res);
+                //Notification update. Notify this users contacts of the change.
+                self.updateUsers(res.data, user._id, user.contacts);
             });
     };
 
@@ -459,8 +460,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                 // Check if the token has been created yet or has changed.
                 var user = UserData.getUser();
 
-                // Notification update. Notify this users contacts of the change.
-                self.updateUsers(data, user._id, user.contacts);
+
 
                 // First time. Create notification key.
                 if (user.notification_key_name === undefined) {
@@ -810,7 +810,19 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
         return deferred.promise;
     };
 
+    UserData.getContact = function(id) {
+        var deferred = $q.defer();
+        var index = General.findWithAttr(contacts, '_id', id);
+        if (index >= 0) {
+            deferred.resolve(contacts[index]);
+        } else {
+            deferred.resolve('user not found');
+        }
+        return deferred.promise;
+    };
+
     UserData.updateContact = function(val) {
+        console.log(val);
         var deferred = $q.defer();
         var index = General.findWithAttr(contacts, '_id', val._id);
         // if contact found
