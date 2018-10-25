@@ -15,7 +15,7 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
     var myImageName = '';
     var mySavedImage = '';
     var saved_user_name = '';
-    $window.androidToJS = this.androidToJS;
+    $window.imageUploaded = this.imageUploaded;
     $scope.prepareImage = Format.prepareImage;
     $scope.setting_change = false;
 
@@ -150,7 +150,7 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
     }
 
     // Image returned from Android.
-    androidToJS = function(data) {
+    imageUploaded = function(data) {
         var file = data.file;
         myImageName = data.file;
         var reader = new FileReader();

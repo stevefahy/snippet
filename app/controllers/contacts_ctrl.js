@@ -473,7 +473,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     };
 
     // Image returned from Android.
-    androidToJS = function(data) {
+    imageUploaded = function(data) {
         var file = data.file;
         myImageName = data.file;
         var reader = new FileReader();

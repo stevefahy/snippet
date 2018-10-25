@@ -23,7 +23,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     var focused_user;
     var savedSelection;
 
-    $window.androidToJS = self.androidToJS;
+    $window.imageUploaded = self.imageUploaded;
 
     // Set serverUrl based upon current host (local or live)
     if (location.hostname === 'localhost') {
@@ -33,7 +33,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         serverUrl = 'https://www.snipbee.com/upload';
     }
 
-    this.androidToJS = function(data) {
+    this.imageUploaded = function(data) {
         console.log('Format');
         console.log(data);
         insertImage(data);
