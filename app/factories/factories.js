@@ -210,7 +210,7 @@ cardApp.factory('socket', function($rootScope, $window) {
     socket = io({ transports: ['websocket'] });
 
     var self = socket;
-    
+
 
     notifyUsers = function(msg) {
         console.log('notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
@@ -258,7 +258,7 @@ cardApp.factory('socket', function($rootScope, $window) {
                 console.log(socket.id);
                 console.log(id);
                 console.log(self);
-                self.emit('create_ns', id);
+                //self.emit('create_ns', id);
                 $rootScope.$broadcast('SOCKET_RECONNECT');
             });
             socket.on('reconnecting', function(attempt) {
