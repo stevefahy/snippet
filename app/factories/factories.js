@@ -250,6 +250,7 @@ cardApp.factory('socket', function($rootScope, $window) {
             });
             socket.on('reconnect', function(attempt) {
                 console.log('reconnect: ' + attempt);
+                
                 $rootScope.$broadcast('SOCKET_RECONNECT');
             });
             socket.on('reconnecting', function(attempt) {
