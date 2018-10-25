@@ -240,7 +240,7 @@ cardApp.factory('socket', function($rootScope, $window) {
             // namespace disconnected by server
             socket.on('disconnect', function(reason) {
                 console.log('CLIENT NS disconnected by server: ' + reason);
-                $rootScope.$broadcast('SOCKET_RENEW');
+                //$rootScope.$broadcast('SOCKET_RENEW');
             });
             socket.on('connect_error', function(error) {
                 console.log('connect_error: ' + error);
