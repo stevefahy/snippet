@@ -266,8 +266,6 @@ cardApp.factory('socket', function($rootScope, $window) {
             // create the unique namespace on the client
             socket = io('/' + id);
 
-
-
                 $rootScope.$broadcast('SOCKET_RECONNECT');
             });
             socket.on('reconnecting', function(attempt) {
