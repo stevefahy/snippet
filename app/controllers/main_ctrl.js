@@ -17,9 +17,10 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', 'UserData', '
     // Broadcast by socket after it has reconnected. Check for updates.
     $scope.$on('SOCKET_RENEW', function(event) {
         console.log('SOCKET_RENEW');
-        
+
         console.log(socket.getId());
-        socket.connect(socket.getId());
+        //socket.connect(socket.getId());
+        socket.emit('create_ns', socket.getId());
     });
 
     // Broadcast by socket service when data needs to be updated.

@@ -262,11 +262,12 @@ cardApp.factory('socket', function($rootScope, $window) {
                 //self.emit('create_ns', id);
                      console.log('connect: ' + this.id + ' : ' + id);
             // Connected, request unique namespace to be created
-            this.emit('create_ns', id);
+            //this.emit('create_ns', id);
             // create the unique namespace on the client
-            socket = io('/' + id);
+            //socket = io('/' + id);
 
                 $rootScope.$broadcast('SOCKET_RECONNECT');
+                $rootScope.$broadcast('SOCKET_RENEW');
             });
             socket.on('reconnecting', function(attempt) {
                 console.log('reconnecting: ' + attempt);
