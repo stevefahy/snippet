@@ -257,14 +257,14 @@ cardApp.factory('socket', function($rootScope, $window) {
                 console.log('reconnect: ' + attempt);
                 console.log(this.id);
                 console.log(id);
-                console.log(self);
+                //console.log(self);
                 console.log(this);
                 //self.emit('create_ns', id);
                      console.log('connect: ' + this.id + ' : ' + id);
                      console.log(socket_m);
             // Connected, request unique namespace to be created
-            socket_m.emit('create_ns', id);
-            socket = io('/' + id);
+            //socket_m.emit('create_ns', id);
+            //socket = io('/' + id);
             // create the unique namespace on the client
             //socket = io('/' + id);
 

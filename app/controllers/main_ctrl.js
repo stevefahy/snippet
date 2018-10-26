@@ -20,9 +20,11 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
         console.log(socket.getId());
         //socket.connect(socket.getId());
-        
+
         $timeout(function() {
         //socket.emit('create_ns', socket.getId());
+        console.log(socket.getId());
+        socket.connect(socket.getId());
         }, 1000);
     });
 
