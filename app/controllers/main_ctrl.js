@@ -30,6 +30,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         console.log('on UPDATE_DATA');
         console.log(msg);
 
+
         UserData.updateContact(msg.update_values)
             .then(function(result) {
                 console.log(result);
