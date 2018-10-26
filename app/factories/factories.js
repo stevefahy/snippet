@@ -267,7 +267,7 @@ cardApp.factory('socket', function($rootScope, $window) {
             //socket = io('/' + id);
 
                 $rootScope.$broadcast('SOCKET_RECONNECT');
-                
+
                 $rootScope.$broadcast('SOCKET_RENEW');
             });
             socket.on('reconnecting', function(attempt) {
@@ -287,6 +287,10 @@ cardApp.factory('socket', function($rootScope, $window) {
             });
             socket.on('pong', function(ms) {
                 //console.log('pong: ' + ms);
+            });
+
+            socket.on('SERVER_CONNECTION', function(id) {
+                console.log('SERVER_CONNECTION: ' + id);
             });
         },
         delete: function() {

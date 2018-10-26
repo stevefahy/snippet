@@ -20,7 +20,9 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', 'UserData', '
 
         console.log(socket.getId());
         //socket.connect(socket.getId());
+        $timeout(function() {
         socket.emit('create_ns', socket.getId());
+        }, 1000);
     });
 
     // Broadcast by socket service when data needs to be updated.
