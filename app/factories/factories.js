@@ -253,13 +253,20 @@ cardApp.factory('socket', function($rootScope, $window) {
             socket.on('connect_timeout', function() {
                 console.log('connect_timeout');
             });
-            socket.on('reconnect', function(attempt) {
+            socket.on('reconnect', function(attempt, socket) {
                 console.log('reconnect: ' + attempt);
                 console.log(socket.id);
                 console.log(id);
                 console.log(self);
+                console.log(socket);
                 //self.emit('create_ns', id);
-                
+                     console.log('connect: ' + socket.id + ' : ' + id);
+            // Connected, request unique namespace to be created
+            socket.emit('create_ns', id);
+            // create the unique namespace on the client
+            socket = io('/' + id);
+
+
                 $rootScope.$broadcast('SOCKET_RECONNECT');
             });
             socket.on('reconnecting', function(attempt) {
