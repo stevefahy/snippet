@@ -203,13 +203,13 @@ cardApp.factory('Conversations', ['$http', function($http) {
 
 cardApp.factory('socket', function($rootScope, $window) {
 
-    var socket;
+    var socket_m;
 
     
 
-    socket = io({ transports: ['websocket'] });
+    socket_m = io({ transports: ['websocket'] });
 
-    var self = socket;
+    //var self = socket;
 
 
     notifyUsers = function(msg) {
@@ -225,9 +225,9 @@ cardApp.factory('socket', function($rootScope, $window) {
     return {
         // called by core.js - UserData once when the app loads 
         connect: function(id) {
-            console.log('connect: ' + socket.id + ' : ' + id);
+            console.log('connect: ' + socket_m.id + ' : ' + id);
             // Connected, request unique namespace to be created
-            socket.emit('create_ns', id);
+            socket_m.emit('create_ns', id);
             // create the unique namespace on the client
             socket = io('/' + id);
             // namespace connect
@@ -262,7 +262,7 @@ cardApp.factory('socket', function($rootScope, $window) {
                 //self.emit('create_ns', id);
                      console.log('connect: ' + this.id + ' : ' + id);
             // Connected, request unique namespace to be created
-            //this.emit('create_ns', id);
+            socket_m.emit('create_ns', id);
             // create the unique namespace on the client
             //socket = io('/' + id);
 
