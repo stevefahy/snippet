@@ -90,6 +90,7 @@ io.on('connection', function(socket) {
     // namespace sent by client
     var ns;
 
+
     //socket.emit('SERVER_CONNECTION', socket.id);
 
     socket.on('create_ns', function(ns) {
