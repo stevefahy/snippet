@@ -1,4 +1,4 @@
-cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', 'UserData', 'socket', 'principal', function($scope, $window, $rootScope, UserData, socket, principal) {
+cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', 'UserData', 'socket', 'principal', function($scope, $window, $rootScope, $timeout, UserData, socket, principal) {
 
     var ua = navigator.userAgent;
 
