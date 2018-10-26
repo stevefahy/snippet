@@ -267,6 +267,7 @@ cardApp.factory('socket', function($rootScope, $window) {
             socket = io('/' + id);
 
 
+
                 $rootScope.$broadcast('SOCKET_RECONNECT');
             });
             socket.on('reconnecting', function(attempt) {
