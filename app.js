@@ -88,70 +88,75 @@ dataChange = function(data) {
 io.on('connection', function(socket) {
     console.log('SERVER CONNECTION: ' + socket.id + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     // namespace sent by client
+    //var ns = '5b335ea00486103a8c319252';
     var ns;
+    var socket_ns;
 
-
-    //socket.emit('SERVER_CONNECTION', socket.id);
 
     socket.on('create_ns', function(ns) {
         console.log('create ns: ' + ns);
         // create unique namespace requested by client
-        socket = io.of('/' + ns);
+        socket_ns = io.of('/' + ns);
+        //console.log(socket_ns);
+        console.log('clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+        
+            socket_ns.on('reconnect', function(sockets) {
+                console.log('socket reconnect');
+            });
         // namespace connection made
-        socket.on('connection', function(socket) {
+        socket_ns.on('connection', function(socket_ns) {
             console.log('connection');
-            socket.setMaxListeners(0);
+            socket_ns.setMaxListeners(0);
             // store the namespace name
             nspn = ns;
             // confirm that namespace has been created to client
-            socket.emit('joined_ns', socket.id);
+            socket_ns.emit('joined_ns', socket.id);
             // Remove old card_posted listener and create new one.
             console.log('REMOVE card_posted listener');
-            socket.removeListener('card_posted', cardPosted);
+            socket_ns.removeListener('card_posted', cardPosted);
             console.log('ADD card_posted listener');
-            socket.on('card_posted', cardPosted);
+            socket_ns.on('card_posted', cardPosted);
             // Remove old data_change listener and create new one.
             console.log('REMOVE data_change listener');
-            socket.removeListener('data_change', dataChange);
+            socket_ns.removeListener('data_change', dataChange);
             console.log('ADD data_change listener');
-            socket.on('data_change', dataChange);
+            socket_ns.on('data_change', dataChange);
             // on namespace disconnect
-            socket.on('disconnect', function(sockets) {
+            socket_ns.on('disconnect', function(sockets) {
                 console.log('SERVER NS DISCONNECT: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
             });
             // close socket connection and delete nsmespace from io.nsps array
-            socket.on('delete', function(sockets) {
+            socket_ns.on('delete', function(sockets) {
                 console.log('SERVER NS DELETE: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
                 delete io.nsps['/' + nspn];
-                socket.disconnect('unauthorized');
-                socket.removeAllListeners('connection');
+                socket_ns.disconnect('unauthorized');
+                socket_ns.removeAllListeners('connection');
             });
             // on reconnection, reset the transports option, as the Websocket
             // connection may have failed (caused by proxy, firewall, browser, ...)
-            socket.on('reconnect_attempt', function(sockets) {
+            socket_ns.on('reconnect_attempt', function(sockets) {
                 console.log('socket reconnect attempt');
-                socket.io.opts.transports = ['polling', 'websocket'];
+                socket_ns.io.opts.transports = ['polling', 'websocket'];
             });
 
-            socket.on('reconnect', function(sockets) {
+            socket_ns.on('reconnect', function(sockets) {
                 console.log('socket reconnect');
             });
 
-            socket.on('reconnecting', function(sockets) {
+            socket_ns.on('reconnecting', function(sockets) {
                 console.log('socket reconnecting');
             });
 
-            socket.on('reconnect_error', function(sockets) {
+            socket_ns.on('reconnect_error', function(sockets) {
                 console.log('reconnect_error');
             });
 
-            socket.on('reconnect_failed', function(sockets) {
+            socket_ns.on('reconnect_failed', function(sockets) {
                 console.log('reconnect_failed');
             });
 
         });
     });
-
     // on socket disconnect
     socket.on('disconnect', function(sockets) {
         console.log('SERVER DISCONNECT, clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
