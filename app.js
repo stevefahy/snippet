@@ -89,6 +89,7 @@ io.on('connection', function(socket) {
     console.log('SERVER CONNECTION: ' + socket.id + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     // namespace sent by client
     var ns;
+    var nspn;
 
 
     socket.on('create_ns', function(ns) {
