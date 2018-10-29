@@ -612,6 +612,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
             if ($scope.import_sel == true) {
                 $scope.animating = false;
             }
+            $scope.animating = false;
         });
     });
 

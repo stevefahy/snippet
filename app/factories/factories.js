@@ -207,7 +207,7 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
     var socket_n;
 
     notifyUsers = function(msg) {
-        //console.log('notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
+        console.log('notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
         $rootScope.$broadcast('NOTIFICATION', msg);
     };
 
@@ -632,6 +632,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     //
 
     notification = function(msg) {
+        console.log(msg);
         // CONVERSATIONS
         if (!update_inprogress) {
             // Find the conversations for current user
@@ -794,6 +795,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     };
 
     $rootScope.$on('NOTIFICATION', function(event, msg) {
+        console.log('NOTIFICATION');
         notification(msg);
     });
 
