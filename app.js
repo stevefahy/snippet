@@ -36,17 +36,16 @@ io.sockets.setMaxListeners(0);
 // 04/07/18
 io.set('transports', ['websocket']);
 // namespace name
-var nspn;
+//var nspn;
 
 cardPosted = function(data) {
+    console.log(data);
     //console.log('card_posted, conv id: ' + data.conversation_id + ' , participants: ' + data.participants);
     //console.log('namespace: ' + nspn + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     // notify relevant namespace(s) of the cards creation
     for (var i in data.participants) {
         // dont emit to the user which sent the card
-        if (data.participants[i]._id === nspn.substring(1, nspn.length)) {
-            //
-        } else {
+        if (data.participants[i]._id !== data.sender_id) {
             for (var y in Object.keys(io.nsps)) {
                 // if the namespace exists on the server
                 //console.log(Object.keys(io.nsps)[y]);
@@ -67,9 +66,7 @@ dataChange = function(data) {
     // notify relevant namespace(s) of the data change.
     for (var i in data.users) {
         // dont emit to the user which sent the change.
-        if (data.users[i] === nspn.substring(1, nspn.length)) {
-            //
-        } else {
+        if (data.users[i] !== data.user) {
             for (var y in Object.keys(io.nsps)) {
                 // if the namespace exists on the server
                 //console.log(Object.keys(io.nsps)[y]);
