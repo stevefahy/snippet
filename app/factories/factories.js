@@ -201,73 +201,52 @@ cardApp.factory('Conversations', ['$http', function($http) {
 // socket Factory
 //
 
-cardApp.factory('socket', function($rootScope, $window) {
-    var self = this;
+cardApp.factory('socket', function($rootScope, $window, $interval) {
 
-    //var socket_fact = this;
-    //console.log(self);
     var socket_m;
     var socket_n;
-    var socket_o;
-    //var socket;
-
-    var theio = io;
-
-    //socket_m = io({ transports: ['websocket'] });
-    //this.socket_m = io({ transports: ['websocket'] });
-    //console.log(this.socket_m);
-    //var self = socket;
-    /*
-    this.docreate = function(){
-        socket_m = io({ transports: ['websocket'] });
-        console.log(socket_m.id);
-    };
-    this.docreate();
-    */
-    //this.create();
-
 
     notifyUsers = function(msg) {
-        console.log('notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
+        //console.log('notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
         $rootScope.$broadcast('NOTIFICATION', msg);
     };
 
     updateData = function(msg) {
-        console.log('update_data: ' + msg.update_values + ', user: ' + msg.user);
+        //console.log('update_data: ' + msg.update_values + ', user: ' + msg.user);
         $rootScope.$broadcast('UPDATE_DATA', msg);
     };
-    /*
-    doCreate = function() {
-        console.log('doCreate');
-        socket_m = io({ transports: ['websocket'] });
-        this.setSocket(socket_m);
-    };
-    */
 
-    doconnect = function(id, factory) {
-        console.log('doconnect: ' + id);
-        console.log(factory);
-        console.log(self);
-        console.log(socket_m);
-        console.log(socket_m.id);
-        console.log(socket_m.connected);
-        console.log('connect: ' + socket_m.id + ' : ' + id);
-        socket_m.emit('hi', 'one');
+    recreateConnection = function() {
+        console.log('recreateConnection');
+        var connection = socket_n.connect();
+        var checkConnection = $interval(function() {
+            console.log(connection.connected);
+            if (connection.connected) {
+                console.log("Made connection");
+                $rootScope.$broadcast('SOCKET_RECONNECT');
+                 $interval.cancel(checkConnection);
+            }
+        }, 100, 300);
+    };
+
+    connectNamespace = function(id, factory) {
         // Connected, request unique namespace to be created
         socket_m.emit('create_ns', id);
         // create the unique namespace on the client
         socket_n = io('/' + id);
-        console.log(socket_n);
-        socket_m.emit('hi', 'two');
         // namespace connect
         socket_n.on('connect', function() {
-            console.log('CLIENT NS connect: ' + socket_n.id);
-
+            //console.log('CLIENT NS connect: ' + socket_n.id);
         });
+
+        // server confirming that the namespace has been created
+        socket_n.on('rejoined_ns', function(id) {
+            console.log('CLIENT rejoined_ns: ' + socket_n.id);
+        });
+
         // server confirming that the namespace has been created
         socket_n.on('joined_ns', function(id) {
             console.log('CLIENT joined_ns: ' + socket_n.id);
-            console.log(socket_n);
         });
         // server notifying users by namespace of content update
         socket_n.on('notify_users', notifyUsers);
@@ -275,28 +254,17 @@ cardApp.factory('socket', function($rootScope, $window) {
         socket_n.on('update_data', updateData);
         // namespace disconnected by server
         socket_n.on('disconnect', function(reason) {
-            console.log('CLIENT NS disconnected by server: ' + reason);
-            console.log(socket_m);
-            console.log(socket_n);
-            console.log(factory);
-            console.log(id);
-            socket_m.emit('hi', ' dis three');
+            //console.log('CLIENT NS disconnected by server: ' + reason);
         });
         socket_n.on('connect_error', function(error) {
             console.log('connect_error: ' + error);
-            console.log(socket_m);
-            console.log(socket_n);
-            console.log(this);
         });
         socket_n.on('connect_timeout', function() {
             console.log('connect_timeout');
         });
         socket_n.on('reconnect', function(attempt) {
             console.log('reconnect: ' + attempt);
-            console.log(socket_m.id);
-            console.log(socket_n.id);
-            console.log(socket_m.connected);
-            console.log(socket_n.connected);
+            $rootScope.$broadcast('SOCKET_RECONNECT');
         });
         socket_n.on('reconnecting', function(attempt) {
             console.log('reconnecting: ' + attempt);
@@ -316,68 +284,39 @@ cardApp.factory('socket', function($rootScope, $window) {
         socket_n.on('pong', function(ms) {
             //console.log('pong: ' + ms);
         });
-
         socket_n.on('SERVER_CONNECTION', function(id) {
             console.log('SERVER_CONNECTION: ' + id);
         });
     };
 
     return {
-        getio: function() {
-            return theio;
-        },
-        destroy: function() {
-            console.log('DESTROY');
-            socket_m = null;
-        },
         create: function() {
-            console.log('CREATE');
-            socket_m = theio({ transports: ['websocket'] });
-            console.log(this);
+            socket_m = io({ transports: ['websocket'] });
             var socket_factory = this;
-            console.log(socket_factory);
             socket_m.once('connect', function() {
-                console.log("connected from the client side");
-                console.log(this);
-                console.log(socket_factory);
-                doconnect(socket_factory.getId(), socket_factory);
+                //console.log("connected from the client side");
+                connectNamespace(socket_factory.getId(), socket_factory);
             });
 
             socket_m.on('reconnect', function() {
                 console.log("reconnected from the client side");
-                console.log(this);
-                console.log(this.id);
-                console.log(this.connected);
-                console.log(socket_factory);
-
                 this.once('connect', function() {
-                    console.log("connection! from the client side");
-                    console.log(this);
-                    console.log(this.id);
-                    console.log(this.connected);
-                    console.log(socket_factory);
+                    console.log("connect from the client side!");
                     // Connected, request unique namespace to be created
                     socket_m.emit('create_ns', socket_factory.getId());
-                    console.log(socket_n);
-                    console.log(socket_n.id);
-                    console.log(socket_n.connected);
-                    socket_n.connect();
-                    // create the unique namespace on the client
-                    //socket_n = io('/' + socket_factory.getId());
-                    //doconnect(socket_factory.getId(), socket_factory);
+                    // Re-establish connection with the namespace.
+                    // Wait before checking the re connect with the namespace.
+                    setTimeout(recreateConnection, 500);
                 });
-
-                //doconnect(socket_factory.getId(), socket_factory);
             });
 
-
         },
-        connect: doconnect,
+        connect: connectNamespace,
         delete: function() {
-            socket_m.emit('delete');
+            //socket_m.emit('delete');
         },
         disconnect: function() {
-            console.log('disconnect');
+            //console.log('disconnect');
             socket_m.disconnect(true);
             socket_m.emit('disconnect');
         },
@@ -387,18 +326,10 @@ cardApp.factory('socket', function($rootScope, $window) {
         setId: function(value) {
             property = value;
         },
-        setSocket: function(val) {
-            console.log(val);
-            socket_m = val;
-        },
-        getSocket: function() {
-            return socket_m;
-        },
         isConnected: function() {
             return socket_m.connected;
         },
         on: function(eventName, callback) {
-            console.log('on: ' + eventName + 'callback: ' + callback);
             socket_m.on(eventName, function() {
                 var args = arguments;
                 $rootScope.$apply(function() {
@@ -407,7 +338,6 @@ cardApp.factory('socket', function($rootScope, $window) {
             });
         },
         emit: function(eventName, data, callback) {
-            console.log('emity');
             socket_n.emit(eventName, data, function() {
                 var args = arguments;
                 $rootScope.$apply(function() {
@@ -681,6 +611,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                                             if (result.data.length > 0) {
                                                 UserData.getCardsModelById(key._id)
                                                     .then(function(res) {
+                                                        console.log(res);
                                                         for (var i in result.data) {
                                                             if (!General.isEqual(result.data[i].content, res.data[i].content)) {
                                                                 conv_same = false;
@@ -1718,10 +1649,8 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
         }).then(function() {
             // connect to socket.io via socket service 
             // and request that a unique namespace be created for this user with their user id
-
             socket.setId(UserData.getUser()._id);
             socket.create();
-            //socket.connect(socket.getId());
             // Set loaded to true.
             $rootScope.loaded = true;
             $rootScope.dataLoading = false;
