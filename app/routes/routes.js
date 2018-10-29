@@ -590,14 +590,14 @@ module.exports = function(app, passport) {
     // send notification to user
     app.post('/api/users/send_notification', isLoggedIn, function(req, res) {
         var options = req.body;
-        console.log(options);
+        //console.log(options);
         request(options, function(err, response, body) {
             if (err) {
                 console.log('err: ' + err);
                 throw err;
             } else {
                 //console.log(response.results);
-                console.log(body.results);
+                //console.log(body.results);
                 if (body.results[0].error == "NotRegistered") {
                     res.json({ 'error': 'NotRegistered' });
                 } else {
