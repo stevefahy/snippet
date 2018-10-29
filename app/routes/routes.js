@@ -66,7 +66,9 @@ function createPublicConversation(user, callback) {
 function isMember(req, res, next) {
     // must be logged in to be a member
     var token = req.headers['x-access-token'];
-    req.principal.isAuthenticated = false;
+    if (req.principal) {
+        req.principal.isAuthenticated = false;
+    }
     if (token) {
         try {
             var decoded = jwt.verify(token, configAuth.tokenAuth.token.secret);
@@ -596,12 +598,12 @@ module.exports = function(app, passport) {
             } else {
                 //console.log(response.results);
                 console.log(body.results);
-                if(body.results[0].error == "NotRegistered"){
+                if (body.results[0].error == "NotRegistered") {
                     res.json({ 'error': 'NotRegistered' });
                 } else {
                     res.status(200).send('ok');
                 }
-                
+
             }
         });
     });
