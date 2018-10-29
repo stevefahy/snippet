@@ -236,14 +236,8 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
         socket_n = io('/' + id);
         // namespace connect
         socket_n.on('connect', function() {
-            //console.log('CLIENT NS connect: ' + socket_n.id);
+            console.log('CLIENT NS connect: ' + socket_n.id);
         });
-
-        // server confirming that the namespace has been created
-        socket_n.on('rejoined_ns', function(id) {
-            console.log('CLIENT rejoined_ns: ' + socket_n.id);
-        });
-
         // server confirming that the namespace has been created
         socket_n.on('joined_ns', function(id) {
             console.log('CLIENT joined_ns: ' + socket_n.id);
@@ -254,7 +248,7 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
         socket_n.on('update_data', updateData);
         // namespace disconnected by server
         socket_n.on('disconnect', function(reason) {
-            //console.log('CLIENT NS disconnected by server: ' + reason);
+            console.log('CLIENT NS disconnected by server: ' + reason);
         });
         socket_n.on('connect_error', function(error) {
             console.log('connect_error: ' + error);
