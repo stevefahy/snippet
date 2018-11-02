@@ -223,6 +223,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     };
 
     this.createFilter = function(id, filter) {
+        console.log(id + ' : ' + filter);
         var deferred = $q.defer();
         convertImageToCanvas(document.getElementById('image_' + id), filter, id).then(function(canvas) {
             var canvasFilter = document.createElement('canvas');
@@ -249,9 +250,11 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     };
 
     this.filterClick = function(e, button, id, filter) {
+        console.log('filterClick: ' + id + ' : ' + filter);
         // Store the selcted filter in a custom attribute.
         ImageAdjustment.setImageAdjustment(id, 'filter', filter);
         self.createFilter(id, filter).then(function(canvasFilter) {
+            console.log(canvasFilter);
             if ($('#cropper_' + id + ' #temp_canvas_filtered_' + id).length >= 0) {
                 $('#cropper_' + id + ' #temp_canvas_filtered_' + id).remove();
             }
@@ -483,11 +486,13 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     };
 
     this.editImage = function(scope, id) {
+        console.log('editImage:' + scope, id);
+        // Turn off content saving.
+                image_edit_finished = false;
         if (principal.isValid()) {
             UserData.checkUser().then(function(result) {
                 // Logged in.
-                // Turn off content saving.
-                image_edit_finished = false;
+                
                 // Get the editable attibute for this card (for this user).
                 // check user has permision to edit.
                 if ($(scope).closest('div.ce').attr('editable') == 'true') {
@@ -571,6 +576,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     }
 
     function convertImageToCanvas(image, filter, id) {
+        console.log(image + ' : ' + filter + ' : ' + id);
         var deferred = $q.defer();
         var filter_data = getFilter(filter);
         // Convert image to canvas

@@ -2782,6 +2782,7 @@ span#header b.header_3 {
 }
 
 .image_adjust {
+    clear: both;
     width: calc(100% + 2.8em);
     left: -1.38em;
     border-bottom: .5px solid rgba(187, 187, 187, 1);
@@ -2927,4 +2928,8 @@ div.after_image:empty {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+}
+
+.escaped {
+color: red;
 }

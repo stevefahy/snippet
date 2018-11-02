@@ -43,6 +43,18 @@ cardApp.service('General', ['Users', 'Format', function(Users, Format) {
             });
     };
 
+    this.swapCase = function(letters) {
+        var newLetters = "";
+        for (var i = 0; i < letters.length; i++) {
+            if (letters[i] === letters[i].toLowerCase()) {
+                newLetters += letters[i].toUpperCase();
+            } else {
+                newLetters += letters[i].toLowerCase();
+            }
+        }
+        return newLetters;
+    };
+
     this.isEqual = function(value, other) {
         // Get the value type
         var type = Object.prototype.toString.call(value);

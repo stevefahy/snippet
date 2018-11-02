@@ -7,7 +7,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     var paste_in_progress = false;
     var marky_started_array = [];
     var INITIAL_KEY = 'z';
+    var ESCAPE_KEY = '\\';
     var secondkey_array = [];
+    var marky_char_array = [];
     var within_pre = false;
     var start_key = false;
     var ua = navigator.userAgent;
@@ -22,6 +24,10 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     var focused_card;
     var focused_user;
     var savedSelection;
+
+    var INITIAL_KEY_CODE = INITIAL_KEY.toUpperCase().charCodeAt(0);
+    var marky_started = false;
+
 
     $window.imageUploaded = self.imageUploaded;
 
@@ -103,8 +109,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     // Create secondkey_array from marky_array
     for (var i = 0; i < marky_array.length; i++) {
-        secondkey_array.push(marky_array[i].charstring.charAt(1));
+        //secondkey_array.push(marky_array[i].charstring.charAt(1));
+
+        secondkey_array.push(marky_array[i].charstring.charAt(1).toUpperCase().charCodeAt(0));
+        marky_char_array.push(INITIAL_KEY.toUpperCase() + marky_array[i].charstring.charAt(1).toUpperCase());
     }
+    console.log(secondkey_array);
 
     function getDate() {
         var today = new Date();
@@ -460,12 +470,22 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     findMarky = function(content) {
+        console.log('findMarky');
         var marky_found = false;
+        var content_upper = content.toUpperCase();
+        for (var i = 0; i < marky_char_array.length; i++) {
+            if (content_upper.indexOf(marky_char_array[i]) >= 0) {
+                marky_found = true;
+                break;
+            }
+        }
+        /*
         for (var i = 0; i < secondkey_array.length; i++) {
             if (content.indexOf(INITIAL_KEY + secondkey_array[i]) >= 0) {
                 marky_found = true;
             }
         }
+        */
         return marky_found;
     };
 
@@ -495,15 +515,21 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.getBlur = function(id, card, currentUser) {
+        console.log('getBlur');
+        console.log(image_edit_finished);
         // Add slight delay so that document.activeElement works
         setTimeout(function() {
             // Get the element currently in focus
             var active = $(document.activeElement).closest("div").attr('id');
             // If the blurred card is not the current card or the hidden input.
-            if (('ce' + card._id != active && (active != 'hidden_input_container')) || image_edit_finished == true) {
+            console.log(image_edit_finished);
+            if (('ce' + card._id != active && (active != 'hidden_input_container')) && image_edit_finished == true) {
+                console.log('DIFF CARD');
+                marky_started_array = [];
                 // Check if there is a marky in progress
                 // zm launching image capture should not trigger an update. It causes error.
                 found_marky = findMarky(card.content);
+                console.log(found_marky);
                 // check the content has changed and not currently mid marky
                 if ((card.content != card.original_content && (found_marky == false)) || image_edit_finished == true) {
                     // Only do this if not in current card?
@@ -514,7 +540,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     if (image_edit_finished) {
                         card.content = $('#ce' + card._id).html();
                     }
-                    image_edit_finished = false;
+                    //image_edit_finished = false;
                     // Inject the Database Service
                     var Database = $injector.get('Database');
                     // Update the card
@@ -621,6 +647,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     function moveCaretAfter(id) {
         self.removeDeleteIds();
         var current_node = $("#" + id).get(0);
+        console.log(current_node);
+        if(current_node != undefined){
         $("<span id='delete'>&#x200b</span>").insertAfter(current_node);
         var range = document.createRange();
         range.setStartAfter(current_node.nextSibling);
@@ -635,6 +663,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             $('#' + id).html($('#' + id).html().replace(/<br>/g, ""));
         }
         $('#' + id).removeAttr('id');
+    }
         return;
     }
 
@@ -676,6 +705,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             // Now re-apply currently open tags to the pre contents in sequence
             for (var msa = 0; msa < marky_started_array.length - 1; msa++) {
                 // Find the HTML for this charstring and create that element
+                console.log(marky_array);
+                console.log(marky_started_array);
                 var result = $.grep(marky_array, function(e) { return e.charstring == marky_started_array[msa]; });
                 var updateChars = document.createElement(result[0].html);
                 updateChars.attribute = result[0].attribute;
@@ -710,10 +741,16 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     function closeMarky(marky_array, marky_started_array, char_watch) {
         // Close Marky tag and remove it from the marky_started_array
-        var item_index = marky_started_array.indexOf(char_watch);
+        //var item_index = marky_started_array.indexOf(char_watch);
+        console.log(marky_started_array);
+        var item_index = marky_started_array.indexOf(char_watch.toLowerCase());
         marky_started_array.splice(item_index, 1);
+        //var ns = marky_array.html + ":contains('" + char_watch + "')";
         var ns = marky_array.html + ":contains('" + char_watch + "')";
+        console.log(ns);
         var node = $($(ns));
+        console.log(node);
+        if(node.length > 0){
         var node_content = $(node).html();
         var before_index = node_content.indexOf(char_watch);
         var node_content_before = node_content.substr(0, before_index);
@@ -723,6 +760,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         $(node.attr('id', 'marky'));
         //
         $(node.removeClass('in_progress'));
+    }
         return marky_started_array;
     }
 
@@ -759,53 +797,192 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         }
         return;
     }
-
+    var marky_check = false;
+    //var mark_list_current;
     this.markyCheck = function(content, elem, pre) {
+        var escape_marky = false;
+        //marky_check = true;
+        console.log(marky_check);
+        // Inject the General Service
+        var General = $injector.get('General');
         // pre false - currently not within a pre
         // pre true - currently within a pre
-        if (!pre) {
-            content_less_pre = self.removePreTag(content);
-            content_to_match = content_less_pre;
-        } else {
-            content_to_match = content;
-        }
-        // Ignore Canvas Images (which may contain chars from markey_array).
-        content_less_temp = self.removeTempFiltered(content);
-        content_to_match = content_less_temp;
-        for (var ma = 0; ma < marky_array.length; ma++) {
+        console.log(content.indexOf(INITIAL_KEY));
+        console.log(content.indexOf(General.swapCase(INITIAL_KEY)));
+        marky_check = true;
+        if (marky_check) {
+            console.log('do marky_check');
+            //var result = content_to_match.match(new RegExp(reg2_str, 'igm'));
+
+            if (!pre) {
+                content_less_pre = self.removePreTag(content);
+                content_to_match = content_less_pre;
+            } else {
+                content_to_match = content;
+            }
+            // Ignore Canvas Images (which may contain chars from markey_array).
+            content_less_temp = self.removeTempFiltered(content);
+            content_to_match = content_less_temp;
+            console.log(content_to_match);
+
+            //var ma_index = marky_char_array.indexOf(mark_list_current[0].toUpperCase());
+
+
             var mark_list_current;
-            var reg2_str = "(" + marky_array[ma].charstring + ")";
-            mark_list_current = content_to_match.match(new RegExp(reg2_str, 'igm'));
+            var ma_index;
+            //console.log(content_to_match);
+            for (var ma = 0; ma < marky_array.length; ma++) {
+                //var mark_list_current;
+
+                var char_one = marky_array[ma].charstring.substr(0, 1);
+                var char_two = marky_array[ma].charstring.substr(1, 1);
+
+                var char_one_other_case = General.swapCase(char_one);
+                var char_two_other_case = General.swapCase(char_two);
+                //console.log(char_two);
+                //console.log(char_two_other_case);
+
+                //var reg2_str = "(" + marky_array[ma].charstring + ")";
+
+                var reg2_str = "(" + '[' + char_one + char_one_other_case + ']' + '[' + char_two + char_two_other_case + ']' + ")";
+
+
+                var result = content_to_match.match(new RegExp(reg2_str, 'igm'));
+                if (result != null) {
+
+                    // Check for escape 
+                    var marky_index = content_to_match.indexOf(result);
+                    var marky_preceding = content_to_match.substring(marky_index - 1, marky_index);
+                    console.log('preceding: ' + marky_preceding);
+                    if (marky_preceding == ESCAPE_KEY) {
+                        console.log('escape');
+                        var currentChars = content_to_match.substring(marky_index - 1, marky_index + 2);
+                        console.log(currentChars);
+                        var updateChars = "<span id='marky' class='escaped'>" + currentChars.substring(1,2) + '<WBR>' + currentChars.substring(2,3) + "</span>";
+                        console.log(updateChars);
+                        // Use timeout to fix bug on Galaxy S6 (Chrome, FF, Canary)
+                        $timeout(function() {
+                                console.log(currentChars);
+                                self.selectText(elem, currentChars);
+                            }, 0)
+                            .then(
+                                function() {
+                                    return $timeout(function() {
+                                        self.pasteHtmlAtCaret(updateChars);
+                                    }, 0);
+                                }
+                            )
+                            .then(
+                                function() {
+                                    return $timeout(function() {
+                                        document.getElementById(elem).focus();
+                                            moveCaretAfter('marky');
+                                    }, 0);
+                                }
+                            );
+
+                    } else {
+                        mark_list_current = result;
+                        ma_index = ma;
+                        console.log(mark_list_current);
+                    }
+                    break;
+                }
+                //console.log(mark_list_current);
+
+
+            }
+
+
+            /*
+            var selection_start = $(this.getSelectionStart());
+            var selection_text = selection_start[0].nodeValue;
+
+            var selection_text_upper = selection_text.toUpperCase();
+            var mark_list_current;
+            var ma_index;
+            console.log(selection_start);
+            var init_key = selection_text_upper.indexOf(INITIAL_KEY.toUpperCase());
+            var pre_init_key = init_key-1;
+
+            if (init_key >= 0) {
+                var last_chars = selection_text_upper.substring(init_key, init_key + 2);
+                console.log(last_chars);
+                console.log(marky_char_array);
+                var marky_char_index = marky_char_array.indexOf(last_chars);
+                if (marky_char_index >= 0) {
+                    if( selection_text_upper.substring(init_key-1, init_key) == ESCAPE_KEY.toUpperCase()){
+                        console.log('ESCAPE');
+                        escape_marky = true;
+                    }
+                    //var parent_element = selection_start[0].parentElement;
+                    var parent_element = $(selection_start[0]).parents('pre').length;
+                    console.log(parent_element);
+                    console.log('FOUND A MARKY?: ' + last_chars);
+                    if (parent_element == 0 && !escape_marky) {
+                        mark_list_current = [selection_text.substring(init_key, init_key + 2)];
+                        ma_index = marky_char_index;
+                        console.log('FOUND A MARKY: ' + last_chars);
+                    } else {
+                        // Escaped marky
+                        console.log('escape_marky');
+                    }
+                }
+            }
+            */
+
+
+
+
             if (mark_list_current !== null && mark_list_current !== undefined) {
+                console.log(mark_list_current);
+                //content_to_match.replace(/(mark_list_current[0])/g, mark_list_current[0].toLowerCase());
+                // content_to_match = content_to_match.replace(mark_list_current[0], mark_list_current[0].toLowerCase());
+                //console.log(content_to_match);
+                //mark_list_current[0] = mark_list_current[0].toLowerCase();
+                // Change the original text.
+
+
                 //marky open
+                //var currentChars = mark_list_current[0];
                 var currentChars = mark_list_current[0];
-                var char_watch = evluateChar(marky_array, ma);
-                if (marky_array[ma].html !== '') {
-                    if (!include(marky_started_array, char_watch)) {
+                //var char_watch = evluateChar(marky_array, ma);
+                var char_watch = mark_list_current[0];
+                var char_watch_lowercase = char_watch.toLowerCase();
+                //if (marky_array[ma].html !== '') {
+                if (marky_array[ma_index].html !== '') {
+                    if (!include(marky_started_array, char_watch_lowercase)) {
                         // TODO DUPE! ma_arg
-                        var ma_arg = marky_array[ma];
+                        //var ma_arg = marky_array[ma];
+                        var ma_arg = marky_array[ma_index];
                         // Open Marky tag
                         var close_tag = true;
                         // Check whether this Tag is to be closed as well as opened
-                        if (marky_array[ma].close === false) {
+                        //if (marky_array[ma].close === false) {
+                        if (marky_array[ma_index].close === false) {
                             close_tag = false;
                         }
                         // Only add this Tag to the marky_started_array if it needs to be closed
                         if (close_tag) {
-                            marky_started_array.push(JSON.parse(JSON.stringify(mark_list_current[0])));
+                            //marky_started_array.push(JSON.parse(JSON.stringify(mark_list_current[0])));
+                            marky_started_array.push(JSON.parse(JSON.stringify(mark_list_current[0].toLowerCase())));
                         }
                         var updateChars;
-                        if (marky_array[ma].span_start != undefined) {
-                            updateChars = currentChars.replace(char_watch, marky_array[ma].span_start + "<" + marky_array[ma].html + " " + marky_array[ma].attribute + " class='scroll_latest' id='marky'>" + marky_array[ma].span_end);
+                        if (marky_array[ma_index].span_start != undefined) {
+                            //updateChars = currentChars.replace(char_watch, marky_array[ma].span_start + "<" + marky_array[ma].html + " " + marky_array[ma].attribute + " class='scroll_latest' id='marky'>" + marky_array[ma].span_end);
+                            updateChars = currentChars.replace(char_watch, marky_array[ma_index].span_start + "<" + marky_array[ma_index].html + " " + marky_array[ma_index].attribute + " class='scroll_latest' id='marky'>" + marky_array[ma_index].span_end);
                         } else {
-                            updateChars = currentChars.replace(char_watch, "<" + marky_array[ma].html + " " + marky_array[ma].attribute + " class='scroll_latest in_progress' id='marky'>");
+                            //updateChars = currentChars.replace(char_watch, "<" + marky_array[ma].html + " " + marky_array[ma].attribute + " class='scroll_latest in_progress' id='marky'>");
+                            updateChars = currentChars.replace(char_watch, "<" + marky_array[ma_index].html + " " + marky_array[ma_index].attribute + " class='scroll_latest in_progress' id='marky'>");
                         }
                         if (close_tag) {
-                            updateChars += "</" + marky_array[ma].html + ">";
+                            //updateChars += "</" + marky_array[ma].html + ">";
+                            updateChars += "</" + marky_array[ma_index].html + ">";
                         }
                         replaceTags.removeSpaces(elem);
                         // Use timeout to fix bug on Galaxy S6 (Chrome, FF, Canary)
                         $timeout(function() {
+                                console.log(currentChars);
                                 self.selectText(elem, currentChars);
                             }, 0)
                             .then(
@@ -834,11 +1011,16 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     } else {
                         // Check whether to Close Marky tag 
                         // Close it if it has been opened, otherwise this is another Marky being opened
-                        char_watch = evluateChar(marky_array, ma);
-                        if (include(marky_started_array, char_watch)) {
-                            var ma_arg = marky_array[ma];
+                        //char_watch = evluateChar(marky_array, ma);
+                        //char_watch = mark_list_current[0];
+                        //if (include(marky_started_array, char_watch)) {
+                        if (include(marky_started_array, char_watch_lowercase)) {
+
+                            var ma_arg = marky_array[ma_index];
                             $timeout(function() {
+                                    //marky_started_array = closeMarky(ma_arg, marky_started_array, char_watch);
                                     marky_started_array = closeMarky(ma_arg, marky_started_array, char_watch);
+
                                 }, 0)
                                 .then(
                                     function() {
@@ -857,15 +1039,16 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                                 );
                         }
                     }
-                } else if (marky_array[ma].script !== '' && marky_array[ma].script !== undefined) {
+                } else if (marky_array[ma_index].script !== '' && marky_array[ma_index].script !== undefined) {
                     // Not HTML but SCRIPT 
                     // TODO Fix so that the actual script which is passed is called     
-                    if (marky_array[ma].script === 'getImage') {
+                    if (marky_array[ma_index].script === 'getImage') {
                         $('#upload-trigger' + elem).trigger('click');
                     }
                     // Use timeout to fix bug on Galaxy S6 (Chrome, FF, Canary)
                     // Timeout causing bug on Web MS Edge. Removed and changed paste from '' to '&#x200b'
                     $timeout(function() {
+                            console.log(currentChars);
                             self.selectText(elem, currentChars);
                         }, 0)
                         .then(
@@ -875,6 +1058,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                         );
                 }
             }
+            marky_check = false;
+            //mark_list_current = [];
         }
     };
 
@@ -914,10 +1099,13 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.selectText = function(element, word) {
+        console.log(element);
+        console.log(word);
         var doc = document;
         var current_node;
         var node_pos = self.findNodeNumber(doc.getElementById(element), word);
         var text = doc.getElementById(element);
+        console.log(text);
         if (doc.body.createTextRange) {
             range = document.body.createTextRange();
             range.moveToElementText(text);
@@ -1074,6 +1262,13 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         }
     };
 
+    this.getSelectionStart = function() {
+        console.log('gss');
+        var node = document.getSelection().anchorNode;
+        console.log(node);
+        return node;
+    };
+
     this.keyListen = function(elem) {
         var getKeyCode = function() {
             var editableEl = document.getElementById(elem);
@@ -1082,10 +1277,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             return a;
         };
 
-        var getSelectionStart = function() {
-            var node = document.getSelection().anchorNode;
-            return node;
-        };
+        /*
+                var getSelectionStart = function() {
+                    var node = document.getSelection().anchorNode;
+                    return node;
+                };
+                */
 
         var observeDOM = (function() {
             var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
@@ -1110,12 +1307,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         observeDOM(document.querySelector("#" + elem), function(m) {
             if (m.addedNodes.length == 0 && m.removedNodes.length > 0) {
                 if (m.removedNodes[0].className == 'in_progress') {
-                    // Removed an in prgress node.
+                    // Removed an in progress node.
                     // Inject the General Service
                     var General = $injector.get('General');
                     // Get the position of this HTML element in the marky_array.
                     var index = General.findWithAttr(marky_array, 'html', m.removedNodes[0].nodeName.toLowerCase());
-                    // If this tag exists in the marky_started_array thrn remove it.
+                    // If this tag exists in the marky_started_array then remove it.
                     var del = marky_started_array.indexOf(marky_array[index].charstring);
                     if (del >= 0) {
                         marky_started_array.splice(del, 1);
@@ -1126,32 +1323,75 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
         document.getElementById(elem).onkeyup = function(e) {
             var kc = getKeyCode();
+            var kc2 = e.keyCode;
+            console.log('kc: ' + kc);
+            console.log('kc2: ' + kc2);
+            //$event.keyCode == INITIAL_KEY_CODE
             // Listen for backspace
+            //console.log($(this.getSelectionStart())[0].nodeValue);
+            var selection_start = $(self.getSelectionStart());
+            //console.log(selection_start[0].nodeValue);
+            console.log('e: ' + e.keyCode);
             if (e.keyCode == 8) {
+                console.log('delete');
+                console.log($(selection_start).attr("class"));
                 //console.log($(getSelectionStart().parentNode));
-                if ($(getSelectionStart()).attr("class") != undefined) {
-                    var prev_class = $(getSelectionStart()).attr("class");
-                    var prev_elem = $(getSelectionStart());
-                    var parent = $(getSelectionStart()).parent().attr("id");
+                if ($(selection_start).attr("class") != undefined) {
+                    var prev_class = $(selection_start).attr("class");
+                    var prev_elem = $(selection_start);
+                    var parent = $(selection_start).parent().attr("id");
                     // If this is a header then delete the header elements and remove from the marky_started_array if it exists.
+                    console.log(prev_class.indexOf('header'));
                     if (prev_class.indexOf('header') >= 0 && parent == 'header') {
-                        $(getSelectionStart()).parent().remove();
+                        console.log('delete header');
+                        $(selection_start).parent().remove();
                         var del = marky_started_array.indexOf(INITIAL_KEY + prev_class.substr(7, 1));
+                        console.log(marky_started_array);
                         marky_started_array.splice(del, 1);
+                        console.log(marky_started_array);
                     }
                 }
             }
 
-            if (kc == INITIAL_KEY) {
-                start_key = true;
-            } else if (start_key) {
-                start_key = false;
-                for (var i = 0; i < secondkey_array.length; i++) {
-                    if (kc == secondkey_array[i]) {
-                        stopEditing(this.id);
-                    }
+            var selection_text = selection_start[0].nodeValue;
+            var selection_text_upper = selection_text.toUpperCase();
+
+            var init_key = selection_text_upper.indexOf(INITIAL_KEY.toUpperCase());
+            if (init_key >= 0) {
+                var last_chars = selection_text_upper.substring(init_key, init_key + 2);
+                console.log(last_chars);
+                console.log(marky_char_array);
+                if (marky_char_array.indexOf(last_chars) >= 0) {
+                    console.log('STOP');
+                    //mark_list_current = [last_chars];
+                    marky_check = true;
+                    stopEditing(this.id);
                 }
+
             }
+            //var last_chars = selection_text.slice(-2);
+            //var last_chars_upper = last_chars.toUpperCase();
+
+
+
+
+
+
+
+
+            //INITIAL_KEY.toUpperCase().charCodeAt(0)
+            /*
+            kc = kc.toUpperCase().charCodeAt(0);
+            console.log(kc);
+            console.log(secondkey_array.indexOf(kc));
+            //for (var i = 0; i < secondkey_array.length; i++) {
+                if (secondkey_array.indexOf(kc) >= 0) {
+                    console.log('STOP');
+                    stopEditing(this.id);
+                }
+            //}
+*/
+
         };
     };
 
@@ -1178,8 +1418,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.checkKey = function($event, elem) {
-        // Stop the default behavior for the ENTER key and insert <br><br> instead
         if ($event.keyCode == 13) {
+            // Stop the default behavior for the ENTER key and insert <br><br> instead
             $event.preventDefault();
             self.pasteHtmlAtCaret("<br><span class='scroll_enter_latest' id='enter_focus'></span>");
             moveCaretInto('enter_focus');
