@@ -74,8 +74,12 @@ canvas {
     padding-top: 9px;
     padding-bottom: 9px;
     background-color: #FFFFFF;
+    /*
     -webkit-border-radius: 0px !important;
     -moz-border-radius: 0px !important;
+    */
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
     border-style: solid;
     border-color: #e6e6e6;
     border-width: 1px;
