@@ -1,10 +1,5 @@
 cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', '$animate', 'viewAnimationsService', 'Cropp', '$compile', 'ImageAdjustment', function($scope, $rootScope, $location, $http, $window, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, $animate, viewAnimationsService, Cropp, $compile, ImageAdjustment) {
 
-    show = function() {
-        UserData.show();
-        cmod = UserData.cards_model;
-    };
-
     openCrop = Cropp.openCrop;
     setCrop = Cropp.setCrop;
     editImage = Cropp.editImage;
@@ -368,7 +363,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                             // If this is the first card in a new conversation then create the cards model for this conversation.
                                             UserData.addCardsModelById(res[conv_pos]._id)
                                                 .then(function(res) {
-                                                    console.log(res);
+                                                    //console.log(res);
                                                 });
                                         });
                                     callback(true);

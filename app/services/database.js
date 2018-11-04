@@ -163,7 +163,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                                             var optionsObj = new createOptions(headersObj.headers, dataObj.data);
                                                             Users.send_notification(optionsObj.options)
                                                                 .then(function(res) {
-                                                                    console.log(res);
+                                                                    //console.log(res);
                                                                 });
                                                         }
                                                     }
@@ -237,31 +237,24 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                             // Send notifications
                             for (var i in response.data.participants) {
                                 // dont emit to the user which sent the card
-                                console.log(response.data.participants[i]._id + ' !== ' + currentUser._id);
-                                console.log(response.data.participants[i]._id !== currentUser._id);
                                 if (response.data.participants[i]._id !== currentUser._id) {
                                     // Add this users id to the viewed_users array.
                                     viewed_users.push({ "_id": response.data.participants[i]._id });
                                     // Find the other user(s)
                                     promises.push(UserData.getConversationsUser(response.data.participants[i]._id)
                                         .then(function(result) {
-                                            console.log(result);
                                             // Get the participants notification key
                                             // Set the message title and body
                                             if (result.notification_key_name !== undefined) {
                                                 // Send to all registered devices!
                                                 for (var y in result.tokens) {
-                                                    console.log(result.tokens[y].token);
                                                     var dataObj = new createData(result.tokens[y].token, notification_title, sent_content, response.data._id);
                                                     var optionsObj = new createOptions(headersObj.headers, dataObj.data);
                                                     // Send the notification
                                                     Users.send_notification(optionsObj.options)
                                                         .then(function(res) {
-                                                            console.log(res);
                                                             if (res.error) {
-                                                                console.log('UserData.checkDataUpdate');
                                                                 UserData.checkDataUpdate();
-
                                                             }
                                                         });
                                                 }
@@ -284,7 +277,6 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                 // Add the current user to the participants being notified of update in case they have multiple devices.
                                 viewed_users.push({ "_id": currentUser._id });
                                 // update other paticipants in the conversation via socket.
-                                console.log('card_posted');
                                 socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: current_conversation_id, participants: viewed_users });
                             });
                         }

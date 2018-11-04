@@ -29,7 +29,7 @@ cardApp.service('FormatHTML', ['Format', 'General', function(Format, General) {
         var regex_6 = regex_5.replace(/(<h([1-7])>(.*?)<\/h[1-7]>)/gi, "<strong> $2 </strong>");
 
         var regex_7 = regex_6.replace(/(<b>(.*?)<\/b>)/gi, "<strong> $2 </strong>");
-        
+
         temp_content = regex_7;
 
         // Loop through the content to count the characters only and not the HTML

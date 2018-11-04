@@ -10,7 +10,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     // Broadcast by socket after it has reconnected. Check for updates.
     $scope.$on('SOCKET_RECONNECT', function(event) {
-        console.log('SOCKET_RECONNECT');
+        //console.log('SOCKET_RECONNECT');
         UserData.checkDataUpdate();
     });
 
@@ -19,11 +19,11 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     $scope.$on('UPDATE_DATA', function(event, msg) {
         UserData.updateContact(msg.update_values)
             .then(function(result) {
-                console.log(result);
+                //console.log(result);
             });
         UserData.updateConversationsUser(msg.update_values)
             .then(function(result) {
-                console.log(result);
+                //console.log(result);
             });
     });
 

@@ -53,11 +53,12 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     };
 
     this.openCrop = function(id) {
+        var img_height;
         // If filtered image exists
         if ($('#cropper_' + id + ' img.adjusted').length > 0) {
             $('#cropper_' + id + ' img.adjusted').css('display', 'none');
             $('#image_' + id).css('display', 'inline');
-            var img_height = $('#image_' + id).height();
+            img_height = $('#image_' + id).height();
             // Get the filter and set it to cropper
             var filter = $('#image_' + id).attr('adjustment-data');
             $('#cropper_' + id).addClass(filter);
@@ -189,17 +190,16 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         var canv = $('canvas.temp_canvas_filtered').attr('id');
         id = canv.substr(21, canv.length - 20);
         var canvasFilter = document.getElementById('temp_canvas_filtered_' + id);
-        //var dataUrl = canvasFilter.toDataURL();
         var dataUrl = canvasFilter.toDataURL('image/jpeg', JPEG_COMPRESSION);
         Format.dataURItoBlob(dataUrl).then(function(blob) {
             blob.name = 'image_filtered_' + id + '.jpg';
             blob.renamed = true;
             Format.prepImage([blob], function(result) {
-                var img5 = new Image();
-                img5.src = 'fileuploads/images/' + result.file + '?' + new Date();
-                img5.className = 'adjusted';
-                img5.id = 'image_filtered_' + id;
-                img5.onload = function() {
+                var img_new = new Image();
+                img_new.src = 'fileuploads/images/' + result.file + '?' + new Date();
+                img_new5.className = 'adjusted';
+                img_new.id = 'image_filtered_' + id;
+                img_new.onload = function() {
                     $('#temp_canvas_filtered_' + id).remove();
                     // Remove current filter.
                     if ($('#cropper_' + id + ' img.adjusted').length > 0) {
@@ -212,8 +212,6 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                     $('#temp_image_filtered_' + id).remove();
                     $(this).insertBefore('#image_' + id);
                     // SAVE
-                    console.log('save');
-                    console.log(image_edit_finished);
                     image_edit_finished = true;
                     $('#cropper_' + id).closest('div.ce').focus();
                     $('#cropper_' + id).closest('div.ce').blur();
@@ -223,16 +221,11 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     };
 
     this.createFilter = function(id, filter) {
-        console.log(id + ' : ' + filter);
         var deferred = $q.defer();
         convertImageToCanvas(document.getElementById('image_' + id), filter, id).then(function(canvas) {
             var canvasFilter = document.createElement('canvas');
-            console.log(canvas.width);
-            console.log(canvas.height);
             canvasFilter.width = canvas.width;
             canvasFilter.height = canvas.height;
-                      console.log(canvasFilter.width);
-            console.log(canvasFilter.height);
             var ctx = canvasFilter.getContext('2d');
             var filter_data = getFilter(filter);
             if (filter_data.filter != undefined) {
@@ -250,11 +243,9 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     };
 
     this.filterClick = function(e, button, id, filter) {
-        console.log('filterClick: ' + id + ' : ' + filter);
         // Store the selcted filter in a custom attribute.
         ImageAdjustment.setImageAdjustment(id, 'filter', filter);
         self.createFilter(id, filter).then(function(canvasFilter) {
-            console.log(canvasFilter);
             if ($('#cropper_' + id + ' #temp_canvas_filtered_' + id).length >= 0) {
                 $('#cropper_' + id + ' #temp_canvas_filtered_' + id).remove();
             }
@@ -328,7 +319,6 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 // Apply any other image adjustments
                 if (i == 'sharpen') {
                     ImageAdjustment.setSharpen(id, target, ImageAdjustment.getSource(), ia[i]);
-
                 }
             }
         }
@@ -486,13 +476,11 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     };
 
     this.editImage = function(scope, id) {
-        console.log('editImage:' + scope, id);
-        // Turn off content saving.
-                image_edit_finished = false;
         if (principal.isValid()) {
             UserData.checkUser().then(function(result) {
                 // Logged in.
-                
+                // Turn off content saving.
+                image_edit_finished = false;
                 // Get the editable attibute for this card (for this user).
                 // check user has permision to edit.
                 if ($(scope).closest('div.ce').attr('editable') == 'true') {
@@ -576,7 +564,6 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     }
 
     function convertImageToCanvas(image, filter, id) {
-        console.log(image + ' : ' + filter + ' : ' + id);
         var deferred = $q.defer();
         var filter_data = getFilter(filter);
         // Convert image to canvas
@@ -584,12 +571,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         var topCanvas = document.createElement("canvas");
         topCanvas.width = image.naturalWidth;
         topCanvas.height = image.naturalHeight;
-        console.log(topCanvas.width);
-        console.log(topCanvas.height);
         var topCtx = topCanvas.getContext('2d');
-        //topCtx.drawImage(topImage, 0, 0, image.width, image.height);
-        console.log(image.naturalWidth);
-        console.log(image.naturalHeight);
         topCtx.drawImage(topImage, 0, 0, image.naturalWidth, image.naturalHeight);
         // If there is a blend to be applied.
         if (filter_data.blend != 'none') {
@@ -642,7 +624,6 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             applyBlending(bottomImage, topImage, image, id, filter_data.blend).then(function(result) {
                 deferred.resolve(result);
             });
-
         } else {
             deferred.resolve(topCanvas);
         }
@@ -714,8 +695,6 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             // After image
             image_edit_finished = true;
             // CHECK - still needed?
-            //var card_id = $('#cropper_' + image_id).parent().attr('id');
-            //var active_el = document.activeElement;
             $('.content_cnv').scrollTop($('.content_cnv')[0].scrollHeight);
         }, 0);
     };

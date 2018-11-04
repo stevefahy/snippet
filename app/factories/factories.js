@@ -207,7 +207,7 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
     var socket_n;
 
     notifyUsers = function(msg) {
-        console.log('notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
+        //console.log('notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
         $rootScope.$broadcast('NOTIFICATION', msg);
     };
 
@@ -217,14 +217,14 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
     };
 
     recreateConnection = function() {
-        console.log('recreateConnection');
+        //console.log('recreateConnection');
         var connection = socket_n.connect();
         var checkConnection = $interval(function() {
-            console.log(connection.connected);
+            //console.log(connection.connected);
             if (connection.connected) {
-                console.log("Made connection");
+                //console.log("Made connection");
                 $rootScope.$broadcast('SOCKET_RECONNECT');
-                 $interval.cancel(checkConnection);
+                $interval.cancel(checkConnection);
             }
         }, 100, 300);
     };
@@ -236,11 +236,11 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
         socket_n = io('/' + id);
         // namespace connect
         socket_n.on('connect', function() {
-            console.log('CLIENT NS connect: ' + socket_n.id);
+            //console.log('CLIENT NS connect: ' + socket_n.id);
         });
         // server confirming that the namespace has been created
         socket_n.on('joined_ns', function(id) {
-            console.log('CLIENT joined_ns: ' + socket_n.id);
+            //console.log('CLIENT joined_ns: ' + socket_n.id);
         });
         // server notifying users by namespace of content update
         socket_n.on('notify_users', notifyUsers);
@@ -248,29 +248,29 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
         socket_n.on('update_data', updateData);
         // namespace disconnected by server
         socket_n.on('disconnect', function(reason) {
-            console.log('CLIENT NS disconnected by server: ' + reason);
+            //console.log('CLIENT NS disconnected by server: ' + reason);
         });
         socket_n.on('connect_error', function(error) {
-            console.log('connect_error: ' + error);
+            //console.log('connect_error: ' + error);
         });
         socket_n.on('connect_timeout', function() {
-            console.log('connect_timeout');
+            //console.log('connect_timeout');
         });
         socket_n.on('reconnect', function(attempt) {
-            console.log('reconnect: ' + attempt);
+            //console.log('reconnect: ' + attempt);
             $rootScope.$broadcast('SOCKET_RECONNECT');
         });
         socket_n.on('reconnecting', function(attempt) {
-            console.log('reconnecting: ' + attempt);
+            //console.log('reconnecting: ' + attempt);
         });
         socket_n.on('reconnect_attempt', function() {
-            console.log('reconnect_attempt');
+            //console.log('reconnect_attempt');
         });
         socket_n.on('reconnect_error', function(error) {
-            console.log('reconnect_error: ' + error);
+            //console.log('reconnect_error: ' + error);
         });
         socket_n.on('reconnect_failed', function() {
-            console.log('reconnect_failed');
+            //console.log('reconnect_failed');
         });
         socket_n.on('ping', function() {
             //console.log('ping');
@@ -279,7 +279,7 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
             //console.log('pong: ' + ms);
         });
         socket_n.on('SERVER_CONNECTION', function(id) {
-            console.log('SERVER_CONNECTION: ' + id);
+            //console.log('SERVER_CONNECTION: ' + id);
         });
     };
 
@@ -293,9 +293,9 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
             });
 
             socket_m.on('reconnect', function() {
-                console.log("reconnected from the client side");
+                //console.log("reconnected from the client side");
                 this.once('connect', function() {
-                    console.log("connect from the client side!");
+                    //console.log("connect from the client side!");
                     // Connected, request unique namespace to be created
                     socket_m.emit('create_ns', socket_factory.getId());
                     // Re-establish connection with the namespace.
@@ -387,6 +387,7 @@ cardApp.factory('principal', function($cookies, jwtHelper, $q, $rootScope) {
 //
 // UserData Factory
 //
+
 var cards_model;
 cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $http, $cookies, $location, jwtHelper, $q, principal, Users, Conversations, FormatHTML, General, socket, $filter) {
     var self = this;
@@ -417,10 +418,6 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     $window.restoreState = this.restoreState;
 
     var update_inprogress = false;
-
-    UserData.show = function() {
-        console.log(cards_model);
-    };
 
 
     // Android called functions.
@@ -470,7 +467,6 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     };
 
     this.updateUsers = function(data, user, users) {
-        console.log('updateUsers');
         socket.emit('data_change', { sender_id: socket.getId(), update: data, user: user, users: users });
     };
 
@@ -478,7 +474,6 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
         // get notifcation data and check if this needs to be updated or added
         Users.update_notification(data)
             .then(function(res) {
-                console.log(res);
                 //Notification update. Notify this users contacts of the change.
                 self.updateUsers(res.data, user._id, user.contacts);
             });
@@ -493,9 +488,6 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
             if (device_id != undefined && token != undefined) {
                 // Check if the token has been created yet or has changed.
                 var user = UserData.getUser();
-
-
-
                 // First time. Create notification key.
                 if (user.notification_key_name === undefined) {
                     setNotificationData(data, user);
@@ -575,14 +567,6 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
             var convs_same = true;
             var conv_same = true;
 
-            // connect to socket.io via socket service 
-            // and request that a unique namespace be created for this user with their user id
-            //console.log('checkDataUpdate socket reconnect');
-
-
-            //socket.setId(UserData.getUser()._id);
-            //socket.connect(socket.getId());
-
             Conversations.find_user_conversations(user_id)
                 .then(function(res) {
                     res.data.map(function(key) {
@@ -605,7 +589,6 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                                             if (result.data.length > 0) {
                                                 UserData.getCardsModelById(key._id)
                                                     .then(function(res) {
-                                                        console.log(res);
                                                         for (var i in result.data) {
                                                             if (!General.isEqual(result.data[i].content, res.data[i].content)) {
                                                                 conv_same = false;
@@ -632,7 +615,6 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     //
 
     notification = function(msg) {
-        console.log(msg);
         // CONVERSATIONS
         if (!update_inprogress) {
             // Find the conversations for current user
@@ -658,7 +640,6 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                                             //console.log(ret);
                                         });
                                 }
-
                                 UserData.getConversationsUser(key._id)
                                     .then(function(returned) {
                                         if (UserData.getUser()._id != returned._id) {
@@ -795,7 +776,6 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     };
 
     $rootScope.$on('NOTIFICATION', function(event, msg) {
-        console.log('NOTIFICATION');
         notification(msg);
     });
 
@@ -856,7 +836,6 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     };
 
     UserData.updateContact = function(val) {
-        console.log(val);
         var deferred = $q.defer();
         var index = General.findWithAttr(contacts, '_id', val._id);
         // if contact found
