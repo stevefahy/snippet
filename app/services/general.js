@@ -231,7 +231,7 @@ cardApp.service('General', ['Users', 'Format', function(Users, Format) {
     showFooter = function() {
         $('.footer').show();
         $('.create_container').show();
-        $('#placeholderDiv').css('bottom', '59px');
+        $('#placeholderDiv').css('bottom', '5px');
     };
 
     // Start listening for keyboard.
