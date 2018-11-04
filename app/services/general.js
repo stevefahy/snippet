@@ -221,7 +221,7 @@ cardApp.service('General', ['Users', 'Format', function(Users, Format) {
             $('.create_container').hide();
         }
         $('.footer').hide();
-        $('#placeholderDiv').css('bottom', '-1px');
+        //$('#placeholderDiv').css('bottom', '-1px');
         // Paste div that will be scrolled into view if necessary and the deleted.
         Format.pasteHtmlAtCaret("<span class='scroll_latest_footer' id='scroll_latest_footer'></span>");
         // Scroll into view if necessary

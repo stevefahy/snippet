@@ -1269,16 +1269,14 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     grid-row: 1;
     text-align: left;
     padding-left: 4px;
-    padding-top: 3px;
-    align-self: flex-start;
+    align-self: center;
 }
 
 .create_c {
     grid-column: 3;
     grid-row: 1;
     padding-left: 6px;
-    padding-top: 3px;
-    align-self: flex-start;
+    align-self: center;
 }
 
 .create_c_no_input {
