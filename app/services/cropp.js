@@ -197,7 +197,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             Format.prepImage([blob], function(result) {
                 var img_new = new Image();
                 img_new.src = 'fileuploads/images/' + result.file + '?' + new Date();
-                img_new5.className = 'adjusted';
+                img_new.className = 'adjusted';
                 img_new.id = 'image_filtered_' + id;
                 img_new.onload = function() {
                     $('#temp_canvas_filtered_' + id).remove();
