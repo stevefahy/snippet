@@ -207,22 +207,22 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
     var socket_n;
 
     notifyUsers = function(msg) {
-        console.log('notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
+        //console.log('notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
         $rootScope.$broadcast('NOTIFICATION', msg);
     };
 
     updateData = function(msg) {
-        console.log('update_data: ' + msg.update_values + ', user: ' + msg.user);
+        //console.log('update_data: ' + msg.update_values + ', user: ' + msg.user);
         $rootScope.$broadcast('UPDATE_DATA', msg);
     };
 
     recreateConnection = function() {
-        console.log('recreateConnection');
+        //console.log('recreateConnection');
         var connection = socket_n.connect();
         var checkConnection = $interval(function() {
-            console.log(connection.connected);
+            //console.log(connection.connected);
             if (connection.connected) {
-                console.log("Made connection");
+                //console.log("Made connection");
                 $rootScope.$broadcast('SOCKET_RECONNECT');
                 $interval.cancel(checkConnection);
             }
@@ -236,11 +236,11 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
         socket_n = io('/' + id);
         // namespace connect
         socket_n.on('connect', function() {
-            console.log('CLIENT NS connect: ' + socket_n.id);
+            //console.log('CLIENT NS connect: ' + socket_n.id);
         });
         // server confirming that the namespace has been created
         socket_n.on('joined_ns', function(id) {
-            console.log('CLIENT joined_ns: ' + socket_n.id);
+            //console.log('CLIENT joined_ns: ' + socket_n.id);
         });
         // server notifying users by namespace of content update
         socket_n.on('notify_users', notifyUsers);
@@ -248,7 +248,7 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
         socket_n.on('update_data', updateData);
         // namespace disconnected by server
         socket_n.on('disconnect', function(reason) {
-            console.log('CLIENT NS disconnected by server: ' + reason);
+            //console.log('CLIENT NS disconnected by server: ' + reason);
         });
         socket_n.on('connect_error', function(error) {
             //console.log('connect_error: ' + error);
@@ -257,7 +257,7 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
             //console.log('connect_timeout');
         });
         socket_n.on('reconnect', function(attempt) {
-            console.log('reconnect: ' + attempt);
+            //console.log('reconnect: ' + attempt);
             $rootScope.$broadcast('SOCKET_RECONNECT');
         });
         socket_n.on('reconnecting', function(attempt) {
@@ -293,9 +293,9 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
             });
 
             socket_m.on('reconnect', function() {
-                console.log("reconnected from the client side");
+                //console.log("reconnected from the client side");
                 this.once('connect', function() {
-                    console.log("connect from the client side!");
+                    //console.log("connect from the client side!");
                     // Connected, request unique namespace to be created
                     socket_m.emit('create_ns', socket_factory.getId());
                     // Re-establish connection with the namespace.
