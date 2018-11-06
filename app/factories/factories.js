@@ -207,12 +207,12 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
     var socket_n;
 
     notifyUsers = function(msg) {
-        //console.log('notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
+        console.log('notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
         $rootScope.$broadcast('NOTIFICATION', msg);
     };
 
     updateData = function(msg) {
-        //console.log('update_data: ' + msg.update_values + ', user: ' + msg.user);
+        console.log('update_data: ' + msg.update_values + ', user: ' + msg.user);
         $rootScope.$broadcast('UPDATE_DATA', msg);
     };
 
