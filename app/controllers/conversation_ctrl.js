@@ -450,6 +450,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             .then(function(result) {
                 if (result != undefined) {
                     $scope.cards = result.data;
+                    console.log($scope.cards);
                     if (result.data.length == 0) {
                         $rootScope.pageLoading = false;
                     }
@@ -475,6 +476,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             .then(function(res) {
                 // Set the user_name to the retrieved name
                 data.user_name = res.user_name;
+                data.avatar = res.avatar;
             })
             .catch(function(error) {
                 console.log('error: ' + error);

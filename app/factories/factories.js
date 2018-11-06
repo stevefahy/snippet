@@ -1311,6 +1311,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     };
 
     UserData.addCardsModel = function(id, data) {
+        console.log(data);
         var deferred = $q.defer();
         var index = General.findWithAttr(cards_model, '_id', id);
         if (index < 0) {
@@ -1336,6 +1337,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
 
 
     UserData.getConversation = function() {
+        console.log('getConversation');
         var deferred = $q.defer();
         var promises = [];
         cards_model = [];
@@ -1352,8 +1354,10 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                         // TODO dont repeat if user id already retreived
                         promises.push(UserData.getConversationsUser(key.user)
                             .then(function(res) {
+                                console.log(res);
                                 // Set the user_name to the retrieved name
                                 key.user_name = res.user_name;
+                                key.avatar = res.avatar;
                                 return;
                             })
                             .catch(function(error) {

@@ -50,7 +50,7 @@ canvas {
     font-size: 0.95rem;
     line-height: 1.4em;
     font-weight: 200;
-    color: #000000;
+    color: #262626;
     outline: none;
     clear: both;
     margin-bottom: 5px;
@@ -178,6 +178,8 @@ img.resize-drag.clip {
     left: -1.38em;
     overflow: hidden;
     background-color: #000000;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #efefef;
 }
 
 .resize-container {
@@ -600,6 +602,48 @@ hr {
     border: 1px solid #9E9E9E;
 }
 
+.card_avatar {
+    margin-left: 1.25em;
+    align-self: center;
+    float: left;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    cursor: pointer;
+    -webkit-box-flex: 0;
+    -webkit-flex: 0 0 auto;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    overflow: hidden;
+    position: relative;
+    /* border: 1px solid #9E9E9E; */
+    border: 1px solid rgba(0,0,0,.0975);
+    border-top-color: rgba(0, 0, 0, 0.098);
+    border-top-style: solid;
+    border-top-width: 1px;
+    border-right-color: rgba(0, 0, 0, 0.098);
+    border-right-style: solid;
+    border-right-width: 1px;
+    border-bottom-color: rgba(0, 0, 0, 0.098);
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-left-color: rgba(0, 0, 0, 0.098);
+    border-left-style: solid;
+    border-left-width: 1px;
+    border-image-source: initial;
+    border-image-slice: initial;
+    border-image-width: initial;
+    border-image-outset: initial;
+    border-image-repeat: initial;
+    border-radius: 50%;
+    border-top-left-radius: 50%;
+    border-top-right-radius: 50%;
+    border-bottom-right-radius: 50%;
+    border-bottom-left-radius: 50%;
+}
+
 .convs_avatar {
     width: 60px;
     height: 60px;
@@ -856,15 +900,19 @@ form.form-horizontal.ng-valid.ng-dirty.ng-valid-parse {
 }
 
 .username.ng-binding {
-    color: darkslategrey;
+    align-self: center;
+    color: #262626;
     float: left;
-    margin-right: 5px;
+    /* margin-right: 5px; */
+    margin-left: 12px;
 }
 
 .edit {
-    float: right;
+     float: right;
     margin-left: auto;
     z-index: 2000;
+    margin-right: 20px;
+    align-self: center;
 }
 
 .header_edit {
@@ -873,8 +921,17 @@ form.form-horizontal.ng-valid.ng-dirty.ng-valid-parse {
 }
 
 div#user {
+    height: 60px;
     float: left;
     width: 100%;
+    /* margin-right: 20em; */
+    background-color: #f5f5f5;
+    display: flex;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-color: #efefef;
+    /* border-top-style: solid; */
+    /* border-top-color: #efefef; */
 }
 
 /* EDIT MENU */
@@ -1019,17 +1076,17 @@ li.list-group-item.d-flex.justify-content-between.align-items-center.ng-binding 
 }
 
 #conversation_part {
-    margin-bottom: 6px;
+    /* margin-bottom: 6px; */
     padding-left: 1.25em;
     padding-right: 1.25em;
     padding-top: 9px;
     padding-bottom: 9px;
-    background-color: #FFFFFF;
+    /* background-color: #FFFFFF; */
     -webkit-border-radius: 0px !important;
     -moz-border-radius: 0px !important;
-    border-style: solid;
-    border-color: #e6e6e6;
-    border-width: 1px;
+    /* border-style: solid; */
+    /* border-color: #e6e6e6; */
+    /* border-width: 1px; */
     width: calc(100vw);
 }
 
@@ -2935,4 +2992,8 @@ div.after_image:empty {
 
 .escaped {
     color: red;
+}
+
+#conversation_card {
+    background-color: #fafafa;
 }
