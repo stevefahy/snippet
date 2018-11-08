@@ -43,6 +43,7 @@ canvas {
 .ce,
 #cec,
 #cet {
+    margin-top: 10px;
     display: inline-block;
     width: 100%;
     word-wrap: break-word;
@@ -172,6 +173,7 @@ img.resize-drag.clip {
 }
 
 .cropper_cont {
+        margin-top: 10px;
     position: relative;
     width: calc(100% + 2.8em);
     position: relative;
@@ -2996,4 +2998,48 @@ div.after_image:empty {
 
 #conversation_card {
     background-color: #fafafa;
+}
+
+.no_image_space {
+    margin-top: -10px;
+}
+
+
+/*
+.ce .cropper_cont:first-child {
+  border: 2px solid red;
+}
+*/
+
+/*
+.ce:first-child::first-line {
+       border: 2px solid red;
+    background: #ff0000;
+    line-height: 50px
+    }
+    */
+
+    /*
+
+.ce:nth-child(2)::first-line {
+       border: 2px solid red;
+    background: green;
+    line-height: 10px
+    }
+*/
+ /*
+    border: 2px solid red;
+    background: #ff0000;
+    */
+/*
+    .ce + .cropper_cont::before{
+        content: "";
+   border: 2px solid red;
+    background: #ff0000;
+    }
+    */
+
+    span.after_image {
+    float: left;
+    width: 100%
 }

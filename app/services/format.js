@@ -239,23 +239,84 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     // Added for update. Ensures focus is called after an image is inserted.
     imageLoaded = function() {
+        console.log('img loaded');
         var active_el = document.activeElement;
         var new_image = document.getElementById('new_image');
+        //console.log($(new_image).parent());
+
+
         $(new_image).removeAttr('onload id');
         active_el.blur();
         active_el.focus();
         // Scroll the image into view.
-        self.scrollLatest('scroll_image_latest');
+        //self.scrollLatest('scroll_image_latest');
         $(new_image).attr('id', 'image_' + new_image.className.split(' ')[1]);
         $('#cropper_' + new_image.className.split(' ')[1]).css('maxWidth', new_image.naturalWidth);
         $('#cropper_' + new_image.className.split(' ')[1]).css('cssFloat', 'left');
+
+        //$timeout(function() {
+            //$($('#cropper_' + new_image.className.split(' ')[1])).closest('.ce')[0].childNodes[1].data = '';
+            //$($('#cropper_' + new_image.className.split(' ')[1])).closest('.ce')[0].removeChild($($('#cropper_' + new_image.className.split(' ')[1])).closest('.ce')[0].childNodes[1]);
+            /*
+            console.log($($('#cropper_' + new_image.className.split(' ')[1])).closest('.ce'));
+            console.log($($('#cropper_' + new_image.className.split(' ')[1])).closest('.ce')[0].childNodes[0].data);
+            if ($($('#cropper_' + new_image.className.split(' ')[1])).closest('.ce')[0].childNodes[0].data == '') {
+                //$('#cropper_' + new_image.className.split(' ')[1]).addClass('top_image');
+            }
+
+
+            for (var i in $($('#cropper_' + new_image.className.split(' ')[1])).closest('.ce')[0].childNodes) {
+                //console.log(i);
+                //console.log($($('#cropper_' + new_image.className.split(' ')[1])).closest('.ce')[0].childNodes[i].nodeType);
+                //console.log($($('#cropper_' + new_image.className.split(' ')[1])).closest('.ce')[0].childNodes[i].nodeValue);
+                if ($($('#cropper_' + new_image.className.split(' ')[1])).closest('.ce')[0].childNodes[i].nodeType == 3 && $($('#cropper_' + new_image.className.split(' ')[1])).closest('.ce')[0].childNodes[i].nodeValue == "") {
+                    console.log('remove');
+                    //$($('#cropper_' + new_image.className.split(' ')[1])).closest('.ce')[0].removeChild($($('#cropper_' + new_image.className.split(' ')[1])).closest('.ce')[0].childNodes[i]);
+                }
+            }
+            */
+
+
+            //console.log(($(new_image).parent('div.ce').length));
+            //console.log($(new_image).is(':first-child'));
+            //console.log($(new_image).parent()[0].previousSibling);
+            //if ($(new_image).parent().parent('div.ce').length) {
+            //if($(new_image).parent()[0].previousSibling == null){
+            if ($(new_image).parent()[0].previousSibling == null) {
+                console.log('direct child! 1');
+                $('#cropper_' + new_image.className.split(' ')[1]).addClass('no_image_space');
+            } else if ($(new_image).parent()[0].previousSibling.nodeType == 3 && $(new_image).parent()[0].previousSibling.nodeValue == "") {
+                console.log('direct child! 2');
+                $('#cropper_' + new_image.className.split(' ')[1]).addClass('no_image_space');
+            } else {
+                console.log('NOT direct child!');
+            }
+
+
+
+        //}, 0);
+
+        /*
+        $timeout(function() {
+        var t = $($('#cropper_' + new_image.className.split(' ')[1])).closest('.ce').html();
+        t.replace(/\u200B/g, 'steve');
+        console.log(t);
+        $($('#cropper_' + new_image.className.split(' ')[1])).closest('.ce').html(t);
+ },1000);
+ */
+
+
+        moveCaretInto('after_image_' + new_image.className.split(' ')[1]);
     };
 
     insertImage = function(data) {
         if (data.response === 'saved') {
             data.file_name = data.file.substring(0, data.file.indexOf('.'));
-            var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'></div><slider></slider><span class='after_image'>&#x200b;&#10;</span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
+            var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'></div><slider></slider><span class='after_image' id='after_image_" + data.file_name + "'>&#x200b;&#10;</span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
             self.pasteHtmlAtCaret(new_image);
+
+
+
             // commented out because it causes an issue with onblur which is used to update card.
             /*
             // remove zero width space above image if it exists 
@@ -636,6 +697,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     }
 
     function moveCaretInto(id) {
+        console.log(id);
         // Causing bug in cecreate_card when enter is pressed following data is deleted.
         //self.removeDeleteIds();
         $("#" + id).html('&#x200b');
@@ -651,6 +713,10 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         if (ua.toLowerCase().indexOf('firefox') > -1) {
             $('#' + id).html($('#' + id).html().replace(/<br>/g, ""));
         }
+
+
+        $('#' + id).addClass('scroll_enter_latest');
+
         $('#' + id).removeAttr('id');
         // Scroll the pasted HTML into view
         self.scrollLatest('scroll_enter_latest');
@@ -761,6 +827,20 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     //var mark_list_current;
     this.markyCheck = function(content, elem) {
+        // Check if first entered is text
+        /*
+        console.log($('#'+elem)[0].childNodes[0].nodeType);
+        if($('#'+elem)[0].childNodes[0].nodeType == 3){
+            //$('#'+elem).addClass('text_space');
+            $('#'+elem).prepend( "<div class='text_space'></div>" );
+        } else {
+            console.log('remove');
+            $('#'+elem + " .text_space").remove();
+            //$('#'+elem).removeClass('text_space');
+        }
+        */
+
+
         var escape_marky = false;
         // Inject the General Service
         var General = $injector.get('General');
@@ -906,7 +986,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     }, 0)
                     .then(
                         function() {
-                            self.pasteHtmlAtCaret('&#x200b');
+                            // self.pasteHtmlAtCaret('&#x200b');
                         }
                     );
             }
@@ -996,6 +1076,19 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         if (window.getSelection) {
             // IE9 and non-IE
             sel = window.getSelection();
+            //console.log(sel);
+
+            var selection_start = $(self.getSelectionStart());
+            //console.log(selection_start);
+            //console.log($(selection_start).attr("class"));
+            if ($(selection_start).attr("class") != undefined) {
+                if ($(selection_start).attr("class").indexOf('ce') >= 0) {
+                    // console.log(html);
+                }
+
+            }
+
+
             if (sel.getRangeAt && sel.rangeCount) {
                 range = sel.getRangeAt(0);
                 range.deleteContents();
@@ -1020,6 +1113,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     sel.removeAllRanges();
                     sel.addRange(range);
                 }
+
+
+
                 if (html.indexOf('scroll_image_latest') < 0) {
                     self.scrollLatest('scroll_latest');
                 }
@@ -1170,12 +1266,14 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 }
             }
             var selection_text = selection_start[0].nodeValue;
-            var selection_text_upper = selection_text.toUpperCase();
-            var init_key = selection_text_upper.indexOf(INITIAL_KEY.toUpperCase());
-            if (init_key >= 0) {
-                var last_chars = selection_text_upper.substring(init_key, init_key + 2);
-                if (marky_char_array.indexOf(last_chars) >= 0) {
-                    stopEditing(this.id);
+            if (selection_text != undefined) {
+                var selection_text_upper = selection_text.toUpperCase();
+                var init_key = selection_text_upper.indexOf(INITIAL_KEY.toUpperCase());
+                if (init_key >= 0) {
+                    var last_chars = selection_text_upper.substring(init_key, init_key + 2);
+                    if (marky_char_array.indexOf(last_chars) >= 0) {
+                        stopEditing(this.id);
+                    }
                 }
             }
         };
