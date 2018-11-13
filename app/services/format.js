@@ -250,28 +250,25 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         var card_id = $(new_image).parent().closest('.ce').attr('id');
         var is_topmost = true;
         var end_search = false;
-
         $('#' + 'image_' + unique_id).parent().parents().each(function(index, item) {
             if (is_topmost && !end_search) {
-                console.log($(item));
                 if ($(item)[0].className == 'after_image' && is_topmost) {
                     $(item).contents().each(function(index2, item2) {
-                        console.log($(item2));
                         if ($(item2)[0].nodeType != 3) {
                             if ($(item2)[0].className.indexOf('cropper_cont') >= 0) {
                                 if ($(item2)[0].id.indexOf(unique_id) >= 0) {
-                                    console.log('this cropper');
+                                    //console.log('this cropper');
                                     end_search = true;
                                     return false;
                                 } else {
-                                    console.log('not empty');
+                                    //console.log('not empty');
                                     is_topmost = false;
                                     return false;
                                 }
                             } else if ($(item2)[0].className.indexOf('after_image') >= 0) {
                                 if ($(item2)[0].firstChild != null) {
                                     if ($(item2)[0].firstChild.childNodes.length > 0) {
-                                        console.log('not empty');
+                                        //console.log('not empty');
                                         is_topmost = false;
                                         return false;
                                     }
@@ -279,7 +276,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                             }
                         } else {
                             if ($(item2)[0].nodeValue != "") {
-                                console.log('not empty');
+                                //console.log('not empty');
                                 is_topmost = false;
                                 return false;
                             }
@@ -287,20 +284,18 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     });
                 }
                 if ($(item)[0].className.indexOf('ce') >= 0 && $(item)[0].className.indexOf('ce') < 3) {
-                    console.log('top: ' + $(item)[0].className.indexOf('ce'));
                     $(item).contents().each(function(index3, item3) {
-                        console.log($(item3));
                         if ($(item3)[0].nodeType == 3 && $(item3)[0].length > 0) {
-                            console.log('not empty');
+                            //console.log('not empty');
                             is_topmost = false;
                             return false;
                         } else if ($(item3)[0].nodeType == 1) {
                             if ($(item3)[0].id.indexOf(unique_id) >= 0) {
-                                console.log('this cropper');
-                                 end_search = true;
-                                    return false;
+                                //console.log('this cropper');
+                                end_search = true;
+                                return false;
                             } else {
-                                console.log('not empty');
+                                //console.log('not empty');
                                 is_topmost = false;
                                 return false;
                             }
@@ -310,7 +305,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 }
             }
         });
-        console.log(is_topmost);
         if (is_topmost) {
             // First remove the no_image_space class from all other croper_cont in this card
             $('#' + card_id + ' .no_image_space').removeClass('no_image_space');
@@ -705,7 +699,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     }
 
     function moveCaretInto(id) {
-        console.log(id);
         // Causing bug in cecreate_card when enter is pressed following data is deleted.
         //self.removeDeleteIds();
         $("#" + id).html('&#x200b');
@@ -721,10 +714,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         if (ua.toLowerCase().indexOf('firefox') > -1) {
             $('#' + id).html($('#' + id).html().replace(/<br>/g, ""));
         }
-
-
         $('#' + id).addClass('scroll_enter_latest');
-
         $('#' + id).removeAttr('id');
         // Scroll the pasted HTML into view
         self.scrollLatest('scroll_enter_latest');
@@ -833,22 +823,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         return;
     }
 
-    //var mark_list_current;
     this.markyCheck = function(content, elem) {
-        // Check if first entered is text
-        /*
-        console.log($('#'+elem)[0].childNodes[0].nodeType);
-        if($('#'+elem)[0].childNodes[0].nodeType == 3){
-            //$('#'+elem).addClass('text_space');
-            $('#'+elem).prepend( "<div class='text_space'></div>" );
-        } else {
-            console.log('remove');
-            $('#'+elem + " .text_space").remove();
-            //$('#'+elem).removeClass('text_space');
-        }
-        */
-
-
         var escape_marky = false;
         // Inject the General Service
         var General = $injector.get('General');
@@ -1060,7 +1035,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     // Scroll the HTML into view
     this.scrollLatest = function(clas) {
-        console.log('scroll_latest: ' + clas);
         var scroll_latest = document.querySelector('.' + clas);
         $timeout(function() {
             $timeout(function() {
@@ -1070,8 +1044,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             }, 200);
             $timeout(function() {
                 if (clas == 'scroll_latest_footer' || clas == 'scroll_image_latest') {
-                    console.log('remove');
-                    console.log($('.' + clas));
                     // remove scroll div after scrolling
                     $('.' + clas).remove();
                 } else {
@@ -1079,7 +1051,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     $('.' + clas).removeClass(clas);
                 }
             }, 400);
-
         });
     };
 
@@ -1088,19 +1059,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         if (window.getSelection) {
             // IE9 and non-IE
             sel = window.getSelection();
-            //console.log(sel);
-
             var selection_start = $(self.getSelectionStart());
-            //console.log(selection_start);
-            //console.log($(selection_start).attr("class"));
-            if ($(selection_start).attr("class") != undefined) {
-                if ($(selection_start).attr("class").indexOf('ce') >= 0) {
-                    // console.log(html);
-                }
-
-            }
-
-
             if (sel.getRangeAt && sel.rangeCount) {
                 range = sel.getRangeAt(0);
                 range.deleteContents();
@@ -1125,9 +1084,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     sel.removeAllRanges();
                     sel.addRange(range);
                 }
-
-
-
                 if (html.indexOf('scroll_image_latest') >= 0) {
                     self.scrollLatest('scroll_image_latest');
                 }
@@ -1267,47 +1223,22 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             if (e.keyCode == 8) {
                 if ($(selection_start).attr("class") != undefined) {
                     var prev_class = $(selection_start).attr("class");
-                    var prev_elem = $(selection_start);
                     var parent = $(selection_start).closest('.ce').attr("id");
-
-                    var prev_id = $(selection_start).attr("id");
-                    console.log(selection_start);
-                    console.log(prev_class);
-                    console.log(prev_id);
-                    console.log(parent);
-
-
-
                     // If this is a header then delete the header elements and remove from the marky_started_array if it exists.
                     if (prev_class.indexOf('header') >= 0 && parent == 'header') {
                         $(selection_start).parent().remove();
                         var del = marky_started_array.indexOf(INITIAL_KEY + prev_class.substr(7, 1));
                         marky_started_array.splice(del, 1);
                     }
-
                     // If this is a cropper_cont then delete the header elements and remove from the marky_started_array if it exists.
                     if (prev_class.indexOf('after_image') >= 0) {
-                        //$(selection_start).remove();
-                        //var del = marky_started_array.indexOf(INITIAL_KEY + prev_class.substr(7, 1));
-                        //marky_started_array.splice(del, 1);
                         if (selection_start[0].innerHTML == '<br>') {
                             selection_start[0].innerHTML = '';
-                            //parent = $(selection_start).prev().parent().attr("id");
-                            console.log(parent);
                         }
-
-                        // ERROR ALWAYS deletes the first occurence. Must be the one previous to the cursor.
-                        console.log($('#' + parent + ' .' + prev_class).prev().prev()[0]);
-                        console.log($('#' + parent + ' .' + prev_class).prev()[0]);
-                        console.log($('#' + parent + ' .' + prev_class));
-
                         if ($(selection_start)[0].previousElementSibling) {
                             var slider = $(selection_start)[0].previousElementSibling;
                             var cropper = $(selection_start)[0].previousElementSibling.previousElementSibling;
                             var clear = $(selection_start)[0].nextElementSibling;
-                            console.log(slider);
-                            console.log(cropper);
-                            console.log(clear);
                             if (slider != null) {
                                 slider.remove();
                             }
@@ -1318,41 +1249,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                                 clear.remove();
                             }
                         }
-
-
-
-
-                        //$('#' + parent + ' .' + prev_class).prev().prev()[0].remove();
-                        //$('#' + parent + ' .' + prev_class).prev()[0].remove();
-
-                        /*
-                        $('#' + parent + ' .after_image').each(function() {
-                            var $this = $(this);
-                            if ($this.html().replace(/\s|&nbsp;/g, '').length == 0){
-                                console.log('remove!');
-                                $this.remove();
-                            }
-                        });
-
-
-                        $('#' + parent + ' .clear_after_image').each(function() {
-                            var $this = $(this);
-                            if ($this.html().replace(/\s|&nbsp;/g, '').length == 0){
-                                console.log('remove!');
-                                $this.remove();
-                            }
-                        });
-                        */
-
-                        //console.log($('.'+prev_class).prev().prev().parent().html());
-                        //console.log($('.'+prev_class).prev().prev().attr('class'));
-                        //self.selectText(elem, currentChars);
                         if ($('.' + prev_class).prev().prev().attr('class').indexOf('cropper_cont') >= 0) {
                             var currentChars = $('.' + prev_class).prev().prev().parent().html();
                             var elem = $('.' + prev_class).closest('.ce');
-                            //console.log(elem);
-                            //console.log(currentChars);
-                            //self.selectText(elem, currentChars);
                         }
                     }
                 }

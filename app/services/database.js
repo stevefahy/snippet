@@ -213,7 +213,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         card_create.content = replaceTags.removeFocusIds(card_create.content);
         // Remove any temp filtered images
         card_create.content = Format.removeTempFiltered(card_create.content);
-        
+
         var sent_content;
         var notification_title;
         var notification_body;

@@ -3014,41 +3014,6 @@ div.after_image:empty {
     margin-top: -10px;
 }
 
-
-/*
-.ce .cropper_cont:first-child {
-  border: 2px solid red;
-}
-*/
-
-/*
-.ce:first-child::first-line {
-       border: 2px solid red;
-    background: #ff0000;
-    line-height: 50px
-    }
-    */
-
-/*
-
-.ce:nth-child(2)::first-line {
-       border: 2px solid red;
-    background: green;
-    line-height: 10px
-    }
-*/
-/*
-    border: 2px solid red;
-    background: #ff0000;
-    */
-/*
-    .ce + .cropper_cont::before{
-        content: "";
-   border: 2px solid red;
-    background: #ff0000;
-    }
-    */
-
 span.after_image {
     float: left;
     width: 100%

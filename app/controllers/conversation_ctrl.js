@@ -305,7 +305,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             // Check the users permission for this conversation. (logged in and participant)
                             checkPermission(public_id, function(result) {
                                 $scope.isMember = result;
-                                getPublicConversation(public_id, res.data.conversation_name);
+                                getPublicConversation(public_id, res.data);
                                 callback(public_id);
                             });
                         }
@@ -380,7 +380,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     };
 
-    getPublicConversation = function(id, name) {
+    getPublicConversation = function(id, conv) {
         Conversations.getPublicConversationById(id)
             .then(function(result) {
                 $scope.cards = result.data;
@@ -390,7 +390,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         // Store the original characters of the card.
                         key.original_content = key.content;
                         // Get the user name for the user id
-                        key.user_name = name;
+                        key.user_name = conv.conversation_name;
+
+                        key.avatar = conv.conversation_avatar;
                     });
                 } else {
                     $rootScope.pageLoading = false;
@@ -450,7 +452,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             .then(function(result) {
                 if (result != undefined) {
                     $scope.cards = result.data;
-                    console.log($scope.cards);
                     if (result.data.length == 0) {
                         $rootScope.pageLoading = false;
                     }

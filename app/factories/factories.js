@@ -403,7 +403,6 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     // Final cards model for display.
     cards_model = [];
 
-
     var UserData = { isAuthenticated: false, isLoaded: false, isLoading: false };
     $rootScope.loaded = false;
     var isLoading = false;
@@ -418,7 +417,6 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     $window.restoreState = this.restoreState;
 
     var update_inprogress = false;
-
 
     // Android called functions.
 
@@ -665,6 +663,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                     Conversations.getConversationLatestCard(msg.conversation_id)
                         .then(function(result) {
                             if (result.data != null) {
+                                // Add
                                 // Add latest card for this converation to LM.
                                 UserData.conversationsLatestCardAdd(result.data.conversationId, result.data);
                             }
@@ -720,7 +719,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                                     // find only the new cards which have been posted
                                     var updates = result.data.slice(conversation_length, result.data.length);
                                     if (conversation_length < result.data.length || res == undefined) {
-                                        // console.log('add new card');
+                                        //console.log('add new card');
                                         // update the conversation model with the new cards
                                         updates.map(function(key) {
                                             key.original_content = key.content;
@@ -728,6 +727,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                                             UserData.getConversationsUser(key.user)
                                                 .then(function(r) {
                                                     key.user_name = r.user_name;
+                                                    key.avatar = r.avatar;
                                                     // Update the cards model
                                                     UserData.addCardsModel(key.conversationId, key)
                                                         .then(function(response) {
@@ -747,6 +747,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                                                         // Update 
                                                         key.original_content = key.content;
                                                         key.user_name = r.user_name;
+                                                        key.avatar = r.avatar;
                                                         // Update the cards model
                                                         UserData.addCardsModel(key.conversationId, key)
                                                             .then(function(response) {
@@ -1311,7 +1312,6 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     };
 
     UserData.addCardsModel = function(id, data) {
-        console.log(data);
         var deferred = $q.defer();
         var index = General.findWithAttr(cards_model, '_id', id);
         if (index < 0) {
@@ -1337,7 +1337,6 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
 
 
     UserData.getConversation = function() {
-        console.log('getConversation');
         var deferred = $q.defer();
         var promises = [];
         cards_model = [];
@@ -1354,7 +1353,6 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                         // TODO dont repeat if user id already retreived
                         promises.push(UserData.getConversationsUser(key.user)
                             .then(function(res) {
-                                console.log(res);
                                 // Set the user_name to the retrieved name
                                 key.user_name = res.user_name;
                                 key.avatar = res.avatar;
@@ -1391,6 +1389,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
             deferred.resolve(conversationsLatestCard);
         } else {
             // Add.
+            //data.avatar = 'default';
             var card = { _id: id, data: data };
             conversationsLatestCard.push(card);
             deferred.resolve(conversationsLatestCard);
