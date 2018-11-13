@@ -173,7 +173,7 @@ img.resize-drag.clip {
 }
 
 .cropper_cont {
-        margin-top: 10px;
+    margin-top: 10px;
     position: relative;
     width: calc(100% + 2.8em);
     position: relative;
@@ -621,7 +621,7 @@ hr {
     overflow: hidden;
     position: relative;
     /* border: 1px solid #9E9E9E; */
-    border: 1px solid rgba(0,0,0,.0975);
+    border: 1px solid rgba(0, 0, 0, .0975);
     border-top-color: rgba(0, 0, 0, 0.098);
     border-top-style: solid;
     border-top-width: 1px;
@@ -910,7 +910,7 @@ form.form-horizontal.ng-valid.ng-dirty.ng-valid-parse {
 }
 
 .edit {
-     float: right;
+    float: right;
     margin-left: auto;
     z-index: 2000;
     margin-right: 20px;
@@ -2844,6 +2844,7 @@ span#header b.header_3 {
 }
 
 .image_adjust {
+        top: 10px;
     clear: both;
     width: calc(100% + 2.8em);
     left: -1.38em;
@@ -2927,7 +2928,7 @@ div.after_image:empty {
     z-index: 100;
     left: -1.38em;
     width: calc(100% + 2.8em);
-    top: -1px;
+    top: -11px;
 }
 
 .filter_list {
@@ -3004,6 +3005,15 @@ div.after_image:empty {
     margin-top: -10px;
 }
 
+.no_image_space_adjust {
+    top: -10px;
+}
+
+.no_image_space_adjust_crop {
+    top: unset !important;
+    margin-top: -10px;
+}
+
 
 /*
 .ce .cropper_cont:first-child {
@@ -3019,7 +3029,7 @@ div.after_image:empty {
     }
     */
 
-    /*
+/*
 
 .ce:nth-child(2)::first-line {
        border: 2px solid red;
@@ -3027,7 +3037,7 @@ div.after_image:empty {
     line-height: 10px
     }
 */
- /*
+/*
     border: 2px solid red;
     background: #ff0000;
     */
@@ -3039,7 +3049,12 @@ div.after_image:empty {
     }
     */
 
-    span.after_image {
+span.after_image {
     float: left;
     width: 100%
+}
+
+.clear_after_image {
+    display: block;
+    clear: both;
 }

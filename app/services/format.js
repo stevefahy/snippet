@@ -237,86 +237,94 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         return $('#cecard_create').html();
     };
 
-    // Added for update. Ensures focus is called after an image is inserted.
+    // Added for update.
     imageLoaded = function() {
-        console.log('img loaded');
-        var active_el = document.activeElement;
         var new_image = document.getElementById('new_image');
-        //console.log($(new_image).parent());
-
-
         $(new_image).removeAttr('onload id');
-        active_el.blur();
-        active_el.focus();
-        // Scroll the image into view.
-        //self.scrollLatest('scroll_image_latest');
-        $(new_image).attr('id', 'image_' + new_image.className.split(' ')[1]);
-        $('#cropper_' + new_image.className.split(' ')[1]).css('maxWidth', new_image.naturalWidth);
-        $('#cropper_' + new_image.className.split(' ')[1]).css('cssFloat', 'left');
+        var unique_id = new_image.className.split(' ')[1];
+        $(new_image).attr('id', 'image_' + unique_id);
+        $('#cropper_' + unique_id).css('maxWidth', new_image.naturalWidth);
+        $('#cropper_' + unique_id).css('cssFloat', 'left');
+        // Check if this image is the first piece of content. If it is then add a class to remove spacing between card and image (only required if text is the directly after the title area).
+        var previous_node = $(new_image).parent()[0].previousSibling;
+        var card_id = $(new_image).parent().closest('.ce').attr('id');
+        var is_topmost = true;
+        var end_search = false;
 
-        //$timeout(function() {
-            //$($('#cropper_' + new_image.className.split(' ')[1])).closest('.ce')[0].childNodes[1].data = '';
-            //$($('#cropper_' + new_image.className.split(' ')[1])).closest('.ce')[0].removeChild($($('#cropper_' + new_image.className.split(' ')[1])).closest('.ce')[0].childNodes[1]);
-            /*
-            console.log($($('#cropper_' + new_image.className.split(' ')[1])).closest('.ce'));
-            console.log($($('#cropper_' + new_image.className.split(' ')[1])).closest('.ce')[0].childNodes[0].data);
-            if ($($('#cropper_' + new_image.className.split(' ')[1])).closest('.ce')[0].childNodes[0].data == '') {
-                //$('#cropper_' + new_image.className.split(' ')[1]).addClass('top_image');
-            }
-
-
-            for (var i in $($('#cropper_' + new_image.className.split(' ')[1])).closest('.ce')[0].childNodes) {
-                //console.log(i);
-                //console.log($($('#cropper_' + new_image.className.split(' ')[1])).closest('.ce')[0].childNodes[i].nodeType);
-                //console.log($($('#cropper_' + new_image.className.split(' ')[1])).closest('.ce')[0].childNodes[i].nodeValue);
-                if ($($('#cropper_' + new_image.className.split(' ')[1])).closest('.ce')[0].childNodes[i].nodeType == 3 && $($('#cropper_' + new_image.className.split(' ')[1])).closest('.ce')[0].childNodes[i].nodeValue == "") {
-                    console.log('remove');
-                    //$($('#cropper_' + new_image.className.split(' ')[1])).closest('.ce')[0].removeChild($($('#cropper_' + new_image.className.split(' ')[1])).closest('.ce')[0].childNodes[i]);
+        $('#' + 'image_' + unique_id).parent().parents().each(function(index, item) {
+            if (is_topmost && !end_search) {
+                console.log($(item));
+                if ($(item)[0].className == 'after_image' && is_topmost) {
+                    $(item).contents().each(function(index2, item2) {
+                        console.log($(item2));
+                        if ($(item2)[0].nodeType != 3) {
+                            if ($(item2)[0].className.indexOf('cropper_cont') >= 0) {
+                                if ($(item2)[0].id.indexOf(unique_id) >= 0) {
+                                    console.log('this cropper');
+                                    end_search = true;
+                                    return false;
+                                } else {
+                                    console.log('not empty');
+                                    is_topmost = false;
+                                    return false;
+                                }
+                            } else if ($(item2)[0].className.indexOf('after_image') >= 0) {
+                                if ($(item2)[0].firstChild != null) {
+                                    if ($(item2)[0].firstChild.childNodes.length > 0) {
+                                        console.log('not empty');
+                                        is_topmost = false;
+                                        return false;
+                                    }
+                                }
+                            }
+                        } else {
+                            if ($(item2)[0].nodeValue != "") {
+                                console.log('not empty');
+                                is_topmost = false;
+                                return false;
+                            }
+                        }
+                    });
+                }
+                if ($(item)[0].className.indexOf('ce') >= 0 && $(item)[0].className.indexOf('ce') < 3) {
+                    console.log('top: ' + $(item)[0].className.indexOf('ce'));
+                    $(item).contents().each(function(index3, item3) {
+                        console.log($(item3));
+                        if ($(item3)[0].nodeType == 3 && $(item3)[0].length > 0) {
+                            console.log('not empty');
+                            is_topmost = false;
+                            return false;
+                        } else if ($(item3)[0].nodeType == 1) {
+                            if ($(item3)[0].id.indexOf(unique_id) >= 0) {
+                                console.log('this cropper');
+                                 end_search = true;
+                                    return false;
+                            } else {
+                                console.log('not empty');
+                                is_topmost = false;
+                                return false;
+                            }
+                        }
+                    });
+                    return false;
                 }
             }
-            */
-
-
-            //console.log(($(new_image).parent('div.ce').length));
-            //console.log($(new_image).is(':first-child'));
-            //console.log($(new_image).parent()[0].previousSibling);
-            //if ($(new_image).parent().parent('div.ce').length) {
-            //if($(new_image).parent()[0].previousSibling == null){
-            if ($(new_image).parent()[0].previousSibling == null) {
-                console.log('direct child! 1');
-                $('#cropper_' + new_image.className.split(' ')[1]).addClass('no_image_space');
-            } else if ($(new_image).parent()[0].previousSibling.nodeType == 3 && $(new_image).parent()[0].previousSibling.nodeValue == "") {
-                console.log('direct child! 2');
-                $('#cropper_' + new_image.className.split(' ')[1]).addClass('no_image_space');
-            } else {
-                console.log('NOT direct child!');
-            }
-
-
-
-        //}, 0);
-
-        /*
-        $timeout(function() {
-        var t = $($('#cropper_' + new_image.className.split(' ')[1])).closest('.ce').html();
-        t.replace(/\u200B/g, 'steve');
-        console.log(t);
-        $($('#cropper_' + new_image.className.split(' ')[1])).closest('.ce').html(t);
- },1000);
- */
-
-
-        moveCaretInto('after_image_' + new_image.className.split(' ')[1]);
+        });
+        console.log(is_topmost);
+        if (is_topmost) {
+            // First remove the no_image_space class from all other croper_cont in this card
+            $('#' + card_id + ' .no_image_space').removeClass('no_image_space');
+            $('#cropper_' + unique_id).addClass('no_image_space');
+        }
+        // Move the cursor into the after image span
+        moveCaretInto('after_image_' + unique_id);
     };
 
     insertImage = function(data) {
         if (data.response === 'saved') {
             data.file_name = data.file.substring(0, data.file.indexOf('.'));
-            var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'></div><slider></slider><span class='after_image' id='after_image_" + data.file_name + "'>&#x200b;&#10;</span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
+            var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'></div><slider></slider><span class='after_image' id='after_image_" + data.file_name + "'>&#x200b;&#10;</span><span class='clear_after_image'></span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
             self.pasteHtmlAtCaret(new_image);
-
-
-
             // commented out because it causes an issue with onblur which is used to update card.
             /*
             // remove zero width space above image if it exists 
@@ -986,7 +994,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     }, 0)
                     .then(
                         function() {
-                            // self.pasteHtmlAtCaret('&#x200b');
+                            //self.pasteHtmlAtCaret('&#x200b');
+                            self.pasteHtmlAtCaret('');
                         }
                     );
             }
@@ -1051,6 +1060,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     // Scroll the HTML into view
     this.scrollLatest = function(clas) {
+        console.log('scroll_latest: ' + clas);
         var scroll_latest = document.querySelector('.' + clas);
         $timeout(function() {
             $timeout(function() {
@@ -1059,7 +1069,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 }
             }, 200);
             $timeout(function() {
-                if (clas == 'scroll_latest_footer') {
+                if (clas == 'scroll_latest_footer' || clas == 'scroll_image_latest') {
+                    console.log('remove');
+                    console.log($('.' + clas));
                     // remove scroll div after scrolling
                     $('.' + clas).remove();
                 } else {
@@ -1116,15 +1128,15 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
 
 
-                if (html.indexOf('scroll_image_latest') < 0) {
-                    self.scrollLatest('scroll_latest');
+                if (html.indexOf('scroll_image_latest') >= 0) {
+                    self.scrollLatest('scroll_image_latest');
                 }
             }
         } else if (document.selection && document.selection.type != "Control") {
             // IE < 9
             document.selection.createRange().pasteHTML(html);
-            if (html.indexOf('scroll_image_latest') < 0) {
-                self.scrollLatest('scroll_latest');
+            if (html.indexOf('scroll_image_latest') >= 0) {
+                self.scrollLatest('scroll_image_latest');
             }
         }
         return;
@@ -1256,12 +1268,92 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 if ($(selection_start).attr("class") != undefined) {
                     var prev_class = $(selection_start).attr("class");
                     var prev_elem = $(selection_start);
-                    var parent = $(selection_start).parent().attr("id");
+                    var parent = $(selection_start).closest('.ce').attr("id");
+
+                    var prev_id = $(selection_start).attr("id");
+                    console.log(selection_start);
+                    console.log(prev_class);
+                    console.log(prev_id);
+                    console.log(parent);
+
+
+
                     // If this is a header then delete the header elements and remove from the marky_started_array if it exists.
                     if (prev_class.indexOf('header') >= 0 && parent == 'header') {
                         $(selection_start).parent().remove();
                         var del = marky_started_array.indexOf(INITIAL_KEY + prev_class.substr(7, 1));
                         marky_started_array.splice(del, 1);
+                    }
+
+                    // If this is a cropper_cont then delete the header elements and remove from the marky_started_array if it exists.
+                    if (prev_class.indexOf('after_image') >= 0) {
+                        //$(selection_start).remove();
+                        //var del = marky_started_array.indexOf(INITIAL_KEY + prev_class.substr(7, 1));
+                        //marky_started_array.splice(del, 1);
+                        if (selection_start[0].innerHTML == '<br>') {
+                            selection_start[0].innerHTML = '';
+                            //parent = $(selection_start).prev().parent().attr("id");
+                            console.log(parent);
+                        }
+
+                        // ERROR ALWAYS deletes the first occurence. Must be the one previous to the cursor.
+                        console.log($('#' + parent + ' .' + prev_class).prev().prev()[0]);
+                        console.log($('#' + parent + ' .' + prev_class).prev()[0]);
+                        console.log($('#' + parent + ' .' + prev_class));
+
+                        if ($(selection_start)[0].previousElementSibling) {
+                            var slider = $(selection_start)[0].previousElementSibling;
+                            var cropper = $(selection_start)[0].previousElementSibling.previousElementSibling;
+                            var clear = $(selection_start)[0].nextElementSibling;
+                            console.log(slider);
+                            console.log(cropper);
+                            console.log(clear);
+                            if (slider != null) {
+                                slider.remove();
+                            }
+                            if (cropper != null) {
+                                cropper.remove();
+                            }
+                            if (clear != null) {
+                                clear.remove();
+                            }
+                        }
+
+
+
+
+                        //$('#' + parent + ' .' + prev_class).prev().prev()[0].remove();
+                        //$('#' + parent + ' .' + prev_class).prev()[0].remove();
+
+                        /*
+                        $('#' + parent + ' .after_image').each(function() {
+                            var $this = $(this);
+                            if ($this.html().replace(/\s|&nbsp;/g, '').length == 0){
+                                console.log('remove!');
+                                $this.remove();
+                            }
+                        });
+
+
+                        $('#' + parent + ' .clear_after_image').each(function() {
+                            var $this = $(this);
+                            if ($this.html().replace(/\s|&nbsp;/g, '').length == 0){
+                                console.log('remove!');
+                                $this.remove();
+                            }
+                        });
+                        */
+
+                        //console.log($('.'+prev_class).prev().prev().parent().html());
+                        //console.log($('.'+prev_class).prev().prev().attr('class'));
+                        //self.selectText(elem, currentChars);
+                        if ($('.' + prev_class).prev().prev().attr('class').indexOf('cropper_cont') >= 0) {
+                            var currentChars = $('.' + prev_class).prev().prev().parent().html();
+                            var elem = $('.' + prev_class).closest('.ce');
+                            //console.log(elem);
+                            //console.log(currentChars);
+                            //self.selectText(elem, currentChars);
+                        }
                     }
                 }
             }

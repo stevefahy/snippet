@@ -71,6 +71,12 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         $(wrapper).addClass('cropping');
         wrapper.style.maxWidth = '';
         wrapper.style.cssFloat = 'none';
+
+        if($('#cropper_' + id).attr('class').indexOf('no_image_space') >= 0){
+            $('#image_adjust_' + id).addClass('no_image_space_adjust_crop');
+        }
+        
+
         // Turn off contenteditable for this card
         var card = $(wrapper).parent().closest('div').attr('id');
         $('#' + card).attr('contenteditable', 'false');
@@ -188,36 +194,38 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
     this.saveImage = function(id) {
         var canv = $('canvas.temp_canvas_filtered').attr('id');
-        id = canv.substr(21, canv.length - 20);
-        var canvasFilter = document.getElementById('temp_canvas_filtered_' + id);
-        var dataUrl = canvasFilter.toDataURL('image/jpeg', JPEG_COMPRESSION);
-        Format.dataURItoBlob(dataUrl).then(function(blob) {
-            blob.name = 'image_filtered_' + id + '.jpg';
-            blob.renamed = true;
-            Format.prepImage([blob], function(result) {
-                var img_new = new Image();
-                img_new.src = 'fileuploads/images/' + result.file + '?' + new Date();
-                img_new.className = 'adjusted';
-                img_new.id = 'image_filtered_' + id;
-                img_new.onload = function() {
-                    $('#temp_canvas_filtered_' + id).remove();
-                    // Remove current filter.
-                    if ($('#cropper_' + id + ' img.adjusted').length > 0) {
-                        $('#cropper_' + id + ' img.adjusted').remove();
-                    }
-                    // Get image Styles
-                    var cssStyleParsed = getStyles(id);
-                    $(this).attr("style", cssStyleParsed);
-                    $('#image_' + id).css('display', 'none');
-                    $('#temp_image_filtered_' + id).remove();
-                    $(this).insertBefore('#image_' + id);
-                    // SAVE
-                    image_edit_finished = true;
-                    $('#cropper_' + id).closest('div.ce').focus();
-                    $('#cropper_' + id).closest('div.ce').blur();
-                };
+        if (canv != undefined) {
+            id = canv.substr(21, canv.length - 20);
+            var canvasFilter = document.getElementById('temp_canvas_filtered_' + id);
+            var dataUrl = canvasFilter.toDataURL('image/jpeg', JPEG_COMPRESSION);
+            Format.dataURItoBlob(dataUrl).then(function(blob) {
+                blob.name = 'image_filtered_' + id + '.jpg';
+                blob.renamed = true;
+                Format.prepImage([blob], function(result) {
+                    var img_new = new Image();
+                    img_new.src = 'fileuploads/images/' + result.file + '?' + new Date();
+                    img_new.className = 'adjusted';
+                    img_new.id = 'image_filtered_' + id;
+                    img_new.onload = function() {
+                        $('#temp_canvas_filtered_' + id).remove();
+                        // Remove current filter.
+                        if ($('#cropper_' + id + ' img.adjusted').length > 0) {
+                            $('#cropper_' + id + ' img.adjusted').remove();
+                        }
+                        // Get image Styles
+                        var cssStyleParsed = getStyles(id);
+                        $(this).attr("style", cssStyleParsed);
+                        $('#image_' + id).css('display', 'none');
+                        $('#temp_image_filtered_' + id).remove();
+                        $(this).insertBefore('#image_' + id);
+                        // SAVE
+                        image_edit_finished = true;
+                        $('#cropper_' + id).closest('div.ce').focus();
+                        $('#cropper_' + id).closest('div.ce').blur();
+                    };
+                });
             });
-        });
+        }
     };
 
     this.createFilter = function(id, filter) {
@@ -499,6 +507,11 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                         // set this to active
                         $('#image_adjust_' + id).addClass('image_adjust_on');
                         $('#image_adjust_' + id).append(edit_btns);
+                        // Adjust marging top if this is the topmost image.
+                        console.log($('#cropper_' + id).attr('class').indexOf('no_image_space') >=0);
+                        if($('#cropper_' + id).attr('class').indexOf('no_image_space') >=0){
+                            $('#image_adjust_' + id).addClass('no_image_space_adjust');
+                        }
                     }
                 }
             });
