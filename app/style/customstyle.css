@@ -3000,7 +3000,7 @@ div.after_image:empty {
     padding-left: 5px;
 }
 .filter_container:last-child {
-    padding-right: 10px;
+    padding-right: 5px;
 }
 
 .escaped {
