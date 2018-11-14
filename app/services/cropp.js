@@ -507,7 +507,6 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                         $('#image_adjust_' + id).addClass('image_adjust_on');
                         $('#image_adjust_' + id).append(edit_btns);
                         // Adjust marging top if this is the topmost image.
-                        console.log($('#cropper_' + id).attr('class').indexOf('no_image_space') >= 0);
                         if ($('#cropper_' + id).attr('class').indexOf('no_image_space') >= 0) {
                             $('#image_adjust_' + id).addClass('no_image_space_adjust');
                         }

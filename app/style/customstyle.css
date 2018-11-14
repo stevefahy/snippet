@@ -2954,6 +2954,7 @@ div.after_image:empty {
     margin-bottom: 25px;
     margin-right: 5px;
     margin-top: 10px;
+    border-bottom: unset;
 }
 
 .close_filters {
