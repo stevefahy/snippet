@@ -973,9 +973,9 @@ div#user {
 .material-icons {
     font-size: 21px;
     cursor: default;
-    /* color: #5e5e5e; */
+    color: #5e5e5e;
     /* color: #303030; */
-    color: #4b4949;
+    /* color: #4b4949; */
 }
 
 #mi-more_vert {
@@ -1110,7 +1110,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center.ng-binding 
     font-size: .8rem;
     margin-right: 20px;
     color: #999999;
-    margin-top: 2px;
+    margin-top: 4px;
 }
 
 .time_wrapper {}
@@ -3077,14 +3077,15 @@ span.after_image {
 }
 
 .likes {
-    padding-top: 4px;
+    padding-top: 2px;
     padding-bottom: 8px;
     /* margin-bottom: 24px; */
     margin-left: 9px;
     font-size: 14px;
-    font-weight: 400;
+    font-weight: 600;
     /* display: flex; */
     /* float: left; */
-    width: ;
+    width:;
+    color: #5e5e5e;
     color: #262626;
 }
