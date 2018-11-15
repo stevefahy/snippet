@@ -3089,3 +3089,7 @@ span.after_image {
     color: #5e5e5e;
     color: #262626;
 }
+
+.file_edit {
+    color: green;
+}
