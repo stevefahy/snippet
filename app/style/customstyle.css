@@ -973,8 +973,9 @@ div#user {
 .material-icons {
     font-size: 21px;
     cursor: default;
-    color: #5e5e5e;
+    /* color: #5e5e5e; */
     /* color: #303030; */
+    color: #4b4949;
 }
 
 #mi-more_vert {
@@ -1109,6 +1110,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center.ng-binding 
     font-size: .8rem;
     margin-right: 20px;
     color: #999999;
+    margin-top: 2px;
 }
 
 .time_wrapper {}
@@ -3040,11 +3042,12 @@ span.after_image {
 
 .card_footer {
     background-color: #fafafa;
-    display: flex;
-    flex-direction: row;
-    height: 40px;
-    align-items: center;
+    /* display: flex; */
+    /* flex-direction: row; */
+    /* height: 40px; */
+    /* align-items: center; */
     /* margin-right: 20%; */
+    margin-left: 1.25em;
     /* justify-content: center; */
 }
 
@@ -3056,15 +3059,32 @@ span.after_image {
     -webkit-box-decoration-break: center;
     /* justify-content: space-evenly; */
     /* margin-right: 20%; */
-    margin: 0px 1.25em;
+    /* margin: 0px 1.25em; */
 }
 
 .cf_btn{
     margin-left: 6px;
-    margin-right: 20px;
+    margin-right: 10px;
     /* margin: 0 15%; */
 }
 
 .cf_btn .material-icons {
-    font-size: 28px;
+    font-size: 30px;
+}
+
+.cf_btn.send {
+    margin-top: -2px;
+}
+
+.likes {
+    padding-top: 4px;
+    padding-bottom: 8px;
+    /* margin-bottom: 24px; */
+    margin-left: 9px;
+    font-size: 14px;
+    font-weight: 400;
+    /* display: flex; */
+    /* float: left; */
+    width: ;
+    color: #262626;
 }
