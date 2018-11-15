@@ -3064,3 +3064,7 @@ span.after_image {
     margin-right: 20px;
     /* margin: 0 15%; */
 }
+
+.cf_btn .material-icons {
+    font-size: 28px;
+}
