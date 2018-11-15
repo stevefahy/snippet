@@ -363,7 +363,7 @@ hr {
 .mi-import_contacts {
     color: green;
     font-size: 30px !important;
-    font-weight: 900;
+    /* font-weight: 900; */
 }
 
 .mi-import_contacts_n {
@@ -383,7 +383,7 @@ hr {
 .mi-search_contacts {
     color: green;
     font-size: 30px !important;
-    font-weight: 900;
+    /* font-weight: 900; */
 }
 
 .mi-search_contacts_n {
@@ -973,6 +973,8 @@ div#user {
 .material-icons {
     font-size: 21px;
     cursor: default;
+    color: #5e5e5e;
+    /* color: #303030; */
 }
 
 #mi-more_vert {
@@ -1105,6 +1107,8 @@ li.list-group-item.d-flex.justify-content-between.align-items-center.ng-binding 
     text-align: right;
     font-size: 13px;
     font-size: .8rem;
+    margin-right: 20px;
+    color: #999999;
 }
 
 .time_wrapper {}
@@ -3032,4 +3036,31 @@ span.after_image {
 .clear_after_image {
     display: block;
     clear: both;
+}
+
+.card_footer {
+    background-color: #fafafa;
+    display: flex;
+    flex-direction: row;
+    height: 40px;
+    align-items: center;
+    /* margin-right: 20%; */
+    /* justify-content: center; */
+}
+
+.card_footer_btns {
+    display: flex;
+    /* flex-direction: row; */
+    /* max-width: 50%; */
+    /* width: 300px; */
+    -webkit-box-decoration-break: center;
+    /* justify-content: space-evenly; */
+    /* margin-right: 20%; */
+    margin: 0px 1.25em;
+}
+
+.cf_btn{
+    margin-left: 6px;
+    margin-right: 20px;
+    /* margin: 0 15%; */
 }
