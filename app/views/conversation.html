@@ -29,27 +29,14 @@
             </div>
             <div class="card_footer">
                 <div class="c_footer_o">
-                <div class="card_footer_btns">
-                    <div class="cf_btn"><i class="material-icons">favorite_border</i></div>
-                    <!--
-                    <div class="cf_btn"><i class="material-icons">chat_bubble_outline</i></div>
-                -->
-                <div class="cf_btn"><i class="material-icons">directions_walk</i></div>
-                    <div class="cf_btn send"><i class="material-icons send">send</i></div>
-
-                    <div class="cf_btn"><i class="material-icons edit" ng-class="{'file_edit': {{card.user == currentUser._id}}}">edit</i></div>
-<!--
-                    <div class="cf_btn"><i class="material-icons">playlist_add</i></div>
-
-                    <div class="cf_btn"><i class="material-icons">playlist_add_check</i></div>
-
-                    <div class="cf_btn"><i class="material-icons">plus_one</i></div>
-                -->
-
-                    <div moment-time-conv="card.updatedAt" id="time"></div>
+                    <div class="card_footer_btns">
+                        <div class="cf_btn"><i class="material-icons">favorite_border</i></div>
+                        <div class="cf_btn"><i class="material-icons">directions_walk</i></div>
+                        <div class="cf_btn send"><i class="material-icons send">send</i></div>
+                        <div class="cf_btn"><i class="material-icons edit" ng-class="{'file_edit': {{card.user == currentUser._id}}}">edit</i></div>
+                        <div moment-time-conv="card.updatedAt" id="time"></div>
+                    </div>
                 </div>
-                
-            </div>
                 <div class="likes">7,255 likes</div>
             </div>
         </div>
