@@ -10,9 +10,13 @@ var image_edit_finished = true;
 
 cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
     $routeProvider
+        //.when('/', {
+        //    templateUrl: '/views/conversations.html',
+        //    controller: 'conversationsCtrl'
+        //})
         .when('/', {
-            templateUrl: '/views/conversations.html',
-            controller: 'conversationsCtrl'
+            templateUrl: '/views/feed.html',
+            controller: 'feedCtrl'
         })
         .when("/s/:snip", {
             templateUrl: '/views/card.html',

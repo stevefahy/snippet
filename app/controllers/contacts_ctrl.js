@@ -218,6 +218,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
 
     // Start or continue a single user conversation with a contact.
     $scope.chat = function(contact) {
+        console.log(contact);
         if (contact.conversation_exists) {
             $scope.continueChat(contact.conversation_id, contact);
         } else {
@@ -534,6 +535,10 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     // SEARCH
     //
 
+    $scope.showPublic = function(conversation_id){
+        $location.path("/chat/conversation/" + conversation_id);
+    };
+
     // check whether the search result is already a contact
     checkIfContact = function(result) {
         // if the result is the current user
@@ -566,6 +571,17 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
                         $scope.search_results = [];
                         // Map response values to field label and value
                         response($.map(data, function(res) {
+                            console.log(res);
+
+                            Conversations.find_user_public_conversation_by_id(res._id)
+                                .then(function(result) {
+                                    console.log(result);
+                                    // If public then show link to the public conversation
+                                    if(result.data.conversation_type == 'public'){
+                                        res.public_conversation = result.data._id;
+                                    }
+                                });
+
                             // check if this user is already a contact
                             // Do not list current user
                             if (res._id != $scope.currentUser._id) {

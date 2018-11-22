@@ -558,6 +558,67 @@ module.exports = function(app, passport) {
         });
     });
 
+    // follow conversation by id
+    app.post('/api/users/follow_conversation/:id', isLoggedIn, function(req, res) {
+        var id = req.params.id;
+        // Get the conversations participants list and update it.
+
+        // get the users following array and update it.
+        User.findById({ _id: req.principal._id }, function(err, user) {
+            if (err) {
+                //console.log('err: ' + err);
+                res.send(err);
+            } else {
+                // add the id to the users following list if it is not already there
+                if (user.following.indexOf(id) < 0) {
+                    user.following.push(id);
+                    // Save
+                    user.save(function(err, user) {
+                        if (err) {
+                            res.send(err);
+                        } else {
+                            res.json(user);
+                        }
+                    });
+                } else {
+                    res.json(user);
+                }
+            }
+        });
+    });
+
+    // unfollow conversation by id
+    app.post('/api/users/unfollow_conversation/:id', isLoggedIn, function(req, res) {
+        var id = req.params.id;
+        // get the users following array
+        User.findById({ _id: req.principal._id }, function(err, user) {
+            if (err) {
+                //console.log('err: ' + err);
+                res.send(err);
+            } else {
+                // Convert the conversation model to JSON so that findWithAttr functions.
+                user_temp = user.toJSON();
+                // Delete old participants.
+                for (var j in user_temp.following) {
+                    //var index2 = findWithAttr(toupdate.participants, '_id', conversation_temp.following[j]._id);
+                    // If old participant. Delete.
+                    //console.log(user_temp.following[j] + ' == ' + id);
+                    if (user_temp.following[j] == id) {
+                        user.following.splice(j, 1);
+                        //console.log(user);
+                    }
+                }
+                // Save
+                user.save(function(err, user) {
+                    if (err) {
+                        res.send(err);
+                    } else {
+                        res.json(user);
+                    }
+                });
+            }
+        });
+    });
     // add user contact by id
     app.post('/api/users/add_contact/:id', isLoggedIn, function(req, res) {
         var id = req.params.id;
@@ -876,6 +937,42 @@ module.exports = function(app, passport) {
         });
     });
 
+
+    app.put('/chat/follow_public_conversation/:conversation_id', isLoggedIn, function(req, res) {
+        Conversation.findById({ _id: req.params.conversation_id }, function(err, conversation) {
+            if (err) {
+                //console.log(err);
+                res.send(err);
+            }
+            console.log(conversation);
+            console.log('Follow');
+            console.log(req.body.user);
+
+            var toupdate = req.body.user;
+            // Update participants with the latest viewed data.
+            // Convert the conversation model to JSON so that findWithAttr functions.
+            conversation_temp = conversation.toJSON();
+            // Add new participants.
+            //for (var i in toupdate.participants) {
+            var index = findWithAttr(conversation_temp.followers, '_id', toupdate);
+            // If new participant. Add
+            if (index < 0) {
+                var temp = { _id: toupdate };
+                conversation.followers.push(temp);
+            }
+            //var updateConversation = new Conversation(conversation);
+            conversation.save(function(err, conversation) {
+                if (err) {
+                    //console.log(err);
+                    res.send(err);
+                } else {
+                    res.json(conversation);
+                }
+            });
+
+        });
+    });
+
     // Update Conversation
     // Update User profile
     app.put('/chat/update_conversation/:conversation_id', isLoggedIn, function(req, res) {
@@ -1050,6 +1147,17 @@ module.exports = function(app, passport) {
         Conversation.findOne({ '_id': req.params.id }, function(err, conversation) {
             if (err) {
                 return done(err);
+            }
+            console.log(conversation);
+            res.json(conversation);
+        });
+    });
+
+    // get a public conversation by conversation id
+    app.get('/chat/public_conversation_id/:id', function(req, res) {
+        Conversation.findOne({ '_id': req.params.id, 'conversation_type': 'public' }, function(err, conversation) {
+            if (err) {
+                res.json({ 'error': 'not found' });
             }
             res.json(conversation);
         });

@@ -416,6 +416,15 @@ hr {
     color: gray;
 }
 
+.mi-search-chat {
+    font-size: 30px !important;
+}
+
+.search_result_public {
+    display: flex;
+    width: 100%;
+}
+
 .crop_container {
     position: relative;
     height: 0px;
@@ -1225,8 +1234,10 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 .convs_col_b {
     margin-right: auto;
     text-align: right;
-    line-height: normal;
-    margin-top: 3px;
+    /*line-height: normal;
+    margin-top: 3px;*/
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 .convs_col_c {
@@ -2200,9 +2211,11 @@ span#scroll_image_latest {
     cursor: default;
 }
 
+/*
 .contacts_result_container_on {
     cursor: pointer;
 }
+*/
 
 .search_add_user {
     cursor: pointer;
@@ -2363,7 +2376,7 @@ span#scroll_image_latest {
 .convs_data_bottom {
     position: relative;
     margin-top: 2px;
-    min-height: 20px;
+    /*min-height: 20px;*/
     width: 100%;
     overflow: hidden;
 }
@@ -3037,6 +3050,16 @@ span.after_image {
     margin-right: 10px;
 }
 
+.btn_follow {
+    cursor: pointer;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 .cf_btn .material-icons {
     font-size: 30px;
 }
@@ -3054,5 +3077,9 @@ span.after_image {
 }
 
 .file_edit {
+    color: green;
+}
+
+.following {
     color: green;
 }

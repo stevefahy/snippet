@@ -1,4 +1,4 @@
-cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', '$animate', 'viewAnimationsService', 'Cropp', '$compile', 'ImageAdjustment', function($scope, $rootScope, $location, $http, $window, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, $animate, viewAnimationsService, Cropp, $compile, ImageAdjustment) {
+cardApp.controller("feedCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$interval', '$q', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', '$animate', 'viewAnimationsService', 'Cropp', '$compile', 'ImageAdjustment', function($scope, $rootScope, $location, $http, $window, $interval, $q, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, $animate, viewAnimationsService, Cropp, $compile, ImageAdjustment) {
 
     openCrop = Cropp.openCrop;
     setCrop = Cropp.setCrop;
@@ -9,65 +9,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     filterClick = Cropp.filterClick;
     settingsImage = Cropp.settingsImage;
     adjustImage = Cropp.adjustImage;
-
-
-    $scope.follow = function(card) {
-        // Find the public conversation for this user.
-        Conversations.find_user_public_conversation_by_id(card.user)
-            .then(function(result) {
-                console.log(result);
-                if (result.data.conversation_type == 'public') {
-                    // If following then unfollow
-                    if (card.following) {
-                        Users.unfollow_conversation(result.data._id)
-                            .then(function(result) {
-                                UserData.setUser(result.data);
-                                $scope.currentUser = UserData.getUser();
-                                updatedFollowing($scope.cards);
-                            });
-                        // If not following then follow
-                    } else {
-                        var pms = { 'id': result.data._id, 'user': UserData.getUser()._id };
-                        // Updateconversation in DB.
-                        Conversations.addFollower(pms)
-                            .then(function(result) {
-                                console.log(result);
-                            });
-                        Users.follow_conversation(result.data._id)
-                            .then(function(result) {
-                                UserData.setUser(result.data);
-                                $scope.currentUser = UserData.getUser();
-                                updatedFollowing($scope.cards);
-                            });
-                    }
-                }
-            });
-    };
-
-    updatedFollowing = function(newValue) {
-        //console.log(newValue);
-        if (newValue != undefined) {
-            newValue.map(function(key, array) {
-                // Find the public conversation for this user.
-                Conversations.find_user_public_conversation_by_id(key.user)
-                    .then(function(result) {
-                        if ($scope.currentUser.following.indexOf(result.data._id) >= 0) {
-                            // The user is following this user.
-                            key.following = true;
-                        } else {
-                            // The user is not following this user.
-                            key.following = false;
-                        }
-                    });
-            });
-        }
-    };
-
-    $scope.$watch('cards', function(newValue, oldValue) {
-        if (newValue != undefined) {
-            updatedFollowing(newValue);
-        }
-    });
 
     $scope.addSlider = function(data) {
         if (data.last_position != undefined) {
@@ -104,11 +45,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         //leaving controller.
         Cropp.destroyCrop();
         $('.image_adjust_on').remove();
+
+        $interval.cancel(updateContent);
+        updateContent = undefined;
+
     });
 
     $scope.$on('getCards', function(event, data) {});
-
-    $scope.following = false;
 
     // Detect device user agent 
     var ua = navigator.userAgent;
@@ -178,7 +121,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Broadcast by UserData after it has processed the notification. (card has been created, updated or deleted by another user to this user).
     $scope.$on('CONV_NOTIFICATION', function(event, msg) {
-        console.log(msg);
         // only update the conversation if the user is currently in that conversation
         if (id === msg.conversation_id) {
             updateConversationViewed(id);
@@ -188,15 +130,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         Conversations.find_public_conversation_id(msg.conversation_id)
             .then(function(result) {
                 console.log(result);
-                if (result.conversation_type == 'public') {
-
+                if (result.data.conversation_type == 'public') {
+                    updateFollowing();
                 }
             });
-
-    });
-
-    $scope.$on('CONV_MODEL_NOTIFICATION', function(event, msg) {
-        updatedFollowing($scope.cards);
     });
 
     // Broadcast by Database createCard service when a new card has been created by this user.
@@ -223,6 +160,219 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     });
 
+
+
+    $scope.follow = function(card) {
+        // Find the public conversation for this user.
+        Conversations.find_user_public_conversation_by_id(card.user)
+            .then(function(result) {
+                if (result.data.conversation_type == 'public') {
+                    // If following then unfollow
+                    if (card.following) {
+                        Users.unfollow_conversation(result.data._id)
+                            .then(function(result) {
+                                UserData.setUser(result.data);
+                                $scope.currentUser = UserData.getUser();
+                                updatedFollowing($scope.cards);
+                            });
+                        // If not following then follow
+                    } else {
+                        Users.follow_conversation(result.data._id)
+                            .then(function(result) {
+                                UserData.setUser(result.data);
+                                $scope.currentUser = UserData.getUser();
+                                updatedFollowing($scope.cards);
+                            });
+                    }
+                }
+            });
+    };
+
+    updatedFollowing = function(newValue) {
+        //console.log(newValue);
+        if (newValue != undefined) {
+            newValue.map(function(key, array) {
+                // Find the public conversation for this user.
+                Conversations.find_user_public_conversation_by_id(key.user)
+                    .then(function(result) {
+                        if ($scope.currentUser.following.indexOf(result.data._id) >= 0) {
+                            // The user is following this user.
+                            key.following = true;
+                        } else {
+                            // The user is not following this user.
+                            key.following = false;
+                        }
+                    });
+            });
+        }
+    };
+
+    $rootScope.$on('PUBLIC_NOTIFICATION', function(event, msg) {
+        //notification(msg);
+        console.log(msg);
+        updateFollowing();
+    });
+
+    updateCards = function(new_cards) {
+        console.log(new_cards);
+        $scope.cards.map(function(key, array) {
+            var card_pos = General.findWithAttr(new_cards, '_id', key._id);
+            console.log(card_pos);
+            if (card_pos < 0) {
+                console.log('delete: ' + key._id);
+                var delete_card_pos = General.findWithAttr($scope.cards, '_id', key._id);
+                $scope.cards.splice(delete_card_pos, 1);
+            }
+        });
+
+        new_cards.map(function(key, array) {
+            var card_pos = General.findWithAttr($scope.cards, '_id', key._id);
+            console.log(card_pos);
+            if (card_pos < 0) {
+                console.log('add: ' + key.content);
+                //var add_card_pos = General.findWithAttr($scope.cards, '_id', key._id);
+                $scope.cards.push(key);
+            } else {
+                console.log('update: ' + key);
+                $scope.cards[card_pos] = key;
+            }
+        });
+    };
+
+    updateFollowing = function() {
+        var deferred = $q.defer();
+        var promises = [];
+        //General.isEqual(key[check_objects[i]], res[check_objects[i]])) {
+        var temp_cards = [];
+        var followed = UserData.getUser().following;
+        console.log(followed);
+        followed.map(function(key, array) {
+            var prom1 = Conversations.find_public_conversation_id(key)
+                .then(function(result) {
+                    console.log(result);
+                    return Conversations.getPublicConversationById(key)
+                        .then(function(res) {
+                            console.log(res);
+                            if (temp_cards.length < 1) {
+                                res.data.map(function(key, array) {
+                                    // Store the original characters of the card.
+                                    key.original_content = result.data.content;
+                                    // Get the user name for the user id
+                                    key.user_name = result.data.conversation_name;
+                                    key.avatar = result.data.conversation_avatar;
+                                    key.following = true;
+                                    temp_cards.push(key);
+                                });
+                            } else {
+                                res.data.map(function(key, array) {
+                                    // Store the original characters of the card.
+                                    key.original_content = result.data.content;
+                                    // Get the user name for the user id
+                                    key.user_name = result.data.conversation_name;
+                                    key.avatar = result.data.conversation_avatar;
+                                    key.following = true;
+                                    temp_cards.push(key);
+                                });
+                            }
+                            return temp_cards;
+
+
+                        });
+                    //promises.push(prom2);
+                });
+            promises.push(prom1);
+        });
+
+        // All the users contacts have been mapped.
+        $q.all(promises).then(function() {
+            console.log(promises);
+            console.log('map finished');
+            console.log(temp_cards);
+            updateCards(temp_cards);
+        });
+        return deferred.promise;
+    };
+
+    /*
+    
+                                */
+
+    // TODO - If not following anyone suggest follow?
+    getFollowing = function() {
+        $scope.cards = [];
+        var followed = UserData.getUser().following;
+        console.log(followed);
+        followed.map(function(key, array) {
+            console.log(key);
+            Conversations.find_public_conversation_id(key)
+                .then(function(result) {
+                    console.log(result);
+                    Conversations.getPublicConversationById(key)
+                        .then(function(res) {
+                            console.log(res);
+                            console.log($scope.cards.length);
+                            if ($scope.cards.length < 1) {
+                                console.log('first');
+
+                                res.data.map(function(key, array) {
+
+                                    // Store the original characters of the card.
+                                    key.original_content = result.data.content;
+                                    // Get the user name for the user id
+                                    key.user_name = result.data.conversation_name;
+                                    key.avatar = result.data.conversation_avatar;
+                                    key.following = true;
+
+                                    $scope.cards.push(key);
+                                });
+                            } else {
+                                console.log('subsequent');
+                                res.data.map(function(key, array) {
+
+                                    // Store the original characters of the card.
+                                    key.original_content = result.data.content;
+                                    // Get the user name for the user id
+                                    key.user_name = result.data.conversation_name;
+                                    key.avatar = result.data.conversation_avatar;
+                                    key.following = true;
+
+                                    $scope.cards.push(key);
+                                });
+                                console.log($scope.cards);
+                            }
+
+                        });
+                });
+        });
+    };
+
+
+    /*
+        getPublicConversation = function(id, conv) {
+        Conversations.getPublicConversationById(id)
+            .then(function(result) {
+                $scope.cards = result.data;
+                // Map relevant data to the loaded cards.
+                if ($scope.cards.length > 0) {
+                    $scope.cards.map(function(key, array) {
+                        // Store the original characters of the card.
+                        key.original_content = key.content;
+                        // Get the user name for the user id
+                        key.user_name = conv.conversation_name;
+
+                        key.avatar = conv.conversation_avatar;
+                    });
+                } else {
+                    $rootScope.pageLoading = false;
+                }
+            })
+            .catch(function(error) {
+                console.log('error: ' + error);
+            });
+
+    };
+    */
+
     getCards = function() {
         $timeout(function() {
             findConversationId(function(result) {
@@ -230,7 +380,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     .then(function(result) {
                         if (result != undefined) {
                             $scope.cards = result.data;
-
                         }
                     });
             });
@@ -241,7 +390,23 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         UserData.checkUser().then(function(result) {
             $scope.currentUser = UserData.getUser();
             // Logged in.Load the conversation for the first time.
-            getCards();
+            //getCards();
+            // Get the users which this user is following.
+            console.log('feed');
+            console.log(UserData.getUser());
+
+            // Set the users profile
+            var profile = {};
+            profile.user_name = UserData.getUser().user_name;
+            profile.avatar = UserData.getUser().avatar;
+            Profile.setProfile(profile);
+            $rootScope.$broadcast('PROFILE_SET');
+
+            getFollowing();
+
+            updateContent = $interval(function() {
+                //updateFollowing();
+            }, 5000);
         });
     } else {
         // Public route (Does not need to be logged in).
@@ -392,25 +557,17 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     });
             }
         } else {
-            // Check if this is a public conversation.
-            Conversations.find_public_conversation_id(id)
-                .then(function(result) {
-                    if (result.data != null && result.data.conversation_type == 'public') {
-                        getPublicConversation(id, result.data);
-                    } else {
-                        Conversations.setConversationId(id);
-                        // Check the users permission for this conversation. (logged in and participant)
-                        checkPermission(id, function(result) {
-                            $scope.isMember = result;
-                            if (result) {
-                                getConversation(id);
-                            } else {
-                                $location.path("/api/login");
-                            }
-                            callback(id);
-                        });
-                    }
-                });
+            Conversations.setConversationId(id);
+            // Check the users permission for this conversation. (logged in and participant)
+            checkPermission(id, function(result) {
+                $scope.isMember = result;
+                if (result) {
+                    getConversation(id);
+                } else {
+                    $location.path("/api/login");
+                }
+                callback(id);
+            });
         }
     };
 
@@ -418,7 +575,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // If the user is logged in and a participant of the conversation the $scope.isMember=true.
     // card_create.html is added to the conversation if $scope.isMember=true.
     checkPermission = function(conversation_id, callback) {
-        // If logged in
+        // If looged in
         if ($scope.currentUser) {
             UserData.getConversationModelById(conversation_id)
                 .then(function(res) {
@@ -466,7 +623,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     getPublicConversation = function(id, conv) {
-        var profile = {};
         Conversations.getPublicConversationById(id)
             .then(function(result) {
                 $scope.cards = result.data;
@@ -477,11 +633,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         key.original_content = key.content;
                         // Get the user name for the user id
                         key.user_name = conv.conversation_name;
+
                         key.avatar = conv.conversation_avatar;
-                        profile.user_name = conv.conversation_name;
-                        profile.avatar = conv.conversation_avatar;
-                        Profile.setConvProfile(profile);
-                        $rootScope.$broadcast('PROFILE_SET');
                     });
                 } else {
                     $rootScope.pageLoading = false;
@@ -611,6 +764,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     $scope.inviewoptions = { offset: [100, 0, 100, 0] };
+
 
     $scope.lineInView = function(data, id) {
         if (data) {

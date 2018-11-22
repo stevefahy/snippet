@@ -85,6 +85,12 @@ cardApp.factory('Contacts', ['$http', function($http) {
 
 cardApp.factory('Users', ['$http', function($http) {
     return {
+        follow_conversation: function(id) {
+            return $http.post('api/users/follow_conversation/' + id);
+        },
+        unfollow_conversation: function(id) {
+            return $http.post('api/users/unfollow_conversation/' + id);
+        },
         search_id: function(id) {
             return $http.post('api/users/search_id/' + id);
         },
@@ -132,6 +138,10 @@ cardApp.factory('Conversations', ['$http', function($http) {
                     return response;
                 });
         },
+        addFollower: function(conversation) {
+            var theurl = 'chat/follow_public_conversation/' + conversation.id;
+            return $http.put(theurl, conversation);
+        },
         update: function(conversation) {
             var theurl = 'chat/update_conversation/' + conversation.id;
             return $http.put(theurl, conversation);
@@ -151,6 +161,10 @@ cardApp.factory('Conversations', ['$http', function($http) {
         },
         find_conversation_id: function(id) {
             return $http.get('chat/conversation_id/' + id);
+        },
+        // Find public conversation by conversation id
+        find_public_conversation_id: function(id) {
+            return $http.get('chat/public_conversation_id/' + id);
         },
         find_user_conversations: function(id) {
             return $http.get('chat/user_conversations/' + id)
@@ -211,6 +225,11 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
         $rootScope.$broadcast('NOTIFICATION', msg);
     };
 
+    notifyPublic = function(msg) {
+        //console.log('notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
+        $rootScope.$broadcast('PUBLIC_NOTIFICATION', msg);
+    };
+
     updateData = function(msg) {
         //console.log('update_data: ' + msg.update_values + ', user: ' + msg.user);
         $rootScope.$broadcast('UPDATE_DATA', msg);
@@ -244,6 +263,10 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
         });
         // server notifying users by namespace of content update
         socket_n.on('notify_users', notifyUsers);
+
+        // server notifying users by namespace of content update
+        socket_n.on('notify_public', notifyPublic);
+
         // server notifying users by namespace of data update
         socket_n.on('update_data', updateData);
         // namespace disconnected by server
@@ -731,7 +754,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                                                     // Update the cards model
                                                     UserData.addCardsModel(key.conversationId, key)
                                                         .then(function(response) {
-                                                            //console.log(response);
+                                                            $rootScope.$broadcast('CONV_MODEL_NOTIFICATION', key);
                                                         });
                                                 });
                                         });
@@ -779,6 +802,13 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     $rootScope.$on('NOTIFICATION', function(event, msg) {
         notification(msg);
     });
+
+/*
+    $rootScope.$on('PUBLIC_NOTIFICATION', function(event, msg) {
+        //notification(msg);
+        console.log(msg);
+    });
+    */
 
     //
     // User

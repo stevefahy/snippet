@@ -9,6 +9,7 @@ var userSchema = new Schema({
     _id: Schema.Types.ObjectId,
     contacts: [{ "type": Schema.Types.ObjectId, "ref": "User" }],
     imported_contacts: [],
+    following: [{ "type": Schema.Types.ObjectId, "ref": "Conversation" }],
     notification_key_name: String,
     first_login: Boolean,
     user_name: String,
