@@ -1,4 +1,4 @@
-cardApp.controller("headerCtrl", ['Profile', 'Conversations', '$scope', '$rootScope', '$location', '$http', 'viewAnimationsService', 'Cropp', function(Profile, Conversations, $scope, $rootScope, $location, $http, viewAnimationsService, Cropp) {
+cardApp.controller("headerCtrl", ['Profile', 'Conversations', '$scope', '$rootScope', '$location', '$http', '$window', 'Cropp', function(Profile, Conversations, $scope, $rootScope, $location, $http, $window, Cropp) {
 
     displayProfile = function() {
         var user;
@@ -36,18 +36,61 @@ cardApp.controller("headerCtrl", ['Profile', 'Conversations', '$scope', '$rootSc
             });
         }
     });
+    /*
+    $scope.$on('$locationChangeSuccess',function(evt, absNewUrl, absOldUrl, newState, oldState) {
+       console.log('success', evt, absNewUrl, absOldUrl, newState, oldState);
+       var prevUrl = absOldUrl.$$route.originalPath;
+       console.log(prevUrl);
+    });
+    */
+    /*
+        $rootScope.$on('$routeChangeSuccess', function(event, next, prev) {
+            console.log(prev.$$route.originalPath);
+            $rootScope.prev_route = prev.$$route.originalPath;
+        });
+        */
+
+    $scope.goBack = function() {
+        //$rootScope.animate_pages = true;
+        console.log($rootScope.prev_route);
+        console.log($location.path());
+        /*
+          if ($rootScope.prev_route == undefined) {
+              $rootScope.prev_route = '/';
+              $rootScope.nav = { from: 'us', to: 'page-conversation' };
+          } else if ($rootScope.prev_route == '/chat/conversations') {
+              //viewAnimationsService.setEnterAnimation('page-user_setting');
+              //viewAnimationsService.setLeaveAnimation('page-conversation');
+          } else if ($rootScope.prev_route == '/') {
+              console.log('gere');
+              //viewAnimationsService.setEnterAnimation('');
+              //viewAnimationsService.setLeaveAnimation('page-user_setting');
+              $rootScope.nav = { from: 'us', to: 'conv' };
+          }
+          */
+        $location.path($rootScope.prev_route);
+    };
 
     $scope.changePath = function(path) {
         // Detect device user agent 
         var ua = navigator.userAgent;
         Cropp.destroyCrop();
         // Add custom class for Android scrollbar
-        if (ua.indexOf('AndroidApp') >= 0) {
+       // if (ua.indexOf('AndroidApp') >= 0) {
             //Android.animationBack();
-            $location.path(path);
-        } else {
-            $location.path(path);
-        }
+            
+        //} else {
+           // console.log(path);
+            /*
+            if (path == '/api/user_setting') {
+                $rootScope.nav = { from: 'conv', to: 'us' };
+            } else if (path == '/chat/conversations') {
+                $rootScope.nav = { from: 'convs', to: 'conv' };
+            }
+*/
+            
+        //}
+        $location.path(path);
     };
 
     $scope.changePathConversation = function() {
@@ -58,6 +101,8 @@ cardApp.controller("headerCtrl", ['Profile', 'Conversations', '$scope', '$rootSc
     $scope.changePathContacts = function(path) {
         // Resets contacts
         $scope.pageAnimationStart();
+
+
         $location.path(path);
     };
 

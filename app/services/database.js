@@ -112,13 +112,16 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
     // MERGE  Conversations.updateTime(card.conversationId) & Conversations.updateViewed(card.conversationId, viewed_users[x]._id, card_id)
     // UPDATE CARD
     this.updateCard = function(card_id, card, currentUser) {
+        console.log(card_id);
+        console.log(card);
+        console.log(currentUser);
         if (!updateinprogress) {
             updateinprogress = true;
             setTimeout(function() {
                 var promises = [];
                 var promises_followers = [];
                 // Get the Conversation in which this card is being created.
-                var current_conversation_id = Conversations.getConversationId();
+                //var current_conversation_id = Conversations.getConversationId();
                 card.content = Format.setMediaSize(card_id, card);
                 card.content = replaceTags.replace(card.content);
                 // DANGER These had been removed for android image save bug
@@ -134,12 +137,14 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 // call the create function from our service (returns a promise object)
                 Cards.update(pms)
                     .then(function(returned) {
+                        console.log(returned);
                         $rootScope.$broadcast('CARD_UPDATED', returned.data);
                         var viewed_users = [];
                         // Update the Conversation updateAt time.
-                        //Conversations.updateTime(card.conversationId)
-                        Conversations.updateTime(current_conversation_id)
+                        Conversations.updateTime(card.conversationId)
+                        //Conversations.updateTime(current_conversation_id)
                             .then(function(response) {
+                                console.log(response);
                                 // Only send notifications if there are other participants.
                                 if (response.data.participants.length > 1) {
                                     var notification = self.setNotification(response.data, currentUser, card_content);
@@ -259,11 +264,15 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
     // CREATE CARD
     this.createCard = function(id, card_create, currentUser) {
+        console.log(id);
+        console.log(card_create);
+        console.log(currentUser);
         var promises = [];
         var promises_followers = [];
         card_create.user = currentUser.google.name;
         // Get the Conversation in which this card is being created.
         var current_conversation_id = Conversations.getConversationId();
+        console.log(current_conversation_id);
         card_create.conversationId = current_conversation_id;
         card_create.content = Format.setMediaSize(id, card_create);
         card_create.content = replaceTags.replace(card_create.content);
@@ -288,6 +297,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 // Update the Conversation updateAt time.
                 Conversations.updateTime(current_conversation_id)
                     .then(function(response) {
+                        console.log(response);
                         // Only send notifications if there are other participants.
                         if (response.data.participants.length > 1) {
                             var notification = self.setNotification(response.data, currentUser, card_content);

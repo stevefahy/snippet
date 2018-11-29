@@ -142,6 +142,10 @@ cardApp.factory('Conversations', ['$http', function($http) {
             var theurl = 'chat/follow_public_conversation/' + conversation.id;
             return $http.put(theurl, conversation);
         },
+        deleteFollower: function(conversation) {
+            var theurl = 'chat/unfollow_public_conversation/' + conversation.id;
+            return $http.put(theurl, conversation);
+        },
         update: function(conversation) {
             var theurl = 'chat/update_conversation/' + conversation.id;
             return $http.put(theurl, conversation);
@@ -610,6 +614,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                                             if (result.data.length > 0) {
                                                 UserData.getCardsModelById(key._id)
                                                     .then(function(res) {
+                                                        if(res.data != undefined){
                                                         for (var i in result.data) {
                                                             if (!General.isEqual(result.data[i].content, res.data[i].content)) {
                                                                 conv_same = false;
@@ -620,6 +625,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                                                             var msg = { conversation_id: res._id };
                                                             notification(msg);
                                                         }
+                                                    }
                                                     });
                                             }
                                             update_inprogress = false;

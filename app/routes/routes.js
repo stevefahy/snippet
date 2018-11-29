@@ -55,10 +55,35 @@ function createPublicConversation(user, callback) {
             //console.log('error: ' + err);
             res.send(err);
         }
+        // Add this users public conversation to their following list
+        // get the users following array and update it.
+        User.findById({ _id: user._id }, function(err, user) {
+            if (err) {
+                //console.log('err: ' + err);
+                res.send(err);
+            } else {
+                // add the id to the users following list if it is not already there
+                if (user.following.indexOf(conversation._id) < 0) {
+                    user.following.push(conversation._id);
+                    // Save
+                    user.save(function(err, user) {
+                        if (err) {
+                            //res.send(err);
+                        } else {
+                            //res.json(user);
+                        }
+                    });
+                } else {
+                    //res.json(user);
+                }
+            }
+        });
+
         // return the created conversation
         callback(conversation);
     });
 }
+
 
 // TODO - check routes for isMember and isLoggedIn sufficent. e.g. only current user should be able to change own avatar.
 
@@ -354,6 +379,8 @@ module.exports = function(app, passport) {
                         // Create Public conversation for this user
                         // Any time profile changes update Public conv profile also.
                         createPublicConversation(req.user, function(result) {
+                            console.log(result);
+
                             res.redirect('/api/user_setting');
                         });
                     } else {
@@ -944,23 +971,16 @@ module.exports = function(app, passport) {
                 //console.log(err);
                 res.send(err);
             }
-            console.log(conversation);
-            console.log('Follow');
-            console.log(req.body.user);
-
             var toupdate = req.body.user;
-            // Update participants with the latest viewed data.
             // Convert the conversation model to JSON so that findWithAttr functions.
             conversation_temp = conversation.toJSON();
-            // Add new participants.
-            //for (var i in toupdate.participants) {
+            // Add new follower.
             var index = findWithAttr(conversation_temp.followers, '_id', toupdate);
-            // If new participant. Add
+            // If new follower. Add
             if (index < 0) {
                 var temp = { _id: toupdate };
                 conversation.followers.push(temp);
             }
-            //var updateConversation = new Conversation(conversation);
             conversation.save(function(err, conversation) {
                 if (err) {
                     //console.log(err);
@@ -969,7 +989,33 @@ module.exports = function(app, passport) {
                     res.json(conversation);
                 }
             });
+        });
+    });
 
+   app.put('/chat/unfollow_public_conversation/:conversation_id', isLoggedIn, function(req, res) {
+        Conversation.findById({ _id: req.params.conversation_id }, function(err, conversation) {
+            if (err) {
+                //console.log(err);
+                res.send(err);
+            }
+            var toupdate = req.body.user;
+            // Convert the conversation model to JSON so that findWithAttr functions.
+            conversation_temp = conversation.toJSON();
+            // Delete follower.
+            var index = findWithAttr(conversation_temp.followers, '_id', toupdate);
+            // If follower exists. Delete
+            if (index >= 0) {
+                conversation.followers.splice(index, 1);
+            }
+            conversation.save(function(err, conversation) {
+                if (err) {
+                    console.log(err);
+                    res.send(err);
+                } else {
+                    console.log(conversation);
+                    res.json(conversation);
+                }
+            });
         });
     });
 
@@ -1024,7 +1070,7 @@ module.exports = function(app, passport) {
     app.put('/chat/conversation_time/:id', isLoggedIn, function(req, res) {
         Conversation.findById({ _id: req.params.id }, function(err, conversation) {
             if (err) {
-                //console.log('err: ' + err);
+                console.log('err: ' + err);
                 res.send(err);
             }
             var new_conversation = new Conversation(conversation);

@@ -1,13 +1,59 @@
-cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites', '$rootScope', '$location', '$http', '$window', '$routeParams', 'Users', 'Profile', 'Conversations', 'General', 'principal', 'UserData', '$animate', function($scope, $timeout, Format, Invites, $rootScope, $location, $http, $window, $routeParams, Users, Profile, Conversations, General, principal, UserData, $animate) {
+cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites', '$rootScope', '$location', '$http', '$window', '$routeParams', 'Users', 'Profile', 'Conversations', 'General', 'principal', 'UserData', function($scope, $timeout, Format, Invites, $rootScope, $location, $http, $window, $routeParams, Users, Profile, Conversations, General, principal, UserData) {
 
     // Animation
-    $scope.pageClass = 'page-user_setting';
+    //$scope.pageClass = 'page-user_setting';
     // Loading conversation directly should not animate.
-    $animate.enabled($rootScope.animate_pages);
+    //$animate.enabled($rootScope.animate_pages);
     // turn on animation.
+    /*
     $scope.$on('$routeChangeStart', function($event, next, current) {
+        console.log('anim enabled');
         $animate.enabled(true);
     });
+    */
+
+    // variable to turn on animation of view chage. Loading conversation directly should not animate.
+    //$rootScope.animate_pages = true;
+    // Loading conversation directly should not animate.
+    //$animate.enabled($rootScope.animate_pages);
+
+/*
+    // Default navigation
+    if ($rootScope.animate_pages) {
+        console.log('ENTER');
+        // Loading conversation directly should not animate.
+        //viewAnimationsService.setEnterAnimation('page-user_setting');
+    }
+
+    if ($rootScope.nav) {
+        console.log($rootScope.nav);
+        if ($rootScope.nav.from == 'group') {
+            viewAnimationsService.setEnterAnimation('page-conversation-static');
+            viewAnimationsService.setLeaveAnimation('page-group');
+        } else if ($rootScope.nav.from == 'group-direct') {
+            viewAnimationsService.setEnterAnimation('page-conversation-static');
+            viewAnimationsService.setLeaveAnimation('page-group-direct');
+        } else if ($rootScope.nav.from == 'contacts') {
+            $rootScope.nav = { from: 'conv', to: 'contacts' };
+            viewAnimationsService.setEnterAnimation('page-conversation');
+            viewAnimationsService.setLeaveAnimation('page-contacts-static');
+        } else if ($rootScope.nav.from == 'us') {
+            $rootScope.nav = { from: 'us', to: 'contacts' };
+            viewAnimationsService.setEnterAnimation('page-conversation-static');
+            viewAnimationsService.setLeaveAnimation('page-user_setting');
+        } else if ($rootScope.nav.from == 'conv') {
+            console.log('conv to us');
+  
+
+            //viewAnimationsService.setEnterAnimation('page-user_setting');
+            //viewAnimationsService.setLeaveAnimation('page-conversation-static');
+        } else {
+            //$rootScope.nav = { from: 'conv', to: 'convs' };
+        }
+    } else {
+        //$rootScope.nav = { from: 'conv', to: 'convs' };
+    }
+    */
 
 
     $scope.myImage = '';

@@ -14,9 +14,41 @@ cardApp.controller("footerCtrl", ['$scope', 'Cards', '$rootScope', '$location', 
     $scope.$on('search', function(event) {
         $scope.searchCard();
     });
+/*
+    $rootScope.$on('$routeChangeSuccess', function(event, next, prev) {
+        //console.log(prev.$$route.originalPath);
+        $rootScope.prev_route = prev.$$route.originalPath;
+        console.log($rootScope.prev_route);
+    });
+    */
+
 
     $scope.changePath = function(path) {
+        //console.log(path);
+        //console.log($location.path());
+        //console.log($rootScope.prev_route);
+        
+/*
+        if (path == '/c/contacts' && $rootScope.prev_route == '/chat/conversations') {
+            $rootScope.nav = { from: 'convs', to: 'conv' };
+        } else if(path == '/c/contacts' && $rootScope.prev_route == '/'){
+            console.log('conv to contct');
+            $rootScope.nav = { from: 'conv', to: 'contact' };
+        } else if(path == '/chat/conversations' && $rootScope.prev_route == '/'){
+            console.log('conv to convs');
+            $('.page-conversation').css('z-index', 0);
+            //$rootScope.nav = { from: 'convs', to: 'conv' };
+            $rootScope.nav = { from: 'feed', to: 'convs' };
+        } else if(path == '/'){
+            console.log('convs to feed');
+            $('.page-conversation').css('z-index', 0);
+            //$rootScope.nav = { from: 'convs', to: 'conv' };
+            $rootScope.nav = { from: 'conv', to: 'feed' };
+        }
+$rootScope.prev_route = $location.path();
+*/
         $location.path(path);
+
     };
 
     $scope.logOut = function() {

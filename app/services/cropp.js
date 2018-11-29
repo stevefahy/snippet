@@ -471,7 +471,10 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     };
 
     this.closeEdit = function(e, id) {
-        e.stopPropagation();
+        //if(e){
+           e.stopPropagation(); 
+        //}
+        
         $('#' + e.target.id).closest('div.ce').attr('contenteditable', 'true');
         $('.image_adjust_on').remove();
         $('#cropper_' + id).removeClass('cropping');
@@ -502,7 +505,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                         $(ia).attr('id', 'image_adjust_' + id);
                         $('#image_adjust_' + id).css('visibility', 'visible');
                         $('#image_adjust_' + id).css('position', 'relative');
-                        var edit_btns = "<div class='image_editor'><div class='image_edit_btns'><div class='' onclick='adjustImage(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_tune'>tune</i></div><div class='' onclick='filterImage(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_filter'>filter</i></div><div class='' onclick='openCrop(\"" + id + "\")'><i class='material-icons image_edit' id='ie_crop' >crop</i></div><div class='close_image_edit' onclick='closeEdit(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_close'>&#xE14C;</i></div></div><div class='crop_edit'><div class='set_crop' onclick='setCrop(\"" + id + "\")'><i class='material-icons image_edit' id='ie_accept'>&#xe876;</i></div></div></div>";
+                        var edit_btns = "<div class='image_editor'><div class='image_edit_btns'><div class='' onclick='adjustImage(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_tune'>tune</i></div><div class='' onclick='filterImage(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_filter'>filter</i></div><div class='' onclick='openCrop(\"" + id + "\")'><i class='material-icons image_edit' id='ie_crop' >crop</i></div><div class='close_image_edit' onclick='closeEdit(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_close'>&#xE14C;</i></div></div><div class='crop_edit'><div class='set_crop' onclick='setCrop(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_accept'>&#xe876;</i></div></div></div>";
                         // set this to active
                         $('#image_adjust_' + id).addClass('image_adjust_on');
                         $('#image_adjust_' + id).append(edit_btns);
@@ -642,7 +645,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     }
 
 
-    this.setCrop = function(image_id) {
+    this.setCrop = function(event, image_id) {
         var cur_filter = $("#image_" + image_id).attr('adjustment-data');
         getData = function() {
             var stored_image_data = cropper.getImageData();
@@ -698,6 +701,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             }
             cropper.destroy();
             $rootScope.crop_on = false;
+            //var event = null;
             closeEdit(event, image_id);
         };
         getData();

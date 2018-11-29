@@ -1,29 +1,32 @@
-cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location', '$http', '$timeout', 'principal', 'UserData', 'Invites', 'Email', 'Users', 'Conversations', 'Profile', 'General', 'Format', 'Contacts', '$q', '$animate', 'viewAnimationsService', function($scope, $route, $rootScope, $location, $http, $timeout, principal, UserData, Invites, Email, Users, Conversations, Profile, General, Format, Contacts, $q, $animate, viewAnimationsService) {
+cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location', '$http', '$timeout', 'principal', 'UserData', 'Invites', 'Email', 'Users', 'Conversations', 'Profile', 'General', 'Format', 'Contacts', '$q', function($scope, $route, $rootScope, $location, $http, $timeout, principal, UserData, Invites, Email, Users, Conversations, Profile, General, Format, Contacts, $q) {
 
 
     // TODO - make sure two users cant create a 2 person conv with each other at the same time.
     // Add users to each others contacts when conv created?
     // TODO - make sure two users cannot create a chat simultanously
     // TODO - make sure only one chat created with aother single user.
-
+console.log($rootScope.nav);
     // Animation
     if ($rootScope.nav) {
         if ($rootScope.nav.from == 'conv') {
-            viewAnimationsService.setEnterAnimation('page-contacts-static');
-            viewAnimationsService.setLeaveAnimation('page-conversation');
+            //viewAnimationsService.setEnterAnimation('page-contacts');
+            //viewAnimationsService.setLeaveAnimation('page-conversation-static');
         } else if ($rootScope.nav.from == 'convs') {
-            viewAnimationsService.setLeaveAnimation('page-contacts-static');
-            viewAnimationsService.setEnterAnimation('page-contacts');
+            //viewAnimationsService.setLeaveAnimation('page-contacts-static');
+            //viewAnimationsService.setEnterAnimation('page-contacts');
         }
     }
-    $rootScope.nav = { from: 'contacts', to: 'convs' };
+    //$rootScope.nav = { from: 'contacts', to: 'convs' };
     // Loading conversation directly should not animate.
-    $animate.enabled($rootScope.animate_pages);
+    //$animate.enabled($rootScope.animate_pages);
     // turn on animation.
-    $scope.contact_back = false;
+    //$scope.contact_back = false;
+
+    /*
     $scope.$on('$routeChangeStart', function($event, next, current) {
         $animate.enabled(true);
     });
+    */
     // Check if the page has been loaded witha param (user contacts import callback).
     var paramValue = $route.current.$$route.menuItem;
     // Stop listening for Mobile soft keyboard.
@@ -453,6 +456,19 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
         $scope.contacts = UserData.getContacts();
         var index = General.findWithAttr($scope.contacts, '_id', UserData.getUser()._id);
         $scope.contacts[index].is_admin = true;
+        $scope.contacts[index].is_current_user = true;
+
+        $scope.contacts.map(function(key, array) {
+            Conversations.find_user_public_conversation_by_id(key._id)
+                .then(function(result) {
+                    console.log(result);
+                    // If public then show link to the public conversation
+                    if (result.data.conversation_type == 'public') {
+                        key.public_conversation = result.data._id;
+                    }
+                });
+        });
+
         // Reset
         $scope.cancelGroup();
         checkImportedContacts();
@@ -535,7 +551,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     // SEARCH
     //
 
-    $scope.showPublic = function(conversation_id){
+    $scope.showPublic = function(conversation_id) {
         $location.path("/chat/conversation/" + conversation_id);
     };
 
@@ -577,7 +593,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
                                 .then(function(result) {
                                     console.log(result);
                                     // If public then show link to the public conversation
-                                    if(result.data.conversation_type == 'public'){
+                                    if (result.data.conversation_type == 'public') {
                                         res.public_conversation = result.data._id;
                                     }
                                 });

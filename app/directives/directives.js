@@ -113,12 +113,14 @@ cardApp.directive('viewAnimations', function(viewAnimationsService, $rootScope) 
 
             var enterAnimation = viewAnimationsService.getEnterAnimation();
             if (enterAnimation) {
+                console.log(previousEnter);
                 if (previousEnter) element.removeClass(previousEnter);
                 previousEnter = enterAnimation;
                 element.addClass(enterAnimation);
             }
 
             $rootScope.$on('event:newLeaveAnimation', function(event, leaveAnimation) {
+                console.log(previousLeave);
                 if (previousLeave) element.removeClass(previousLeave);
                 previousLeave = leaveAnimation;
                 element.addClass(leaveAnimation);

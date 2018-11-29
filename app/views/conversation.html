@@ -1,10 +1,14 @@
 <div class="container_cnv">
-    <div class="slide-animate header_container" ng-include="'/views/header_conv.html'"></div>
+    <div class="slide-animate header_container" ng-if="feed" ng-include="'/views/header.html'"></div>
+    <div class="slide-animate header_container" ng-if="!feed" ng-include="'/views/header_conv.html'"></div>
     <div ng-if="$root.pageLoading" class="loading_screen">
         <div ng-include="'/views/spinner.html'"></div>
     </div>
-    <div class="content_cnv" ng-class="{ 'content_cnv_off': $root.pageLoading}" scroll-glue in-view-container>
-        <div id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : false | limitTo:totalDisplayed" on-finish-render="ngRepeatFinished" in-view="lineInView($inview, card._id)" in-view-options="inviewoptions">
+    <div class="content_cnv" scroll-glue="glued" in-view-container ng-class="{ 'content_cnv_conv': !feed}">
+        <!--ng-class="{ 'content_cnv_off': $root.pageLoading}"-->
+        <!--
+        <div id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : false | limitTo:totalDisplayed" on-finish-render="ngRepeatFinished" in-view="lineInView($inview, card._id)" in-view-options="inviewoptions">-->
+        <div id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : feed | limitTo:totalDisplayed" on-finish-render="ngRepeatFinished" in-view="lineInView($inview, card._id)" in-view-options="inviewoptions" >
             <div id="user">
                 <img ng-if="card.avatar!='default'" alt="" class="card_avatar" ng-src="{{card.avatar}}" />
                 <img ng-if="card.avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="card_avatar" />
@@ -31,7 +35,7 @@
                 <div class="c_footer_o">
                     <div class="card_footer_btns">
                         <div class="cf_btn"><i class="material-icons">favorite_border</i></div>
-                        <div class="cf_btn" ng-click="follow(card)"><i class="material-icons btn_follow" ng-class="{'following': card.following}">directions_walk</i></div>
+                        <div class="cf_btn" ng-show="{{card.user != currentUser._id}}" ng-click="follow(card)"><i class="material-icons btn_follow" ng-class="{'following': card.following}">directions_walk</i></div>
                         <div class="cf_btn send"><i class="material-icons send">send</i></div>
                         <div class="cf_btn"><i class="material-icons edit" ng-class="{'file_edit': {{card.user == currentUser._id}}}">edit</i></div>
                         <div moment-time-conv="card.updatedAt" id="time"></div>
@@ -42,6 +46,7 @@
         </div>
     </div>
     <div class="card_create_container" ng-if="isMember" ng-include src="'/views/card_create.html'"></div>
+    <div ng-if="feed" ng-include src="'/views/footer.html'"></div>
     <div class="image_adjust"></div>
     <div class="image_filt_div">
         <div class='close_filters' onclick='closeFilters(event)'><i class='material-icons image_edit' id='ie_close'>&#xE14C;</i></div>

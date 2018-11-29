@@ -14,9 +14,13 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
         //    templateUrl: '/views/conversations.html',
         //    controller: 'conversationsCtrl'
         //})
+        //.when('/', {
+        //    templateUrl: '/views/feed.html',
+        //    controller: 'feedCtrl'
+        //})
         .when('/', {
-            templateUrl: '/views/feed.html',
-            controller: 'feedCtrl'
+           templateUrl: '/views/conversation.html',
+            controller: 'conversationCtrl'
         })
         .when("/s/:snip", {
             templateUrl: '/views/card.html',
