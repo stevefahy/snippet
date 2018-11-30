@@ -52,7 +52,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // Set the following icons on first load.
     $scope.$watch('cards', function(newValue, oldValue) {
         if (newValue != undefined) {
-            updateFollowingIcons(newValue);
+            //updateFollowingIcons(newValue);
         }
     });
 
@@ -335,6 +335,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var deferred = $q.defer();
         var promises = [];
         $scope.cards = [];
+        $scope.cards_temp = [];
         var followed = UserData.getUser().following;
         followed.map(function(key, array) {
             var prom1 = Conversations.find_public_conversation_id(key)
@@ -349,7 +350,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                     key.user_name = result.data.conversation_name;
                                     key.avatar = result.data.conversation_avatar;
                                     key.following = true;
-                                    $scope.cards.push(key);
+                                    //$scope.cards.push(key);
+                                    $scope.cards_temp.push(key);
                                 });
                             });
                     }
@@ -363,6 +365,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             // Set the feed value to true to reverse the cards order.
             //$scope.feed = true;
             //$scope.glued = false;
+            $scope.cards = $scope.cards_temp;
         });
         return deferred.promise;
     };
