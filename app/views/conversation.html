@@ -4,7 +4,7 @@
     <div ng-if="$root.pageLoading" class="loading_screen">
         <div ng-include="'/views/spinner.html'"></div>
     </div>
-    <div class="content_cnv" scroll-glue="glued" in-view-container ng-class="{ 'content_cnv_conv': !feed}">
+    <div class="content_cnv" scroll-glue="glued" in-view-container ng-class="{ 'content_cnv_conv': !feed}" scroll-trigger="scrollEventCallback" threshold="10">
         <!--ng-class="{ 'content_cnv_off': $root.pageLoading}"-->
         <!--
         <div id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : false | limitTo:totalDisplayed" on-finish-render="ngRepeatFinished" in-view="lineInView($inview, card._id)" in-view-options="inviewoptions">-->

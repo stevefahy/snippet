@@ -10,6 +10,32 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     settingsImage = Cropp.settingsImage;
     adjustImage = Cropp.adjustImage;
 
+    var paused = false;
+    $scope.scrollEventCallback = function(edge){
+        //console.log('SCROLL EDGE: ' + edge);
+console.log(paused);
+console.log($scope.cards.length);
+        if($scope.feed && edge=='bottom' && !paused){
+            paused = true;
+            $timeout(function() {
+                paused = false;
+            },1000);
+            
+            if($scope.totalDisplayed < $scope.cards.length){
+                $scope.totalDisplayed -= 3;
+            }
+            
+            console.log('feed bottom: ' + $scope.totalDisplayed);
+
+
+        } 
+       if(!$scope.feed && edge=='top'){
+            console.log('not feed top');
+            $scope.totalDisplayed -= 1;
+        } 
+        
+    };
+
     $scope.follow = function(card) {
         // Find the public conversation for this user.
         Conversations.find_user_public_conversation_by_id(card.user)
@@ -197,7 +223,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Load the rest of the cards if page loaded directly without animation.
     if (!$rootScope.animate_pages) {
-        $scope.totalDisplayed = -1000;
+        //$scope.totalDisplayed = -1000;
     }
 
     // variable to turn on animation of view chage. Loading conversation directly should not animate.
@@ -830,7 +856,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $scope.$apply(function() {
                     console.log('load 1000');
                     // Load the rest of the cards.
-                    $scope.totalDisplayed = -1000;
+                    //$scope.totalDisplayed = -1000;
                 }, 0);
             });
         }

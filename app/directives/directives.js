@@ -129,6 +129,51 @@ cardApp.directive('viewAnimations', function(viewAnimationsService, $rootScope) 
     };
 });
 
+/*
+cardApp.directive('scrollTrigger', function($window) {
+    return {
+        link : function(scope, element, attrs) {
+            var offset = parseInt(attrs.threshold) || 0;
+            //var e = jQuery(element[0]);
+            var e = jQuery(element.parent()[0]);
+            
+            var doc = jQuery(document);
+            angular.element(document).bind('scroll', function() {
+                if (doc.scrollTop() + $window.innerHeight + offset > e.offset().top) {
+                    scope.$apply(attrs.scrollTrigger);
+                }
+            });
+        }
+    };
+});
+*/
+
+cardApp.directive("scrollTrigger", function() {
+    return {
+        scope: {
+            callback: '=scrollTrigger'
+        },
+        link: function(scope, element, attrs) {
+            var offset = parseInt(attrs.threshold) || 0;
+            //console.log(offset);
+            var container = angular.element(element);
+            //var edge;
+            container.bind("scroll", function(evt) {
+                //console.log('scroll: ' + container[0].scrollTop);
+                if (container[0].scrollTop <= (0 + offset)) {
+                    //console.log('On the top of the world I\'m singing I\'m dancing.');
+                   // scope.$apply(attrs.scrollTrigger);
+                   scope.callback('top');
+                }
+                if (container[0].offsetHeight + container[0].scrollTop >= (container[0].scrollHeight - offset)) {
+                    //console.log('On the bottom of the world I\'m waiting.');
+                    scope.callback('bottom');
+                }
+            });
+        }
+    };
+});
+
 
 // scrollIndicator directive
 /*
