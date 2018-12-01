@@ -158,7 +158,7 @@ cardApp.directive("scrollTrigger", function() {
             //console.log(offset);
             var container = angular.element(element);
             //var edge;
-            container.bind("scroll", function(evt) {
+            container.bind("scroll mousewheel touchstart", function(evt) {
                 //console.log('scroll: ' + container[0].scrollTop);
                 if (container[0].scrollTop <= (0 + offset)) {
                     //console.log('On the top of the world I\'m singing I\'m dancing.');

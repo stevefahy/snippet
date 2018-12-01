@@ -11,29 +11,37 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     adjustImage = Cropp.adjustImage;
 
     var paused = false;
-    $scope.scrollEventCallback = function(edge){
-        //console.log('SCROLL EDGE: ' + edge);
-console.log(paused);
-console.log($scope.cards.length);
-        if($scope.feed && edge=='bottom' && !paused){
+    $scope.scrollEventCallback = function(edge) {
+        console.log('SCROLL EDGE: ' + edge);
+        //console.log(paused);
+        //console.log($scope.cards.length);
+        if ($scope.feed && edge == 'bottom' && !paused) {
             paused = true;
             $timeout(function() {
                 paused = false;
-            },1000);
-            
-            if($scope.totalDisplayed < $scope.cards.length){
+            }, 1000);
+
+            if ($scope.totalDisplayed < $scope.cards.length) {
+                $scope.totalDisplayed += 3;
+            }
+
+            console.log('feed bottom: ' + $scope.totalDisplayed + ' of ' + $scope.cards.length);
+
+
+        }
+        if (!$scope.feed && edge == 'top' && !paused) {
+            paused = true;
+            $timeout(function() {
+                paused = false;
+            }, 1000);
+
+            if ($scope.totalDisplayed *-1 < $scope.cards.length) {
                 $scope.totalDisplayed -= 3;
             }
-            
-            console.log('feed bottom: ' + $scope.totalDisplayed);
 
+            console.log('feed top: ' + $scope.totalDisplayed + ' of ' + $scope.cards.length);
+        }
 
-        } 
-       if(!$scope.feed && edge=='top'){
-            console.log('not feed top');
-            $scope.totalDisplayed -= 1;
-        } 
-        
     };
 
     $scope.follow = function(card) {
@@ -146,7 +154,7 @@ console.log($scope.cards.length);
     $scope.pasteHtmlAtCaret = Format.pasteHtmlAtCaret;
     $scope.checkCursor = Format.checkCursor;
     $scope.isMember = false;
-    $scope.totalDisplayed = -6;
+    //$scope.totalDisplayed = 6;
     $scope.following = false;
     $scope.feed = false;
     $scope.glued = true;
@@ -158,18 +166,18 @@ console.log($scope.cards.length);
 
     //$('#page-system').addClass("page-conversation-static");
 
-/*
-        $rootScope.$on('$routeChangeSuccess', function(event, next, prev) {
-        //console.log(prev.$$route.originalPath);
-        $rootScope.prev_route = prev.$$route.originalPath;
-        console.log($rootScope.prev_route);
-    });
-    
+    /*
+            $rootScope.$on('$routeChangeSuccess', function(event, next, prev) {
+            //console.log(prev.$$route.originalPath);
+            $rootScope.prev_route = prev.$$route.originalPath;
+            console.log($rootScope.prev_route);
+        });
+        
 
-        $rootScope.prev_route = '/';
-        */
+            $rootScope.prev_route = '/';
+            */
 
-        //$rootScope.prev_route = $location.path();
+    //$rootScope.prev_route = $location.path();
 
     // Default navigation
     if ($rootScope.animate_pages) {
@@ -200,15 +208,15 @@ console.log($scope.cards.length);
             //viewAnimationsService.setLeaveAnimation('page-user_setting');
         } else if ($rootScope.nav.from == 'convs') {
             //console.log('convs to conv');
-            
-            
-           //viewAnimationsService.setEnterAnimation('page-conversation-top');
-           //viewAnimationsService.setLeaveAnimation('page-conversation-static');
-           
+
+
+            //viewAnimationsService.setEnterAnimation('page-conversation-top');
+            //viewAnimationsService.setLeaveAnimation('page-conversation-static');
+
         } else if ($rootScope.nav.from == 'conv' && $rootScope.nav.to == 'feed') {
             //console.log('conv to feed');
-            
-           /*
+
+            /*
            $('#page-system').removeClass("page-conversations-static");
            $('#page-system').addClass("page-conversations");
            viewAnimationsService.setEnterAnimation('page-conversation-static');
@@ -429,10 +437,12 @@ console.log($scope.cards.length);
             $scope.currentUser = UserData.getUser();
             if ($location.url() == '/') {
                 $scope.feed = true;
+                $scope.totalDisplayed = 6;
                 $scope.glued = false;
                 // Display the users feed.
                 loadFeed();
             } else {
+                $scope.totalDisplayed = -6;
                 // Logged in.Load the conversation for the first time.
                 getCards();
             }
