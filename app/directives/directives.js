@@ -148,6 +148,24 @@ cardApp.directive('scrollTrigger', function($window) {
 });
 */
 
+cardApp.directive("scrollToTopWhen", function($timeout) {
+    return {
+        link: function(scope, element, attrs) {
+            scope.$on(attrs.scrollToTopWhen, function(event, data) {
+                console.log('scrollToTopWhen: ' + data);
+                $timeout(function() {
+                    if (data == 'top') {
+                        angular.element(element)[0].scrollTop = 0;
+                    } else {
+                        angular.element(element)[0].scrollTop = angular.element(element)[0].scrollHeight;
+                    }
+
+                },100);
+            });
+        }
+    };
+});
+
 cardApp.directive("scrollTrigger", function() {
     return {
         scope: {
@@ -162,8 +180,8 @@ cardApp.directive("scrollTrigger", function() {
                 //console.log('scroll: ' + container[0].scrollTop);
                 if (container[0].scrollTop <= (0 + offset)) {
                     //console.log('On the top of the world I\'m singing I\'m dancing.');
-                   // scope.$apply(attrs.scrollTrigger);
-                   scope.callback('top');
+                    // scope.$apply(attrs.scrollTrigger);
+                    scope.callback('top');
                 }
                 if (container[0].offsetHeight + container[0].scrollTop >= (container[0].scrollHeight - offset)) {
                     //console.log('On the bottom of the world I\'m waiting.');

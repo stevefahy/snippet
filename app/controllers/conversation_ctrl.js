@@ -11,37 +11,55 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     adjustImage = Cropp.adjustImage;
 
     var paused = false;
+
+    var NUM_TO_LOAD = 3;
+
+    //console.log(header_height);
     $scope.scrollEventCallback = function(edge) {
         console.log('SCROLL EDGE: ' + edge);
         //console.log(paused);
         //console.log($scope.cards.length);
         if ($scope.feed && edge == 'bottom' && !paused) {
+
             paused = true;
-            $timeout(function() {
-                paused = false;
-            }, 1000);
 
             if ($scope.totalDisplayed < $scope.cards.length) {
-                $scope.totalDisplayed += 3;
+                var bottommost_card = $(".content_cnv #conversation_card:last-child").children().find('.ce').attr('id');
+                console.log(bottommost_card);
+                //var bottom_full_card = $('#' + bottommost_card).parents().find('#conversation_card');
+                var bottom_full_card = $('#' + bottommost_card).closest('#conversation_card');
+                console.log(bottom_full_card);
+                $scope.totalDisplayed += NUM_TO_LOAD;
+
+                $timeout(function() {
+                    console.log(bottom_full_card[0].offsetTop);
+                    //$('.content_cnv').animate({ scrollTop: bottom_full_card[0].offsetTop - $('.header').height() }, "fast");
+                    $('.content_cnv').scrollTop(bottom_full_card[0].offsetTop - $('.header').height());
+                    paused = false;
+                }, 0);
+
             }
-
-            console.log('feed bottom: ' + $scope.totalDisplayed + ' of ' + $scope.cards.length);
-
-
+            console.log('feed bottom: ' + $scope.totalDisplayed + ' of ' + $scope.cards.length + ' : ' + $scope.glued);
         }
         if (!$scope.feed && edge == 'top' && !paused) {
+
             paused = true;
-            $timeout(function() {
-                paused = false;
-            }, 1000);
 
-            if ($scope.totalDisplayed *-1 < $scope.cards.length) {
-                $scope.totalDisplayed -= 3;
+            if ($scope.totalDisplayed * -1 < $scope.cards.length) {
+                var topmost_card = $(".content_cnv #conversation_card:first-child").children().find('.ce').attr('id');
+                //var top_full_card = $('#' + topmost_card).parents().find('#conversation_card');
+                var top_full_card = $('#' + topmost_card).closest('#conversation_card');
+                $scope.totalDisplayed -= NUM_TO_LOAD;
+
+                $timeout(function() {
+                    //$('.content_cnv').animate({ scrollTop: top_full_card[0].offsetTop - $('.header').height() }, "fast");
+                    $('.content_cnv').scrollTop(top_full_card[0].offsetTop - $('.header').height());
+                    paused = false;
+                }, 0);
+
             }
-
-            console.log('feed top: ' + $scope.totalDisplayed + ' of ' + $scope.cards.length);
+            console.log('feed top: ' + $scope.totalDisplayed + ' of ' + $scope.cards.length + ' : ' + $scope.glued);
         }
-
     };
 
     $scope.follow = function(card) {
@@ -85,7 +103,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Set the following icons on first load.
     $scope.$watch('cards', function(newValue, oldValue) {
+        console.log('new cards');
         if (newValue != undefined) {
+
             //updateFollowingIcons(newValue);
         }
     });
@@ -400,6 +420,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             //$scope.feed = true;
             //$scope.glued = false;
             $scope.cards = $scope.cards_temp;
+
+            // Scroll
+            //$rootScope.$broadcast('cards', data);
+            //$scope.$broadcast("items_changed", $scope.feed);
+            console.log($scope.feed);
+            $scope.$broadcast("items_changed", 'top');
         });
         return deferred.promise;
     };
@@ -411,6 +437,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     .then(function(result) {
                         if (result != undefined) {
                             $scope.cards = result.data;
+
+                            console.log($scope.feed);
+                            $scope.$broadcast("items_changed", 'bottom');
                         }
                     });
             });
@@ -439,6 +468,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $scope.feed = true;
                 $scope.totalDisplayed = 6;
                 $scope.glued = false;
+                $('.content_cnv')
                 // Display the users feed.
                 loadFeed();
             } else {
@@ -795,6 +825,16 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         updateConversationViewed(data.conversationId);
 
         updateFollowingIcons($scope.cards);
+
+        //
+        var dir;
+        if ($scope.feed) {
+            dir = 'top';
+        } else {
+            dir = 'bottom';
+        }
+
+        $scope.$broadcast("items_changed", dir);
     };
 
     adjustCropped = function() {
