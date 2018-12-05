@@ -10,9 +10,23 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     settingsImage = Cropp.settingsImage;
     adjustImage = Cropp.adjustImage;
 
+    var win_width = $(window).width();
+    console.log(win_width);
+
     var paused = false;
 
     var NUM_TO_LOAD = 3;
+
+    //var stored_image = $(value).attr('image-data');
+    //$("#image_" + image_id).attr('image-data', JSON.stringify(stored_image_data));
+
+    $(document).ready(function() {
+        // Handler for .ready() called.
+        console.log('doc ready');
+
+
+
+    });
 
     //console.log(header_height);
     $scope.scrollEventCallback = function(edge) {
@@ -103,7 +117,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Set the following icons on first load.
     $scope.$watch('cards', function(newValue, oldValue) {
-        console.log('new cards');
+        //console.log('new cards');
         if (newValue != undefined) {
 
             //updateFollowingIcons(newValue);
@@ -875,9 +889,53 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     };
 
+    deleteTemp = function(id){
+        console.log('DELETE TEMP: ' + id);
+        $('#cropper_' + id).css('height', 'unset');
+    };
+
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
         console.log('ngRepeatFinished');
         $rootScope.pageLoading = false;
+
+        $('.resize-drag').each(function() {
+            console.log($(this));
+            // Check if parent is a cropper_cont and remove temp css height!
+            console.log($(this).parent());
+            if ($(this).parent().attr('class').indexOf('cropper_cont') >= 0) {
+                var ratio_temp = $(this).parent().attr('image-original');
+                if (ratio_temp != undefined) {
+                    ratio_temp = JSON.parse(ratio_temp);
+                    console.log(ratio_temp.nat_ratio);
+                    var id = $(this).attr('id');
+                    id = id.substring(6,id.length);
+                    console.log(id);
+                    $(this).attr('onload', 'deleteTemp("' + id + '")');
+                }
+
+            }
+        });
+
+        // Put this into above?
+
+        $('.cropper_cont').each(function() {
+            console.log($(this).attr('image-original'));
+
+            //var stored_image = $(value).attr('image-data');
+            //stored_image = JSON.parse(stored_image);
+
+            var nat_r = $(this).attr('image-original');
+            if (nat_r != undefined) {
+                nat_r = JSON.parse(nat_r);
+                console.log(nat_r.nat_ratio);
+                var nh = win_width * nat_r.nat_ratio;
+                console.log(nh);
+                $(this).css('height', nh + 'px');
+            }
+
+            //var stored_image = $(value).attr('image-data');
+        });
+
         if ($('.cropper-container').length > 0) {
             $('.cropper-container').remove();
             $('.cropper-hidden').removeClass('cropper-hidden');
