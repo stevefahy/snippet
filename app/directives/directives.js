@@ -94,7 +94,7 @@ cardApp.directive('onFinishRender', function($timeout, $rootScope) {
     return {
         restrict: 'A',
         link: function(scope, element, attr) {
-            if (scope.$last === true) {
+            if (scope.$last === true || scope.$first === true) {
                 $timeout(function() {
                     //scope.$emit('ngRepeatFinished');
                     $rootScope.$broadcast("ngRepeatFinished", { temp: "some value" });

@@ -14,6 +14,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     console.log(win_width);
 
     var paused = false;
+    var scrolling = false;
 
     var NUM_TO_LOAD = 3;
 
@@ -23,53 +24,84 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $(document).ready(function() {
         // Handler for .ready() called.
         console.log('doc ready');
-
-
-
     });
+
+    disableScroll = function() {
+        $('.content_cnv').css('overflowY', 'hidden');
+    };
+
+    enableScroll = function() {
+        $('.content_cnv').css('overflowY', 'unset');
+    };
 
     //console.log(header_height);
     $scope.scrollEventCallback = function(edge) {
-        console.log('SCROLL EDGE: ' + edge);
+        console.log('SCROLL EDGE: ' + edge + ' : ' + paused);
         //console.log(paused);
         //console.log($scope.cards.length);
-        if ($scope.feed && edge == 'bottom' && !paused) {
+        if ($scope.feed && edge == 'bottom' && !paused && !scrolling) {
 
-            paused = true;
+            //paused = true;
+            //scrolling = true;
+
+            //disableScroll();
 
             if ($scope.totalDisplayed < $scope.cards.length) {
+
+                paused = true;
+                scrolling = true;
+
                 var bottommost_card = $(".content_cnv #conversation_card:last-child").children().find('.ce').attr('id');
-                console.log(bottommost_card);
+                //console.log(bottommost_card);
                 //var bottom_full_card = $('#' + bottommost_card).parents().find('#conversation_card');
                 var bottom_full_card = $('#' + bottommost_card).closest('#conversation_card');
-                console.log(bottom_full_card);
+                //console.log(bottom_full_card);
                 $scope.totalDisplayed += NUM_TO_LOAD;
+
+                $timeout(function() {
+                $('.content_cnv').scrollTop(bottom_full_card[0].offsetTop - $('.header').height());
+                }, 100);
 
                 $timeout(function() {
                     console.log(bottom_full_card[0].offsetTop);
                     //$('.content_cnv').animate({ scrollTop: bottom_full_card[0].offsetTop - $('.header').height() }, "fast");
-                    $('.content_cnv').scrollTop(bottom_full_card[0].offsetTop - $('.header').height());
-                    paused = false;
-                }, 0);
+                    //$('.content_cnv').scrollTop(bottom_full_card[0].offsetTop - $('.header').height());
+                    //paused = false;
+                    scrolling = false;
+                    //enableScroll();
+                }, 500);
+
+
+
 
             }
             console.log('feed bottom: ' + $scope.totalDisplayed + ' of ' + $scope.cards.length + ' : ' + $scope.glued);
         }
-        if (!$scope.feed && edge == 'top' && !paused) {
+        if (!$scope.feed && edge == 'top' && !paused && !scrolling) {
 
-            paused = true;
 
             if ($scope.totalDisplayed * -1 < $scope.cards.length) {
+
+                paused = true;
+                scrolling = true;
+                //disableScroll();
+
                 var topmost_card = $(".content_cnv #conversation_card:first-child").children().find('.ce').attr('id');
                 //var top_full_card = $('#' + topmost_card).parents().find('#conversation_card');
                 var top_full_card = $('#' + topmost_card).closest('#conversation_card');
                 $scope.totalDisplayed -= NUM_TO_LOAD;
 
                 $timeout(function() {
-                    //$('.content_cnv').animate({ scrollTop: top_full_card[0].offsetTop - $('.header').height() }, "fast");
                     $('.content_cnv').scrollTop(top_full_card[0].offsetTop - $('.header').height());
-                    paused = false;
-                }, 0);
+                }, 100);
+
+                $timeout(function() {
+                    //$('.content_cnv').animate({ scrollTop: top_full_card[0].offsetTop - $('.header').height() }, "fast");
+                    //$('.content_cnv').scrollTop(top_full_card[0].offsetTop - $('.header').height());
+                    //paused = false;
+                    scrolling = false;
+                    //enableScroll();
+                }, 500);
 
             }
             console.log('feed top: ' + $scope.totalDisplayed + ' of ' + $scope.cards.length + ' : ' + $scope.glued);
@@ -889,7 +921,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     };
 
-    deleteTemp = function(id){
+    deleteTemp = function(id) {
         console.log('DELETE TEMP: ' + id);
         $('#cropper_' + id).css('height', 'unset');
     };
@@ -899,42 +931,45 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         $rootScope.pageLoading = false;
 
         $('.resize-drag').each(function() {
-            console.log($(this));
+            //console.log($(this));
             // Check if parent is a cropper_cont and remove temp css height!
-            console.log($(this).parent());
+            //console.log($(this).parent());
             if ($(this).parent().attr('class').indexOf('cropper_cont') >= 0) {
                 var ratio_temp = $(this).parent().attr('image-original');
+
                 if (ratio_temp != undefined) {
                     ratio_temp = JSON.parse(ratio_temp);
-                    console.log(ratio_temp.nat_ratio);
+                    //console.log(ratio_temp.nat_ratio);
+                    var nh = win_width * ratio_temp.nat_ratio;
+                    //console.log(nh);
+                    $(this).parent().css('height', nh + 'px');
                     var id = $(this).attr('id');
-                    id = id.substring(6,id.length);
-                    console.log(id);
+                    id = id.substring(6, id.length);
+                    //console.log(id);
                     $(this).attr('onload', 'deleteTemp("' + id + '")');
                 }
-
             }
         });
 
-        // Put this into above?
+        paused = false;
 
+        // Put this into above?
+        /*
         $('.cropper_cont').each(function() {
             console.log($(this).attr('image-original'));
-
-            //var stored_image = $(value).attr('image-data');
-            //stored_image = JSON.parse(stored_image);
-
             var nat_r = $(this).attr('image-original');
             if (nat_r != undefined) {
                 nat_r = JSON.parse(nat_r);
-                console.log(nat_r.nat_ratio);
-                var nh = win_width * nat_r.nat_ratio;
-                console.log(nh);
-                $(this).css('height', nh + 'px');
+                console.log(nat_r);
+                if (nat_r.nat_ratio != undefined) {
+                    console.log(nat_r.nat_ratio);
+                    var nh = win_width * nat_r.nat_ratio;
+                    console.log(nh);
+                    $(this).css('height', nh + 'px');
+                }
             }
-
-            //var stored_image = $(value).attr('image-data');
         });
+        */
 
         if ($('.cropper-container').length > 0) {
             $('.cropper-container').remove();
