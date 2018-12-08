@@ -1315,7 +1315,8 @@ module.exports = function(app, passport) {
                             //console.log('err: ' + err);
                         }
                         res.json(cards);
-                    });
+                   // }).limit(3);
+                });
                 } else {
                     res.json({ 'error': 'denied' });
                 }

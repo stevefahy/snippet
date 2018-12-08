@@ -5,8 +5,18 @@
         <div ng-include="'/views/spinner.html'"></div>
     </div>
     <!--<div class="content_cnv"  in-view-container ng-class="{ 'content_cnv_conv': !feed}" scroll-trigger="scrollEventCallback" threshold="10" ng-if="!feed">-->
-     <!--<div class="content_cnv"  in-view-container ng-class="{ 'content_cnv_conv': !feed}" scroll-trigger="scrollEventCallback" threshold="10" ng-attr-scroll-glue="{{glued=== true}}">-->
-        <div class="content_cnv"  in-view-container ng-class="{ 'content_cnv_conv': !feed}" scroll-trigger="scrollEventCallback" threshold="30" scroll-to-top-when="items_changed">
+    <!--<div class="content_cnv"  in-view-container ng-class="{ 'content_cnv_conv': !feed}" scroll-trigger="scrollEventCallback" threshold="10" ng-attr-scroll-glue="{{glued=== true}}">-->
+<!--
+                        <div ng-if="$root.card_loading" class="loading_card">
+            <div ng-include="'/views/spinner.html'"></div>
+        </div>
+    -->
+
+    <div class="content_cnv" in-view-container ng-class="{ 'content_cnv_conv': !feed}" scroll-trigger="scrollEventCallback" threshold="30" scroll-to-top-when="items_changed">
+
+
+
+
         <!--ng-class="{ 'content_cnv_off': $root.pageLoading}"-->
         <!--
         <div id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : false | limitTo:totalDisplayed" on-finish-render="ngRepeatFinished" in-view="lineInView($inview, card._id)" in-view-options="inviewoptions">-->
@@ -46,6 +56,7 @@
                 <div class="likes">7,255 likes</div>
             </div>
         </div>
+
     </div>
     <div class="card_create_container" ng-if="isMember" ng-include src="'/views/card_create.html'"></div>
     <div ng-if="feed" ng-include src="'/views/footer.html'"></div>

@@ -34,6 +34,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         $('.content_cnv').css('overflowY', 'unset');
     };
 
+    $rootScope.card_loading = false;
+
+var anchor_card;
+var direction;
     //console.log(header_height);
     $scope.scrollEventCallback = function(edge) {
         console.log('SCROLL EDGE: ' + edge + ' : ' + paused);
@@ -47,6 +51,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             //disableScroll();
 
             if ($scope.totalDisplayed < $scope.cards.length) {
+                direction = 'bottom';
 
                 paused = true;
                 scrolling = true;
@@ -56,8 +61,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 //var bottom_full_card = $('#' + bottommost_card).parents().find('#conversation_card');
                 var bottom_full_card = $('#' + bottommost_card).closest('#conversation_card');
                 //console.log(bottom_full_card);
+                anchor_card = bottom_full_card;
                 $scope.totalDisplayed += NUM_TO_LOAD;
 
+/*
                 $timeout(function() {
                 $('.content_cnv').scrollTop(bottom_full_card[0].offsetTop - $('.header').height());
                 }, 100);
@@ -70,6 +77,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     scrolling = false;
                     //enableScroll();
                 }, 500);
+                */
 
 
 
@@ -81,6 +89,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
 
             if ($scope.totalDisplayed * -1 < $scope.cards.length) {
+direction = 'top';
+                $rootScope.card_loading = true;
 
                 paused = true;
                 scrolling = true;
@@ -89,19 +99,20 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 var topmost_card = $(".content_cnv #conversation_card:first-child").children().find('.ce').attr('id');
                 //var top_full_card = $('#' + topmost_card).parents().find('#conversation_card');
                 var top_full_card = $('#' + topmost_card).closest('#conversation_card');
+                anchor_card = top_full_card;
+                
+                $timeout(function() {
                 $scope.totalDisplayed -= NUM_TO_LOAD;
-
+}, 500);
+/*
                 $timeout(function() {
                     $('.content_cnv').scrollTop(top_full_card[0].offsetTop - $('.header').height());
                 }, 100);
 
                 $timeout(function() {
-                    //$('.content_cnv').animate({ scrollTop: top_full_card[0].offsetTop - $('.header').height() }, "fast");
-                    //$('.content_cnv').scrollTop(top_full_card[0].offsetTop - $('.header').height());
-                    //paused = false;
                     scrolling = false;
-                    //enableScroll();
                 }, 500);
+                */
 
             }
             console.log('feed top: ' + $scope.totalDisplayed + ' of ' + $scope.cards.length + ' : ' + $scope.glued);
@@ -149,10 +160,16 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Set the following icons on first load.
     $scope.$watch('cards', function(newValue, oldValue) {
-        //console.log('new cards');
+        console.log('new cards');
+        console.log(newValue);
         if (newValue != undefined) {
 
             //updateFollowingIcons(newValue);
+
+            newValue.map(function(key, array) {
+                key.loaded = true;
+            });
+            
         }
     });
 
@@ -430,8 +447,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         return deferred.promise;
     };
 
+    var NUM_CARDS_TO_LOAD = 6;
     // TODO - If not following anyone suggest follow?
     getFollowing = function() {
+
+        var cards_loaded = 0;
+
         var deferred = $q.defer();
         var promises = [];
         $scope.cards = [];
@@ -501,6 +522,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         $rootScope.$broadcast('PROFILE_SET');
         $scope.isMember = true;
         Conversations.find_user_public_conversation_by_id(UserData.getUser()._id).then(function(result) {
+            console.log(result);
             // Set the conversation id so that it can be retrieved by cardcreate_ctrl
             Conversations.setConversationId(result.data._id);
             getFollowing();
@@ -926,6 +948,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         $('#cropper_' + id).css('height', 'unset');
     };
 
+ $scope.$on('$viewContentLoaded', function(){
+    //Here your view content is fully loaded !!
+    console.log('viewContentLoaded');
+  });
+
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
         console.log('ngRepeatFinished');
         $rootScope.pageLoading = false;
@@ -950,6 +977,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 }
             }
         });
+
+//$('.content_cnv').scrollTop(bottom_full_card[0].offsetTop - $('.header').height());
+                  //      $timeout(function() {
+                    $('.content_cnv').scrollTop(anchor_card[0].offsetTop - $('.header').height());
+               // }, 100);
+
+                //$timeout(function() {
+                    scrolling = false;
+               // }, 500);
 
         paused = false;
 

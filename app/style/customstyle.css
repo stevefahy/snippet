@@ -2372,6 +2372,14 @@ span#scroll_image_latest {
     background-color: white;
 }
 
+.loading_card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    background-color: white;
+}
+
 .data_loading_screen {
     top: 0px;
     position: absolute;
