@@ -27,7 +27,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     });
 
     disableScroll = function() {
-        //$('.content_cnv').css('overflowY', 'hidden');
+        $('.content_cnv').css('overflowY', 'hidden');
         //$('.content_cnv').css('overflowY', 'hidden');
         //position: fixed; overflow-y:scroll
     };
@@ -38,9 +38,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     $rootScope.card_loading = false;
 
-var anchor_card;
-var direction;
-var scroll_pos;
+    var anchor_card;
+    var direction;
+    var scroll_pos;
+
+    var $container;
+                var $topItem;
+                var oScrollTop;
+                var oOffset;
     //console.log(header_height);
     $scope.scrollEventCallback = function(edge) {
         console.log('SCROLL EDGE: ' + edge + ' : ' + paused);
@@ -67,20 +72,20 @@ var scroll_pos;
                 anchor_card = bottom_full_card;
                 $scope.totalDisplayed += NUM_TO_LOAD;
 
-/*
-                $timeout(function() {
-                $('.content_cnv').scrollTop(bottom_full_card[0].offsetTop - $('.header').height());
-                }, 100);
+                /*
+                                $timeout(function() {
+                                $('.content_cnv').scrollTop(bottom_full_card[0].offsetTop - $('.header').height());
+                                }, 100);
 
-                $timeout(function() {
-                    console.log(bottom_full_card[0].offsetTop);
-                    //$('.content_cnv').animate({ scrollTop: bottom_full_card[0].offsetTop - $('.header').height() }, "fast");
-                    //$('.content_cnv').scrollTop(bottom_full_card[0].offsetTop - $('.header').height());
-                    //paused = false;
-                    scrolling = false;
-                    //enableScroll();
-                }, 500);
-                */
+                                $timeout(function() {
+                                    console.log(bottom_full_card[0].offsetTop);
+                                    //$('.content_cnv').animate({ scrollTop: bottom_full_card[0].offsetTop - $('.header').height() }, "fast");
+                                    //$('.content_cnv').scrollTop(bottom_full_card[0].offsetTop - $('.header').height());
+                                    //paused = false;
+                                    scrolling = false;
+                                    //enableScroll();
+                                }, 500);
+                                */
 
 
 
@@ -92,7 +97,8 @@ var scroll_pos;
 
 
             if ($scope.totalDisplayed * -1 < $scope.cards.length) {
-direction = 'top';
+                direction = 'top';
+                //disableScroll();
                 $rootScope.card_loading = true;
 
                 paused = true;
@@ -106,21 +112,45 @@ direction = 'top';
                 anchor_card = topmost_card;
                 console.log(anchor_card);
                 console.log(topmost_card);
-                disableScroll();
+
+/*
+                 $container = $('.content_cnv');
+             $topItem = $('#conversation_card:first');
+                 oScrollTop = $container.scrollTop();
+                oOffset = $topItem.length ? $topItem.position().top : 0;
+                */
+
+
+
                 //scroll_pos = top_full_card[0].offsetTop - $('.header').height();
                 //console.log(scroll_pos);
                 $timeout(function() {
-                $scope.totalDisplayed -= NUM_TO_LOAD;
-});
-/*
-                $timeout(function() {
-                    $('.content_cnv').scrollTop(top_full_card[0].offsetTop - $('.header').height());
-                }, 100);
+                    //console.log($scope.cards.indexOf);
+var id = topmost_card.substring(2,topmost_card.length);
+console.log(id);
+                    var card_pos = General.findWithAttr($scope.cards, '_id', id);
+                    console.log(card_pos);
 
-                $timeout(function() {
-                    scrolling = false;
-                }, 500);
-                */
+for(var i in $scope.cards){
+    //$scope.cards[card_pos].cardFade = "hide_card";
+    if(i <= card_pos){
+        $scope.cards[i].cardFade = "hide_card";
+    }
+}
+
+
+                    //$('.resize-container').css('opacity', '0.0');
+                    $scope.totalDisplayed -= NUM_TO_LOAD;
+                });
+                /*
+                                $timeout(function() {
+                                    $('.content_cnv').scrollTop(top_full_card[0].offsetTop - $('.header').height());
+                                }, 100);
+
+                                $timeout(function() {
+                                    scrolling = false;
+                                }, 500);
+                                */
 
             }
             console.log('feed top: ' + $scope.totalDisplayed + ' of ' + $scope.cards.length + ' : ' + $scope.glued);
@@ -177,7 +207,7 @@ direction = 'top';
             newValue.map(function(key, array) {
                 key.loaded = true;
             });
-            
+
         }
     });
 
@@ -956,94 +986,101 @@ direction = 'top';
         $('#cropper_' + id).css('height', 'unset');
     };
 
- $scope.$on('$viewContentLoaded', function(){
-    //Here your view content is fully loaded !!
-    console.log('viewContentLoaded');
-  });
+    $scope.$on('$viewContentLoaded', function() {
+        //Here your view content is fully loaded !!
+        console.log('viewContentLoaded');
+    });
+
+    $scope.$$postDigest(function() {
+        console.log('render finished');
+        // Executed after the dom has finished rendering
+        /*
+        if ($container.scrollTop() !== 0) {
+          $container.scrollTop(oScrollTop + ($topItem.length ? $topItem.position().top : 0) - oOffset);
+        }
+        */
+    });
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
         console.log('ngRepeatFinished');
         $rootScope.pageLoading = false;
-/*
-        $('.resize-drag').each(function() {
-            //console.log($(this));
-            // Check if parent is a cropper_cont and remove temp css height!
-            //console.log($(this).parent());
-            if ($(this).parent().attr('class').indexOf('cropper_cont') >= 0) {
-                var ratio_temp = $(this).parent().attr('image-original');
+        /*
+                $('.resize-drag').each(function() {
+                    //console.log($(this));
+                    // Check if parent is a cropper_cont and remove temp css height!
+                    //console.log($(this).parent());
+                    if ($(this).parent().attr('class').indexOf('cropper_cont') >= 0) {
+                        var ratio_temp = $(this).parent().attr('image-original');
 
-                if (ratio_temp != undefined) {
-                    ratio_temp = JSON.parse(ratio_temp);
-                    //console.log(ratio_temp.nat_ratio);
-                    var nh = win_width * ratio_temp.nat_ratio;
-                    //console.log(nh);
-                    $(this).parent().css('height', nh + 'px');
-                    var id = $(this).attr('id');
-                    id = id.substring(6, id.length);
-                    //console.log(id);
-                    $(this).attr('onload', 'deleteTemp("' + id + '")');
-                }
+                        if (ratio_temp != undefined) {
+                            ratio_temp = JSON.parse(ratio_temp);
+                            //console.log(ratio_temp.nat_ratio);
+                            var nh = win_width * ratio_temp.nat_ratio;
+                            //console.log(nh);
+                            $(this).parent().css('height', nh + 'px');
+                            var id = $(this).attr('id');
+                            id = id.substring(6, id.length);
+                            //console.log(id);
+                            $(this).attr('onload', 'deleteTemp("' + id + '")');
+                        }
+                    }
+                });
+        */
+
+        //$('.content_cnv').scrollTop(bottom_full_card[0].offsetTop - $('.header').height());
+
+
+        $timeout(function() {
+            if (anchor_card != undefined) {
+                $rootScope.pageLoading = true;
+                var top_full_card = $('#' + anchor_card).closest('#conversation_card');
+                console.log(top_full_card[0].offsetTop - $('.header').height());
+                //$('.content_cnv').scrollTop(top_full_card[0].offsetTop - $('.header').height());
+                var val = top_full_card[0].offsetTop - $('.header').height();
+                $('.content_cnv').animate({ scrollTop: val }, 0, function() {
+                    // Animation complete.
+                    console.log('anim complete');
+                    scrolling = false;
+                    paused = false;
+                    $rootScope.pageLoading = false;
+                    enableScroll();
+
+
+var id = anchor_card.substring(2,anchor_card.length);
+console.log(id);
+                    var card_pos = General.findWithAttr($scope.cards, '_id', id);
+                    console.log(card_pos);
+
+for(var i in $scope.cards){
+    //$scope.cards[card_pos].cardFade = "hide_card";
+    if(i <= card_pos){
+        $scope.cards[i].cardFade = "show_card";
+    }
+}
+
+
+
+$('.resize-container').animate({ opacity: 1 }, 1000, function() {
+
+});
+                });
             }
         });
-*/
-
-//$('.content_cnv').scrollTop(bottom_full_card[0].offsetTop - $('.header').height());
-                        $timeout(function() {
-                            if(anchor_card != undefined){
-                            $rootScope.pageLoading = true;
-                            var top_full_card = $('#' + anchor_card).closest('#conversation_card');
-                            console.log(top_full_card[0].offsetTop - $('.header').height());
-                    //$('.content_cnv').scrollTop(top_full_card[0].offsetTop - $('.header').height());
-              var val = top_full_card[0].offsetTop - $('.header').height();
-              $('.content_cnv').animate({ scrollTop: val }, 0, function() {
-    // Animation complete.
-    console.log('anim complete');
-    scrolling = false;
-         paused = false;
-         $rootScope.pageLoading = false;
-
-  });
-          }
-
-              /*
-               $('html, body').animate({
-    scrollTop: 2000
-  }, 2000);
-  */
-               //scrolling = false;
-                   // paused = false;
-
+        
 /*
-            jQuery('html, body').animate({
-                  scrollTop:  jQuery('#' + page).position().top
-                }); 
+              // Executed after the dom has finished rendering
+              console.log($container.scrollTop());
+              console.log($topItem);
+     // if ($container.scrollTop() !== 0) {
+        $container.scrollTop(oScrollTop + ($topItem.length ? $topItem.position().top : 0) - oOffset);
+      $timeout(function() {
+      scrolling = false;
+                    paused = false;
+                },1000);
                 */
 
-                });
-//$('.content_cnv').scrollTop(scroll_pos);
-                //$timeout(function() {
+      //}
 
-               // }, 500);
-
-        
-
-        // Put this into above?
-        /*
-        $('.cropper_cont').each(function() {
-            console.log($(this).attr('image-original'));
-            var nat_r = $(this).attr('image-original');
-            if (nat_r != undefined) {
-                nat_r = JSON.parse(nat_r);
-                console.log(nat_r);
-                if (nat_r.nat_ratio != undefined) {
-                    console.log(nat_r.nat_ratio);
-                    var nh = win_width * nat_r.nat_ratio;
-                    console.log(nh);
-                    $(this).css('height', nh + 'px');
-                }
-            }
-        });
-        */
 
         if ($('.cropper-container').length > 0) {
             $('.cropper-container').remove();

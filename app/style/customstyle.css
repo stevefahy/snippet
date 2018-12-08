@@ -921,6 +921,14 @@ form.form-horizontal.ng-valid.ng-dirty.ng-valid-parse {
     align-self: center;
 }
 
+.hide_card {
+    opacity: 0;
+}
+
+.show_card {
+    opacity: 1;
+}
+
 .header_edit {
     margin-left: 10px;
     z-index: 2000;
