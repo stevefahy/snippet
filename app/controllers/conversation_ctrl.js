@@ -103,7 +103,7 @@ direction = 'top';
                 
                 $timeout(function() {
                 $scope.totalDisplayed -= NUM_TO_LOAD;
-}, 500);
+}, 0);
 /*
                 $timeout(function() {
                     $('.content_cnv').scrollTop(top_full_card[0].offsetTop - $('.header').height());
