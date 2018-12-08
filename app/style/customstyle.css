@@ -915,7 +915,8 @@ form.form-horizontal.ng-valid.ng-dirty.ng-valid-parse {
 .edit {
     float: right;
     margin-left: auto;
-    z-index: 2000;
+    /*z-index: 2000;*/
+    z-index: 19;
     margin-right: 20px;
     align-self: center;
 }
@@ -2365,11 +2366,23 @@ span#scroll_image_latest {
 }
 
 .loading_screen {
+    /*
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100%;
     background-color: white;
+    */
+
+        position: absolute;
+    top: 55px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100% - 128px);
+    width: 100%;
+    background-color: white;
+    z-index: 20;
 }
 
 .loading_card {

@@ -20,7 +20,7 @@
         <!--ng-class="{ 'content_cnv_off': $root.pageLoading}"-->
         <!--
         <div id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : false | limitTo:totalDisplayed" on-finish-render="ngRepeatFinished" in-view="lineInView($inview, card._id)" in-view-options="inviewoptions">-->
-        <div id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : feed | limitTo:totalDisplayed" on-finish-render="ngRepeatFinished" in-view="lineInView($inview, card._id)" in-view-options="inviewoptions" >
+        <div id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : feed | limitTo:totalDisplayed track by $index"   on-finish-render="ngRepeatFinished" in-view="lineInView($inview, card._id)" in-view-options="inviewoptions" >
             <div id="user">
                 <img ng-if="card.avatar!='default'" alt="" class="card_avatar" ng-src="{{card.avatar}}" />
                 <img ng-if="card.avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="card_avatar" />

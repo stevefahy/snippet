@@ -27,7 +27,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     });
 
     disableScroll = function() {
-        $('.content_cnv').css('overflowY', 'hidden');
+        //$('.content_cnv').css('overflowY', 'hidden');
+        //$('.content_cnv').css('overflowY', 'hidden');
+        //position: fixed; overflow-y:scroll
     };
 
     enableScroll = function() {
@@ -38,6 +40,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
 var anchor_card;
 var direction;
+var scroll_pos;
     //console.log(header_height);
     $scope.scrollEventCallback = function(edge) {
         console.log('SCROLL EDGE: ' + edge + ' : ' + paused);
@@ -60,7 +63,7 @@ var direction;
                 //console.log(bottommost_card);
                 //var bottom_full_card = $('#' + bottommost_card).parents().find('#conversation_card');
                 var bottom_full_card = $('#' + bottommost_card).closest('#conversation_card');
-                //console.log(bottom_full_card);
+                console.log(bottom_full_card);
                 anchor_card = bottom_full_card;
                 $scope.totalDisplayed += NUM_TO_LOAD;
 
@@ -99,11 +102,16 @@ direction = 'top';
                 var topmost_card = $(".content_cnv #conversation_card:first-child").children().find('.ce').attr('id');
                 //var top_full_card = $('#' + topmost_card).parents().find('#conversation_card');
                 var top_full_card = $('#' + topmost_card).closest('#conversation_card');
-                anchor_card = top_full_card;
-                
+                //anchor_card = top_full_card;
+                anchor_card = topmost_card;
+                console.log(anchor_card);
+                console.log(topmost_card);
+                disableScroll();
+                //scroll_pos = top_full_card[0].offsetTop - $('.header').height();
+                //console.log(scroll_pos);
                 $timeout(function() {
                 $scope.totalDisplayed -= NUM_TO_LOAD;
-}, 0);
+});
 /*
                 $timeout(function() {
                     $('.content_cnv').scrollTop(top_full_card[0].offsetTop - $('.header').height());
@@ -956,7 +964,7 @@ direction = 'top';
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
         console.log('ngRepeatFinished');
         $rootScope.pageLoading = false;
-
+/*
         $('.resize-drag').each(function() {
             //console.log($(this));
             // Check if parent is a cropper_cont and remove temp css height!
@@ -977,17 +985,47 @@ direction = 'top';
                 }
             }
         });
+*/
 
 //$('.content_cnv').scrollTop(bottom_full_card[0].offsetTop - $('.header').height());
-                  //      $timeout(function() {
-                    $('.content_cnv').scrollTop(anchor_card[0].offsetTop - $('.header').height());
-               // }, 100);
+                        $timeout(function() {
+                            if(anchor_card != undefined){
+                            $rootScope.pageLoading = true;
+                            var top_full_card = $('#' + anchor_card).closest('#conversation_card');
+                            console.log(top_full_card[0].offsetTop - $('.header').height());
+                    //$('.content_cnv').scrollTop(top_full_card[0].offsetTop - $('.header').height());
+              var val = top_full_card[0].offsetTop - $('.header').height();
+              $('.content_cnv').animate({ scrollTop: val }, 0, function() {
+    // Animation complete.
+    console.log('anim complete');
+    scrolling = false;
+         paused = false;
+         $rootScope.pageLoading = false;
 
+  });
+          }
+
+              /*
+               $('html, body').animate({
+    scrollTop: 2000
+  }, 2000);
+  */
+               //scrolling = false;
+                   // paused = false;
+
+/*
+            jQuery('html, body').animate({
+                  scrollTop:  jQuery('#' + page).position().top
+                }); 
+                */
+
+                });
+//$('.content_cnv').scrollTop(scroll_pos);
                 //$timeout(function() {
-                    scrolling = false;
+
                // }, 500);
 
-        paused = false;
+        
 
         // Put this into above?
         /*

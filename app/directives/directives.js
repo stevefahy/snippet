@@ -90,11 +90,13 @@ cardApp.directive('momentTimeConv', ['$interval', '$filter', function($interval,
     };
 }]);
 
+
 cardApp.directive('onFinishRender', function($timeout, $rootScope) {
     return {
         restrict: 'A',
         link: function(scope, element, attr) {
             if (scope.$last === true || scope.$first === true) {
+                console.log(scope.$index + ' : ' + scope.$first + ' : ' + scope.$last);
                 $timeout(function() {
                     //scope.$emit('ngRepeatFinished');
                     $rootScope.$broadcast("ngRepeatFinished", { temp: "some value" });
@@ -103,6 +105,7 @@ cardApp.directive('onFinishRender', function($timeout, $rootScope) {
         }
     };
 });
+
 
 cardApp.directive('viewAnimations', function(viewAnimationsService, $rootScope) {
     return {
