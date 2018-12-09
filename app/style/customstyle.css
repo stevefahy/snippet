@@ -175,7 +175,8 @@ img.resize-drag.clip {
     position: relative;
     left: -1.38em;
     overflow: hidden;
-    background-color: #000000;
+    /*background-color: #000000;*/
+    background-color: #ffffff;
     margin-bottom: 10px;
     border-bottom: 1px solid #efefef;
 }
@@ -921,13 +922,13 @@ form.form-horizontal.ng-valid.ng-dirty.ng-valid-parse {
     align-self: center;
 }
 
-.hide_card .cropper_cont {
-    opacity : 0;
+.hide_card .resize-drag {
+    visibility: hidden;
    /* -webkit-animation: fadeCard .3s forwards ;*/
 }
 
-.show_card .cropper_cont {
-    opacity : 1;
+.show_card .resize-drag {
+    visibility: visible;;
     /* -webkit-animation: unfadeCard 2s forwards ;*/
 }
 
