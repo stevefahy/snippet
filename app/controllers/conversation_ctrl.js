@@ -1125,7 +1125,12 @@ $('.loading_card').css('visibility', 'visible');
                 var newscroll = (newScrollHeight - origScrollHeight) ;
                 console.log(newscroll);
 
-                                 
+                                      var id = anchor_card.substring(2, anchor_card.length);
+                    console.log(id);
+                    var card_pos = General.findWithAttr($scope.cards, '_id', id);
+                    console.log(card_pos);
+
+                    $scope.cards[card_pos-1].cardFade = "temp_anchor";             
                
 
 
@@ -1171,12 +1176,7 @@ $('.loading_card').css('visibility', 'hidden');
                     enableScroll();
 
 
-                    var id = anchor_card.substring(2, anchor_card.length);
-                    console.log(id);
-                    var card_pos = General.findWithAttr($scope.cards, '_id', id);
-                    console.log(card_pos);
-
-                    $scope.cards[card_pos-1].cardFade = "temp_anchor";
+  
 
                     //
 
