@@ -205,7 +205,7 @@ $(".content_cnv").on( 'scroll', function(){
                     //$('.loading_card').css('height', $scope.threshold_val + 'px');
 $('.loading_card').css('visibility', 'visible');
 //$('.loading_card').css('height', '0px');
-                    $('.loading_card').animate({height: 60  }, 300, function() {
+                    $('.loading_card').animate({height: 60  }, 200,  'easeOutExpo', function() {
 
                     });
 
@@ -1136,12 +1136,19 @@ $rootScope.pageLoading = false;
                     paused = false;
                     */
 
-                   $('.loading_card').animate({ height: 0 }, 1000, function() {
+                   $('.loading_card').animate({ height: 0 }, 500,  'easeOutExpo', function() {
 $('.loading_card').css('visibility', 'hidden');
 
-                                      $('.content_cnv').animate({ scrollTop: $('.content_cnv').scrollTop() - 100 }, 500, 'easeOutExpo', function() {
+                                      //$('.content_cnv').animate({ scrollTop: $('.content_cnv').scrollTop() - 100 }, 500, 'easeOutExpo', function() {
 
-                    });
+                    //});
+
+                   // scrollIntoViewIfNeeded('.temp_anchor', { duration: 200, offset: { bottom: 30 } });
+
+ var aTag = $('.temp_anchor');
+    $('.content_cnv').animate({scrollTop: $('.content_cnv').scrollTop() + aTag.offset().top - 60}, 400,  'easeOutExpo', function() {
+        $('.temp_anchor').removeClass('temp_anchor');
+    });
 
                     });
 
@@ -1168,6 +1175,10 @@ $('.loading_card').css('visibility', 'hidden');
                     console.log(id);
                     var card_pos = General.findWithAttr($scope.cards, '_id', id);
                     console.log(card_pos);
+
+                    $scope.cards[card_pos-1].cardFade = "temp_anchor";
+
+                    //
 
                     for (var i in $scope.cards) {
                         //$scope.cards[card_pos].cardFade = "hide_card";
