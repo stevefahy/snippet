@@ -1139,6 +1139,10 @@ $rootScope.pageLoading = false;
 $('.loading_card').css('visibility', 'hidden');
                     });
 
+// $('.content_cnv').animate({ scrollTop: newscroll - $scope.threshold_val - 100 }, 1000, function() {
+
+// });
+
 
                 $rootScope.pageLoading = false;
                 $('.content_cnv').animate({ scrollTop: newscroll }, 0, function() {

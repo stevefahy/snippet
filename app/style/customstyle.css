@@ -2394,7 +2394,7 @@ span#scroll_image_latest {
 }
 
 .loading_card {
-    position: absolute;
+    /*position: absolute;*/
     display: flex;
     justify-content: center;
     align-items: center;
