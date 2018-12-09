@@ -1138,6 +1138,11 @@ $rootScope.pageLoading = false;
 
                    $('.loading_card').animate({ height: 0 }, 1000, function() {
 $('.loading_card').css('visibility', 'hidden');
+
+                                      $('.content_cnv').animate({ scrollTop: $('.content_cnv').scrollTop() - 100 }, 500, 'easeOutExpo', function() {
+
+                    });
+
                     });
 
                                       // $('.content_cnv').animate({ scrollTop: newscroll - 200 }, 1000, function() {
@@ -1171,9 +1176,7 @@ $('.loading_card').css('visibility', 'hidden');
                         //}
                     }
 
-                                      // $('.content_cnv').animate({ scrollTop: $('.content_cnv').scrollTop() - 100 }, 1000, function() {
-
-                   // });
+ 
                     
                     //$('.resize-container').animate({ opacity: 1 }, 1000, function() {
 
