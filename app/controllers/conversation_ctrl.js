@@ -205,7 +205,7 @@ $(".content_cnv").on( 'scroll', function(){
                     //$('.loading_card').css('height', $scope.threshold_val + 'px');
 $('.loading_card').css('visibility', 'visible');
 //$('.loading_card').css('height', '0px');
-                    $('.loading_card').animate({height: 100  }, 400, function() {
+                    $('.loading_card').animate({height: 60  }, 300, function() {
 
                     });
 
