@@ -50,7 +50,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var origScrollPos;
     var origScrollHeight;
 
-    $scope.threshold_val = 200;
+    $scope.threshold_val = 0;
 
 /*
 var mySelector = ".content_cnv";
@@ -205,7 +205,7 @@ $(".content_cnv").on( 'scroll', function(){
                     //$('.loading_card').css('height', $scope.threshold_val + 'px');
 $('.loading_card').css('visibility', 'visible');
 //$('.loading_card').css('height', '0px');
-                    $('.loading_card').animate({height: $scope.threshold_val  }, 200, function() {
+                    $('.loading_card').animate({height: 100  }, 200, function() {
 
                     });
 
