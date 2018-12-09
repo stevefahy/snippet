@@ -52,53 +52,53 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     $scope.threshold_val = 0;
 
-/*
-var mySelector = ".content_cnv";
-    var lastOffset = $(mySelector).scrollTop();
-    var lastDate = new Date().getTime();
+    /*
+    var mySelector = ".content_cnv";
+        var lastOffset = $(mySelector).scrollTop();
+        var lastDate = new Date().getTime();
 
-    $(mySelector).scroll(function(e) {
-        var delayInMs = e.timeStamp - lastDate;
-        var offset = e.target.scrollTop - lastOffset;
-        var speedInpxPerMs = offset / delayInMs;
-        console.log(speedInpxPerMs);
+        $(mySelector).scroll(function(e) {
+            var delayInMs = e.timeStamp - lastDate;
+            var offset = e.target.scrollTop - lastOffset;
+            var speedInpxPerMs = offset / delayInMs;
+            console.log(speedInpxPerMs);
 
-        lastDate = e.timeStamp;
-        lastOffset = e.target.scrollTop;
+            lastDate = e.timeStamp;
+            lastOffset = e.target.scrollTop;
+        });
+        */
+
+    var checkScrollSpeed = (function(settings) {
+        settings = settings || {};
+
+        var lastPos, newPos, timer, delta,
+            delay = settings.delay || 50; // in "ms" (higher means lower fidelity )
+
+        function clear() {
+            lastPos = null;
+            delta = 0;
+        }
+
+        clear();
+
+        return function() {
+            newPos = $(".content_cnv").scrollTop();
+            if (lastPos != null) { // && newPos < maxScroll 
+                delta = newPos - lastPos;
+            }
+            lastPos = newPos;
+            clearTimeout(timer);
+            timer = setTimeout(clear, delay);
+            return delta;
+        };
+    })();
+
+    // listen to "scroll" event
+    var sp;
+    $(".content_cnv").on('scroll', function() {
+        sp = checkScrollSpeed();
+        //console.log( checkScrollSpeed() );
     });
-    */
-
-    var checkScrollSpeed = (function(settings){
-    settings = settings || {};
-
-    var lastPos, newPos, timer, delta, 
-        delay = settings.delay || 50; // in "ms" (higher means lower fidelity )
-
-    function clear() {
-      lastPos = null;
-      delta = 0;
-    }
-
-    clear();
-
-    return function(){
-      newPos = $(".content_cnv").scrollTop();
-      if ( lastPos != null ){ // && newPos < maxScroll 
-        delta = newPos -  lastPos;
-      }
-      lastPos = newPos;
-      clearTimeout(timer);
-      timer = setTimeout(clear, delay);
-      return delta;
-    };
-})();
-
-// listen to "scroll" event
-var sp;
-$(".content_cnv").on( 'scroll', function(){
-    sp = checkScrollSpeed() ;
-  //console.log( checkScrollSpeed() );
-});
 
     //console.log(header_height);
     $scope.scrollEventCallback = function(edge) {
@@ -203,9 +203,9 @@ $(".content_cnv").on( 'scroll', function(){
                     console.log(origScrollHeight);
 
                     //$('.loading_card').css('height', $scope.threshold_val + 'px');
-$('.loading_card').css('visibility', 'visible');
-//$('.loading_card').css('height', '0px');
-                    $('.loading_card').animate({height: 60  }, 200,  'easeOutExpo', function() {
+                    $('.loading_card').css('visibility', 'visible');
+                    //$('.loading_card').css('height', '0px');
+                    $('.loading_card').animate({ height: 60 }, 200, 'easeOutExpo', function() {
 
                     });
 
@@ -1122,25 +1122,26 @@ $('.loading_card').css('visibility', 'visible');
                 console.log(newScrollHeight);
 
                 //var newscroll = (newScrollHeight - origScrollHeight)   + $scope.threshold_val;
-                var newscroll = (newScrollHeight - origScrollHeight) ;
+                var newscroll = (newScrollHeight - origScrollHeight);
                 console.log(newscroll);
 
-                                      var id = anchor_card.substring(2, anchor_card.length);
-                    console.log(id);
-                    var card_pos = General.findWithAttr($scope.cards, '_id', id);
-                    console.log(card_pos);
+                var id = anchor_card.substring(2, anchor_card.length);
+                console.log(id);
+                var card_pos = General.findWithAttr($scope.cards, '_id', id);
+                console.log(card_pos);
 
-                    //$scope.cards[card_pos-1].cardFade = "temp_anchor";   
+                //$scope.cards[card_pos-1].cardFade = "temp_anchor";   
 
 
 
-                    for (var i in $scope.cards) {
-                        $scope.cards[i].cardFade = "hide_card";
-                        //if(i <= card_pos){
-                        // $scope.cards[i].cardFade = "show_card";
-                        //}
-                    }          
-               
+                for (var i in $scope.cards) {
+                   
+                    if(i <= card_pos){
+                         $scope.cards[i].cardFade = "hide_card";
+                    // $scope.cards[i].cardFade = "show_card";
+                    }
+                }
+
 
 
                 /*
@@ -1150,61 +1151,62 @@ $rootScope.pageLoading = false;
                     paused = false;
                     */
 
-                   $('.loading_card').animate({ height: 0 }, 500,  'easeOutExpo', function() {
-$('.loading_card').css('visibility', 'hidden');
+                $('.loading_card').animate({ height: 0 }, 500, 'easeOutExpo', function() {
+                    $('.loading_card').css('visibility', 'hidden');
 
-                    for (var i in $scope.cards) {
-                        $scope.cards[i].cardFade = "show_card";
-                        //if(i <= card_pos){
-                        // $scope.cards[i].cardFade = "show_card";
-                        //}
-                    }  
 
-                                      $('.content_cnv').animate({ scrollTop: $('.content_cnv').scrollTop() - 100 }, 500, 'easeOutExpo', function() {
+
+                    $('.content_cnv').animate({ scrollTop: $('.content_cnv').scrollTop() - 100 }, 500, 'easeOutExpo', function() {
 
                     });
 
-                   // scrollIntoViewIfNeeded('.temp_anchor', { duration: 200, offset: { bottom: 30 } });
+                    // scrollIntoViewIfNeeded('.temp_anchor', { duration: 200, offset: { bottom: 30 } });
 
- //var aTag = $('.temp_anchor');
-  //  $('.content_cnv').animate({scrollTop: $('.content_cnv').scrollTop() + aTag.offset().top - 60}, 400,  'easeOutExpo', function() {
-   //     $('.temp_anchor').removeClass('temp_anchor');
-  //  });
+                    //var aTag = $('.temp_anchor');
+                    //  $('.content_cnv').animate({scrollTop: $('.content_cnv').scrollTop() + aTag.offset().top - 60}, 400,  'easeOutExpo', function() {
+                    //     $('.temp_anchor').removeClass('temp_anchor');
+                    //  });
 
-                    });
+                });
 
-                                      // $('.content_cnv').animate({ scrollTop: newscroll - 200 }, 1000, function() {
+                // $('.content_cnv').animate({ scrollTop: newscroll - 200 }, 1000, function() {
 
-                   // });
+                // });
 
-// $('.content_cnv').animate({ scrollTop: newscroll - $scope.threshold_val - 100 }, 1000, function() {
+                // $('.content_cnv').animate({ scrollTop: newscroll - $scope.threshold_val - 100 }, 1000, function() {
 
-// });
+                // });
 
 
                 $rootScope.pageLoading = false;
-                $('.content_cnv').animate({ scrollTop: $('.content_cnv').scrollTop()  +  newscroll}, 0, function() {
+                $('.content_cnv').animate({ scrollTop: $('.content_cnv').scrollTop() + newscroll }, 0, function() {
                     // Animation complete.
                     console.log('anim complete');
                     scrolling = false;
                     paused = false;
-                    
+
                     enableScroll();
 
+                    for (var i in $scope.cards) {
+                   
+                    if(i <= card_pos){
+                         $scope.cards[i].cardFade = "show_card";
+                    // $scope.cards[i].cardFade = "show_card";
+                    }
+                }
 
-  
 
                     //
 
 
- 
-                    
+
+
                     //$('.resize-container').animate({ opacity: 1 }, 1000, function() {
 
                     //});
-                    
+
                 });
-                
+
             }
         });
 

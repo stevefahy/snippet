@@ -921,19 +921,19 @@ form.form-horizontal.ng-valid.ng-dirty.ng-valid-parse {
     align-self: center;
 }
 
-.hide_card {
-    /*opacity: 0;*/
-    -webkit-animation: fadeCard 1s cubic-bezier(0.19, 1, 0.22, 1);
+.hide_card .cropper_cont {
+    opacity : 0;
+   /* -webkit-animation: fadeCard .3s forwards ;*/
 }
 
-.show_card {
-    /*opacity: 1;*/
-    -webkit-animation: unfadeCard 1s cubic-bezier(0.19, 1, 0.22, 1);
+.show_card .cropper_cont {
+    opacity : 1;
+    /* -webkit-animation: unfadeCard 2s forwards ;*/
 }
 
 @keyframes unfadeCard {
     0% {
-        opacity : 0.5;
+        opacity : 0;
     }
 
     100% {
@@ -943,11 +943,11 @@ form.form-horizontal.ng-valid.ng-dirty.ng-valid-parse {
 
 @keyframes fadeCard {
     0% {
-        opacity : 1;
+        opacity : .5;
     }
 
     100% {
-        opacity : 0.5;
+        opacity : 0;
     }
 }
 
