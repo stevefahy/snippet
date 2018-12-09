@@ -1121,7 +1121,7 @@ $('.loading_card').css('visibility', 'visible');
                 console.log(origScrollHeight);
                 console.log(newScrollHeight);
 
-                var newscroll = (newScrollHeight - origScrollHeight)  + $('.header').height() + $scope.threshold_val;
+                var newscroll = (newScrollHeight - origScrollHeight)   + $scope.threshold_val;
                 console.log(newscroll);
 
                                  
