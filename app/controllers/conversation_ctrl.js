@@ -1130,7 +1130,7 @@ $('.loading_card').css('visibility', 'visible');
                     var card_pos = General.findWithAttr($scope.cards, '_id', id);
                     console.log(card_pos);
 
-                    $scope.cards[card_pos-1].cardFade = "temp_anchor";             
+                    //$scope.cards[card_pos-1].cardFade = "temp_anchor";             
                
 
 
@@ -1144,16 +1144,16 @@ $rootScope.pageLoading = false;
                    $('.loading_card').animate({ height: 0 }, 500,  'easeOutExpo', function() {
 $('.loading_card').css('visibility', 'hidden');
 
-                                      //$('.content_cnv').animate({ scrollTop: $('.content_cnv').scrollTop() - 100 }, 500, 'easeOutExpo', function() {
+                                      $('.content_cnv').animate({ scrollTop: $('.content_cnv').scrollTop() - 100 }, 500, 'easeOutExpo', function() {
 
-                    //});
+                    });
 
                    // scrollIntoViewIfNeeded('.temp_anchor', { duration: 200, offset: { bottom: 30 } });
 
- var aTag = $('.temp_anchor');
-    $('.content_cnv').animate({scrollTop: $('.content_cnv').scrollTop() + aTag.offset().top - 60}, 400,  'easeOutExpo', function() {
-        $('.temp_anchor').removeClass('temp_anchor');
-    });
+ //var aTag = $('.temp_anchor');
+  //  $('.content_cnv').animate({scrollTop: $('.content_cnv').scrollTop() + aTag.offset().top - 60}, 400,  'easeOutExpo', function() {
+   //     $('.temp_anchor').removeClass('temp_anchor');
+  //  });
 
                     });
 
