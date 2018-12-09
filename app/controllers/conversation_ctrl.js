@@ -1170,9 +1170,9 @@ $('.loading_card').css('visibility', 'hidden');
                         //}
                     }
 
-                                       $('.content_cnv').animate({ scrollTop: newscroll - 0 }, 1000, function() {
+                                     //  $('.content_cnv').animate({ scrollTop: newscroll - 0 }, 1000, function() {
 
-                    });
+                    //});
                     
                     //$('.resize-container').animate({ opacity: 1 }, 1000, function() {
 
