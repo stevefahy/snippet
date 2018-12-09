@@ -922,12 +922,36 @@ form.form-horizontal.ng-valid.ng-dirty.ng-valid-parse {
 }
 
 .hide_card {
-    opacity: 0;
+    /*opacity: 0;*/
+    -webkit-animation: fadeCard 1s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .show_card {
-    opacity: 1;
+    /*opacity: 1;*/
+    -webkit-animation: unfadeCard 1s cubic-bezier(0.19, 1, 0.22, 1);
 }
+
+@keyframes unfadeCard {
+    0% {
+        opacity : 0.5;
+    }
+
+    100% {
+        opacity : 1;
+    }
+}
+
+@keyframes fadeCard {
+    0% {
+        opacity : 1;
+    }
+
+    100% {
+        opacity : 0.5;
+    }
+}
+
+
 
 .header_edit {
     margin-left: 10px;

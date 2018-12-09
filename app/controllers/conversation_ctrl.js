@@ -1130,7 +1130,16 @@ $('.loading_card').css('visibility', 'visible');
                     var card_pos = General.findWithAttr($scope.cards, '_id', id);
                     console.log(card_pos);
 
-                    //$scope.cards[card_pos-1].cardFade = "temp_anchor";             
+                    //$scope.cards[card_pos-1].cardFade = "temp_anchor";   
+
+
+
+                    for (var i in $scope.cards) {
+                        $scope.cards[i].cardFade = "hide_card";
+                        //if(i <= card_pos){
+                        // $scope.cards[i].cardFade = "show_card";
+                        //}
+                    }          
                
 
 
@@ -1143,6 +1152,13 @@ $rootScope.pageLoading = false;
 
                    $('.loading_card').animate({ height: 0 }, 500,  'easeOutExpo', function() {
 $('.loading_card').css('visibility', 'hidden');
+
+                    for (var i in $scope.cards) {
+                        $scope.cards[i].cardFade = "show_card";
+                        //if(i <= card_pos){
+                        // $scope.cards[i].cardFade = "show_card";
+                        //}
+                    }  
 
                                       $('.content_cnv').animate({ scrollTop: $('.content_cnv').scrollTop() - 100 }, 500, 'easeOutExpo', function() {
 
@@ -1180,12 +1196,6 @@ $('.loading_card').css('visibility', 'hidden');
 
                     //
 
-                    for (var i in $scope.cards) {
-                        //$scope.cards[card_pos].cardFade = "hide_card";
-                        //if(i <= card_pos){
-                        // $scope.cards[i].cardFade = "show_card";
-                        //}
-                    }
 
  
                     
