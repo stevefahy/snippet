@@ -43,14 +43,71 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var scroll_pos;
 
     var $container;
-                var $topItem;
-                var oScrollTop;
-                var oOffset;
+    var $topItem;
+    var oScrollTop;
+    var oOffset;
+
+    var origScrollPos;
+    var origScrollHeight;
+
+    $scope.threshold_val = 200;
+
+/*
+var mySelector = ".content_cnv";
+    var lastOffset = $(mySelector).scrollTop();
+    var lastDate = new Date().getTime();
+
+    $(mySelector).scroll(function(e) {
+        var delayInMs = e.timeStamp - lastDate;
+        var offset = e.target.scrollTop - lastOffset;
+        var speedInpxPerMs = offset / delayInMs;
+        console.log(speedInpxPerMs);
+
+        lastDate = e.timeStamp;
+        lastOffset = e.target.scrollTop;
+    });
+    */
+
+    var checkScrollSpeed = (function(settings){
+    settings = settings || {};
+
+    var lastPos, newPos, timer, delta, 
+        delay = settings.delay || 50; // in "ms" (higher means lower fidelity )
+
+    function clear() {
+      lastPos = null;
+      delta = 0;
+    }
+
+    clear();
+
+    return function(){
+      newPos = $(".content_cnv").scrollTop();
+      if ( lastPos != null ){ // && newPos < maxScroll 
+        delta = newPos -  lastPos;
+      }
+      lastPos = newPos;
+      clearTimeout(timer);
+      timer = setTimeout(clear, delay);
+      return delta;
+    };
+})();
+
+// listen to "scroll" event
+var sp;
+$(".content_cnv").on( 'scroll', function(){
+    sp = checkScrollSpeed() ;
+  //console.log( checkScrollSpeed() );
+});
+
     //console.log(header_height);
     $scope.scrollEventCallback = function(edge) {
         console.log('SCROLL EDGE: ' + edge + ' : ' + paused);
         //console.log(paused);
         //console.log($scope.cards.length);
+
+
+
         if ($scope.feed && edge == 'bottom' && !paused && !scrolling) {
 
             //paused = true;
@@ -113,12 +170,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 console.log(anchor_card);
                 console.log(topmost_card);
 
-/*
-                 $container = $('.content_cnv');
-             $topItem = $('#conversation_card:first');
-                 oScrollTop = $container.scrollTop();
-                oOffset = $topItem.length ? $topItem.position().top : 0;
-                */
+
+
+                /*
+                                 $container = $('.content_cnv');
+                             $topItem = $('#conversation_card:first');
+                                 oScrollTop = $container.scrollTop();
+                                oOffset = $topItem.length ? $topItem.position().top : 0;
+                                */
 
 
 
@@ -126,18 +185,29 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 //console.log(scroll_pos);
                 $timeout(function() {
                     //console.log($scope.cards.indexOf);
-var id = topmost_card.substring(2,topmost_card.length);
-console.log(id);
+                    var id = topmost_card.substring(2, topmost_card.length);
+                    console.log(id);
                     var card_pos = General.findWithAttr($scope.cards, '_id', id);
                     console.log(card_pos);
 
-for(var i in $scope.cards){
-    //$scope.cards[card_pos].cardFade = "hide_card";
-    if(i <= card_pos){
-        $scope.cards[i].cardFade = "hide_card";
-    }
-}
+                    for (var i in $scope.cards) {
+                        //$scope.cards[card_pos].cardFade = "hide_card";
+                        //if(i <= card_pos){
+                        //$scope.cards[i].cardFade = "hide_card";
+                        //}
+                    }
 
+                    origScrollPos = $('.content_cnv').scrollTop();
+                    console.log(origScrollPos);
+                    origScrollHeight = $('.content_cnv')[0].scrollHeight;
+                    console.log(origScrollHeight);
+
+                    //$('.loading_card').css('height', $scope.threshold_val + 'px');
+$('.loading_card').css('visibility', 'visible');
+//$('.loading_card').css('height', '0px');
+                    $('.loading_card').animate({height: $scope.threshold_val  }, 200, function() {
+
+                    });
 
                     //$('.resize-container').css('opacity', '0.0');
                     $scope.totalDisplayed -= NUM_TO_LOAD;
@@ -1001,6 +1071,7 @@ for(var i in $scope.cards){
         */
     });
 
+
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
         console.log('ngRepeatFinished');
         $rootScope.pageLoading = false;
@@ -1037,49 +1108,84 @@ for(var i in $scope.cards){
                 console.log(top_full_card[0].offsetTop - $('.header').height());
                 //$('.content_cnv').scrollTop(top_full_card[0].offsetTop - $('.header').height());
                 var val = top_full_card[0].offsetTop - $('.header').height();
-                $('.content_cnv').animate({ scrollTop: val }, 0, function() {
+
+
+
+
+
+
+                newScrollPos = $('.content_cnv').scrollTop();
+                console.log(origScrollPos);
+                console.log(newScrollPos);
+                newScrollHeight = $('.content_cnv')[0].scrollHeight;
+                console.log(origScrollHeight);
+                console.log(newScrollHeight);
+
+                var newscroll = (newScrollHeight - origScrollHeight)  + $('.header').height() + $scope.threshold_val;
+                console.log(newscroll);
+
+                                 
+               
+
+
+                /*
+                $('.content_cnv').scrollTop(newscroll);
+$rootScope.pageLoading = false;
+                   scrolling = false;
+                    paused = false;
+                    */
+
+                   $('.loading_card').animate({ height: 0 }, 1000, function() {
+$('.loading_card').css('visibility', 'hidden');
+                    });
+
+
+                $rootScope.pageLoading = false;
+                $('.content_cnv').animate({ scrollTop: newscroll }, 0, function() {
                     // Animation complete.
                     console.log('anim complete');
                     scrolling = false;
                     paused = false;
-                    $rootScope.pageLoading = false;
+                    
                     enableScroll();
 
 
-var id = anchor_card.substring(2,anchor_card.length);
-console.log(id);
+                    var id = anchor_card.substring(2, anchor_card.length);
+                    console.log(id);
                     var card_pos = General.findWithAttr($scope.cards, '_id', id);
                     console.log(card_pos);
 
-for(var i in $scope.cards){
-    //$scope.cards[card_pos].cardFade = "hide_card";
-    if(i <= card_pos){
-        $scope.cards[i].cardFade = "show_card";
-    }
-}
+                    for (var i in $scope.cards) {
+                        //$scope.cards[card_pos].cardFade = "hide_card";
+                        //if(i <= card_pos){
+                        // $scope.cards[i].cardFade = "show_card";
+                        //}
+                    }
 
 
+                    
+                    //$('.resize-container').animate({ opacity: 1 }, 1000, function() {
 
-$('.resize-container').animate({ opacity: 1 }, 1000, function() {
-
-});
+                    //});
+                    
                 });
+                
             }
         });
-        
-/*
-              // Executed after the dom has finished rendering
-              console.log($container.scrollTop());
-              console.log($topItem);
-     // if ($container.scrollTop() !== 0) {
-        $container.scrollTop(oScrollTop + ($topItem.length ? $topItem.position().top : 0) - oOffset);
-      $timeout(function() {
-      scrolling = false;
-                    paused = false;
-                },1000);
-                */
 
-      //}
+        /*
+                      // Executed after the dom has finished rendering
+                      console.log($container.scrollTop());
+                      console.log($topItem);
+             // if ($container.scrollTop() !== 0) {
+                $container.scrollTop(oScrollTop + ($topItem.length ? $topItem.position().top : 0) - oOffset);
+              $timeout(function() {
+              scrolling = false;
+                            paused = false;
+                        },1000);
+                        */
+
+        //}
 
 
         if ($('.cropper-container').length > 0) {

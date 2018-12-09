@@ -176,13 +176,13 @@ cardApp.directive("scrollTrigger", function() {
         },
         link: function(scope, element, attrs) {
             var offset = parseInt(attrs.threshold) || 0;
-            //console.log(offset);
+            console.log(offset);
             var container = angular.element(element);
             //var edge;
             container.bind("scroll mousewheel touchstart", function(evt) {
-                //console.log('scroll: ' + container[0].scrollTop);
+                console.log('scroll: ' + container[0].scrollTop);
                 if (container[0].scrollTop <= (0 + offset)) {
-                    //console.log('On the top of the world I\'m singing I\'m dancing.');
+                    console.log('On the top of the world I\'m singing I\'m dancing.');
                     // scope.$apply(attrs.scrollTrigger);
                     scope.callback('top');
                 }

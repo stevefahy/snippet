@@ -2394,11 +2394,15 @@ span#scroll_image_latest {
 }
 
 .loading_card {
+    position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
+width: calc(100vw - 16px);
     height: 100px;
     background-color: white;
+    top: 55px;
+    z-index: 100;
 }
 
 .data_loading_screen {
