@@ -2399,7 +2399,7 @@ span#scroll_image_latest {
     justify-content: center;
     align-items: center;
 width: calc(100vw - 16px);
-    height: 100px;
+    height: 0px;
     background-color: white;
     top: 55px;
     z-index: 100;
