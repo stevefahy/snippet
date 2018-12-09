@@ -1136,10 +1136,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
                 for (var i in $scope.cards) {
                    
-                    if(i <= card_pos){
+                    //if(i <= card_pos){
                          $scope.cards[i].cardFade = "hide_card";
                     // $scope.cards[i].cardFade = "show_card";
-                    }
+                    //}
                 }
 
 
@@ -1189,10 +1189,10 @@ $rootScope.pageLoading = false;
 
                     for (var i in $scope.cards) {
                    
-                    if(i <= card_pos){
+                    //if(i <= card_pos){
                          $scope.cards[i].cardFade = "show_card";
                     // $scope.cards[i].cardFade = "show_card";
-                    }
+                    //}
                 }
 
 
