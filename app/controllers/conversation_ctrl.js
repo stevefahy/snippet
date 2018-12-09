@@ -1121,7 +1121,8 @@ $('.loading_card').css('visibility', 'visible');
                 console.log(origScrollHeight);
                 console.log(newScrollHeight);
 
-                var newscroll = (newScrollHeight - origScrollHeight)   + $scope.threshold_val;
+                //var newscroll = (newScrollHeight - origScrollHeight)   + $scope.threshold_val;
+                var newscroll = (newScrollHeight - origScrollHeight) ;
                 console.log(newscroll);
 
                                  
@@ -1149,7 +1150,7 @@ $('.loading_card').css('visibility', 'hidden');
 
 
                 $rootScope.pageLoading = false;
-                $('.content_cnv').animate({ scrollTop: newscroll}, 1000, function() {
+                $('.content_cnv').animate({ scrollTop: $('.content_cnv').scrollTop()  +  newscroll}, 0, function() {
                     // Animation complete.
                     console.log('anim complete');
                     scrolling = false;
@@ -1170,9 +1171,9 @@ $('.loading_card').css('visibility', 'hidden');
                         //}
                     }
 
-                                     //  $('.content_cnv').animate({ scrollTop: newscroll - 0 }, 1000, function() {
+                                      // $('.content_cnv').animate({ scrollTop: $('.content_cnv').scrollTop() - 100 }, 1000, function() {
 
-                    //});
+                   // });
                     
                     //$('.resize-container').animate({ opacity: 1 }, 1000, function() {
 
