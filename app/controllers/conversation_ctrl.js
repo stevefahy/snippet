@@ -1139,13 +1139,17 @@ $rootScope.pageLoading = false;
 $('.loading_card').css('visibility', 'hidden');
                     });
 
+                                      // $('.content_cnv').animate({ scrollTop: newscroll - 200 }, 1000, function() {
+
+                   // });
+
 // $('.content_cnv').animate({ scrollTop: newscroll - $scope.threshold_val - 100 }, 1000, function() {
 
 // });
 
 
                 $rootScope.pageLoading = false;
-                $('.content_cnv').animate({ scrollTop: newscroll }, 0, function() {
+                $('.content_cnv').animate({ scrollTop: newscroll}, 1000, function() {
                     // Animation complete.
                     console.log('anim complete');
                     scrolling = false;
@@ -1166,7 +1170,9 @@ $('.loading_card').css('visibility', 'hidden');
                         //}
                     }
 
+                                       $('.content_cnv').animate({ scrollTop: newscroll - 0 }, 1000, function() {
 
+                    });
                     
                     //$('.resize-container').animate({ opacity: 1 }, 1000, function() {
 
