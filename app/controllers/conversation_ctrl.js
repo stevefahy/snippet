@@ -16,7 +16,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var paused = false;
     var scrolling = false;
 
-    var NUM_TO_LOAD = 3;
+    var NUM_TO_LOAD = 10;
 
     //var stored_image = $(value).attr('image-data');
     //$("#image_" + image_id).attr('image-data', JSON.stringify(stored_image_data));
@@ -190,7 +190,7 @@ console.log(lastMsg);
                 
             } else {
                 if ($scope.totalDisplayed < $scope.cards.length) {
-                    $scope.totalDisplayed -= NUM_TO_LOAD;
+                    $scope.totalDisplayed += NUM_TO_LOAD;
                 }
             }
         //}
