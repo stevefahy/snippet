@@ -166,7 +166,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     $scope.myPagingFunction = function(){
         console.log('inifiniteScroll');
-        if($scope.feed){
+        if($scope.totalDisplayed != undefined){
+            if($scope.feed){
         if ($scope.totalDisplayed < $scope.cards.length) {
             $scope.totalDisplayed += NUM_TO_LOAD;
         }
@@ -174,7 +175,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 if ($scope.totalDisplayed < $scope.cards.length) {
             $scope.totalDisplayed -= NUM_TO_LOAD;
         }    
+        }        
         }
+
 
     };
 
