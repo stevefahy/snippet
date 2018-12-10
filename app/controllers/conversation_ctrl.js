@@ -164,13 +164,30 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     */
     };
 
-    $scope.myPagingFunction = function() {
-        console.log('inifiniteScroll');
+var STORED = 0;
+var lastMsg;
+    $scope.myPagingFunction = function(data) {
+        console.log('inifiniteScroll: ' + data);
+STORED = data;
+lastMsg = $('.content_cnv .conversation_card:last').attr('id');
+console.log(lastMsg);
+                         // $('.content_cnv').animate({ scrollTop: $('.content_cnv').scrollTop() - 100 }, 500, 'easeOutExpo', function() {
+
+                    // });
         //if ($scope.totalDisplayed != undefined && $scope.cards != undefined) {
             if ($scope.feed) {
+                
                 if ($scope.totalDisplayed < $scope.cards.length) {
                     $scope.totalDisplayed += NUM_TO_LOAD;
                 }
+                /*
+                if(INIT_NUM < $scope.cards_temp.length){
+                    INIT_NUM++;
+                    console.log(INIT_NUM);
+                    $scope.cards.push($scope.cards_temp[INIT_NUM]);
+                }
+                */
+                
             } else {
                 if ($scope.totalDisplayed < $scope.cards.length) {
                     $scope.totalDisplayed -= NUM_TO_LOAD;
@@ -512,6 +529,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     var NUM_CARDS_TO_LOAD = 6;
+    var INIT_NUM = 6;
     // TODO - If not following anyone suggest follow?
     getFollowing = function() {
 
@@ -526,7 +544,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             var prom1 = Conversations.find_public_conversation_id(key)
                 .then(function(result) {
                     if (result.data != null) {
-                        Conversations.getPublicConversationById(key)
+                        return Conversations.getPublicConversationById(key)
                             .then(function(res) {
                                 res.data.map(function(key, array) {
                                     // Store the original characters of the card.
@@ -536,9 +554,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                     key.avatar = result.data.conversation_avatar;
                                     key.following = true;
                                     //$scope.cards.push(key);
+                                    console.log(key);
                                     $scope.cards_temp.push(key);
                                 });
                             });
+                           
                     }
                 });
             promises.push(prom1);
@@ -550,7 +570,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             // Set the feed value to true to reverse the cards order.
             //$scope.feed = true;
             //$scope.glued = false;
+
             $scope.cards = $scope.cards_temp;
+            /*
+            console.log($scope.cards_temp);
+            for(var i = 0; i <= INIT_NUM; i++){
+                $scope.cards.push($scope.cards_temp[i]);
+            }
+            */
 
             // Scroll
             //$rootScope.$broadcast('cards', data);
@@ -1022,6 +1049,17 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log('ngRepeatFinished');
 
         $rootScope.pageLoading = false;
+        if(STORED != undefined){
+            console.log(STORED);
+            $('.content_cnv').scrollTop(STORED);
+        }
+        /*
+        if(lastMsg != undefined){
+            console.log(lastMsg);
+            console.log($('#'+lastMsg).offset().top);
+        $('.content_cnv').scrollTop($('#'+lastMsg).offset().top + $('.header').height());
+        }
+        */
         /*
          $timeout(function() {
              if (anchor_card != undefined) {

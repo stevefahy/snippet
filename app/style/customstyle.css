@@ -3274,7 +3274,7 @@ div.after_image:empty {
     color: red;
 }
 
-#conversation_card {
+.conversation_card {
     background-color: #fafafa;
 }
 
