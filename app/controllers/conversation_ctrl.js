@@ -1051,7 +1051,9 @@ console.log(lastMsg);
         $rootScope.pageLoading = false;
         if(STORED != undefined){
             console.log(STORED);
-            $('.content_cnv').scrollTop(STORED);
+            var cur_height  = $('.content_cnv')[0].scrollHeight;
+            console.log(cur_height);
+            $('.content_cnv').scrollTop(STORED.top);
         }
         /*
         if(lastMsg != undefined){

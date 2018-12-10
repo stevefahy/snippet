@@ -75,7 +75,8 @@ angular.module('infinite-scroll', []).value('THROTTLE_MILLISECONDS', null).direc
                               console.log($('.content_cnv').scrollTop());
                                 //return scope.$apply(scope.infiniteScroll);
                                 //return scope.callback('bottom');
-                                return scope.$apply( scope.callback($('.content_cnv').scrollTop()));
+                                var sc = {top: $('.content_cnv').scrollTop(), height: $('.content_cnv')[0].scrollHeight};
+                                return scope.$apply( scope.callback(sc));
                             }
                         }
                     } else {
