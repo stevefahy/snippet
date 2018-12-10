@@ -14,7 +14,9 @@
 
     <!--<div class="content_cnv" in-view-container ng-class="{ 'content_cnv_conv': !feed}" scroll-trigger="scrollEventCallback" threshold="{{threshold_val}}" scroll-to-top-when="items_changed" infinite-scroll="myPagingFunction()" infinite-scroll-distance="3">-->
 
-    <div class="content_cnv"  infinite-scroll="myPagingFunction()" infinite-scroll-distance="2" infinite-scroll-container="'.content_cnv'" ng-class="{ 'content_cnv_conv': !feed}"  >
+    <div class="content_cnv"  ng-class="{ 'content_cnv_conv': !feed}"  >
+
+        <div infinite-scroll="myPagingFunction()" infinite-scroll-immediate-check='true'  infinite-scroll-distance='2' infinite-scroll-parent="true">
 
 
 
@@ -60,6 +62,8 @@
         </div>
 
     </div>
+
+</div>
     <div class="card_create_container" ng-if="isMember" ng-include src="'/views/card_create.html'"></div>
     <div ng-if="feed" ng-include src="'/views/footer.html'"></div>
     <div class="image_adjust"></div>
