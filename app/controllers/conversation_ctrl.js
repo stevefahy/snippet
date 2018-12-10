@@ -53,34 +53,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.threshold_val = 0;
 
     /*
-    var mySelector = ".content_cnv";
-        var lastOffset = $(mySelector).scrollTop();
-        var lastDate = new Date().getTime();
-
-        $(mySelector).scroll(function(e) {
-            var delayInMs = e.timeStamp - lastDate;
-            var offset = e.target.scrollTop - lastOffset;
-            var speedInpxPerMs = offset / delayInMs;
-            console.log(speedInpxPerMs);
-
-            lastDate = e.timeStamp;
-            lastOffset = e.target.scrollTop;
-        });
-        */
-
     var checkScrollSpeed = (function(settings) {
         settings = settings || {};
-
         var lastPos, newPos, timer, delta,
             delay = settings.delay || 50; // in "ms" (higher means lower fidelity )
-
         function clear() {
             lastPos = null;
             delta = 0;
         }
-
         clear();
-
         return function() {
             newPos = $(".content_cnv").scrollTop();
             if (lastPos != null) { // && newPos < maxScroll 
@@ -92,28 +73,21 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             return delta;
         };
     })();
-
     // listen to "scroll" event
     var sp;
     $(".content_cnv").on('scroll', function() {
         sp = checkScrollSpeed();
         //console.log( checkScrollSpeed() );
     });
-
+    */
     //console.log(header_height);
+
+
+    
     $scope.scrollEventCallback = function(edge) {
         console.log('SCROLL EDGE: ' + edge + ' : ' + paused);
-        //console.log(paused);
-        //console.log($scope.cards.length);
-
-
-
+/*
         if ($scope.feed && edge == 'bottom' && !paused && !scrolling) {
-
-            //paused = true;
-            //scrolling = true;
-
-            //disableScroll();
 
             if ($scope.totalDisplayed < $scope.cards.length) {
                 direction = 'bottom';
@@ -123,13 +97,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
                 var bottommost_card = $(".content_cnv #conversation_card:last-child").children().find('.ce').attr('id');
                 //console.log(bottommost_card);
-                //var bottom_full_card = $('#' + bottommost_card).parents().find('#conversation_card');
                 var bottom_full_card = $('#' + bottommost_card).closest('#conversation_card');
-                console.log(bottom_full_card);
+                //console.log(bottom_full_card);
                 anchor_card = bottom_full_card;
                 $scope.totalDisplayed += NUM_TO_LOAD;
 
-                /*
+                
                                 $timeout(function() {
                                 $('.content_cnv').scrollTop(bottom_full_card[0].offsetTop - $('.header').height());
                                 }, 100);
@@ -142,53 +115,30 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                     scrolling = false;
                                     //enableScroll();
                                 }, 500);
-                                */
-
-
-
-
+                                
             }
             console.log('feed bottom: ' + $scope.totalDisplayed + ' of ' + $scope.cards.length + ' : ' + $scope.glued);
         }
         if (!$scope.feed && edge == 'top' && !paused && !scrolling) {
-
-
             if ($scope.totalDisplayed * -1 < $scope.cards.length) {
                 direction = 'top';
                 //disableScroll();
                 $rootScope.card_loading = true;
-
                 paused = true;
                 scrolling = true;
                 //disableScroll();
-
                 var topmost_card = $(".content_cnv #conversation_card:first-child").children().find('.ce').attr('id');
-                //var top_full_card = $('#' + topmost_card).parents().find('#conversation_card');
                 var top_full_card = $('#' + topmost_card).closest('#conversation_card');
-                //anchor_card = top_full_card;
                 anchor_card = topmost_card;
-                console.log(anchor_card);
-                console.log(topmost_card);
+                //console.log(anchor_card);
+                //console.log(topmost_card);
 
-
-
-                /*
-                                 $container = $('.content_cnv');
-                             $topItem = $('#conversation_card:first');
-                                 oScrollTop = $container.scrollTop();
-                                oOffset = $topItem.length ? $topItem.position().top : 0;
-                                */
-
-
-
-                //scroll_pos = top_full_card[0].offsetTop - $('.header').height();
-                //console.log(scroll_pos);
                 $timeout(function() {
                     //console.log($scope.cards.indexOf);
                     var id = topmost_card.substring(2, topmost_card.length);
-                    console.log(id);
+                    //console.log(id);
                     var card_pos = General.findWithAttr($scope.cards, '_id', id);
-                    console.log(card_pos);
+                   //console.log(card_pos);
 
                     for (var i in $scope.cards) {
                         //$scope.cards[card_pos].cardFade = "hide_card";
@@ -198,34 +148,36 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     }
 
                     origScrollPos = $('.content_cnv').scrollTop();
-                    console.log(origScrollPos);
+                    //console.log(origScrollPos);
                     origScrollHeight = $('.content_cnv')[0].scrollHeight;
-                    console.log(origScrollHeight);
-
-                    //$('.loading_card').css('height', $scope.threshold_val + 'px');
+                    //console.log(origScrollHeight);
                     $('.loading_card').css('visibility', 'visible');
-                    //$('.loading_card').css('height', '0px');
                     $('.loading_card').animate({ height: 60 }, 200, 'easeOutExpo', function() {
 
                     });
 
-                    //$('.resize-container').css('opacity', '0.0');
                     $scope.totalDisplayed -= NUM_TO_LOAD;
                 });
-                /*
-                                $timeout(function() {
-                                    $('.content_cnv').scrollTop(top_full_card[0].offsetTop - $('.header').height());
-                                }, 100);
-
-                                $timeout(function() {
-                                    scrolling = false;
-                                }, 500);
-                                */
-
             }
             console.log('feed top: ' + $scope.totalDisplayed + ' of ' + $scope.cards.length + ' : ' + $scope.glued);
         }
+            */
     };
+
+    $scope.myPagingFunction = function(){
+        console.log('inifiniteScroll');
+        if($scope.feed){
+        if ($scope.totalDisplayed < $scope.cards.length) {
+            $scope.totalDisplayed += NUM_TO_LOAD;
+        }
+        } else {
+                if ($scope.totalDisplayed < $scope.cards.length) {
+            $scope.totalDisplayed -= NUM_TO_LOAD;
+        }    
+        }
+
+    };
+
 
     $scope.follow = function(card) {
         // Find the public conversation for this user.
@@ -1061,46 +1013,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log('viewContentLoaded');
     });
 
-    $scope.$$postDigest(function() {
-        console.log('render finished');
-        // Executed after the dom has finished rendering
-        /*
-        if ($container.scrollTop() !== 0) {
-          $container.scrollTop(oScrollTop + ($topItem.length ? $topItem.position().top : 0) - oOffset);
-        }
-        */
-    });
-
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
         console.log('ngRepeatFinished');
+        
         $rootScope.pageLoading = false;
-        /*
-                $('.resize-drag').each(function() {
-                    //console.log($(this));
-                    // Check if parent is a cropper_cont and remove temp css height!
-                    //console.log($(this).parent());
-                    if ($(this).parent().attr('class').indexOf('cropper_cont') >= 0) {
-                        var ratio_temp = $(this).parent().attr('image-original');
-
-                        if (ratio_temp != undefined) {
-                            ratio_temp = JSON.parse(ratio_temp);
-                            //console.log(ratio_temp.nat_ratio);
-                            var nh = win_width * ratio_temp.nat_ratio;
-                            //console.log(nh);
-                            $(this).parent().css('height', nh + 'px');
-                            var id = $(this).attr('id');
-                            id = id.substring(6, id.length);
-                            //console.log(id);
-                            $(this).attr('onload', 'deleteTemp("' + id + '")');
-                        }
-                    }
-                });
-        */
-
-        //$('.content_cnv').scrollTop(bottom_full_card[0].offsetTop - $('.header').height());
-
-
+       /*
         $timeout(function() {
             if (anchor_card != undefined) {
                 $rootScope.pageLoading = true;
@@ -1109,74 +1027,29 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 //$('.content_cnv').scrollTop(top_full_card[0].offsetTop - $('.header').height());
                 var val = top_full_card[0].offsetTop - $('.header').height();
 
-
-
-
-
-
                 newScrollPos = $('.content_cnv').scrollTop();
-                console.log(origScrollPos);
-                console.log(newScrollPos);
+                //console.log(origScrollPos);
+               //console.log(newScrollPos);
                 newScrollHeight = $('.content_cnv')[0].scrollHeight;
-                console.log(origScrollHeight);
-                console.log(newScrollHeight);
+                //console.log(origScrollHeight);
+                //console.log(newScrollHeight);
 
                 //var newscroll = (newScrollHeight - origScrollHeight)   + $scope.threshold_val;
                 var newscroll = (newScrollHeight - origScrollHeight);
-                console.log(newscroll);
-
+                //console.log(newscroll);
                 var id = anchor_card.substring(2, anchor_card.length);
-                console.log(id);
+                //console.log(id);
                 var card_pos = General.findWithAttr($scope.cards, '_id', id);
-                console.log(card_pos);
-
-                //$scope.cards[card_pos-1].cardFade = "temp_anchor";   
-
-
-
-                for (var i in $scope.cards) {
-                   
-                    //if(i <= card_pos){
-                         $scope.cards[i].cardFade = "hide_card";
-                    // $scope.cards[i].cardFade = "show_card";
-                    //}
-                }
-
-
-
-                /*
-                $('.content_cnv').scrollTop(newscroll);
-$rootScope.pageLoading = false;
-                   scrolling = false;
-                    paused = false;
-                    */
+                //console.log(card_pos);
 
                 $('.loading_card').animate({ height: 0 }, 500, 'easeOutExpo', function() {
                     $('.loading_card').css('visibility', 'hidden');
-
-
 
                     $('.content_cnv').animate({ scrollTop: $('.content_cnv').scrollTop() - 100 }, 500, 'easeOutExpo', function() {
 
                     });
 
-                    // scrollIntoViewIfNeeded('.temp_anchor', { duration: 200, offset: { bottom: 30 } });
-
-                    //var aTag = $('.temp_anchor');
-                    //  $('.content_cnv').animate({scrollTop: $('.content_cnv').scrollTop() + aTag.offset().top - 60}, 400,  'easeOutExpo', function() {
-                    //     $('.temp_anchor').removeClass('temp_anchor');
-                    //  });
-
                 });
-
-                // $('.content_cnv').animate({ scrollTop: newscroll - 200 }, 1000, function() {
-
-                // });
-
-                // $('.content_cnv').animate({ scrollTop: newscroll - $scope.threshold_val - 100 }, 1000, function() {
-
-                // });
-
 
                 $rootScope.pageLoading = false;
                 $('.content_cnv').animate({ scrollTop: $('.content_cnv').scrollTop() + newscroll }, 0, function() {
@@ -1184,46 +1057,18 @@ $rootScope.pageLoading = false;
                     console.log('anim complete');
                     scrolling = false;
                     paused = false;
-
                     enableScroll();
 
                     for (var i in $scope.cards) {
-                   
                     //if(i <= card_pos){
-                         $scope.cards[i].cardFade = "show_card";
+                         //$scope.cards[i].cardFade = "show_card";
                     // $scope.cards[i].cardFade = "show_card";
                     //}
                 }
-
-
-                    //
-
-
-
-
-                    //$('.resize-container').animate({ opacity: 1 }, 1000, function() {
-
-                    //});
-
                 });
-
             }
         });
-
-        /*
-                      // Executed after the dom has finished rendering
-                      console.log($container.scrollTop());
-                      console.log($topItem);
-             // if ($container.scrollTop() !== 0) {
-                $container.scrollTop(oScrollTop + ($topItem.length ? $topItem.position().top : 0) - oOffset);
-              $timeout(function() {
-              scrolling = false;
-                            paused = false;
-                        },1000);
-                        */
-
-        //}
-
+        */
 
         if ($('.cropper-container').length > 0) {
             $('.cropper-container').remove();

@@ -175,8 +175,7 @@ img.resize-drag.clip {
     position: relative;
     left: -1.38em;
     overflow: hidden;
-    /*background-color: #000000;*/
-    background-color: #ffffff;
+    background-color: #000000;
     margin-bottom: 10px;
     border-bottom: 1px solid #efefef;
 }
