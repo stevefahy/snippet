@@ -10,10 +10,12 @@ angular.module('infinite-scroll', []).value('THROTTLE_MILLISECONDS', null).direc
                 infiniteScrollDisabled: '=',
                 infiniteScrollUseDocumentBottom: '=',
                 infiniteScrollListenForEvent: '@',
+
+                infiniteScrollDown: '=infiniteScrollDown',
                 callback: '=infiniteScroll'
             },
             link: function(scope, elem, attrs) {
-                var changeContainer, checkInterval, checkWhenEnabled, container, handleInfiniteScrollContainer, handleInfiniteScrollDisabled, handleInfiniteScrollDistance, handleInfiniteScrollUseDocumentBottom, handler, height, immediateCheck, offsetTop, pageYOffset, scrollDistance, scrollEnabled, throttle, unregisterEventListener, useDocumentBottom, windowElement;
+                var  handleInfiniteScrollDown, detectTop, changeContainer, checkInterval, checkWhenEnabled, container, handleInfiniteScrollContainer, handleInfiniteScrollDisabled, handleInfiniteScrollDistance, handleInfiniteScrollUseDocumentBottom, handler, height, immediateCheck, offsetTop, pageYOffset, scrollDistance, scrollEnabled, throttle, unregisterEventListener, useDocumentBottom, windowElement;
                 windowElement = angular.element($window);
                 scrollDistance = null;
                 scrollEnabled = null;
@@ -23,6 +25,10 @@ angular.module('infinite-scroll', []).value('THROTTLE_MILLISECONDS', null).direc
                 useDocumentBottom = false;
                 unregisterEventListener = null;
                 checkInterval = false;
+
+                //infiniteScrollDown = false;
+                detectTop = false;
+                
                 height = function(elem) {
                     elem = elem[0] || elem;
                     if (isNaN(elem.offsetHeight)) {
@@ -61,8 +67,19 @@ angular.module('infinite-scroll', []).value('THROTTLE_MILLISECONDS', null).direc
                     if (useDocumentBottom) {
                         elementBottom = height((elem[0].ownerDocument || elem[0].document).documentElement);
                     }
+                    console.log(detectTop);
                     remaining = elementBottom - containerBottom;
+
                     shouldScroll = remaining <= height(container) * scrollDistance + 1;
+                    
+                    if(detectTop){
+                      remaining = (offsetTop(elem) - containerTopOffset) * -1;
+                      
+                      shouldScroll = remaining <= 1 * scrollDistance + 1;
+
+                    } 
+                    console.log(remaining);
+console.log(shouldScroll);
                     if (shouldScroll) {
                         checkWhenEnabled = true;
                         if (scrollEnabled) {
@@ -71,8 +88,8 @@ angular.module('infinite-scroll', []).value('THROTTLE_MILLISECONDS', null).direc
 
                                 return scope.infiniteScroll();
                             } else {
-                              console.log(containerTopOffset);
-                              console.log($('.content_cnv').scrollTop());
+                              //console.log(containerTopOffset);
+                              //console.log($('.content_cnv').scrollTop());
                                 //return scope.$apply(scope.infiniteScroll);
                                 //return scope.callback('bottom');
                                 var sc = {top: $('.content_cnv').scrollTop(), height: $('.content_cnv')[0].scrollHeight};
@@ -142,6 +159,26 @@ angular.module('infinite-scroll', []).value('THROTTLE_MILLISECONDS', null).direc
                 handleInfiniteScrollUseDocumentBottom = function(v) {
                     return useDocumentBottom = v;
                 };
+
+                ////
+                
+                                handleInfiniteScrollDown = function(v) {
+                  console.log(v.feed);
+                  return detectTop = !v.feed;
+                    //return useDocumentBottom = v;
+                };
+                handleInfiniteScrollDown(scope.infiniteScrollDown);
+                scope.$watch('infiniteScrollDown', handleInfiniteScrollDown);
+
+
+                
+
+
+                
+                
+
+
+                
                 scope.$watch('infiniteScrollUseDocumentBottom', handleInfiniteScrollUseDocumentBottom);
                 handleInfiniteScrollUseDocumentBottom(scope.infiniteScrollUseDocumentBottom);
                 changeContainer = function(newContainer) {

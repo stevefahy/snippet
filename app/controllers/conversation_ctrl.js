@@ -1,5 +1,5 @@
 cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$q', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', 'Cropp', '$compile', 'ImageAdjustment', function($scope, $rootScope, $location, $http, $window, $q, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, Cropp, $compile, ImageAdjustment) {
-
+ $scope.feed = false;
     openCrop = Cropp.openCrop;
     setCrop = Cropp.setCrop;
     editImage = Cropp.editImage;
@@ -169,12 +169,12 @@ var lastMsg;
     $scope.myPagingFunction = function(data) {
         console.log('inifiniteScroll: ' + data);
 STORED = data;
-lastMsg = $('.content_cnv .conversation_card:last').attr('id');
-console.log(lastMsg);
+//lastMsg = $('.content_cnv .conversation_card:last').attr('id');
+//console.log(lastMsg);
                          // $('.content_cnv').animate({ scrollTop: $('.content_cnv').scrollTop() - 100 }, 500, 'easeOutExpo', function() {
 
                     // });
-        //if ($scope.totalDisplayed != undefined && $scope.cards != undefined) {
+        if ($scope.totalDisplayed != undefined && $scope.cards != undefined) {
             if ($scope.feed) {
                 
                 if ($scope.totalDisplayed < $scope.cards.length) {
@@ -190,10 +190,10 @@ console.log(lastMsg);
                 
             } else {
                 if ($scope.totalDisplayed < $scope.cards.length) {
-                    $scope.totalDisplayed += NUM_TO_LOAD;
+                    $scope.totalDisplayed -= NUM_TO_LOAD;
                 }
             }
-        //}
+        }
 
 
     };
@@ -320,7 +320,7 @@ console.log(lastMsg);
     $scope.isMember = false;
     //$scope.totalDisplayed = 6;
     $scope.following = false;
-    $scope.feed = false;
+    //$scope.feed = false;
     $scope.glued = true;
 
     // Use the urls id param from the route to load the conversation.
@@ -1053,7 +1053,16 @@ console.log(lastMsg);
             console.log(STORED);
             var cur_height  = $('.content_cnv')[0].scrollHeight;
             console.log(cur_height);
-            $('.content_cnv').scrollTop(STORED.top);
+            console.log(STORED.height);
+            var val;
+            if($scope.feed){
+                val = STORED.top;
+            } else {
+                val = cur_height - STORED.height;
+            }
+            
+            $('.content_cnv').scrollTop(val);
+            //$('.content_cnv').scrollTop(STORED.top);
         }
         /*
         if(lastMsg != undefined){
