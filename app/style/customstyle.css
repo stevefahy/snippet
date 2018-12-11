@@ -3356,3 +3356,8 @@ span.after_image {
     margin-top: auto;
     margin-bottom: auto;
 }
+
+.load_off_screen {
+    position: absolute;
+    left: 100vw;
+}

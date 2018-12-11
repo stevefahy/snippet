@@ -29,6 +29,11 @@
 <!--
             <div class="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : feed | limitTo:totalDisplayed  "   on-finish-render="ngRepeatFinished" in-view="lineInView($inview, card._id)" in-view-options="inviewoptions" ng-attr-id="{{ 'card_' + card._id }}"  >
             -->
+            <div class="load_off_screen">
+              <div id="conversation_card" ng-repeat="card in cards_temp | orderBy :'updatedAt' : feed " >
+                   <div class='ce' ng-attr-id="{{ 'ce' + card._id }}" ng-attr-contenteditable="{{card.user == currentUser._id}}" ng-attr-editable="{{card.user == currentUser._id}}" ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id);" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce'+card._id);" ng-blur="getBlur(card._id, card, currentUser)" ng-model="card.content" ng-model-options="{ debounce: 1000 }"></div>
+              </div>
+          </div>
 
             <div id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : feed | limitTo:totalDisplayed" on-finish-render="ngRepeatFinished" in-view="lineInView($inview, card._id)" in-view-options="inviewoptions" >
 
