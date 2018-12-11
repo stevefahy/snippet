@@ -1061,7 +1061,9 @@ STORED = data;
                 val = cur_height - STORED.height;
             }
             
-            $('.content_cnv').scrollTop(val);
+           // $('.content_cnv').scrollTop(val);
+
+
             //$('.content_cnv').scrollTop(STORED.top);
         }
         /*
