@@ -16,9 +16,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var paused = false;
     var scrolling = false;
 
-    var NUM_TO_LOAD = 10;
+    var INIT_NUM_TO_LOAD = 7;
+    var NUM_TO_LOAD = INIT_NUM_TO_LOAD;
 
-    var NUM_RECORDS = 3;
+    var INIT_NUM_TO_DISPLAY = 5;
+    var NUM_TO_DISPLAY = INIT_NUM_TO_DISPLAY;
 
     //var stored_image = $(value).attr('image-data');
     //$("#image_" + image_id).attr('image-data', JSON.stringify(stored_image_data));
@@ -93,7 +95,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         /*
                 if ($scope.feed && edge == 'bottom' && !paused && !scrolling) {
 
-                    if ($scope.totalDisplayed < $scope.cards.length) {
+                    if ($scope.total_to_display < $scope.cards.length) {
                         direction = 'bottom';
 
                         paused = true;
@@ -104,7 +106,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         var bottom_full_card = $('#' + bottommost_card).closest('#conversation_card');
                         //console.log(bottom_full_card);
                         anchor_card = bottom_full_card;
-                        $scope.totalDisplayed += NUM_TO_LOAD;
+                        $scope.total_to_display += NUM_TO_LOAD;
 
                         
                                         $timeout(function() {
@@ -121,10 +123,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                         }, 500);
                                         
                     }
-                    console.log('feed bottom: ' + $scope.totalDisplayed + ' of ' + $scope.cards.length + ' : ' + $scope.glued);
+                    console.log('feed bottom: ' + $scope.total_to_display + ' of ' + $scope.cards.length + ' : ' + $scope.glued);
                 }
                 if (!$scope.feed && edge == 'top' && !paused && !scrolling) {
-                    if ($scope.totalDisplayed * -1 < $scope.cards.length) {
+                    if ($scope.total_to_display * -1 < $scope.cards.length) {
                         direction = 'top';
                         //disableScroll();
                         $rootScope.card_loading = true;
@@ -160,10 +162,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
                             });
 
-                            $scope.totalDisplayed -= NUM_TO_LOAD;
+                            $scope.total_to_display -= NUM_TO_LOAD;
                         });
                     }
-                    console.log('feed top: ' + $scope.totalDisplayed + ' of ' + $scope.cards.length + ' : ' + $scope.glued);
+                    console.log('feed top: ' + $scope.total_to_display + ' of ' + $scope.cards.length + ' : ' + $scope.glued);
                 }
                     */
     };
@@ -180,28 +182,28 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         // $('.content_cnv').animate({ scrollTop: $('.content_cnv').scrollTop() - 100 }, 500, 'easeOutExpo', function() {
 
         // });
-        if ($scope.totalDisplayed != undefined && $scope.cards != undefined) {
-            console.log($scope.totalDisplayed + ' : ' + $scope.cards.length);
+        if ($scope.total_to_display != undefined && $scope.cards != undefined) {
+            console.log($scope.total_to_display + ' : ' + $scope.cards.length);
 
-            var td = $scope.totalDisplayed;
+            var td = $scope.total_to_display;
             if (!$scope.feed) {
                 td *= -1;
             }
             if (td < $scope.cards.length) {
                 if ($scope.feed) {
-                    $scope.totalDisplayed += NUM_TO_LOAD;
+                    $scope.total_to_display += NUM_TO_DISPLAY;
                 } else {
-                    $scope.totalDisplayed -= NUM_TO_LOAD;
+                    $scope.total_to_display -= NUM_TO_DISPLAY;
                 }
             } else {
                 console.log('load more cards');
 
                                 if ($scope.feed) {
-                    $scope.totalDisplayed += NUM_RECORDS;
+                    $scope.total_to_display += NUM_TO_LOAD;
                 } else {
-                    $scope.totalDisplayed -= NUM_RECORDS;
+                    $scope.total_to_display -= NUM_TO_LOAD;
                 }
-                
+
                 getFollowing();
             }
         }
@@ -300,7 +302,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         Cropp.destroyCrop();
         $('.image_adjust_on').remove();
         $scope.glued = true;
-        NUM_TO_LOAD = 3;
+        NUM_TO_LOAD = INIT_NUM_TO_LOAD;
     });
 
     $scope.$on('getCards', function(event, data) {});
@@ -329,7 +331,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.pasteHtmlAtCaret = Format.pasteHtmlAtCaret;
     $scope.checkCursor = Format.checkCursor;
     $scope.isMember = false;
-    //$scope.totalDisplayed = 6;
+    //$scope.total_to_display = 6;
     $scope.following = false;
     //$scope.feed = false;
     $scope.glued = true;
@@ -406,7 +408,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Load the rest of the cards if page loaded directly without animation.
     if (!$rootScope.animate_pages) {
-        //$scope.totalDisplayed = -1000;
+        //$scope.total_to_display = -1000;
     }
 
     // variable to turn on animation of view chage. Loading conversation directly should not animate.
@@ -539,8 +541,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         return deferred.promise;
     };
 
-    var NUM_CARDS_TO_LOAD = 6;
-    var INIT_NUM = 6;
+    //var NUM_CARDS_TO_LOAD = 6;
+    //var INIT_NUM = 6;
 
     $scope.cards = [];
     $scope.cards_temp = [];
@@ -561,7 +563,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             last_card = General.getISODate();
         }
 
-        var val = { ids: followed, amount: NUM_RECORDS, last_card: last_card };
+        var val = { ids: followed, amount: NUM_TO_LOAD, last_card: last_card };
 
         var prom1 = Conversations.getFeed(val)
             .then(function(res) {
@@ -630,13 +632,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             $scope.currentUser = UserData.getUser();
             if ($location.url() == '/') {
                 $scope.feed = true;
-                $scope.totalDisplayed = 6;
+                $scope.total_to_display = INIT_NUM_TO_DISPLAY;
                 $scope.glued = false;
                 $('.content_cnv')
                 // Display the users feed.
                 loadFeed();
             } else {
-                $scope.totalDisplayed = -6;
+                $scope.total_to_display = -INIT_NUM_TO_LOAD;
                 // Logged in.Load the conversation for the first time.
                 getCards();
             }
@@ -1160,7 +1162,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $scope.$apply(function() {
                     console.log('load 1000');
                     // Load the rest of the cards.
-                    //$scope.totalDisplayed = -1000;
+                    //$scope.total_to_display = -1000;
                 }, 0);
             });
         }
