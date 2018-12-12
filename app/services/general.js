@@ -128,6 +128,13 @@ cardApp.service('General', ['Users', 'Format', function(Users, Format) {
         return date;
     };
 
+    this.getISODate = function() {
+        var now = new Date();
+        return now.toISOString();
+    };
+
+
+
     // Check if an Array of Objects includes a property
     this.arrayObjectIndexOf = function(myArray, searchTerm, property) {
         for (var i = 0, len = myArray.length; i < len; i++) {
@@ -143,6 +150,19 @@ cardApp.service('General', ['Users', 'Format', function(Users, Format) {
         }
         return -1;
     };
+
+    // Check if an Array of Objects includes a property value
+    this.nestedArrayIndexOfValue = function(myArray, property, value) {
+        for (var i = 0, len = myArray.length; i < len; i++) {
+
+            for(var x = 0, len2 = myArray[i][property].length; x < len2; x++){
+                if (myArray[i][property][x] === value) return i;
+            }
+            //if (myArray[i][property][value] === searchTerm) return i;
+        }
+        return -1;
+    };
+
 
     // Helper function for findDifference.
     this.comparer = function(otherArray, value) {

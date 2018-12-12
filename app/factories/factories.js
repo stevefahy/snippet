@@ -211,7 +211,26 @@ cardApp.factory('Conversations', ['$http', function($http) {
         },
         getConversationLatestCard: function(id) {
             return $http.get('/chat/get_conversation_latest_card/' + id);
+        },
+        getFeed: function(val) {
+            console.log(val);
+            var theurl = '/chat/get_feed/' + val.ids;
+            return $http.post(theurl, val);
         }
+
+        /*
+                update: function(pms) {
+            var theurl = 'api/cards/' + pms.id;
+            return $http.put(theurl, pms);
+        },
+        */
+
+        /*
+                addFollower: function(conversation) {
+            var theurl = 'chat/follow_public_conversation/' + conversation.id;
+            return $http.put(theurl, conversation);
+        },
+        */
     };
 }]);
 

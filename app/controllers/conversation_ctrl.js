@@ -1,5 +1,5 @@
 cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$q', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', 'Cropp', '$compile', 'ImageAdjustment', function($scope, $rootScope, $location, $http, $window, $q, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, Cropp, $compile, ImageAdjustment) {
- $scope.feed = false;
+    $scope.feed = false;
     openCrop = Cropp.openCrop;
     setCrop = Cropp.setCrop;
     editImage = Cropp.editImage;
@@ -17,6 +17,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var scrolling = false;
 
     var NUM_TO_LOAD = 10;
+
+    var NUM_RECORDS = 3;
 
     //var stored_image = $(value).attr('image-data');
     //$("#image_" + image_id).attr('image-data', JSON.stringify(stored_image_data));
@@ -51,6 +53,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var origScrollHeight;
 
     $scope.threshold_val = 0;
+
+    $scope.scrollingdisabled = false;
 
     /*
     var checkScrollSpeed = (function(settings) {
@@ -164,34 +168,41 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     */
     };
 
-var STORED = 0;
-var lastMsg;
+    var STORED = 0;
+    var lastMsg;
     $scope.myPagingFunction = function(data) {
         console.log('inifiniteScroll: ' + data);
-STORED = data;
-//lastMsg = $('.content_cnv .conversation_card:last').attr('id');
-//console.log(lastMsg);
-                         // $('.content_cnv').animate({ scrollTop: $('.content_cnv').scrollTop() - 100 }, 500, 'easeOutExpo', function() {
 
-                    // });
+        $scope.scrollingdisabled = true;
+        STORED = data;
+        //lastMsg = $('.content_cnv .conversation_card:last').attr('id');
+        //console.log(lastMsg);
+        // $('.content_cnv').animate({ scrollTop: $('.content_cnv').scrollTop() - 100 }, 500, 'easeOutExpo', function() {
+
+        // });
         if ($scope.totalDisplayed != undefined && $scope.cards != undefined) {
-            if ($scope.feed) {
-                
-                if ($scope.totalDisplayed < $scope.cards.length) {
+            console.log($scope.totalDisplayed + ' : ' + $scope.cards.length);
+
+            var td = $scope.totalDisplayed;
+            if (!$scope.feed) {
+                td *= -1;
+            }
+            if (td < $scope.cards.length) {
+                if ($scope.feed) {
                     $scope.totalDisplayed += NUM_TO_LOAD;
-                }
-                /*
-                if(INIT_NUM < $scope.cards_temp.length){
-                    INIT_NUM++;
-                    console.log(INIT_NUM);
-                    $scope.cards.push($scope.cards_temp[INIT_NUM]);
-                }
-                */
-                
-            } else {
-                if ($scope.totalDisplayed < $scope.cards.length) {
+                } else {
                     $scope.totalDisplayed -= NUM_TO_LOAD;
                 }
+            } else {
+                console.log('load more cards');
+
+                                if ($scope.feed) {
+                    $scope.totalDisplayed += NUM_RECORDS;
+                } else {
+                    $scope.totalDisplayed -= NUM_RECORDS;
+                }
+                
+                getFollowing();
             }
         }
 
@@ -530,60 +541,54 @@ STORED = data;
 
     var NUM_CARDS_TO_LOAD = 6;
     var INIT_NUM = 6;
+
+    $scope.cards = [];
+    $scope.cards_temp = [];
+
     // TODO - If not following anyone suggest follow?
     getFollowing = function() {
 
-        var cards_loaded = 0;
-
         var deferred = $q.defer();
         var promises = [];
-        $scope.cards = [];
-        $scope.cards_temp = [];
+
         var followed = UserData.getUser().following;
-        followed.map(function(key, array) {
-            var prom1 = Conversations.find_public_conversation_id(key)
-                .then(function(result) {
-                    if (result.data != null) {
-                        return Conversations.getPublicConversationById(key)
-                            .then(function(res) {
-                                res.data.map(function(key, array) {
-                                    // Store the original characters of the card.
-                                    key.original_content = result.data.content;
-                                    // Get the user name for the user id
-                                    key.user_name = result.data.conversation_name;
-                                    key.avatar = result.data.conversation_avatar;
-                                    key.following = true;
-                                    //$scope.cards.push(key);
-                                    console.log(key);
-                                    $scope.cards_temp.push(key);
-                                });
-                            });
-                           
-                    }
+        var last_card;
+
+        if($scope.cards.length > 0){
+            console.log($scope.cards[$scope.cards.length - 1]);
+            last_card = $scope.cards[$scope.cards.length - 1].updatedAt;
+        } else {
+            last_card = General.getISODate();
+        }
+
+        var val = { ids: followed, amount: NUM_RECORDS, last_card: last_card };
+
+        var prom1 = Conversations.getFeed(val)
+            .then(function(res) {
+                console.log(res);
+                res.data.cards.map(function(key, array) {
+                    console.log(key.user);
+                    // Get the conversation for this card
+                    var conversation_pos = General.nestedArrayIndexOfValue(res.data.conversations, 'admin', key.user);
+                    var conversation = res.data.conversations[conversation_pos];
+                    // Store the original characters of the card.
+                    key.original_content = key.content;
+                    // Get the user name for the user id
+                    key.user_name = conversation.conversation_name;
+                    key.avatar = conversation.conversation_avatar;
+                    key.following = true;
+                    $scope.cards_temp.push(key);
                 });
-            promises.push(prom1);
-        });
+            });
+        promises.push(prom1);
         // All the users contacts have been mapped.
         $q.all(promises).then(function() {
             console.log('getFollowing finished');
-            //$scope.cards.reverse();
-            // Set the feed value to true to reverse the cards order.
-            //$scope.feed = true;
-            //$scope.glued = false;
-
-            $scope.cards = $scope.cards_temp;
-            /*
-            console.log($scope.cards_temp);
-            for(var i = 0; i <= INIT_NUM; i++){
-                $scope.cards.push($scope.cards_temp[i]);
+            if($scope.cards.length == 0){
+              //$scope.cards = $scope.cards_temp; 
             }
-            */
-
-            // Scroll
-            //$rootScope.$broadcast('cards', data);
-            //$scope.$broadcast("items_changed", $scope.feed);
-            console.log($scope.feed);
-            $scope.$broadcast("items_changed", 'top');
+            $scope.cards = $scope.cards_temp;
+            //$scope.$broadcast("items_changed", 'top');
         });
         return deferred.promise;
     };
@@ -1049,19 +1054,21 @@ STORED = data;
         console.log('ngRepeatFinished');
 
         $rootScope.pageLoading = false;
-        if(STORED != undefined){
+
+        $scope.scrollingdisabled = false;
+        if (STORED != undefined) {
             console.log(STORED);
-            var cur_height  = $('.content_cnv')[0].scrollHeight;
+            var cur_height = $('.content_cnv')[0].scrollHeight;
             console.log(cur_height);
             console.log(STORED.height);
             var val;
-            if($scope.feed){
+            if ($scope.feed) {
                 val = STORED.top;
             } else {
                 val = cur_height - STORED.height;
             }
-            
-           // $('.content_cnv').scrollTop(val);
+
+            // $('.content_cnv').scrollTop(val);
 
 
             //$('.content_cnv').scrollTop(STORED.top);
