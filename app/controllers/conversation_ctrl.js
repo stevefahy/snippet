@@ -212,7 +212,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 getFollowing();
             }
         }
-$scope.scrollingdisabled = true;
+//$scope.scrollingdisabled = true;
 
     };
 
