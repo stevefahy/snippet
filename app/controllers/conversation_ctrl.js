@@ -175,7 +175,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.myPagingFunction = function(data) {
         console.log('inifiniteScroll: ' + data);
 
-        $scope.scrollingdisabled = true;
+        //$scope.scrollingdisabled = true;
         STORED = data;
         //lastMsg = $('.content_cnv .conversation_card:last').attr('id');
         //console.log(lastMsg);
@@ -212,7 +212,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 getFollowing();
             }
         }
-
+$scope.scrollingdisabled = true;
 
     };
 
