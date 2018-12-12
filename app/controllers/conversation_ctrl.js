@@ -191,7 +191,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }
 
             if (td >= ($scope.cards.length / 2)) {
-                getFollowing();
+                //getFollowing();
             }
 
             if (td < $scope.cards.length) {
