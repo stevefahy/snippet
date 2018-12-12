@@ -172,6 +172,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     var STORED = 0;
     var lastMsg;
+
+    var no_more_records = false;
+    
     $scope.myPagingFunction = function(data) {
         console.log('inifiniteScroll: ' + data);
 
@@ -190,8 +193,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 td *= -1;
             }
 
-            if (td >= ($scope.cards.length / 2)) {
-                //getFollowing();
+            if (td >= ($scope.cards.length / 2) && !no_more_records) {
+                getFollowing();
             }
 
             if (td < $scope.cards.length) {
@@ -609,6 +612,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         $scope.cards_temp.push(key);
                     });
                 } else {
+                    no_more_records = true;
                     console.log('NO MORE RECORDS');
                 }
             });
