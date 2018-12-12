@@ -1,4 +1,4 @@
-cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$q', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', 'Cropp', '$compile', 'ImageAdjustment', function($scope, $rootScope, $location, $http, $window, $q, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, Cropp, $compile, ImageAdjustment) {
+cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$q', '$filter', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', 'Cropp', '$compile', 'ImageAdjustment', function($scope, $rootScope, $location, $http, $window, $q, $filter, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, Cropp, $compile, ImageAdjustment) {
     $scope.feed = false;
     openCrop = Cropp.openCrop;
     setCrop = Cropp.setCrop;
@@ -16,7 +16,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var paused = false;
     var scrolling = false;
 
-    var INIT_NUM_TO_LOAD = 7;
+    var INIT_NUM_TO_LOAD = 20;
     var NUM_TO_LOAD = INIT_NUM_TO_LOAD;
 
     var INIT_NUM_TO_DISPLAY = 5;
@@ -189,6 +189,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             if (!$scope.feed) {
                 td *= -1;
             }
+
+            if (td >= ($scope.cards.length / 2)) {
+                getFollowing();
+            }
+
             if (td < $scope.cards.length) {
                 if ($scope.feed) {
                     $scope.total_to_display += NUM_TO_DISPLAY;
@@ -198,7 +203,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             } else {
                 console.log('load more cards');
 
-                                if ($scope.feed) {
+                if ($scope.feed) {
                     $scope.total_to_display += NUM_TO_LOAD;
                 } else {
                     $scope.total_to_display -= NUM_TO_LOAD;
@@ -547,6 +552,23 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.cards = [];
     $scope.cards_temp = [];
 
+    /*
+    myArray.sort(function compare(a, b) {
+  var dateA = new Date(a.date);
+  var dateB = new Date(b.date);
+  return dateA - dateB;
+});
+*/
+
+    function sortArryByValue(arr) {
+        arr.sort(function(a, b) {
+            var dateA = new Date(a.date);
+            var dateB = new Date(b.date);
+            return aDate - bDate;
+
+        });
+    }
+
     // TODO - If not following anyone suggest follow?
     getFollowing = function() {
 
@@ -556,9 +578,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var followed = UserData.getUser().following;
         var last_card;
 
-        if($scope.cards.length > 0){
-            console.log($scope.cards[$scope.cards.length - 1]);
-            last_card = $scope.cards[$scope.cards.length - 1].updatedAt;
+        if ($scope.cards.length > 0) {
+            //console.log($scope.cards[$scope.cards.length - 1]);
+            //last_card = $scope.cards[$scope.cards.length - 1].updatedAt;
+
+            var sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
+            console.log(sort_card);
+            last_card = sort_card[0].updatedAt;
         } else {
             last_card = General.getISODate();
         }
@@ -568,26 +594,30 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var prom1 = Conversations.getFeed(val)
             .then(function(res) {
                 console.log(res);
-                res.data.cards.map(function(key, array) {
-                    console.log(key.user);
-                    // Get the conversation for this card
-                    var conversation_pos = General.nestedArrayIndexOfValue(res.data.conversations, 'admin', key.user);
-                    var conversation = res.data.conversations[conversation_pos];
-                    // Store the original characters of the card.
-                    key.original_content = key.content;
-                    // Get the user name for the user id
-                    key.user_name = conversation.conversation_name;
-                    key.avatar = conversation.conversation_avatar;
-                    key.following = true;
-                    $scope.cards_temp.push(key);
-                });
+                if (res.data.cards.length > 0) {
+                    res.data.cards.map(function(key, array) {
+                        console.log(key.user);
+                        // Get the conversation for this card
+                        var conversation_pos = General.nestedArrayIndexOfValue(res.data.conversations, 'admin', key.user);
+                        var conversation = res.data.conversations[conversation_pos];
+                        // Store the original characters of the card.
+                        key.original_content = key.content;
+                        // Get the user name for the user id
+                        key.user_name = conversation.conversation_name;
+                        key.avatar = conversation.conversation_avatar;
+                        key.following = true;
+                        $scope.cards_temp.push(key);
+                    });
+                } else {
+                    console.log('NO MORE RECORDS');
+                }
             });
         promises.push(prom1);
         // All the users contacts have been mapped.
         $q.all(promises).then(function() {
             console.log('getFollowing finished');
-            if($scope.cards.length == 0){
-              //$scope.cards = $scope.cards_temp; 
+            if ($scope.cards.length == 0) {
+                //$scope.cards = $scope.cards_temp; 
             }
             $scope.cards = $scope.cards_temp;
             //$scope.$broadcast("items_changed", 'top');

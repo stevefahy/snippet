@@ -1363,7 +1363,7 @@ Conversation.findOne({
 */
             Card.find({
                 'updatedAt': {
-                    '$lte': last_card
+                    '$lt': last_card
                 },
                 'conversationId': {
                     //"created_on": {"$gte": new Date(2012, 7, 14),
