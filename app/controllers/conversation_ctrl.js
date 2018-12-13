@@ -27,7 +27,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     //var stored_image = $(value).attr('image-data');
     //$("#image_" + image_id).attr('image-data', JSON.stringify(stored_image_data));
 
-    
+
     $(document).ready(function() {
         // Handler for .ready() called.
         console.log('doc ready');
@@ -195,7 +195,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         // });
         if ($scope.total_to_display != undefined && $scope.cards != undefined) {
             console.log($scope.total_to_display + ' : ' + $scope.cards.length);
-
+            var id = Conversations.getConversationId();
             var td = $scope.total_to_display;
             if (!$scope.feed) {
                 td *= -1;
@@ -204,10 +204,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             if (td >= ($scope.cards.length / 2)) {
                 if ($scope.feed) {
                     $scope.total_to_display += NUM_TO_LOAD;
+                    getFollowing();
                 } else {
                     $scope.total_to_display -= NUM_TO_LOAD;
+                    getCards(id);
                 }
-                getFollowing();
+
             }
 
             if (td < $scope.cards.length) {
@@ -226,8 +228,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 } else {
                     $scope.total_to_display -= NUM_TO_LOAD;
                 }
+                if ($scope.feed) {
+                    getFollowing();
+                } else {
+                    getCards(id);
+                }
 
-                getFollowing();
             }
         }
         //$scope.scrollingdisabled = true;
@@ -329,7 +335,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     });
 
-    $scope.$on('getCards', function(event, data) {});
+    //$scope.$on('getCards', function(event, data) {});
 
 
     // Detect device user agent 
@@ -588,6 +594,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         });
     }
 
+
     // TODO - If not following anyone suggest follow?
     getFollowing = function() {
         console.log('loading_cards: ' + loading_cards);
@@ -652,20 +659,103 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     };
 
-    getCards = function() {
-        $timeout(function() {
-            findConversationId(function(result) {
-                UserData.getCardsModelById(result)
-                    .then(function(result) {
-                        if (result != undefined) {
-                            $scope.cards = result.data;
+    getCards = function(id) {
 
-                            console.log($scope.feed);
-                            $scope.$broadcast("items_changed", 'bottom');
-                        }
-                    });
+        if (!loading_cards) {
+            loading_cards = true;
+            //$scope.scrollingdisabled = true;
+            var deferred = $q.defer();
+            var promises = [];
+
+            //var followed = UserData.getUser().following;
+            var last_card;
+
+            if ($scope.cards.length > 0) {
+                var sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
+                //console.log(sort_card);
+                last_card = sort_card[0].updatedAt;
+            } else {
+                last_card = General.getISODate();
+            }
+
+            var val = { id: id, amount: NUM_TO_LOAD, last_card: last_card };
+
+            //var prom1 = Conversations.getFeed(val)
+
+
+            /*
+                        Conversations.getConversationById(id).then(function(result) {
+                            console.log(result);
+                            if (result != undefined) {
+                                $scope.cards = result.data;
+                                console.log($scope.feed);
+                                $scope.$broadcast("items_changed", 'bottom');
+                            }
+                        });
+                        */
+
+            var prom1 = Conversations.getConversationCards(val)
+                .then(function(res) {
+
+                    console.log(res);
+                    if (res.data.length > 0) {
+                        res.data.map(function(key, array) {
+                            console.log(key.user);
+
+                            // Get the user for this card
+                            var users = UserData.getContacts();
+                            console.log(users);
+                            //var user_pos = General.nestedArrayIndexOfValue(users, '_id', key.user);
+                            var user_pos = General.findWithAttr(users, '_id', key.user);
+                            console.log(user_pos);
+                            var user = users[user_pos];
+                            console.log(user);
+
+
+                            // Get the conversation for this card
+                            //var conversation_pos = General.nestedArrayIndexOfValue(res.data.conversations, 'admin', key.user);
+                            //var conversation = res.data.conversations[conversation_pos];
+                            
+                            // Store the original characters of the card.
+                            key.original_content = key.content;
+                            // Get the user name for the user id
+                            key.user_name = user.user_name;
+                            key.avatar = user.avatar;
+                            //key.following = true;
+                            $scope.cards_temp.push(key);
+                        });
+                    } else {
+                        //no_more_records = true;
+                        console.log('NO MORE RECORDS');
+                    }
+                });
+            promises.push(prom1);
+            // All the users contacts have been mapped.
+            $q.all(promises).then(function() {
+                console.log('getCards finished');
+                if ($scope.cards.length == 0) {
+                    //$scope.cards = $scope.cards_temp; 
+                }
+                $scope.cards = $scope.cards_temp;
+                loading_cards = false;
+                deferred.resolve();
+                //$scope.scrollingdisabled = false;
+                //$scope.$broadcast("items_changed", 'bottom');
             });
+            return deferred.promise;
+        }
+
+        /*
+        Conversations.getConversationById(id).then(function(result) {
+            console.log(result);
+            if (result != undefined) {
+                $scope.cards = result.data;
+
+                console.log($scope.feed);
+                $scope.$broadcast("items_changed", 'bottom');
+            }
         });
+        */
     };
 
     loadFeed = function() {
@@ -676,12 +766,116 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         Profile.setProfile(profile);
         $rootScope.$broadcast('PROFILE_SET');
         $scope.isMember = true;
+        //  Load the users public conversation
         Conversations.find_user_public_conversation_by_id(UserData.getUser()._id).then(function(result) {
             console.log(result);
             // Set the conversation id so that it can be retrieved by cardcreate_ctrl
             Conversations.setConversationId(result.data._id);
             getFollowing();
         });
+    };
+
+    setConversationProfile = function(id) {
+        var profile = {};
+        Conversations.find_conversation_id(id).then(function(res) {
+            res = res.data;
+            console.log(res);
+            if (res.conversation_type == 'public') {
+                //  $scope.conv_type used for Header
+                $scope.conv_type = 'public';
+                profile.user_name = res.conversation_name;
+                profile.avatar = res.conversation_avatar;
+                Profile.setConvProfile(profile);
+                $rootScope.$broadcast('PROFILE_SET');
+            }
+            // Group conversation. (Two or more)
+            if (res.conversation_name != '') {
+                $scope.conv_type = 'group';
+                profile.user_name = res.conversation_name;
+                profile.avatar = res.conversation_avatar;
+                Profile.setConvProfile(profile);
+                $rootScope.$broadcast('PROFILE_SET');
+            }
+            // Two user conversation (not a group)
+            if (res.conversation_name == '') {
+                console.log('TWO');
+                $scope.conv_type = 'two';
+                // get the index position of the current user within the participants array
+                var user_pos = General.findWithAttr(res.participants, '_id', $scope.currentUser._id);
+                // Get the position of the current user
+                participant_pos = 1 - user_pos;
+                // Find the other user
+                console.log(res.participants[participant_pos]);
+                UserData.getConversationsUser(res.participants[participant_pos]._id)
+                    .then(function(result) {
+                        var avatar = "default";
+                        // set the other user name as the name of the conversation.
+                        if (result) {
+                            profile.user_name = result.user_name;
+                            avatar = result.avatar;
+                        }
+                        profile.avatar = avatar;
+                        Profile.setConvProfile(profile);
+                        $rootScope.$broadcast('PROFILE_SET');
+                    });
+            }
+        });
+    };
+
+    loadConversation = function() {
+        // Get the conversation id (could be using a username)
+        $timeout(function() {
+            findConversationId(function(result) {
+                var id = result;
+                // Set the conversation id so that it can be retrieved by cardcreate_ctrl
+                Conversations.setConversationId(id);
+                // Set the conversation profile
+                setConversationProfile(id);
+                // Check the users permission for this conversation. (logged in and participant)
+                checkPermission(id, function(result) {
+                    $scope.isMember = result;
+                    if (result) {
+                        getCards(id).then(function(result) {
+                            console.log('INITIAL CARDS');
+                            $scope.$broadcast("items_changed", 'bottom');
+                        });
+
+
+                        //$scope.$broadcast("items_changed", 'bottom');
+                        /*
+                                                Conversations.getConversationById(id).then(function(result) {
+                                                    console.log(result);
+                                                    if (result != undefined) {
+                                                        $scope.cards = result.data;
+                                                        console.log($scope.feed);
+                                                        $scope.$broadcast("items_changed", 'bottom');
+                                                    }
+                                                });
+                                                */
+
+                    } else {
+                        $location.path("/api/login");
+                    }
+                });
+
+                /*
+                                                        Conversations.setConversationId(id);
+                                        // Check the users permission for this conversation. (logged in and participant)
+                                        checkPermission(id, function(result) {
+                                            $scope.isMember = result;
+                                            if (result) {
+                                                //getConversation(id);
+                                            } else {
+                                                $location.path("/api/login");
+                                            }
+                                            callback(id);
+                                        });*/
+
+
+            });
+        });
+
+
     };
 
     if (principal.isValid()) {
@@ -697,13 +891,16 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             } else {
                 $scope.total_to_display = -INIT_NUM_TO_LOAD;
                 // Logged in.Load the conversation for the first time.
-                getCards();
+                console.log('GET CARDS');
+                //getCards();
+                loadConversation();
             }
         });
     } else {
         if ($location.url() != '/') {
             // Public route (Does not need to be logged in).
-            getCards();
+            //getCards();
+            loadConversation();
         } else {
             $location.path("/api/login/");
         }
@@ -832,6 +1029,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         if (res.data.error) {
                             $location.path("/api/login");
                         } else {
+                            callback(res.data._id);
+                            /*
                             var profile = {};
                             profile.user_name = res.data.conversation_name;
                             profile.avatar = res.data.conversation_avatar;
@@ -847,6 +1046,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                 getPublicConversation(public_id, res.data);
                                 callback(public_id);
                             });
+                            */
                         }
                     })
                     .catch(function(error) {
@@ -854,27 +1054,33 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     });
             }
         } else {
+            console.log('PUBLIC?');
             // Check if this is a public conversation.
             Conversations.find_public_conversation_id(id)
                 .then(function(result) {
                     if (result.data != null && result.data.conversation_type == 'public') {
+                        console.log('PUBLIC!');
                         getPublicConversation(id, result.data);
                         // Check the users permission for this conversation. (logged in and participant)
                         checkPermission(id, function(result) {
                             $scope.isMember = result;
                         });
                     } else {
+                        console.log('PRIVATE!');
+                        /*
                         Conversations.setConversationId(id);
                         // Check the users permission for this conversation. (logged in and participant)
                         checkPermission(id, function(result) {
                             $scope.isMember = result;
                             if (result) {
-                                getConversation(id);
+                                //getConversation(id);
                             } else {
                                 $location.path("/api/login");
                             }
                             callback(id);
                         });
+                        */
+                        callback(id);
                     }
                 });
         }
@@ -935,6 +1141,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var profile = {};
         Conversations.getPublicConversationById(id)
             .then(function(result) {
+                console.log('GEt PUBLIC');
                 $scope.cards = result.data;
                 // Map relevant data to the loaded cards.
                 if ($scope.cards.length > 0) {
@@ -962,8 +1169,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // Get the conversation by id
     getConversation = function(id) {
         var profile = {};
-        UserData.getConversationModelById(id)
+        console.log('getConversation');
+        //UserData.getConversationModelById(id)
+        //Conversations.getConversationById(id)
+        Conversations.find_conversation_id(id)
+
             .then(function(res) {
+                console.log(res);
+                res = res.data;
+                /*
                 if (res.conversation_type == 'public') {
                     //  $scope.conv_type used for Header
                     $scope.conv_type = 'public';
@@ -982,12 +1196,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 }
                 // Two user conversation (not a group)
                 if (res.conversation_name == '') {
+                    console.log('TWO');
                     $scope.conv_type = 'two';
                     // get the index position of the current user within the participants array
                     var user_pos = General.findWithAttr(res.participants, '_id', $scope.currentUser._id);
                     // Get the position of the current user
                     participant_pos = 1 - user_pos;
                     // Find the other user
+                    console.log(res.participants[participant_pos]);
                     UserData.getConversationsUser(res.participants[participant_pos]._id)
                         .then(function(result) {
                             var avatar = "default";
@@ -1001,10 +1217,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             $rootScope.$broadcast('PROFILE_SET');
                         });
                 }
+                */
             });
 
-        UserData.getCardsModelById(id)
+        //UserData.getCardsModelById(id)
+        Conversations.getConversationById(id)
             .then(function(result) {
+                console.log(result);
                 if (result != undefined) {
                     $scope.cards = result.data;
                     if (result.data.length == 0) {

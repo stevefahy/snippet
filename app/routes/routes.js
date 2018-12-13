@@ -1194,7 +1194,7 @@ module.exports = function(app, passport) {
             if (err) {
                 return done(err);
             }
-            console.log(conversation);
+            //console.log(conversation);
             res.json(conversation);
         });
     });
@@ -1325,23 +1325,43 @@ module.exports = function(app, passport) {
 
     });
 
-    app.post('/chat/get_feed/:val', function(req, res) {
-       // console.log(req.params.val);
-        //console.log(req.params.val.ids);
-        console.log(req.body.ids);
+
+
+    app.post('/chat/get_conversation_cards/:id', isMember, function(req, res) {
+
+        console.log(req.body.id);
         console.log(req.body.amount);
         console.log(req.body.last_card);
-        //console.log(req.body.val.ids);
-        //console.log(req.body.val.amount);
 
-        //var user_array = req.body.ids.split(',');
-        var user_array = req.body.ids;
+        var id = req.body.id;
         var amount = req.body.amount;
         var last_card = req.body.last_card;
 
-        //if(last_card == undefined){
-            //last_card = ;
-        //}
+        Card.find({
+                'updatedAt': {
+                    '$lt': last_card
+                },
+                'conversationId': req.params.id
+            }, function(err, cards) {
+                if (err) {
+                    console.log(err);
+                }
+                console.log('cards');
+                //console.log(cards);
+                res.json(cards);
+            }).sort({ "updatedAt": -1 }).limit(amount);
+
+    });
+
+    app.post('/chat/get_feed/:val', isLoggedIn, function(req, res) {
+
+        console.log(req.body.ids);
+        console.log(req.body.amount);
+        console.log(req.body.last_card);
+
+        var user_array = req.body.ids;
+        var amount = req.body.amount;
+        var last_card = req.body.last_card;
 
         var feed = {};
 
@@ -1356,19 +1376,14 @@ module.exports = function(app, passport) {
             console.log('conversations');
             //console.log(conversations);
             feed.conversations = conversations;
-            //res.json(users);
-/*
-Conversation.findOne({ 
-'_id': req.params.id, 'conversation_type': 'public' }, function(err, conversation) {
-*/
             Card.find({
                 'updatedAt': {
                     '$lt': last_card
                 },
                 'conversationId': {
                     //"created_on": {"$gte": new Date(2012, 7, 14),
-                    $in: user_array.map(function(o) { 
-                        return mongoose.Types.ObjectId(o); 
+                    $in: user_array.map(function(o) {
+                        return mongoose.Types.ObjectId(o);
                     })
                 }
             }, function(err, cards) {
@@ -1380,41 +1395,9 @@ Conversation.findOne({
                 //res.json(cards);
                 feed.cards = cards;
                 res.json(feed);
-            }).sort({"updatedAt": -1}).limit(amount);
+            }).sort({ "updatedAt": -1 }).limit(amount);
 
         });
-
-        /*
-                    Card.find({
-                        'conversationId': {
-                            $in: user_array.map(function(o) { return mongoose.Types.ObjectId(o); })
-                        }
-                    }, function(err, cards) {
-                        if(err){
-                            console.log(err);
-                        }
-                        console.log('cards');
-                        console.log(cards);
-                        res.json(cards);
-                    }).limit(3);
-                    */
-
-
-        // By date!
-
-
-        /*
-                Card.find({ 'conversationId': req.params.id }, function(err, cards) {
-                    if (err) {
-                        //console.log('err: ' + err);
-                    }
-                    res.json(cards);
-                    // }).limit(3);
-                });
-                */
-
-
-
     });
 
 
