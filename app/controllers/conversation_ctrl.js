@@ -27,6 +27,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     //var stored_image = $(value).attr('image-data');
     //$("#image_" + image_id).attr('image-data', JSON.stringify(stored_image_data));
 
+    
     $(document).ready(function() {
         // Handler for .ready() called.
         console.log('doc ready');
@@ -201,6 +202,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }
 
             if (td >= ($scope.cards.length / 2)) {
+                if ($scope.feed) {
+                    $scope.total_to_display += NUM_TO_LOAD;
+                } else {
+                    $scope.total_to_display -= NUM_TO_LOAD;
+                }
                 getFollowing();
             }
 
@@ -320,6 +326,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         $('.image_adjust_on').remove();
         $scope.glued = true;
         NUM_TO_LOAD = INIT_NUM_TO_LOAD;
+
     });
 
     $scope.$on('getCards', function(event, data) {});
@@ -580,7 +587,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
         });
     }
-    
+
     // TODO - If not following anyone suggest follow?
     getFollowing = function() {
         console.log('loading_cards: ' + loading_cards);
