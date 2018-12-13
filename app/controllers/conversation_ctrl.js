@@ -22,6 +22,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var INIT_NUM_TO_DISPLAY = 5;
     var NUM_TO_DISPLAY = INIT_NUM_TO_DISPLAY;
 
+    var loading_cards = false;
+
     //var stored_image = $(value).attr('image-data');
     //$("#image_" + image_id).attr('image-data', JSON.stringify(stored_image_data));
 
@@ -173,12 +175,17 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var STORED = 0;
     var lastMsg;
 
-    var no_more_records = false;
-    
+    //var no_more_records = false;
+
     $scope.myPagingFunction = function(data) {
         console.log('inifiniteScroll: ' + data);
 
         //$scope.scrollingdisabled = true;
+
+        // CHECK FOR SCROLL POS
+        // DONT FIRE GET FOLLOWING TWICE
+        //  VAR CURRENTLY UPDATING?
+
         STORED = data;
         //lastMsg = $('.content_cnv .conversation_card:last').attr('id');
         //console.log(lastMsg);
@@ -193,7 +200,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 td *= -1;
             }
 
-            if (td >= ($scope.cards.length / 2) && !no_more_records) {
+            if (td >= ($scope.cards.length / 2)) {
                 getFollowing();
             }
 
@@ -206,6 +213,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             } else {
                 console.log('load more cards');
 
+                //$scope.scrollingdisabled = true;
+
                 if ($scope.feed) {
                     $scope.total_to_display += NUM_TO_LOAD;
                 } else {
@@ -215,7 +224,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 getFollowing();
             }
         }
-//$scope.scrollingdisabled = true;
+        //$scope.scrollingdisabled = true;
 
     };
 
@@ -571,62 +580,69 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
         });
     }
-
+    
     // TODO - If not following anyone suggest follow?
     getFollowing = function() {
+        console.log('loading_cards: ' + loading_cards);
+        if (!loading_cards) {
+            loading_cards = true;
+            //$scope.scrollingdisabled = true;
+            var deferred = $q.defer();
+            var promises = [];
 
-        var deferred = $q.defer();
-        var promises = [];
+            var followed = UserData.getUser().following;
+            var last_card;
 
-        var followed = UserData.getUser().following;
-        var last_card;
+            if ($scope.cards.length > 0) {
+                //console.log($scope.cards[$scope.cards.length - 1]);
+                //last_card = $scope.cards[$scope.cards.length - 1].updatedAt;
 
-        if ($scope.cards.length > 0) {
-            //console.log($scope.cards[$scope.cards.length - 1]);
-            //last_card = $scope.cards[$scope.cards.length - 1].updatedAt;
+                var sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
+                console.log(sort_card);
+                last_card = sort_card[0].updatedAt;
+            } else {
+                last_card = General.getISODate();
+            }
 
-            var sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
-            console.log(sort_card);
-            last_card = sort_card[0].updatedAt;
-        } else {
-            last_card = General.getISODate();
+            var val = { ids: followed, amount: NUM_TO_LOAD, last_card: last_card };
+
+            var prom1 = Conversations.getFeed(val)
+                .then(function(res) {
+                    console.log(res);
+                    if (res.data.cards.length > 0) {
+                        res.data.cards.map(function(key, array) {
+                            console.log(key.user);
+                            // Get the conversation for this card
+                            var conversation_pos = General.nestedArrayIndexOfValue(res.data.conversations, 'admin', key.user);
+                            var conversation = res.data.conversations[conversation_pos];
+                            // Store the original characters of the card.
+                            key.original_content = key.content;
+                            // Get the user name for the user id
+                            key.user_name = conversation.conversation_name;
+                            key.avatar = conversation.conversation_avatar;
+                            key.following = true;
+                            $scope.cards_temp.push(key);
+                        });
+                    } else {
+                        //no_more_records = true;
+                        console.log('NO MORE RECORDS');
+                    }
+                });
+            promises.push(prom1);
+            // All the users contacts have been mapped.
+            $q.all(promises).then(function() {
+                console.log('getFollowing finished');
+                if ($scope.cards.length == 0) {
+                    //$scope.cards = $scope.cards_temp; 
+                }
+                $scope.cards = $scope.cards_temp;
+                loading_cards = false;
+                //$scope.scrollingdisabled = false;
+                //$scope.$broadcast("items_changed", 'top');
+            });
+            return deferred.promise;
         }
 
-        var val = { ids: followed, amount: NUM_TO_LOAD, last_card: last_card };
-
-        var prom1 = Conversations.getFeed(val)
-            .then(function(res) {
-                console.log(res);
-                if (res.data.cards.length > 0) {
-                    res.data.cards.map(function(key, array) {
-                        console.log(key.user);
-                        // Get the conversation for this card
-                        var conversation_pos = General.nestedArrayIndexOfValue(res.data.conversations, 'admin', key.user);
-                        var conversation = res.data.conversations[conversation_pos];
-                        // Store the original characters of the card.
-                        key.original_content = key.content;
-                        // Get the user name for the user id
-                        key.user_name = conversation.conversation_name;
-                        key.avatar = conversation.conversation_avatar;
-                        key.following = true;
-                        $scope.cards_temp.push(key);
-                    });
-                } else {
-                    no_more_records = true;
-                    console.log('NO MORE RECORDS');
-                }
-            });
-        promises.push(prom1);
-        // All the users contacts have been mapped.
-        $q.all(promises).then(function() {
-            console.log('getFollowing finished');
-            if ($scope.cards.length == 0) {
-                //$scope.cards = $scope.cards_temp; 
-            }
-            $scope.cards = $scope.cards_temp;
-            //$scope.$broadcast("items_changed", 'top');
-        });
-        return deferred.promise;
     };
 
     getCards = function() {
@@ -1091,7 +1107,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
         $rootScope.pageLoading = false;
 
-        $scope.scrollingdisabled = false;
+        //$scope.scrollingdisabled = false;
         if (STORED != undefined) {
             console.log(STORED);
             var cur_height = $('.content_cnv')[0].scrollHeight;
