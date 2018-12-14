@@ -459,6 +459,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     });
 
     $scope.$on('CONV_MODEL_NOTIFICATION', function(event, msg) {
+        console.log(msg);
+        updateConversation(msg);
         updateFollowingIcons($scope.cards);
     });
 

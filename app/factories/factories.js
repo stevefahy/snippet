@@ -666,6 +666,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     //
 
     notification = function(msg) {
+        console.log(msg);
         // CONVERSATIONS
         if (!update_inprogress) {
             // Find the conversations for current user
