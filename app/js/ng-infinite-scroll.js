@@ -71,13 +71,14 @@ angular.module('infinite-scroll', []).value('THROTTLE_MILLISECONDS', null).direc
                     remaining = elementBottom - containerBottom;
                     console.log(height(container));
                     console.log(height(container) * scrollDistance);
-                    shouldScroll = remaining <= height(container) * scrollDistance + 1;
+                    //shouldScroll = remaining <= height(container) * scrollDistance + 1;
                     //shouldScroll = remaining >= (height(elem)  - height(container))  / scrollDistance;
+                    shouldScroll = remaining <= (height(elem)  - height(container)) * scrollDistance ;
                     if (detectTop) {
                         remaining = (offsetTop(elem) - containerTopOffset) * -1;
 
-                        shouldScroll = remaining <= height(container) * scrollDistance + 1 ;
-
+                        //shouldScroll = remaining <= height(container) * scrollDistance + 1 ;
+                        shouldScroll = remaining <= (height(elem)  - height(container)) * scrollDistance ;
                     }
                     console.log(remaining);
                     console.log(height(elem)  - height(container));
