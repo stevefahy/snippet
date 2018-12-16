@@ -662,10 +662,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     //$scope.cards = $scope.cards_temp; 
                 }
                 //$scope.cards = $scope.cards_temp;
-                
+
                 $scope.cards_temp.map(function(key, array) {
                     $scope.cards.push(key);
+                    console.log(key);
+                    //$this.splice(array, 1);
+
                 });
+                console.log('FIN');
+                $scope.cards_temp = [];
                 loading_cards = false;
                 //$scope.scrollingdisabled = false;
                 //$scope.$broadcast("items_changed", 'top');
@@ -754,9 +759,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     //$scope.cards = $scope.cards_temp; 
                 }
                 //$scope.cards = $scope.cards_temp;
-                    $scope.cards_temp.map(function(key, array) {
+                $scope.cards_temp.map(function(key, array) {
                     $scope.cards.push(key);
+                    console.log(key);
                 });
+                console.log('FIN');
+                $scope.cards_temp = [];
                 loading_cards = false;
                 deferred.resolve();
                 //$scope.scrollingdisabled = false;
