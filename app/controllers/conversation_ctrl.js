@@ -577,7 +577,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     //var INIT_NUM = 6;
 
     $scope.cards = [];
-    $scope.cards_temp = [];
+    //$scope.cards_temp = [];
 
     /*
     myArray.sort(function compare(a, b) {
@@ -601,6 +601,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     getFollowing = function() {
         console.log('loading_cards: ' + loading_cards);
         if (!loading_cards) {
+            $scope.cards_temp = [];
             loading_cards = true;
             //$scope.scrollingdisabled = true;
             var deferred = $q.defer();
@@ -637,7 +638,16 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             key.user_name = conversation.conversation_name;
                             key.avatar = conversation.conversation_avatar;
                             key.following = true;
+                            // Load any images offScreen
+
                             $scope.cards_temp.push(key);
+
+                            $('#conversation_card').find('IMG').map(function() {
+                                console.log($(this).attr('src'));
+                                return $(this).attr('src');
+                            });
+                            //console.log(images);
+
                         });
                     } else {
                         //no_more_records = true;
@@ -651,7 +661,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 if ($scope.cards.length == 0) {
                     //$scope.cards = $scope.cards_temp; 
                 }
-                $scope.cards = $scope.cards_temp;
+                //$scope.cards = $scope.cards_temp;
+                
+                $scope.cards_temp.map(function(key, array) {
+                    $scope.cards.push(key);
+                });
                 loading_cards = false;
                 //$scope.scrollingdisabled = false;
                 //$scope.$broadcast("items_changed", 'top');
@@ -664,6 +678,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     getCards = function(id) {
 
         if (!loading_cards) {
+            $scope.cards_temp = [];
             loading_cards = true;
             //$scope.scrollingdisabled = true;
             var deferred = $q.defer();
@@ -717,7 +732,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             // Get the conversation for this card
                             //var conversation_pos = General.nestedArrayIndexOfValue(res.data.conversations, 'admin', key.user);
                             //var conversation = res.data.conversations[conversation_pos];
-                            
+
                             // Store the original characters of the card.
                             key.original_content = key.content;
                             // Get the user name for the user id
@@ -738,7 +753,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 if ($scope.cards.length == 0) {
                     //$scope.cards = $scope.cards_temp; 
                 }
-                $scope.cards = $scope.cards_temp;
+                //$scope.cards = $scope.cards_temp;
+                    $scope.cards_temp.map(function(key, array) {
+                    $scope.cards.push(key);
+                });
                 loading_cards = false;
                 deferred.resolve();
                 //$scope.scrollingdisabled = false;
