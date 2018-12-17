@@ -155,7 +155,7 @@ cardApp.service('General', ['Users', 'Format', '$rootScope', function(Users, For
     this.nestedArrayIndexOfValue = function(myArray, property, value) {
         for (var i = 0, len = myArray.length; i < len; i++) {
 
-            for(var x = 0, len2 = myArray[i][property].length; x < len2; x++){
+            for (var x = 0, len2 = myArray[i][property].length; x < len2; x++) {
                 if (myArray[i][property][x] === value) return i;
             }
             //if (myArray[i][property][value] === searchTerm) return i;
@@ -219,6 +219,7 @@ cardApp.service('General', ['Users', 'Format', '$rootScope', function(Users, For
     }
 
     this.resizeListener = function() {
+        console.log('resize');
         keyboard_listen = true;
         is_landscape = (screen.height < screen.width);
         if (is_landscape) {
@@ -237,13 +238,17 @@ cardApp.service('General', ['Users', 'Format', '$rootScope', function(Users, For
     };
 
     hideFooter = function() {
+        console.log('hide');
         var focused = document.activeElement;
         if (focused.id != 'cecard_create') {
             $('.create_container').hide();
         }
         $('.footer').hide();
 
-        $rootScope.hide_footer = true;
+        $rootScope.$apply(function() {
+            $rootScope.hide_footer = true;
+        });
+
         //$('#placeholderDiv').css('bottom', '-1px');
         // Paste div that will be scrolled into view if necessary and the deleted.
         Format.pasteHtmlAtCaret("<span class='scroll_latest_footer' id='scroll_latest_footer'></span>");
@@ -252,7 +257,9 @@ cardApp.service('General', ['Users', 'Format', '$rootScope', function(Users, For
     };
 
     showFooter = function() {
-        $rootScope.hide_footer = false;
+        $rootScope.$apply(function() {
+            $rootScope.hide_footer = false;
+        });
         $('.footer').show();
         $('.create_container').show();
         $('#placeholderDiv').css('bottom', '5px');
@@ -260,12 +267,12 @@ cardApp.service('General', ['Users', 'Format', '$rootScope', function(Users, For
 
     // Start listening for keyboard.
     this.keyBoardListenStart = function() {
-        if (ua.indexOf('AndroidApp') >= 0) {
-            if (!keyboard_listen) {
-                window.addEventListener('resize', this.resizeListener);
-                keyboard_listen = true;
-            }
+        //if (ua.indexOf('AndroidApp') >= 0) {
+        if (!keyboard_listen) {
+            window.addEventListener('resize', this.resizeListener);
+            keyboard_listen = true;
         }
+        // }
     };
 
     // Stop listening for keyboard.
