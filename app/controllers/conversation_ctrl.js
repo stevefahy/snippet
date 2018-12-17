@@ -204,10 +204,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             if (td >= ($scope.cards.length / 2)) {
                 if ($scope.feed) {
                     $scope.total_to_display += NUM_TO_LOAD;
-                    getFollowing();
+                    //getFollowing();
                 } else {
                     $scope.total_to_display -= NUM_TO_LOAD;
-                    getCards(id);
+                    //getCards(id);
                 }
 
             }
@@ -229,9 +229,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     $scope.total_to_display -= NUM_TO_LOAD;
                 }
                 if ($scope.feed) {
-                    getFollowing();
+                   // getFollowing();
                 } else {
-                    getCards(id);
+                   // getCards(id);
                 }
 
             }
@@ -1360,6 +1360,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log('ngRepeatFinished');
 
         $rootScope.pageLoading = false;
+var id = Conversations.getConversationId();
+                   if ($scope.feed) {
+                    getFollowing();
+                } else {
+                    getCards(id);
+                }
 
         //$scope.scrollingdisabled = false;
         if (STORED != undefined) {
