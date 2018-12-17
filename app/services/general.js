@@ -273,6 +273,7 @@ cardApp.service('General', ['Users', 'Format', '$rootScope', function(Users, For
         }
     };
 
+
     // Stop listening for keyboard.
     this.keyBoardListenStop = function() {
         if (keyboard_listen) {
