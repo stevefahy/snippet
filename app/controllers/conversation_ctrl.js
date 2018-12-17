@@ -670,7 +670,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
                 });
                 console.log('FIN');
-                $scope.cards_temp = [];
+                //$scope.cards_temp = [];
                 loading_cards = false;
                 //$scope.scrollingdisabled = false;
                 //$scope.$broadcast("items_changed", 'top');
@@ -764,7 +764,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     console.log(key);
                 });
                 console.log('FIN');
-                $scope.cards_temp = [];
+                //$scope.cards_temp = [];
                 loading_cards = false;
                 deferred.resolve();
                 //$scope.scrollingdisabled = false;
