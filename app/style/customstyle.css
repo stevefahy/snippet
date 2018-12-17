@@ -1391,8 +1391,8 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     opacity: 1;
     color: darkgreen;
     text-align: left;
-    padding-left: 2px;
-    right: 0px;
+    padding-left: 8px;
+    position: unset;
 }
 
 .create_d {
@@ -1492,6 +1492,10 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 
     border-radius: 1px;
     background-color: #FFFFFF;
+}
+
+.content_cnv_hide_footer {
+    height: calc(100% - 125px);
 }
 
 .content_cnv_conv{

@@ -2,7 +2,7 @@
 // General Service
 //
 
-cardApp.service('General', ['Users', 'Format', function(Users, Format) {
+cardApp.service('General', ['Users', 'Format', '$rootScope', function(Users, Format, $rootScope) {
     var ua = navigator.userAgent;
     var keyboard_listen = false;
     var self = this;
@@ -201,6 +201,7 @@ cardApp.service('General', ['Users', 'Format', function(Users, Format) {
     var initial_width = window.innerWidth;
     var portrait_height;
     var landscape_height;
+    $rootScope.hide_footer = false;
 
     // If the initial height is less than the screen height (status bar etc..)
     // then adjust the initial width to take into account this difference
@@ -241,6 +242,8 @@ cardApp.service('General', ['Users', 'Format', function(Users, Format) {
             $('.create_container').hide();
         }
         $('.footer').hide();
+
+        $rootScope.hide_footer = true;
         //$('#placeholderDiv').css('bottom', '-1px');
         // Paste div that will be scrolled into view if necessary and the deleted.
         Format.pasteHtmlAtCaret("<span class='scroll_latest_footer' id='scroll_latest_footer'></span>");
@@ -249,6 +252,7 @@ cardApp.service('General', ['Users', 'Format', function(Users, Format) {
     };
 
     showFooter = function() {
+        $rootScope.hide_footer = false;
         $('.footer').show();
         $('.create_container').show();
         $('#placeholderDiv').css('bottom', '5px');
