@@ -219,7 +219,6 @@ cardApp.service('General', ['Users', 'Format', '$rootScope', function(Users, For
     }
 
     this.resizeListener = function() {
-        console.log('resize');
         keyboard_listen = true;
         is_landscape = (screen.height < screen.width);
         if (is_landscape) {
@@ -238,7 +237,6 @@ cardApp.service('General', ['Users', 'Format', '$rootScope', function(Users, For
     };
 
     hideFooter = function() {
-        console.log('hide');
         var focused = document.activeElement;
         if (focused.id != 'cecard_create') {
             $('.create_container').hide();
@@ -267,12 +265,12 @@ cardApp.service('General', ['Users', 'Format', '$rootScope', function(Users, For
 
     // Start listening for keyboard.
     this.keyBoardListenStart = function() {
-        //if (ua.indexOf('AndroidApp') >= 0) {
-        if (!keyboard_listen) {
-            window.addEventListener('resize', this.resizeListener);
-            keyboard_listen = true;
+        if (ua.indexOf('AndroidApp') >= 0) {
+            if (!keyboard_listen) {
+                window.addEventListener('resize', this.resizeListener);
+                keyboard_listen = true;
+            }
         }
-        // }
     };
 
     // Stop listening for keyboard.
