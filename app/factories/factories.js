@@ -233,12 +233,12 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
     var socket_n;
 
     notifyUsers = function(msg) {
-        //console.log('notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
+        console.log('notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
         $rootScope.$broadcast('NOTIFICATION', msg);
     };
 
     notifyPublic = function(msg) {
-        //console.log('notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
+        console.log('notify_users, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
         $rootScope.$broadcast('PUBLIC_NOTIFICATION', msg);
     };
 
@@ -591,6 +591,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
 
     // Check for updates
     UserData.checkDataUpdate = function() {
+        console.log('checkDataUpdate');
         if (!update_inprogress) {
             update_inprogress = true;
             var toUpdate = [];
