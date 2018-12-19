@@ -325,11 +325,16 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             } 
             var val = { ids: followed, amount: NUM_TO_LOAD, last_card: last_card };
             console.log(val);
+            console.log($scope.cards);
             var prom1 = Conversations.getFeed(val)
                 .then(function(res) {
                     console.log(res);
                     if (res.data.cards.length > 0) {
                         res.data.cards.map(function(key, array) {
+
+                            // Ckeck that this card does not already exist in scope.cards
+                            if(General.findWithAttr($scope.cards, '_id', key._id) < 0){
+
                             // Get the conversation for this card
                             var conversation_pos = General.nestedArrayIndexOfValue(res.data.conversations, 'admin', key.user);
                             var conversation = res.data.conversations[conversation_pos];
@@ -341,6 +346,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             key.following = true;
                             // Load any images offScreen
                             $scope.cards_temp.push(key);
+
+                            }
+
                         });
                     } else {
                         //console.log('NO MORE RECORDS');
