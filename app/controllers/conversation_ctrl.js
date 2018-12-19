@@ -176,6 +176,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         $scope.addSlider(data);
     });
 
+
+    // New
+    $scope.$on('SOCKET_RECONNECT', function(event) {
+        console.log('SOCKET_RECONNECT');
+        //UserData.checkDataUpdate();
+        updateFollowing();
+    });
+
     // Broadcast by UserData after it has processed the notification. (card has been created, updated or deleted by another user to this user).
     $scope.$on('CONV_NOTIFICATION', function(event, msg) {
         // only update the conversation if the user is currently in that conversation
@@ -300,6 +308,54 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             updateCards(temp_cards);
         });
         return deferred.promise;
+    };
+
+    updateFollowing = function() {
+        if (!loading_cards) {
+            $scope.cards_temp = [];
+            loading_cards = true;
+            var deferred = $q.defer();
+            var promises = [];
+            var followed = UserData.getUser().following;
+            var last_card;
+            if ($scope.cards.length > 0) {
+                var sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
+                // newest card
+                last_card = sort_card[sort_card.length - 1].updatedAt; 
+            } 
+            var val = { ids: followed, amount: NUM_TO_LOAD, last_card: last_card };
+            console.log(val);
+            var prom1 = Conversations.getFeed(val)
+                .then(function(res) {
+                    console.log(res);
+                    if (res.data.cards.length > 0) {
+                        res.data.cards.map(function(key, array) {
+                            // Get the conversation for this card
+                            var conversation_pos = General.nestedArrayIndexOfValue(res.data.conversations, 'admin', key.user);
+                            var conversation = res.data.conversations[conversation_pos];
+                            // Store the original characters of the card.
+                            key.original_content = key.content;
+                            // Get the user name for the user id
+                            key.user_name = conversation.conversation_name;
+                            key.avatar = conversation.conversation_avatar;
+                            key.following = true;
+                            // Load any images offScreen
+                            $scope.cards_temp.push(key);
+                        });
+                    } else {
+                        //console.log('NO MORE RECORDS');
+                    }
+                });
+            promises.push(prom1);
+            // All the users contacts have been mapped.
+            $q.all(promises).then(function() {
+                $scope.cards_temp.map(function(key, array) {
+                    $scope.cards.push(key);
+                });
+                loading_cards = false;
+            });
+            return deferred.promise;
+        }
     };
 
     // TODO - If not following anyone suggest follow?

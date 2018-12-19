@@ -2,8 +2,8 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     // Broadcast by socket after it has reconnected. Check for updates.
     $scope.$on('SOCKET_RECONNECT', function(event) {
-        //console.log('SOCKET_RECONNECT');
-        UserData.checkDataUpdate();
+        console.log('SOCKET_RECONNECT');
+        //UserData.checkDataUpdate();
     });
 
     // Broadcast by socket service when data needs to be updated.
