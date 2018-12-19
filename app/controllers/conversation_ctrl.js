@@ -82,6 +82,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         // Find the public conversation for this user.
         Conversations.find_user_public_conversation_by_id(card.user)
             .then(function(result) {
+                console.log(result);
                 if (result.data.conversation_type == 'public') {
                     // If following then unfollow
                     var pms = { 'id': result.data._id, 'user': UserData.getUser()._id };
@@ -224,6 +225,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 // Find the public conversation for this user.
                 var prom1 = Conversations.find_user_public_conversation_by_id(key.user)
                     .then(function(result) {
+                        console.log(result);
                         if ($scope.currentUser.following.indexOf(result.data._id) >= 0) {
                             // The user is following this user.
                             key.following = true;
@@ -402,6 +404,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         // Load the users public conversation
         Conversations.find_user_public_conversation_by_id(UserData.getUser()._id).then(function(result) {
             // Set the conversation id so that it can be retrieved by cardcreate_ctrl
+            console.log(result);
             Conversations.setConversationId(result.data._id);
             getFollowing();
         });
