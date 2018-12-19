@@ -94,6 +94,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                     .then(function(result) {
                                         UserData.setUser(result.data);
                                         $scope.currentUser = UserData.getUser();
+                                        console.log('2');
                                         updateFollowingIcons($scope.cards)
                                             .then(function(result) {
                                                 // Remove this users cards from the feed.
@@ -110,6 +111,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                     .then(function(result) {
                                         UserData.setUser(result.data);
                                         $scope.currentUser = UserData.getUser();
+                                        console.log('3');
                                         updateFollowingIcons($scope.cards);
                                     });
                             });
@@ -184,6 +186,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     $scope.$on('CONV_MODEL_NOTIFICATION', function(event, msg) {
         updateConversation(msg);
+        console.log('4');
         updateFollowingIcons($scope.cards);
     });
 
@@ -402,11 +405,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         $rootScope.$broadcast('PROFILE_SET');
         $scope.isMember = true;
         // Load the users public conversation
+        console.log(UserData.getUser()._id);
         Conversations.find_user_public_conversation_by_id(UserData.getUser()._id).then(function(result) {
             // Set the conversation id so that it can be retrieved by cardcreate_ctrl
             console.log(result);
-            Conversations.setConversationId(result.data._id);
-            getFollowing();
+            if (result.data._id != undefined) {
+                Conversations.setConversationId(result.data._id);
+                getFollowing();
+            }
         });
     };
 
@@ -754,7 +760,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         });
         // Clear the cards unviewed arrary for this participant of this conversation.
         updateConversationViewed(data.conversationId);
-
+        console.log('1');
         updateFollowingIcons($scope.cards);
 
         var dir;
