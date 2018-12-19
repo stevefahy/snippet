@@ -326,7 +326,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             var val = { ids: followed, amount: NUM_TO_LOAD, last_card: last_card };
             console.log(val);
             console.log($scope.cards);
-            var prom1 = Conversations.getFeed(val)
+            var prom1 = Conversations.updateFeed(val)
                 .then(function(res) {
                     console.log(res);
                     if (res.data.cards.length > 0) {

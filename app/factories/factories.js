@@ -216,6 +216,10 @@ cardApp.factory('Conversations', ['$http', function($http) {
             var theurl = '/chat/get_feed/' + val.ids;
             return $http.post(theurl, val);
         },
+        updateFeed: function(val) {
+            var theurl = '/chat/update_feed/' + val.ids;
+            return $http.post(theurl, val);
+        },
         getConversationCards: function(val) {
             var theurl = '/chat/get_conversation_cards/' + val.id;
             return $http.post(theurl, val);

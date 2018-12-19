@@ -1328,6 +1328,41 @@ module.exports = function(app, passport) {
         }).sort({ "updatedAt": -1 }).limit(amount);
     });
 
+   app.post('/chat/update_feed/:val', isLoggedIn, function(req, res) {
+        var user_array = req.body.ids;
+        var amount = req.body.amount;
+        var last_card = req.body.last_card;
+        var feed = {};
+        console.log(user_array);
+        Conversation.find({
+            '_id': {
+                $in: user_array.map(function(o) { return mongoose.Types.ObjectId(o); })
+            },
+            'conversation_type': 'public'
+        }, function(err, conversations) {
+            if (err) {
+                //console.log(err);
+            }
+            feed.conversations = conversations;
+            Card.find({
+                'conversationId': {
+                    $in: user_array.map(function(o) {
+                        return mongoose.Types.ObjectId(o);
+                    })
+                },
+                'updatedAt': {
+                    '$gt': last_card
+                }
+            }, function(err, cards) {
+                if (err) {
+                    console.log(err);
+                }
+                feed.cards = cards;
+                res.json(feed);
+            }).sort({ "updatedAt": -1 }).limit(amount);
+        });
+    });
+
     app.post('/chat/get_feed/:val', isLoggedIn, function(req, res) {
         var user_array = req.body.ids;
         var amount = req.body.amount;
