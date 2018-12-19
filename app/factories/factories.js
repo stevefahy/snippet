@@ -213,29 +213,13 @@ cardApp.factory('Conversations', ['$http', function($http) {
             return $http.get('/chat/get_conversation_latest_card/' + id);
         },
         getFeed: function(val) {
-            console.log(val);
             var theurl = '/chat/get_feed/' + val.ids;
             return $http.post(theurl, val);
         },
         getConversationCards: function(val) {
-            console.log(val);
             var theurl = '/chat/get_conversation_cards/' + val.id;
             return $http.post(theurl, val);
         }
-
-        /*
-                update: function(pms) {
-            var theurl = 'api/cards/' + pms.id;
-            return $http.put(theurl, pms);
-        },
-        */
-
-        /*
-                addFollower: function(conversation) {
-            var theurl = 'chat/follow_public_conversation/' + conversation.id;
-            return $http.put(theurl, conversation);
-        },
-        */
     };
 }]);
 
@@ -638,18 +622,18 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                                             if (result.data.length > 0) {
                                                 UserData.getCardsModelById(key._id)
                                                     .then(function(res) {
-                                                        if(res.data != undefined){
-                                                        for (var i in result.data) {
-                                                            if (!General.isEqual(result.data[i].content, res.data[i].content)) {
-                                                                conv_same = false;
+                                                        if (res.data != undefined) {
+                                                            for (var i in result.data) {
+                                                                if (!General.isEqual(result.data[i].content, res.data[i].content)) {
+                                                                    conv_same = false;
+                                                                }
+                                                            }
+                                                            if (!conv_same) {
+                                                                update_inprogress = false;
+                                                                var msg = { conversation_id: res._id };
+                                                                notification(msg);
                                                             }
                                                         }
-                                                        if (!conv_same) {
-                                                            update_inprogress = false;
-                                                            var msg = { conversation_id: res._id };
-                                                            notification(msg);
-                                                        }
-                                                    }
                                                     });
                                             }
                                             update_inprogress = false;
@@ -666,7 +650,6 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     //
 
     notification = function(msg) {
-        console.log(msg);
         // CONVERSATIONS
         if (!update_inprogress) {
             // Find the conversations for current user
@@ -833,13 +816,6 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     $rootScope.$on('NOTIFICATION', function(event, msg) {
         notification(msg);
     });
-
-/*
-    $rootScope.$on('PUBLIC_NOTIFICATION', function(event, msg) {
-        //notification(msg);
-        console.log(msg);
-    });
-    */
 
     //
     // User

@@ -5,28 +5,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     // Add users to each others contacts when conv created?
     // TODO - make sure two users cannot create a chat simultanously
     // TODO - make sure only one chat created with aother single user.
-console.log($rootScope.nav);
-    // Animation
-    if ($rootScope.nav) {
-        if ($rootScope.nav.from == 'conv') {
-            //viewAnimationsService.setEnterAnimation('page-contacts');
-            //viewAnimationsService.setLeaveAnimation('page-conversation-static');
-        } else if ($rootScope.nav.from == 'convs') {
-            //viewAnimationsService.setLeaveAnimation('page-contacts-static');
-            //viewAnimationsService.setEnterAnimation('page-contacts');
-        }
-    }
-    //$rootScope.nav = { from: 'contacts', to: 'convs' };
-    // Loading conversation directly should not animate.
-    //$animate.enabled($rootScope.animate_pages);
-    // turn on animation.
-    //$scope.contact_back = false;
 
-    /*
-    $scope.$on('$routeChangeStart', function($event, next, current) {
-        $animate.enabled(true);
-    });
-    */
     // Check if the page has been loaded witha param (user contacts import callback).
     var paramValue = $route.current.$$route.menuItem;
     // Stop listening for Mobile soft keyboard.
@@ -165,7 +144,6 @@ console.log($rootScope.nav);
         $scope.avatar = 'default';
     };
 
-
     $scope.selectGroup = function() {
         $scope.group_selected = !$scope.group_selected;
         if ($scope.group_selected) {
@@ -221,7 +199,6 @@ console.log($rootScope.nav);
 
     // Start or continue a single user conversation with a contact.
     $scope.chat = function(contact) {
-        console.log(contact);
         if (contact.conversation_exists) {
             $scope.continueChat(contact.conversation_id, contact);
         } else {
@@ -461,7 +438,6 @@ console.log($rootScope.nav);
         $scope.contacts.map(function(key, array) {
             Conversations.find_user_public_conversation_by_id(key._id)
                 .then(function(result) {
-                    console.log(result);
                     // If public then show link to the public conversation
                     if (result.data.conversation_type == 'public') {
                         key.public_conversation = result.data._id;
@@ -587,17 +563,13 @@ console.log($rootScope.nav);
                         $scope.search_results = [];
                         // Map response values to field label and value
                         response($.map(data, function(res) {
-                            console.log(res);
-
                             Conversations.find_user_public_conversation_by_id(res._id)
                                 .then(function(result) {
-                                    console.log(result);
                                     // If public then show link to the public conversation
                                     if (result.data.conversation_type == 'public') {
                                         res.public_conversation = result.data._id;
                                     }
                                 });
-
                             // check if this user is already a contact
                             // Do not list current user
                             if (res._id != $scope.currentUser._id) {

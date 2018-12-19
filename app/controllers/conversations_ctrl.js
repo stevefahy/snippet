@@ -1,52 +1,7 @@
 cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$http', 'Invites', 'Email', 'Users', 'Conversations', '$q', 'FormatHTML', 'General', 'Profile', '$cookies', '$timeout', 'principal', 'UserData', function($scope, $rootScope, $location, $http, Invites, Email, Users, Conversations, $q, FormatHTML, General, Profile, $cookies, $timeout, principal, UserData) {
 
-
-    // Animation
-    console.log($rootScope.nav);
-    if ($rootScope.nav) {
-
-        //viewAnimationsService.setEnterAnimation('page-conversations');
-       //viewAnimationsService.setLeaveAnimation('page-conversation-static');
-
-        
-        if ($rootScope.nav.from == 'convs' && $rootScope.nav.to == 'conv') {
-            //viewAnimationsService.setEnterAnimation('page-conversations');
-            //viewAnimationsService.setLeaveAnimation('page-conversation');
-/*
-            $('#page-system').removeClass("page-conversation-static");
-            $('#page-system').removeClass("page-contacts");
-            $('#page-system').addClass("page-conversation");
-            viewAnimationsService.setEnterAnimation('page-conversations-static');
-            viewAnimationsService.setLeaveAnimation('page-conversation');
-            */
-        } else if ($rootScope.nav.from == 'contacts' && $rootScope.nav.to == 'convs') {
-            //viewAnimationsService.setEnterAnimation('page-conversations-static');
-            //viewAnimationsService.setLeaveAnimation('page-conversation');
-        } else if ($rootScope.nav.from == 'conv' && $rootScope.nav.to == 'convs') {
-                //$('.page-conversations.ng-enter').css('z-index', 9000);
-                //viewAnimationsService.setEnterAnimation('page-conversations');
-                //viewAnimationsService.setLeaveAnimation('page-conversation');
-        } else if ($rootScope.nav.from == 'group' && $rootScope.nav.to == 'conv') {
-                //viewAnimationsService.setEnterAnimation('page-conversations');
-                //viewAnimationsService.setLeaveAnimation('page-conversation');
-        } else if ($rootScope.nav.from == 'feed' && $rootScope.nav.to == 'convs') {
-            /*
-            $('#page-system').removeClass("page-conversation-static");
-            $('#page-system').addClass("page-conversation");
-            viewAnimationsService.setEnterAnimation('page-conversations');
-            viewAnimationsService.setLeaveAnimation('page-conversation-static');
-            */
-        }
-        
-        
-    }
-
-    //$rootScope.nav = { from: 'convs', to: 'conv' };
-    // variable to turn on animation of view chage. Loading conversation directly should not animate.
-    //$rootScope.animate_pages = true;
-    // Enable scroll indicator if mobile.
-    //$scope.scroll_indicator_options = { disable: !$rootScope.is_mobile };
-    //$scope.scroll_indicator_options = false;
+    // Detect device user agent 
+    var ua = navigator.userAgent;
     // array of conversations
     $scope.conversations = [];
 
@@ -56,9 +11,6 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
         // Update the conversations.
         $scope.conversations = UserData.getConversationModel();
     });
-
-    // Detect device user agent 
-    var ua = navigator.userAgent;
 
     // Continue chat
     $scope.chat = function(conversation_id, conversation, index) {

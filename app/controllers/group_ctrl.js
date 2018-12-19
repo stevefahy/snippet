@@ -1,25 +1,4 @@
 cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams', '$location', '$http', '$timeout', 'principal', 'UserData', 'Invites', 'Email', 'Users', 'Conversations', 'Profile', 'General', 'Format', 'Contacts', '$q', function($scope, $route, $rootScope, $routeParams, $location, $http, $timeout, principal, UserData, Invites, Email, Users, Conversations, Profile, General, Format, Contacts, $q) {
-console.log($rootScope.nav);
-    // Animation
-    //$rootScope.nav = { from: 'group', to: 'conv' };
-   // console.log($rootScope.nav);
-    // Default navigation
-    if ($rootScope.animate_pages) {
-        // Loading conversation directly should not animate.
-        //viewAnimationsService.setEnterAnimation('page-group');
-    } else {
-        //$rootScope.nav = { from: 'group-direct', to: 'conv' };
-        //viewAnimationsService.setLeaveAnimation('page-group-direct');
-    }
-    //viewAnimationsService.setLeaveAnimation('page-group');
-    // turn on animation.
-    //$scope.contact_back = false;
-    /*
-    $scope.$on('$routeChangeStart', function($event, next, current) {
-        $rootScope.animate_pages = true;
-        $animate.enabled(true);
-    });
-    */
 
     // Use the urls id param from the route to load the conversation.
     var id = $routeParams.id;
@@ -62,7 +41,6 @@ console.log($rootScope.nav);
     // Image
     var myImageName = '';
     var mySavedImage = '';
-
 
     updateProfile = function() {
         var profile = {};

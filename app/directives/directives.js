@@ -96,9 +96,7 @@ cardApp.directive('onFinishRender', function($timeout, $rootScope) {
         restrict: 'A',
         link: function(scope, element, attr) {
             if (scope.$last === true || scope.$first === true) {
-                console.log(scope.$index + ' : ' + scope.$first + ' : ' + scope.$last);
                 $timeout(function() {
-                    //scope.$emit('ngRepeatFinished');
                     $rootScope.$broadcast("ngRepeatFinished", { temp: "some value" });
                 });
             }
@@ -116,14 +114,12 @@ cardApp.directive('viewAnimations', function(viewAnimationsService, $rootScope) 
 
             var enterAnimation = viewAnimationsService.getEnterAnimation();
             if (enterAnimation) {
-                console.log(previousEnter);
                 if (previousEnter) element.removeClass(previousEnter);
                 previousEnter = enterAnimation;
                 element.addClass(enterAnimation);
             }
 
             $rootScope.$on('event:newLeaveAnimation', function(event, leaveAnimation) {
-                console.log(previousLeave);
                 if (previousLeave) element.removeClass(previousLeave);
                 previousLeave = leaveAnimation;
                 element.addClass(leaveAnimation);
@@ -132,30 +128,11 @@ cardApp.directive('viewAnimations', function(viewAnimationsService, $rootScope) 
     };
 });
 
-/*
-cardApp.directive('scrollTrigger', function($window) {
-    return {
-        link : function(scope, element, attrs) {
-            var offset = parseInt(attrs.threshold) || 0;
-            //var e = jQuery(element[0]);
-            var e = jQuery(element.parent()[0]);
-            
-            var doc = jQuery(document);
-            angular.element(document).bind('scroll', function() {
-                if (doc.scrollTop() + $window.innerHeight + offset > e.offset().top) {
-                    scope.$apply(attrs.scrollTrigger);
-                }
-            });
-        }
-    };
-});
-*/
 
 cardApp.directive("scrollToTopWhen", function($timeout) {
     return {
         link: function(scope, element, attrs) {
             scope.$on(attrs.scrollToTopWhen, function(event, data) {
-                console.log('scrollToTopWhen: ' + data);
                 $timeout(function() {
                     if (data == 'top') {
                         angular.element(element)[0].scrollTop = 0;
@@ -163,12 +140,13 @@ cardApp.directive("scrollToTopWhen", function($timeout) {
                         angular.element(element)[0].scrollTop = angular.element(element)[0].scrollHeight;
                     }
 
-                },100);
+                }, 100);
             });
         }
     };
 });
 
+/*
 cardApp.directive("scrollTrigger", function() {
     return {
         scope: {
@@ -176,25 +154,19 @@ cardApp.directive("scrollTrigger", function() {
         },
         link: function(scope, element, attrs) {
             var offset = parseInt(attrs.threshold) || 0;
-            console.log(offset);
             var container = angular.element(element);
-            //var edge;
             container.bind("scroll mousewheel touchstart", function(evt) {
-                console.log('scroll: ' + container[0].scrollTop);
                 if (container[0].scrollTop <= (0 + offset)) {
-                    console.log('On the top of the world I\'m singing I\'m dancing.');
-                    // scope.$apply(attrs.scrollTrigger);
                     scope.callback('top');
                 }
                 if (container[0].offsetHeight + container[0].scrollTop >= (container[0].scrollHeight - offset)) {
-                    //console.log('On the bottom of the world I\'m waiting.');
                     scope.callback('bottom');
                 }
             });
         }
     };
 });
-
+*/
 
 // scrollIndicator directive
 /*

@@ -521,7 +521,6 @@ hr {
     padding-left: 1.25em;
     padding-right: 1.25em;
     align-items: center;
-
     position: absolute;
 }
 
@@ -915,7 +914,6 @@ form.form-horizontal.ng-valid.ng-dirty.ng-valid-parse {
 .edit {
     float: right;
     margin-left: auto;
-    /*z-index: 2000;*/
     z-index: 19;
     margin-right: 20px;
     align-self: center;
@@ -923,35 +921,12 @@ form.form-horizontal.ng-valid.ng-dirty.ng-valid-parse {
 
 .hide_card .resize-drag {
     visibility: hidden;
-   /* -webkit-animation: fadeCard .3s forwards ;*/
 }
 
 .show_card .resize-drag {
-    visibility: visible;;
-    /* -webkit-animation: unfadeCard 2s forwards ;*/
+    visibility: visible;
+    ;
 }
-
-@keyframes unfadeCard {
-    0% {
-        opacity : 0;
-    }
-
-    100% {
-        opacity : 1;
-    }
-}
-
-@keyframes fadeCard {
-    0% {
-        opacity : .5;
-    }
-
-    100% {
-        opacity : 0;
-    }
-}
-
-
 
 .header_edit {
     margin-left: 10px;
@@ -1269,8 +1244,6 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 .convs_col_b {
     margin-right: auto;
     text-align: right;
-    /*line-height: normal;
-    margin-top: 3px;*/
     margin-top: auto;
     margin-bottom: auto;
 }
@@ -1349,7 +1322,6 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 .create_container_hide_footer {
     bottom: 0px !important;
 }
-
 
 .create_a {
     display: flex;
@@ -1490,10 +1462,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     overflow-y: overlay;
     /* DANGER added x 01/04/18 */
     overflow-x: hidden;
-    /*height: calc(100%);*/
-
     height: calc(100% - 185px);
-
     border-radius: 1px;
     background-color: #FFFFFF;
 }
@@ -1502,20 +1471,15 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     height: calc(100% - 125px);
 }
 
-.content_cnv_conv{
+.content_cnv_conv {
     height: calc(100% - 126px) !important;
-}   
+}
 
 .convs {
     height: calc(100% - 115px) !important;
 }
 
-
-.content_cnv_off {
-    /*height: 0px;*/
-
-    /*display: none;*/
-}
+.content_cnv_off {}
 
 .scroller {
     overflow-x: hidden;
@@ -1692,10 +1656,6 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     height: 0px;
 }
 
-.placeholderDiv_feed {
-    /*bottom: 66px !important;*/
-}
-
 #placeholderDiv {
     z-index: 100;
     position: absolute;
@@ -1706,7 +1666,6 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     padding-top: 11px;
     padding-bottom: 9px;
     bottom: 5px;
-    /*bottom: 66px;*/
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -1715,8 +1674,6 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     left: 0px;
     color: grey;
 }
-
-
 
 span#scroll_latest_footer {
     display: inline-block;
@@ -2286,12 +2243,6 @@ span#scroll_image_latest {
     cursor: default;
 }
 
-/*
-.contacts_result_container_on {
-    cursor: pointer;
-}
-*/
-
 .search_add_user {
     cursor: pointer;
 }
@@ -2413,15 +2364,7 @@ span#scroll_image_latest {
 }
 
 .loading_screen {
-    /*
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    background-color: white;
-    */
-
-        position: absolute;
+    position: absolute;
     top: 55px;
     display: flex;
     justify-content: center;
@@ -2433,11 +2376,10 @@ span#scroll_image_latest {
 }
 
 .loading_card {
-    /*position: absolute;*/
     display: flex;
     justify-content: center;
     align-items: center;
-width: calc(100vw - 16px);
+    width: calc(100vw - 16px);
     height: 0px;
     background-color: white;
     top: 55px;
@@ -2475,7 +2417,6 @@ width: calc(100vw - 16px);
 .convs_data_bottom {
     position: relative;
     margin-top: 2px;
-    /*min-height: 20px;*/
     width: 100%;
     overflow: hidden;
 }
@@ -2661,95 +2602,6 @@ span#header b.header_3 {
 ============================================================================= 
 */
 
-
-
-/*
-
-.page-conversation {
-    z-index: 5000;
-}
-
-.page-conversation-top {
-     z-index: 9000;
-}
-
-.page-conversation-static {
-    z-index: 5000;
-}
-
-.page-conversations-static {
-    z-index: 5000;
-}
-
-.page-conversations {
-    z-index: 6000;
-}
-
-.page-user_setting {
-    z-index: 9000;
-}
-
-.page-contacts {
-    z-index: 7000;
-}
-
-.page-contacts-static {
-    z-index: 7000;
-}
-
-.page-group {
-    z-index: 7000;
-}
-
-.page-group-direct {
-    z-index: 7000;
-}
-
-.pause.ng-leave {
-    -webkit-animation: 5s conversations-leave;
-}
-
-.pause.ng-enter {
-    -webkit-animation: 5s conversations-leave;
-}
-*/
-
-/*
-.page-anim-top.ng-leave {
-    -webkit-animation: slideOutRight 7s cubic-bezier(0.19, 1, 0.22, 1);
-}
-
-.page-anim-top.ng-leave.ng-leave-active .content_cnv {
-    overflow-y: hidden;
-}
-
-.page-anim-top.ng-enter {
-    will-change: transform;
-    -webkit-animation: slide-in 7s cubic-bezier(0.19, 1, 0.22, 1);
-}
-
-.page-anim-top.ng-enter.ng-enter-active .content_cnv {
-    overflow-y: hidden;
-}
-*/
-
-/*
-.page-group.ng-enter {
-    -webkit-animation: slide-in .5s forwards;
-}
-
-@keyframes slide-in {
-    0% {
-        transform: translateX(100%);
-    }
-
-    100% {
-        transform: translateX(0);
-    }
-}
-*/
-
-
 .page {
     bottom: 0;
     top: 0;
@@ -2775,8 +2627,6 @@ span#header b.header_3 {
 }
 
 /* NEW */
-
-
 
 .page-anim.ng-leave {
     -webkit-animation: slideOutRight .7s cubic-bezier(0.19, 1, 0.22, 1);
@@ -2828,10 +2678,6 @@ span#header b.header_3 {
     overflow-y: hidden;
 }
 
-
-
-
-
 /* NEW */
 
 
@@ -2865,7 +2711,6 @@ Transitions
     -webkit-transition: all .4s cubic-bezier(.4, 0, .2, 1);
     transition: all .4s cubic-bezier(.4, 0, .2, 1);
 }
-
 
 .transition_2 {
     -webkit-transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.4s;
@@ -2958,172 +2803,6 @@ scrollIndicator directive
         opacity: 0;
     }
 }
-
-
-
-/* page-group */
-
-/*
-
-.page-group-leave.ng-leave {}
-
-.page-group.ng-leave {
-    -webkit-animation: slideOutRight 7s cubic-bezier(0.19, 1, 0.22, 1);
-}
-
-.page-group-direct.ng-leave {
-    -webkit-animation: slideOutRight 7s cubic-bezier(0.19, 1, 0.22, 1);
-}
-
-.page-group.ng-leave .content_cnv {
-    overflow-y: hidden;
-}
-
-.page-group.ng-enter {
-    -webkit-animation: slide-in 5s forwards;
-}
-
-.page-group.ng-enter.ng-enter-active .content_cnv {
-    overflow-y: hidden;
-}
-
-*/
-
-/* page-contacts */
-
-/*
-
-.page-contacts-static.ng-leave {
-    -webkit-animation: 5s conversations-leave;
-}
-
-.page-contacts-static.ng-enter {
-    -webkit-animation: 5s conversations-leave;
-}
-
-.page-contacts.ng-leave {
-    -webkit-animation: slideOutRight 5s forwards;
-}
-
-.page-contacts.ng-leave .content_cnv {
-    overflow-y: hidden;
-}
-
-.page-contacts.ng-enter {
-    -webkit-animation: slide-in 5s forwards;
-}
-
-.page-contacts.ng-enter.ng-enter-active .content_cnv {
-    overflow-y: hidden;
-}
-*/
-
-/* page-user_setting */
-
-/*
-.page-user_setting.ng-leave {
-    -webkit-animation: slideOutRight 5s forwards;
-}
-
-.page-user_setting.ng-leave .content_cnv {
-    overflow-y: hidden;
-}
-
-.page-user_setting.ng-enter {
-    -webkit-animation: slide-in 5s forwards;
-}
-
-.page-user_setting.ng-enter.ng-enter-active .content_cnv {
-    overflow-y: hidden;
-}
-
-*/
-
-/* conversations ---------------------- */
-
-/*
-.page-conversations.ng-leave {
-      -webkit-animation: slideOutRight 5s forwards;
-}
-
-.page-conversations.ng-enter {
-    -webkit-animation: slide-in 5s forwards;
-}
-
-.page-conversations.ng-enter .content_cnv {
-    overflow-y: hidden;
-}
-
-.page-conversations-static.ng-leave {
-    -webkit-animation: 3s conversations-leave;
-}
-
-
-@keyframes conversations-leave {
-        {}
-}
-
-*/
-
-/* conversation ---------------------- */
-
-/*
-
-.page-conversation_group.ng-leave {
-    -webkit-animation: 5s conversations-leave;
-}
-
-.page-conversation_group.ng-enter {
-    -webkit-animation: 5s conversations-leave;
-}
-
-.page-conversation.ng-leave {
-    -webkit-animation: slideOutRight 7s cubic-bezier(0.19, 1, 0.22, 1);
-}
-
-.page-conversation-top.ng-leave {
-    -webkit-animation: slideOutRight 7s cubic-bezier(0.19, 1, 0.22, 1);
-}
-
-.page-conversation.ng-leave.ng-leave-active .content_cnv {
-    overflow-y: hidden;
-}
-
-.page-conversation-top.ng-leave.ng-leave-active .content_cnv {
-    overflow-y: hidden;
-}
-
-.page-conversation.ng-enter {
-    will-change: transform;
-    -webkit-animation: slide-in 7s cubic-bezier(0.19, 1, 0.22, 1);
-}
-
-.page-conversation-top.ng-enter {
-    will-change: transform;
-    -webkit-animation: slide-in 7s cubic-bezier(0.19, 1, 0.22, 1);
-}
-
-.page-conversation.ng-enter.ng-enter-active .content_cnv {
-    overflow-y: hidden;
-}
-
-.page-conversation-top.ng-enter.ng-enter-active .content_cnv {
-    overflow-y: hidden;
-}
-*/
-
-/* page-conversation entering */
-
-/*
-.page-conversation-static.ng-leave {
-    -webkit-animation: 3s conversations-leave;
-}
-*/
-
-
-
-
-
 
 .image_adjust {
     top: 10px;

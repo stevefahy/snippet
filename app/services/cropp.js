@@ -471,10 +471,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     };
 
     this.closeEdit = function(e, id) {
-        //if(e){
-           e.stopPropagation(); 
-        //}
-        
+        e.stopPropagation();
         $('#' + e.target.id).closest('div.ce').attr('contenteditable', 'true');
         $('.image_adjust_on').remove();
         $('#cropper_' + id).removeClass('cropping');

@@ -237,31 +237,17 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         return $('#cecard_create').html();
     };
 
-
-
     // Added for update.
     imageLoaded = function() {
-        //console.log(this);
-        //console.log(this.naturalWidth + ' : ' + this.naturalHeight);
         var new_image = document.getElementById('new_image');
         $(new_image).removeAttr('onload id');
         var unique_id = new_image.className.split(' ')[1];
         $(new_image).attr('id', 'image_' + unique_id);
-
-
-        //
         var nw = document.getElementById('image_' + unique_id).naturalWidth;
         var nh = document.getElementById('image_' + unique_id).naturalHeight;
         var nr = nh / nw;
-        console.log(nw + ' : ' + nh);
-        //$('#image_' + unique_id).
         var original_image_data = { nat_width: nw, nat_height: nh, nat_ratio: nr };
         $('#cropper_' + unique_id).attr('image-original', JSON.stringify(original_image_data));
-
-        //$('#cropper_' + unique_id).attr('onload','calcHeight('+nr+')');
-        //
-
-
         $('#cropper_' + unique_id).css('maxWidth', new_image.naturalWidth);
         $('#cropper_' + unique_id).css('cssFloat', 'left');
         // Check if this image is the first piece of content. If it is then add a class to remove spacing between card and image (only required if text is the directly after the title area).

@@ -25,6 +25,7 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'Conversations', 'Users', 're
             loadUserData();
         }
     });
+
     // If This is a username url then get the public cards for that user
     if (username != undefined) {
         Conversations.find_user_public_conversation(username)

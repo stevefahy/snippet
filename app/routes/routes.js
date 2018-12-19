@@ -627,12 +627,9 @@ module.exports = function(app, passport) {
                 user_temp = user.toJSON();
                 // Delete old participants.
                 for (var j in user_temp.following) {
-                    //var index2 = findWithAttr(toupdate.participants, '_id', conversation_temp.following[j]._id);
                     // If old participant. Delete.
-                    //console.log(user_temp.following[j] + ' == ' + id);
                     if (user_temp.following[j] == id) {
                         user.following.splice(j, 1);
-                        //console.log(user);
                     }
                 }
                 // Save
@@ -673,8 +670,6 @@ module.exports = function(app, passport) {
         });
     });
 
-
-
     // send notification to user
     app.post('/api/users/send_notification', isLoggedIn, function(req, res) {
         var options = req.body;
@@ -684,14 +679,11 @@ module.exports = function(app, passport) {
                 console.log('err: ' + err);
                 throw err;
             } else {
-                //console.log(response.results);
-                //console.log(body.results);
                 if (body.results[0].error == "NotRegistered") {
                     res.json({ 'error': 'NotRegistered' });
                 } else {
                     res.status(200).send('ok');
                 }
-
             }
         });
     });
@@ -707,7 +699,6 @@ module.exports = function(app, passport) {
                 res.json(error);
             } else if (user === null) {
                 // no user found
-                //console.log('no user');
                 res.json({ 'error': 'null' });
             } else {
                 // User found
@@ -1009,10 +1000,8 @@ module.exports = function(app, passport) {
             }
             conversation.save(function(err, conversation) {
                 if (err) {
-                    console.log(err);
                     res.send(err);
                 } else {
-                    console.log(conversation);
                     res.json(conversation);
                 }
             });
@@ -1169,7 +1158,6 @@ module.exports = function(app, passport) {
             },
             function(err, conversation) {
                 if (err) {
-                    console.log('err: ' + err);
                     res.send(err);
                 }
                 return res.status(201).end("created");
@@ -1181,7 +1169,6 @@ module.exports = function(app, passport) {
     app.get('/chat/conversation', isLoggedIn, function(req, res) {
         Conversation.find({ 'participants._id': req.principal._id }, function(err, conversations) {
             if (err) {
-                console.log('err: ' + err);
                 return res.send(err);
             }
             res.send(conversations);
@@ -1194,7 +1181,6 @@ module.exports = function(app, passport) {
             if (err) {
                 return done(err);
             }
-            //console.log(conversation);
             res.json(conversation);
         });
     });
@@ -1325,87 +1311,61 @@ module.exports = function(app, passport) {
 
     });
 
-
-
     app.post('/chat/get_conversation_cards/:id', isMember, function(req, res) {
-
-        console.log(req.body.id);
-        console.log(req.body.amount);
-        console.log(req.body.last_card);
-
         var id = req.body.id;
         var amount = req.body.amount;
         var last_card = req.body.last_card;
-
         Card.find({
-                'updatedAt': {
-                    '$lt': last_card
-                },
-                'conversationId': req.params.id
-            }, function(err, cards) {
-                if (err) {
-                    console.log(err);
-                }
-                console.log('cards');
-                //console.log(cards);
-                res.json(cards);
-            }).sort({ "updatedAt": -1 }).limit(amount);
-
+            'updatedAt': {
+                '$lt': last_card
+            },
+            'conversationId': req.params.id
+        }, function(err, cards) {
+            if (err) {
+                // console.log(err);
+            }
+            res.json(cards);
+        }).sort({ "updatedAt": -1 }).limit(amount);
     });
 
     app.post('/chat/get_feed/:val', isLoggedIn, function(req, res) {
-
-        console.log(req.body.ids);
-        console.log(req.body.amount);
-        console.log(req.body.last_card);
-
         var user_array = req.body.ids;
         var amount = req.body.amount;
         var last_card = req.body.last_card;
-
         var feed = {};
-
         Conversation.find({
             '_id': {
                 $in: user_array.map(function(o) { return mongoose.Types.ObjectId(o); })
             }
         }, function(err, conversations) {
             if (err) {
-                console.log(err);
+                //console.log(err);
             }
-            console.log('conversations');
-            //console.log(conversations);
             feed.conversations = conversations;
             Card.find({
                 'updatedAt': {
                     '$lt': last_card
                 },
                 'conversationId': {
-                    //"created_on": {"$gte": new Date(2012, 7, 14),
                     $in: user_array.map(function(o) {
                         return mongoose.Types.ObjectId(o);
                     })
                 }
             }, function(err, cards) {
                 if (err) {
-                    console.log(err);
+                    //console.log(err);
                 }
-                console.log('cards');
-                //console.log(cards);
-                //res.json(cards);
                 feed.cards = cards;
                 res.json(feed);
             }).sort({ "updatedAt": -1 }).limit(amount);
-
         });
     });
-
 
     // get latest card for a conversation by conversation id
     app.get('/chat/get_conversation_latest_card/:id', isLoggedIn, function(req, res) {
         Card.findOne({ 'conversationId': req.params.id }).sort('-updatedAt').exec(function(err, card) {
             if (err) {
-                console.log('err: ' + err);
+                //console.log('err: ' + err);
             }
             res.json(card);
         });

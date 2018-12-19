@@ -115,8 +115,6 @@
             <div class="content_cnv_scroll">
                 <div ng-repeat="search_result in search_results">
                     <div class="contacts_result_container">
-                        <!-- ng-class="{ 'contacts_result_container_on': search_result.is_contact}" -->
-                        <!-- ng-click="!search_result.is_contact || chat(search_result)" -->
                         <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
                             <div class="convs_container">
                                 <div class="search_result_public" ng-click="showPublic(search_result.public_conversation)">
@@ -138,8 +136,8 @@
                                     </div>
                                 </div>
                             </div>
+                        </li>
                     </div>
-                    </li>
                 </div>
             </div>
         </div>
@@ -247,27 +245,25 @@
                     <div ng-repeat="contact in contacts | orderBy:'user_name'">
                         <div class="contact_div" ng-click="!group_selected || contactBtn(contact)">
                             <li class="list-group-item d-flex justify-content-between align-items-center convs_list">
-                                 
                                 <div class="convs_container">
                                     <div class="search_result_public" ng-click="group_selected || showPublic(contact.public_conversation)">
-                                    <div class="convs_a">
-                                        <img ng-if="contact.avatar!='default'" alt="" ng-src="{{contact.avatar}}" class="convs_avatar" />
-                                        <img ng-if="contact.avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="convs_avatar" />
-                                        <div class="done_contacts " ng-class="{'done_contacts_selected': contact.item_selected}">
-                                            <i class="material-icons" id="mi-done_contacts_bg">&#xE876;</i>
-                                            <i class="material-icons" id="mi-done_contacts">&#xE876;</i>
+                                        <div class="convs_a">
+                                            <img ng-if="contact.avatar!='default'" alt="" ng-src="{{contact.avatar}}" class="convs_avatar" />
+                                            <img ng-if="contact.avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="convs_avatar" />
+                                            <div class="done_contacts " ng-class="{'done_contacts_selected': contact.item_selected}">
+                                                <i class="material-icons" id="mi-done_contacts_bg">&#xE876;</i>
+                                                <i class="material-icons" id="mi-done_contacts">&#xE876;</i>
+                                            </div>
+                                        </div>
+                                        <div class="convs_col_a">
+                                            <div class="convs_b" id="convs_name">{{contact.user_name}}</div>
                                         </div>
                                     </div>
-                                    <div class="convs_col_a">
-                                        <div class="convs_b" id="convs_name">{{contact.user_name}}</div>
-                                    </div>
-</div>
                                     <div class="convs_col_b2" ng-show="!contact.is_current_user && !group_selected">
-                                    <div class="search_chat_user"  ng-click="contactBtn(contact)">
-                                        <i class="material-icons mi-search-chat">chat_bubble_outline</i>
+                                        <div class="search_chat_user" ng-click="contactBtn(contact)">
+                                            <i class="material-icons mi-search-chat">chat_bubble_outline</i>
+                                        </div>
                                     </div>
-                                </div>
-
                                     <div class="admin_container" ng-show="group_selected ? contact.is_admin : false">
                                         <div class="convs_b" id="convs_name"><span class="badge badge-secondary group-admin"> Group Admin </span></div>
                                     </div>
@@ -279,3 +275,4 @@
             </div>
         </div>
     </div>
+</div>

@@ -138,11 +138,4 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
         $window.onfocus = null;
     });
 
-/*
-    // Listen for the end of the view transition.
-    $(".create_a").on("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend", function(e) {
-        console.log('create_a');
-    });
-    */
-
 }]);

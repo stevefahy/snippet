@@ -158,7 +158,6 @@ cardApp.service('General', ['Users', 'Format', '$rootScope', function(Users, For
             for (var x = 0, len2 = myArray[i][property].length; x < len2; x++) {
                 if (myArray[i][property][x] === value) return i;
             }
-            //if (myArray[i][property][value] === searchTerm) return i;
         }
         return -1;
     };
@@ -246,8 +245,6 @@ cardApp.service('General', ['Users', 'Format', '$rootScope', function(Users, For
         $rootScope.$apply(function() {
             $rootScope.hide_footer = true;
         });
-
-        //$('#placeholderDiv').css('bottom', '-1px');
         // Paste div that will be scrolled into view if necessary and the deleted.
         Format.pasteHtmlAtCaret("<span class='scroll_latest_footer' id='scroll_latest_footer'></span>");
         // Scroll into view if necessary
@@ -272,7 +269,6 @@ cardApp.service('General', ['Users', 'Format', '$rootScope', function(Users, For
             }
         }
     };
-
 
     // Stop listening for keyboard.
     this.keyBoardListenStop = function() {

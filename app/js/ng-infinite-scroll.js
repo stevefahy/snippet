@@ -26,7 +26,6 @@ angular.module('infinite-scroll', []).value('THROTTLE_MILLISECONDS', null).direc
                 unregisterEventListener = null;
                 checkInterval = false;
 
-                //infiniteScrollDown = false;
                 detectTop = false;
 
                 height = function(elem) {
@@ -67,37 +66,19 @@ angular.module('infinite-scroll', []).value('THROTTLE_MILLISECONDS', null).direc
                     if (useDocumentBottom) {
                         elementBottom = height((elem[0].ownerDocument || elem[0].document).documentElement);
                     }
-                    console.log(detectTop);
                     remaining = elementBottom - containerBottom;
-                    console.log(height(container));
-                    console.log(height(container) * scrollDistance);
-                    //shouldScroll = remaining <= height(container) * scrollDistance + 1;
-                    //shouldScroll = remaining >= (height(elem)  - height(container))  / scrollDistance;
-                    shouldScroll = remaining <= (height(elem)  - height(container)) * scrollDistance ;
+                    shouldScroll = remaining <= (height(elem) - height(container)) * scrollDistance;
                     if (detectTop) {
                         remaining = (offsetTop(elem) - containerTopOffset) * -1;
-
-                        //shouldScroll = remaining <= height(container) * scrollDistance + 1 ;
-                        shouldScroll = remaining <= (height(elem)  - height(container)) * scrollDistance ;
+                        shouldScroll = remaining <= (height(elem) - height(container)) * scrollDistance;
                     }
-                    console.log(remaining);
-                    console.log(height(elem)  - height(container));
-                    console.log( (height(elem)  - height(container))  / scrollDistance);
-                    console.log(shouldScroll);
                     if (shouldScroll) {
                         checkWhenEnabled = true;
                         if (scrollEnabled) {
                             if (scope.$$phase || $rootScope.$$phase) {
-
-
                                 return scope.infiniteScroll();
                             } else {
-                                //console.log(containerTopOffset);
-                                //console.log($('.content_cnv').scrollTop());
-                                //return scope.$apply(scope.infiniteScroll);
-                                //return scope.callback('bottom');
-                                var sc = { top: $('.content_cnv').scrollTop(), height: $('.content_cnv')[0].scrollHeight };
-                                return scope.$apply(scope.callback(sc));
+                                return scope.$apply(scope.callback());
                             }
                         }
                     } else {
@@ -164,24 +145,11 @@ angular.module('infinite-scroll', []).value('THROTTLE_MILLISECONDS', null).direc
                     return useDocumentBottom = v;
                 };
 
-                ////
-
                 handleInfiniteScrollDown = function(v) {
-                    console.log(v.feed);
                     return detectTop = !v.feed;
-                    //return useDocumentBottom = v;
                 };
                 handleInfiniteScrollDown(scope.infiniteScrollDown);
                 scope.$watch('infiniteScrollDown', handleInfiniteScrollDown);
-
-
-
-
-
-
-
-
-
 
                 scope.$watch('infiniteScrollUseDocumentBottom', handleInfiniteScrollUseDocumentBottom);
                 handleInfiniteScrollUseDocumentBottom(scope.infiniteScrollUseDocumentBottom);

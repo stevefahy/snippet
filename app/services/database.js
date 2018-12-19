@@ -84,8 +84,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         return notification;
     };
 
-
-    // SAVE CARD (Android image bug. Temporarily save the updated card but do not send notificstion.)
+    // SAVE CARD (Android image bug. Temporarily save the updated card but do not send notification.)
     this.saveTempCard = function(card_id, card, currentUser) {
         if (!updateinprogress) {
             updateinprogress = true;
@@ -112,9 +111,6 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
     // MERGE  Conversations.updateTime(card.conversationId) & Conversations.updateViewed(card.conversationId, viewed_users[x]._id, card_id)
     // UPDATE CARD
     this.updateCard = function(card_id, card, currentUser) {
-        console.log(card_id);
-        console.log(card);
-        console.log(currentUser);
         if (!updateinprogress) {
             updateinprogress = true;
             setTimeout(function() {
@@ -137,14 +133,11 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 // call the create function from our service (returns a promise object)
                 Cards.update(pms)
                     .then(function(returned) {
-                        console.log(returned);
                         $rootScope.$broadcast('CARD_UPDATED', returned.data);
                         var viewed_users = [];
                         // Update the Conversation updateAt time.
                         Conversations.updateTime(card.conversationId)
-                        //Conversations.updateTime(current_conversation_id)
                             .then(function(response) {
-                                console.log(response);
                                 // Only send notifications if there are other participants.
                                 if (response.data.participants.length > 1) {
                                     var notification = self.setNotification(response.data, currentUser, card_content);
@@ -196,7 +189,6 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                     });
                                 }
 
-
                                 if (response.data.followers.length > 0) {
                                     var notification = self.setNotification(response.data, currentUser, card_content);
                                     notification_title = notification.title;
@@ -227,18 +219,6 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                                 }));
                                         }
                                     }
-
-                                    // Update the unviewed arrary for all participants.
-                                    /*
-                                    for (var x = 0; x < viewed_users.length; x++) {
-                                        promises.push(
-                                            Conversations.updateViewed(card.conversationId, viewed_users[x]._id, card_id)
-                                            .then(function(res) {
-                                                //console.log(res);
-                                            })
-                                        );
-                                    }
-                                    */
                                     // All Conversation participants unviewed arrays updated
                                     $q.all(promises_followers).then(function() {
                                         // Add the current user to the participants being notified of update in case they have multiple devices.
@@ -250,10 +230,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                         updateinprogress = false;
                                     });
                                 }
-
-
                             });
-
                     })
                     .catch(function(error) {
                         console.log('error: ' + error);
@@ -264,15 +241,11 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
     // CREATE CARD
     this.createCard = function(id, card_create, currentUser) {
-        console.log(id);
-        console.log(card_create);
-        console.log(currentUser);
         var promises = [];
         var promises_followers = [];
         card_create.user = currentUser.google.name;
         // Get the Conversation in which this card is being created.
         var current_conversation_id = Conversations.getConversationId();
-        console.log(current_conversation_id);
         card_create.conversationId = current_conversation_id;
         card_create.content = Format.setMediaSize(id, card_create);
         card_create.content = replaceTags.replace(card_create.content);
@@ -281,7 +254,6 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         card_create.content = replaceTags.removeFocusIds(card_create.content);
         // Remove any temp filtered images
         card_create.content = Format.removeTempFiltered(card_create.content);
-
         var sent_content;
         var notification_title;
         var notification_body;
@@ -297,7 +269,6 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 // Update the Conversation updateAt time.
                 Conversations.updateTime(current_conversation_id)
                     .then(function(response) {
-                        console.log(response);
                         // Only send notifications if there are other participants.
                         if (response.data.participants.length > 1) {
                             var notification = self.setNotification(response.data, currentUser, card_content);
@@ -384,23 +355,12 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                         }));
                                 }
                             }
-                            // Update the unviewed array for all participants.
-                            for (var x = 0; x < viewed_users.length; x++) {
-                                //promises.push(
-                                    //Conversations.updateViewed(current_conversation_id, viewed_users[x]._id, card_id)
-                                    //.then(function(res) {
-                                    //console.log(res);
-                                    //})
-                                //);
-                            }
                             // All Conversation participants unviewed arrays updated
                             $q.all(promises_followers).then(function() {
                                 //console.log('all promises - emit card_posted');
                                 // Add the current user to the participants being notified of update in case they have multiple devices.
                                 viewed_users.push({ "_id": currentUser._id });
                                 // update other paticipants in the conversation via socket.
-                                //socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: current_conversation_id, participants: viewed_users });
-
                                 socket.emit('public_posted', { sender_id: socket.getId(), conversation_id: current_conversation_id, followers: viewed_users });
                             });
                         }
@@ -478,10 +438,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                             }
                         }
                         // socket.io emit the card posted to the server
-                        //socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: response.data._id, participants: response.data.participants });
-
                         socket.emit('public_posted', { sender_id: socket.getId(), conversation_id: response.data._id, followers: response.data.followers });
-                        //socket.emit('public_posted', { sender_id: socket.getId(), conversation_id: current_conversation_id, followers: viewed_users });
                     });
             })
             .catch(function(error) {
