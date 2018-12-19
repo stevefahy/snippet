@@ -221,6 +221,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     });
 
     updateFollowingIcons = function(newValue) {
+        /*
         var deferred = $q.defer();
         var promises = [];
         if (newValue != undefined) {
@@ -245,6 +246,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             deferred.resolve();
         });
         return deferred.promise;
+        */
     };
 
     updateCards = function(new_cards) {
