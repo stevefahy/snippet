@@ -311,8 +311,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 last_card = General.getISODate();
             }
             var val = { ids: followed, amount: NUM_TO_LOAD, last_card: last_card };
+            console.log(val);
             var prom1 = Conversations.getFeed(val)
                 .then(function(res) {
+                    console.log(res);
                     if (res.data.cards.length > 0) {
                         res.data.cards.map(function(key, array) {
                             // Get the conversation for this card

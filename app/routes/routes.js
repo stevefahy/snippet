@@ -1333,24 +1333,26 @@ module.exports = function(app, passport) {
         var amount = req.body.amount;
         var last_card = req.body.last_card;
         var feed = {};
+        console.log(user_array);
         Conversation.find({
             '_id': {
                 $in: user_array.map(function(o) { return mongoose.Types.ObjectId(o); })
-            }
+            },
+            'conversation_type': 'public'
         }, function(err, conversations) {
             if (err) {
                 //console.log(err);
             }
             feed.conversations = conversations;
             Card.find({
-                'updatedAt': {
-                    '$lt': last_card
-                },
                 'conversationId': {
                     $in: user_array.map(function(o) {
                         return mongoose.Types.ObjectId(o);
-                    })
-                }
+                    }),
+                    'updatedAt': {
+                        '$lt': last_card
+                    }
+                },
             }, function(err, cards) {
                 if (err) {
                     //console.log(err);
