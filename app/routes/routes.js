@@ -1348,14 +1348,14 @@ module.exports = function(app, passport) {
                 'conversationId': {
                     $in: user_array.map(function(o) {
                         return mongoose.Types.ObjectId(o);
-                    }),
-                    'updatedAt': {
-                        '$lt': last_card
-                    }
+                    })
                 },
+                'updatedAt': {
+                    '$lt': last_card
+                }
             }, function(err, cards) {
                 if (err) {
-                    //console.log(err);
+                    console.log(err);
                 }
                 feed.cards = cards;
                 res.json(feed);
