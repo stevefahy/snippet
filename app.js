@@ -92,8 +92,8 @@ publicDeleted = function(data) {
                 if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.followers[i]._id) {
                     // emit to the participant
                     var nsp_new = io.of('/' + data.followers[i]._id);
-                    console.log('emit notify_users: ' + data.followers[i]._id);
-                    nsp_new.emit('notify_public_deleted', { conversation_id: data.conversation_id, followers: data.followers });
+                    console.log('emit notify_users public_deleted: ' + data.followers[i]._id);
+                    nsp_new.emit('notify_public_deleted', { conversation_id: data.conversation_id, card_id: data.card_id,  followers: data.followers });
                 }
             }
         //}
@@ -101,7 +101,7 @@ publicDeleted = function(data) {
 };
 
 publicUpdated = function(data) {
-    console.log('public_posted, conv id: ' + data.conversation_id + ' card id: ' + data.card_id + ' , followers: ' + data.followers);
+    console.log('public_updated, conv id: ' + data.conversation_id + ' card id: ' + data.card_id + ' , followers: ' + data.followers);
     console.log('namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     // notify relevant namespace(s) of the cards creation
     for (var i in data.followers) {
@@ -113,8 +113,8 @@ publicUpdated = function(data) {
                 if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.followers[i]._id) {
                     // emit to the participant
                     var nsp_new = io.of('/' + data.followers[i]._id);
-                    console.log('emit notify_users: ' + data.followers[i]._id);
-                    nsp_new.emit('notify_public_updated', { conversation_id: data.conversation_id, followers: data.followers });
+                    console.log('emit notify_user public_updated: ' + data.followers[i]._id);
+                    nsp_new.emit('notify_public_updated', { conversation_id: data.conversation_id, card_id: data.card_id, followers: data.followers });
                 }
             }
         //}
