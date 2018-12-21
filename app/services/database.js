@@ -269,6 +269,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 // Update the Conversation updateAt time.
                 Conversations.updateTime(current_conversation_id)
                     .then(function(response) {
+                        console.log(response);
                         // Only send notifications if there are other participants.
                         if (response.data.participants.length > 1) {
                             var notification = self.setNotification(response.data, currentUser, card_content);
@@ -303,6 +304,35 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                         }));
                                 }
                             }
+
+                            for (var i in response.data.followers) {
+                                // dont emit to the user which sent the card
+                                if (response.data.followers[i]._id !== currentUser._id) {
+                                    // Add this users id to the viewed_users array.
+                                    viewed_users.push({ "_id": response.data.followers[i]._id });
+                                    // Find the other user(s)
+                                    promises.push(UserData.getConversationsUser(response.data.followers[i]._id)
+                                        .then(function(result) {
+                                            // Get the participants notification key
+                                            // Set the message title and body
+                                            if (result.notification_key_name !== undefined) {
+                                                // Send to all registered devices!
+                                                for (var y in result.tokens) {
+                                                    var dataObj = new createData(result.tokens[y].token, notification_title, sent_content, response.data._id);
+                                                    var optionsObj = new createOptions(headersObj.headers, dataObj.data);
+                                                    // Send the notification
+                                                    Users.send_notification(optionsObj.options)
+                                                        .then(function(res) {
+                                                            if (res.error) {
+                                                                UserData.checkDataUpdate();
+                                                            }
+                                                        });
+                                                }
+                                            }
+                                        }));
+                                }
+                            }
+
                             // Update the unviewed array for all participants.
                             for (var x = 0; x < viewed_users.length; x++) {
                                 promises.push(
@@ -314,7 +344,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                             }
                             // All Conversation participants unviewed arrays updated
                             $q.all(promises).then(function() {
-                                //console.log('all promises - emit card_posted');
+                                console.log('all promises - emit card_posted');
                                 // Add the current user to the participants being notified of update in case they have multiple devices.
                                 viewed_users.push({ "_id": currentUser._id });
                                 // update other paticipants in the conversation via socket.
