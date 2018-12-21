@@ -93,7 +93,7 @@ publicDeleted = function(data) {
                     // emit to the participant
                     var nsp_new = io.of('/' + data.followers[i]._id);
                     console.log('emit notify_users: ' + data.followers[i]._id);
-                    nsp_new.emit('notify_public', { conversation_id: data.conversation_id, followers: data.followers });
+                    nsp_new.emit('notify_public_deleted', { conversation_id: data.conversation_id, followers: data.followers });
                 }
             }
         //}
@@ -114,7 +114,7 @@ publicUpdated = function(data) {
                     // emit to the participant
                     var nsp_new = io.of('/' + data.followers[i]._id);
                     console.log('emit notify_users: ' + data.followers[i]._id);
-                    nsp_new.emit('notify_public', { conversation_id: data.conversation_id, followers: data.followers });
+                    nsp_new.emit('notify_public_updated', { conversation_id: data.conversation_id, followers: data.followers });
                 }
             }
         //}
