@@ -221,13 +221,51 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             $scope.cards.splice(deleted_card_pos, 1);
         }
     });
-
+    // NOTIFICATION for private conversation.
     $rootScope.$on('PUBLIC_NOTIFICATION', function(event, msg) {
         console.log('PUBLIC_NOTIFICATION');
         if ($location.url() == '/') {
             displayFollowing();
         }
     });
+
+    // NOTIFICATION for private conversation.
+    $rootScope.$on('PUBLIC_NOTIFICATION_DELETED', function(event, msg) {
+        console.log('PUBLIC_NOTIFICATION_DELETED');
+        console.log(msg);
+        if (msg.conversation_id == Conversations.getConversationId()) {
+            deleteCard(msg.card_id);
+        }
+    });
+
+    // NOTIFICATION for private conversation.
+    $rootScope.$on('PUBLIC_NOTIFICATION_UPDATED', function(event, msg) {
+        console.log('PUBLIC_NOTIFICATION_UPDATED');
+        console.log(msg);
+        if (msg.conversation_id == Conversations.getConversationId()) {
+            updateCard(msg.card_id);
+        }
+    });
+
+
+    deleteCard = function(id) {
+        var card_pos = General.findWithAttr($scope.cards, '_id', id);
+        if (card_pos > 0) {
+            $scope.cards.splice(card_pos, 1);
+        }
+    };
+
+    updateCard = function(id) {
+        var card_pos = General.findWithAttr($scope.cards, '_id', id);
+        if (card_pos > 0) {
+            Cards.search_id(id).then(function(result) {
+                console.log(result);
+                $scope.cards[card_pos] = result;
+            });
+
+        }
+    };
+
 
     updateFollowingIcons = function(newValue) {
         /*
@@ -322,8 +360,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             if ($scope.cards.length > 0) {
                 var sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
                 // newest card
-                last_card = sort_card[sort_card.length - 1].updatedAt; 
-            } 
+                last_card = sort_card[sort_card.length - 1].updatedAt;
+            }
             var val = { ids: followed, amount: NUM_TO_LOAD, last_card: last_card };
             console.log(val);
             console.log($scope.cards);
@@ -334,19 +372,19 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         res.data.cards.map(function(key, array) {
 
                             // Ckeck that this card does not already exist in scope.cards
-                            if(General.findWithAttr($scope.cards, '_id', key._id) < 0){
+                            if (General.findWithAttr($scope.cards, '_id', key._id) < 0) {
 
-                            // Get the conversation for this card
-                            var conversation_pos = General.nestedArrayIndexOfValue(res.data.conversations, 'admin', key.user);
-                            var conversation = res.data.conversations[conversation_pos];
-                            // Store the original characters of the card.
-                            key.original_content = key.content;
-                            // Get the user name for the user id
-                            key.user_name = conversation.conversation_name;
-                            key.avatar = conversation.conversation_avatar;
-                            key.following = true;
-                            // Load any images offScreen
-                            $scope.cards_temp.push(key);
+                                // Get the conversation for this card
+                                var conversation_pos = General.nestedArrayIndexOfValue(res.data.conversations, 'admin', key.user);
+                                var conversation = res.data.conversations[conversation_pos];
+                                // Store the original characters of the card.
+                                key.original_content = key.content;
+                                // Get the user name for the user id
+                                key.user_name = conversation.conversation_name;
+                                key.avatar = conversation.conversation_avatar;
+                                key.following = true;
+                                // Load any images offScreen
+                                $scope.cards_temp.push(key);
 
                             }
 

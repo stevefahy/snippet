@@ -79,6 +79,48 @@ publicPosted = function(data) {
     }
 };
 
+publicDeleted = function(data) {
+    console.log('public_deleted, conv id: ' + data.conversation_id + ' , card id: ' + data.card_id + ' , followers: ' + data.followers);
+    console.log('namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    // notify relevant namespace(s) of the cards creation
+    for (var i in data.followers) {
+        // dont emit to the user which sent the card
+        //if (data.followers[i]._id != data.sender_id) {
+            for (var y in Object.keys(io.nsps)) {
+                // if the namespace exists on the server
+                console.log(Object.keys(io.nsps)[y]);
+                if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.followers[i]._id) {
+                    // emit to the participant
+                    var nsp_new = io.of('/' + data.followers[i]._id);
+                    console.log('emit notify_users: ' + data.followers[i]._id);
+                    nsp_new.emit('notify_public', { conversation_id: data.conversation_id, followers: data.followers });
+                }
+            }
+        //}
+    }
+};
+
+publicUpdated = function(data) {
+    console.log('public_posted, conv id: ' + data.conversation_id + ' card id: ' + data.card_id + ' , followers: ' + data.followers);
+    console.log('namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    // notify relevant namespace(s) of the cards creation
+    for (var i in data.followers) {
+        // dont emit to the user which sent the card
+        //if (data.followers[i]._id != data.sender_id) {
+            for (var y in Object.keys(io.nsps)) {
+                // if the namespace exists on the server
+                console.log(Object.keys(io.nsps)[y]);
+                if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.followers[i]._id) {
+                    // emit to the participant
+                    var nsp_new = io.of('/' + data.followers[i]._id);
+                    console.log('emit notify_users: ' + data.followers[i]._id);
+                    nsp_new.emit('notify_public', { conversation_id: data.conversation_id, followers: data.followers });
+                }
+            }
+        //}
+    }
+};
+
 dataChange = function(data) {
     console.log('data_change, update: ' + data.update + ' , user: ' + data.user + ' , users: ' + data.users);
     console.log('namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
@@ -116,7 +158,11 @@ socket_connection = function(socket_ns) {
     // Add listeners.
     //console.log('ADD card_posted, data_change, reconnect_attempt, disconnect listeners');
     socket_ns.on('card_posted', cardPosted);
+    //socket_ns.on('card_deleted', cardDeleted);
+    //socket_ns.on('card_updated', cardUpdated);
     socket_ns.on('public_posted', publicPosted);
+    socket_ns.on('public_deleted', publicDeleted);
+    socket_ns.on('public_updated', publicUpdated);
     socket_ns.on('data_change', dataChange);
     socket_ns.on('reconnect_attempt', reconnect_attempt);
     socket_ns.on('disconnect', socket_ns_disconnect);
@@ -131,7 +177,11 @@ socket_ns_disconnect = function() {
     socket_ns.removeListener('create_ns', create_ns);
     socket_ns.removeListener('connection', socket_connection);
     socket_ns.removeListener('card_posted', cardPosted);
+    //socket_ns.removeListener('card_deleted', cardDeleted);
+    //socket_ns.removeListener('card_updated', cardUpdated);
     socket_ns.removeListener('public_posted', publicPosted);
+    socket_ns.removeListener('public_deleted', publicDeleted);
+    socket_ns.removeListener('public_updated', publicUpdated);
     socket_ns.removeListener('data_change', dataChange);
     socket_ns.removeListener('reconnect_attempt', reconnect_attempt);
     socket_ns.removeListener('disconnect', socket_ns_disconnect);

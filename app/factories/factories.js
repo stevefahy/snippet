@@ -246,6 +246,16 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
         $rootScope.$broadcast('PUBLIC_NOTIFICATION', msg);
     };
 
+    notifyPublicDeleted = function(msg) {
+        console.log('notify_users_deleted, conv id: ' + msg.conversation_id + ' , card id: ' + msg.card_id + ', participants: ' + msg.participants);
+        $rootScope.$broadcast('PUBLIC_NOTIFICATION_DELETED', msg);
+    };
+
+    notifyPublicUpdated = function(msg) {
+        console.log('notify_users_updated, conv id: ' + msg.conversation_id + ' , card id: ' + msg.card_id + ', participants: ' + msg.participants);
+        $rootScope.$broadcast('PUBLIC_NOTIFICATION_UPDATED', msg);
+    };
+
     updateData = function(msg) {
         console.log('update_data: ' + msg.update_values + ', user: ' + msg.user);
         $rootScope.$broadcast('UPDATE_DATA', msg);
@@ -282,6 +292,12 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
 
         // server notifying users by namespace of content update
         socket_n.on('notify_public', notifyPublic);
+
+        // server notifying users by namespace of content update
+        socket_n.on('notify_public_deleted', notifyPublicDeleted);
+
+        // server notifying users by namespace of content update
+        socket_n.on('notify_public_updated', notifyPublicUpdated);
 
         // server notifying users by namespace of data update
         socket_n.on('update_data', updateData);
