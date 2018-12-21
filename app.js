@@ -71,7 +71,7 @@ publicPosted = function(data) {
                 if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.followers[i]._id) {
                     // emit to the participant
                     var nsp_new = io.of('/' + data.followers[i]._id);
-                    console.log('emit notify_users: ' + data.participants[i]._id);
+                    console.log('emit notify_users: ' + data.followers[i]._id);
                     nsp_new.emit('notify_public', { conversation_id: data.conversation_id, followers: data.followers });
                 }
             }
