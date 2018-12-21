@@ -271,7 +271,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                     .then(function(response) {
                         console.log(response);
                         // Only send notifications if there are other participants.
-                        if (response.data.participants.length > 1) {
+                        if (response.data.participants.length > 0) {
                             var notification = self.setNotification(response.data, currentUser, card_content);
                             notification_title = notification.title;
                             notification_body = notification.body;

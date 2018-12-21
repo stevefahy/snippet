@@ -37,40 +37,41 @@ io.set('transports', ['websocket']);
 
 
 cardPosted = function(data) {
-    //console.log('card_posted, conv id: ' + data.conversation_id + ' , participants: ' + data.participants);
-    //console.log('namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    console.log('card_posted, conv id: ' + data.conversation_id + ' , participants: ' + data.participants);
+    console.log(data.participants);
+    console.log('namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     // notify relevant namespace(s) of the cards creation
     for (var i in data.participants) {
         // dont emit to the user which sent the card
-        if (data.participants[i]._id != data.sender_id) {
+        //if (data.participants[i]._id != data.sender_id) {
             for (var y in Object.keys(io.nsps)) {
                 // if the namespace exists on the server
-                //console.log(Object.keys(io.nsps)[y]);
+                console.log(Object.keys(io.nsps)[y]);
                 if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.participants[i]._id) {
                     // emit to the participant
                     var nsp_new = io.of('/' + data.participants[i]._id);
-                    //console.log('emit notify_users: ' + data.participants[i]._id);
+                    console.log('emit notify_users: ' + data.participants[i]._id);
                     nsp_new.emit('notify_users', { conversation_id: data.conversation_id, participants: data.participants });
                 }
             }
-        }
+        //}
     }
 };
 
 publicPosted = function(data) {
-    //console.log('public_posted, conv id: ' + data.conversation_id + ' , followers: ' + data.followers);
-    //console.log('namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    console.log('public_posted, conv id: ' + data.conversation_id + ' , followers: ' + data.followers);
+    console.log('namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     // notify relevant namespace(s) of the cards creation
     for (var i in data.followers) {
         // dont emit to the user which sent the card
         if (data.followers[i]._id != data.sender_id) {
             for (var y in Object.keys(io.nsps)) {
                 // if the namespace exists on the server
-                //console.log(Object.keys(io.nsps)[y]);
+                console.log(Object.keys(io.nsps)[y]);
                 if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.followers[i]._id) {
                     // emit to the participant
                     var nsp_new = io.of('/' + data.followers[i]._id);
-                    //console.log('emit notify_users: ' + data.participants[i]._id);
+                    console.log('emit notify_users: ' + data.participants[i]._id);
                     nsp_new.emit('notify_public', { conversation_id: data.conversation_id, followers: data.followers });
                 }
             }
@@ -79,8 +80,8 @@ publicPosted = function(data) {
 };
 
 dataChange = function(data) {
-    //console.log('data_change, update: ' + data.update + ' , user: ' + data.user + ' , users: ' + data.users);
-    //console.log('namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    console.log('data_change, update: ' + data.update + ' , user: ' + data.user + ' , users: ' + data.users);
+    console.log('namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     // notify relevant namespace(s) of the data change.
     for (var i in data.users) {
         // dont emit to the user which sent the change.
@@ -100,15 +101,15 @@ dataChange = function(data) {
 };
 
 create_ns = function(ns) {
-    //console.log('create ns: ' + ns);
+    console.log('create ns: ' + ns);
     // create unique namespace requested by client
     var socket_ns = io.of('/' + ns);
-    //console.log('clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    console.log('clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     socket_ns.on('connection', socket_connection);
 };
 
 socket_connection = function(socket_ns) {
-    //console.log('connection');
+    console.log('connection');
     socket_ns.setMaxListeners(0);
     // confirm that namespace has been created to client
     socket_ns.emit('joined_ns', this.id);
@@ -125,7 +126,7 @@ socket_ns_disconnect = function() {
     var socket_ns = this.nsp;
     // Delete the namespace.
     delete io.nsps[this.nsp.name];
-    //console.log('SERVER NS DISCONNECT: ' + this.id + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    console.log('SERVER NS DISCONNECT: ' + this.id + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     //console.log('REMOVE socket_ns listeners');
     socket_ns.removeListener('create_ns', create_ns);
     socket_ns.removeListener('connection', socket_connection);
@@ -137,19 +138,19 @@ socket_ns_disconnect = function() {
 };
 
 reconnect_attempt = function() {
-    //console.log('socket reconnect attempt');
+    console.log('socket reconnect attempt');
     // on reconnection, reset the transports option, as the Websocket
     // connection may have failed (caused by proxy, firewall, browser, ...)
     socket_ns.io.opts.transports = ['polling', 'websocket'];
 };
 
 io.on('connection', function(socket) {
-    //console.log('SERVER CONNECTION: ' + socket.id + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    console.log('SERVER CONNECTION: ' + socket.id + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     // namespace sent by client
     socket.on('create_ns', create_ns);
     // on socket disconnect
     socket.on('disconnect', function(sockets) {
-        //console.log('SERVER DISCONNECT, clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+        console.log('SERVER DISCONNECT, clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     });
 
 });
