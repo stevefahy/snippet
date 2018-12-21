@@ -247,7 +247,7 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
     };
 
     updateData = function(msg) {
-        //console.log('update_data: ' + msg.update_values + ', user: ' + msg.user);
+        console.log('update_data: ' + msg.update_values + ', user: ' + msg.user);
         $rootScope.$broadcast('UPDATE_DATA', msg);
     };
 

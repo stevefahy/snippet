@@ -223,6 +223,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     });
 
     $rootScope.$on('PUBLIC_NOTIFICATION', function(event, msg) {
+        console.log('PUBLIC_NOTIFICATION');
         if ($location.url() == '/') {
             displayFollowing();
         }
