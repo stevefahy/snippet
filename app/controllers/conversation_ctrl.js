@@ -159,6 +159,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     });
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
+        console.log('ngRepeatFinished');
         $rootScope.pageLoading = false;
         var id = Conversations.getConversationId();
         if ($scope.feed) {
@@ -237,7 +238,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var followed = UserData.getUser().following;
         console.log(followed.indexOf(msg.conversation_id));
         console.log($scope.feed);
-        if($scope.feed && followed.indexOf(msg.conversation_id) >= 0){
+        if ($scope.feed && followed.indexOf(msg.conversation_id) >= 0) {
             deleteCard(msg.card_id);
         } else if (msg.conversation_id == Conversations.getConversationId()) {
             deleteCard(msg.card_id);
@@ -260,7 +261,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log(card_pos);
         if (card_pos > 0) {
             console.log('deleting');
-            $scope.cards.splice(card_pos, 1);
+            $scope.$apply(function() {
+                $scope.cards.splice(card_pos, 1);
+            });
         }
     };
 
@@ -511,6 +514,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     loadFeed = function() {
+        console.log('loadFeed');
         // Set the users profile
         var profile = {};
         profile.user_name = UserData.getUser().user_name;
