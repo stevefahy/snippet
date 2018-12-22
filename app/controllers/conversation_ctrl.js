@@ -233,6 +233,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $rootScope.$on('PUBLIC_NOTIFICATION_DELETED', function(event, msg) {
         console.log('PUBLIC_NOTIFICATION_DELETED');
         console.log(msg);
+        console.log(Conversations.getConversationId());
         if (msg.conversation_id == Conversations.getConversationId()) {
             deleteCard(msg.card_id);
         }
