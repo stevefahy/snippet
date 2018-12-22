@@ -48,9 +48,12 @@ cardPosted = function(data) {
                 // if the namespace exists on the server
                 console.log(Object.keys(io.nsps)[y]);
                 if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.participants[i]._id) {
+                //if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length).indexOf(data.participants[i]._id)) {
                     // emit to the participant
-                    var nsp_new = io.of('/' + data.participants[i]._id);
-                    console.log('emit notify_users: ' + data.participants[i]._id);
+                    //var nsp_new = io.of('/' + data.participants[i]._id);
+                    var nsp_new = io.of('/' + Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length));
+                    //console.log('emit notify_users: ' + data.participants[i]._id);
+                    console.log('emit notify_users: ' + Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length));
                     nsp_new.emit('notify_users', { conversation_id: data.conversation_id, participants: data.participants });
                 }
             }
@@ -145,8 +148,18 @@ dataChange = function(data) {
 create_ns = function(ns) {
     console.log('create ns: ' + ns);
     // create unique namespace requested by client
+    //console.log(Object.keys(io.nsps)[y]);
+    console.log(Object.keys(io.nsps).indexOf('/' + ns));
+    //var instances = Object.keys(io.nsps).indexOf('/' + ns);
+    //if(instances >= 0){
+        //ns = ns + '_' + instances;
+    //}
     var socket_ns = io.of('/' + ns);
     console.log('clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    
+
+
+
     socket_ns.on('connection', socket_connection);
 };
 

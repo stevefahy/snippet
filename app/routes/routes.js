@@ -1333,7 +1333,7 @@ module.exports = function(app, passport) {
         var amount = req.body.amount;
         var last_card = req.body.last_card;
         var feed = {};
-        console.log(user_array);
+        //console.log(user_array);
         Conversation.find({
             '_id': {
                 $in: user_array.map(function(o) { return mongoose.Types.ObjectId(o); })
