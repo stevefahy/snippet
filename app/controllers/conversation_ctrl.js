@@ -236,6 +236,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log(Conversations.getConversationId());
         var followed = UserData.getUser().following;
         console.log(followed.indexOf(msg.conversation_id));
+        console.log($scope.feed);
         if($scope.feed && followed.indexOf(msg.conversation_id) >= 0){
             deleteCard(msg.card_id);
         } else if (msg.conversation_id == Conversations.getConversationId()) {
@@ -254,8 +255,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
 
     deleteCard = function(id) {
+        console.log('delete: ' + id);
         var card_pos = General.findWithAttr($scope.cards, '_id', id);
+        console.log(card_pos);
         if (card_pos > 0) {
+            console.log('deleting');
             $scope.cards.splice(card_pos, 1);
         }
     };
