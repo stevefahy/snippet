@@ -193,10 +193,10 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                         //socket.emit('card_posted', { sender_id: socket.getId(), conversation_id: card.conversationId, participants: viewed_users });
                                         if (response.data.conversation_type == 'public') {
                                             // socket.io emit the card posted to the server
-                                            socket.emit('public_updated', { sender_id: socket.getId(), conversation_id: response.data._id, card_id: card_id, followers: recipients });
+                                            socket.emit('public_updated', { sender_id: socket.getId(), conversation_id: response.data._id, card_id: card_id, followers: viewed_users });
                                         } else {
                                             // update other paticipants in the conversation via socket.
-                                            socket.emit('card_updated', { sender_id: socket.getId(), conversation_id: response.data._id, card_id: card_id, participants: recipients });
+                                            socket.emit('card_updated', { sender_id: socket.getId(), conversation_id: response.data._id, card_id: card_id, participants: viewed_users });
                                         }
                                         updateinprogress = false;
                                     });
@@ -401,6 +401,9 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                     });
                             }
                         }
+
+                        // Add the current user to the participants being notified of update in case they have multiple devices.
+                        recipients.push({ "_id": currentUser._id });
                         if (response.data.conversation_type == 'public') {
                             // socket.io emit the card posted to the server
                             socket.emit('public_deleted', { sender_id: socket.getId(), conversation_id: response.data._id, card_id: card_id, followers: recipients });
