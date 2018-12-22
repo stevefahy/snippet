@@ -234,7 +234,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log('PUBLIC_NOTIFICATION_DELETED');
         console.log(msg);
         console.log(Conversations.getConversationId());
-        if (msg.conversation_id == Conversations.getConversationId()) {
+        var followed = UserData.getUser().following;
+        console.log(followed.indexOf(msg.conversation_id));
+        if($scope.feed && followed.indexOf(msg.conversation_id) >= 0){
+            deleteCard(msg.card_id);
+        } else if (msg.conversation_id == Conversations.getConversationId()) {
             deleteCard(msg.card_id);
         }
     });
