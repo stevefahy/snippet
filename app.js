@@ -149,7 +149,7 @@ create_ns = function(ns) {
     console.log('create ns: ' + ns);
     // create unique namespace requested by client
     //console.log(Object.keys(io.nsps)[y]);
-    console.log(Object.keys(io.nsps).indexOf('/' + ns));
+    //console.log(Object.keys(io.nsps).indexOf('/' + ns));
     //var instances = Object.keys(io.nsps).indexOf('/' + ns);
     //if(instances >= 0){
         //ns = ns + '_' + instances;
@@ -179,6 +179,14 @@ socket_connection = function(socket_ns) {
     socket_ns.on('data_change', dataChange);
     socket_ns.on('reconnect_attempt', reconnect_attempt);
     socket_ns.on('disconnect', socket_ns_disconnect);
+
+//console.log(socket_ns);
+    console.log('Clients of ' + socket_ns.nsp.name + ':');
+io.of(socket_ns.nsp.name).clients((error, clients) => {
+  if (error) throw error;
+  console.log(clients); // => [PZDoMHjiu8PYfRiKAAAF, Anw2LatarvGVVXEIAAAD]
+});
+
 };
 
 socket_ns_disconnect = function() {

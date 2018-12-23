@@ -259,7 +259,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log('delete: ' + id);
         var card_pos = General.findWithAttr($scope.cards, '_id', id);
         console.log(card_pos);
-        if (card_pos > 0) {
+        if (card_pos >= 0) {
             console.log('deleting');
             $scope.$apply(function() {
                 $scope.cards.splice(card_pos, 1);
@@ -433,10 +433,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 last_card = General.getISODate();
             }
             var val = { ids: followed, amount: NUM_TO_LOAD, last_card: last_card };
-            console.log(val);
+            //console.log(val);
             var prom1 = Conversations.getFeed(val)
                 .then(function(res) {
-                    console.log(res);
+                    //console.log(res);
                     if (res.data.cards.length > 0) {
                         res.data.cards.map(function(key, array) {
                             // Get the conversation for this card
