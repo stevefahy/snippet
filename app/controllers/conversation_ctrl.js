@@ -249,7 +249,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $rootScope.$on('PUBLIC_NOTIFICATION_UPDATED', function(event, msg) {
         console.log('PUBLIC_NOTIFICATION_UPDATED');
         console.log(msg);
-        if (msg.conversation_id == Conversations.getConversationId()) {
+        if ($scope.feed && followed.indexOf(msg.conversation_id) >= 0) {
+            updateCard(msg.card_id);
+        } else if (msg.conversation_id == Conversations.getConversationId()) {
             updateCard(msg.card_id);
         }
     });
@@ -362,6 +364,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     updateFollowing = function() {
+        console.log('loading_cards: ' + loading_cards);
         if (!loading_cards) {
             $scope.cards_temp = [];
             loading_cards = true;

@@ -44,19 +44,19 @@ cardPosted = function(data) {
     for (var i in data.participants) {
         // dont emit to the user which sent the card
         //if (data.participants[i]._id != data.sender_id) {
-            for (var y in Object.keys(io.nsps)) {
-                // if the namespace exists on the server
-                console.log(Object.keys(io.nsps)[y]);
-                if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.participants[i]._id) {
+        for (var y in Object.keys(io.nsps)) {
+            // if the namespace exists on the server
+            console.log(Object.keys(io.nsps)[y]);
+            if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.participants[i]._id) {
                 //if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length).indexOf(data.participants[i]._id)) {
-                    // emit to the participant
-                    //var nsp_new = io.of('/' + data.participants[i]._id);
-                    var nsp_new = io.of('/' + Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length));
-                    //console.log('emit notify_users: ' + data.participants[i]._id);
-                    console.log('emit notify_users: ' + Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length));
-                    nsp_new.emit('notify_users', { conversation_id: data.conversation_id, participants: data.participants });
-                }
+                // emit to the participant
+                //var nsp_new = io.of('/' + data.participants[i]._id);
+                var nsp_new = io.of('/' + Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length));
+                //console.log('emit notify_users: ' + data.participants[i]._id);
+                console.log('emit notify_users: ' + Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length));
+                nsp_new.emit('notify_users', { conversation_id: data.conversation_id, participants: data.participants });
             }
+        }
         //}
     }
 };
@@ -68,24 +68,24 @@ publicPosted = function(data) {
     for (var i in data.followers) {
         // dont emit to the user which sent the card
         //if (data.followers[i]._id != data.sender_id) {
-            for (var y in Object.keys(io.nsps)) {
-                // if the namespace exists on the server
-                console.log(Object.keys(io.nsps)[y]);
-                if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.followers[i]._id) {
-                    // emit to the participant
-                    var nsp_new = io.of('/' + data.followers[i]._id);
-                    console.log('emit notify_users: ' + data.followers[i]._id);
+        for (var y in Object.keys(io.nsps)) {
+            // if the namespace exists on the server
+            console.log(Object.keys(io.nsps)[y]);
+            if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.followers[i]._id) {
+                // emit to the participant
+                var nsp_new = io.of('/' + data.followers[i]._id);
+                console.log('emit notify_users: ' + data.followers[i]._id);
 
-                        console.log('Clients of ' + data.followers[i]._id + ':');
+                console.log('Clients of ' + data.followers[i]._id + ':');
 
-io.of('/'+data.followers[i]._id).clients((error, clients) => {
-  if (error) throw error;
-  console.log(clients); // => [PZDoMHjiu8PYfRiKAAAF, Anw2LatarvGVVXEIAAAD]
-});
+                io.of('/' + data.followers[i]._id).clients((error, clients) => {
+                    if (error) throw error;
+                    console.log(clients); // => [PZDoMHjiu8PYfRiKAAAF, Anw2LatarvGVVXEIAAAD]
+                });
 
-                    nsp_new.emit('notify_public', { conversation_id: data.conversation_id, followers: data.followers });
-                }
+                nsp_new.emit('notify_public', { conversation_id: data.conversation_id, followers: data.followers });
             }
+        }
         //}
     }
 };
@@ -97,16 +97,16 @@ publicDeleted = function(data) {
     for (var i in data.followers) {
         // dont emit to the user which sent the card
         //if (data.followers[i]._id != data.sender_id) {
-            for (var y in Object.keys(io.nsps)) {
-                // if the namespace exists on the server
-                console.log(Object.keys(io.nsps)[y]);
-                if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.followers[i]._id) {
-                    // emit to the participant
-                    var nsp_new = io.of('/' + data.followers[i]._id);
-                    console.log('emit notify_users public_deleted: ' + data.followers[i]._id);
-                    nsp_new.emit('notify_public_deleted', { conversation_id: data.conversation_id, card_id: data.card_id,  followers: data.followers });
-                }
+        for (var y in Object.keys(io.nsps)) {
+            // if the namespace exists on the server
+            console.log(Object.keys(io.nsps)[y]);
+            if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.followers[i]._id) {
+                // emit to the participant
+                var nsp_new = io.of('/' + data.followers[i]._id);
+                console.log('emit notify_users public_deleted: ' + data.followers[i]._id);
+                nsp_new.emit('notify_public_deleted', { conversation_id: data.conversation_id, card_id: data.card_id, followers: data.followers });
             }
+        }
         //}
     }
 };
@@ -118,16 +118,16 @@ publicUpdated = function(data) {
     for (var i in data.followers) {
         // dont emit to the user which sent the card
         //if (data.followers[i]._id != data.sender_id) {
-            for (var y in Object.keys(io.nsps)) {
-                // if the namespace exists on the server
-                console.log(Object.keys(io.nsps)[y]);
-                if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.followers[i]._id) {
-                    // emit to the participant
-                    var nsp_new = io.of('/' + data.followers[i]._id);
-                    console.log('emit notify_user public_updated: ' + data.followers[i]._id);
-                    nsp_new.emit('notify_public_updated', { conversation_id: data.conversation_id, card_id: data.card_id, followers: data.followers });
-                }
+        for (var y in Object.keys(io.nsps)) {
+            // if the namespace exists on the server
+            console.log(Object.keys(io.nsps)[y]);
+            if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.followers[i]._id) {
+                // emit to the participant
+                var nsp_new = io.of('/' + data.followers[i]._id);
+                console.log('emit notify_user public_updated: ' + data.followers[i]._id);
+                nsp_new.emit('notify_public_updated', { conversation_id: data.conversation_id, card_id: data.card_id, followers: data.followers });
             }
+        }
         //}
     }
 };
@@ -155,24 +155,21 @@ dataChange = function(data) {
 
 create_ns = function(ns) {
     console.log('create ns: ' + ns);
-    // create unique namespace requested by client
-    //console.log(Object.keys(io.nsps)[y]);
-    //console.log(Object.keys(io.nsps).indexOf('/' + ns));
+    // Check whether this namespace has been created already.
     var instances = Object.keys(io.nsps).indexOf('/' + ns);
-    //if(instances >= 0){
-        //ns = ns + '_' + instances;
-    //}
-    if(instances < 0){
-        console.log('Creating NS: ' + ns);
-    var socket_ns = io.of('/' + ns);
-    console.log('clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
-    socket_ns.on('connection', socket_connection);
+    // Only create the namespace if it has not already been created.
+    if (instances < 0) {
+        // create unique namespace requested by client
+        console.log('Creating ns: ' + ns);
+        var socket_ns = io.of('/' + ns);
+        console.log('clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+        socket_ns.on('connection', socket_connection);
     }
 };
 
 socket_connection = function(socket_ns) {
     console.log('connection');
-    //socket_ns.setMaxListeners(0);
+    socket_ns.setMaxListeners(0);
     // confirm that namespace has been created to client
     socket_ns.emit('joined_ns', this.id);
     // Add listeners.
@@ -187,13 +184,13 @@ socket_connection = function(socket_ns) {
     socket_ns.on('reconnect_attempt', reconnect_attempt);
     socket_ns.on('disconnect', socket_ns_disconnect);
 
-//console.log(socket_ns);
+    //console.log(socket_ns);
     console.log('Clients of ' + socket_ns.nsp.name + ':');
 
-io.of(socket_ns.nsp.name).clients((error, clients) => {
-  if (error) throw error;
-  console.log(clients); // => [PZDoMHjiu8PYfRiKAAAF, Anw2LatarvGVVXEIAAAD]
-});
+    io.of(socket_ns.nsp.name).clients((error, clients) => {
+        if (error) throw error;
+        console.log(clients); // => [PZDoMHjiu8PYfRiKAAAF, Anw2LatarvGVVXEIAAAD]
+    });
 
 
 };
