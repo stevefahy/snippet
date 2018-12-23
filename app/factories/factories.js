@@ -281,11 +281,11 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
         socket_n = io('/' + id);
         // namespace connect
         socket_n.on('connect', function() {
-            //console.log('CLIENT NS connect: ' + socket_n.id);
+            console.log('CLIENT NS connect: ' + socket_n.id);
         });
         // server confirming that the namespace has been created
         socket_n.on('joined_ns', function(id) {
-            //console.log('CLIENT joined_ns: ' + socket_n.id);
+            console.log('CLIENT joined_ns: ' + socket_n.id);
         });
         // server notifying users by namespace of content update
         socket_n.on('notify_users', notifyUsers);

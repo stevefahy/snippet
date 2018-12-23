@@ -162,13 +162,12 @@ create_ns = function(ns) {
     //if(instances >= 0){
         //ns = ns + '_' + instances;
     //}
+    if(instances < 0){
+        console.log('Creating NS: ' + ns);
     var socket_ns = io.of('/' + ns);
     console.log('clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
-    
-
-
-
     socket_ns.on('connection', socket_connection);
+    }
 };
 
 socket_connection = function(socket_ns) {
