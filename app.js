@@ -75,6 +75,14 @@ publicPosted = function(data) {
                     // emit to the participant
                     var nsp_new = io.of('/' + data.followers[i]._id);
                     console.log('emit notify_users: ' + data.followers[i]._id);
+
+                        console.log('Clients of ' + data.followers[i]._id + ':');
+
+io.of('/'+data.followers[i]._id).clients((error, clients) => {
+  if (error) throw error;
+  console.log(clients); // => [PZDoMHjiu8PYfRiKAAAF, Anw2LatarvGVVXEIAAAD]
+});
+
                     nsp_new.emit('notify_public', { conversation_id: data.conversation_id, followers: data.followers });
                 }
             }
@@ -150,7 +158,7 @@ create_ns = function(ns) {
     // create unique namespace requested by client
     //console.log(Object.keys(io.nsps)[y]);
     //console.log(Object.keys(io.nsps).indexOf('/' + ns));
-    //var instances = Object.keys(io.nsps).indexOf('/' + ns);
+    var instances = Object.keys(io.nsps).indexOf('/' + ns);
     //if(instances >= 0){
         //ns = ns + '_' + instances;
     //}
@@ -165,7 +173,7 @@ create_ns = function(ns) {
 
 socket_connection = function(socket_ns) {
     console.log('connection');
-    socket_ns.setMaxListeners(0);
+    //socket_ns.setMaxListeners(0);
     // confirm that namespace has been created to client
     socket_ns.emit('joined_ns', this.id);
     // Add listeners.
@@ -182,10 +190,12 @@ socket_connection = function(socket_ns) {
 
 //console.log(socket_ns);
     console.log('Clients of ' + socket_ns.nsp.name + ':');
+
 io.of(socket_ns.nsp.name).clients((error, clients) => {
   if (error) throw error;
   console.log(clients); // => [PZDoMHjiu8PYfRiKAAAF, Anw2LatarvGVVXEIAAAD]
 });
+
 
 };
 
