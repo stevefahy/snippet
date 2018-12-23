@@ -249,6 +249,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $rootScope.$on('PUBLIC_NOTIFICATION_UPDATED', function(event, msg) {
         console.log('PUBLIC_NOTIFICATION_UPDATED');
         console.log(msg);
+        var followed = UserData.getUser().following;
         if ($scope.feed && followed.indexOf(msg.conversation_id) >= 0) {
             updateCard(msg.card_id);
         } else if (msg.conversation_id == Conversations.getConversationId()) {
