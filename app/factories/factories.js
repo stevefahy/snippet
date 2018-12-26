@@ -262,12 +262,12 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
     };
 
     recreateConnection = function() {
-        //console.log('recreateConnection');
+        console.log('recreateConnection');
         var connection = socket_n.connect();
         var checkConnection = $interval(function() {
-            //console.log(connection.connected);
+            console.log(connection.connected);
             if (connection.connected) {
-                //console.log("Made connection");
+                console.log("Made connection");
                 $rootScope.$broadcast('SOCKET_RECONNECT');
                 $interval.cancel(checkConnection);
             }
@@ -303,29 +303,29 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
         socket_n.on('update_data', updateData);
         // namespace disconnected by server
         socket_n.on('disconnect', function(reason) {
-            //console.log('CLIENT NS disconnected by server: ' + reason);
+            console.log('CLIENT NS disconnected by server: ' + reason);
         });
         socket_n.on('connect_error', function(error) {
-            //console.log('connect_error: ' + error);
+            console.log('connect_error: ' + error);
         });
         socket_n.on('connect_timeout', function() {
-            //console.log('connect_timeout');
+            console.log('connect_timeout');
         });
         socket_n.on('reconnect', function(attempt) {
-            //console.log('reconnect: ' + attempt);
+            console.log('reconnect: ' + attempt);
             $rootScope.$broadcast('SOCKET_RECONNECT');
         });
         socket_n.on('reconnecting', function(attempt) {
-            //console.log('reconnecting: ' + attempt);
+            console.log('reconnecting: ' + attempt);
         });
         socket_n.on('reconnect_attempt', function() {
-            //console.log('reconnect_attempt');
+            console.log('reconnect_attempt');
         });
         socket_n.on('reconnect_error', function(error) {
-            //console.log('reconnect_error: ' + error);
+            console.log('reconnect_error: ' + error);
         });
         socket_n.on('reconnect_failed', function() {
-            //console.log('reconnect_failed');
+            console.log('reconnect_failed');
         });
         socket_n.on('ping', function() {
             //console.log('ping');
@@ -334,7 +334,7 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
             //console.log('pong: ' + ms);
         });
         socket_n.on('SERVER_CONNECTION', function(id) {
-            //console.log('SERVER_CONNECTION: ' + id);
+            console.log('SERVER_CONNECTION: ' + id);
         });
     };
 
@@ -343,16 +343,23 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
             socket_m = io({ transports: ['websocket'] });
             var socket_factory = this;
             socket_m.once('connect', function() {
-                //console.log("connected from the client side");
+                console.log("connected from the client side");
                 connectNamespace(socket_factory.getId(), socket_factory);
             });
 
             socket_m.on('reconnect', function() {
-                //console.log("reconnected from the client side");
+                console.log("reconnected from the client side");
                 this.once('connect', function() {
-                    //console.log("connect from the client side!");
+                    console.log("connect from the client side!");
                     // Connected, request unique namespace to be created
                     socket_m.emit('create_ns', socket_factory.getId());
+
+
+                        
+       // TEST
+        // create the unique namespace on the client
+        socket_m = io('/' + id);
+
                     // Re-establish connection with the namespace.
                     // Wait before checking the re connect with the namespace.
                     setTimeout(recreateConnection, 500);
@@ -365,7 +372,7 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
             //socket_m.emit('delete');
         },
         disconnect: function() {
-            //console.log('disconnect');
+            console.log('disconnect');
             socket_m.disconnect(true);
             socket_m.emit('disconnect');
         },
