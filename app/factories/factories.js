@@ -353,13 +353,6 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
                     console.log("connect from the client side!");
                     // Connected, request unique namespace to be created
                     socket_m.emit('create_ns', socket_factory.getId());
-
-
-                        
-       // TEST
-        // create the unique namespace on the client
-        socket_m = io('/' + id);
-
                     // Re-establish connection with the namespace.
                     // Wait before checking the re connect with the namespace.
                     setTimeout(recreateConnection, 500);

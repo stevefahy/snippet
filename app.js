@@ -198,9 +198,10 @@ socket_connection = function(socket_ns) {
 socket_ns_disconnect = function() {
     var socket_ns = this.nsp;
     // Delete the namespace.
-    delete io.nsps[this.nsp.name];
+    //delete io.nsps[this.nsp.name];
     console.log('SERVER NS DISCONNECT: ' + this.id + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     //console.log('REMOVE socket_ns listeners');
+    /*
     socket_ns.removeListener('create_ns', create_ns);
     socket_ns.removeListener('connection', socket_connection);
     socket_ns.removeListener('card_posted', cardPosted);
@@ -212,6 +213,7 @@ socket_ns_disconnect = function() {
     socket_ns.removeListener('data_change', dataChange);
     socket_ns.removeListener('reconnect_attempt', reconnect_attempt);
     socket_ns.removeListener('disconnect', socket_ns_disconnect);
+    */
 };
 
 reconnect_attempt = function() {
