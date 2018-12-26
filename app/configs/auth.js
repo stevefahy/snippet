@@ -26,7 +26,7 @@ module.exports = {
             secret: '--my-secret-dffdff446hfgsdsgd46--',
             // zeit/ms format. '2 days' '1d' '10h' '2.5 hrs' '2h' '1m' '5s' 1y' '-3 days'
             // Seconds
-            expiresIn: 60 * 60 * 24
+            expiresIn: 60 * 60 * 24 * 7
         },
         cookieName: '_accessToken'
     }
