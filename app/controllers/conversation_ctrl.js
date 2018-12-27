@@ -426,6 +426,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     } else {
                         //console.log('NO MORE RECORDS');
                     }
+                }).catch(function(error) {
+                    console.log(error);
                 });
             promises.push(prom1);
             // All the users contacts have been mapped.
