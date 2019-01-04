@@ -263,6 +263,7 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
 
     recreateConnection = function() {
         console.log('recreateConnection');
+        
         var connection = socket_n.connect();
         var checkConnection = $interval(function() {
             console.log(connection.connected);
@@ -271,7 +272,8 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
                 $rootScope.$broadcast('SOCKET_RECONNECT');
                 $interval.cancel(checkConnection);
             }
-        }, 100, 300);
+        }, 500, 1000);
+        
     };
 
     connectNamespace = function(id, factory) {
