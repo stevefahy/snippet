@@ -23,6 +23,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     $scope.feed = false;
 
+    $rootScope.feed = false;
+
     $rootScope.pageLoading = true;
     $rootScope.last_win_width;
 
@@ -156,6 +158,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         Cropp.destroyCrop();
         $('.image_adjust_on').remove();
         NUM_TO_LOAD = INIT_NUM_TO_LOAD;
+        $rootScope.feed = false;
     });
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
@@ -635,6 +638,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             $scope.currentUser = UserData.getUser();
             if ($location.url() == '/') {
                 $scope.feed = true;
+                $rootScope.feed = true;
                 $scope.total_to_display = INIT_NUM_TO_DISPLAY;
                 $('.content_cnv')
                 // Display the users feed.

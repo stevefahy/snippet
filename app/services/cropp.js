@@ -706,8 +706,19 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         $timeout(function() {
             // After image
             image_edit_finished = true;
+            console.log('scrollTop: ' + $rootScope.feed);
             // CHECK - still needed?
-            $('.content_cnv').scrollTop($('.content_cnv')[0].scrollHeight);
+            //$('.content_cnv').scrollTop($('.content_cnv')[0].scrollHeight);
+                var dir;
+        if ($rootScope.feed) {
+            dir = 'top';
+        } else {
+            dir = 'bottom';
+        }
+
+        $rootScope.$broadcast("items_changed", dir);
+
+
         }, 0);
     };
 
