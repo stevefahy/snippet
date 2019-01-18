@@ -1,4 +1,4 @@
-cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams', '$location', '$http', '$timeout', 'principal', 'UserData', 'Invites', 'Email', 'Users', 'Conversations', 'Profile', 'General', 'Format', 'Contacts', '$q', function($scope, $route, $rootScope, $routeParams, $location, $http, $timeout, principal, UserData, Invites, Email, Users, Conversations, Profile, General, Format, Contacts, $q) {
+cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams', '$location', '$http', '$timeout', 'principal', 'UserData', 'Invites', 'Email', 'Users', 'Conversations', 'Profile', 'General', 'Format', 'Contacts', 'UserService', '$q', 'Keyboard', function($scope, $route, $rootScope, $routeParams, $location, $http, $timeout, principal, UserData, Invites, Email, Users, Conversations, Profile, General, Format, Contacts, UserService, $q, Keyboard) {
 
     // Use the urls id param from the route to load the conversation.
     var id = $routeParams.id;
@@ -6,7 +6,7 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams
     Conversations.setConversationId(id);
 
     // Stop listening for Mobile soft keyboard.
-    General.keyBoardListenStop();
+    Keyboard.keyBoardListenStop();
     $scope.animating = true;
     // Vars
     $scope.contacts_on = false;
@@ -57,18 +57,21 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams
             $scope.currentUser = UserData.getUser();
             // Default Group Image
             $scope.avatar = 'default';
-            UserData.getConversationModelById(id)
+            //UserData.getConversationModelById(id)
+            UserData.getConversationById(id)
                 .then(function(res) {
+                    console.log(res);
                     $scope.conversation = res;
                     if (res.admin.includes(UserData.getUser()._id)) {
                         $scope.is_admin = true;
                     }
                     res.participants.map(function(key, array) {
-                        UserData.getConversationsUser(key._id)
-                            .then(function(result) {
+                        //UserData.getConversationsUser(key._id)
+                        var result = UserData.getContact(key._id);
+                            //.then(function(result) {
                                 $scope.participants.push(result);
                                 $scope.participants_orig.push(result);
-                            });
+                           // });
                     });
                     // Admin rights
                     if (res.admin.includes(UserData.getUser()._id)) {
@@ -83,15 +86,16 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams
                         var index = General.findWithAttr(res.participants, '_id', UserData.getUser()._id);
                         // Get the other user.
                         index = 1 - index;
-                        UserData.getConversationsUser(res.participants[index]._id)
-                            .then(function(result) {
+                        //UserData.getConversationsUser(res.participants[index]._id)
+                         var result = UserData.getContact(res.participants[index]._id);    
+                            //.then(function(result) {
                                 $scope.avatar = result.avatar;
                                 $scope.saved_avatar = result.avatar;
                                 $scope.conversation_name = result.user_name;
                                 $scope.chat_update.conversation_avatar = result.avatar;
                                 $scope.group_name = $scope.conversation_name;
                                 updateProfile();
-                            });
+                            //});
                     } else {
                         $scope.conv_type = "group";
                         $scope.avatar = res.conversation_avatar;
@@ -223,15 +227,17 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams
                     // Update the participants model.
                     $scope.participants = [];
                     res.data.participants.map(function(key, array) {
-                        UserData.getConversationsUser(key._id)
-                            .then(function(result) {
+                        var result = UserData.getContact(key._id); 
+                        //UserData.getConversationsUser(key._id)
+                           // .then(function(result) {
                                 $scope.participants.push(result);
-                            });
+                           // });
                     });
                     // Add this conversation to the local model.
-                    UserData.addConversationModel(res.data)
+                    //UserData.addConversationModel(res.data)
+                    UserData.conversationsAdd(res.data)
                         .then(function(res) {
-                            //console.log(res);
+                            console.log(res);
                         });
                     var profile_obj = {};
                     // if group
@@ -251,7 +257,7 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams
                             participant_pos = 0;
                         }
                         // Find the other user
-                        General.findUser(res.data.participants[participant_pos]._id, function(result) {
+                        UserService.findUser(res.data.participants[participant_pos]._id, function(result) {
                             profile_obj.avatar = "default";
                             // set the other user name as the name of the conversation.
                             if (result) {

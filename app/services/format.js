@@ -1,6 +1,6 @@
 // Format Service
 
-cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', '$injector', function($window, $rootScope, $timeout, $q, Users, Cards, Conversations, replaceTags, socket, $injector) {
+cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', 'Cards', 'replaceTags', 'socket', '$injector', function($window, $rootScope, $timeout, $q, Users, Cards, replaceTags, socket, $injector) {
 
     var self = this;
     var tag_count_previous;
@@ -571,8 +571,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 // Check if there is a marky in progress
                 // zm launching image capture should not trigger an update. It causes error.
                 found_marky = findMarky(card.content);
+                console.log(card.content != card.original_content);
+                console.log(found_marky);
+                console.log(image_edit_finished);
                 // check the content has changed and not currently mid marky. Or that an image is being edited.
                 if ((card.content != card.original_content && (found_marky == false)) || image_edit_finished == true) {
+                    console.log('update');
                     // Only do this if not in current card?
                     if ($('.cropper-container').length > 0) {
                         $('.cropper-container').remove();

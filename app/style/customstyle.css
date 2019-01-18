@@ -1467,6 +1467,8 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     background-color: #FFFFFF;
 }
 
+
+
 .content_cnv_hide_footer {
     height: calc(100% - 125px);
 }
@@ -1477,6 +1479,10 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 
 .convs {
     height: calc(100% - 115px) !important;
+}
+
+.content_cnv_no_footer {
+    height: calc(100% - 55px) !important;
 }
 
 .content_cnv_off {}

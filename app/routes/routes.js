@@ -506,7 +506,7 @@ module.exports = function(app, passport) {
     // Search for user by id
     // TODO - Needed for Public not logged in route?
     // Users.search_id(key.user)
-    app.post('/api/users/search_id/:id', isLoggedIn, function(req, res) {
+    app.post('/api/users/search_id/:id', function(req, res) {
         var id = req.params.id;
         User.findById({ '_id': id }, function(error, user) {
             if (error) {
@@ -517,6 +517,26 @@ module.exports = function(app, passport) {
                 res.json({ 'error': 'null' });
             } else {
                 res.json({ 'success': user });
+            }
+        });
+    });
+
+    // Used for public route
+    app.post('/api/users/search_public_id/:id', function(req, res) {
+        var id = req.params.id;
+        User.findById({ '_id': id }, function(error, user) {
+            if (error) {
+                //console.log(error);
+                res.json(error);
+            } else if (user === null) {
+                // no user found
+                res.json({ 'error': 'null' });
+            } else {
+                var trimmed_user = {};
+                trimmed_user._id = user._id;
+                trimmed_user.avatar = user.avatar;
+                trimmed_user.user_name = user.user_name;
+                res.json({ 'success': trimmed_user });
             }
         });
     });
@@ -1090,7 +1110,17 @@ module.exports = function(app, passport) {
                     //console.log('err: ' + err);
                     res.send(err);
                 }
-                res.json(conversation);
+                //res.json(conversation);
+
+                Conversation.findById({ _id: req.params.id }, function(err, conversation) {
+                    if (err) {
+                        //console.log('err: ' + err);
+                        res.send(err);
+                    } else {
+                        res.json(conversation);
+                    }
+                });
+
             });
     });
 
@@ -1283,12 +1313,50 @@ module.exports = function(app, passport) {
         });
     });
 
+    /*
+        // Get all cards for a PUBLIC conversation by conversation id.
+        // Does not need to be a member or logged in because it is a public chat.
+        // getPublicConversationById(id);
+        app.get('/chat/get_public_conversation/:id', function(req, res) {
+            // Ensure the conversation id is a public conversation
+            Conversation.findOne({ '_id': req.params.id, 'conversation_type': 'public' }, function(err, conversation) {
+                if (err) {
+                    res.json({ 'error': 'not found' });
+                }
+                if (conversation == null) {
+                    res.json({ 'error': 'denied' });
+                } else {
+                    if (conversation.conversation_type === 'public') {
+                        Card.find({ 'conversationId': req.params.id }, function(err, cards) {
+                            if (err) {
+                                //console.log('err: ' + err);
+                            }
+                            res.json(cards);
+                            // }).limit(3);
+                        });
+                    } else {
+                        res.json({ 'error': 'denied' });
+                    }
+                }
+            });
+        });
+        */
+
     // Get all cards for a PUBLIC conversation by conversation id.
     // Does not need to be a member or logged in because it is a public chat.
     // getPublicConversationById(id);
-    app.get('/chat/get_public_conversation/:id', function(req, res) {
+    app.post('/chat/get_public_conversation_cards/:id', function(req, res) {
+        console.log('get_public_conversation_cards');
+        var id = req.body.id;
+        var amount = req.body.amount;
+        var last_card = req.body.last_card;
+        var operand = req.body.operand;
+        //if (operand == '$gt') {
         // Ensure the conversation id is a public conversation
-        Conversation.findOne({ '_id': req.params.id, 'conversation_type': 'public' }, function(err, conversation) {
+        Conversation.findOne({
+            '_id': id,
+            'conversation_type': 'public'
+        }, function(err, conversation) {
             if (err) {
                 res.json({ 'error': 'not found' });
             }
@@ -1296,18 +1364,37 @@ module.exports = function(app, passport) {
                 res.json({ 'error': 'denied' });
             } else {
                 if (conversation.conversation_type === 'public') {
-                    Card.find({ 'conversationId': req.params.id }, function(err, cards) {
-                        if (err) {
-                            //console.log('err: ' + err);
-                        }
-                        res.json(cards);
-                        // }).limit(3);
-                    });
+                    if (operand == '$lt') {
+                        Card.find({
+                            'updatedAt': {
+                                $lt: last_card
+                            },
+                            'conversationId': req.params.id
+                        }, function(err, cards) {
+                            if (err) {
+                                console.log('err: ' + err);
+                            }
+                            res.json(cards);
+                        }).sort({ "updatedAt": -1 }).limit(amount);
+                    } else if (operand == '$gt') {
+                        Card.find({
+                            'updatedAt': {
+                                $gt: last_card
+                            },
+                            'conversationId': req.params.id
+                        }, function(err, cards) {
+                            if (err) {
+                                console.log('err: ' + err);
+                            }
+                            res.json(cards);
+                        }).sort({ "updatedAt": -1 }).limit(amount);
+                    }
                 } else {
                     res.json({ 'error': 'denied' });
                 }
             }
         });
+
 
     });
 
@@ -1315,20 +1402,37 @@ module.exports = function(app, passport) {
         var id = req.body.id;
         var amount = req.body.amount;
         var last_card = req.body.last_card;
-        Card.find({
-            'updatedAt': {
-                '$lt': last_card
-            },
-            'conversationId': req.params.id
-        }, function(err, cards) {
-            if (err) {
-                // console.log(err);
-            }
-            res.json(cards);
-        }).sort({ "updatedAt": -1 }).limit(amount);
+        var operand = req.body.operand;
+        //var operand = '$gt';
+        console.log(operand);
+        if (operand == '$gt') {
+            Card.find({
+                'updatedAt': {
+                    $gt: last_card
+                },
+                'conversationId': req.params.id
+            }, function(err, cards) {
+                if (err) {
+                    console.log(err);
+                }
+                res.json(cards);
+            }).sort({ "updatedAt": -1 }).limit(amount);
+        } else {
+            Card.find({
+                'updatedAt': {
+                    $lt: last_card
+                },
+                'conversationId': req.params.id
+            }, function(err, cards) {
+                if (err) {
+                    console.log(err);
+                }
+                res.json(cards);
+            }).sort({ "updatedAt": -1 }).limit(amount);
+        }
     });
 
-   app.post('/chat/update_feed/:val', isLoggedIn, function(req, res) {
+    app.post('/chat/update_feed/:val', isLoggedIn, function(req, res) {
         var user_array = req.body.ids;
         var amount = req.body.amount;
         var last_card = req.body.last_card;

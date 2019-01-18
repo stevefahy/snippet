@@ -36,8 +36,30 @@ io.sockets.setMaxListeners(0);
 io.set('transports', ['websocket']);
 
 
-cardPosted = function(data) {
-    console.log('card_posted, conv id: ' + data.conversation_id + ' , participants: ' + data.participants);
+conversationCreated = function(data){
+console.log('conversation_created, conv id: ' + data.conversation_id + ' , participants: ' + data.participants);
+    console.log(data.participants);
+    console.log('namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    // notify relevant namespace(s) of the cards creation
+    for (var i in data.participants) {
+        for (var y in Object.keys(io.nsps)) {
+            // if the namespace exists on the server
+            console.log(Object.keys(io.nsps)[y]);
+            if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.participants[i]._id) {
+                //if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length).indexOf(data.participants[i]._id)) {
+                // emit to the participant
+                //var nsp_new = io.of('/' + data.participants[i]._id);
+                var nsp_new = io.of('/' + Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length));
+                //console.log('emit notify_users: ' + data.participants[i]._id);
+                console.log('emit conversation_created: ' + Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length));
+                nsp_new.emit('notify_conversation_created', { conversation_id: data.conversation_id, participants: data.participants });
+            }
+        }
+    }
+};
+
+privateCreated = function(data) {
+    console.log('private_created, conv id: ' + data.conversation_id + ' , card_id: ' + data.card_id +  ' , participants: ' + data.participants + ' , viewed_users: ' + data.viewed_users);
     console.log(data.participants);
     console.log('namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     // notify relevant namespace(s) of the cards creation
@@ -53,16 +75,66 @@ cardPosted = function(data) {
                 //var nsp_new = io.of('/' + data.participants[i]._id);
                 var nsp_new = io.of('/' + Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length));
                 //console.log('emit notify_users: ' + data.participants[i]._id);
-                console.log('emit notify_users: ' + Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length));
-                nsp_new.emit('notify_users', { conversation_id: data.conversation_id, participants: data.participants });
+                console.log('emit private_created: ' + Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length));
+                nsp_new.emit('notify_private_created', { conversation_id: data.conversation_id, card_id: data.card_id, participants: data.participants, viewed_users: data.viewed_users });
             }
         }
         //}
     }
 };
 
-publicPosted = function(data) {
-    console.log('public_posted, conv id: ' + data.conversation_id + ' , followers: ' + data.followers);
+privateUpdated = function(data) {
+    console.log('private_updated, conv id: ' + data.conversation_id + ' , card_id: ' + data.card_id + ' , participants: ' + data.participants + ' , viewed_users: ' + data.viewed_users);
+    console.log(data.participants);
+    console.log('namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    // notify relevant namespace(s) of the cards creation
+    for (var i in data.participants) {
+        // dont emit to the user which sent the card
+        //if (data.participants[i]._id != data.sender_id) {
+        for (var y in Object.keys(io.nsps)) {
+            // if the namespace exists on the server
+            console.log(Object.keys(io.nsps)[y]);
+            if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.participants[i]._id) {
+                //if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length).indexOf(data.participants[i]._id)) {
+                // emit to the participant
+                //var nsp_new = io.of('/' + data.participants[i]._id);
+                var nsp_new = io.of('/' + Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length));
+                //console.log('emit notify_users: ' + data.participants[i]._id);
+                console.log('emit private_updated: ' + Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length));
+                nsp_new.emit('notify_private_updated', { conversation_id: data.conversation_id, card_id: data.card_id, participants: data.participants, viewed_users: data.viewed_users });
+            }
+        }
+        //}
+    }
+};
+
+privateDeleted = function(data) {
+    console.log('private_deleted, conv id: ' + data.conversation_id + ' , card_id: ' + data.card_id +  ' , participants: ' + data.participants + ' , viewed_users: ' + data.viewed_users);
+    console.log(data.participants);
+    console.log('namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    // notify relevant namespace(s) of the cards creation
+    for (var i in data.participants) {
+        // dont emit to the user which sent the card
+        //if (data.participants[i]._id != data.sender_id) {
+        for (var y in Object.keys(io.nsps)) {
+            // if the namespace exists on the server
+            console.log(Object.keys(io.nsps)[y]);
+            if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.participants[i]._id) {
+                //if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length).indexOf(data.participants[i]._id)) {
+                // emit to the participant
+                //var nsp_new = io.of('/' + data.participants[i]._id);
+                var nsp_new = io.of('/' + Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length));
+                //console.log('emit notify_users: ' + data.participants[i]._id);
+                console.log('emit private_deleted: ' + Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length));
+                nsp_new.emit('notify_private_deleted', { conversation_id: data.conversation_id, card_id: data.card_id, participants: data.participants, viewed_users: data.viewed_users });
+            }
+        }
+        //}
+    }
+};
+
+publicCreated = function(data) {
+    console.log('public_created, conv id: ' + data.conversation_id + ' , card id: ' + data.card_id +  ' , followers: ' + data.followers);
     console.log('namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     // notify relevant namespace(s) of the cards creation
     for (var i in data.followers) {
@@ -83,7 +155,7 @@ publicPosted = function(data) {
                     console.log(clients); // => [PZDoMHjiu8PYfRiKAAAF, Anw2LatarvGVVXEIAAAD]
                 });
 
-                nsp_new.emit('notify_public', { conversation_id: data.conversation_id, followers: data.followers });
+                nsp_new.emit('notify_public_created', { conversation_id: data.conversation_id, card_id: data.card_id, followers: data.followers });
             }
         }
         //}
@@ -174,10 +246,11 @@ socket_connection = function(socket_ns) {
     socket_ns.emit('joined_ns', this.id);
     // Add listeners.
     //console.log('ADD card_posted, data_change, reconnect_attempt, disconnect listeners');
-    socket_ns.on('card_posted', cardPosted);
-    //socket_ns.on('card_deleted', cardDeleted);
-    //socket_ns.on('card_updated', cardUpdated);
-    socket_ns.on('public_posted', publicPosted);
+    socket_ns.on('conversation_created', conversationCreated);
+    socket_ns.on('private_created', privateCreated);
+    socket_ns.on('private_deleted', privateDeleted);
+    socket_ns.on('private_updated', privateUpdated);
+    socket_ns.on('public_created', publicCreated);
     socket_ns.on('public_deleted', publicDeleted);
     socket_ns.on('public_updated', publicUpdated);
     socket_ns.on('data_change', dataChange);
@@ -248,7 +321,7 @@ for (var k in interfaces) {
 }
 // Dell XPS 13 or other local networks
 console.log(addresses);
-if (addresses == '192.168.192.59' || addresses == '10.21.221.127' || addresses == '10.61.137.245' || addresses == '10.32.139.207' || addresses == '192.168.43.199' || addresses == '10.70.216.59' || addresses == '192.168.1.85') {
+if (addresses == '192.168.192.59' || addresses == '10.21.221.127' || addresses == '10.61.137.245' || addresses == '10.32.139.207' || addresses == '192.168.43.199' || addresses == '10.70.216.59' || addresses == '192.168.1.85' || addresses == '192.168.43.62') {
     // MongoDB
     var dburl = urls.localUrl;
     // Google Auth callBackURL

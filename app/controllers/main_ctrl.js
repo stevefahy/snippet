@@ -1,9 +1,155 @@
-cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', 'UserData', 'socket', 'principal', 'viewAnimationsService', function($scope, $window, $rootScope, $timeout, UserData, socket, principal, viewAnimationsService) {
+cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '$location', 'UserData', 'socket', 'principal', 'viewAnimationsService', 'Conversations', 'Cards', function($scope, $window, $rootScope, $timeout, $location, UserData, socket, principal, viewAnimationsService, Conversations, Cards) {
+
+    $rootScope.deleting_card = false;
 
     // Broadcast by socket after it has reconnected. Check for updates.
     $scope.$on('SOCKET_RECONNECT', function(event) {
         console.log('SOCKET_RECONNECT');
-        //UserData.checkDataUpdate();
+        loading_cards = false;
+        var id = Conversations.getConversationId();
+        console.log(Conversations.getConversationType());
+        if (Conversations.getConversationType() == 'feed') {
+            getFollowingUpdate();
+        } else if (Conversations.getConversationType() == 'private') {
+            getCardsUpdate(id);
+        } else if (Conversations.getConversationType() == 'public') {
+            getPublicCardsUpdate(id);
+        }
+    });
+
+
+
+
+    // NOTIFICATION for private conversation.
+    $rootScope.$on('PRIVATE_CONVERSATION_CREATED', function(event, msg) {
+        console.log('PRIVATE_CONVERSATION_CREATED');
+        // TODO - Show message to user that they have been added to a conversation.
+        console.log(msg);
+        UserData.loadConversations()
+            .then(function(res) {
+                console.log(res);
+                UserData.getConversationsLatestCard()
+                    .then(function(res) {
+                        console.log(res);
+                        console.log($location.url());
+                        if ($location.url() == '/chat/conversations') {
+                            loadConversations();
+                        }
+                    });
+            });
+
+    });
+
+    // NOTIFICATION for private conversation.
+    $rootScope.$on('PRIVATE_NOTIFICATION_CREATED', function(event, msg) {
+        console.log('PRIVATE_NOTIFICATION_CREATED');
+        console.log(msg);
+        UserData.addConversationViewed(msg.conversation_id, msg.viewed_users);
+        var id = Conversations.getConversationId();
+        // only update the conversation if the user is currently in that conversation
+        if (id === msg.conversation_id) {
+            updateConversationViewed(id);
+            getCardsUpdate(id).then(function(result) {
+                $scope.$broadcast("items_changed", 'bottom');
+            });
+        } else {
+            Conversations.getConversationLatestCard(msg.conversation_id)
+                .then(function(res) {
+                    console.log(res);
+                    UserData.conversationsLatestCardAdd(msg.conversation_id, res.data);
+                    if ($location.url() == '/chat/conversations') {
+                        loadConversations();
+                    }
+                });
+        }
+    });
+
+
+    // NOTIFICATION for private conversation.
+    $rootScope.$on('PRIVATE_NOTIFICATION_UPDATED', function(event, msg) {
+        console.log('PRIVATE_NOTIFICATION_UPDATED');
+        console.log(msg);
+        UserData.addConversationViewed(msg.conversation_id, msg.viewed_users);
+        var id = Conversations.getConversationId();
+        Conversations.getConversationLatestCard(msg.conversation_id)
+            .then(function(res) {
+                console.log(res);
+                UserData.conversationsLatestCardAdd(msg.conversation_id, res.data);
+                if (id == msg.conversation_id) {
+                    updateConversationViewed(id);
+                    updateCard(res.data);
+                }
+                if ($location.url() == '/chat/conversations') {
+                    loadConversations();
+                }
+            });
+    });
+
+    // NOTIFICATION for private conversation.
+    $rootScope.$on('PRIVATE_NOTIFICATION_DELETED', function(event, msg) {
+        console.log('PRIVATE_NOTIFICATION_DELETED');
+        console.log(msg);
+        UserData.addConversationViewed(msg.conversation_id, msg.viewed_users);
+        var id = Conversations.getConversationId();
+        Conversations.getConversationLatestCard(msg.conversation_id)
+            .then(function(res) {
+                console.log(res);
+                UserData.conversationsLatestCardAdd(msg.conversation_id, res.data);
+                if (id == msg.conversation_id) {
+                    updateConversationViewed(id);
+                    deleteCard(msg.card_id);
+                }
+                if ($location.url() == '/chat/conversations') {
+                    loadConversations();
+                }
+            });
+    });
+
+    // NOTIFICATION for public conversation.
+    $rootScope.$on('PUBLIC_NOTIFICATION_CREATED', function(event, msg) {
+        console.log('PUBLIC_NOTIFICATION_CREATED');
+        console.log(msg);
+        var id = Conversations.getConversationId();
+        console.log(Conversations.getConversationType());
+        // only update the conversation if the user is currently in that conversation
+        if (id === msg.conversation_id) {
+            //updateConversationViewed(id);
+            getPublicCardsUpdate(id).then(function(result) {
+                $scope.$broadcast("items_changed", 'top');
+            });
+        } else if (Conversations.getConversationType() == 'feed') {
+            getFollowingUpdate().then(function(result) {
+                $scope.$broadcast("items_changed", 'top');
+            });
+        } 
+    });
+
+    // NOTIFICATION for private conversation.
+    $rootScope.$on('PUBLIC_NOTIFICATION_DELETED', function(event, msg) {
+        console.log('PUBLIC_NOTIFICATION_DELETED');
+
+        var id = Conversations.getConversationId();
+        var followed = UserData.getUser().following;
+        if (Conversations.getConversationType() == 'feed' && followed.indexOf(msg.conversation_id) >= 0) {
+            deleteCard(msg.card_id);
+        } else if (msg.conversation_id == id) {
+            deleteCard(msg.card_id);
+        }
+        
+    });
+
+    // NOTIFICATION for private conversation.
+    $rootScope.$on('PUBLIC_NOTIFICATION_UPDATED', function(event, msg) {
+        console.log('PUBLIC_NOTIFICATION_UPDATED');
+        var id = Conversations.getConversationId();
+        var followed = UserData.getUser().following;
+        if ((Conversations.getConversationType() == 'feed' && followed.indexOf(msg.conversation_id) >= 0) || (msg.conversation_id == Conversations.getConversationId())) {
+            Conversations.getConversationLatestCard(msg.conversation_id)
+            .then(function(res) {
+                console.log(res);
+                updateCard(res.data);
+            });
+        }
     });
 
     // Broadcast by socket service when data needs to be updated.

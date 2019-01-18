@@ -1,4 +1,4 @@
-cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites', '$rootScope', '$location', '$http', '$window', '$routeParams', 'Users', 'Profile', 'Conversations', 'General', 'principal', 'UserData', function($scope, $timeout, Format, Invites, $rootScope, $location, $http, $window, $routeParams, Users, Profile, Conversations, General, principal, UserData) {
+cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites', '$rootScope', '$location', '$http', '$window', '$routeParams', 'Users', 'Profile', 'Conversations', 'General', 'principal', 'UserData', 'Keyboard', function($scope, $timeout, Format, Invites, $rootScope, $location, $http, $window, $routeParams, Users, Profile, Conversations, General, principal, UserData, Keyboard) {
 
     $scope.myImage = '';
     $scope.myCroppedImage = '';
@@ -9,7 +9,7 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
     $scope.prepareImage = Format.prepareImage;
     $scope.setting_change = false;
 
-    General.keyBoardListenStart();
+    Keyboard.keyBoardListenStart();
 
     // Detect device user agent 
     var ua = navigator.userAgent;
@@ -111,7 +111,7 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
         Conversations.find_user_public_conversation_by_id($scope.currentFullUser._id)
             .then(function(result) {
                 // Update the avatar for the public conversation.
-                var obj = { 'id': result.data._id, 'avatar': profile.avatar };
+                var obj = { 'id': result._id, 'avatar': profile.avatar };
                 Conversations.updateAvatar(obj)
                     .then(function(result) {
                         // Update UserData.

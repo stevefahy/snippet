@@ -1,10 +1,13 @@
 <div ng-controller="headerCtrl">
     <div class="header">
-        <a class="btn_zindex" href ng-click="changePath('/chat/conversations')">
+        <!--<a class="btn_zindex" href ng-click="changePath('/chat/conversations')">-->
+            <div ng-show="!no_back" class="btn_zindex" href ng-click="goBack()">
+            <a >
             <div class="header_back">
                 <i class="material-icons header-mi">&#xE5C4;</i>
             </div>
         </a>
+    </div>
         <div class="header_conv_name">{{conversation_name}}</div>
         <div class="user_right">
             <img ng-if="avatar!='default'" alt="" class="heading_avatar" ng-src="{{avatar}}" />

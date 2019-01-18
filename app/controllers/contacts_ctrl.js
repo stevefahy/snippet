@@ -1,4 +1,4 @@
-cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location', '$http', '$timeout', 'principal', 'UserData', 'Invites', 'Email', 'Users', 'Conversations', 'Profile', 'General', 'Format', 'Contacts', '$q', function($scope, $route, $rootScope, $location, $http, $timeout, principal, UserData, Invites, Email, Users, Conversations, Profile, General, Format, Contacts, $q) {
+cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location', '$http', '$timeout', 'principal', 'UserData', 'Invites', 'Email', 'Users', 'Conversations', 'Profile', 'General', 'Format', 'Contacts', '$q', 'UserService', 'Keyboard', 'socket', function($scope, $route, $rootScope, $location, $http, $timeout, principal, UserData, Invites, Email, Users, Conversations, Profile, General, Format, Contacts, $q, UserService, Keyboard, socket) {
 
 
     // TODO - make sure two users cant create a 2 person conv with each other at the same time.
@@ -9,7 +9,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     // Check if the page has been loaded witha param (user contacts import callback).
     var paramValue = $route.current.$$route.menuItem;
     // Stop listening for Mobile soft keyboard.
-    General.keyBoardListenStop();
+    Keyboard.keyBoardListenStop();
     // Contacts animation
     $scope.search_sel = false;
     $scope.import_sel = false;
@@ -249,8 +249,14 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
             $scope.chat_create.participants.push({ _id: key._id, viewed: 0 });
         });
         // Create conversation in DB.
+        // TODO - notify others users that conversation created.
         Conversations.create($scope.chat_create)
             .then(function(res) {
+                console.log(res);
+                console.log('conv created');
+                // update other paticipants in the conversation via socket.
+                socket.emit('conversation_created', { sender_id: socket.getId(), conversation_id: res.data._id, participants: res.data.participants });
+
                 // If two person conversation
                 if (res.data.participants.length == 2) {
                     $scope.contacts = UserData.getContacts();
@@ -269,6 +275,8 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
                 // Add this conversation to the local model.
                 res.data.avatar = res.data.conversation_avatar;
                 res.data.name = res.data.conversation_name;
+
+                /*
                 UserData.addConversationModel(res.data)
                     .then(function(result) {
                         // If this is the first card in a new conversation then create the cards model for this conversation.
@@ -277,6 +285,14 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
                                 //console.log(res);
                             });
                     });
+                    */
+                    UserData.conversationsAdd(res.data)
+                       .then(function(res) {
+                                console.log(res);
+                            });
+                    
+
+
                 var profile_obj = {};
                 // if group
                 if (res.data.conversation_name != '') {
@@ -297,7 +313,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
                         participant_pos = 0;
                     }
                     // Find the other user
-                    General.findUser(res.data.participants[participant_pos]._id, function(result) {
+                    UserService.findUser(res.data.participants[participant_pos]._id, function(result) {
                         profile_obj.avatar = "default";
                         // set the other user name as the name of the conversation.
                         if (result) {
@@ -439,8 +455,8 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
             Conversations.find_user_public_conversation_by_id(key._id)
                 .then(function(result) {
                     // If public then show link to the public conversation
-                    if (result.data.conversation_type == 'public') {
-                        key.public_conversation = result.data._id;
+                    if (result.conversation_type == 'public') {
+                        key.public_conversation = result._id;
                     }
                 });
         });
@@ -563,11 +579,13 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
                         $scope.search_results = [];
                         // Map response values to field label and value
                         response($.map(data, function(res) {
+                            console.log(res);
                             Conversations.find_user_public_conversation_by_id(res._id)
                                 .then(function(result) {
+                                    console.log(result);
                                     // If public then show link to the public conversation
-                                    if (result.data.conversation_type == 'public') {
-                                        res.public_conversation = result.data._id;
+                                    if (result.conversation_type == 'public') {
+                                        res.public_conversation = result._id;
                                     }
                                 });
                             // check if this user is already a contact

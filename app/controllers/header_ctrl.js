@@ -1,14 +1,30 @@
 cardApp.controller("headerCtrl", ['Profile', 'Conversations', '$scope', '$rootScope', '$location', '$http', '$window', 'Cropp', function(Profile, Conversations, $scope, $rootScope, $location, $http, $window, Cropp) {
 
+    $scope.no_back = false;
+
+    // Directly load public route. Disbale back button.
+
+    if($location.path().indexOf('/chat/') < 0 && $rootScope.prev_route == undefined && !$scope.isMember){
+        $scope.no_back = true;
+    }
+
     displayProfile = function() {
+        console.log('display');
         var user;
         // Routes where User profile should be displayed.
+        console.log($location.path());
         if ($location.path().indexOf('/api/') < 0) {
             if ($location.path().indexOf('/chat/conversation/') < 0) {
                 user = Profile.getProfile();
+                if(user == undefined){
+                    // Public usernae route
+                    user = Profile.getConvProfile();
+                }
+                console.log(user);
             } else {
                 // Route where Conversation profile should be displayed.
                 user = Profile.getConvProfile();
+                console.log(user);
             }
             if (user != undefined) {
                 $scope.avatar = user.avatar;
@@ -38,7 +54,14 @@ cardApp.controller("headerCtrl", ['Profile', 'Conversations', '$scope', '$rootSc
     });
 
     $scope.goBack = function() {
-        $location.path($rootScope.prev_route);
+        console.log($rootScope.prev_route );
+        if($rootScope.prev_route != undefined){
+            $location.path($rootScope.prev_route);
+        } else {
+            //$location.path('/');
+            $location.path('/chat/conversations');
+        }
+        
     };
 
     $scope.changePath = function(path) {
