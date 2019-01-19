@@ -4,7 +4,7 @@ cardApp.controller("headerCtrl", ['Profile', 'Conversations', '$scope', '$rootSc
 
     // Directly load public route. Disbale back button.
 
-    if($location.path().indexOf('/chat/') < 0 && $rootScope.prev_route == undefined && !$scope.isMember){
+    if ($location.path().indexOf('/chat/') < 0 && $rootScope.prev_route == undefined && !$scope.isMember) {
         $scope.no_back = true;
     }
 
@@ -16,7 +16,7 @@ cardApp.controller("headerCtrl", ['Profile', 'Conversations', '$scope', '$rootSc
         if ($location.path().indexOf('/api/') < 0) {
             if ($location.path().indexOf('/chat/conversation/') < 0) {
                 user = Profile.getProfile();
-                if(user == undefined){
+                if (user == undefined) {
                     // Public usernae route
                     user = Profile.getConvProfile();
                 }
@@ -54,17 +54,17 @@ cardApp.controller("headerCtrl", ['Profile', 'Conversations', '$scope', '$rootSc
     });
 
     $scope.goBack = function() {
-        console.log($rootScope.prev_route );
-        // Resets contacts
-        $scope.pageAnimationStart();
-        if($rootScope.prev_route != undefined && $rootScope.prev_route.indexOf('api') < 0){
+        if ($location.path() == '/c/contacts') {
+            // Resets contacts
+            $scope.pageAnimationStart();
+        }
+        if ($rootScope.prev_route != undefined && $rootScope.prev_route.indexOf('api') < 0) {
             $location.path($rootScope.prev_route);
         } else {
             //$location.path('/');
-            
             $location.path('/chat/conversations');
         }
-        
+
     };
 
     $scope.changePath = function(path) {
