@@ -277,8 +277,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     updateCard = function(card) {
+        console.log(card);
         var card_pos = General.findWithAttr($scope.cards, '_id', card._id);
         if (card_pos >= 0) {
+            $scope.cards[card_pos].original_content = card.content;
             $scope.cards[card_pos].content = card.content;
             $scope.cards[card_pos].updatedAt = card.updatedAt;
         }

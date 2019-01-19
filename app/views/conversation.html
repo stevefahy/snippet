@@ -8,7 +8,7 @@
         <div infinite-scroll="inifiniteScroll" infinite-scroll-immediate-check='false' infinite-scroll-distance='.5' infinite-scroll-parent="true" infinite-scroll-down="{top_down}" infinite-scroll-disabled='scrollingdisabled'>
             <div class="load_off_screen">
                 <div id="conversation_card" ng-repeat="card in cards_temp | orderBy :'updatedAt' : top_down ">
-                    <div class='ce' ng-attr-id="{{ 'ce' + card._id }}" ng-attr-contenteditable="{{card.user == currentUser._id}}" ng-attr-editable="{{card.user == currentUser._id}}" ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id);" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce'+card._id);" ng-blur="getBlur(card._id, card, currentUser)" ng-model="card.content" ng-model-options="{ debounce: 1000 }"></div>
+                    <div class='ce' ng-attr-id="{{ 'ce' + card._id }}" ng-attr-contenteditable="{{card.user == currentUser._id}}" ng-attr-editable="{{card.user == currentUser._id}}" ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id);" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce'+card._id);"  ng-model="card.content" ng-model-options="{ debounce: 1000 }"></div>
                 </div>
             </div>
             <div id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : top_down | limitTo:total_to_display" on-finish-render="ngRepeatFinished" in-view="lineInView($inview, card._id)" in-view-options="inviewoptions">
