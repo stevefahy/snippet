@@ -269,9 +269,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var card_pos = General.findWithAttr($scope.cards, '_id', id);
         if (card_pos >= 0) {
             $rootScope.deleting_card = true;
-            $scope.$apply(function() {
+            //$scope.$apply(function() {
             $scope.cards.splice(card_pos, 1);
-             });
+             //});
             $rootScope.deleting_card = false;
         }
     };
@@ -283,18 +283,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             $scope.cards[card_pos].updatedAt = card.updatedAt;
         }
     };
-
-    /*
-    updateCard = function(id) {
-        var card_pos = General.findWithAttr($scope.cards, '_id', id);
-        if (card_pos >= 0) {
-            Cards.search_id(id).then(function(result) {
-                $scope.cards[card_pos].content = result.data[0].content;
-                $scope.cards[card_pos].updatedAt = result.data[0].updatedAt;
-            });
-        }
-    };
-    */
 
     updateFollowingIcons = function(newValue) {
         console.log('updateFollowingIcons');
