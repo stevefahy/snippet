@@ -227,8 +227,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         $('.image_adjust_on').remove();
         NUM_TO_LOAD = INIT_NUM_TO_LOAD;
         $rootScope.top_down = false;
-        Conversations.setConversationId('');
-        Conversations.setConversationType('');
+        //Conversations.setConversationId('');
+        //Conversations.setConversationType('');
     });
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {

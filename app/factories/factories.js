@@ -446,7 +446,7 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
     };
 
     notifyPrivateUpdated = function(msg) {
-        console.log('notify_private_updated, conv id: ' + msg.conversation_id + ' card_id: ' + msg.card_id + ', participants: ' + msg.participants);
+        console.log('notify_private_updated, conv id: ' + msg.conversation_id + ' card_id: ' + msg.card_id + ', participants: ' + msg.participants + ', viewed_users: ' + msg.viewed_users);
         //$rootScope.$broadcast('NOTIFICATION', msg);
         $rootScope.$broadcast('PRIVATE_NOTIFICATION_UPDATED', msg);
     };
