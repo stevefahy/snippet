@@ -55,10 +55,13 @@ cardApp.controller("headerCtrl", ['Profile', 'Conversations', '$scope', '$rootSc
 
     $scope.goBack = function() {
         console.log($rootScope.prev_route );
-        if($rootScope.prev_route != undefined){
+        // Resets contacts
+        $scope.pageAnimationStart();
+        if($rootScope.prev_route != undefined && $rootScope.prev_route.indexOf('api') < 0){
             $location.path($rootScope.prev_route);
         } else {
             //$location.path('/');
+            
             $location.path('/chat/conversations');
         }
         
@@ -76,7 +79,7 @@ cardApp.controller("headerCtrl", ['Profile', 'Conversations', '$scope', '$rootSc
 
     $scope.changePathContacts = function(path) {
         // Resets contacts
-        $scope.pageAnimationStart();
+        //$scope.pageAnimationStart();
         $location.path(path);
     };
 

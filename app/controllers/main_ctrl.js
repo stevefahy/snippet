@@ -225,9 +225,10 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             viewAnimationsService.setLeaveAnimation('page-static z5000');
             viewAnimationsService.setEnterAnimation('page-anim z7000');
         } else if (from == '/c/contacts' && to == '/chat/conversations') {
-            //console.log('FROM /c/contacts TO /chat/conversations');
+            console.log('FROM /c/contacts TO /chat/conversations');
             viewAnimationsService.setEnterAnimation('page-static z5000');
             viewAnimationsService.setLeaveAnimation('page-anim z7000');
+            $scope.animating = false;
         } else if (from == '/' && to == '/c/contacts') {
             //console.log('FROM / TO /c/contacts');
             viewAnimationsService.setEnterAnimation('page-anim z7000');

@@ -85,6 +85,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
 
     // Called by back button in header. (Hides Search or Import for back animation).
     $scope.pageAnimationStart = function() {
+        console.log('pageAnimationStart');
         if ($scope.search_sel) {
             $scope.search_back = true;
         } else if ($scope.import_sel == true) {
@@ -630,6 +631,9 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     // Animation end listeners.
 
     $(".contacts_transition").bind('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function() {
+        console.log('contacts_transition');
+        console.log($scope.import_sel);
+        console.log($scope.animating);
         $scope.$apply(function($scope) {
             if ($scope.import_sel == true) {
                 $scope.animating = false;
