@@ -598,7 +598,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     Database.updateCard(id, card, currentUser);
                 }
             }
-        }, 0);
+        }, 100);
     };
 
     this.getTagCountPrevious = function(content) {
