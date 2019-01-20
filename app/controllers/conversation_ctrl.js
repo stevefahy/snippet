@@ -19,7 +19,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var INIT_NUM_TO_DISPLAY = 5;
     var NUM_TO_DISPLAY = INIT_NUM_TO_DISPLAY;
 
-    var loading_cards = false;
+    $rootScope.loading_cards = false;
 
     $scope.feed = false;
     $scope.top_down = false;
@@ -352,10 +352,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     getFollowingUpdate = function() {
         console.log('updateFollowing');
-        console.log('loading_cards: ' + loading_cards);
-        if (!loading_cards) {
+        console.log('loading_cards: ' + $rootScope.loading_cards);
+        if (!$rootScope.loading_cards) {
             $scope.cards_temp = [];
-            loading_cards = true;
+            $rootScope.loading_cards = true;
             var deferred = $q.defer();
             var promises = [];
             var followed = UserData.getUser().following;
@@ -400,7 +400,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $scope.cards_temp.map(function(key, array) {
                     $scope.cards.push(key);
                 });
-                loading_cards = false;
+                $rootScope.loading_cards = false;
             });
             return deferred.promise;
         }
@@ -409,10 +409,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // TODO - If not following anyone suggest follow?
     getFollowing = function() {
         console.log('getFollowing');
-        if (!loading_cards) {
+        if (!$rootScope.loading_cards) {
             console.log('load');
             $scope.cards_temp = [];
-            loading_cards = true;
+            $rootScope.loading_cards = true;
             var deferred = $q.defer();
             var promises = [];
             var followed = UserData.getUser().following;
@@ -453,7 +453,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $scope.cards_temp.map(function(key, array) {
                     $scope.cards.push(key);
                 });
-                loading_cards = false;
+                $rootScope.loading_cards = false;
             });
             return deferred.promise;
         }
@@ -463,10 +463,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log('getCardsUpdate: ' + id);
         var deferred = $q.defer();
         var promises = [];
-        console.log(loading_cards);
-        if (!loading_cards) {
+        console.log($rootScope.loading_cards);
+        if (!$rootScope.loading_cards) {
             $scope.cards_temp = [];
-            loading_cards = true;
+            $rootScope.loading_cards = true;
             var last_card;
             var operand;
             if ($scope.cards.length > 0) {
@@ -511,7 +511,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 var sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
                 last_card = sort_card[sort_card.length - 1];
                 UserData.conversationsLatestCardAdd(id, last_card);
-                loading_cards = false;
+                $rootScope.loading_cards = false;
                 deferred.resolve();
             });
         } else {
@@ -522,9 +522,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     getCards = function(id) {
         console.log('getCards: ' + id);
-        if (!loading_cards) {
+        if (!$rootScope.loading_cards) {
             $scope.cards_temp = [];
-            loading_cards = true;
+            $rootScope.loading_cards = true;
             var deferred = $q.defer();
             var promises = [];
             var last_card;
@@ -574,7 +574,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $scope.cards_temp.map(function(key, array) {
                     $scope.cards.push(key);
                 });
-                loading_cards = false;
+                $rootScope.loading_cards = false;
                 //updateFollowingIcons($scope.cards);
                 deferred.resolve();
             });
@@ -584,9 +584,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     getPublicCards = function(id) {
         console.log('getPublicCards: ' + id);
-        if (!loading_cards) {
+        if (!$rootScope.loading_cards) {
             $scope.cards_temp = [];
-            loading_cards = true;
+            $rootScope.loading_cards = true;
             var deferred = $q.defer();
             var promises = [];
             var last_card;
@@ -653,7 +653,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             $scope.cards.push(key);
                         });
                         console.log($scope.cards);
-                        loading_cards = false;
+                        $rootScope.loading_cards = false;
                         //updateFollowingIcons($scope.cards);
                         deferred.resolve();
                     });
@@ -666,9 +666,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log('getPublicCardsUpdate: ' + id);
         var deferred = $q.defer();
         var promises = [];
-        if (!loading_cards) {
+        if (!$rootScope.loading_cards) {
             $scope.cards_temp = [];
-            loading_cards = true;
+            $rootScope.loading_cards = true;
             var last_card;
             var operand;
             if ($scope.cards.length > 0) {
@@ -733,7 +733,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         var sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
                         last_card = sort_card[sort_card.length - 1];
                         UserData.conversationsLatestCardAdd(id, last_card);
-                        loading_cards = false;
+                        $rootScope.loading_cards = false;
                         deferred.resolve();
                     });
                 }));

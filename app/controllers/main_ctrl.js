@@ -5,14 +5,19 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     // Broadcast by socket after it has reconnected. Check for updates.
     $scope.$on('SOCKET_RECONNECT', function(event) {
         console.log('SOCKET_RECONNECT');
-        console.log(loading_cards);
-        loading_cards = false;
+        console.log($rootScope.loading_cards);
+        $rootScope.loading_cards = false;
         var id = Conversations.getConversationId();
         console.log(Conversations.getConversationType());
+        // TODO - needs to cover all routes conversations, conversation other conversation, group contacts etc.
+        // update all required models (could be new conversations, multiple cards across conversations, new users or user data - Userdata first load re call?)
         if (Conversations.getConversationType() == 'feed') {
             getFollowingUpdate();
         } else if (Conversations.getConversationType() == 'private') {
-            getCardsUpdate(id);
+            //getCardsUpdate(id);
+            getCardsUpdate(id).then(function(result) {
+                $scope.$broadcast("items_changed", 'bottom');
+            });
         } else if (Conversations.getConversationType() == 'public') {
             getPublicCardsUpdate(id);
         }
@@ -122,7 +127,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             getFollowingUpdate().then(function(result) {
                 $scope.$broadcast("items_changed", 'top');
             });
-        } 
+        }
     });
 
     // NOTIFICATION for private conversation.
@@ -136,7 +141,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         } else if (msg.conversation_id == id) {
             deleteCard(msg.card_id);
         }
-        
+
     });
 
     // NOTIFICATION for private conversation.
@@ -146,10 +151,10 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         var followed = UserData.getUser().following;
         if ((Conversations.getConversationType() == 'feed' && followed.indexOf(msg.conversation_id) >= 0) || (msg.conversation_id == Conversations.getConversationId())) {
             Conversations.getConversationLatestCard(msg.conversation_id)
-            .then(function(res) {
-                console.log(res);
-                updateCard(res.data);
-            });
+                .then(function(res) {
+                    console.log(res);
+                    updateCard(res.data);
+                });
         }
     });
 
