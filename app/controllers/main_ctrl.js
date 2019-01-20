@@ -5,6 +5,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     // Broadcast by socket after it has reconnected. Check for updates.
     $scope.$on('SOCKET_RECONNECT', function(event) {
         console.log('SOCKET_RECONNECT');
+        console.log(loading_cards);
         loading_cards = false;
         var id = Conversations.getConversationId();
         console.log(Conversations.getConversationType());

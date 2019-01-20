@@ -463,6 +463,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log('getCardsUpdate: ' + id);
         var deferred = $q.defer();
         var promises = [];
+        console.log(loading_cards);
         if (!loading_cards) {
             $scope.cards_temp = [];
             loading_cards = true;
