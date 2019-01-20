@@ -53,9 +53,11 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         UserData.addConversationViewed(msg.conversation_id, msg.viewed_users);
         var id = Conversations.getConversationId();
         // only update the conversation if the user is currently in that conversation
+        console.log(id);
         if (id === msg.conversation_id) {
             updateConversationViewed(id);
             getCardsUpdate(id).then(function(result) {
+                console.log(result);
                 $scope.$broadcast("items_changed", 'bottom');
             });
         } else {
@@ -77,6 +79,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         console.log(msg);
         UserData.addConversationViewed(msg.conversation_id, msg.viewed_users);
         var id = Conversations.getConversationId();
+        console.log(id);
         Conversations.getConversationLatestCard(msg.conversation_id)
             .then(function(res) {
                 console.log(res);
@@ -97,6 +100,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         console.log(msg);
         UserData.addConversationViewed(msg.conversation_id, msg.viewed_users);
         var id = Conversations.getConversationId();
+        console.log(id);
         Conversations.getConversationLatestCard(msg.conversation_id)
             .then(function(res) {
                 console.log(res);

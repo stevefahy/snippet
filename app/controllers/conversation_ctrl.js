@@ -253,10 +253,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     });
 
     addCard = function(card) {
+        console.log(card);
         // Get the user for this card
         var users = UserData.getContacts();
         var user_pos = General.findWithAttr(users, '_id', card.user);
+        console.log(user_pos);
         var user = users[user_pos];
+        console.log(user);
         // Store the original characters of the card.
         card.original_content = card.content;
         // Get the user name for the user id
@@ -266,8 +269,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     deleteCard = function(id) {
+        console.log(id);
         var card_pos = General.findWithAttr($scope.cards, '_id', id);
+        console.log(card_pos);
         if (card_pos >= 0) {
+            console.log('deleting');
             $rootScope.deleting_card = true;
             //$scope.$apply(function() {
             $scope.cards.splice(card_pos, 1);
@@ -279,7 +285,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     updateCard = function(card) {
         console.log(card);
         var card_pos = General.findWithAttr($scope.cards, '_id', card._id);
+        console.log(card_pos);
         if (card_pos >= 0) {
+            console.log('updating');
             $scope.cards[card_pos].original_content = card.content;
             $scope.cards[card_pos].content = card.content;
             $scope.cards[card_pos].updatedAt = card.updatedAt;
