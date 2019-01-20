@@ -532,26 +532,26 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
             console.log('CLIENT NS disconnected by server: ' + reason);
         });
         socket_n.on('connect_error', function(error) {
-            console.log('connect_error: ' + error);
+            console.log('CLIENT NS connect_error: ' + error);
         });
         socket_n.on('connect_timeout', function() {
-            console.log('connect_timeout');
+            console.log('CLIENT NS connect_timeout');
         });
         socket_n.on('reconnect', function(attempt) {
-            console.log('reconnect: ' + attempt);
+            console.log('CLIENT NS reconnect: ' + attempt);
             //$rootScope.$broadcast('SOCKET_RECONNECT');
         });
         socket_n.on('reconnecting', function(attempt) {
-            console.log('reconnecting: ' + attempt);
+            console.log('CLIENT NS reconnecting: ' + attempt);
         });
         socket_n.on('reconnect_attempt', function() {
-            console.log('reconnect_attempt');
+            console.log('CLIENT NS reconnect_attempt');
         });
         socket_n.on('reconnect_error', function(error) {
-            console.log('reconnect_error: ' + error);
+            console.log('CLIENT NS reconnect_error: ' + error);
         });
         socket_n.on('reconnect_failed', function() {
-            console.log('reconnect_failed');
+            console.log('CLIENT NS reconnect_failed');
         });
         socket_n.on('ping', function() {
             //console.log('ping');
@@ -560,7 +560,7 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
             //console.log('pong: ' + ms);
         });
         socket_n.on('SERVER_CONNECTION', function(id) {
-            console.log('SERVER_CONNECTION: ' + id);
+            console.log('CLIENT NS SERVER_CONNECTION: ' + id);
         });
     };
 
@@ -584,6 +584,52 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
                     setTimeout(recreateConnection, 500);
                 });
             });
+
+
+        // TEST 20/01/19
+        socket_m.on('connect', function() {
+            console.log('M CLIENT NS connect');
+        });
+        socket_m.on('connection', function() {
+            console.log('M CLIENT NS connection');
+        });
+        socket_m.on('disconnect', function(reason) {
+            console.log('M CLIENT NS disconnected by server: ' + reason);
+        });
+        socket_m.on('connect_error', function(error) {
+            console.log('M CLIENT NS connect_error: ' + error);
+        });
+        socket_m.on('connect_timeout', function() {
+            console.log('M CLIENT NS connect_timeout');
+        });
+        socket_m.on('reconnect', function(attempt) {
+            console.log('M CLIENT NS reconnect: ' + attempt);
+            //$rootScope.$broadcast('SOCKET_RECONNECT');
+        });
+        socket_m.on('reconnecting', function(attempt) {
+            console.log('M CLIENT NS reconnecting: ' + attempt);
+        });
+        socket_m.on('reconnect_attempt', function() {
+            console.log('M CLIENT NS reconnect_attempt');
+        });
+        socket_m.on('reconnect_error', function(error) {
+            console.log('M CLIENT NS reconnect_error: ' + error);
+        });
+        socket_m.on('reconnect_failed', function() {
+            console.log('M CLIENT NS reconnect_failed');
+        });
+        socket_m.on('ping', function() {
+            //console.log('ping');
+        });
+        socket_m.on('pong', function(ms) {
+            //console.log('pong: ' + ms);
+        });
+        socket_m.on('SERVER_CONNECTION', function(id) {
+            console.log('M CLIENT NS SERVER_CONNECTION: ' + id);
+        });
+
+
+
 
         },
         connect: connectNamespace,
