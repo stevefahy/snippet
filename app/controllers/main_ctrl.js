@@ -6,7 +6,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     $scope.$on('SOCKET_RECONNECT', function(event) {
         console.log('SOCKET_RECONNECT');
         console.log($rootScope.loading_cards);
-        $rootScope.loading_cards = false;
+        //$rootScope.loading_cards = false;
         var id = Conversations.getConversationId();
         console.log(Conversations.getConversationType());
         // TODO - needs to cover all routes conversations, conversation other conversation, group contacts etc.

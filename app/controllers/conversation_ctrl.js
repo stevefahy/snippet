@@ -277,7 +277,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             $rootScope.deleting_card = true;
             //$scope.$apply(function() {
             $scope.cards.splice(card_pos, 1);
-             //});
+            //});
             $rootScope.deleting_card = false;
         }
     };
@@ -495,16 +495,19 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     if (res.data.length > 0) {
                         res.data.map(function(key, array) {
                             console.log(key);
-                            // Get the user for this card
-                            var users = UserData.getContacts();
-                            var user_pos = General.findWithAttr(users, '_id', key.user);
-                            var user = users[user_pos];
-                            // Store the original characters of the card.
-                            key.original_content = key.content;
-                            // Get the user name for the user id
-                            key.user_name = user.user_name;
-                            key.avatar = user.avatar;
-                            $scope.cards_temp.push(key);
+                            // Only add this card if it does not already exist (message recieved and socket reconnect can overlap)
+                            if (General.findWithAttr($scope.cards, '_id', key._id) < 0) {
+                                // Get the user for this card
+                                var users = UserData.getContacts();
+                                var user_pos = General.findWithAttr(users, '_id', key.user);
+                                var user = users[user_pos];
+                                // Store the original characters of the card.
+                                key.original_content = key.content;
+                                // Get the user name for the user id
+                                key.user_name = user.user_name;
+                                key.avatar = user.avatar;
+                                $scope.cards_temp.push(key);
+                            }
                         });
                     } else {
                         // console.log('NO MORE RECORDS');

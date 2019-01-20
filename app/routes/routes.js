@@ -1404,7 +1404,7 @@ module.exports = function(app, passport) {
         var last_card = req.body.last_card;
         var operand = req.body.operand;
         //var operand = '$gt';
-        console.log(operand);
+        //console.log(operand);
         if (operand == '$gt') {
             Card.find({
                 'updatedAt': {
