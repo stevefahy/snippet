@@ -1,26 +1,61 @@
-cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '$location', 'UserData', 'socket', 'principal', 'viewAnimationsService', 'Conversations', 'Cards', function($scope, $window, $rootScope, $timeout, $location, UserData, socket, principal, viewAnimationsService, Conversations, Cards) {
+cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '$location', 'UserData', 'socket', 'principal', 'viewAnimationsService', 'Conversations', 'Cards', '$q', function($scope, $window, $rootScope, $timeout, $location, UserData, socket, principal, viewAnimationsService, Conversations, Cards, $q) {
 
     $rootScope.deleting_card = false;
+
+    checkLoadingCards = function() {
+        var deferred = $q.defer();
+        console.log($rootScope.loading_cards);
+        if ($rootScope.loading_cards) {
+            console.log('already loading...wait');
+            var unbind = $rootScope.$watch('loading_cards', function(n) {
+                console.log($rootScope.loading_cards);
+                console.log(n);
+                if (!n) {
+                    console.log('loaded...proceed');
+                    // loaded!
+                    unbind();
+                    deferred.resolve(true);
+                }
+            });
+        } else {
+            console.log('not loading...proceed');
+            // loaded!
+            deferred.resolve(true);
+        }
+        return deferred.promise;
+    };
 
     // Broadcast by socket after it has reconnected. Check for updates.
     $scope.$on('SOCKET_RECONNECT', function(event) {
         console.log('SOCKET_RECONNECT');
         console.log($rootScope.loading_cards);
-        //$rootScope.loading_cards = false;
-        var id = Conversations.getConversationId();
-        console.log(Conversations.getConversationType());
-        // TODO - needs to cover all routes conversations, conversation other conversation, group contacts etc.
-        // update all required models (could be new conversations, multiple cards across conversations, new users or user data - Userdata first load re call?)
-        if (Conversations.getConversationType() == 'feed') {
-            getFollowingUpdate();
-        } else if (Conversations.getConversationType() == 'private') {
-            //getCardsUpdate(id);
-            getCardsUpdate(id).then(function(result) {
-                $scope.$broadcast("items_changed", 'bottom');
+        checkLoadingCards()
+            .then(function(result) {
+                console.log(result);
+                //$rootScope.loading_cards = false;
+                var id = Conversations.getConversationId();
+                console.log(Conversations.getConversationType());
+                // TODO - needs to cover all routes conversations, conversation other conversation, group contacts etc.
+                // update all required models (could be new conversations, multiple cards across conversations, new users or user data - Userdata first load re call?)
+                if (Conversations.getConversationType() == 'feed') {
+                    getFollowingUpdate();
+                } else if (Conversations.getConversationType() == 'private') {
+                    //getCardsUpdate(id);
+                    getCardsUpdate(id).then(function(result) {
+                        //console.log(result);
+                            $scope.$broadcast("items_changed", 'bottom');
+                        })
+                        .catch(function(error) {
+                            $rootScope.loading_cards = false;
+                            console.log(error);
+                        });
+                } else if (Conversations.getConversationType() == 'public') {
+                    getPublicCardsUpdate(id);
+                }
+            })
+            .catch(function(error) {
+                console.log(error);
             });
-        } else if (Conversations.getConversationType() == 'public') {
-            getPublicCardsUpdate(id);
-        }
     });
 
 
@@ -57,9 +92,12 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         if (id === msg.conversation_id) {
             updateConversationViewed(id);
             getCardsUpdate(id).then(function(result) {
-                console.log(result);
-                $scope.$broadcast("items_changed", 'bottom');
-            });
+                    console.log(result);
+                    $scope.$broadcast("items_changed", 'bottom');
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
         } else {
             Conversations.getConversationLatestCard(msg.conversation_id)
                 .then(function(res) {
@@ -68,6 +106,9 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                     if ($location.url() == '/chat/conversations') {
                         loadConversations();
                     }
+                })
+                .catch(function(error) {
+                    console.log(error);
                 });
         }
     });

@@ -467,67 +467,84 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     };
 
+    $scope.setLoading = function(boo){
+        $rootScope.loading_cards = boo;
+    };
+
     getCardsUpdate = function(id) {
         console.log('getCardsUpdate: ' + id);
         var deferred = $q.defer();
         var promises = [];
         console.log($rootScope.loading_cards);
-        if (!$rootScope.loading_cards) {
-            $scope.cards_temp = [];
-            $rootScope.loading_cards = true;
-            var last_card;
-            var operand;
-            if ($scope.cards.length > 0) {
-                //last_card = General.getISODate();
-                var sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
-                //last_card = sort_card[0].updatedAt;
-                last_card = sort_card[sort_card.length - 1].updatedAt;
-                operand = '$gt';
-            } else {
-                last_card = General.getISODate();
-                operand = '$lt';
-            }
-            var val = { id: id, amount: NUM_TO_LOAD, last_card: last_card, operand: operand };
-            console.log(val);
-            var prom1 = Conversations.getConversationCards(val)
-                .then(function(res) {
-                    console.log(res);
-                    if (res.data.length > 0) {
-                        res.data.map(function(key, array) {
-                            console.log(key);
-                            // Only add this card if it does not already exist (message recieved and socket reconnect can overlap)
-                            if (General.findWithAttr($scope.cards, '_id', key._id) < 0) {
-                                // Get the user for this card
-                                var users = UserData.getContacts();
-                                var user_pos = General.findWithAttr(users, '_id', key.user);
-                                var user = users[user_pos];
-                                // Store the original characters of the card.
-                                key.original_content = key.content;
-                                // Get the user name for the user id
-                                key.user_name = user.user_name;
-                                key.avatar = user.avatar;
-                                $scope.cards_temp.push(key);
-                            }
-                        });
+        //checkLoadingCards()
+            //.then(function(result) {
+                //console.log(result);
+                //console.log($rootScope.loading_cards);
+                if (!$rootScope.loading_cards) {
+                    $scope.cards_temp = [];
+                    $rootScope.loading_cards = true;
+                    var last_card;
+                    var operand;
+                    if ($scope.cards.length > 0) {
+                        //last_card = General.getISODate();
+                        var sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
+                        //last_card = sort_card[0].updatedAt;
+                        last_card = sort_card[sort_card.length - 1].updatedAt;
+                        operand = '$gt';
                     } else {
-                        // console.log('NO MORE RECORDS');
+                        last_card = General.getISODate();
+                        operand = '$lt';
                     }
-                });
-            promises.push(prom1);
-            // All the cards have been mapped.
-            $q.all(promises).then(function() {
-                $scope.cards_temp.map(function(key, array) {
-                    $scope.cards.push(key);
-                });
-                var sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
-                last_card = sort_card[sort_card.length - 1];
-                UserData.conversationsLatestCardAdd(id, last_card);
-                $rootScope.loading_cards = false;
-                deferred.resolve();
-            });
-        } else {
-            deferred.resolve();
-        }
+                    var val = { id: id, amount: NUM_TO_LOAD, last_card: last_card, operand: operand };
+                    console.log(val);
+                    var prom1 = Conversations.getConversationCards(val)
+                        .then(function(res) {
+                            console.log(res);
+                            if (res.data.length > 0) {
+                                res.data.map(function(key, array) {
+                                    console.log(key);
+                                    // Only add this card if it does not already exist (message recieved and socket reconnect can overlap)
+                                    if (General.findWithAttr($scope.cards, '_id', key._id) < 0) {
+                                        // Get the user for this card
+                                        var users = UserData.getContacts();
+                                        var user_pos = General.findWithAttr(users, '_id', key.user);
+                                        var user = users[user_pos];
+                                        // Store the original characters of the card.
+                                        key.original_content = key.content;
+                                        // Get the user name for the user id
+                                        key.user_name = user.user_name;
+                                        key.avatar = user.avatar;
+                                        $scope.cards_temp.push(key);
+                                    }
+                                });
+                            } else {
+                                // console.log('NO MORE RECORDS');
+                            }
+                        })
+                        .catch(function(error) {
+                            $rootScope.loading_cards = true;
+                            console.log(error);
+                        });
+                    promises.push(prom1);
+                    // All the cards have been mapped.
+                    $q.all(promises).then(function() {
+                        $scope.cards_temp.map(function(key, array) {
+                            $scope.cards.push(key);
+                        });
+                        var sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
+                        last_card = sort_card[sort_card.length - 1];
+                        UserData.conversationsLatestCardAdd(id, last_card);
+                        $rootScope.loading_cards = false;
+                        deferred.resolve();
+                    });
+                } else {
+                    deferred.resolve();
+                }
+                //return deferred.promise;
+            //})
+            //.catch(function(error) {
+            //    console.log(error);
+            //});
         return deferred.promise;
     };
 
@@ -578,6 +595,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     } else {
                         // console.log('NO MORE RECORDS');
                     }
+                })
+                .catch(function(error) {
+                    console.log(error);
                 });
             promises.push(prom1);
             // All the cards have been mapped.
