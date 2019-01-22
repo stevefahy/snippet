@@ -666,6 +666,8 @@ $rootScope.socket_m = socket_m;
         },
         disconnect: function() {
             console.log('disconnect');
+            //socket.emit('conversation_created', { sender_id: socket.getId(), conversation_id: res.data._id, participants: res.data.participants });
+            //socket.emit('user_disconnect', { sender_id: socket.getId(), conversation_id: res.data._id, participants: res.data.participants });
             socket_n.disconnect();
             socket_m.disconnect();
             //socket_m.emit('disconnect');
@@ -679,10 +681,11 @@ $rootScope.socket_m = socket_m;
 
 
         recreate: function(value){
-            console.log('recreat');
+            console.log('recreate');
             //recreateConnection();
             socket_m.connect();
-             socket_n.connect();
+            socket_n.connect();
+            //$rootScope.$broadcast('SOCKET_RECONNECT');
             
         },
 

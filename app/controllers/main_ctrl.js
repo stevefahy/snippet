@@ -4,7 +4,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     // ANDROID CALLED FUNCTIONS
 
-   restoreState = function() {
+    restoreState = function() {
         console.log('restoreState');
     };
 
@@ -19,6 +19,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         //socket.setId(UserData.getUser()._id);
         // socket.create();
         socket.recreate();
+        checkDataUpdate();
     };
 
     onRestart = function() {
@@ -29,6 +30,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         if (status == "connected") {
             $timeout(function() {
                 console.log('connected');
+                checkDataUpdate();
             });
         } else if (status == "disconnected") {
             console.log('disconnected');
@@ -60,9 +62,8 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         return deferred.promise;
     };
 
-    // Broadcast by socket after it has reconnected. Check for updates.
-    $scope.$on('SOCKET_RECONNECT', function(event) {
-        console.log('SOCKET_RECONNECT');
+    checkDataUpdate = function() {
+        console.log('checkDataUpdate');
         console.log($rootScope.loading_cards);
         checkLoadingCards()
             .then(function(result) {
@@ -77,7 +78,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                 } else if (Conversations.getConversationType() == 'private') {
                     //getCardsUpdate(id);
                     getCardsUpdate(id).then(function(result) {
-                        //console.log(result);
+                            //console.log(result);
                             $scope.$broadcast("items_changed", 'bottom');
                         })
                         .catch(function(error) {
@@ -91,9 +92,13 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             .catch(function(error) {
                 console.log(error);
             });
+    };
+
+    // Broadcast by socket after it has reconnected. Check for updates.
+    $scope.$on('SOCKET_RECONNECT', function(event) {
+        console.log('SOCKET_RECONNECT');
+        checkDataUpdate();
     });
-
-
 
 
     // NOTIFICATION for private conversation.
