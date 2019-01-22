@@ -467,9 +467,28 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     };
 
+    // TESTING
+
     $scope.setLoading = function(boo){
         $rootScope.loading_cards = boo;
     };
+
+
+    $scope.pause = function(){
+        console.log('pause');
+        onPause();
+    };
+
+    $scope.resume = function(){
+        console.log('resume');
+        onResume();
+    };
+
+    //$scope.socket_m_watch;
+    //$scope.socket_n_watch;
+    //$scope.socket_n = socket.socket_n;
+
+    // TESTING
 
     getCardsUpdate = function(id) {
         console.log('getCardsUpdate: ' + id);

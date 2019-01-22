@@ -2,6 +2,41 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     $rootScope.deleting_card = false;
 
+    // ANDROID CALLED FUNCTIONS
+
+   restoreState = function() {
+        console.log('restoreState');
+    };
+
+    onPause = function() {
+        console.log('onPause');
+        socket.disconnect();
+    };
+
+    onResume = function() {
+        console.log('onResume');
+        //socket.connect();
+        //socket.setId(UserData.getUser()._id);
+        // socket.create();
+        socket.recreate();
+    };
+
+    onRestart = function() {
+        console.log('onRestart');
+    };
+
+    networkChange = function(status) {
+        if (status == "connected") {
+            $timeout(function() {
+                console.log('connected');
+            });
+        } else if (status == "disconnected") {
+            console.log('disconnected');
+        }
+    };
+
+    //
+
     checkLoadingCards = function() {
         var deferred = $q.defer();
         console.log($rootScope.loading_cards);

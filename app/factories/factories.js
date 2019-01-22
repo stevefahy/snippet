@@ -433,6 +433,14 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
     var socket_m;
     var socket_n;
 
+
+    //$rootScope.socket_m = socket_m;
+
+       
+    
+
+
+
     notifyConversationCreated = function(msg) {
         console.log('notify_conversation_created, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
         //$rootScope.$broadcast('NOTIFICATION', msg);
@@ -479,11 +487,16 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
 
     recreateConnection = function() {
         console.log('recreateConnection');
-
+        console.log(socket_m);
+        console.log(socket_n);
+        console.log(socket_m.connected);
+console.log(socket_n.connected);
         var connection = socket_n.connect();
         var checkConnection = $interval(function() {
             console.log(connection.connected);
             if (connection.connected) {
+                        console.log(socket_m.connected);
+console.log(socket_n.connected);
                 console.log("Made connection");
                 $rootScope.$broadcast('SOCKET_RECONNECT');
                 $interval.cancel(checkConnection);
@@ -497,6 +510,13 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
         socket_m.emit('create_ns', id);
         // create the unique namespace on the client
         socket_n = io('/' + id);
+
+        $rootScope.socket_n = socket_n;
+//$rootScope.socket_n = socket_n;
+
+ $rootScope.$watch('socket_n.connected', function(n) {
+               console.log(n);
+            });
         // namespace connect
         socket_n.on('connect', function() {
             console.log('CLIENT NS connect: ' + socket_n.id);
@@ -554,10 +574,10 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
             console.log('CLIENT NS reconnect_failed');
         });
         socket_n.on('ping', function() {
-            //console.log('ping');
+            console.log('ping');
         });
         socket_n.on('pong', function(ms) {
-            //console.log('pong: ' + ms);
+            console.log('pong: ' + ms);
         });
         socket_n.on('SERVER_CONNECTION', function(id) {
             console.log('CLIENT NS SERVER_CONNECTION: ' + id);
@@ -567,6 +587,14 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
     return {
         create: function() {
             socket_m = io({ transports: ['websocket'] });
+
+$rootScope.socket_m = socket_m;
+//$rootScope.socket_n = socket_n;
+
+ $rootScope.$watch('socket_m.connected', function(n) {
+               console.log(n);
+            });
+
             var socket_factory = this;
             socket_m.once('connect', function() {
                 console.log("connected from the client side");
@@ -619,10 +647,10 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
             console.log('M CLIENT NS reconnect_failed');
         });
         socket_m.on('ping', function() {
-            //console.log('ping');
+            console.log('ping');
         });
         socket_m.on('pong', function(ms) {
-            //console.log('pong: ' + ms);
+            console.log('pong: ' + ms);
         });
         socket_m.on('SERVER_CONNECTION', function(id) {
             console.log('M CLIENT NS SERVER_CONNECTION: ' + id);
@@ -638,8 +666,9 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
         },
         disconnect: function() {
             console.log('disconnect');
-            socket_m.disconnect(true);
-            socket_m.emit('disconnect');
+            socket_n.disconnect();
+            socket_m.disconnect();
+            //socket_m.emit('disconnect');
         },
         getId: function() {
             return property;
@@ -647,6 +676,17 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
         setId: function(value) {
             property = value;
         },
+
+
+        recreate: function(value){
+            console.log('recreat');
+            //recreateConnection();
+            socket_m.connect();
+             socket_n.connect();
+            
+        },
+
+
         isConnected: function() {
             return socket_m.connected;
         },
@@ -746,29 +786,33 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     var update_inprogress = false;
 
     // Android called functions.
-
+/*
     restoreState = function() {
-        //console.log('restoreState');
+        console.log('restoreState');
+    };
+
+    onPause = function() {
+        console.log('onPause');
     };
 
     onResume = function() {
-        //console.log('onResume');
+        console.log('onResume');
     };
 
     onRestart = function() {
-        //console.log('onRestart');
+        console.log('onRestart');
     };
 
     networkChange = function(status) {
         if (status == "connected") {
             $timeout(function() {
-                //console.log('connected');
+                console.log('connected');
             });
         } else if (status == "disconnected") {
-            //console.log('disconnected');
+            console.log('disconnected');
         }
     };
-
+*/
     mobileNotification = function(data) {
         $timeout(function() {
             $location.path("/chat/conversation/" + data);
