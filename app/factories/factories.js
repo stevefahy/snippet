@@ -433,11 +433,15 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
     var socket_m;
     var socket_n;
 
+    //var returned_m;
+
+    //var socket_f = this;
+
 
     //$rootScope.socket_m = socket_m;
 
-       
-    
+
+
 
 
 
@@ -490,18 +494,18 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
         console.log(socket_m);
         console.log(socket_n);
         console.log(socket_m.connected);
-console.log(socket_n.connected);
+        console.log(socket_n.connected);
         var connection = socket_n.connect();
         var checkConnection = $interval(function() {
             console.log(connection.connected);
             if (connection.connected) {
-                        console.log(socket_m.connected);
-console.log(socket_n.connected);
+                console.log(socket_m.connected);
+                console.log(socket_n.connected);
                 console.log("Made connection");
                 $rootScope.$broadcast('SOCKET_RECONNECT');
                 $interval.cancel(checkConnection);
             }
-        }, 500, 1000);
+        }, 500, 10);
 
     };
 
@@ -509,22 +513,44 @@ console.log(socket_n.connected);
         // Connected, request unique namespace to be created
         socket_m.emit('create_ns', id);
         // create the unique namespace on the client
-        socket_n = io('/' + id);
+        //socket_n = io('/' + id);
+        socket_n = io('/' + id, { transports: ['websocket'] });
+        //const adminSocket = io('/admin', { forceNew: true });
+
+
+        /*
+                      socket_m = io({
+                     transports: ['websocket'],
+                      timeout: 100,
+                      reconnectionAttempts: 2
+                      //autoConnect: false
+                  });
+                  */
 
         $rootScope.socket_n = socket_n;
-//$rootScope.socket_n = socket_n;
+        //$rootScope.socket_n = socket_n;
 
- $rootScope.$watch('socket_n.connected', function(n) {
-               console.log(n);
-            });
+        $rootScope.$watch('socket_n.connected', function(n) {
+            console.log(n);
+        });
         // namespace connect
-        socket_n.on('connect', function() {
+        /*socket_n.on('connect', function() {
+            console.log('CLIENT NS connect: ' + socket_n.id);
+        });*/
+        socket_n.once('connect', function() {
             console.log('CLIENT NS connect: ' + socket_n.id);
         });
         // server confirming that the namespace has been created
         socket_n.on('joined_ns', function(id) {
             console.log('CLIENT joined_ns: ' + socket_n.id);
         });
+/*
+        socket_n.on('existing_ns', function(id) {
+            console.log('CLIENT existing_ns: ' + socket_n.id);
+        });
+        */
+
+
         // server notifying users by namespace of content update
         socket_n.on('notify_conversation_created', notifyConversationCreated);
         // server notifying users by namespace of content update
@@ -568,9 +594,11 @@ console.log(socket_n.connected);
             console.log('CLIENT NS reconnect_attempt');
         });
         socket_n.on('reconnect_error', function(error) {
+            console.log(socket_n);
             console.log('CLIENT NS reconnect_error: ' + error);
         });
         socket_n.on('reconnect_failed', function() {
+            console.log(socket_n);
             console.log('CLIENT NS reconnect_failed');
         });
         socket_n.on('ping', function() {
@@ -586,22 +614,30 @@ console.log(socket_n.connected);
 
     return {
         create: function() {
-            socket_m = io({ transports: ['websocket'] });
+            console.log('create');
+            socket_m = io({
+                transports: ['websocket']//,
+                //timeout: 100,
+                //reconnectionAttempts: 5
+                //autoConnect: false
+            });
 
-$rootScope.socket_m = socket_m;
-//$rootScope.socket_n = socket_n;
+            $rootScope.socket_m = socket_m;
+            //$rootScope.socket_n = socket_n;
 
- $rootScope.$watch('socket_m.connected', function(n) {
-               console.log(n);
+            $rootScope.$watch('socket_m.connected', function(n) {
+                console.log(n);
             });
 
             var socket_factory = this;
             socket_m.once('connect', function() {
+                //socket_m.on('connect', function() {
                 console.log("connected from the client side");
                 connectNamespace(socket_factory.getId(), socket_factory);
             });
 
-            socket_m.on('reconnect', function() {
+           //socket_m.once('reconnect', function() {
+                socket_m.on('reconnect', function() {
                 console.log("reconnected from the client side");
                 this.once('connect', function() {
                     console.log("connect from the client side!");
@@ -614,47 +650,66 @@ $rootScope.socket_m = socket_m;
             });
 
 
-        // TEST 20/01/19
-        socket_m.on('connect', function() {
-            console.log('M CLIENT NS connect');
-        });
-        socket_m.on('connection', function() {
-            console.log('M CLIENT NS connection');
-        });
-        socket_m.on('disconnect', function(reason) {
-            console.log('M CLIENT NS disconnected by server: ' + reason);
-        });
-        socket_m.on('connect_error', function(error) {
-            console.log('M CLIENT NS connect_error: ' + error);
-        });
-        socket_m.on('connect_timeout', function() {
-            console.log('M CLIENT NS connect_timeout');
-        });
-        socket_m.on('reconnect', function(attempt) {
-            console.log('M CLIENT NS reconnect: ' + attempt);
-            //$rootScope.$broadcast('SOCKET_RECONNECT');
-        });
-        socket_m.on('reconnecting', function(attempt) {
-            console.log('M CLIENT NS reconnecting: ' + attempt);
-        });
-        socket_m.on('reconnect_attempt', function() {
-            console.log('M CLIENT NS reconnect_attempt');
-        });
-        socket_m.on('reconnect_error', function(error) {
-            console.log('M CLIENT NS reconnect_error: ' + error);
-        });
-        socket_m.on('reconnect_failed', function() {
-            console.log('M CLIENT NS reconnect_failed');
-        });
-        socket_m.on('ping', function() {
-            console.log('ping');
-        });
-        socket_m.on('pong', function(ms) {
-            console.log('pong: ' + ms);
-        });
-        socket_m.on('SERVER_CONNECTION', function(id) {
-            console.log('M CLIENT NS SERVER_CONNECTION: ' + id);
-        });
+            // TEST 20/01/19
+            /*
+            socket_m.on('connect', function() {
+                console.log(socket_factory.getId());
+                //returned_m = this;
+                //connectNamespace(socket_factory.getId(), socket_factory);
+                console.log('M CLIENT NS connect 2ND TIME');
+                console.log(socket_n);
+                console.log(socket_n.connected);
+                console.log(socket_factory.getId());
+                connectNamespace(socket_factory.getId(), socket_factory);
+                //console.log("connected from the client side");
+                   // connectNamespace(socket_factory.getId(), socket_factory);
+                //socket_n.connect();
+               //socket_n = io('/' + socket_factory.getId());
+            });
+            */
+
+
+
+
+            socket_m.on('connection', function() {
+                console.log('M CLIENT NS connection');
+            });
+            socket_m.on('disconnect', function(reason) {
+                console.log('M CLIENT NS disconnected by server: ' + reason);
+            });
+            socket_m.on('connect_error', function(error) {
+                console.log('M CLIENT NS connect_error: ' + error);
+            });
+            socket_m.on('connect_timeout', function() {
+                console.log('M CLIENT NS connect_timeout');
+            });
+            socket_m.on('reconnect', function(attempt) {
+                console.log('M CLIENT NS reconnect: ' + attempt);
+                //$rootScope.$broadcast('SOCKET_RECONNECT');
+            });
+            socket_m.on('reconnecting', function(attempt) {
+                console.log('M CLIENT NS reconnecting: ' + attempt);
+            });
+            socket_m.on('reconnect_attempt', function() {
+                console.log('M CLIENT NS reconnect_attempt');
+            });
+            socket_m.on('reconnect_error', function(error) {
+                console.log('M CLIENT NS reconnect_error: ' + error);
+            });
+            socket_m.on('reconnect_failed', function() {
+                console.log('M CLIENT NS reconnect_failed');
+                socket_factory.create();
+
+            });
+            socket_m.on('ping', function() {
+                console.log('ping');
+            });
+            socket_m.on('pong', function(ms) {
+                console.log('pong: ' + ms);
+            });
+            socket_m.on('SERVER_CONNECTION', function(id) {
+                console.log('M CLIENT NS SERVER_CONNECTION: ' + id);
+            });
 
 
 
@@ -680,13 +735,70 @@ $rootScope.socket_m = socket_m;
         },
 
 
-        recreate: function(value){
+        recreate: function(value) {
             console.log('recreate');
             //recreateConnection();
-            socket_m.connect();
-            socket_n.connect();
+
+            var sox = this;
+            console.log(socket_m);
+            console.log(socket_n);
+            //socket_m.disconnect();
+            if (!socket_m.connected) {
+                socket_m.connect();
+                //socket_n.connect();
+
+                socket_m.once('connect', function() {
+                    //socket_m.on('connect', function() {
+                    console.log("connected from the client side 2");
+                    //connectNamespace(sox.getId(), sox);
+                    //socket_n.connect();
+                    //socket_m.emit('check_ns', sox.getId());
+                    socket_m.emit('create_ns', sox.getId());
+                    socket_n.connect();
+                    //socket_n.on('connect', function() {
+                    //console.log('CLIENT NS connect 2: ' + socket_n.id);
+                    //});
+                });
+
+            }
+
+
+            //connectNamespace(this.getId(), this);
+            //socket_m.emit('create_ns', this.getId());
+
+
+
+
+
+            //socket_m.connect();
+            //socket_m.emit('create_ns', this.getId());
+            //connectNamespace(this.getId(), this);
+            /*
+            if(!socket_n.connected){
+                //socket_n.connect();
+                console.log(this.getId());
+                //socket_m.emit('create_ns', this.getId());
+                //connectNamespace(this.getId(), this);
+                socket_n.connect();
+            } else {
+               // socket_m.connect();
+            }
+            */
+            //socket_n.connect();
+
+            //connectNamespace(sox.getId(), sox);
+            /*socket_m.once('connect', function() {
+                //socket_m.on('connect', function() {
+                console.log("connected from the client side AGAIN");
+                console.log(sox);
+                connectNamespace(sox.getId(), sox);
+            });*/
+            //socket_n.connect();
             //$rootScope.$broadcast('SOCKET_RECONNECT');
-            
+            //console.log(socket_m);
+            //console.log(returned_m);
+            //socket_n.io.reconnect();
+
         },
 
 
@@ -789,33 +901,33 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     var update_inprogress = false;
 
     // Android called functions.
-/*
-    restoreState = function() {
-        console.log('restoreState');
-    };
+    /*
+        restoreState = function() {
+            console.log('restoreState');
+        };
 
-    onPause = function() {
-        console.log('onPause');
-    };
+        onPause = function() {
+            console.log('onPause');
+        };
 
-    onResume = function() {
-        console.log('onResume');
-    };
+        onResume = function() {
+            console.log('onResume');
+        };
 
-    onRestart = function() {
-        console.log('onRestart');
-    };
+        onRestart = function() {
+            console.log('onRestart');
+        };
 
-    networkChange = function(status) {
-        if (status == "connected") {
-            $timeout(function() {
-                console.log('connected');
-            });
-        } else if (status == "disconnected") {
-            console.log('disconnected');
-        }
-    };
-*/
+        networkChange = function(status) {
+            if (status == "connected") {
+                $timeout(function() {
+                    console.log('connected');
+                });
+            } else if (status == "disconnected") {
+                console.log('disconnected');
+            }
+        };
+    */
     mobileNotification = function(data) {
         $timeout(function() {
             $location.path("/chat/conversation/" + data);

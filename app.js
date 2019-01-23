@@ -36,10 +36,12 @@ io.sockets.setMaxListeners(0);
 io.set('transports', ['websocket']);
 
 
+
+
 conversationCreated = function(data) {
-    console.log('conversation_created, conv id: ' + data.conversation_id + ' , participants: ' + data.participants);
+    console.log('socket_ns conversation_created, conv id: ' + data.conversation_id + ' , participants: ' + data.participants);
     console.log(data.participants);
-    console.log('namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    console.log('socket_ns namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     // notify relevant namespace(s) of the cards creation
     for (var i in data.participants) {
         for (var y in Object.keys(io.nsps)) {
@@ -51,7 +53,7 @@ conversationCreated = function(data) {
                 //var nsp_new = io.of('/' + data.participants[i]._id);
                 var nsp_new = io.of('/' + Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length));
                 //console.log('emit notify_users: ' + data.participants[i]._id);
-                console.log('emit conversation_created: ' + Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length));
+                console.log('socket_ns emit conversation_created: ' + Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length));
                 nsp_new.emit('notify_conversation_created', { conversation_id: data.conversation_id, participants: data.participants });
             }
         }
@@ -59,9 +61,9 @@ conversationCreated = function(data) {
 };
 
 privateCreated = function(data) {
-    console.log('private_created, conv id: ' + data.conversation_id + ' , card_id: ' + data.card_id + ' , participants: ' + data.participants + ' , viewed_users: ' + data.viewed_users);
+    console.log('socket_ns private_created, conv id: ' + data.conversation_id + ' , card_id: ' + data.card_id + ' , participants: ' + data.participants + ' , viewed_users: ' + data.viewed_users);
     console.log(data.participants);
-    console.log('namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    console.log('socket_ns namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     // notify relevant namespace(s) of the cards creation
     for (var i in data.participants) {
         // dont emit to the user which sent the card
@@ -75,7 +77,7 @@ privateCreated = function(data) {
                 //var nsp_new = io.of('/' + data.participants[i]._id);
                 var nsp_new = io.of('/' + Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length));
                 //console.log('emit notify_users: ' + data.participants[i]._id);
-                console.log('emit private_created: ' + Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length));
+                console.log('socket_ns emit private_created: ' + Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length));
                 nsp_new.emit('notify_private_created', { conversation_id: data.conversation_id, card_id: data.card_id, participants: data.participants, viewed_users: data.viewed_users });
             }
         }
@@ -84,9 +86,9 @@ privateCreated = function(data) {
 };
 
 privateUpdated = function(data) {
-    console.log('private_updated, conv id: ' + data.conversation_id + ' , card_id: ' + data.card_id + ' , participants: ' + data.participants + ' , viewed_users: ' + data.viewed_users);
+    console.log('socket_ns private_updated, conv id: ' + data.conversation_id + ' , card_id: ' + data.card_id + ' , participants: ' + data.participants + ' , viewed_users: ' + data.viewed_users);
     console.log(data.participants);
-    console.log('namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    console.log('socket_ns namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     // notify relevant namespace(s) of the cards creation
     for (var i in data.participants) {
         // dont emit to the user which sent the card
@@ -100,7 +102,7 @@ privateUpdated = function(data) {
                 //var nsp_new = io.of('/' + data.participants[i]._id);
                 var nsp_new = io.of('/' + Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length));
                 //console.log('emit notify_users: ' + data.participants[i]._id);
-                console.log('emit private_updated: ' + Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length));
+                console.log('socket_ns emit private_updated: ' + Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length));
                 nsp_new.emit('notify_private_updated', { conversation_id: data.conversation_id, card_id: data.card_id, participants: data.participants, viewed_users: data.viewed_users });
             }
         }
@@ -109,9 +111,9 @@ privateUpdated = function(data) {
 };
 
 privateDeleted = function(data) {
-    console.log('private_deleted, conv id: ' + data.conversation_id + ' , card_id: ' + data.card_id + ' , participants: ' + data.participants + ' , viewed_users: ' + data.viewed_users);
+    console.log('socket_ns private_deleted, conv id: ' + data.conversation_id + ' , card_id: ' + data.card_id + ' , participants: ' + data.participants + ' , viewed_users: ' + data.viewed_users);
     console.log(data.participants);
-    console.log('namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    console.log('socket_ns namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     // notify relevant namespace(s) of the cards creation
     for (var i in data.participants) {
         // dont emit to the user which sent the card
@@ -125,7 +127,7 @@ privateDeleted = function(data) {
                 //var nsp_new = io.of('/' + data.participants[i]._id);
                 var nsp_new = io.of('/' + Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length));
                 //console.log('emit notify_users: ' + data.participants[i]._id);
-                console.log('emit private_deleted: ' + Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length));
+                console.log('socket_ns emit private_deleted: ' + Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length));
                 nsp_new.emit('notify_private_deleted', { conversation_id: data.conversation_id, card_id: data.card_id, participants: data.participants, viewed_users: data.viewed_users });
             }
         }
@@ -134,8 +136,8 @@ privateDeleted = function(data) {
 };
 
 publicCreated = function(data) {
-    console.log('public_created, conv id: ' + data.conversation_id + ' , card id: ' + data.card_id + ' , followers: ' + data.followers);
-    console.log('namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    console.log('socket_ns public_created, conv id: ' + data.conversation_id + ' , card id: ' + data.card_id + ' , followers: ' + data.followers);
+    console.log('socket_ns namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     // notify relevant namespace(s) of the cards creation
     for (var i in data.followers) {
         // dont emit to the user which sent the card
@@ -146,9 +148,9 @@ publicCreated = function(data) {
             if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.followers[i]._id) {
                 // emit to the participant
                 var nsp_new = io.of('/' + data.followers[i]._id);
-                console.log('emit notify_users: ' + data.followers[i]._id);
+                console.log('socket_ns emit notify_users: ' + data.followers[i]._id);
 
-                console.log('Clients of ' + data.followers[i]._id + ':');
+                console.log('socket_ns Clients of ' + data.followers[i]._id + ':');
 
                 io.of('/' + data.followers[i]._id).clients((error, clients) => {
                     if (error) throw error;
@@ -163,8 +165,8 @@ publicCreated = function(data) {
 };
 
 publicDeleted = function(data) {
-    console.log('public_deleted, conv id: ' + data.conversation_id + ' , card id: ' + data.card_id + ' , followers: ' + data.followers);
-    console.log('namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    console.log('socket_ns public_deleted, conv id: ' + data.conversation_id + ' , card id: ' + data.card_id + ' , followers: ' + data.followers);
+    console.log('socket_ns namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     // notify relevant namespace(s) of the cards creation
     for (var i in data.followers) {
         // dont emit to the user which sent the card
@@ -175,7 +177,7 @@ publicDeleted = function(data) {
             if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.followers[i]._id) {
                 // emit to the participant
                 var nsp_new = io.of('/' + data.followers[i]._id);
-                console.log('emit notify_users public_deleted: ' + data.followers[i]._id);
+                console.log('socket_ns emit notify_users public_deleted: ' + data.followers[i]._id);
                 nsp_new.emit('notify_public_deleted', { conversation_id: data.conversation_id, card_id: data.card_id, followers: data.followers });
             }
         }
@@ -184,8 +186,8 @@ publicDeleted = function(data) {
 };
 
 publicUpdated = function(data) {
-    console.log('public_updated, conv id: ' + data.conversation_id + ' card id: ' + data.card_id + ' , followers: ' + data.followers);
-    console.log('namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    console.log('socket_ns public_updated, conv id: ' + data.conversation_id + ' card id: ' + data.card_id + ' , followers: ' + data.followers);
+    console.log('socket_ns namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     // notify relevant namespace(s) of the cards creation
     for (var i in data.followers) {
         // dont emit to the user which sent the card
@@ -196,7 +198,7 @@ publicUpdated = function(data) {
             if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.followers[i]._id) {
                 // emit to the participant
                 var nsp_new = io.of('/' + data.followers[i]._id);
-                console.log('emit notify_user public_updated: ' + data.followers[i]._id);
+                console.log('socket_ns emit notify_user public_updated: ' + data.followers[i]._id);
                 nsp_new.emit('notify_public_updated', { conversation_id: data.conversation_id, card_id: data.card_id, followers: data.followers });
             }
         }
@@ -205,8 +207,8 @@ publicUpdated = function(data) {
 };
 
 dataChange = function(data) {
-    console.log('data_change, update: ' + data.update + ' , user: ' + data.user + ' , users: ' + data.users);
-    console.log('namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    console.log('socket_ns data_change, update: ' + data.update + ' , user: ' + data.user + ' , users: ' + data.users);
+    console.log('socket_ns namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     // notify relevant namespace(s) of the data change.
     for (var i in data.users) {
         // dont emit to the user which sent the change.
@@ -217,7 +219,7 @@ dataChange = function(data) {
                 if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.users[i]) {
                     // emit to the participant
                     var nsp_new = io.of('/' + data.users[i]);
-                    //console.log('emit update_data: ' + data.users[i]);
+                    console.log('socket_ns emit update_data: ' + data.users[i]);
                     nsp_new.emit('update_data', { update_values: data.update, user: data.user });
                 }
             }
@@ -226,59 +228,75 @@ dataChange = function(data) {
 };
 
 create_ns = function(ns) {
-    console.log('create ns: ' + ns);
+    console.log('IO create ns: ' + ns);
     // Check whether this namespace has been created already.
     var instances = Object.keys(io.nsps).indexOf('/' + ns);
+    //console.log(instances);
     // Only create the namespace if it has not already been created.
     if (instances < 0) {
         // create unique namespace requested by client
-        console.log('Creating ns: ' + ns);
+        console.log('socket create_ns Creating ns: ' + ns);
         var socket_ns = io.of('/' + ns);
-        console.log('clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+        //console.log(socket_ns);
+        //console.log('socket create_ns clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
         socket_ns.on('connection', socket_connection);
 
 
-// TEST  20/01/19
-socket_ns.on('disconnect', function(sockets) {
-
-    console.log('socket_ns 2 SERVER DISCONNECT, clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
-});
-
-socket_ns.on('connect', function(socket) {
-    //console.log(socket);
-        console.log(this.name);
-    console.log('socket_ns 2 connect');
-    console.log('socket_ns 2 SERVER CONNECT: ' + socket.id + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
-});
-socket_ns.on('connect_error', function(error) {
-    console.log('socket_ns 2 connect_error: ' + error);
-});
-socket_ns.on('connect_timeout', function(timeout) {
-    console.log('socket_ns 2 connect_timeout:' + timeout);
-});
-socket_ns.on('error', function(error) {
-    console.log('socket_ns 2 error: ' + error);
-});
-socket_ns.on('reconnect', function(attemptNumber) {
-    console.log('socket_ns 2 reconnect: ' + attemptNumber);
-});
-socket_ns.on('reconnect_attempt', function(attemptNumber) {
-    console.log('socket_ns 2 reconnect_attempt: ' + attemptNumber);
-});
-socket_ns.on('reconnecting', function(attemptNumber) {
-    console.log('socket_ns 2 reconnecting: ' + attemptNumber);
-});
-socket_ns.on('reconnect_error', function(error) {
-    console.log('socket_ns 2 reconnect_error: ' + error);
-});
-socket_ns.on('reconnect_failed', function() {
-    console.log('socket_ns 2 reconnect_failed');
-});
+        // TEST  20/01/19
+        socket_ns.on('disconnect', function(sockets) {
+            console.log('socket disconnect, clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+        });
+        socket_ns.on('connect', function(socket) {
+            //console.log(socket.nsp.name  + ' # ' + socket.client.conn.id);
+           //console.log(this);
+            //console.log(this.name);
+            //console.log('socket connect: ' + socket.id + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+            console.log('socket connect: ' + socket.nsp.name  + ' # ' + socket.client.conn.id + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+            //console.log('socket_ns 2 SERVER CONNECT: ' + socket.id + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+        });
+        socket_ns.on('connect_error', function(error) {
+            console.log('socket connect_error: ' + error);
+        });
+        socket_ns.on('connect_timeout', function(timeout) {
+            console.log('socket connect_timeout:' + timeout);
+        });
+        socket_ns.on('error', function(error) {
+            console.log('socket error: ' + error);
+        });
+        socket_ns.on('reconnect', function(attemptNumber) {
+            console.log('socket reconnect: ' + attemptNumber);
+        });
+        socket_ns.on('reconnect_attempt', function(attemptNumber) {
+            console.log('socket reconnect_attempt: ' + attemptNumber);
+        });
+        socket_ns.on('reconnecting', function(attemptNumber) {
+            console.log('socket reconnecting: ' + attemptNumber);
+        });
+        socket_ns.on('reconnect_error', function(error) {
+            console.log('socket reconnect_error: ' + error);
+        });
+        socket_ns.on('reconnect_failed', function() {
+            console.log('socket reconnect_failed');
+        });
+    } else {
+        console.log('already created');
+        //console.log(Object.keys(io.nsps)[instances]);
+        //var socket_ns = io.of(Object.keys(io.nsps)[instances]);
+        //socket_ns.emit('existing_ns', this.id);
     }
 };
 
+showSockets = function(){
+    setTimeout(function(){
+     console.log('clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    }, 500);
+ 
+};
+
 socket_connection = function(socket_ns) {
-    console.log('connection');
+    console.log('socket_ns connection: ' + socket_ns.id);
+    showSockets();
+    //console.log(socket_ns.id);
     socket_ns.setMaxListeners(0);
     // confirm that namespace has been created to client
     socket_ns.emit('joined_ns', this.id);
@@ -292,59 +310,73 @@ socket_connection = function(socket_ns) {
     socket_ns.on('public_deleted', publicDeleted);
     socket_ns.on('public_updated', publicUpdated);
     socket_ns.on('data_change', dataChange);
-    socket_ns.on('reconnect_attempt', reconnect_attempt);
-    socket_ns.on('disconnect', socket_ns_disconnect);
+    //socket_ns.on('reconnect_attempt', reconnect_attempt);
+    //socket_ns.on('disconnect', socket_ns_disconnect);
 
-// TEST  20/01/19
-socket_ns.on('disconnect', function(sockets) {
-    console.log('socket_ns SERVER DISCONNECT, clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
-});
+    // TEST  20/01/19
+    socket_ns.on('connection', function(sockets) {
+        console.log('socket_ns connection, clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    });
+    
+    socket_ns.on('disconnect', function(sockets) {
+        //console.log(this.nsp.name);
+        //console.log(this.client.conn.id);
+        //console.log('disconnect: ' + sockets);
+        //console.log(this.id);
+        console.log('socket_ns disconnect: ' + this.nsp.name  + ' # ' + this.client.conn.id + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+        showSockets();
+    });
+    
+    socket_ns.on('connect', function(socket) {
+        console.log('socket_ns connect: ' + socket.id + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    });
 
-socket_ns.on('connect', function(socket) {
-    console.log('socket_ns connect');
-    console.log('socket_ns SERVER CONNECT: ' + socket.id + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
-});
-socket_ns.on('connect_error', function(error) {
-    console.log('socket_ns connect_error: ' + error);
-});
-socket_ns.on('connect_timeout', function(timeout) {
-    console.log('socket_ns connect_timeout:' + timeout);
-});
-socket_ns.on('error', function(error) {
-    console.log('socket_ns error: ' + error);
-});
-socket_ns.on('reconnect', function(attemptNumber) {
-    console.log('socket_ns reconnect: ' + attemptNumber);
-});
-socket_ns.on('reconnect_attempt', function(attemptNumber) {
-    console.log('socket_ns reconnect_attempt: ' + attemptNumber);
-});
-socket_ns.on('reconnecting', function(attemptNumber) {
-    console.log('socket_ns reconnecting: ' + attemptNumber);
-});
-socket_ns.on('reconnect_error', function(error) {
-    console.log('socket_ns reconnect_error: ' + error);
-});
-socket_ns.on('reconnect_failed', function() {
-    console.log('socket_ns reconnect_failed');
-});
+    socket_ns.on('connect_error', function(error) {
+        console.log('socket_ns connect_error: ' + error);
+    });
+    socket_ns.on('connect_timeout', function(timeout) {
+        console.log('socket_ns connect_timeout:' + timeout);
+    });
+    socket_ns.on('error', function(error) {
+        console.log('socket_ns error: ' + error);
+    });
+    socket_ns.on('reconnect', function(attemptNumber) {
+        console.log('socket_ns reconnect: ' + attemptNumber);
+    });
+    socket_ns.on('reconnect_attempt', function(attemptNumber) {
+        console.log('socket_ns reconnect_attempt: ' + attemptNumber);
+        socket_ns.io.opts.transports = ['polling', 'websocket'];
+    });
+    socket_ns.on('reconnecting', function(attemptNumber) {
+        console.log('socket_ns reconnecting: ' + attemptNumber);
+    });
+    socket_ns.on('reconnect_error', function(error) {
+        console.log('socket_ns reconnect_error: ' + error);
+    });
+    socket_ns.on('reconnect_failed', function() {
+        console.log('socket_ns reconnect_failed');
+    });
 
-    //console.log(socket_ns);
+
+
+    /*
     console.log('Clients of ' + socket_ns.nsp.name + ':');
 
     io.of(socket_ns.nsp.name).clients((error, clients) => {
         if (error) throw error;
         console.log(clients); // => [PZDoMHjiu8PYfRiKAAAF, Anw2LatarvGVVXEIAAAD]
     });
+    */
 
 
 };
 
+/*
 socket_ns_disconnect = function() {
     var socket_ns = this.nsp;
     // Delete the namespace.
     //delete io.nsps[this.nsp.name];
-    console.log('SERVER NS DISCONNECT: ' + this.id + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    console.log('socket_ns DISCONNECT 2: ' + this.id + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     //console.log('REMOVE socket_ns listeners');
     /*
     socket_ns.removeListener('create_ns', create_ns);
@@ -359,59 +391,62 @@ socket_ns_disconnect = function() {
     socket_ns.removeListener('reconnect_attempt', reconnect_attempt);
     socket_ns.removeListener('disconnect', socket_ns_disconnect);
     */
+    /*
 };
+*/
 
+/*
 reconnect_attempt = function() {
-    console.log('socket reconnect attempt');
+    console.log('socket_ns reconnect attempt');
     // on reconnection, reset the transports option, as the Websocket
     // connection may have failed (caused by proxy, firewall, browser, ...)
     socket_ns.io.opts.transports = ['polling', 'websocket'];
 };
+*/
 
-io.on('connection', function(socket) {
-    console.log('SERVER CONNECTION: ' + socket.id + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+io.on('connect', function(socket) {
+    console.log('IO CONNECT: ' + socket.id + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     // namespace sent by client
     socket.on('create_ns', create_ns);
+    /*
     // on socket disconnect
     socket.on('disconnect', function(sockets) {
-        console.log('SERVER DISCONNECT, clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+        console.log('SOCKET DISCONNECT, clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     });
+    */
+    
 
 });
 
 
 // TEST  20/01/19
 io.on('disconnect', function(sockets) {
-    console.log('io SERVER DISCONNECT, clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    console.log('IO DISCONNECT, clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
 });
 
-io.on('connect', function(socket) {
-    console.log('connect');
-    console.log('io SERVER CONNECT: ' + socket.id + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
-});
 io.on('connect_error', function(error) {
-    console.log('io connect_error: ' + error);
+    console.log('IO connect_error: ' + error);
 });
 io.on('connect_timeout', function(timeout) {
-    console.log('io connect_timeout:' + timeout);
+    console.log('IO connect_timeout:' + timeout);
 });
 io.on('error', function(error) {
-    console.log('io error: ' + error);
+    console.log('IO error: ' + error);
 });
 io.on('reconnect', function(attemptNumber) {
-    console.log('io reconnect: ' + attemptNumber);
+    console.log('IO reconnect: ' + attemptNumber);
 });
 io.on('reconnect_attempt', function(attemptNumber) {
-    console.log('io reconnect_attempt: ' + attemptNumber);
+    console.log('IO reconnect_attempt: ' + attemptNumber);
 });
 io.on('reconnecting', function(attemptNumber) {
-    console.log('io reconnecting: ' + attemptNumber);
+    console.log('IO reconnecting: ' + attemptNumber);
 });
 io.on('reconnect_error', function(error) {
-    console.log('io reconnect_error: ' + error);
+    console.log('IO reconnect_error: ' + error);
 });
 io.on('reconnect_failed', function() {
-    console.log('io reconnect_failed');
+    console.log('IO reconnect_failed');
 });
 
 // Check for local or production environment
@@ -469,7 +504,7 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 // configuration ===============================================================
 //mongoose.set('debug', true);
-mongoose.connect(dburl); // Connect to local MongoDB instance. A remoteUrl is also available (modulus.io)
+mongoose.connect(dburl, { useNewUrlParser: true }); // Connect to local MongoDB instance. A remoteUrl is also available (modulus.io)
 
 var db = mongoose.connection;
 

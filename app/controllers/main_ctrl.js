@@ -2,6 +2,24 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     $rootScope.deleting_card = false;
 
+    var last_network_status = true;
+
+    $scope.$watch('online', function(newStatus) { 
+        console.log('NETWORK: ' + newStatus);
+        console.log(last_network_status + ' : ' + newStatus);
+        if(!last_network_status && newStatus){
+            console.log('BACK');
+            //checkDataUpdate();
+            onResume();
+        }
+        if(!newStatus){
+            console.log('network turned off');
+            onPause();
+        }
+        last_network_status = newStatus;
+
+    });
+
     // ANDROID CALLED FUNCTIONS
 
     restoreState = function() {
