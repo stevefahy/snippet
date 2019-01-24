@@ -3062,3 +3062,14 @@ span.after_image {
     left: 200vw;
     width: 10px;
 }
+
+.debug{
+position: absolute;
+    z-index: 10000;
+    top: 6px;
+    width: 50%;
+    left: 10px;
+    background-color: #0d0d0d85;
+    color: #ffffff;
+    padding: 10px;
+}

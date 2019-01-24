@@ -52,7 +52,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     notificationReceived = function(){
         console.log('notificationReceived');
-        reconnect_socket();
+        //reconnect_socket();
     };
 
     restoreState = function() {

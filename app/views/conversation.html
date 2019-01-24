@@ -8,12 +8,15 @@
     <button ng-click="setLoading(true)">set true</button>
     <button ng-click="setLoading(false)">set false</button>
     {{loading_cards}}-->
+    <div class="debug">
     <button ng-click="pause()">pause</button>
     <button ng-click="resume()">resume</button>
-    Loading cards: {{loading_cards}}
-    socket m: {{socket_m.connected}}
-    socket n: {{socket_n.connected}}
+    <br>
+    Loading cards: {{loading_cards}}<br>
+    socket m: {{socket_m.connected}}<br>
+    socket n: {{socket_n.connected}}<br>
     onlne: {{online}}
+    </div>
     <div class="content_cnv" in-view-container ng-class="{ 'content_cnv_conv': !feed, 'content_cnv_hide_footer': hide_footer, 'content_cnv_no_footer': no_footer}" scroll-to-top-when="items_changed">
         <div infinite-scroll="inifiniteScroll" infinite-scroll-immediate-check='false' infinite-scroll-distance='.5' infinite-scroll-parent="true" infinite-scroll-down="{top_down}" infinite-scroll-disabled='scrollingdisabled'>
             <div class="load_off_screen">
