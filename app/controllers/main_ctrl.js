@@ -133,6 +133,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     };
 
     runUpdate = function() {
+        console.log('runUpdate');
         //$rootScope.loading_cards = false;
         var id = Conversations.getConversationId();
         console.log(Conversations.getConversationType());
