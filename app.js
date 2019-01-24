@@ -22,6 +22,13 @@ var session = require('express-session');
 var favicon = require('serve-favicon');
 var nodemailer = require('nodemailer');
 var request = require('request');
+
+
+// Debug Socketio
+//var debug = require('debug')('http'), http = require('http'), name = 'My App';
+//debug=* node app.js;
+//debug('booting %o', name);
+
 //
 // socket.io
 //
@@ -34,6 +41,9 @@ io.sockets.setMaxListeners(0);
 
 // 04/07/18
 io.set('transports', ['websocket']);
+
+
+
 
 
 

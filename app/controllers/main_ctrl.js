@@ -5,11 +5,15 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     $window.onRestart = this.onRestart;
     $window.restoreState = this.restoreState;
 
+    $window.notificationReceived = this.notificationReceived;
+
+    $window.onStop = this.onStop;
+    $window.onStart = this.onStart;
+
 /*
-    $window.onStop = this.onStop();
     $window.onDestroy = this.onDestroy();
     $window.onCreate = this.onCreate();
-    $window.onStart = this.onStart();
+    
     */
 
     $rootScope.deleting_card = false;
@@ -40,11 +44,16 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     };
 
     reconnect_socket = function(){
-        socket.recreate();
         checkDataUpdate();
+        socket.recreate();
     };
 
     // ANDROID CALLED FUNCTIONS
+
+    notificationReceived = function(){
+        console.log('notificationReceived');
+        reconnect_socket();
+    };
 
     restoreState = function() {
         console.log('restoreState');
@@ -54,7 +63,19 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         console.log('onPause');
         //socket.disconnect();
 
-        //disconnect_socket();
+        disconnect_socket();
+    };
+
+    onStop = function() {
+        console.log('onStop');
+    };
+
+    onRestart = function() {
+        console.log('onRestart');
+    };
+
+    onStart = function() {
+        console.log('onStart');
     };
 
     onResume = function() {
@@ -67,12 +88,10 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         //socket.recreate();
         //checkDataUpdate();
 
-        //reconnect_socket();
+        reconnect_socket();
     };
 
-    onRestart = function() {
-        console.log('onRestart');
-    };
+
 
     networkChange = function(status) {
         if (status == "connected") {

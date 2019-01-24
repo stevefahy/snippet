@@ -736,7 +736,7 @@ cardApp.factory('socket', function($rootScope, $window, $interval, $q) {
 
 
         recreate: function(value) {
-            
+
             console.log('recreate');
             //recreateConnection();
 
@@ -745,6 +745,7 @@ cardApp.factory('socket', function($rootScope, $window, $interval, $q) {
             console.log(socket_n);
             //socket_m.disconnect();
             if (!socket_m.connected) {
+                console.log('socket_m not connected');
                 socket_m.connect();
                 //socket_n.connect();
 
@@ -761,6 +762,12 @@ cardApp.factory('socket', function($rootScope, $window, $interval, $q) {
                     //});
                 });
 
+            } else if(!socket_n.connected){
+                console.log('socket_m connected but socket_n not');
+                socket_m.emit('create_ns', sox.getId());
+                    socket_n.connect();
+            } else {
+                console.log('socket_m & socket_n connected');
             }
 
 
