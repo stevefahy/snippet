@@ -3066,7 +3066,7 @@ span.after_image {
 .debug{
     position: absolute;
     z-index: 10000;
-    top: 6px;
+    top: 70px;
     width: 50%;
     left: 10px;
     background-color: rgba(0, 0, 0, 0.5);
