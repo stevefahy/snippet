@@ -72,7 +72,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     onRestart = function() {
         console.log('onRestart');
-        reconnect_socket();
+        //reconnect_socket();
     };
 
     onStart = function() {

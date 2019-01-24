@@ -433,6 +433,8 @@ cardApp.factory('socket', function($rootScope, $window, $interval, $q) {
     var socket_m;
     var socket_n;
 
+    var socket_m_connecting = false;
+
     //var returned_m;
 
     //var socket_f = this;
@@ -743,13 +745,16 @@ cardApp.factory('socket', function($rootScope, $window, $interval, $q) {
             var sox = this;
             console.log(socket_m);
             console.log(socket_n);
+            console.log('socket_m_connecting: ' + socket_m_connecting);
             //socket_m.disconnect();
-            if (!socket_m.connected) {
+            if (!socket_m.connected && !socket_m_connecting) {
                 console.log('socket_m not connected');
+                socket_m_connecting = true;
                 socket_m.connect();
                 //socket_n.connect();
 
                 socket_m.once('connect', function() {
+                    socket_m_connecting = false;
                     //socket_m.on('connect', function() {
                     console.log("connected from the client side 2");
                     //connectNamespace(sox.getId(), sox);
