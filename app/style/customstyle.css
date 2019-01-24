@@ -3064,12 +3064,13 @@ span.after_image {
 }
 
 .debug{
-position: absolute;
+    position: absolute;
     z-index: 10000;
     top: 6px;
     width: 50%;
     left: 10px;
-    background-color: #0d0d0d85;
+    background-color: rgba(0, 0, 0, 0.5);
     color: #ffffff;
     padding: 10px;
+    line-height: 1.5;
 }

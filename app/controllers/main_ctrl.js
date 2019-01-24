@@ -10,27 +10,27 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     $window.onStop = this.onStop;
     $window.onStart = this.onStart;
 
-/*
-    $window.onDestroy = this.onDestroy();
-    $window.onCreate = this.onCreate();
-    
-    */
+    /*
+        $window.onDestroy = this.onDestroy();
+        $window.onCreate = this.onCreate();
+        
+        */
 
     $rootScope.deleting_card = false;
 
     var last_network_status = true;
 
-    $scope.$watch('online', function(newStatus) { 
+    $scope.$watch('online', function(newStatus) {
         console.log('NETWORK: ' + newStatus);
         console.log(last_network_status + ' : ' + newStatus);
-        if(!last_network_status && newStatus){
+        if (!last_network_status && newStatus) {
             console.log('BACK');
             //checkDataUpdate();
 
             //onResume();
             reconnect_socket();
         }
-        if(!newStatus){
+        if (!newStatus) {
             console.log('network turned off');
             //onPause();
             disconnect_socket();
@@ -39,18 +39,18 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     });
 
-    disconnect_socket = function(){
+    disconnect_socket = function() {
         socket.disconnect();
     };
 
-    reconnect_socket = function(){
-        checkDataUpdate();
+    reconnect_socket = function() {
+        checkDataUpdate(false);
         socket.recreate();
     };
 
     // ANDROID CALLED FUNCTIONS
 
-    notificationReceived = function(){
+    notificationReceived = function() {
         console.log('notificationReceived');
         //reconnect_socket();
     };
@@ -72,10 +72,12 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     onRestart = function() {
         console.log('onRestart');
+        reconnect_socket();
     };
 
     onStart = function() {
         console.log('onStart');
+        //reconnect_socket();
     };
 
     onResume = function() {
@@ -84,7 +86,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         //socket.setId(UserData.getUser()._id);
         // socket.create();
 
-        
+
         //socket.recreate();
         //checkDataUpdate();
 
@@ -130,42 +132,53 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         return deferred.promise;
     };
 
-    checkDataUpdate = function() {
-        console.log('checkDataUpdate');
+    runUpdate = function() {
+        //$rootScope.loading_cards = false;
+        var id = Conversations.getConversationId();
+        console.log(Conversations.getConversationType());
+        // TODO - needs to cover all routes conversations, conversation other conversation, group contacts etc.
+        // update all required models (could be new conversations, multiple cards across conversations, new users or user data - Userdata first load re call?)
+        if (Conversations.getConversationType() == 'feed') {
+            getFollowingUpdate();
+        } else if (Conversations.getConversationType() == 'private') {
+            //getCardsUpdate(id);
+            getCardsUpdate(id).then(function(result) {
+                    //console.log(result);
+                    $scope.$broadcast("items_changed", 'bottom');
+                })
+                .catch(function(error) {
+                    $rootScope.loading_cards = false;
+                    console.log(error);
+                });
+        } else if (Conversations.getConversationType() == 'public') {
+            getPublicCardsUpdate(id);
+        }
+    };
+
+    checkDataUpdate = function(queue) {
+        console.log('checkDataUpdate, queue: ' + queue);
         console.log($rootScope.loading_cards);
-        checkLoadingCards()
-            .then(function(result) {
-                console.log(result);
-                //$rootScope.loading_cards = false;
-                var id = Conversations.getConversationId();
-                console.log(Conversations.getConversationType());
-                // TODO - needs to cover all routes conversations, conversation other conversation, group contacts etc.
-                // update all required models (could be new conversations, multiple cards across conversations, new users or user data - Userdata first load re call?)
-                if (Conversations.getConversationType() == 'feed') {
-                    getFollowingUpdate();
-                } else if (Conversations.getConversationType() == 'private') {
-                    //getCardsUpdate(id);
-                    getCardsUpdate(id).then(function(result) {
-                            //console.log(result);
-                            $scope.$broadcast("items_changed", 'bottom');
-                        })
-                        .catch(function(error) {
-                            $rootScope.loading_cards = false;
-                            console.log(error);
-                        });
-                } else if (Conversations.getConversationType() == 'public') {
-                    getPublicCardsUpdate(id);
-                }
-            })
-            .catch(function(error) {
-                console.log(error);
-            });
+        // queue this request
+        if (queue) {
+            checkLoadingCards()
+                .then(function(result) {
+                    console.log(result);
+                    runUpdate();
+
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
+        } else if(!$rootScope.loading_cards){
+            // only run this request if not already running.
+            runUpdate();
+        }
     };
 
     // Broadcast by socket after it has reconnected. Check for updates.
     $scope.$on('SOCKET_RECONNECT', function(event) {
         console.log('SOCKET_RECONNECT');
-        checkDataUpdate();
+        checkDataUpdate(false);
     });
 
 
