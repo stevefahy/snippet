@@ -428,7 +428,7 @@ cardApp.factory('Conversations', ['$http', '$q', 'LocalDB', function($http, $q, 
 // socket Factory
 //
 
-cardApp.factory('socket', function($rootScope, $window, $interval) {
+cardApp.factory('socket', function($rootScope, $window, $interval, $q) {
 
     var socket_m;
     var socket_n;
@@ -736,6 +736,7 @@ cardApp.factory('socket', function($rootScope, $window, $interval) {
 
 
         recreate: function(value) {
+            
             console.log('recreate');
             //recreateConnection();
 
@@ -885,6 +886,8 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     // Final cards model for display.
     cards_model = [];
 
+
+// TODO - move these to main?
     var UserData = { isAuthenticated: false, isLoaded: false, isLoading: false };
     $rootScope.loaded = false;
     var isLoading = false;
@@ -893,10 +896,13 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     $window.androidToken = this.androidToken;
     $window.androidTokenUpdated = this.androidTokenUpdated;
     $window.mobileNotification = this.mobileNotification;
+
+    /*
     $window.networkChange = this.networkChange;
     $window.onResume = this.onResume;
     $window.onRestart = this.onRestart;
     $window.restoreState = this.restoreState;
+    */
 
     var update_inprogress = false;
 

@@ -1,5 +1,15 @@
 cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '$location', 'UserData', 'socket', 'principal', 'viewAnimationsService', 'Conversations', 'Cards', '$q', function($scope, $window, $rootScope, $timeout, $location, UserData, socket, principal, viewAnimationsService, Conversations, Cards, $q) {
 
+    $window.networkChange = this.networkChange;
+    $window.onResume = this.onResume;
+    $window.onRestart = this.onRestart;
+    $window.restoreState = this.restoreState;
+
+    $window.onStop = this.onStop();
+    $window.onDestroy = this.onDestroy();
+    $window.onCreate = this.onCreate();
+    $window.onStart = this.onStart();
+
     $rootScope.deleting_card = false;
 
     var last_network_status = true;
@@ -10,15 +20,27 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         if(!last_network_status && newStatus){
             console.log('BACK');
             //checkDataUpdate();
-            onResume();
+
+            //onResume();
+            reconnect_socket();
         }
         if(!newStatus){
             console.log('network turned off');
-            onPause();
+            //onPause();
+            disconnect_socket();
         }
         last_network_status = newStatus;
 
     });
+
+    disconnect_socket = function(){
+        socket.disconnect();
+    };
+
+    reconnect_socket = function(){
+        socket.recreate();
+        checkDataUpdate();
+    };
 
     // ANDROID CALLED FUNCTIONS
 
@@ -28,7 +50,9 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     onPause = function() {
         console.log('onPause');
-        socket.disconnect();
+        //socket.disconnect();
+
+        //disconnect_socket();
     };
 
     onResume = function() {
@@ -36,8 +60,12 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         //socket.connect();
         //socket.setId(UserData.getUser()._id);
         // socket.create();
-        socket.recreate();
-        checkDataUpdate();
+
+        
+        //socket.recreate();
+        //checkDataUpdate();
+
+        //reconnect_socket();
     };
 
     onRestart = function() {
@@ -48,7 +76,8 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         if (status == "connected") {
             $timeout(function() {
                 console.log('connected');
-                checkDataUpdate();
+                //checkDataUpdate();
+                reconnect_socket();
             });
         } else if (status == "disconnected") {
             console.log('disconnected');

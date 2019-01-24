@@ -33,7 +33,7 @@ server.setMaxListeners(0);
 io.sockets.setMaxListeners(0);
 
 // 04/07/18
-//io.set('transports', ['websocket']);
+io.set('transports', ['websocket']);
 
 
 
