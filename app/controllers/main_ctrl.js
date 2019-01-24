@@ -5,10 +5,12 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     $window.onRestart = this.onRestart;
     $window.restoreState = this.restoreState;
 
+/*
     $window.onStop = this.onStop();
     $window.onDestroy = this.onDestroy();
     $window.onCreate = this.onCreate();
     $window.onStart = this.onStart();
+    */
 
     $rootScope.deleting_card = false;
 
