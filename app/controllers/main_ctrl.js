@@ -77,6 +77,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     notificationReceived = function() {
         console.log('notificationReceived');
+        console.log('mobile_active: ' + mobile_active);
         //reconnect_socket();
         if(mobile_active == false){
             checkDataUpdate(true);
