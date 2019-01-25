@@ -77,23 +77,27 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     // ANDROID CALLED FUNCTIONS
 
     mobileNotification = function(data) {
-        console.log('mobile_active: ' + mobile_active);
-        //reconnect_socket();
-        if (mobile_active == false) {
-            checkDataUpdate(true);
-        }
+        $timeout(function() {
+            console.log('mobile_active: ' + mobile_active);
+            //reconnect_socket();
+            if (mobile_active == false) {
+                checkDataUpdate(true);
+            }
+        });
         $timeout(function() {
             $location.path("/chat/conversation/" + data);
         });
     };
 
     notificationReceived = function() {
+        $timeout(function() {
         console.log('notificationReceived');
         console.log('mobile_active: ' + mobile_active);
         //reconnect_socket();
         if (mobile_active == false) {
             checkDataUpdate(true);
         }
+    });
     };
 
     restoreState = function() {
