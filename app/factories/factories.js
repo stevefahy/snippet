@@ -907,7 +907,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     var ua = navigator.userAgent;
     $window.androidToken = this.androidToken;
     $window.androidTokenUpdated = this.androidTokenUpdated;
-    $window.mobileNotification = this.mobileNotification;
+    //$window.mobileNotification = this.mobileNotification;
 
     /*
     $window.networkChange = this.networkChange;
@@ -945,12 +945,13 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                 console.log('disconnected');
             }
         };
-    */
+    
     mobileNotification = function(data) {
         $timeout(function() {
             $location.path("/chat/conversation/" + data);
         });
     };
+    */
 
     androidTokenUpdated = function() {
         UserData.getFCMToken();

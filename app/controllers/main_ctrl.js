@@ -6,6 +6,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     $window.restoreState = this.restoreState;
 
     $window.notificationReceived = this.notificationReceived;
+    $window.mobileNotification = this.mobileNotification;
 
     $window.onStop = this.onStop;
     $window.onStart = this.onStart;
@@ -27,13 +28,13 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     }
     console.log(DEVICE_TYPE);
 
-    if(DEVICE_TYPE == 'mobile'){
+    if (DEVICE_TYPE == 'mobile') {
 
     }
 
-    
 
-    
+
+
 
     /*
         $window.onDestroy = this.onDestroy();
@@ -75,11 +76,22 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     // ANDROID CALLED FUNCTIONS
 
+    mobileNotification = function(data) {
+        console.log('mobile_active: ' + mobile_active);
+        //reconnect_socket();
+        if (mobile_active == false) {
+            checkDataUpdate(true);
+        }
+        $timeout(function() {
+            $location.path("/chat/conversation/" + data);
+        });
+    };
+
     notificationReceived = function() {
         console.log('notificationReceived');
         console.log('mobile_active: ' + mobile_active);
         //reconnect_socket();
-        if(mobile_active == false){
+        if (mobile_active == false) {
             checkDataUpdate(true);
         }
     };
@@ -202,7 +214,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                 .catch(function(error) {
                     console.log(error);
                 });
-        } else if(!$rootScope.loading_cards){
+        } else if (!$rootScope.loading_cards) {
             // only run this request if not already running.
             runUpdate();
         }
