@@ -10,6 +10,31 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     $window.onStop = this.onStop;
     $window.onStart = this.onStart;
 
+    var ua = navigator.userAgent;
+
+    var DEVICE_TYPE;
+    var DEVICE_OS;
+    // variable which stores whether the mobile app is currently running in the foreground.
+    var mobile_active = false;
+
+    console.log(ua);
+    if (ua.indexOf('AndroidApp') >= 0) {
+        DEVICE_TYPE = 'mobile';
+        DEVICE_OS = 'android';
+    } else {
+        DEVICE_TYPE = 'non-mobile';
+        //DEVICE_OS = 'android';
+    }
+    console.log(DEVICE_TYPE);
+
+    if(DEVICE_TYPE == 'mobile'){
+
+    }
+
+    
+
+    
+
     /*
         $window.onDestroy = this.onDestroy();
         $window.onCreate = this.onCreate();
@@ -53,6 +78,9 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     notificationReceived = function() {
         console.log('notificationReceived');
         //reconnect_socket();
+        if(mobile_active == false){
+            checkDataUpdate(true);
+        }
     };
 
     restoreState = function() {
@@ -60,6 +88,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     };
 
     onPause = function() {
+        mobile_active = false;
         console.log('onPause');
         //socket.disconnect();
 
@@ -67,6 +96,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     };
 
     onStop = function() {
+        mobile_active = false;
         console.log('onStop');
     };
 
@@ -81,6 +111,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     };
 
     onResume = function() {
+        mobile_active = true;
         console.log('onResume');
         //socket.connect();
         //socket.setId(UserData.getUser()._id);
@@ -179,7 +210,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     // Broadcast by socket after it has reconnected. Check for updates.
     $scope.$on('SOCKET_RECONNECT', function(event) {
         console.log('SOCKET_RECONNECT');
-        checkDataUpdate(false);
+        checkDataUpdate(true);
     });
 
 
