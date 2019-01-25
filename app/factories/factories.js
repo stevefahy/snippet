@@ -437,7 +437,7 @@ cardApp.factory('socket', function($rootScope, $window, $interval, $q) {
 
     //var returned_m;
 
-    //var socket_f = this;
+    var socket_f = this;
 
 
     //$rootScope.socket_m = socket_m;
@@ -512,6 +512,7 @@ cardApp.factory('socket', function($rootScope, $window, $interval, $q) {
     };
 
     connectNamespace = function(id, factory) {
+        //console.log(socket_f.getId());
         // Connected, request unique namespace to be created
         socket_m.emit('create_ns', id);
         // create the unique namespace on the client
@@ -541,10 +542,12 @@ cardApp.factory('socket', function($rootScope, $window, $interval, $q) {
         });*/
         socket_n.once('connect', function() {
             console.log('CLIENT NS connect: ' + socket_n.id);
+
         });
         // server confirming that the namespace has been created
         socket_n.on('joined_ns', function(id) {
             console.log('CLIENT joined_ns: ' + socket_n.id);
+            //console.log(this.getId());
         });
 /*
         socket_n.on('existing_ns', function(id) {
@@ -602,6 +605,9 @@ cardApp.factory('socket', function($rootScope, $window, $interval, $q) {
         socket_n.on('reconnect_failed', function() {
             console.log(socket_n);
             console.log('CLIENT NS reconnect_failed');
+            //socket_factory.create();
+            factory.disconnect();
+            factory.create();
         });
         socket_n.on('ping', function() {
             console.log('ping');
@@ -700,6 +706,9 @@ cardApp.factory('socket', function($rootScope, $window, $interval, $q) {
             });
             socket_m.on('reconnect_failed', function() {
                 console.log('M CLIENT NS reconnect_failed');
+                //socket_factory.create();
+
+                socket_factory.disconnect();
                 socket_factory.create();
 
             });
@@ -746,8 +755,10 @@ cardApp.factory('socket', function($rootScope, $window, $interval, $q) {
             console.log(socket_m);
             console.log(socket_n);
             console.log('socket_m_connecting: ' + socket_m_connecting);
+            console.log(socket_m.reconnecting);
             //socket_m.disconnect();
-            if (!socket_m.connected && !socket_m_connecting) {
+            //if (!socket_m.connected && !socket_m_connecting) {
+            if (!socket_m.connected) {
                 console.log('socket_m not connected');
                 socket_m_connecting = true;
                 socket_m.connect();

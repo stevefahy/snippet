@@ -77,6 +77,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     // ANDROID CALLED FUNCTIONS
 
     mobileNotification = function(data) {
+        /*
         $timeout(function() {
             console.log('mobile_active: ' + mobile_active);
             //reconnect_socket();
@@ -84,6 +85,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                 checkDataUpdate(true);
             }
         });
+        */
         $timeout(function() {
             $location.path("/chat/conversation/" + data);
         });
