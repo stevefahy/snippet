@@ -1415,6 +1415,7 @@ module.exports = function(app, passport) {
                 if (err) {
                     console.log(err);
                 }
+                console.log('getConversationCards');
                 res.json(cards);
             }).sort({ "updatedAt": -1 }).limit(amount);
         } else {
@@ -1427,6 +1428,7 @@ module.exports = function(app, passport) {
                 if (err) {
                     console.log(err);
                 }
+                console.log('getConversationCards');
                 res.json(cards);
             }).sort({ "updatedAt": -1 }).limit(amount);
         }
