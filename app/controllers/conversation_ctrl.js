@@ -216,7 +216,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             },
             onEnd: function(id) {
                 //console.log('on end ' + $scope.adjust.sharpen);
-                ImageAdjustment.setSharpen(ImageAdjustment.getImageId(), ImageAdjustment.getTarget(), ImageAdjustment.getSource(), $scope.adjust.sharpen);
+                ImageAdjustment.setSharpen(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), ImageAdjustment.getTarget(), ImageAdjustment.getSource(), $scope.adjust.sharpen);
             }
         }
     };
@@ -476,12 +476,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     $scope.pause = function(){
         console.log('pause');
-        onPause();
+        // Mobile disconnect
+        disconnect_socket();
     };
 
     $scope.resume = function(){
         console.log('resume');
-        onResume();
+        // Mobile reconnect
+        reconnect_socket();
     };
 
     //$scope.socket_m_watch;

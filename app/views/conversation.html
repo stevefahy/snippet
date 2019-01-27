@@ -9,21 +9,30 @@
     <button ng-click="setLoading(false)">set false</button>
     {{loading_cards}}-->
     <div class="debug">
-    <button ng-click="pause()">pause</button>
-    <button ng-click="resume()">resume</button>
-    <br>
-    Loading cards: {{loading_cards}}<br>
-    socket m: {{socket_m.connected}}<br>
-    socket n: {{socket_n.connected}}<br>
-    onlne: {{online}}
+        <button ng-click="pause()">pause</button>
+        <button ng-click="resume()">resume</button>
+        <br>
+        Loading cards: {{loading_cards}}<br>
+        socket m: {{socket_m.connected}}<br>
+        socket n: {{socket_n.connected}}<br>
+        onlne: {{online}}
     </div>
+    
+    <div class="load_off_screen">
+        <div id="conversation_card" ng-repeat="card in cards_temp | orderBy :'updatedAt' : top_down ">
+            <div class='ce' ng-attr-id="{{ 'ce' + card._id }}" ng-attr-contenteditable="{{card.user == currentUser._id}}" ng-attr-editable="{{card.user == currentUser._id}}" ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id);" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce'+card._id);" ng-model="card.content" ng-model-options="{ debounce: 1000 }"></div>
+        </div>
+    </div>
+
     <div class="content_cnv" in-view-container ng-class="{ 'content_cnv_conv': !feed, 'content_cnv_hide_footer': hide_footer, 'content_cnv_no_footer': no_footer}" scroll-to-top-when="items_changed">
         <div infinite-scroll="inifiniteScroll" infinite-scroll-immediate-check='false' infinite-scroll-distance='.5' infinite-scroll-parent="true" infinite-scroll-down="{top_down}" infinite-scroll-disabled='scrollingdisabled'>
+            <!--
             <div class="load_off_screen">
                 <div id="conversation_card" ng-repeat="card in cards_temp | orderBy :'updatedAt' : top_down ">
                     <div class='ce' ng-attr-id="{{ 'ce' + card._id }}" ng-attr-contenteditable="{{card.user == currentUser._id}}" ng-attr-editable="{{card.user == currentUser._id}}" ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id);" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce'+card._id);"  ng-model="card.content" ng-model-options="{ debounce: 1000 }"></div>
                 </div>
             </div>
+        -->
             <div id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : top_down | limitTo:total_to_display" on-finish-render="ngRepeatFinished" in-view="lineInView($inview, card._id)" in-view-options="inviewoptions">
                 <div id="user">
                     <img ng-if="card.avatar!='default'" alt="" class="card_avatar" ng-src="{{card.avatar}}" />
