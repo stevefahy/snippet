@@ -58,7 +58,20 @@ cardApp.controller("headerCtrl", ['Profile', 'Conversations', '$scope', '$rootSc
             // Resets contacts
             $scope.pageAnimationStart();
         }
-        if ($rootScope.prev_route != undefined && $rootScope.prev_route.indexOf('api') < 0) {
+
+/*
+        if ($location.path() == '/chat/conversation/:id') {
+            // Resets contacts
+            $scope.pageAnimationStart();
+        }
+        // && $rootScope.prev_route != '/chat/conversation/:id'
+        */
+
+        console.log($rootScope.prev_route);
+
+        if($rootScope.prev_route == '/chat/conversation/:id'){
+            $location.path('/chat/conversations');
+        } else if ($rootScope.prev_route != undefined && $rootScope.prev_route.indexOf('api') < 0) {
             $location.path($rootScope.prev_route);
         } else {
             //$location.path('/');

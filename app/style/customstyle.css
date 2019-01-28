@@ -178,6 +178,13 @@ img.resize-drag.clip {
     background-color: #000000;
     margin-bottom: 10px;
     border-bottom: 1px solid #efefef;
+
+
+}
+
+.resize-drag {
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
 }
 
 .resize-container {
@@ -3073,4 +3080,5 @@ span.after_image {
     color: #ffffff;
     padding: 10px;
     line-height: 1.5;
+    display: none;
 }

@@ -408,12 +408,12 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         to = next.$$route.originalPath;
 
         if (current != undefined) {
-            //console.log('current: ' + current.$$route.originalPath);
+            console.log('current: ' + current.$$route.originalPath);
             from = current.$$route.originalPath;
             // Not a directly loaded page.
             $rootScope.animate_pages = true;
         }
-
+        console.log('to: ' + to);
         if (from == '/' && to == '/chat/conversations') {
             //console.log('FROM / TO /chat/conversations');
             $('#page-system').removeClass("page-static");
@@ -441,6 +441,23 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             $('#page-system').removeClass("z9000");
             viewAnimationsService.setEnterAnimation('page-anim z6000');
             viewAnimationsService.setLeaveAnimation('page-static z5000');
+
+
+        } else if (from == '/chat/conversation/:id' && to == '/c/contacts') {
+            console.log('FROM /chat/conversation/:id TO /c/contacts');
+            //$('#page-system').removeClass("page-static");
+            //$('#page-system').addClass("page-anim");
+            //$('#page-system').removeClass("z6000");
+
+            //$('#page-system').removeClass("page-static");
+            //$('#page-system').addClass("page-anim");
+            //viewAnimationsService.setEnterAnimation('page-anim z6000');
+            //viewAnimationsService.setLeaveAnimation('page-static z5000');
+
+            viewAnimationsService.setLeaveAnimation('page-anim z7000');
+            viewAnimationsService.setEnterAnimation('page-static z6000');
+
+
         } else if (from == '/api/group_info/:id' && to == '/chat/conversation/:id') {
             //console.log('FROM /api/group_info/:id TO /chat/conversation/:id');
             viewAnimationsService.setEnterAnimation('page-static z5000');
@@ -453,6 +470,10 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             console.log('FROM /c/contacts TO /chat/conversations');
             viewAnimationsService.setEnterAnimation('page-static z5000');
             viewAnimationsService.setLeaveAnimation('page-anim z7000');
+
+            $('#page-system').removeClass("page-static");
+            $('#page-system').addClass("page-anim");
+
             $scope.animating = false;
         } else if (from == '/' && to == '/c/contacts') {
             //console.log('FROM / TO /c/contacts');
