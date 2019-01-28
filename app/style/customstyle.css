@@ -3080,5 +3080,15 @@ span.after_image {
     color: #ffffff;
     padding: 10px;
     line-height: 1.5;
-    display: none;
+}
+
+.debug_btn {
+    position: absolute;
+    right: 103px;
+    bottom: 12px;
+    z-index: 10000;
+}
+
+.debug_icon {
+    font-size: 35px;
 }

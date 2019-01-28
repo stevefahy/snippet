@@ -117,11 +117,14 @@
     <script src="/controllers/conversations_ctrl.js" defer></script>
     <script src="/controllers/group_ctrl.js" defer></script>
     <script src="/controllers/main_ctrl.js" defer></script>
+    <!-- DEBUG -->
+    <script src="/controllers/debug_ctrl.js" defer></script>
     <!-- socket.io -->
     <script src="/socket.io/socket.io.js" defer></script>
 </head>
 
 <body>
+    <div ng-include="'/views/debug.html'"></div>
     <!-- Templates loaded into ng-view -->
     <div ng-controller="MainCtrl">
         <ng-view view-animations class="page" id="page-system"></ng-view>

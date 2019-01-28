@@ -11,6 +11,8 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     $window.onStop = this.onStop;
     $window.onStart = this.onStart;
 
+    $scope.debug = true;
+
     var ua = navigator.userAgent;
 
     var DEVICE_TYPE;

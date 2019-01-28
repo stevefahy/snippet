@@ -1,0 +1,23 @@
+<div ng-controller="debugCtrl">
+    <div class="debug_btn">
+        <a ng-click="debug = !debug">
+        <div ng-show="!debug">
+            <i class=" material-icons debug_icon">zoom_in</i>
+        </div>
+        <div ng-show="debug">
+            <i class=" material-icons debug_icon">zoom_out</i>
+        </div>
+        </a>
+    </div>
+    <div ng-show="debug">
+        <div class="debug">
+            <button ng-click="pause()">pause</button>
+            <button ng-click="resume()">resume</button>
+            <br>
+            Loading cards: {{loading_cards}}<br>
+            socket m: {{socket_m.connected}}<br>
+            socket n: {{socket_n.connected}}<br>
+            onlne: {{online}}
+        </div>
+    </div>
+</div>
