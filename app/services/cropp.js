@@ -246,8 +246,10 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                         $(this).insertBefore('.' + parent_container + ' .cropper_cont #image_' + id);
                         // SAVE
                         image_edit_finished = true;
-                        $('.' + parent_container + ' .cropper_cont #cropper_' + id).closest('div.ce').focus();
-                        $('.' + parent_container + ' .cropper_cont #cropper_' + id).closest('div.ce').blur();
+                        //$('.' + parent_container + ' .cropper_cont #cropper_' + id).closest('div.ce').focus();
+                        //$('.' + parent_container + ' .cropper_cont #cropper_' + id).closest('div.ce').blur();
+                        $('.' + parent_container + ' #cropper_' + id).closest('div.ce').focus();
+                        $('.' + parent_container + ' #cropper_' + id).closest('div.ce').blur();
                     };
                 });
             });
