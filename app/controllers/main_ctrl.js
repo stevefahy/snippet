@@ -112,7 +112,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         //socket.disconnect();
 
         // Mobile disconnect
-        //disconnect_socket();
+        disconnect_socket();
     };
 
     onStop = function() {
@@ -142,7 +142,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         //checkDataUpdate();
 
         // Mobile reconnect
-        //reconnect_socket();
+        reconnect_socket();
     };
 
 
