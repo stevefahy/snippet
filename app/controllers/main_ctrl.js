@@ -1,4 +1,4 @@
-cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '$location', 'UserData', 'socket', 'principal', 'viewAnimationsService', 'Conversations', 'Cards', '$q', function($scope, $window, $rootScope, $timeout, $location, UserData, socket, principal, viewAnimationsService, Conversations, Cards, $q) {
+cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '$location', 'UserData', 'socket', 'principal', 'viewAnimationsService', 'Conversations', 'Cards', '$q', 'Profile', 'Users', function($scope, $window, $rootScope, $timeout, $location, UserData, socket, principal, viewAnimationsService, Conversations, Cards, $q, Profile, Users) {
 
     $window.networkChange = this.networkChange;
     $window.onResume = this.onResume;
@@ -37,12 +37,70 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
 
 
+    // ** Main **
+    // For current user and all this users conversation participants - 
+    // Update localDB and UserData
+    // Update UserData -  contacts, conversations (including public) (contacts), conversationsLatestCard, conversationsUsers (contacts)
+    updateUserData = function(id, contact) {
+        console.log('MAIN');
+        // note own public conv already updated.
+        console.log(id);
+        console.log(contact);
 
-    /*
-        $window.onDestroy = this.onDestroy();
-        $window.onCreate = this.onCreate();
-        
+        // contacts
+        /*
+        var contact = UserData.getContact(id);
+        if (contact != "Unknown") {
+            contact.avatar = profile.avatar;
+            contact.user_name = profile.user_name;
+            UserData.addContact(contact);
+        }
         */
+
+        // STILL NEED to load conversations contact at the begining?
+        // need the function when a conversation is created
+        // are thes users added to cotacts?
+        // if no the still needed
+        // only admin is added as contact.
+
+        UserData.addContact(contact);
+
+        if ($location.url() == '/chat/conversations') {
+            loadConversations();
+        } else if ($location.url().indexOf('conversation') >= 0) {
+            console.log('update cards user');
+            updateCardsUser('cards',id, contact.user_name, contact.avatar);
+            updateCardsUser('cards_temp',id, contact.user_name, contact.avatar);
+            //updateProfile();
+            setConversationProfile(Conversations.getConversationId());
+        }
+
+        // conversationsLatestCard
+        /*
+        UserData.updateConversationLatestCard(id)
+            .then(function(result) {
+                console.log(result);
+            });
+            */
+
+
+
+
+        /*
+                    UserData.setContacts = function(value) {
+                var deferred = $q.defer();
+                contacts = value;
+                deferred.resolve(contacts);
+                return deferred.promise;
+            };
+
+            UserData.getContacts = function() {
+                return contacts;
+            };
+            */
+
+
+    };
 
     $rootScope.deleting_card = false;
 
@@ -95,13 +153,13 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     notificationReceived = function() {
         $timeout(function() {
-        console.log('notificationReceived');
-        console.log('mobile_active: ' + mobile_active);
-        //reconnect_socket();
-        if (mobile_active == false) {
-            checkDataUpdate(true);
-        }
-    });
+            console.log('notificationReceived');
+            console.log('mobile_active: ' + mobile_active);
+            //reconnect_socket();
+            if (mobile_active == false) {
+                checkDataUpdate(true);
+            }
+        });
     };
 
     restoreState = function() {
@@ -236,12 +294,53 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         checkDataUpdate(true);
     });
 
+    updateConversations = function() {
+        UserData.loadConversations()
+            .then(function(res) {
+                console.log(res);
+
+
+                UserData.loadConversationsUsers()
+                    .then(function(res) {
+                        console.log(res);
+
+                        UserData.getConversationsLatestCard()
+                            .then(function(res) {
+                                console.log(res);
+                                console.log($location.url());
+                                if ($location.url() == '/chat/conversations') {
+                                    loadConversations();
+                                }
+                            });
+
+                    });
+            });
+    };
 
     // NOTIFICATION for private conversation.
     $rootScope.$on('PRIVATE_CONVERSATION_CREATED', function(event, msg) {
         console.log('PRIVATE_CONVERSATION_CREATED');
         // TODO - Show message to user that they have been added to a conversation.
         console.log(msg);
+
+        // Add the participants to contacts
+        // msg.participants._id
+
+        if (msg.admin != UserData.getUser()._id) {
+            // Add the admin (creator of the conversation to contacts)
+            Users.add_contact(msg.admin)
+                .then(function(res) {
+                    console.log(res);
+                    updateConversations();
+                });
+        } else {
+            updateConversations();
+        }
+
+
+
+
+        /*
         UserData.loadConversations()
             .then(function(res) {
                 console.log(res);
@@ -254,6 +353,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                         }
                     });
             });
+            */
 
     });
 
@@ -379,8 +479,63 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         }
     });
 
+    /*
+        updateUserData = function(id, profile) {
+            console.log('MAIN');
+            // note own public conv already updated.
+            console.log(id);
+            console.log(profile);
+
+            // contacts
+            var contact = UserData.getContact(id);
+            if (contact != "Unknown") {
+                contact.avatar = profile.avatar;
+                contact.user_name = profile.user_name;
+                UserData.addContact(contact);
+            } 
+    */
+    $scope.$on('UPDATE_CONTACT', function(event, msg) {
+        console.log(msg);
+        console.log(msg.update_values);
+        /*
+        var profile = {};
+        profile.avatar = msg.update_values.avatar;
+        profile.user_name = msg.update_values.user_name;
+        */
+        var id = msg.update_values._id;
+        updateUserData(id, msg.update_values);
+
+        /*
+                UserData.addContact(msg.update_values)
+                    .then(function(result) {
+                        console.log(result);
+                    });
+                    */
+    });
+
     // Broadcast by socket service when data needs to be updated.
+    // TODO - Check
     $scope.$on('UPDATE_DATA', function(event, msg) {
+        console.log(msg);
+        console.log(msg.update_values);
+
+        UserData.addContact(msg.update_values)
+            .then(function(result) {
+                console.log(result);
+            });
+        // Send full contact! Security?
+        // Adjust to only send what needs to be updated
+
+        //user is the user to be updated.
+
+        // Disparity between contacts list and conersations users
+
+        UserData.addContact(msg.update_values)
+            .then(function(result) {
+                console.log(result);
+            });
+
+        /*
         UserData.updateContact(msg.update_values)
             .then(function(result) {
                 //console.log(result);
@@ -389,6 +544,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             .then(function(result) {
                 //console.log(result);
             });
+            */
     });
 
     //

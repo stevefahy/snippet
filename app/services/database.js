@@ -178,7 +178,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                                     Users.send_notification(optionsObj.options)
                                                         .then(function(res) {
                                                             if (res.error) {
-                                                                UserData.checkDataUpdate();
+                                                                //UserData.checkDataUpdate();
                                                             }
                                                         });
                                                 }
@@ -354,6 +354,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         var updated_viewed_users;
         Cards.delete(card_id)
             .then(function(response) {
+                console.log(response);
                 // notify conversation_ctrl that the card has been deleted
                 //$rootScope.$broadcast('CARD_DELETED', card_id);
                 // remove this Card from the unviewed array for all Conversation participants.

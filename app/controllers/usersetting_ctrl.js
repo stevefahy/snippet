@@ -97,17 +97,80 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
     };
 
     saveProfile = function(profile) {
+        // TODO - check these - $scope.currentFullUser etc..
         var pms = { 'id': $scope.currentFullUser._id, 'user': $scope.currentFullUser };
+
+        // TODO - need to update all private conversations also.
+        // TODO - Boadcast change.
+        // TODO - on recieve one function to update all conversations and localDB
+        // public conversation.
+
+        // This can be done in user setting and in group info for Users Public conv. 
+        // Change group info link for users public conv to link to user setting - NO
+        // Want this user to be able to add multiple editors to their public conv
+        // They would keep their own user details (nsme, avatar) for their posts
+        // but the public conv would have its own group info (name and avatar).
+        // Update avatar only conversation_avatar ?
+
+        // Update existing User in DB, user, public conversation avatar (user who is updating)
+        // Update profile (headers)
+        // Emit change to all this users conversation participants -
+        // ** Main **
+        // For current user and all this users conversation participants - 
+        // Update localDB and UserData
+        // Update UserData -  contacts, conversations (including public), conversationsLatestCard, conversationsUsers
+
+
+        //setUser (current),
+        var user = UserData.getUser();
+        user.user_name = profile.user_name;
+        user.avatar = profile.avatar;
+        UserData.setUser(user);
+
+
+        // Update profile (headers)
+        UserData.updatePublicProfile(profile);
+        // Update the Profile service.
+        Profile.setProfile(profile);
+
+
+
+        // ** Main **
+        // For current user and all this users conversation participants - 
+        // Update localDB and UserData
+        // Update UserData - setUser (current), contacts, conversations (including public), conversationsLatestCard, conversationsUsers
+        //updateUserData(UserData.getUser()._id, profile);
+        updateUserData(UserData.getUser()._id, UserData.getUser());
+
+        // EMIT HERE!
+        //UserData.updateUsers(res.data, user._id, user.contacts);
+        //getContacts
+        //getUser().contacts
+        console.log(UserData.getContacts());
+        var contacts_ids = [];
+        var contacts = UserData.getContacts();
+        for(var i in contacts){
+            console.log(contacts[i]._id);
+             contacts_ids.push(contacts[i]._id);
+        }
+        UserData.updateUserContact(UserData.getUser(), UserData.getUser()._id, contacts_ids);
+
+
+
+        // Update existing User in DB, user, public conversation avatar (user who is updating)
         // Update this users details.
+        // DONT LDB
         Users.update_user(pms)
             .then(function(data) {
                 // Update the Profile service.
-                Profile.setProfile(profile);
+                //Profile.setProfile(profile);
             })
             .catch(function(error) {
                 console.log('error: ' + error);
             });
+        // Update existing User in DB, user, public conversation avatar (user who is updating)
         // Find this users public conversation by id.
+        // DONT LDB - user may have updated?
         Conversations.find_user_public_conversation_by_id($scope.currentFullUser._id)
             .then(function(result) {
                 // Update the avatar for the public conversation.
@@ -115,7 +178,8 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
                 Conversations.updateAvatar(obj)
                     .then(function(result) {
                         // Update UserData.
-                        UserData.updateProfile(profile);
+                        // TODO - check
+
                     })
                     .catch(function(error) {
                         console.log('error: ' + error);

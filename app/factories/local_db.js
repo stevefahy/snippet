@@ -10,8 +10,9 @@ cardApp.factory('LocalDB', function($q, General) {
     console.log('EMPTY');
 
     return {
-        // Users
 
+
+        // Users
         getUser: function(id){
             var deferred = $q.defer();
             var res;

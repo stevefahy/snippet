@@ -124,7 +124,8 @@ cardApp.factory('Users', ['$http', '$q', 'LocalDB', function($http, $q, LocalDB)
                 .then(function(response) {
                     console.log(response);
                     if (response.found) {
-                        deferred.resolve(response.data);
+                        //deferred.resolve(response.data);
+                        deferred.resolve(response);
                     } else {
                         $http.post('api/users/search_id/' + id)
                             .then(function(response) {
@@ -166,9 +167,36 @@ cardApp.factory('Users', ['$http', '$q', 'LocalDB', function($http, $q, LocalDB)
             return deferred.promise;
         },
 
+        /*
+                addFollower: function(conversation) {
+                    var deferred = $q.defer();
+                    var theurl = 'chat/follow_public_conversation/' + conversation.id;
+                    $http.put(theurl, conversation)
+                        .then(function(response) {
+                            LocalDB.updateConversation(response.data);
+                            deferred.resolve(response.data);
+                        });
+                    return deferred.promise;
+                },
+
+        */
+        
+                add_contact: function(id) {
+                    return $http.post('api/users/add_contact/' + id);
+                },
+                
+/*
         add_contact: function(id) {
-            return $http.post('api/users/add_contact/' + id);
+            var deferred = $q.defer();
+            $http.post('api/users/add_contact/' + id)
+                .then(function(response) {
+                    //LocalDB.updateUser(response.data);
+                    deferred.resolve(response.data);
+                });
+            return deferred.promise;
         },
+        */
+
         update_user: function(user) {
             var theurl = 'api/users/update_user/' + user.id;
             return $http.put(theurl, user);
@@ -448,7 +476,7 @@ cardApp.factory('socket', function($rootScope, $window, $interval, $q) {
 
 
     notifyConversationCreated = function(msg) {
-        console.log('notify_conversation_created, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants);
+        console.log('notify_conversation_created, conv id: ' + msg.conversation_id + ', participants: ' + msg.participants + ', admin: ' + msg.admin);
         //$rootScope.$broadcast('NOTIFICATION', msg);
         $rootScope.$broadcast('PRIVATE_CONVERSATION_CREATED', msg);
     };
@@ -489,6 +517,11 @@ cardApp.factory('socket', function($rootScope, $window, $interval, $q) {
     updateData = function(msg) {
         console.log('update_data: ' + msg.update_values + ', user: ' + msg.user);
         $rootScope.$broadcast('UPDATE_DATA', msg);
+    };
+
+    updateContact = function(msg) {
+        console.log('update_contact: ' + msg.update_values + ', user: ' + msg.user);
+        $rootScope.$broadcast('UPDATE_CONTACT', msg);
     };
 
     recreateConnection = function() {
@@ -549,11 +582,11 @@ cardApp.factory('socket', function($rootScope, $window, $interval, $q) {
             console.log('CLIENT joined_ns: ' + socket_n.id);
             //console.log(this.getId());
         });
-/*
-        socket_n.on('existing_ns', function(id) {
-            console.log('CLIENT existing_ns: ' + socket_n.id);
-        });
-        */
+        /*
+                socket_n.on('existing_ns', function(id) {
+                    console.log('CLIENT existing_ns: ' + socket_n.id);
+                });
+                */
 
 
         // server notifying users by namespace of content update
@@ -578,6 +611,8 @@ cardApp.factory('socket', function($rootScope, $window, $interval, $q) {
 
         // server notifying users by namespace of data update
         socket_n.on('update_data', updateData);
+
+        socket_n.on('update_contact', updateContact);
         // namespace disconnected by server
         socket_n.on('disconnect', function(reason) {
             console.log('CLIENT NS disconnected by server: ' + reason);
@@ -624,7 +659,7 @@ cardApp.factory('socket', function($rootScope, $window, $interval, $q) {
         create: function() {
             console.log('create');
             socket_m = io({
-                transports: ['websocket']//,
+                transports: ['websocket'] //,
                 //timeout: 100,
                 //reconnectionAttempts: 5
                 //autoConnect: false
@@ -644,8 +679,8 @@ cardApp.factory('socket', function($rootScope, $window, $interval, $q) {
                 connectNamespace(socket_factory.getId(), socket_factory);
             });
 
-           //socket_m.once('reconnect', function() {
-                socket_m.on('reconnect', function() {
+            //socket_m.once('reconnect', function() {
+            socket_m.on('reconnect', function() {
                 console.log("reconnected from the client side");
                 this.once('connect', function() {
                     console.log("connect from the client side!");
@@ -778,10 +813,10 @@ cardApp.factory('socket', function($rootScope, $window, $interval, $q) {
                     //});
                 });
 
-            } else if(!socket_n.connected){
+            } else if (!socket_n.connected) {
                 console.log('socket_m connected but socket_n not');
                 socket_m.emit('create_ns', sox.getId());
-                    socket_n.connect();
+                socket_n.connect();
             } else {
                 console.log('socket_m & socket_n connected');
             }
@@ -894,23 +929,23 @@ cardApp.factory('principal', function($cookies, jwtHelper, $q, $rootScope) {
 // UserData Factory
 //
 
-var cards_model;
+//var cards_model;
 cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $http, $cookies, $location, jwtHelper, $q, principal, Users, Conversations, FormatHTML, General, socket, $filter, LocalDB) {
     var self = this;
     var user;
     var contacts = [];
-    var contacts_and_user = [];
+    //var contacts_and_user = [];
     var conversations;
     var conversationsLatestCard = [];
     var conversationsUsers = [];
     var sent_content_length = 200;
     // Final conversations model for display.
-    var conversations_model = [];
+    //var conversations_model = [];
     // Final cards model for display.
-    cards_model = [];
+    //cards_model = [];
 
 
-// TODO - move these to main?
+    // TODO - move these to main?
     var UserData = { isAuthenticated: false, isLoaded: false, isLoading: false };
     $rootScope.loaded = false;
     var isLoading = false;
@@ -968,8 +1003,12 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
         UserData.getFCMToken();
     };
 
-    this.updateUsers = function(data, user, users) {
+    UserData.updateUsers = function(data, user, users) {
         socket.emit('data_change', { sender_id: socket.getId(), update: data, user: user, users: users });
+    };
+
+    UserData.updateUserContact = function(data, user, users) {
+        socket.emit('contact_change', { sender_id: socket.getId(), update: data, user: user, users: users });
     };
 
     setNotificationData = function(data, user) {
@@ -977,7 +1016,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
         Users.update_notification(data)
             .then(function(res) {
                 //Notification update. Notify this users contacts of the change.
-                self.updateUsers(res.data, user._id, user.contacts);
+                UserData.updateUsers(res.data, user._id, user.contacts);
             });
     };
 
@@ -1055,6 +1094,23 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     UserData.getContacts = function() {
         return contacts;
     };
+
+    /*
+
+    UserData.updateContact = function(val) {
+        var deferred = $q.defer();
+        var index = General.findWithAttr(contacts, '_id', val._id);
+        // if contact found
+        if (index >= 0) {
+            // Update.
+            contacts[index] = val;
+            deferred.resolve(contacts[index]);
+        } else {
+            deferred.resolve('user not found');
+        }
+        return deferred.promise;
+    };
+    */
 
     UserData.addContact = function(val) {
         var deferred = $q.defer();
@@ -1185,10 +1241,14 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     };
 
     UserData.loadConversations = function() {
-        return Conversations.find().then(function(result) {
+        var deferred = $q.defer();
+        //return Conversations.find().then(function(result) {
+        Conversations.find().then(function(result) {
             conversations = result.data;
             console.log(conversations);
+            deferred.resolve(conversations);
         });
+        return deferred.promise;
     };
 
 
@@ -1293,9 +1353,6 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
         // Only add if the conversation does not already exist otherwise update.
         var index = General.findWithAttr(conversations, '_id', conv._id);
         //console.log(conversations[index]);
-
-
-
         if (index < 0) {
             // Add
             conversations.push(conv);
@@ -1311,6 +1368,14 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
         return deferred.promise;
     };
 
+    /*
+    UserData.updateConversationLatestCard = function(val) {
+        var deferred = $q.defer();
+        var index = General.findValue(conversationsLatestCard, val);
+        deferred.resolve(conversationsLatestCard[index]);
+        return deferred.promise;
+    };
+    */
 
 
     UserData.getConversationLatestCardById = function(id) {
@@ -1418,6 +1483,8 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
         }).then(function() {
             //console.log('GET 9 BC');
             //return UserData.loadConversations();
+            //
+            // Adds the conversations users to the "contacts"
             return UserData.loadConversationsUsers();
         }).then(function() {
             //console.log('GET 9 BC');
@@ -1473,6 +1540,36 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     } else {
         this.isAuthenticated = false;
     }
+
+
+
+    //
+    // Profile
+    //
+
+    UserData.updatePublicProfile = function(profile) {
+        var deferred = $q.defer();
+        UserData.findPublicConversation(UserData.getUser()._id)
+            .then(function(res) {
+                console.log(res);
+                res.avatar = profile.avatar;
+                res.conversation_avatar = profile.avatar;
+                res.conversation_name = profile.user_name;
+                //UserData.updateConversationById(res._id, res);
+                UserData.conversationsAdd(res);
+                deferred.resolve(res);
+            });
+        return deferred.promise;
+    };
+
+    UserData.findPublicConversation = function() {
+        var deferred = $q.defer();
+        //var index = General.findWithAttr(conversations_model, 'conversation_type', 'public');
+        var index = General.findWithAttr(conversations, 'conversation_type', 'public');
+        deferred.resolve(conversations[index]);
+        return deferred.promise;
+    };
+
     return UserData;
 
     // Check for updates

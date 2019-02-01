@@ -469,18 +469,18 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // TESTING
 
-    $scope.setLoading = function(boo){
+    $scope.setLoading = function(boo) {
         $rootScope.loading_cards = boo;
     };
 
 
-    $scope.pause = function(){
+    $scope.pause = function() {
         console.log('pause');
         // Mobile disconnect
         disconnect_socket();
     };
 
-    $scope.resume = function(){
+    $scope.resume = function() {
         console.log('resume');
         // Mobile reconnect
         reconnect_socket();
@@ -490,6 +490,24 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     //$scope.socket_n_watch;
     //$scope.socket_n = socket.socket_n;
 
+
+
+
+
+
+    updateCardsUser = function(arr, user, user_name, avatar) {
+        array = $scope[arr];
+        if (array.length > 0) {
+            array.map(function(key, array) {
+                console.log(key);
+                if (key.user == user) {
+                    key.user_name = user_name;
+                    key.avatar = avatar;
+                }
+            });
+        }
+    };
+
     // TESTING
 
     getCardsUpdate = function(id) {
@@ -498,74 +516,74 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var promises = [];
         console.log($rootScope.loading_cards);
         //checkLoadingCards()
-            //.then(function(result) {
-                //console.log(result);
-                //console.log($rootScope.loading_cards);
-                if (!$rootScope.loading_cards) {
-                    $scope.cards_temp = [];
-                    $rootScope.loading_cards = true;
-                    var last_card;
-                    var operand;
-                    if ($scope.cards.length > 0) {
-                        //last_card = General.getISODate();
-                        var sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
-                        //last_card = sort_card[0].updatedAt;
-                        last_card = sort_card[sort_card.length - 1].updatedAt;
-                        operand = '$gt';
-                    } else {
-                        last_card = General.getISODate();
-                        operand = '$lt';
-                    }
-                    var val = { id: id, amount: NUM_TO_LOAD, last_card: last_card, operand: operand };
-                    console.log(val);
-                    var prom1 = Conversations.getConversationCards(val)
-                        .then(function(res) {
-                            console.log(res);
-                            if (res.data.length > 0) {
-                                res.data.map(function(key, array) {
-                                    console.log(key);
-                                    // Only add this card if it does not already exist (message recieved and socket reconnect can overlap)
-                                    if (General.findWithAttr($scope.cards, '_id', key._id) < 0) {
-                                        // Get the user for this card
-                                        var users = UserData.getContacts();
-                                        var user_pos = General.findWithAttr(users, '_id', key.user);
-                                        var user = users[user_pos];
-                                        // Store the original characters of the card.
-                                        key.original_content = key.content;
-                                        // Get the user name for the user id
-                                        key.user_name = user.user_name;
-                                        key.avatar = user.avatar;
-                                        $scope.cards_temp.push(key);
-                                    }
-                                });
-                            } else {
-                                // console.log('NO MORE RECORDS');
+        //.then(function(result) {
+        //console.log(result);
+        //console.log($rootScope.loading_cards);
+        if (!$rootScope.loading_cards) {
+            $scope.cards_temp = [];
+            $rootScope.loading_cards = true;
+            var last_card;
+            var operand;
+            if ($scope.cards.length > 0) {
+                //last_card = General.getISODate();
+                var sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
+                //last_card = sort_card[0].updatedAt;
+                last_card = sort_card[sort_card.length - 1].updatedAt;
+                operand = '$gt';
+            } else {
+                last_card = General.getISODate();
+                operand = '$lt';
+            }
+            var val = { id: id, amount: NUM_TO_LOAD, last_card: last_card, operand: operand };
+            console.log(val);
+            var prom1 = Conversations.getConversationCards(val)
+                .then(function(res) {
+                    console.log(res);
+                    if (res.data.length > 0) {
+                        res.data.map(function(key, array) {
+                            console.log(key);
+                            // Only add this card if it does not already exist (message recieved and socket reconnect can overlap)
+                            if (General.findWithAttr($scope.cards, '_id', key._id) < 0) {
+                                // Get the user for this card
+                                var users = UserData.getContacts();
+                                var user_pos = General.findWithAttr(users, '_id', key.user);
+                                var user = users[user_pos];
+                                // Store the original characters of the card.
+                                key.original_content = key.content;
+                                // Get the user name for the user id
+                                key.user_name = user.user_name;
+                                key.avatar = user.avatar;
+                                $scope.cards_temp.push(key);
                             }
-                        })
-                        .catch(function(error) {
-                            $rootScope.loading_cards = true;
-                            console.log(error);
                         });
-                    promises.push(prom1);
-                    // All the cards have been mapped.
-                    $q.all(promises).then(function() {
-                        $scope.cards_temp.map(function(key, array) {
-                            $scope.cards.push(key);
-                        });
-                        var sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
-                        last_card = sort_card[sort_card.length - 1];
-                        UserData.conversationsLatestCardAdd(id, last_card);
-                        $rootScope.loading_cards = false;
-                        deferred.resolve();
-                    });
-                } else {
-                    deferred.resolve();
-                }
-                //return deferred.promise;
-            //})
-            //.catch(function(error) {
-            //    console.log(error);
-            //});
+                    } else {
+                        // console.log('NO MORE RECORDS');
+                    }
+                })
+                .catch(function(error) {
+                    $rootScope.loading_cards = true;
+                    console.log(error);
+                });
+            promises.push(prom1);
+            // All the cards have been mapped.
+            $q.all(promises).then(function() {
+                $scope.cards_temp.map(function(key, array) {
+                    $scope.cards.push(key);
+                });
+                var sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
+                last_card = sort_card[sort_card.length - 1];
+                UserData.conversationsLatestCardAdd(id, last_card);
+                $rootScope.loading_cards = false;
+                deferred.resolve();
+            });
+        } else {
+            deferred.resolve();
+        }
+        //return deferred.promise;
+        //})
+        //.catch(function(error) {
+        //    console.log(error);
+        //});
         return deferred.promise;
     };
 

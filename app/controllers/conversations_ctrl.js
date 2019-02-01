@@ -6,10 +6,11 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
     $scope.conversations = [];
 
     // Broadcast by socket service when a  card has been created, updated or deleted by another user to this user
+    // TODO - check still needed
     $scope.$on('NOTIFICATION', function(event, msg) {
         var id = Conversations.getConversationId();
         // Update the conversations.
-        $scope.conversations = UserData.getConversationModel();
+        //$scope.conversations = UserData.getConversationModel();
     });
 
     // Continue chat
@@ -65,9 +66,9 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
                         //result.data.
                         //notification_body = "EMPTY";
 
-                        sender_name = "NONE";
+                        sender_name = "";
                         //card_content = "EMPTY";
-                        result.data.content = "EMPTY2";
+                        result.data.content = "";
                     }
                     key.updatedAt = result.data.updatedAt;
                     //key.latest_card = result.data.content;

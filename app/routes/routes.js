@@ -586,6 +586,7 @@ module.exports = function(app, passport) {
     });
 
     // Update User profile
+    // Add LocalDB.updateUser
     app.put('/api/users/update_user/:user_id', isLoggedIn, function(req, res) {
         User.findById({ _id: req.params.user_id }, function(err, user) {
             if (err) {
@@ -666,12 +667,14 @@ module.exports = function(app, passport) {
     // add user contact by id
     app.post('/api/users/add_contact/:id', isLoggedIn, function(req, res) {
         var id = req.params.id;
+        console.log(id);
         // get the users contact array
         User.findById({ _id: req.principal._id }, function(err, user) {
             if (err) {
-                //console.log('err: ' + err);
+                console.log('err: ' + err);
                 res.send(err);
             } else {
+                console.log(user);
                 // add the id to the users contacts if it is not already there
                 if (user.contacts.indexOf(id) < 0) {
                     user.contacts.push(id);
@@ -871,11 +874,15 @@ module.exports = function(app, passport) {
 
     // delete a card by id.
     app.delete('/api/cards/:card_id', isLoggedIn, function(req, res) {
-        Card.remove({
+        console.log(req.params.card_id);
+        Card.findOneAndDelete({
             _id: req.params.card_id
         }, function(err, card) {
-            if (err)
+            if (err){
+                console.log(err);
                 res.send(err);
+            }
+            console.log(card);
             res.json(card);
         });
     });

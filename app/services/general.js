@@ -114,6 +114,29 @@ cardApp.service('General', ['$rootScope', function($rootScope) {
         return -1;
     };
 
+
+
+    /*
+    // Find the array index of an objects value
+    this.updateValue = function(array, value) {
+        console.log(array);
+        for (var i = 0; i < array.length - 1; i++) {
+            var keys = Object.keys(array[i].data);
+            var values = Object.values(array[i].data);
+            console.log(values);
+            //console.log(values.data) ;
+            for (var x in values) {
+                console.log(keys[x]);
+                console.log(values[x]);
+                if (values[x] === value) {
+                    console.log('found: ' + values[x] + ' == ' + value);
+                }
+            }
+        }
+        return array;
+    };
+    */
+
     // Find the array index of an object value
     this.findWithAttr = function(array, attr, value) {
         for (var i = 0; i < array.length; i += 1) {

@@ -256,7 +256,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
                 console.log(res);
                 console.log('conv created');
                 // update other paticipants in the conversation via socket.
-                socket.emit('conversation_created', { sender_id: socket.getId(), conversation_id: res.data._id, participants: res.data.participants });
+                socket.emit('conversation_created', { sender_id: socket.getId(), conversation_id: res.data._id, participants: res.data.participants, admin: UserData.getUser()._id });
 
                 // If two person conversation
                 if (res.data.participants.length == 2) {
@@ -410,9 +410,10 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
         event.stopPropagation();
         Users.add_contact(user._id)
             .then(function(res) {
+                console.log(res);
                 // Update the currentUser model
-                UserData.addUserContact(user._id);
-                UserData.addConversationsUser(user);
+                //UserData.addUserContact(user._id);
+                //UserData.addConversationsUser(user);
                 UserData.addContact(user)
                     .then(function(res) {
                         // re-load the user contacts

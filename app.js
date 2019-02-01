@@ -49,7 +49,7 @@ io.set('transports', ['websocket']);
 
 
 conversationCreated = function(data) {
-    console.log('socket_ns conversation_created, conv id: ' + data.conversation_id + ' , participants: ' + data.participants);
+    console.log('socket_ns conversation_created, conv id: ' + data.conversation_id + ' , participants: ' + data.participants, ', admin: ' + data.admin);
     console.log(data.participants);
     console.log('socket_ns namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     // notify relevant namespace(s) of the cards creation
@@ -64,7 +64,7 @@ conversationCreated = function(data) {
                 var nsp_new = io.of('/' + Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length));
                 //console.log('emit notify_users: ' + data.participants[i]._id);
                 console.log('socket_ns emit conversation_created: ' + Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length));
-                nsp_new.emit('notify_conversation_created', { conversation_id: data.conversation_id, participants: data.participants });
+                nsp_new.emit('notify_conversation_created', { conversation_id: data.conversation_id, participants: data.participants, admin: data.admin });
             }
         }
     }
@@ -237,6 +237,27 @@ dataChange = function(data) {
     }
 };
 
+contactChange = function(data) {
+    console.log('socket_ns contact_change, update: ' + data.update + ' , user: ' + data.user + ' , users: ' + data.users);
+    console.log('socket_ns namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    // notify relevant namespace(s) of the data change.
+    for (var i in data.users) {
+        // dont emit to the user which sent the change.
+        if (data.users[i] != data.user) {
+            for (var y in Object.keys(io.nsps)) {
+                // if the namespace exists on the server
+                //console.log(Object.keys(io.nsps)[y]);
+                if (Object.keys(io.nsps)[y].substring(1, Object.keys(io.nsps)[y].length) === data.users[i]) {
+                    // emit to the participant
+                    var nsp_new = io.of('/' + data.users[i]);
+                    console.log('socket_ns emit update_contact: ' + data.users[i]);
+                    nsp_new.emit('update_contact', { update_values: data.update, user: data.user });
+                }
+            }
+        }
+    }
+};
+
 create_ns = function(ns) {
     console.log('IO create ns: ' + ns);
     // Check whether this namespace has been created already.
@@ -320,6 +341,7 @@ socket_connection = function(socket_ns) {
     socket_ns.on('public_deleted', publicDeleted);
     socket_ns.on('public_updated', publicUpdated);
     socket_ns.on('data_change', dataChange);
+    socket_ns.on('contact_change', contactChange);
     //socket_ns.on('reconnect_attempt', reconnect_attempt);
     //socket_ns.on('disconnect', socket_ns_disconnect);
 
