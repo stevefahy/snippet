@@ -63,6 +63,8 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         // if no the still needed
         // only admin is added as contact.
 
+        // Force git
+
         UserData.addContact(contact);
 
         if ($location.url() == '/chat/conversations') {
