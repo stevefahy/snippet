@@ -477,6 +477,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     $scope.cards.push(key);
                 });
                 $rootScope.loading_cards = false;
+                //scroll_direction = "top";
             });
             return deferred.promise;
         }
@@ -822,7 +823,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             if (result == undefined) {
                 $rootScope.pageLoading = false;
             }
-            scroll_direction = "bottom";
+            //scroll_direction = "bottom";
             //$scope.$broadcast("items_changed", 'bottom');
         });
     };
@@ -839,7 +840,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $rootScope.pageLoading = false;
             }
             //$scope.$broadcast("items_changed", 'top');
-            scroll_direction = "top";
+            //scroll_direction = "top";
 
         });
     };
@@ -1040,14 +1041,17 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $rootScope.top_down = true;
                 $scope.total_to_display = INIT_NUM_TO_DISPLAY;
                 $scope.isMember = true;
+                scroll_direction = "top";
             } else if (Conversations.getConversationType() == 'public') {
                 $scope.top_down = true;
                 $rootScope.top_down = true;
                 $scope.total_to_display = INIT_NUM_TO_DISPLAY;
                 $scope.isMember = checkPermit(res);
+                scroll_direction = "top";
             } else if (Conversations.getConversationType() == 'private') {
                 $scope.total_to_display = -INIT_NUM_TO_DISPLAY;
                 $scope.isMember = checkPermit(res);
+                scroll_direction = "bottom";
             }
             // Load the public feed, public conversation or private conversation.
             if (principal.isValid()) {

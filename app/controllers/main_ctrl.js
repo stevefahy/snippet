@@ -47,7 +47,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             box.querySelector(".bottomLeft").innerHTML = visiblePct;
             box.querySelector(".bottomRight").innerHTML = visiblePct;
 
-            $(box).css('opacity', (Math.floor(entry.intersectionRatio * 100)) /100);
+            //$(box).css('opacity', (Math.floor(entry.intersectionRatio * 100)) /100);
 
 /*
             if((Math.floor(entry.intersectionRatio * 100)) <= 0 ){
