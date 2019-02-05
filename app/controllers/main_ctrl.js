@@ -42,10 +42,10 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             let box = entry.target;
             let visiblePct = (Math.floor(entry.intersectionRatio * 100)) + "%";
 
-            box.querySelector(".topLeft").innerHTML = visiblePct;
+            //box.querySelector(".topLeft").innerHTML = visiblePct;
             box.querySelector(".topRight").innerHTML = visiblePct;
-            box.querySelector(".bottomLeft").innerHTML = visiblePct;
-            box.querySelector(".bottomRight").innerHTML = visiblePct;
+            //box.querySelector(".bottomLeft").innerHTML = visiblePct;
+            //box.querySelector(".bottomRight").innerHTML = visiblePct;
 
             //$(box).css('opacity', (Math.floor(entry.intersectionRatio * 100)) /100);
 
