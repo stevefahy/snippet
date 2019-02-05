@@ -3073,3 +3073,60 @@ span.after_image {
 .debug_icon {
     font-size: 35px;
 }
+
+.label {
+  font: 14px "Open Sans", "Arial", sans-serif;
+  position: absolute;
+  margin: 0;
+  background-color: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(0, 0, 0, 0.7);
+  width: 3em;
+  height: 18px;
+  padding: 2px;
+  text-align: center;
+}
+
+.topLeft {
+    position: absolute;
+    left: 2px;
+    top: 30px;
+
+    z-index: 1000;
+}
+
+.topRight {
+    position: absolute;
+    right: 25px;
+    top: 30px;
+   
+}
+
+.bottomLeft {
+    position: relative;
+    left: 2px;
+    top: 30px;
+    float: left;
+    z-index: 1000;
+    /* bottom: 2px; */
+    /* left: 2px; */
+}
+
+.bottomRight {
+    /* bottom: 2px; */
+    /* right: 2px; */
+    position: relative;
+    left: -25px;
+    top: 30px;
+    float: right;
+    z-index: 1000;
+    /* bottom: 2px; */
+    /* left: 2px; */
+}
+
+.wrapper{
+    position: relative;
+}
+
+.card_temp {
+    position: relative;
+}

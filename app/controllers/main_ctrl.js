@@ -13,6 +13,8 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     $scope.debug = true;
 
+    $rootScope.scrollingdisabled = true;
+
     var ua = navigator.userAgent;
 
     $rootScope.deleting_card = false;
@@ -31,6 +33,119 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     } else {
         DEVICE_TYPE = 'non-mobile';
     }
+
+    // Intersection Observer
+
+    function intersectionCallback2(entries) {
+        entries.forEach(function(entry) {
+            //console.log(entry.target.id);
+            let box = entry.target;
+            let visiblePct = (Math.floor(entry.intersectionRatio * 100)) + "%";
+
+            box.querySelector(".topLeft").innerHTML = visiblePct;
+            box.querySelector(".topRight").innerHTML = visiblePct;
+            box.querySelector(".bottomLeft").innerHTML = visiblePct;
+            box.querySelector(".bottomRight").innerHTML = visiblePct;
+
+            $(box).css('opacity', (Math.floor(entry.intersectionRatio * 100)) /100);
+
+            if((Math.floor(entry.intersectionRatio * 100)) <= 0 ){
+                //$(box).css('display', 'none');
+                $('#'+entry.target.id + ' .ce').css('display', 'none');
+            } 
+            if((Math.floor(entry.intersectionRatio * 100)) > 0 ){
+                //$(box).css('display', 'block');
+                 $('#'+entry.target.id + ' .ce').css('display', 'inline-block');
+            }
+            
+        });
+    }
+
+
+    intersectionCallback = function(entries, observer) {
+        console.log('intersectionCallback');
+        entries.forEach(entry => {
+            // Each entry describes an intersection change for one observed
+            // target element:
+            //   entry.boundingClientRect
+            //   entry.intersectionRatio
+            //   entry.intersectionRect
+            //   entry.isIntersecting
+            //   entry.rootBounds
+            //   entry.target
+            //   entry.time
+            //console.log(entry.target);
+
+            //console.log(entry.target.id);
+            // console.log(entry.intersectionRatio);
+
+            if (entry.isIntersecting) {
+                var elem = entry.target;
+                console.log('visible: ' + entry.target.id);
+                //console.log(entry.intersectionRatio);
+            }
+
+            if (!entry.isIntersecting) {
+                var elem = entry.target;
+                console.log('invisible: ' + entry.target.id);
+                //console.log(entry.intersectionRatio);
+            }
+        });
+
+    };
+
+    var observer_queue = [];
+    $scope.addObserver = function(id) {
+        observer_queue.push(id);
+    };
+
+    var observer;
+
+    var observers = [];
+
+    window.addEventListener("load", function(event) {
+        //console.log(document.querySelector('.content_cnv'));
+        /*
+        var observerOptions = {
+            root: document.querySelector('.content_cnv'),
+            rootMargin: '0px',
+            threshold: 1.0
+        };
+        */
+
+
+        //observer = new IntersectionObserver(intersectionCallback, oobserverOptions);
+
+
+    });
+
+    addObservers = function() {
+
+        let thresholdSets = [
+            []
+        ];
+
+        for (let i = 0; i <= 1.0; i += 0.01) {
+            thresholdSets[0].push(i);
+        }
+
+        var observerOptions = {
+            root: document.querySelector('.content_cnv'),
+            rootMargin: '0px',
+            threshold: 1.0
+        };
+
+        observerOptions.threshold = thresholdSets[0];
+
+        for (var i = 0; i < observer_queue.length; i++) {
+            var target = document.querySelector('#' + observer_queue[i]);
+            //console.log(target);
+            //observer.observe(target);
+
+            observers[i] = new IntersectionObserver(intersectionCallback2, observerOptions);
+            observers[i].observe(target);
+        }
+    };
 
 
     // Update User for current user and all this users conversation participants. 

@@ -50,6 +50,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // Use the urls username param from the route to load the conversation.
     var username = $routeParams.username;
 
+    var img_count;
+    var img_loaded;
+    var scroll_direction;
+
     // Find the conversation id.
     getConversationId = function() {
         var deferred = $q.defer();
@@ -109,6 +113,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     $scope.inifiniteScroll = function() {
+        console.log('inifiniteScroll');
         if ($scope.total_to_display != undefined && $scope.cards != undefined) {
             var id = Conversations.getConversationId();
             var td = $scope.total_to_display;
@@ -222,8 +227,60 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         Conversations.setConversationType('');
     });
 
+    var first_load = true;
+    //$scope.all_loaded = false;
+    checkImagesLoaded = function() {
+        console.log(img_count + ' == ' + img_loaded);
+        if (img_count == img_loaded) {
+            console.log('all images loaded');
+            //$scope.all_loaded = true;
+            if(first_load){
+                first_load = false;
+              $scope.$broadcast("items_changed", scroll_direction);  
+            }
+            $timeout(function() {
+             addObservers();
+         },500);
+        }
+    };
+
+    checkImages = function() {
+        img_loaded = 0;
+        img_count = $(".content_cnv img").length;
+        console.log(img_count);
+
+        $(".content_cnv").find('img').each(function() {
+            if (this.complete) {
+                // this image already loaded
+                console.log('already loaded');
+                img_loaded++;
+                checkImagesLoaded();
+            } else {
+                $(this).on('load', function() {
+                    // image now loaded
+                    console.log('finally loaded');
+                    img_loaded++;
+                    checkImagesLoaded();
+                });
+            }
+        });
+    };
+
+
+
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
+        console.log('ngRepeatFinished');
+        //$scope.all_loaded = false;
+        checkImages();
+
+        //addObservers();
+
+
+
+
+
         $rootScope.pageLoading = false;
+        $rootScope.scrollingdisabled = false;
         var id = Conversations.getConversationId();
         if (Conversations.getConversationType() == 'feed') {
             getFollowing();
@@ -765,7 +822,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             if (result == undefined) {
                 $rootScope.pageLoading = false;
             }
-            $scope.$broadcast("items_changed", 'bottom');
+            scroll_direction = "bottom";
+            //$scope.$broadcast("items_changed", 'bottom');
         });
     };
 
@@ -780,7 +838,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             if (result == undefined) {
                 $rootScope.pageLoading = false;
             }
-            $scope.$broadcast("items_changed", 'top');
+            //$scope.$broadcast("items_changed", 'top');
+            scroll_direction = "top";
+
         });
     };
 
@@ -970,8 +1030,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     };
 
+    // START - find the conversation id
     getConversationId()
         .then(function(res) {
+            $rootScope.scrollingdisabled = true;
             if (Conversations.getConversationType() == 'feed') {
                 $scope.feed = true;
                 $scope.top_down = true;

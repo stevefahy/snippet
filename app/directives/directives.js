@@ -95,6 +95,10 @@ cardApp.directive('onFinishRender', function($timeout, $rootScope) {
     return {
         restrict: 'A',
         link: function(scope, element, attr) {
+            //console.log(scope.$index);
+            //console.log(element);
+            //console.log(attr);
+
             if (!$rootScope.deleting_card && ($rootScope.top_down && scope.$last === true) || !$rootScope.deleting_card && !$rootScope.top_down && scope.$first === true) {
                 $timeout(function() {
                     $rootScope.$broadcast("ngRepeatFinished", { temp: "some value" });
@@ -134,6 +138,7 @@ cardApp.directive("scrollToTopWhen", function($timeout) {
         link: function(scope, element, attrs) {
             scope.$on(attrs.scrollToTopWhen, function(event, data) {
                 $timeout(function() {
+                    console.log('scrollToTopWhen');
                     if (data == 'top') {
                         angular.element(element)[0].scrollTop = 0;
                     } else {
