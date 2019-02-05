@@ -1,8 +1,4 @@
-var cardApp = angular.module("cardApp", ['ngSanitize', 'ngRoute', 'angularMoment', 'ngAnimate', 'ngImgCrop', 'ngCookies', 'angular-jwt', 'luegg.directives', 'angular-inview', 'rzModule', 'infinite-scroll']);
-
-// Global value
-
-var image_edit_finished = true;
+var cardApp = angular.module("cardApp", ['ngSanitize', 'ngRoute', 'angularMoment', 'ngAnimate', 'ngImgCrop', 'ngCookies', 'angular-jwt', 'angular-inview', 'rzModule', 'infinite-scroll']);
 
 //
 // ROUTES
@@ -114,16 +110,16 @@ cardApp.config(['$httpProvider', function($httpProvider) {
 //
 
 cardApp.run(function($window, $rootScope) {
-      $rootScope.online = navigator.onLine;
-      $window.addEventListener("offline", function() {
+    $rootScope.online = navigator.onLine;
+    $window.addEventListener("offline", function() {
         $rootScope.$apply(function() {
-          $rootScope.online = false;
+            $rootScope.online = false;
         });
-      }, false);
+    }, false);
 
-      $window.addEventListener("online", function() {
+    $window.addEventListener("online", function() {
         $rootScope.$apply(function() {
-          $rootScope.online = true;
+            $rootScope.online = true;
         });
-      }, false);
+    }, false);
 });

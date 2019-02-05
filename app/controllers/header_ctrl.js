@@ -9,10 +9,8 @@ cardApp.controller("headerCtrl", ['Profile', 'Conversations', '$scope', '$rootSc
     }
 
     displayProfile = function() {
-        console.log('display');
         var user;
         // Routes where User profile should be displayed.
-        console.log($location.path());
         if ($location.path().indexOf('/api/') < 0) {
             if ($location.path().indexOf('/chat/conversation/') < 0) {
                 user = Profile.getProfile();
@@ -20,11 +18,9 @@ cardApp.controller("headerCtrl", ['Profile', 'Conversations', '$scope', '$rootSc
                     // Public usernae route
                     user = Profile.getConvProfile();
                 }
-                console.log(user);
             } else {
                 // Route where Conversation profile should be displayed.
                 user = Profile.getConvProfile();
-                console.log(user);
             }
             if (user != undefined) {
                 $scope.avatar = user.avatar;
@@ -58,26 +54,13 @@ cardApp.controller("headerCtrl", ['Profile', 'Conversations', '$scope', '$rootSc
             // Resets contacts
             $scope.pageAnimationStart();
         }
-
-/*
-        if ($location.path() == '/chat/conversation/:id') {
-            // Resets contacts
-            $scope.pageAnimationStart();
-        }
-        // && $rootScope.prev_route != '/chat/conversation/:id'
-        */
-
-        console.log($rootScope.prev_route);
-
-        if($rootScope.prev_route == '/chat/conversation/:id'){
+        if ($rootScope.prev_route == '/chat/conversation/:id') {
             $location.path('/chat/conversations');
         } else if ($rootScope.prev_route != undefined && $rootScope.prev_route.indexOf('api') < 0) {
             $location.path($rootScope.prev_route);
         } else {
-            //$location.path('/');
             $location.path('/chat/conversations');
         }
-
     };
 
     $scope.changePath = function(path) {
@@ -91,8 +74,6 @@ cardApp.controller("headerCtrl", ['Profile', 'Conversations', '$scope', '$rootSc
     };
 
     $scope.changePathContacts = function(path) {
-        // Resets contacts
-        //$scope.pageAnimationStart();
         $location.path(path);
     };
 

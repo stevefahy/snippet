@@ -82,5 +82,4 @@ cardApp.service('replaceTags', function() {
         return str;
     };
 
-
 });

@@ -7,21 +7,20 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114346969-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-
     function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
     gtag('config', 'UA-114346969-1');
     </script>
     <script>
         var pathArray = location.href.split('/');
-    var protocol = pathArray[0];
-    var host = pathArray[2];
-    var theurl = protocol + '//' + host + '/';
-    if (document.location.hostname === "localhost" || document.location.hostname === "127.0.0.1") {
-        document.write('<base href="' + theurl + '" />');
-    } else {
-        document.write('<base href="/" />');
-    }
+        var protocol = pathArray[0];
+        var host = pathArray[2];
+        var theurl = protocol + '//' + host + '/';
+        if (document.location.hostname === "localhost" || document.location.hostname === "127.0.0.1") {
+            document.write('<base href="' + theurl + '" />');
+        } else {
+            document.write('<base href="/" />');
+        }
     </script>
     <!-- META -->
     <meta charset="utf-8">
@@ -78,19 +77,19 @@
     <!-- ngImgCrop -->
     <script src="/js/ng-img-crop.js" defer></script>
     <!-- scrollglue -->
-    <script src="/js/scrollglue.js" defer></script>
+    <!--<script src="/js/scrollglue.js" defer></script>-->
     <!-- rzslider -->
     <script src="/js/rzslider.js" defer></script>
     <!-- ng-infinite-scroll -->
     <script src="/js/ng-infinite-scroll.js" defer></script>
     <!-- load our main application -->
     <script src="/modules/app.js" defer></script>
+    <!-- Configs -->
+    <script src="/configs/filters_config.js" defer></script>
     <!-- load services -->
     <script src="/services/general.js" defer></script>
-    <script src="/services/userservice.js" defer></script>
     <script src="/services/keyboard.js" defer></script>
     <script src="/services/format.js" defer></script>
-    <script src="/services/filters_config.js" defer></script>
     <script src="/services/cropp.js" defer></script>
     <script src="/services/image_adjustment.js" defer></script>
     <script src="/services/database.js" defer></script>

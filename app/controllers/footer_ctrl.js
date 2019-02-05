@@ -20,8 +20,8 @@ cardApp.controller("footerCtrl", ['$scope', 'Cards', '$rootScope', '$location', 
     };
 
     $scope.logOut = function() {
-        // close socket.io connection and delete namespace
-        //socket.delete();
+        // Close socket.io connection.
+        disconnect_socket();
         // Cancle authentication and remove token cookie.
         principal.logOut();
         $scope.changePath('/api/logout');

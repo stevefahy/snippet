@@ -1,11 +1,11 @@
 //
-// UserService Service
+// Keyboard Service
 //
 
 cardApp.service('Keyboard', ['Format', '$rootScope', function(Format, $rootScope) {
-   var ua = navigator.userAgent;
+    var ua = navigator.userAgent;
     var keyboard_listen = false;
-   //
+    //
     // Keyboard listener
     //
     // Detect soft keyboard on Android
@@ -15,7 +15,6 @@ cardApp.service('Keyboard', ['Format', '$rootScope', function(Format, $rootScope
     var portrait_height;
     var landscape_height;
     $rootScope.hide_footer = false;
-
     // If the initial height is less than the screen height (status bar etc..)
     // then adjust the initial width to take into account this difference
     if (initial_height < screen.height) {

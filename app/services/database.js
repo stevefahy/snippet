@@ -89,7 +89,6 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         if (!updateinprogress) {
             updateinprogress = true;
             setTimeout(function() {
-                card.content = Format.setMediaSize(card_id, card);
                 card.content = replaceTags.replace(card.content);
                 // Remove any temp filtered images
                 card.content = Format.removeTempFiltered(card.content);
@@ -97,128 +96,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 // call the update function from our service (returns a promise object)
                 Cards.update(pms)
                     .then(function(returned) {
-                        //$rootScope.$broadcast('CARD_UPDATED', returned.data);
                         updateinprogress = false;
-                    })
-                    .catch(function(error) {
-                        console.log('error: ' + error);
-                    });
-            }, 0);
-        }
-    };
-
-    // CREATE AND UPDATE CARD
-    // MERGE  Conversations.updateTime(card.conversationId) & Conversations.updateViewed(card.conversationId, viewed_users[x]._id, card_id)
-    // UPDATE CARD
-    this.updateCard = function(card_id, card, currentUser) {
-        console.log(updateinprogress);
-        console.log(card);
-        if (!updateinprogress) {
-            updateinprogress = true;
-            setTimeout(function() {
-                var promises = [];
-                var promises_followers = [];
-                // Get the Conversation in which this card is being created.
-                //var current_conversation_id = Conversations.getConversationId();
-                card.content = Format.setMediaSize(card_id, card);
-                card.content = replaceTags.replace(card.content);
-                // DANGER These had been removed for android image save bug
-                card.content = replaceTags.removeDeleteId(card.content);
-                card.content = replaceTags.removeFocusIds(card.content);
-                // Remove any temp filtered images
-                card.content = Format.removeTempFiltered(card.content);
-                // Get the Conversation in which this card is being created.
-                var current_conversation_id = Conversations.getConversationId();
-                var sent_content;
-                var notification_title;
-                var notification_body;
-                var card_content = card.content;
-                var pms = { 'id': card_id, 'card': card };
-                var recipients;
-                // call the create function from our service (returns a promise object)
-                Cards.update(pms)
-                    .then(function(returned) {
-                        //$rootScope.$broadcast('CARD_UPDATED', returned.data);
-                        var viewed_users = [];
-                        var updated_viewed_users;
-                        // Update the Conversation updateAt time.
-                        Conversations.updateTime(card.conversationId)
-                            .then(function(response) {
-                                console.log(response);
-                                var notification = self.setNotification(response.data, currentUser, card_content);
-                                notification_title = notification.title;
-                                notification_body = notification.body;
-                                sent_content = FormatHTML.prepSentContent(notification_body, sent_content_length);
-                                if (response.data.conversation_type == 'public') {
-                                    recipients = response.data.followers;
-                                } else {
-                                    recipients = response.data.participants;
-                                }
-                                // Only send notifications if there are other participants.
-                                if (recipients.length > 0) {
-                                    // Send notifications
-                                    for (var i in recipients) {
-                                        // dont emit to the user which sent the card
-                                        if (recipients[i]._id !== currentUser._id) {
-                                            // Add this users id to the viewed_users array.
-                                            viewed_users.push({ "_id": recipients[i]._id });
-                                            //viewed_users.push( recipients[i] );
-                                            // Find the other user(s)
-                                            //promises.push(UserData.getConversationsUser(recipients[i]._id)
-                                            var result = UserData.getContact(recipients[i]._id);
-                                            //.then(function(result) {
-                                            // Get the participants notification key
-                                            // Set the message title and body
-                                            if (result.notification_key_name !== undefined) {
-                                                // Send to all registered devices!
-                                                for (var y in result.tokens) {
-                                                    var dataObj = new createData(result.tokens[y].token, notification_title, sent_content, response.data._id);
-                                                    var optionsObj = new createOptions(headersObj.headers, dataObj.data);
-                                                    // Send the notification
-                                                    Users.send_notification(optionsObj.options)
-                                                        .then(function(res) {
-                                                            if (res.error) {
-                                                                //UserData.checkDataUpdate();
-                                                            }
-                                                        });
-                                                }
-                                            }
-                                            //}));
-                                        }
-                                    }
-                                    // Update the unviewed array for all participants.
-                                    for (var x = 0; x < viewed_users.length; x++) {
-                                        promises.push(
-                                            Conversations.updateViewed(current_conversation_id, viewed_users[x]._id, card_id)
-                                            .then(function(res) {
-                                                console.log(res);
-                                                updated_viewed_users = res.data.participants;
-                                            })
-                                        );
-                                    }
-                                    // All Conversation participants unviewed arrays updated
-                                    $q.all(promises).then(function() {
-                                        console.log('all promises - emit card_updated');
-                                        // Add the current user to the participants being notified of update in case they have multiple devices.
-                                        viewed_users.push({ "_id": currentUser._id });
-                                        if (response.data.conversation_type == 'public') {
-                                            socket.emit('public_updated', { sender_id: socket.getId(), conversation_id: current_conversation_id, card_id: card_id, followers: viewed_users });
-                                        } else {
-                                            // update other paticipants in the conversation via socket.
-                                            socket.emit('private_updated', { sender_id: socket.getId(), conversation_id: current_conversation_id, card_id: card_id, participants: viewed_users, viewed_users: updated_viewed_users });
-                                        }
-                                        updateinprogress = false;
-                                    });
-                                } else {
-                                    console.log('no participants - emit card_updated');
-                                    // Add the current user to the participants being notified of update in case they have multiple devices.
-                                    viewed_users.push({ "_id": currentUser._id });
-                                    if (response.data.conversation_type == 'public') {
-                                        socket.emit('public_updated', { sender_id: socket.getId(), conversation_id: current_conversation_id, card_id: card_id, followers: viewed_users });
-                                    }
-                                    updateinprogress = false;
-                                }
-                            });
                     })
                     .catch(function(error) {
                         console.log('error: ' + error);
@@ -235,7 +113,6 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         // Get the Conversation in which this card is being created.
         var current_conversation_id = Conversations.getConversationId();
         card_create.conversationId = current_conversation_id;
-        card_create.content = Format.setMediaSize(id, card_create);
         card_create.content = replaceTags.replace(card_create.content);
         card_create.content = Format.removeDeleteIds();
         card_create.content = replaceTags.removeDeleteId(card_create.content);
@@ -256,18 +133,18 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 // reset the input box
                 $rootScope.$broadcast('CARD_CREATED', card_response);
                 var viewed_users = [];
-                // Update the Conversation updateAt time.
-                Conversations.updateTime(current_conversation_id)
+                // Update the participants viewed array for this conversation with this card (Conversation updateAt time is also updated.). Public conversations do not store viewed data.
+                Conversations.updateViewed(current_conversation_id, card_id)
                     .then(function(response) {
-                        console.log(response);
-                        var notification = self.setNotification(response.data, currentUser, card_content);
+                        updated_viewed_users = response.participants;
+                        var notification = self.setNotification(response, currentUser, card_content);
                         notification_title = notification.title;
                         notification_body = notification.body;
                         sent_content = FormatHTML.prepSentContent(notification_body, sent_content_length);
-                        if (response.data.conversation_type == 'public') {
-                            recipients = response.data.followers;
+                        if (response.conversation_type == 'public') {
+                            recipients = response.followers;
                         } else {
-                            recipients = response.data.participants;
+                            recipients = response.participants;
                         }
                         // Only send notifications if there are other participants.
                         if (recipients.length > 0) {
@@ -277,67 +154,140 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                 if (recipients[i]._id !== currentUser._id) {
                                     // Add this users id to the viewed_users array.
                                     viewed_users.push({ "_id": recipients[i]._id });
-                                    //viewed_users.push( recipients[i] );
                                     // Find the other user(s)
-                                    //promises.push(UserData.getConversationsUser(recipients[i]._id)
-                                    console.log(recipients[i]._id);
                                     var result = UserData.getContact(recipients[i]._id);
-                                    console.log(result);
-                                    //.then(function(result) {
                                     // Get the participants notification key
                                     // Set the message title and body
-                                    if(result != 'Unknown'){
-                                    if (result.notification_key_name !== undefined) {
-                                        // Send to all registered devices!
-                                        for (var y in result.tokens) {
-                                            var dataObj = new createData(result.tokens[y].token, notification_title, sent_content, response.data._id);
-                                            var optionsObj = new createOptions(headersObj.headers, dataObj.data);
-                                            // Send the notification
-                                            Users.send_notification(optionsObj.options)
-                                                .then(function(res) {
-                                                    if (res.error) {
-                                                        //UserData.checkDataUpdate();
-                                                    }
-                                                });
+                                    if (result != 'Unknown') {
+                                        if (result.notification_key_name !== undefined) {
+                                            // Send to all registered devices!
+                                            for (var y in result.tokens) {
+                                                var dataObj = new createData(result.tokens[y].token, notification_title, sent_content, response._id);
+                                                var optionsObj = new createOptions(headersObj.headers, dataObj.data);
+                                                // Send the notification
+                                                Users.send_notification(optionsObj.options)
+                                                    .then(function(res) {
+                                                        if (res.error) {}
+                                                    });
+                                            }
                                         }
-                                    }}
-                                    //}));
+                                    }
                                 }
                             }
-                            // Update the unviewed array for all participants.
-                            for (var x = 0; x < viewed_users.length; x++) {
-                                promises.push(
-                                    Conversations.updateViewed(current_conversation_id, viewed_users[x]._id, card_id)
-                                    .then(function(res) {
-                                        console.log(res);
-                                        updated_viewed_users = res.data.participants;
-                                    })
-                                );
-                            }
-                            // All Conversation participants unviewed arrays updated
-                            $q.all(promises).then(function() {
-                                console.log('all promises - emit card_posted');
-                                // Add the current user to the participants being notified of update in case they have multiple devices.
-                                viewed_users.push({ "_id": currentUser._id });
-                                if (response.data.conversation_type == 'public') {
-                                    socket.emit('public_created', { sender_id: socket.getId(), conversation_id: current_conversation_id, card_id: card_id, followers: viewed_users });
-                                } else {
-                                    // update other paticipants in the conversation via socket.
-                                    socket.emit('private_created', { sender_id: socket.getId(), conversation_id: current_conversation_id, card_id: card_id, participants: viewed_users, viewed_users: updated_viewed_users });
-                                }
-
-                            });
-                        } else {
-                            console.log('no participants - emit card_posted');
                             // Add the current user to the participants being notified of update in case they have multiple devices.
                             viewed_users.push({ "_id": currentUser._id });
-                            if (response.data.conversation_type == 'public') {
+                            // Emit that the card has been created.
+                            if (response.conversation_type == 'public') {
+                                socket.emit('public_created', { sender_id: socket.getId(), conversation_id: current_conversation_id, card_id: card_id, followers: viewed_users });
+                            } else {
+                                // update other paticipants in the conversation via socket.
+                                socket.emit('private_created', { sender_id: socket.getId(), conversation_id: current_conversation_id, card_id: card_id, participants: viewed_users, viewed_users: updated_viewed_users });
+                            }
+                        } else {
+                            // Add the current user to the participants being notified of update in case they have multiple devices.
+                            viewed_users.push({ "_id": currentUser._id });
+                            // Emit that the card has been created.
+                            if (response.conversation_type == 'public') {
                                 socket.emit('public_created', { sender_id: socket.getId(), conversation_id: current_conversation_id, card_id: card_id, followers: viewed_users });
                             }
-
                         }
                     });
             });
+    };
+
+    // UPDATE CARD
+    this.updateCard = function(card_id, card, currentUser) {;
+        if (!updateinprogress) {
+            updateinprogress = true;
+            setTimeout(function() {
+                var promises = [];
+                var promises_followers = [];
+                // Get the Conversation in which this card is being created.
+                card.content = replaceTags.replace(card.content);
+                // DANGER These had been removed for android image save bug
+                card.content = replaceTags.removeDeleteId(card.content);
+                card.content = replaceTags.removeFocusIds(card.content);
+                // Remove any temp filtered images
+                card.content = Format.removeTempFiltered(card.content);
+                // Get the Conversation in which this card is being created.
+                var current_conversation_id = Conversations.getConversationId();
+                var sent_content;
+                var notification_title;
+                var notification_body;
+                var card_content = card.content;
+                var pms = { 'id': card_id, 'card': card };
+                var recipients;
+                // call the create function from our service (returns a promise object)
+                Cards.update(pms)
+                    .then(function(returned) {
+                        var viewed_users = [];
+                        var updated_viewed_users;
+                        // Update the participants viewed array for this conversation with this card (Conversation updateAt time is also updated.). Public conversations do not store viewed data.
+                        Conversations.updateViewed(current_conversation_id, card_id)
+                            .then(function(response) {
+                                updated_viewed_users = response.participants;
+                                var notification = self.setNotification(response, currentUser, card_content);
+                                notification_title = notification.title;
+                                notification_body = notification.body;
+                                sent_content = FormatHTML.prepSentContent(notification_body, sent_content_length);
+                                if (response.conversation_type == 'public') {
+                                    recipients = response.followers;
+                                } else {
+                                    recipients = response.participants;
+                                }
+                                // Only send notifications if there are other participants.
+                                if (recipients.length > 0) {
+                                    // Send notifications
+                                    for (var i in recipients) {
+                                        // dont emit to the user which sent the card
+                                        if (recipients[i]._id !== currentUser._id) {
+                                            // Add this users id to the viewed_users array.
+                                            viewed_users.push({ "_id": recipients[i]._id });
+                                            // Find the other user(s)
+                                            var result = UserData.getContact(recipients[i]._id);
+                                            // Get the participants notification key
+                                            // Set the message title and body
+                                            if (result.notification_key_name !== undefined) {
+                                                // Send to all registered devices!
+                                                for (var y in result.tokens) {
+                                                    var dataObj = new createData(result.tokens[y].token, notification_title, sent_content, response._id);
+                                                    var optionsObj = new createOptions(headersObj.headers, dataObj.data);
+                                                    // Send the notification
+                                                    Users.send_notification(optionsObj.options)
+                                                        .then(function(res) {
+                                                            if (res.error) {
+
+                                                            }
+                                                        });
+                                                }
+                                            }
+                                        }
+                                    }
+                                    // Add the current user to the participants being notified of update in case they have multiple devices.
+                                    viewed_users.push({ "_id": currentUser._id });
+                                    // Emit that the card has been updated.
+                                    if (response.conversation_type == 'public') {
+                                        socket.emit('public_updated', { sender_id: socket.getId(), conversation_id: current_conversation_id, card_id: card_id, followers: viewed_users });
+                                    } else {
+                                        // update other paticipants in the conversation via socket.
+                                        socket.emit('private_updated', { sender_id: socket.getId(), conversation_id: current_conversation_id, card_id: card_id, participants: viewed_users, viewed_users: updated_viewed_users });
+                                    }
+                                    updateinprogress = false;
+                                } else {
+                                    // Add the current user to the participants being notified of update in case they have multiple devices.
+                                    viewed_users.push({ "_id": currentUser._id });
+                                    if (response.conversation_type == 'public') {
+                                        socket.emit('public_updated', { sender_id: socket.getId(), conversation_id: current_conversation_id, card_id: card_id, followers: viewed_users });
+                                    }
+                                    updateinprogress = false;
+                                }
+                            });
+                    })
+                    .catch(function(error) {
+                        console.log('error: ' + error);
+                    });
+            }, 0);
+        }
     };
 
     // DELETE CARD
@@ -354,22 +304,18 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         var updated_viewed_users;
         Cards.delete(card_id)
             .then(function(response) {
-                console.log(response);
-                // notify conversation_ctrl that the card has been deleted
-                //$rootScope.$broadcast('CARD_DELETED', card_id);
                 // remove this Card from the unviewed array for all Conversation participants.
                 Conversations.removeViewed(conversation_id, currentUser, card_id)
                     .then(function(response) {
-                        console.log(response);
-                        updated_viewed_users = response.data.participants;
-                        var notification = self.setNotification(response.data, currentUser, card_content);
+                        updated_viewed_users = response.participants;
+                        var notification = self.setNotification(response, currentUser, card_content);
                         notification_title = notification.title;
                         notification_body = notification.body;
                         sent_content = FormatHTML.prepSentContent(notification_body, sent_content_length);
-                        if (response.data.conversation_type == 'public') {
-                            recipients = response.data.followers;
+                        if (response.conversation_type == 'public') {
+                            recipients = response.followers;
                         } else {
-                            recipients = response.data.participants;
+                            recipients = response.participants;
                         }
                         // Only send notifications if there are other participants.
                         if (recipients.length > 0) {
@@ -381,38 +327,35 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                     viewed_users.push({ "_id": recipients[i]._id });
                                     // Find the other user(s)
                                     var result = UserData.getContact(recipients[i]._id);
-                                    //UserData.getConversationsUser(recipients[i]._id)
-                                    //.then(function(result) {
                                     // Get the participants notification key
                                     // set the message title and body
                                     if (result.notification_key_name !== undefined) {
                                         // Send to all registered devices!
                                         for (var y in result.tokens) {
-                                            var dataObj = new createData(result.tokens[y].token, notification_title, sent_content, response.data._id);
+                                            var dataObj = new createData(result.tokens[y].token, notification_title, sent_content, response._id);
                                             var optionsObj = new createOptions(headersObj.headers, dataObj.data);
                                             // Send the notification
                                             Users.send_notification(optionsObj.options)
-                                                .then(function(res) {
-                                                    //console.log(res);
-                                                });
+                                                .then(function(res) {});
                                         }
                                     }
                                 }
                             }
                             // Add the current user to the participants being notified of update in case they have multiple devices.
                             viewed_users.push({ "_id": currentUser._id });
-                            if (response.data.conversation_type == 'public') {
-                                // socket.io emit the card posted to the server
-                                socket.emit('public_deleted', { sender_id: socket.getId(), conversation_id: response.data._id, card_id: card_id, followers: viewed_users });
+                            // Emit that the card has been deleted.
+                            if (response.conversation_type == 'public') {
+                                // socket.io emit the card deleted to the server
+                                socket.emit('public_deleted', { sender_id: socket.getId(), conversation_id: response._id, card_id: card_id, followers: viewed_users });
                             } else {
                                 // update other paticipants in the conversation via socket.
-                                socket.emit('private_deleted', { sender_id: socket.getId(), conversation_id: response.data._id, card_id: card_id, participants: viewed_users, viewed_users: updated_viewed_users });
+                                socket.emit('private_deleted', { sender_id: socket.getId(), conversation_id: response._id, card_id: card_id, participants: viewed_users, viewed_users: updated_viewed_users });
                             }
                         } else {
-                            console.log('no participants - emit card_deleted');
                             // Add the current user to the participants being notified of update in case they have multiple devices.
                             viewed_users.push({ "_id": currentUser._id });
-                            if (response.data.conversation_type == 'public') {
+                            // Emit that the card has been deleted.
+                            if (response.conversation_type == 'public') {
                                 socket.emit('public_deleted', { sender_id: socket.getId(), conversation_id: current_conversation_id, card_id: card_id, followers: viewed_users });
                             }
                         }

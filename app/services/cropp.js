@@ -44,9 +44,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             decrease_percent = (avail_height / $('.' + id).height());
             var decreased_width = ($('.' + id).width() * decrease_percent);
             // Set the height of the container
-            //var wrapper = document.getElementById('cropper_' + id);
             var wrapper = $('.' + parent_container + ' #cropper_' + id)[0];
-            console.log(wrapper);
             wrapper.style.width = decreased_width + 'px';
             reduce_height = true;
             var cont_data = { 'height': 0, 'width': decreased_width };
@@ -64,7 +62,6 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             parent_container = 'content_cnv';
         }
         ImageAdjustment.setImageParent(parent_container);
-        console.log(parent_container);
         var img_height;
         // If filtered image exists
         if ($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length > 0) {
@@ -73,16 +70,13 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             img_height = $('.' + parent_container + ' #image_' + id).height();
             // Get the filter and set it to cropper
             var filter = $('.' + parent_container + ' #image_' + id).attr('adjustment-data');
-            console.log(filter);
             $('.' + parent_container + ' #cropper_' + id).addClass(filter);
         }
 
         $('.image_edit_btns').css('display', 'none');
         $('.crop_edit').css('display', 'flex');
         $rootScope.crop_on = true;
-        //var wrapper = document.getElementById('cropper_' + id);
         var wrapper = $('.' + parent_container + ' #cropper_' + id)[0];
-        console.log(wrapper);
         $(wrapper).addClass('cropping');
         wrapper.style.maxWidth = '';
         wrapper.style.cssFloat = 'none';
@@ -154,33 +148,25 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         };
 
         // Check for stored crop data
-        console.log(id);
-        console.log($('.' + parent_container + ' #image_' + id));
         var stored = $('.' + parent_container + ' #image_' + id).attr('crop-data');
         var reduced = $('.' + parent_container + ' #image_' + id).attr('reduce-data');
 
         if (reduced != undefined) {
             // Set the height of the container
-            //var wrapper = document.getElementById('cropper_' + id);
             var wrapper = $('.' + parent_container + ' #cropper_' + id)[0];
             var d = JSON.parse(reduced);
             var decreased_width = d.width;
             reduce_height = true;
         }
         // Previously cropped.
-        console.log(stored);
         if (stored != undefined) {
-            console.log('previously cropped');
             options.data = JSON.parse(stored);
-            //image = document.getElementById('image_' + id);
             image = $('.' + parent_container + ' #image_' + id)[0];
             cropper = new Cropper(image, options, {});
         } else {
             // New Crop
             resetContainer(id);
-            //image = document.getElementById('image_' + id);
             image = $('.' + parent_container + ' #image_' + id)[0];
-            console.log(image);
             var init_img_width = $('.' + parent_container + ' #image_' + id).width();
             // If image smaller than screen width then reduce container width
             if (init_img_width < win_width) {
@@ -189,8 +175,6 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
             cropper = new Cropper(image, options, {
                 crop(event) {
-                    console.log(parent_container);
-                    //var wrapper = document.getElementById('cropper_' + id);
                     var wrapper = $('.' + parent_container + ' #cropper_' + id)[0];
                     wrapper.style.width = '';
                 }
@@ -218,10 +202,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
     this.saveImage = function(id, parent_container) {
         var canv = $('canvas.temp_canvas_filtered').attr('id');
-        console.log(canv);
         if (canv != undefined) {
             id = canv.substr(21, canv.length - 20);
-            console.log(id);
             var canvasFilter = document.getElementById('temp_canvas_filtered_' + id);
             var dataUrl = canvasFilter.toDataURL('image/jpeg', JPEG_COMPRESSION);
             Format.dataURItoBlob(dataUrl).then(function(blob) {
@@ -235,13 +217,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                     img_new.onload = function() {
                         $('#temp_canvas_filtered_' + id).remove();
                         // Remove current filter.
-                        console.log($('.' + parent_container + ' .cropper_cont #cropper_' + id + ' img.adjusted'));
-                        console.log($('.' + parent_container + ' #cropper_' + id + ' img.adjusted'));
-                        console.log($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length);
-                        console.log($('.' + parent_container + ' .cropper_cont #cropper_' + id + ' img.adjusted').length);
-                        //if ($('.' + parent_container + ' .cropper_cont #cropper_' + id + ' img.adjusted').length > 0) {
                         if ($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length > 0) {
-                            //$('.' + parent_container + ' .cropper_cont #cropper_' + id + ' img.adjusted').remove();
                             $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').remove();
                         }
                         // Get image Styles
@@ -252,8 +228,6 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                         $(this).insertBefore('.' + parent_container + ' .cropper_cont #image_' + id);
                         // SAVE
                         image_edit_finished = true;
-                        //$('.' + parent_container + ' .cropper_cont #cropper_' + id).closest('div.ce').focus();
-                        //$('.' + parent_container + ' .cropper_cont #cropper_' + id).closest('div.ce').blur();
                         $('.' + parent_container + ' #cropper_' + id).closest('div.ce').focus();
                         $('.' + parent_container + ' #cropper_' + id).closest('div.ce').blur();
                     };
@@ -264,8 +238,6 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
     this.createFilter = function(parent_container, id, filter) {
         var deferred = $q.defer();
-        //convertImageToCanvas(document.getElementById('image_' + id), filter, id).then(function(canvas) {
-        console.log($('.' + parent_container + ' #image_' + id)[0]);
         convertImageToCanvas($('.' + parent_container + ' #image_' + id)[0], filter, id).then(function(canvas) {
             var canvasFilter = document.createElement('canvas');
             canvasFilter.width = canvas.width;
@@ -296,7 +268,6 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         }
         ImageAdjustment.setImageParent(parent_container);
         // Store the selcted filter in a custom attribute.
-        console.log(button);
         ImageAdjustment.setImageAdjustment(parent_container, id, 'filter', filter);
         self.createFilter(parent_container, id, filter).then(function(canvasFilter) {
             if ($('.' + parent_container + ' #cropper_' + id + ' #temp_canvas_filtered_' + id).length >= 0) {
@@ -309,11 +280,9 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             $('.' + parent_container + ' #cropper_' + id + ' #image_' + id).css('display', 'none');
             $(canvasFilter).insertBefore('.' + parent_container + ' #image_' + id);
             var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
-            console.log(ia);
             if (ia != undefined) {
                 self.createSourceCanvas(id, canvasFilter);
                 var target = document.getElementById('temp_canvas_filtered_' + id);
-                //var target = $('cropper_cont#temp_canvas_filtered_' + id)[0];
                 self.applyAdjustments(parent_container, id, target, ia);
             }
         });
@@ -333,14 +302,9 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
     getStyles = function(id) {
         var parent_container = ImageAdjustment.getImageParent();
-        console.log(parent_container);
         // If Adjusted exists Get its Style.
-        console.log($('.' + parent_container + ' #cropper_' + id + ' .adjusted'));
-        console.log($('.' + parent_container + ' #cropper_' + id + ' .adjusted').length);
         if ($('.' + parent_container + ' #cropper_' + id + ' .adjusted').length >= 0) {
             var cssStyle = $('.' + parent_container + ' #image_' + id).attr("style");
-            console.log(parent_container);
-            console.log($('.' + parent_container + ' #image_' + id));
             if (cssStyle != undefined) {
                 // Parse the inline styles to remove the display style
                 var cssStyleParsed = "";
@@ -362,13 +326,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     imageToCanvas = function(parent_container, id) {
         // Use the original image
         var image_id = 'image_' + id;
-        //var image = document.getElementById(image_id);
         var image = $('.' + parent_container + ' #' + image_id)[0];
         var canvas = document.createElement('canvas');
-
-        //var canvas = $('#contents')[0];
-        //var contents = $('#contents')[0];
-
         canvas.width = image.width;
         canvas.height = image.height;
         var ctx = canvas.getContext('2d');
@@ -407,15 +366,6 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     };
 
     this.settingsImage = function(parent_container, id) {
-        /*
-        var parent_container;
-        // Get the context of the image (content_cnv or card_create_container)
-        if($(e.target).parents('div.card_create_container').length > 0){
-            parent_container = 'card_create_container';
-        } else {
-            parent_container = 'content_cnv';
-        }
-        */
         var canvas = imageToCanvas(parent_container, id);
         canvas.setAttribute('id', 'temp_canvas_filtered_' + id);
         canvas.setAttribute('class', 'resize-drag temp_canvas_filtered');
@@ -427,13 +377,10 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
         // If this image has any adjustments.
         if (ia != undefined) {
-            console.log('1');
             // If there is a filter applied.
             if (ia.filter != undefined) {
-                console.log('2');
                 // Create a canvas with the filter effect and return the canvas.
                 self.createFilter(parent_container, id, ia.filter).then(function(canvasFilter) {
-                    //canvasFilter.setAttribute('id', 'temp_canvas_source_' + id);
                     var ctx = canvas.getContext('2d');
                     ctx.drawImage(canvasFilter, 0, 0);
                     ImageAdjustment.setSource(canvasFilter);
@@ -446,9 +393,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                     });
                 });
             } else {
-                console.log('3');
                 // No Filter but other image adjustments.
-                //var source_image = document.getElementById('image_' + id);
                 var source_image = $('.' + parent_container + ' #image_' + id)[0];
                 ImageAdjustment.setSource(source_image);
                 ImageAdjustment.setTarget(canvas);
@@ -457,12 +402,10 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 $('.' + parent_container + ' #cropper_' + id + ' .adjusted').css('display', 'none');
             }
         } else {
-            console.log('4');
             // Not previously adjusted.
             // Use the original image as the source.
             $(canvas).insertBefore('.' + parent_container + ' #image_' + id);
             $('.' + parent_container + ' #cropper_' + id + ' #image_' + id).css('display', 'none');
-            //var source_image = document.getElementById('image_' + id);
             var source_image = $('.' + parent_container + ' #image_' + id)[0];
             ImageAdjustment.setSource(source_image);
             ImageAdjustment.setTarget(canvas);
@@ -477,7 +420,6 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         } else {
             parent_container = 'content_cnv';
         }
-        console.log(parent_container);
         $('.image_adjust_on').remove();
         if ($('.' + parent_container + ' #cropper_' + id + ' .image_adjust_div').length <= 0) {
             var filt = $('.image_adjust_div').clone().insertAfter('.' + parent_container + ' #cropper_' + id);
@@ -486,12 +428,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             filt.addClass('filters_active');
             filt.css('visibility', 'visible');
             // TODO - function to handle all adjustments minus filter.
-            // ImageAdjustment.setImageId(id, parent_container);
-            // TRY THIS to fix problem with setSharpen
             ImageAdjustment.setImageId(id);
-
             ImageAdjustment.setImageParent(parent_container);
-
             var data = { 'id': id };
             // Get the last position of the slider.
             var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
@@ -514,7 +452,6 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         } else {
             parent_container = 'content_cnv';
         }
-        console.log(parent_container);
         $('.image_adjust_on').remove();
         if ($('.' + parent_container + ' #cropper_' + id + ' .image_filt_div').length <= 0) {
             var temp = $('.' + parent_container + ' #cropper_' + id).clone();
@@ -524,8 +461,6 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 temp.find('img').css('display', 'unset');
                 // Change the id so that it is different to the original image.
                 temp.find('img').removeAttr('id');
-                //var temp_id = temp.find('img').attr('id');
-                //temp.find('img').attr('id', 'temp_' + temp_id);
             }
             // If there are temp_image_filtered then remove.
             if ($('.' + parent_container + ' #cropper_' + id + ' .temp_image_filtered').length >= 0) {
@@ -540,8 +475,6 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             filt.css('visibility', 'visible');
             $(temp).removeAttr('onclick');
             $(temp).removeAttr('id');
-
-            //$(temp).removeAttr('id');
 
             for (var i in filter_array) {
                 var outer = document.createElement('div');
@@ -593,38 +526,14 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
         $('.' + parent_container + ' #cropper_' + id).removeClass('cropping');
         removeTempCanvas(id);
-        // SAVE
-        
-        //$timeout(function() {        
+        // SAVE       
         image_edit_finished = true;
-
-/*
-        console.log($('.' + parent_container + ' #cropper_' + id).closest('.ce').html());
-        console.log($('.' + parent_container + ' #cropper_' + id).closest('.ce').attr('id'));
-        var card_id = $('.' + parent_container + ' #cropper_' + id).closest('.ce').attr('id');
-        var card_content = $('.' + parent_container + ' #cropper_' + id).closest('.ce').html();
-        card_id = card_id.substr(2,card_id.length);
-        console.log(card_id);
-        */
-        /*
-        var current_card_index = General.findWithAttr($scope.cards, '_id', card_id);
-        console.log(current_card_index);
-        if(current_card_index >=0){
-            $scope.cards[current_card_index].content = card_content;
-        }
-        */
-       //console.log( $('.' + parent_container + ' #cropper_' + id).closest('div.ce'));
         $('.' + parent_container + ' #cropper_' + id).closest('div.ce').focus();
         $('.' + parent_container + ' #cropper_' + id).closest('div.ce').blur();
-
-        //},500);
-        
-
     };
 
-
+    // TODO - make getting parent container a function.
     this.editImage = function(scope, id) {
-        console.log('editImage: ' + id);
         var parent_container;
         // Get the context of the image (content_cnv or card_create_container)
         if ($(scope).parents('div.card_create_container').length > 0) {
@@ -632,24 +541,17 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         } else {
             parent_container = 'content_cnv';
         }
-        //console.log($(scope).parents('div.content_cnv').length);
-        //console.log($(scope).parents('div.card_create_container').length);
         if (principal.isValid()) {
-            console.log('isValid');
             UserData.checkUser().then(function(result) {
-                console.log(result);
                 // Logged in.
                 // Turn off content saving.
                 image_edit_finished = false;
                 // Get the editable attibute for this card (for this user).
                 // check user has permision to edit.
-                console.log($(scope).closest('div.ce').attr('editable'));
                 if ($(scope).closest('div.ce').attr('editable') == 'true') {
                     $(scope).closest('div.ce').attr('contenteditable', 'false');
                     // Only open editing if not already open.
-                    console.log(($('#image_adjust_' + id).length));
                     if ($('#image_adjust_' + id).length <= 0) {
-                        console.log('adjust');
                         // Close existing
                         $('.image_adjust_on').remove();
                         $('.filters_active').remove();
@@ -749,8 +651,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             var ctx_gradient = canvas_gradient.getContext('2d');
             // Gradients
             if (filter_data.gradient == 'radial') {
-                // radial gradient
-                // gradient_percent
+                // radial gradient, gradient_percent
                 if (filter_data.gradient_percent != undefined) {
                     var penultimate_percent = filter_data.gradient_percent[filter_data.gradient_percent.length - 2];
                     var final_radius = image.width * (penultimate_percent / 100);
@@ -787,7 +688,6 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             // get the 2d context to draw
             var bottomCtx = bottomCanvas.getContext('2d');
             bottomCtx.drawImage(bottomImage, 0, 0, image.width, image.height);
-
             applyBlending(bottomImage, topImage, image, id, filter_data.blend).then(function(result) {
                 deferred.resolve(result);
             });
@@ -796,7 +696,6 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         }
         return deferred.promise;
     }
-
 
     this.setCrop = function(event, image_id) {
         var parent_container;
@@ -809,8 +708,6 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         ImageAdjustment.setImageParent(parent_container);
         var cur_filter = $("." + parent_container + " #image_" + image_id).attr('adjustment-data');
         getData = function() {
-            console.log(parent_container);
-            console.log(ImageAdjustment.getImageParent());
             var stored_image_data = cropper.getImageData();
             var stored_data = cropper.getData();
             $("." + parent_container + " #image_" + image_id).attr('crop-data', JSON.stringify(stored_data));
@@ -819,11 +716,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             var gd = cropper.getData();
             var gcbd = cropper.getCropBoxData();
             // Set the height of the container
-            //var wrapper = document.getElementById('cropper_' + image_id);
             var wrapper = $('.' + parent_container + ' #cropper_' + image_id)[0];
-            console.log($('.' + parent_container + ' #cropper_' + image_id)[0]);
             wrapper.style.cssFloat = 'left';
-            console.log(image);
             image.style.position = "relative";
             // TOP RIGHT BOTTOM LEFT
             // top as percent of gcd H and W
@@ -854,8 +748,6 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 var height = (cbd.bottom - cbd.top) * zoom_amount;
             }
             // Add class to show that this image has been cropped
-            console.log($("." + parent_container + " #image_" + image_id));
-            console.log($('.' + parent_container + ' #image_' + image_id));
             $("." + parent_container + " #image_" + image_id).addClass("cropped");
             // set this card to contenteditable true.
             var card = $(wrapper).parent().closest('div').attr('id');
@@ -864,19 +756,11 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             var cssStyleParsed = getStyles(image_id);
             $('.' + parent_container + ' #cropper_' + image_id + ' .adjusted').attr("style", cssStyleParsed);
             // If Adjusted exists hide original.
-            console.log($('.' + parent_container + ' #cropper_' + image_id + ' .adjusted').length);
-            console.log($('.' + parent_container + ' #cropper_' + image_id + ' .adjusted'));
-            // console.log($('.' + parent_container + ' #cropper_' + image_id + ' .adjusted'));
-            //if ($('.' + parent_container + ' #cropper_' + image_id + ' .adjusted').length >= 0) {
             if ($('.' + parent_container + ' #cropper_' + image_id + ' .adjusted').length > 0) {
-                console.log('hide');
-                //$("." + parent_container + " #image_" + image_id).css('display', 'none');
-                console.log($("." + parent_container + ' #cropper_' + image_id + " #image_" + image_id));
                 $("." + parent_container + ' #cropper_' + image_id + " #image_" + image_id).css('display', 'none');
             }
             cropper.destroy();
             $rootScope.crop_on = false;
-            //var event = null;
             closeEdit(event, image_id);
         };
         getData();

@@ -7,7 +7,6 @@ cardApp.service('General', ['$rootScope', function($rootScope) {
     var self = this;
 
     // Profile Image
-    //
     // Transform the cropped image to a blob.
     this.urltoFile = function(url, filename, mimeType) {
         return (fetch(url)
@@ -21,28 +20,6 @@ cardApp.service('General', ['$rootScope', function($rootScope) {
             })
         );
     };
-
-    // USERS
-    //
-    // Find User
-    /*
-    this.findUser = function(id, callback) {
-        var user_found;
-        Users.search_id(id)
-            .then(function(res) {
-                if (res.data.error) {
-                    user_found = res.data.error;
-                } else if (res.data.success) {
-                    user_found = res.data.success;
-
-                }
-                return callback(user_found);
-            })
-            .catch(function(error) {
-                console.log(error);
-            });
-    };
-    */
 
     this.swapCase = function(letters) {
         var newLetters = "";
@@ -114,28 +91,15 @@ cardApp.service('General', ['$rootScope', function($rootScope) {
         return -1;
     };
 
-
-
-    /*
-    // Find the array index of an objects value
-    this.updateValue = function(array, value) {
-        console.log(array);
-        for (var i = 0; i < array.length - 1; i++) {
-            var keys = Object.keys(array[i].data);
-            var values = Object.values(array[i].data);
-            console.log(values);
-            //console.log(values.data) ;
-            for (var x in values) {
-                console.log(keys[x]);
-                console.log(values[x]);
-                if (values[x] === value) {
-                    console.log('found: ' + values[x] + ' == ' + value);
-                }
+    // Find the array index of two object values contained in an array.
+    this.findIncludesAttrs = function(array, attr1, value1, attr2, value2) {
+        for (var i = 0; i < array.length; i += 1) {
+            if (array[i][attr1].includes(value1) && array[i][attr2].includes(value2)) {
+                return i;
             }
         }
-        return array;
+        return -1;
     };
-    */
 
     // Find the array index of an object value
     this.findWithAttr = function(array, attr, value) {
@@ -167,13 +131,9 @@ cardApp.service('General', ['$rootScope', function($rootScope) {
         return now.toISOString();
     };
 
-
-
     // Check if an Array of Objects includes a property
     this.arrayObjectIndexOf = function(myArray, searchTerm, property) {
         for (var i = 0, len = myArray.length; i < len; i++) {
-            console.log(searchTerm);
-            console.log(myArray[i][property]);
             if (myArray[i][property] === searchTerm) return i;
         }
         return -1;
@@ -187,17 +147,15 @@ cardApp.service('General', ['$rootScope', function($rootScope) {
         return -1;
     };
 
-    // Check if an Array of Objects includes a property value
+    // Check if a nested Array of Objects includes a property value
     this.nestedArrayIndexOfValue = function(myArray, property, value) {
         for (var i = 0, len = myArray.length; i < len; i++) {
-
             for (var x = 0, len2 = myArray[i][property].length; x < len2; x++) {
                 if (myArray[i][property][x] === value) return i;
             }
         }
         return -1;
     };
-
 
     // Helper function for findDifference.
     this.comparer = function(otherArray, value) {
@@ -219,101 +177,11 @@ cardApp.service('General', ['$rootScope', function($rootScope) {
         var onlyInA = a.filter(comparer(b, value));
         var onlyInB = b.filter(comparer(a, value));
         result = onlyInA.concat(onlyInB);
-        //console.log(result);
         if (result.length == 0) {
             return true;
         } else {
             return false;
         }
     };
-
-    /*
-        //
-        // Keyboard listener
-        //
-        // Detect soft keyboard on Android
-        var is_landscape = false;
-        var initial_height = window.innerHeight;
-        var initial_width = window.innerWidth;
-        var portrait_height;
-        var landscape_height;
-        $rootScope.hide_footer = false;
-
-        // If the initial height is less than the screen height (status bar etc..)
-        // then adjust the initial width to take into account this difference
-        if (initial_height < screen.height) {
-            initial_width = initial_width - (screen.height - initial_height);
-        }
-        if (initial_height > initial_width) {
-            //portrait
-            portrait_height = initial_height;
-            landscape_height = initial_width;
-        } else {
-            // landscape
-            landscape_height = initial_height;
-            portrait_height = initial_width;
-        }
-
-        this.resizeListener = function() {
-            keyboard_listen = true;
-            is_landscape = (screen.height < screen.width);
-            if (is_landscape) {
-                if (window.innerHeight < landscape_height) {
-                    hideFooter();
-                } else {
-                    showFooter();
-                }
-            } else {
-                if (window.innerHeight < portrait_height) {
-                    hideFooter();
-                } else {
-                    showFooter();
-                }
-            }
-        };
-
-        hideFooter = function() {
-            var focused = document.activeElement;
-            if (focused.id != 'cecard_create') {
-                $('.create_container').hide();
-            }
-            $('.footer').hide();
-
-            $rootScope.$apply(function() {
-                $rootScope.hide_footer = true;
-            });
-            // Paste div that will be scrolled into view if necessary and the deleted.
-            Format.pasteHtmlAtCaret("<span class='scroll_latest_footer' id='scroll_latest_footer'></span>");
-            // Scroll into view if necessary
-            Format.scrollLatest('scroll_latest_footer');
-        };
-
-        showFooter = function() {
-            $rootScope.$apply(function() {
-                $rootScope.hide_footer = false;
-            });
-            $('.footer').show();
-            $('.create_container').show();
-            $('#placeholderDiv').css('bottom', '5px');
-        };
-
-        // Start listening for keyboard.
-        this.keyBoardListenStart = function() {
-            if (ua.indexOf('AndroidApp') >= 0) {
-                if (!keyboard_listen) {
-                    window.addEventListener('resize', this.resizeListener);
-                    keyboard_listen = true;
-                }
-            }
-        };
-
-        // Stop listening for keyboard.
-        this.keyBoardListenStop = function() {
-            if (keyboard_listen) {
-                window.removeEventListener('resize', this.resizeListener);
-                keyboard_listen = false;
-            }
-        };
-        */
 
 }]);

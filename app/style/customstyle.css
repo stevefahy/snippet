@@ -25,9 +25,9 @@ body {
 }
 
 /* Limit image width to avoid overflow the container */
+/* This rule is very important, please do not ignore this! */
 img {
     max-width: 100%;
-    /* This rule is very important, please do not ignore this! */
 }
 
 canvas {
@@ -178,8 +178,6 @@ img.resize-drag.clip {
     background-color: #000000;
     margin-bottom: 10px;
     border-bottom: 1px solid #efefef;
-
-
 }
 
 .resize-drag {
@@ -326,7 +324,6 @@ hr {
     box-shadow: rgba(0, 0, 0, 0.14) 0px 4px 5px 0px, rgba(0, 0, 0, 0.12) 0px 1px 10px 0px, rgba(0, 0, 0, 0.2) 0px 2px 4px -1px;
 }
 
-
 /* HEADER SETTINGS */
 
 .header_decide {
@@ -462,7 +459,6 @@ hr {
     float: left;
 }
 
-
 /* HEADER CONV */
 
 .header_conv_name {
@@ -485,7 +481,6 @@ hr {
     padding: 5px;
     margin: -5px;
 }
-
 
 /* HEADER CONTACTS */
 
@@ -576,7 +571,6 @@ hr {
 .material-icons.md-36 {
     font-size: 36px;
 }
-
 
 /* USER SETTINGS */
 
@@ -932,7 +926,6 @@ form.form-horizontal.ng-valid.ng-dirty.ng-valid-parse {
 
 .show_card .resize-drag {
     visibility: visible;
-    ;
 }
 
 .header_edit {
@@ -1247,7 +1240,6 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     line-height: normal;
 }
 
-
 .convs_col_b {
     margin-right: auto;
     text-align: right;
@@ -1317,7 +1309,6 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     overflow-y: auto;
     overflow-x: hidden;
     border-radius: 1px;
-
     position: absolute;
     bottom: 60px;
 }
@@ -1473,8 +1464,6 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     border-radius: 1px;
     background-color: #FFFFFF;
 }
-
-
 
 .content_cnv_hide_footer {
     height: calc(100% - 125px);
@@ -1659,10 +1648,6 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 
 .content_conv_import_200 {
     margin-left: -100vw;
-}
-
-.content_cnv_android {
-    margin-left: calc(100vw - 100%);
 }
 
 .reset_height {
@@ -1915,7 +1900,6 @@ span#scroll_image_latest {
     left: 28px;
     top: -24px;
 }
-
 
 #mi-done_contacts {
     position: relative;
@@ -2486,7 +2470,6 @@ span#scroll_image_latest {
 .convs_data h5,
 .convs_data h6 {}
 
-
 b.header_1 {
     display: inline-block;
     font-weight: 700;
@@ -2588,7 +2571,6 @@ span#header b.header_3 {
 .convs_data_bl .header_3:before {
     content: "\a";
 }
-
 
 .convs_data_bl .header_1:after,
 .convs_data_bl .header_2:after,
@@ -2692,7 +2674,6 @@ span#header b.header_3 {
 }
 
 /* NEW */
-
 
 /* slide out from the right */
 
@@ -3070,7 +3051,7 @@ span.after_image {
     width: 10px;
 }
 
-.debug{
+.debug {
     position: absolute;
     z-index: 10000;
     top: 70px;

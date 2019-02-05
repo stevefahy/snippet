@@ -1,4 +1,4 @@
-cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams', '$location', '$http', '$timeout', 'principal', 'UserData', 'Invites', 'Email', 'Users', 'Conversations', 'Profile', 'General', 'Format', 'Contacts', 'UserService', '$q', 'Keyboard', function($scope, $route, $rootScope, $routeParams, $location, $http, $timeout, principal, UserData, Invites, Email, Users, Conversations, Profile, General, Format, Contacts, UserService, $q, Keyboard) {
+cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams', '$location', '$http', '$timeout', 'principal', 'UserData', 'Invites', 'Email', 'Users', 'Conversations', 'Profile', 'General', 'Format', 'Contacts', '$q', 'Keyboard', function($scope, $route, $rootScope, $routeParams, $location, $http, $timeout, principal, UserData, Invites, Email, Users, Conversations, Profile, General, Format, Contacts, $q, Keyboard) {
 
     // Use the urls id param from the route to load the conversation.
     var id = $routeParams.id;
@@ -23,6 +23,7 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams
         conversation_avatar: 'default',
         participants: []
     };
+
     // Image
     $scope.myImage = '';
     $scope.myCroppedImage = '';
@@ -38,6 +39,7 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams
     var SELECTED_DRAWER_WAIT = 100;
     var SELECTED_REMOVE_WAIT = 301;
     var ua = navigator.userAgent;
+
     // Image
     var myImageName = '';
     var mySavedImage = '';
@@ -57,21 +59,16 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams
             $scope.currentUser = UserData.getUser();
             // Default Group Image
             $scope.avatar = 'default';
-            //UserData.getConversationModelById(id)
             UserData.getConversationById(id)
                 .then(function(res) {
-                    console.log(res);
                     $scope.conversation = res;
                     if (res.admin.includes(UserData.getUser()._id)) {
                         $scope.is_admin = true;
                     }
                     res.participants.map(function(key, array) {
-                        //UserData.getConversationsUser(key._id)
                         var result = UserData.getContact(key._id);
-                            //.then(function(result) {
-                                $scope.participants.push(result);
-                                $scope.participants_orig.push(result);
-                           // });
+                        $scope.participants.push(result);
+                        $scope.participants_orig.push(result);
                     });
                     // Admin rights
                     if (res.admin.includes(UserData.getUser()._id)) {
@@ -86,16 +83,13 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams
                         var index = General.findWithAttr(res.participants, '_id', UserData.getUser()._id);
                         // Get the other user.
                         index = 1 - index;
-                        //UserData.getConversationsUser(res.participants[index]._id)
-                         var result = UserData.getContact(res.participants[index]._id);    
-                            //.then(function(result) {
-                                $scope.avatar = result.avatar;
-                                $scope.saved_avatar = result.avatar;
-                                $scope.conversation_name = result.user_name;
-                                $scope.chat_update.conversation_avatar = result.avatar;
-                                $scope.group_name = $scope.conversation_name;
-                                updateProfile();
-                            //});
+                        var result = UserData.getContact(res.participants[index]._id);
+                        $scope.avatar = result.avatar;
+                        $scope.saved_avatar = result.avatar;
+                        $scope.conversation_name = result.user_name;
+                        $scope.chat_update.conversation_avatar = result.avatar;
+                        $scope.group_name = $scope.conversation_name;
+                        updateProfile();
                     } else {
                         $scope.conv_type = "group";
                         $scope.avatar = res.conversation_avatar;
@@ -133,7 +127,6 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams
                 } else {
                     $scope.cancelGroup();
                 }
-
             }
         }
     };
@@ -218,60 +211,61 @@ cardApp.controller("groupCtrl", ['$scope', '$route', '$rootScope', '$routeParams
             // Updateconversation in DB.
             Conversations.update(pms)
                 .then(function(res) {
-                    $scope.saved_avatar = res.data.conversation_avatar;
+                    $scope.saved_avatar = res.conversation_avatar;
                     // Update the conversation details for the model
-                    res.data.avatar = res.data.conversation_avatar;
-                    //res.data.conversation_avatar = $scope.conversation.conversation_avatar;
-                    res.data.latest_card = $scope.conversation.latest_card;
-                    res.data.name = res.data.conversation_name;
+                    res.avatar = res.conversation_avatar;
+                    res.latest_card = $scope.conversation.latest_card;
+                    res.name = res.conversation_name;
                     // Update the participants model.
                     $scope.participants = [];
-                    res.data.participants.map(function(key, array) {
-                        var result = UserData.getContact(key._id); 
-                        //UserData.getConversationsUser(key._id)
-                           // .then(function(result) {
-                                $scope.participants.push(result);
-                           // });
+                    res.participants.map(function(key, array) {
+                        var result = UserData.getContact(key._id);
+                        $scope.participants.push(result);
                     });
                     // Add this conversation to the local model.
-                    //UserData.addConversationModel(res.data)
-                    UserData.conversationsAdd(res.data)
-                        .then(function(res) {
-                            console.log(res);
-                        });
+                    UserData.conversationsAdd(res)
+                        .then(function(res) {});
                     var profile_obj = {};
                     // if group
-                    if (res.data.conversation_name != '') {
-                        profile_obj.user_name = res.data.conversation_name;
-                        profile_obj.avatar = res.data.conversation_avatar;
+                    if (res.conversation_name != '') {
+                        profile_obj.user_name = res.conversation_name;
+                        profile_obj.avatar = res.conversation_avatar;
                         Profile.setConvProfile(profile_obj);
                     }
                     // If two person
-                    if (res.data.conversation_name == '') {
+                    if (res.conversation_name == '') {
                         // get the index position of the current user within the participants array
-                        var user_pos = General.findWithAttr(res.data.participants, '_id', $scope.currentUser._id);
+                        var user_pos = General.findWithAttr(res.participants, '_id', $scope.currentUser._id);
                         // Get the position of the current user
                         if (user_pos === 0) {
                             participant_pos = 1;
                         } else {
                             participant_pos = 0;
                         }
-                        // Find the other user
-                        UserService.findUser(res.data.participants[participant_pos]._id, function(result) {
-                            profile_obj.avatar = "default";
-                            // set the other user name as the name of the conversation.
-                            if (result) {
-                                profile_obj.user_name = result.user_name;
-                                profile_obj.avatar = result.avatar;
-                            }
-                            Profile.setConvProfile(profile_obj);
-                            // Go to the conversation after it has been created
-                            $location.path("/chat/conversation/" + res.data._id);
-                        });
+                        // Find the other user.
+                        Users.search_id(res.participants[participant_pos]._id)
+                            .then(function(result) {
+                                profile_obj.avatar = "default";
+                                // set the other user name as the name of the conversation.
+                                if (result) {
+                                    profile_obj.user_name = result.user_name;
+                                    profile_obj.avatar = result.avatar;
+                                }
+                                Profile.setConvProfile(profile_obj);
+                                // Go to the conversation after it has been created
+                                $location.path("/chat/conversation/" + res._id);
+                            });
                     }
                     // reset.
-                    $scope.conversation_name = res.data.conversation_name;
+                    $scope.conversation_name = res.conversation_name;
                     $scope.cancelGroup();
+                    // Emit update to participants.
+                    var contacts_ids = [];
+                    var contacts = UserData.getContacts();
+                    for (var i in contacts) {
+                        contacts_ids.push(contacts[i]._id);
+                    }
+                    UserData.updateUserContact(UserData.getUser(), UserData.getUser()._id, contacts_ids);
                 });
         }
     };

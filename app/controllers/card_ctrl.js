@@ -103,7 +103,6 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'Conversations', 'Users', 're
 
     // UPDATE ==================================================================
     $scope.updateCard = function(id, card) {
-        card.content = Format.setMediaSize(id, card);
         setTimeout(function() {
             $scope.$apply(function() {
                 card.content = replaceTags.replace(card.content);

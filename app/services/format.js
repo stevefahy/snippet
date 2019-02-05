@@ -15,7 +15,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     // Image resize max width or height
     var MAX_WIDTH = 1080;
     var MAX_HEIGHT = 1080;
-    //var JPEG_COMPRESSION = 0.01;
     var JPEG_COMPRESSION = 0.8;
     var IMAGES_URL = 'fileuploads/images/';
     var refreshedToken;
@@ -106,6 +105,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         marky_char_array.push(INITIAL_KEY.toUpperCase() + marky_array[i].charstring.charAt(1).toUpperCase());
     }
 
+    // TODO - make general function
     function getDate() {
         var today = new Date();
         var time = today.getTime();
@@ -123,9 +123,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         return $q(function(resolve, reject) {
             var reader = new FileReader();
             reader.addEventListener("load", function() {
-                img.onload = function() {
-
-                };
+                img.onload = function() {};
                 img.src = reader.result;
                 resolve(img);
             }, false);
@@ -203,13 +201,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     ctx.translate(-width, 0);
                     break;
             }
-
-
             ctx.drawImage(img, 0, 0, width, height);
-
-            //ctx.fillStyle = "#FFFFFF";
-            //ctx.fillRect(0, 0, width, height);
-
             ctx.restore();
             // compress JPEG
             var dataURL = canvas.toDataURL('image/jpeg', JPEG_COMPRESSION);
@@ -246,12 +238,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     // Added for update.
     imageLoaded = function(image) {
-
-        console.log(image);
-
-
-
-
         var new_image = document.getElementById('new_image');
         $(new_image).removeAttr('onload id');
         var unique_id = new_image.className.split(' ')[1];
@@ -275,18 +261,15 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                         if ($(item2)[0].nodeType != 3) {
                             if ($(item2)[0].className.indexOf('cropper_cont') >= 0) {
                                 if ($(item2)[0].id.indexOf(unique_id) >= 0) {
-                                    //console.log('this cropper');
                                     end_search = true;
                                     return false;
                                 } else {
-                                    //console.log('not empty');
                                     is_topmost = false;
                                     return false;
                                 }
                             } else if ($(item2)[0].className.indexOf('after_image') >= 0) {
                                 if ($(item2)[0].firstChild != null) {
                                     if ($(item2)[0].firstChild.childNodes.length > 0) {
-                                        //console.log('not empty');
                                         is_topmost = false;
                                         return false;
                                     }
@@ -294,7 +277,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                             }
                         } else {
                             if ($(item2)[0].nodeValue != "") {
-                                //console.log('not empty');
                                 is_topmost = false;
                                 return false;
                             }
@@ -304,16 +286,13 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 if ($(item)[0].className.indexOf('ce') >= 0 && $(item)[0].className.indexOf('ce') < 3) {
                     $(item).contents().each(function(index3, item3) {
                         if ($(item3)[0].nodeType == 3 && $(item3)[0].length > 0) {
-                            //console.log('not empty');
                             is_topmost = false;
                             return false;
                         } else if ($(item3)[0].nodeType == 1) {
                             if ($(item3)[0].id.indexOf(unique_id) >= 0) {
-                                //console.log('this cropper');
                                 end_search = true;
                                 return false;
                             } else {
-                                //console.log('not empty');
                                 is_topmost = false;
                                 return false;
                             }
@@ -334,10 +313,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     insertImage = function(data) {
         if (data.response === 'saved') {
-            console.log(data);
             data.file_name = data.file.substring(0, data.file.indexOf('.'));
             var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'></div><slider></slider><span class='after_image' id='after_image_" + data.file_name + "'>&#x200b;&#10;</span><span class='clear_after_image'></span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
-            //var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(\"" + IMAGES_URL + data.file + "\"); imagePosted();' src='/assets/images/default_avatar.jpg'></div><slider></slider><span class='after_image' id='after_image_" + data.file_name + "'>&#x200b;&#10;</span><span class='clear_after_image'></span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
             self.pasteHtmlAtCaret(new_image);
             // commented out because it causes an issue with onblur which is used to update card.
             /*
@@ -399,7 +376,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 self.formData.append('uploads[]', file, file.name)
             );
         });
-
         $q.all(promises).then(function(formData) {
             // Image processing of ALL images complete. Upload form
             self.uploadImages(self.formData, callback);
@@ -430,7 +406,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 })
             );
         });
-
         $q.all(promises).then(function(formData) {
             // Image processing of ALL images complete. Upload form
             self.uploadImages(self.formData, callback);
@@ -557,8 +532,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         }
     };
 
-    // Called by Android onPause
-    // Update the card.
+    // Called by Android onPause. Update the card.
     this.getBlurAndroid = function(id, card, currentUser) {
         if (id != undefined && card != undefined && currentUser != undefined) {
             // Check if there is a marky in progress
@@ -575,16 +549,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.getBlur = function(id, card, currentUser) {
-        console.log('getBlur');
-        console.log(card);
-        console.log(JSON.stringify(card));
         // Add slight delay so that document.activeElement works
         setTimeout(function() {
-            //console.log('ce' + card._id);
-            //var content = $('#ce' + card._id).html();
             var content = $('.content_cnv #ce' + card._id).html();
-            console.log(content);
-            //console.log($('#ce' + card._id));
             // Get the element currently in focus
             var active = $(document.activeElement).closest("div").attr('id');
             // If the blurred card is not the current card or the hidden input.
@@ -594,15 +561,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 // Check if there is a marky in progress
                 // zm launching image capture should not trigger an update. It causes error.
                 found_marky = findMarky(card.content);
-
-                console.log(card.content);
-                console.log(card.original_content);
-                console.log(card.content != card.original_content);
-                console.log(found_marky);
-                console.log(image_edit_finished);
                 // check the content has changed and not currently mid marky. Or that an image is being edited.
                 if ((content != card.original_content && (found_marky == false)) && image_edit_finished == true) {
-                    console.log('update');
                     // Only do this if not in current card?
                     if ($('.cropper-container').length > 0) {
                         $('.cropper-container').remove();
@@ -629,11 +589,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             tag_count_previous_local = (content_less_pre.match(reg) || []).length;
         }
         return tag_count_previous_local;
-    };
-
-    // TODO Check if this is still required.
-    this.setMediaSize = function(id, card) {
-        return card.content;
     };
 
     // Currently not used
@@ -710,7 +665,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         return found;
     }
 
-    // TODO remove delete id?
     function moveCaretAfter(id) {
         self.removeDeleteIds();
         var current_node = $("#" + id).get(0);
@@ -734,8 +688,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     }
 
     function moveCaretInto(id) {
-        // Causing bug in cecreate_card when enter is pressed following data is deleted.
-        //self.removeDeleteIds();
         $("#" + id).html('&#x200b');
         var current_node = $("#" + id).get(0);
         range = document.createRange();
@@ -824,6 +776,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         return marky_started_array;
     }
 
+    // TODO - make General?
     // Check if an Array of Objects includes a property
     arrayObjectIndexOf = function(myArray, searchTerm, property) {
         for (var i = 0, len = myArray.length; i < len; i++) {
@@ -1214,7 +1167,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             var a = getCharacterPrecedingCaret(editableEl);
             return a;
         };
-
         var observeDOM = (function() {
             var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
             return function(obj, callback) {

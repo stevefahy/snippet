@@ -10,38 +10,25 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
     var target;
     var image_parent;
 
-
     this.setImageAdjustment = function(parent_container, id, name, value) {
         var ia = this.getImageAdjustments(parent_container, id);
         if (ia == undefined) {
             ia = {};
         }
         ia[name] = value;
-        //console.log($('.'+ parent_container + ' #image_' + id));
-        //console.log($('.' + parent_container + ' #cropper_' + id + ' #image_' + id));
         // Custom attribute for storing image adjustments.
-        $('.'+ parent_container + ' #image_' + id).attr('adjustment-data', JSON.stringify(ia));
-        //$('.'+ parent_container + ' .cropper_' + id + ' #image_' + id).attr('adjustment-data', JSON.stringify(ia));
+        $('.' + parent_container + ' #image_' + id).attr('adjustment-data', JSON.stringify(ia));
     };
 
     this.getImageAdjustments = function(parent_container, id) {
         var adjustment_data;
         // Custom attribute for storing image adjustments.
-        //div#cropper_1548618126080_abstract_3d_4-wallpaper-1920x1080 > img#image_1548618126080_abstract_3d_4-wallpaper-1920x1080
-        //.content_cnv #cropper_1548618126080_abstract_3d_4-wallpaper-1920x1080 #image_1548618126080_abstract_3d_4-wallpaper-1920x1080 
-        //console.log($('.' + parent_container + ' .cropper_cont#image_' + id));
-        //console.log($('.' + parent_container + ' #cropper_' + id + ' #image_' + id));
         var ia = $('.' + parent_container + ' #image_' + id).attr('adjustment-data');
-        //var ia = $('.' + parent_container + '.cropper_' + id + ' #image_' + id).attr('adjustment-data');
         if (ia != undefined) {
             adjustment_data = JSON.parse(ia);
         }
         return adjustment_data;
     };
-    
-
-
-
 
     this.setImageParent = function(id) {
         image_parent = id;

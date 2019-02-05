@@ -1,10 +1,6 @@
-cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location', '$http', '$timeout', 'principal', 'UserData', 'Invites', 'Email', 'Users', 'Conversations', 'Profile', 'General', 'Format', 'Contacts', '$q', 'UserService', 'Keyboard', 'socket', function($scope, $route, $rootScope, $location, $http, $timeout, principal, UserData, Invites, Email, Users, Conversations, Profile, General, Format, Contacts, $q, UserService, Keyboard, socket) {
+cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location', '$http', '$timeout', 'principal', 'UserData', 'Invites', 'Email', 'Users', 'Conversations', 'Profile', 'General', 'Format', 'Contacts', '$q', 'Keyboard', 'socket', function($scope, $route, $rootScope, $location, $http, $timeout, principal, UserData, Invites, Email, Users, Conversations, Profile, General, Format, Contacts, $q, Keyboard, socket) {
 
-
-    // TODO - make sure two users cant create a 2 person conv with each other at the same time.
-    // Add users to each others contacts when conv created?
     // TODO - make sure two users cannot create a chat simultanously
-    // TODO - make sure only one chat created with aother single user.
 
     // Check if the page has been loaded witha param (user contacts import callback).
     var paramValue = $route.current.$$route.menuItem;
@@ -85,7 +81,6 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
 
     // Called by back button in header. (Hides Search or Import for back animation).
     $scope.pageAnimationStart = function() {
-        console.log('pageAnimationStart');
         if ($scope.search_sel) {
             $scope.search_back = true;
         } else if ($scope.import_sel == true) {
@@ -250,14 +245,10 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
             $scope.chat_create.participants.push({ _id: key._id, viewed: 0 });
         });
         // Create conversation in DB.
-        // TODO - notify others users that conversation created.
         Conversations.create($scope.chat_create)
             .then(function(res) {
-                console.log(res);
-                console.log('conv created');
                 // update other paticipants in the conversation via socket.
                 socket.emit('conversation_created', { sender_id: socket.getId(), conversation_id: res.data._id, participants: res.data.participants, admin: UserData.getUser()._id });
-
                 // If two person conversation
                 if (res.data.participants.length == 2) {
                     $scope.contacts = UserData.getContacts();
@@ -269,31 +260,13 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
                     $scope.contacts[index].conversation_id = res.data._id;
                     // update contact to LM
                     UserData.addContact($scope.contacts[index])
-                        .then(function(res) {
-                            //console.log(res);
-                        });
+                        .then(function(res) {});
                 }
                 // Add this conversation to the local model.
                 res.data.avatar = res.data.conversation_avatar;
                 res.data.name = res.data.conversation_name;
-
-                /*
-                UserData.addConversationModel(res.data)
-                    .then(function(result) {
-                        // If this is the first card in a new conversation then create the cards model for this conversation.
-                        UserData.addCardsModelById(res.data._id)
-                            .then(function(res) {
-                                //console.log(res);
-                            });
-                    });
-                    */
-                    UserData.conversationsAdd(res.data)
-                       .then(function(res) {
-                                console.log(res);
-                            });
-                    
-
-
+                UserData.conversationsAdd(res.data)
+                    .then(function(res) {});
                 var profile_obj = {};
                 // if group
                 if (res.data.conversation_name != '') {
@@ -314,17 +287,18 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
                         participant_pos = 0;
                     }
                     // Find the other user
-                    UserService.findUser(res.data.participants[participant_pos]._id, function(result) {
-                        profile_obj.avatar = "default";
-                        // set the other user name as the name of the conversation.
-                        if (result) {
-                            profile_obj.user_name = result.user_name;
-                            profile_obj.avatar = result.avatar;
-                        }
-                        Profile.setConvProfile(profile_obj);
-                        // Go to the conversation after it has been created
-                        $location.path("/chat/conversation/" + res.data._id);
-                    });
+                    Users.search_id(res.data.participants[participant_pos]._id)
+                        .then(function(result) {
+                            profile_obj.avatar = "default";
+                            // set the other user name as the name of the conversation.
+                            if (result) {
+                                profile_obj.user_name = result.user_name;
+                                profile_obj.avatar = result.avatar;
+                            }
+                            Profile.setConvProfile(profile_obj);
+                            // Go to the conversation after it has been created
+                            $location.path("/chat/conversation/" + res.data._id);
+                        });
                 }
             });
     };
@@ -410,10 +384,6 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
         event.stopPropagation();
         Users.add_contact(user._id)
             .then(function(res) {
-                console.log(res);
-                // Update the currentUser model
-                //UserData.addUserContact(user._id);
-                //UserData.addConversationsUser(user);
                 UserData.addContact(user)
                     .then(function(res) {
                         // re-load the user contacts
@@ -454,6 +424,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
         $scope.contacts[index].is_current_user = true;
 
         $scope.contacts.map(function(key, array) {
+            // Get the conversation ids for the public conversatios for each contct.
             Conversations.find_user_public_conversation_by_id(key._id)
                 .then(function(result) {
                     // If public then show link to the public conversation
@@ -461,8 +432,18 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
                         key.public_conversation = result._id;
                     }
                 });
+            // Get the private conversation ids for each contact if it exists.
+            // The conversation will only contain the current user and this contact as participants.
+            var participants = { participants: [UserData.getUser()._id, key._id] };
+            Conversations.find_private_conversation_by_participants(participants)
+                .then(function(result) {
+                    if (result != undefined && !result.error) {
+                        // set conversation_exists and conversation_id for the contacts
+                        key.conversation_exists = true;
+                        key.conversation_id = result._id;
+                    }
+                });
         });
-
         // Reset
         $scope.cancelGroup();
         checkImportedContacts();
@@ -581,10 +562,8 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
                         $scope.search_results = [];
                         // Map response values to field label and value
                         response($.map(data, function(res) {
-                            console.log(res);
                             Conversations.find_user_public_conversation_by_id(res._id)
                                 .then(function(result) {
-                                    console.log(result);
                                     // If public then show link to the public conversation
                                     if (result.conversation_type == 'public') {
                                         res.public_conversation = result._id;
@@ -612,7 +591,6 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
                                         }
                                     });
                                 });
-                                //
                                 // populate search_results array with found users
                                 $scope.search_results.push(res);
                                 $scope.$apply();
@@ -632,9 +610,6 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
     // Animation end listeners.
 
     $(".contacts_transition").bind('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function() {
-        console.log('contacts_transition');
-        console.log($scope.import_sel);
-        console.log($scope.animating);
         $scope.$apply(function($scope) {
             if ($scope.import_sel == true) {
                 $scope.animating = false;

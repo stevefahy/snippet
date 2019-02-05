@@ -7,35 +7,36 @@
         <!-- IMAGE -->
         <div class="user_setting_image">
             <div class="preview" ng-class="{'preview_show': image_loaded}"><img class="cropped_image" ng-src="{{myCroppedImage}}" /></div>
-            <div class="original" ng-class="{'original_hide': image_loaded}">
-                <img ng-if="avatar!='default'" alt="" class="user_settings_avatar" ng-src="{{avatar}}" />
-                <img ng-if="avatar=='default'" alt="" ng-src="/assets/images/people.png" class="user_settings_avatar" />
-                <input type="file" id="fileInput" />
-            </div>
-        </div>
-        <div class="crop_container" ng-class="{'crop_container_show': image_loaded}">
-            <div class="cropArea" ng-class="{'cropArea_show': image_loaded}">
-                <img-crop class="imgcrop transition_100" ng-class="{'imgcrop_show': image_loaded}" image="myImage" result-image="myCroppedImage" result-image-format="image/jpeg" result-image-size="125" change-on-fly="true" on-load-done="imgcropLoaded();"></img-crop>
-            </div>
-        </div>
-        <div class="user_details" ng-class="{'user_details_image_loaded': image_loaded}">
-            <div class="left"></div>
-            <div class="centre">
-                <div class="user_details_container">
-                    <div class="login_name login_detail">Name</div>
-                    <div class="login_name">{{login_name}}</div>
-                </div>
-                <div class="user_details_container">
-                    <div class="login_email login_detail">Email</div>
-                    <div class="login_email">{{login_email}}</div>
-                </div>
-                <div class="user_details_container">
-                    <div class="user_name login_detail">User Name</div>
-                    <input class="ce_username user_name" id="profile_username" maxlength="20" type="text" ng-model="user_name" />
+                <div class="original" ng-class="{'original_hide': image_loaded}">
+                    <img ng-if="avatar!='default'" alt="" class="user_settings_avatar" ng-src="{{avatar}}" />
+                    <img ng-if="avatar=='default'" alt="" ng-src="/assets/images/people.png" class="user_settings_avatar" />
+                    <input type="file" id="fileInput" />
                 </div>
             </div>
-            <div class="right"></div>
+            <div class="crop_container" ng-class="{'crop_container_show': image_loaded}">
+                <div class="cropArea" ng-class="{'cropArea_show': image_loaded}">
+                    <img-crop class="imgcrop transition_100" ng-class="{'imgcrop_show': image_loaded}" image="myImage" result-image="myCroppedImage" result-image-format="image/jpeg" result-image-size="125" change-on-fly="true" on-load-done="imgcropLoaded();"></img-crop>
+                </div>
+            </div>
+            <div class="user_details" ng-class="{'user_details_image_loaded': image_loaded}">
+                <div class="left"></div>
+                <div class="centre">
+                    <div class="user_details_container">
+                        <div class="login_name login_detail">Name</div>
+                        <div class="login_name">{{login_name}}</div>
+                    </div>
+                    <div class="user_details_container">
+                        <div class="login_email login_detail">Email</div>
+                        <div class="login_email">{{login_email}}</div>
+                    </div>
+                    <div class="user_details_container">
+                        <div class="user_name login_detail">User Name</div>
+                        <input class="ce_username user_name" id="profile_username" maxlength="20" type="text" ng-model="user_name" />
+                    </div>
+                </div>
+                <div class="right"></div>
+            </div>
         </div>
+        <div ng-include src="'/views/footer.html'"></div>
     </div>
-    <div ng-include src="'/views/footer.html'"></div>
 </div>
