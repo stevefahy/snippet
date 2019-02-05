@@ -49,6 +49,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
             $(box).css('opacity', (Math.floor(entry.intersectionRatio * 100)) /100);
 
+/*
             if((Math.floor(entry.intersectionRatio * 100)) <= 0 ){
                 //$(box).css('display', 'none');
                 $('#'+entry.target.id + ' .ce').css('display', 'none');
@@ -57,6 +58,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                 //$(box).css('display', 'block');
                  $('#'+entry.target.id + ' .ce').css('display', 'inline-block');
             }
+            */
             
         });
     }
