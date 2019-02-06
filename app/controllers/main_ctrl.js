@@ -97,7 +97,16 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     };
 
     var observer_queue = [];
+
+    resetObserver_queue = function(){
+        console.log('resetObserver_queue');
+        observer_queue = [];
+    };
+
+    
+    //$scope.observer_queue = [];
     $scope.addObserver = function(id) {
+        
         observer_queue.push(id);
     };
 
@@ -122,6 +131,8 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     });
 
     addObservers = function() {
+        observers = [];
+        
 
         let thresholdSets = [
             []
@@ -140,6 +151,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         observerOptions.threshold = thresholdSets[0];
 
         for (var i = 0; i < observer_queue.length; i++) {
+            console.log(observer_queue[i]);
             var target = document.querySelector('#' + observer_queue[i]);
             //console.log(target);
             //observer.observe(target);

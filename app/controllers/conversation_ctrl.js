@@ -225,9 +225,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         $rootScope.top_down = false;
         Conversations.setConversationId('');
         Conversations.setConversationType('');
+        resetObserver_queue();
     });
 
     var first_load = true;
+
     //$scope.all_loaded = false;
     checkImagesLoaded = function() {
         console.log(img_count + ' == ' + img_loaded);
@@ -239,6 +241,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
               $scope.$broadcast("items_changed", scroll_direction);  
             }
             $timeout(function() {
+                 //$scope.observer_queue = [];
              addObservers();
          },500);
         }
