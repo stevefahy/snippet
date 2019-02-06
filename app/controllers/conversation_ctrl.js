@@ -114,6 +114,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     $scope.inifiniteScroll = function() {
         console.log('inifiniteScroll');
+
+            $rootScope.scrollingdisabled = true;
+            console.log('$rootScope.scrollingdisabled 2 : ' + !$rootScope.scrollingdisabled);
+
         if ($scope.total_to_display != undefined && $scope.cards != undefined) {
             var id = Conversations.getConversationId();
             var td = $scope.total_to_display;
@@ -237,8 +241,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             console.log('all images loaded');
             if(first_load){
                 first_load = false;
-              $scope.$broadcast("items_changed", scroll_direction);  
+              $scope.$broadcast("items_changed", scroll_direction); 
+              
             }
+            $rootScope.pageLoading = false; 
+              $rootScope.scrollingdisabled = false;
+              console.log('$rootScope.scrollingdisabled: ' + !$rootScope.scrollingdisabled);
             $timeout(function() {
                 //addObservers();
          },500);
@@ -273,8 +281,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
         checkImages();
 
-        $rootScope.pageLoading = false;
-        $rootScope.scrollingdisabled = false;
+        //$rootScope.pageLoading = false;
+        //$rootScope.scrollingdisabled = false;
         var id = Conversations.getConversationId();
         if (Conversations.getConversationType() == 'feed') {
             getFollowing();
@@ -552,6 +560,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     getCards = function(id) {
         if (!$rootScope.loading_cards) {
+
+
+
             $scope.cards_temp = [];
             $rootScope.loading_cards = true;
             var deferred = $q.defer();
@@ -570,6 +581,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             var prom1 = Conversations.getConversationCards(val)
                 .then(function(res) {
                     if (res.data.length > 0) {
+
+
+
                         res.data.map(function(key, array) {
                             // Get the user for this card
                             var users = UserData.getContacts();
@@ -587,7 +601,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             $scope.cards_temp.push(key);
                         });
                     } else {
-                        // console.log('NO MORE RECORDS');
+                         console.log('NO MORE RECORDS');
                     }
                 })
                 .catch(function(error) {
@@ -816,6 +830,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         getCards(id).then(function(result) {
             if (result == undefined) {
                 $rootScope.pageLoading = false;
+
             }
             //scroll_direction = "bottom";
             //$scope.$broadcast("items_changed", 'bottom');
