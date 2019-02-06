@@ -36,68 +36,17 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     // Intersection Observer
 
-    function intersectionCallback2(entries) {
-        entries.forEach(function(entry) {
-            //console.log(entry.target.id);
-            let box = entry.target;
-            let visiblePct = (Math.floor(entry.intersectionRatio * 100)) + "%";
-
-            //box.querySelector(".topLeft").innerHTML = visiblePct;
-            box.querySelector(".topRight").innerHTML = visiblePct;
-            //box.querySelector(".bottomLeft").innerHTML = visiblePct;
-            //box.querySelector(".bottomRight").innerHTML = visiblePct;
-
-            //$(box).css('opacity', (Math.floor(entry.intersectionRatio * 100)) /100);
-
-/*
-            if((Math.floor(entry.intersectionRatio * 100)) <= 0 ){
-                //$(box).css('display', 'none');
-                $('#'+entry.target.id + ' .ce').css('display', 'none');
-            } 
-            if((Math.floor(entry.intersectionRatio * 100)) > 0 ){
-                //$(box).css('display', 'block');
-                 $('#'+entry.target.id + ' .ce').css('display', 'inline-block');
-            }
-            */
-            
-        });
-    }
-
-
     intersectionCallback = function(entries, observer) {
         console.log('intersectionCallback');
         entries.forEach(entry => {
-            // Each entry describes an intersection change for one observed
-            // target element:
-            //   entry.boundingClientRect
-            //   entry.intersectionRatio
-            //   entry.intersectionRect
-            //   entry.isIntersecting
-            //   entry.rootBounds
-            //   entry.target
-            //   entry.time
-            //console.log(entry.target);
-
-            //console.log(entry.target.id);
-            // console.log(entry.intersectionRatio);
-
-            
-            
-
-          
-
             if (entry.isIntersecting) {
                 var elem = entry.target;
                 elem.querySelector(".topRight").innerHTML = 'vis';
-                //console.log('visible: ' + entry.target.id);
-                //console.log(entry.intersectionRatio);
             }
 
             if (!entry.isIntersecting) {
                 var elem = entry.target;
                 elem.querySelector(".topRight").innerHTML = 'inv';
-                //console.log('invisible: ' + entry.target.id);
-                //console.log(entry.intersectionRatio);
             }
         });
 
@@ -110,10 +59,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         observer_queue = [];
     };
 
-    
-    //$scope.observer_queue = [];
     $scope.addObserver = function(id) {
-        
         observer_queue.push(id);
     };
 
@@ -121,25 +67,8 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     var observers = [];
 
-    window.addEventListener("load", function(event) {
-        //console.log(document.querySelector('.content_cnv'));
-        /*
-        var observerOptions = {
-            root: document.querySelector('.content_cnv'),
-            rootMargin: '0px',
-            threshold: 1.0
-        };
-        */
-
-
-        //observer = new IntersectionObserver(intersectionCallback, oobserverOptions);
-
-
-    });
-
     addObservers = function() {
         observers = [];
-        
 
         let thresholdSets = [
             []
@@ -160,9 +89,6 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         for (var i = 0; i < observer_queue.length; i++) {
             console.log(observer_queue[i]);
             var target = document.querySelector('#' + observer_queue[i]);
-            //console.log(target);
-            //observer.observe(target);
-
             observers[i] = new IntersectionObserver(intersectionCallback, observerOptions);
             observers[i].observe(target);
         }

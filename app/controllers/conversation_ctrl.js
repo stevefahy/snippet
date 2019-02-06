@@ -228,21 +228,19 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         resetObserver_queue();
     });
 
+
     var first_load = true;
 
-    //$scope.all_loaded = false;
     checkImagesLoaded = function() {
         console.log(img_count + ' == ' + img_loaded);
         if (img_count == img_loaded) {
             console.log('all images loaded');
-            //$scope.all_loaded = true;
             if(first_load){
                 first_load = false;
               $scope.$broadcast("items_changed", scroll_direction);  
             }
             $timeout(function() {
-                 //$scope.observer_queue = [];
-            // addObservers();
+                //addObservers();
          },500);
         }
     };
@@ -251,7 +249,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         img_loaded = 0;
         img_count = $(".content_cnv img").length;
         console.log(img_count);
-
         $(".content_cnv").find('img').each(function() {
             if (this.complete) {
                 // this image already loaded
@@ -273,14 +270,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
         console.log('ngRepeatFinished');
-        //$scope.all_loaded = false;
+
         checkImages();
-
-        //addObservers();
-
-
-
-
 
         $rootScope.pageLoading = false;
         $rootScope.scrollingdisabled = false;
@@ -1055,6 +1046,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $scope.total_to_display = -INIT_NUM_TO_DISPLAY;
                 $scope.isMember = checkPermit(res);
                 scroll_direction = "bottom";
+                $scope.top_down = false;
             }
             // Load the public feed, public conversation or private conversation.
             if (principal.isValid()) {
