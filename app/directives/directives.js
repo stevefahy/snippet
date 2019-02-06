@@ -98,7 +98,7 @@ cardApp.directive('onFinishRender', function($timeout, $rootScope) {
             //console.log(scope.$index);
             //console.log(element);
             //console.log(attr);
-
+            //console.log('onFinishRender: ' + $rootScope.top_down);
             if (!$rootScope.deleting_card && ($rootScope.top_down && scope.$last === true) || !$rootScope.deleting_card && !$rootScope.top_down && scope.$first === true) {
                 $timeout(function() {
                     $rootScope.$broadcast("ngRepeatFinished", { temp: "some value" });
