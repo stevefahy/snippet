@@ -242,7 +242,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }
             $timeout(function() {
                  //$scope.observer_queue = [];
-             addObservers();
+            // addObservers();
          },500);
         }
     };
