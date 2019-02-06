@@ -81,15 +81,22 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             //console.log(entry.target.id);
             // console.log(entry.intersectionRatio);
 
+            
+            
+
+          
+
             if (entry.isIntersecting) {
                 var elem = entry.target;
-                console.log('visible: ' + entry.target.id);
+                elem.querySelector(".topRight").innerHTML = 'vis';
+                //console.log('visible: ' + entry.target.id);
                 //console.log(entry.intersectionRatio);
             }
 
             if (!entry.isIntersecting) {
                 var elem = entry.target;
-                console.log('invisible: ' + entry.target.id);
+                elem.querySelector(".topRight").innerHTML = 'inv';
+                //console.log('invisible: ' + entry.target.id);
                 //console.log(entry.intersectionRatio);
             }
         });
@@ -156,7 +163,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             //console.log(target);
             //observer.observe(target);
 
-            observers[i] = new IntersectionObserver(intersectionCallback2, observerOptions);
+            observers[i] = new IntersectionObserver(intersectionCallback, observerOptions);
             observers[i].observe(target);
         }
     };
