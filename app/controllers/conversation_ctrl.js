@@ -130,7 +130,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     tempToCards = function() {
         //console.log(scroll);
-        console.log(JSON.stringify($scope.cards_temp));
+//        console.log(JSON.stringify($scope.cards_temp));
         //var amount = $scope.total_to_display * -1;
         var amount = INIT_NUM_TO_LOAD * 2;
         console.log('tempToCards: ' + amount);
@@ -157,6 +157,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         spliced.map(function(key, index) {
             $scope.cards.push(key);
         });
+          if (!$scope.$$phase) {
+                      console.log('apply');
+                     $scope.$apply();
+                    }
         //console.log($scope.cards);
    
 
@@ -315,8 +319,17 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     };
 
+    removeCards = function(){
+        var amount = INIT_NUM_TO_LOAD-2;
+        if($scope.cards.length > INIT_NUM_TO_LOAD*2){
+                 //var last_card = sort_card[sort_card.length - 1].updatedAt;
+        var last_card = $scope.cards[$scope.cards.length - amount];
+        console.log(last_card);
+        var spliced = $scope.cards.splice(last_card, amount);
+        console.log(spliced);    
+        } 
+    };
 
-    var first_load = true;
 
     checkImagesLoaded = function(location) {
         //console.log(img_count + ' == ' + img_loaded);
@@ -328,7 +341,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 tempToCards();
             }
             // Check if first load of content_cnv
-            if (location == 'content_cnv' && $scope.cards.length  == NUM_TO_LOAD) {
+            if (location == 'content_cnv' && $scope.cards.length > 0 &&   $scope.cards.length <= NUM_TO_LOAD) {
                 $scope.$broadcast("items_changed", scroll_direction);
             }
 
@@ -336,6 +349,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 //$scope.$broadcast("items_changed", scroll_direction);
                 $rootScope.loading_cards = false;
                 checkNext();
+                // Remove cards
+                removeCards();
             }
 
             if (location == 'load_off_screen') {
@@ -344,23 +359,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $rootScope.scrollingdisabled = false;
             }
 
-            if (first_load) {
-                //first_load = false;
-                //$scope.$broadcast("items_changed", scroll_direction);
-
-            }
-            //$rootScope.pageLoading = false; 
-            //$rootScope.scrollingdisabled = false;
-            //$scope.inifiniteScroll();
-            //console.log('$rootScope.scrollingdisabled: ' + !$rootScope.scrollingdisabled);
-            $timeout(function() {
-                //addObservers();
-                //$rootScope.loading_cards = false;
-                // if (!first_load) {
-                // checkNext();
-                //}
-                // first_load = false;
-            }, 500);
+  
         }
     };
 
@@ -626,18 +625,21 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var deferred = $q.defer();
         var promises = [];
         if (!$rootScope.loading_cards) {
-            $scope.cards_temp = [];
+            //$scope.cards_temp = [];
+            $scope.cards_update = [];
             $rootScope.loading_cards = true;
             var last_card;
             var operand;
-            if ($scope.cards.length > 0) {
+            /*if ($scope.cards.length > 0) {
                 var sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
+                console.log(sort_card);
                 last_card = sort_card[sort_card.length - 1].updatedAt;
                 operand = '$gt';
             } else {
+                */
                 last_card = General.getISODate();
                 operand = '$lt';
-            }
+            //}
             var val = { id: id, amount: NUM_TO_LOAD, last_card: last_card, operand: operand };
             var prom1 = Conversations.getConversationCards(val)
                 .then(function(res) {
@@ -654,7 +656,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                 // Get the user name for the user id
                                 key.user_name = user.user_name;
                                 key.avatar = user.avatar;
-                                $scope.cards_temp.push(key);
+                                //$scope.cards_temp.push(key);
+                                $scope.cards_update.push(key);
                             }
                         });
                     } else {
@@ -668,7 +671,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             promises.push(prom1);
             // All the cards have been mapped.
             $q.all(promises).then(function() {
-                $scope.cards_temp.map(function(key, array) {
+                //$scope.cards_temp.map(function(key, array) {
+                $scope.cards_update.map(function(key, array) {
                     $scope.cards.push(key);
                 });
                 var sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
@@ -726,6 +730,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         });
                     } else {
                         console.log('NO MORE RECORDS');
+                        $rootScope.loading_cards = false;
                     }
                 })
                 .catch(function(error) {
@@ -743,7 +748,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     //}
 
                 });
-                console.log(JSON.stringify($scope.cards_temp[0]));
+                //console.log(JSON.stringify($scope.cards_temp[0]));
                 //$rootScope.loading_cards = false;
                 console.log('display: ' + $scope.total_to_display + ', cards: ' + $scope.cards.length);
                 console.log('getCards fin');

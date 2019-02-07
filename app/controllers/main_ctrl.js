@@ -289,13 +289,14 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     // NOTIFICATION for private conversation.
     $rootScope.$on('PRIVATE_NOTIFICATION_CREATED', function(event, msg) {
-        //console.log('PRIVATE_NOTIFICATION_CREATED');
+        console.log('PRIVATE_NOTIFICATION_CREATED');
         UserData.addConversationViewed(msg.conversation_id, msg.viewed_users);
         var id = Conversations.getConversationId();
         // only update the conversation if the user is currently in that conversation
         if (id === msg.conversation_id) {
             updateConversationViewed(id);
             getCardsUpdate(id).then(function(result) {
+                console.log(result);
                     $scope.$broadcast("items_changed", 'bottom');
                 })
                 .catch(function(error) {
