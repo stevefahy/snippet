@@ -97,11 +97,18 @@ cardApp.directive('onFinishRender', function($timeout, $rootScope) {
         link: function(scope, element, attr) {
             //console.log(scope.$index);
             //console.log(element);
-            //console.log(attr);
+            //console.log(attr.onFinishRender);
             //console.log('onFinishRender: ' + $rootScope.top_down);
+
+            // ngRepeatFinishedTemp
             if (!$rootScope.deleting_card && ($rootScope.top_down && scope.$last === true) || !$rootScope.deleting_card && !$rootScope.top_down && scope.$first === true) {
                 $timeout(function() {
-                    $rootScope.$broadcast("ngRepeatFinished", { temp: "some value" });
+                    if (attr.onFinishRender == 'ngRepeatFinishedTemp') {
+                        $rootScope.$broadcast("ngRepeatFinishedTemp", { temp: "some value" });
+                    } else {
+                        $rootScope.$broadcast("ngRepeatFinished", { temp: "some value" });
+                    }
+
                 });
             }
         }
