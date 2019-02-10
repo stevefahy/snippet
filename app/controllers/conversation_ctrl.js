@@ -12,10 +12,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Detect device user agent 
     var ua = navigator.userAgent;
-/*
-    var INIT_NUM_TO_LOAD = 10;
-    var NUM_TO_LOAD = INIT_NUM_TO_LOAD;
-    */
+    /*
+        var INIT_NUM_TO_LOAD = 10;
+        var NUM_TO_LOAD = INIT_NUM_TO_LOAD;
+        */
 
     var UP_PERCENT = 70;
     var DOWN_PERCENT = 80;
@@ -170,7 +170,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             //var amount = NUM_TO_LOAD;
             var amount = NUM_UPDATE_DISPLAY;
 
-            if($scope.cards.length == 0){
+            if ($scope.cards.length == 0) {
                 amount = NUM_UPDATE_DISPLAY_INIT;
             }
             console.log('tempToCards: ' + amount);
@@ -259,26 +259,26 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
 
         //if (scrolled != 100 && scrolled != 0) {
-            //console.log($scope.scrollingdisabled);
-            if (!$scope.scrollingdisabled) {
-                if (dir > 0 && scrolled <= UP_PERCENT) {
-                    //firing = true;
-                    $timeout(function() {
-                        var stored_scrolled = scrolled;
-                        checkFireUp(stored_scrolled);
-                    }, 50);
-                }
+        //console.log($scope.scrollingdisabled);
+        if (!$scope.scrollingdisabled) {
+            if (dir > 0 && scrolled <= UP_PERCENT) {
+                //firing = true;
+                $timeout(function() {
+                    var stored_scrolled = scrolled;
+                    checkFireUp(stored_scrolled);
+                }, 50);
             }
+        }
 
-            if (!$scope.scrollingdisabled) {
-                if (dir < 1 && scrolled >= DOWN_PERCENT) {
-                    //firing = true;
-                    $timeout(function() {
-                        var stored_scrolled = scrolled;
-                        checkFireDown(stored_scrolled);
-                    }, 500);
-                }
+        if (!$scope.scrollingdisabled) {
+            if (dir < 1 && scrolled >= DOWN_PERCENT) {
+                //firing = true;
+                $timeout(function() {
+                    var stored_scrolled = scrolled;
+                    checkFireDown(stored_scrolled);
+                }, 500);
             }
+        }
         //}
 
     });
@@ -310,10 +310,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                 .then(function(result) {
                                     console.log(result);
                                     $timeout(function() {
-                                        $scope.scrollingdisabled = false; 
+                                        $scope.scrollingdisabled = false;
                                     }, 100);
                                 });
-                                
+
 
                         });
                 } else {
@@ -433,15 +433,17 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             getFollowing();
         } else if (Conversations.getConversationType() == 'private') {
             //if($scope.cards_temp.length < NUM_TO_LOAD){
-                getCards(id, 'cache');
+            getCards(id, 'cache');
             //}
-            
+
         } else if (Conversations.getConversationType() == 'public') {
             getPublicCards(i, d);
         }
     };
 
     getCardAmount = function() {
+        var amount = 0;
+        /*
         var current_cards = $scope.cards.length;
         var amount = 0;
         if (current_cards > MAX_DISPLAY) {
@@ -449,6 +451,35 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             amount = REMOVE_BOTTOM;
         }
         return amount;
+        */
+        var allElements = document.querySelectorAll('.content_cnv .card_temp');
+        console.log(allElements);
+
+        $( '.content_cnv .vis' ).last().addClass('removeCards');
+var last_index;
+        for (var i = 0; i < allElements.length; i++) {
+            // your index is inside here
+            console.log(allElements[i]);
+            if($(allElements[i]).hasClass('removeCards')){
+                last_index = i;
+                break;
+            }
+        }
+
+
+
+        console.log(allElements.length);
+        var visibleElements = document.querySelectorAll('.content_cnv .vis');
+        console.log(visibleElements);
+        //var last = visibleElements[visibleElements.length - 1].id;
+        //console.log(last);
+        //var index = General.findWithAttr($scope.cards, '_id', last);
+        //console.log(index);
+        console.log(allElements.length);
+        console.log(last_index);
+        var amount = allElements.length - (last_index + 2);
+        return amount;
+
 
     };
 
@@ -587,6 +618,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             if (location == 'content_cnv' && $scope.cards.length > 0 && first_load) {
                 first_load = false;
                 $scope.$broadcast("items_changed", scroll_direction);
+                //addObservers();
+                //intObservers();
             }
 
             if (location == 'content_cnv') {
@@ -594,6 +627,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $rootScope.loading_cards = false;
 
                 $scope.fully_loaded = true;
+                //addObservers();
                 //$scope.scrollingdisabled = false;
                 checkNext();
                 // Remove cards

@@ -37,16 +37,18 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     // Intersection Observer
 
     intersectionCallback = function(entries, observer) {
-        console.log('intersectionCallback');
+        //console.log('intersectionCallback');
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 var elem = entry.target;
                 elem.querySelector(".topRight").innerHTML = 'vis';
+                $(elem).addClass('vis');
             }
 
             if (!entry.isIntersecting) {
                 var elem = entry.target;
                 elem.querySelector(".topRight").innerHTML = 'inv';
+                $(elem).removeClass('vis');
             }
         });
 
@@ -54,20 +56,45 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     var observer_queue = [];
 
-    resetObserver_queue = function(){
+    resetObserver_queue = function() {
         console.log('resetObserver_queue');
         observer_queue = [];
     };
 
+                   var observerOptions = {
+                    root: document.querySelector('.content_cnv'),
+                    rootMargin: '0px',
+                    threshold: 1.0
+                };
+
     $scope.addObserver = function(id) {
-        observer_queue.push(id);
+        console.log(id);
+
+        $('#' + id).ready(function() {
+            console.log("ready!");
+            var target = document.querySelector('#' + id);
+            var newObserver = new IntersectionObserver(intersectionCallback, $scope.observerOptions);
+            console.log($scope.observerOptions);
+            observers.push(newObserver);
+            newObserver.observe(target);
+        });
+        //observer_queue.push(id);
+        //console.log(observer_queue[i]);
+
     };
 
     var observer;
 
     var observers = [];
 
-    addObservers = function() {
+
+
+
+
+
+$('.content_cnv').ready(function() {
+            console.log("content_cnv ready!");
+    intObservers = function() {
         observers = [];
 
         let thresholdSets = [
@@ -77,22 +104,28 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         for (let i = 0; i <= 1.0; i += 0.01) {
             thresholdSets[0].push(i);
         }
+        
+                $scope.observerOptions = {
+                    root: document.querySelector('.content_cnv'),
+                    rootMargin: '0px',
+                    threshold: 1.0
+                };
+                
 
-        var observerOptions = {
-            root: document.querySelector('.content_cnv'),
-            rootMargin: '0px',
-            threshold: 1.0
-        };
+        $scope.observerOptions.threshold = thresholdSets[0];
 
-        observerOptions.threshold = thresholdSets[0];
-
-        for (var i = 0; i < observer_queue.length; i++) {
-            console.log(observer_queue[i]);
-            var target = document.querySelector('#' + observer_queue[i]);
-            observers[i] = new IntersectionObserver(intersectionCallback, observerOptions);
-            observers[i].observe(target);
-        }
+        /*
+                for (var i = 0; i < observer_queue.length; i++) {
+                    console.log(observer_queue[i]);
+                    var target = document.querySelector('#' + observer_queue[i]);
+                    observers[i] = new IntersectionObserver(intersectionCallback, observerOptions);
+                    observers[i].observe(target);
+                }
+                */
     };
+    intObservers();
+
+});
 
 
     // Update User for current user and all this users conversation participants. 
@@ -296,7 +329,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         if (id === msg.conversation_id) {
             updateConversationViewed(id);
             getCardsUpdate(id).then(function(result) {
-                console.log(result);
+                    console.log(result);
                     $scope.$broadcast("items_changed", 'bottom');
                 })
                 .catch(function(error) {
