@@ -477,7 +477,7 @@ var last_index;
         //console.log(index);
         console.log(allElements.length);
         console.log(last_index);
-        var amount = allElements.length - (last_index + 2);
+        var amount = allElements.length - (last_index + 10);
         return amount;
 
 
