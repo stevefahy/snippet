@@ -200,7 +200,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
 
     var last_st;
-    var UP_PERCENT = 60;
+    var UP_PERCENT = 70;
     var DOWN_PERCENT = 80;
     $scope.scrollingdisabled = false;
 
