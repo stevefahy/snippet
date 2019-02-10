@@ -17,10 +17,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var NUM_TO_LOAD = INIT_NUM_TO_LOAD;
     */
 
-    var INIT_NUM_TO_LOAD = 20;
-    var NUM_TO_LOAD = INIT_NUM_TO_LOAD*2;
+    var INIT_NUM_TO_LOAD = 30;
+    var NUM_TO_LOAD = 100;
+    var NUM_UPDATE_DISPLAY = 15;
+    var NUM_UPDATE_DISPLAY_INIT = 30;
 
-    var MAX_DISPLAY = 60;
+    var MAX_DISPLAY = 50;
 
     var INIT_NUM_TO_DISPLAY = 5000;
     var NUM_TO_DISPLAY = INIT_NUM_TO_DISPLAY;
@@ -32,6 +34,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.feed = false;
     $scope.top_down = false;
     $rootScope.top_down = false;
+
+    var first_load = true;
 
     $rootScope.pageLoading = true;
     $rootScope.last_win_width;
@@ -158,10 +162,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     tempToCards = function() {
         var deferred = $q.defer();
         if ($scope.cards_temp.length > 0) {
-            var amount = NUM_TO_LOAD;
+            //var amount = NUM_TO_LOAD;
+            var amount = NUM_UPDATE_DISPLAY;
 
             if($scope.cards.length == 0){
-                amount = INIT_NUM_TO_LOAD;
+                amount = NUM_UPDATE_DISPLAY_INIT;
             }
             console.log('tempToCards: ' + amount);
             console.log($scope.cards_temp.length);
@@ -249,7 +254,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         //var firing = false;
 
 
-        if (scrolled != 100 && scrolled != 0) {
+        //if (scrolled != 100 && scrolled != 0) {
             //console.log($scope.scrollingdisabled);
             if (!$scope.scrollingdisabled) {
                 if (dir > 0 && scrolled <= UP_PERCENT) {
@@ -270,7 +275,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     }, 500);
                 }
             }
-        }
+        //}
 
     });
 
@@ -304,6 +309,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                         $scope.scrollingdisabled = false; 
                                     }, 100);
                                 });
+                                
 
                         });
                 } else {
@@ -570,7 +576,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 tempToCards();
             }
             // Check if first load of content_cnv
-            if (location == 'content_cnv' && $scope.cards.length > 0 && $scope.cards.length <= INIT_NUM_TO_LOAD) {
+            if (location == 'content_cnv' && $scope.cards.length > 0 && first_load) {
+                first_load = false;
                 $scope.$broadcast("items_changed", scroll_direction);
             }
 

@@ -145,7 +145,7 @@ cardApp.directive("scrollToTopWhen", function($timeout) {
         link: function(scope, element, attrs) {
             scope.$on(attrs.scrollToTopWhen, function(event, data) {
                 $timeout(function() {
-                    //console.log('scrollToTopWhen');
+                    console.log('scrollToTopWhen');
                     if (data == 'top') {
                         angular.element(element)[0].scrollTop = 0;
                     } else {
