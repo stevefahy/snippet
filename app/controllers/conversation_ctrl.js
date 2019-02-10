@@ -18,7 +18,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     */
 
     var INIT_NUM_TO_LOAD = 20;
-    var NUM_TO_LOAD = 10;//INIT_NUM_TO_LOAD;
+    var NUM_TO_LOAD = INIT_NUM_TO_LOAD;
 
     var INIT_NUM_TO_DISPLAY = 5000;
     var NUM_TO_DISPLAY = INIT_NUM_TO_DISPLAY;
@@ -308,14 +308,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     //$scope.scrollingdisabled = false; 
                 }
             });
-        /*
-        console.log(returned);
-        if (!returned && !$scope.top_down) {
-            tempToCards()
-                .then(function(result) {});
-            //removeCardsBottom();
-        }
-        */
+
 
 
     };
