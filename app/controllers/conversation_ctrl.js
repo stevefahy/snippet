@@ -18,7 +18,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     */
 
     var INIT_NUM_TO_LOAD = 20;
-    var NUM_TO_LOAD = INIT_NUM_TO_LOAD;
+    var NUM_TO_LOAD = INIT_NUM_TO_LOAD*2;
+
+    var MAX_DISPLAY = 60;
 
     var INIT_NUM_TO_DISPLAY = 5000;
     var NUM_TO_DISPLAY = INIT_NUM_TO_DISPLAY;
@@ -429,8 +431,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     getCardAmount = function() {
         var current_cards = $scope.cards.length;
         var amount = 0;
-        if (current_cards > NUM_TO_LOAD * 3) {
-            amount = current_cards - NUM_TO_LOAD * 3;
+        if (current_cards > MAX_DISPLAY) {
+            amount = current_cards - MAX_DISPLAY;
         }
         return amount;
 
