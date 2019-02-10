@@ -18,11 +18,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     */
 
     var INIT_NUM_TO_LOAD = 30;
-    var NUM_TO_LOAD = 100;
-    var NUM_UPDATE_DISPLAY = 15;
+    var NUM_TO_LOAD = 30;
+    var NUM_UPDATE_DISPLAY = 10;
     var NUM_UPDATE_DISPLAY_INIT = 30;
 
-    var MAX_DISPLAY = 50;
+    var MAX_DISPLAY = 30;
 
     var INIT_NUM_TO_DISPLAY = 5000;
     var NUM_TO_DISPLAY = INIT_NUM_TO_DISPLAY;
@@ -292,7 +292,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
 
     addMoreTop = function() {
-        $scope.scrollingdisabled = true;
+        //$scope.scrollingdisabled = true;
 
         unRemoveCardsTop()
             .then(function(result) {
@@ -428,7 +428,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         if (Conversations.getConversationType() == 'feed') {
             getFollowing();
         } else if (Conversations.getConversationType() == 'private') {
-            getCards(id, 'cache');
+            //if($scope.cards_temp.length < NUM_TO_LOAD){
+                getCards(id, 'cache');
+            //}
+            
         } else if (Conversations.getConversationType() == 'public') {
             getPublicCards(i, d);
         }
