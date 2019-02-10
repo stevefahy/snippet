@@ -17,10 +17,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var NUM_TO_LOAD = INIT_NUM_TO_LOAD;
     */
 
+    var UP_PERCENT = 70;
+    var DOWN_PERCENT = 80;
+
     var INIT_NUM_TO_LOAD = 30;
     var NUM_TO_LOAD = 30;
-    var NUM_UPDATE_DISPLAY = 10;
+    var NUM_UPDATE_DISPLAY = 30;
     var NUM_UPDATE_DISPLAY_INIT = 30;
+
+    var REMOVE_BOTTOM = 10;
 
     var MAX_DISPLAY = 30;
 
@@ -200,8 +205,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
 
     var last_st;
-    var UP_PERCENT = 70;
-    var DOWN_PERCENT = 80;
+
     $scope.scrollingdisabled = false;
 
     $('.content_cnv').bind('scroll', function() {
@@ -292,7 +296,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
 
     addMoreTop = function() {
-        //$scope.scrollingdisabled = true;
+        $scope.scrollingdisabled = true;
 
         unRemoveCardsTop()
             .then(function(result) {
@@ -441,7 +445,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var current_cards = $scope.cards.length;
         var amount = 0;
         if (current_cards > MAX_DISPLAY) {
-            amount = current_cards - MAX_DISPLAY;
+            //amount = current_cards - MAX_DISPLAY;
+            amount = REMOVE_BOTTOM;
         }
         return amount;
 
