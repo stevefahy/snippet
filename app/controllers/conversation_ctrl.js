@@ -25,6 +25,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var NUM_UPDATE_DISPLAY = 30;
     var NUM_UPDATE_DISPLAY_INIT = 60;
 
+    var MAX_TEMP = 100;
+
     var REMOVE_BOTTOM = 10;
 
     //var MAX_DISPLAY = 30;
@@ -434,9 +436,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         if (Conversations.getConversationType() == 'feed') {
             getFollowing();
         } else if (Conversations.getConversationType() == 'private') {
-            //if($scope.cards_temp.length < NUM_TO_LOAD){
+            if($scope.cards_temp.length < NUM_TO_LOAD){
             getCards(id, 'cache');
-            //}
+            }
 
         } else if (Conversations.getConversationType() == 'public') {
             getPublicCards(i, d);

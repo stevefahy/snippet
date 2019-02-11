@@ -68,6 +68,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                 };
 
     $scope.addObserver = function(id) {
+        /*
         console.log(id);
 
         $('#' + id).ready(function() {
@@ -80,7 +81,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         });
         //observer_queue.push(id);
         //console.log(observer_queue[i]);
-
+*/
     };
 
     var observer;
