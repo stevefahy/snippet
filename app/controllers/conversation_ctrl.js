@@ -29,6 +29,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     var MAX_DISPLAY = 30;
 
+    var MAX_OUT_BOUNDS = 30;
+
     var INIT_NUM_TO_DISPLAY = 5000;
     var NUM_TO_DISPLAY = INIT_NUM_TO_DISPLAY;
 
@@ -459,7 +461,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 var last_index;
         for (var i = 0; i < allElements.length; i++) {
             // your index is inside here
-            console.log(allElements[i]);
+            //console.log(allElements[i]);
             if($(allElements[i]).hasClass('removeCards')){
                 last_index = i;
                 break;
@@ -477,7 +479,9 @@ var last_index;
         //console.log(index);
         console.log(allElements.length);
         console.log(last_index);
-        var amount = allElements.length - (last_index + 10);
+        //MAX_OUT_BOUNDS
+        amount = allElements.length - (last_index + MAX_OUT_BOUNDS);
+        console.log(amount);
         return amount;
 
 
