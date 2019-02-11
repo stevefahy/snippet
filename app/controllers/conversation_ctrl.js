@@ -436,7 +436,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         if (Conversations.getConversationType() == 'feed') {
             getFollowing();
         } else if (Conversations.getConversationType() == 'private') {
-            if($scope.cards_temp.length < NUM_TO_LOAD){
+            if($scope.cards_temp.length < MAX_TEMP){
             getCards(id, 'cache');
             }
 
