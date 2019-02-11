@@ -17,7 +17,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var NUM_TO_LOAD = INIT_NUM_TO_LOAD;
         */
 
-    var UP_PERCENT = 70;
+    var UP_PERCENT = 90;
     var DOWN_PERCENT = 80;
 
     var INIT_NUM_TO_LOAD = 30;
