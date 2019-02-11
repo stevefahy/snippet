@@ -22,7 +22,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     var INIT_NUM_TO_LOAD = 60;
     var NUM_TO_LOAD = 160;
-    var NUM_UPDATE_DISPLAY = 60;
+    var NUM_UPDATE_DISPLAY = 30;
     var NUM_UPDATE_DISPLAY_INIT = 60;
 
     var REMOVE_BOTTOM = 10;
@@ -251,7 +251,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             if (stored_scrolled < scrolled && !$scope.scrollingdisabled) {
                 $scope.scrollingdisabled = true;
                 console.log('FIRE DOWN');
-                addMoreBottom();
+                //addMoreBottom();
                 //firing = false;
             }
             //}
