@@ -21,8 +21,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var DOWN_PERCENT = 80;
 
     var INIT_NUM_TO_LOAD = 30;
-    var NUM_TO_LOAD = 30;
-    var NUM_UPDATE_DISPLAY = 30;
+    var NUM_TO_LOAD = 60;
+    var NUM_UPDATE_DISPLAY = 60;
     var NUM_UPDATE_DISPLAY_INIT = 30;
 
     var REMOVE_BOTTOM = 10;
