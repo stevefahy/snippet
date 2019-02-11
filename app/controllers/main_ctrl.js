@@ -68,20 +68,20 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                 };
 
     $scope.addObserver = function(id) {
-        /*
-        console.log(id);
+        
+        //console.log(id);
 
         $('#' + id).ready(function() {
-            console.log("ready!");
+            //console.log("ready!");
             var target = document.querySelector('#' + id);
             var newObserver = new IntersectionObserver(intersectionCallback, $scope.observerOptions);
-            console.log($scope.observerOptions);
+            //console.log($scope.observerOptions);
             observers.push(newObserver);
             newObserver.observe(target);
         });
         //observer_queue.push(id);
         //console.log(observer_queue[i]);
-*/
+
     };
 
     var observer;
