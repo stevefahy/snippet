@@ -268,7 +268,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $timeout(function() {
                     var stored_scrolled = scrolled;
                     checkFireUp(stored_scrolled);
-                }, 50);
+                }, 10);
             }
         }
 
@@ -313,7 +313,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                     console.log(result);
                                     $timeout(function() {
                                         $scope.scrollingdisabled = false;
-                                    }, 100);
+                                    }, 0);
                                 });
 
 
@@ -583,7 +583,8 @@ var last_index;
         var deferred = $q.defer();
         //var amount = INIT_NUM_TO_LOAD;
         //var amount = NUM_TO_LOAD;
-        var amount = getCardAmount();
+        //var amount = getCardAmount();
+        var amount = 0;
         if (amount > 0) {
             //if ($scope.cards.length > INIT_NUM_TO_LOAD * 4) {
             console.log('removeCardsBottom: ' + amount);
