@@ -233,12 +233,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             //firing = false;
 
             console.log(stored_scrolled + ' : ' + scrolled);
-            if (stored_scrolled > scrolled && !$scope.scrollingdisabled) {
+           // if (stored_scrolled > scrolled && !$scope.scrollingdisabled) {
                 //$scope.scrollingdisabled = true;
                 console.log('FIRE UP');
                 addMoreTop();
                 //firing = false;
-            }
+           // }
             //}
         };
 
@@ -491,7 +491,8 @@ var last_index;
         var deferred = $q.defer();
         //console.log(removed_cards);
         var removed_length = $scope.removed_cards_top.length;
-        var amount = getCardAmount();
+        //var amount = getCardAmount();
+        amount = 0;
         if (removed_length > 0 && amount > 0) {
             console.log('unRemoveCardsBottom');
             var last_card = $scope.removed_cards_top[$scope.removed_cards_top.length - amount];
@@ -513,7 +514,8 @@ var last_index;
         var deferred = $q.defer();
         //console.log(removed_cards);
         var removed_length = $scope.removed_cards_bottom.length;
-        var amount = getCardAmount();
+        //var amount = getCardAmount();
+        var amount = 0;
         console.log(amount);
         if (removed_length > 0 && amount > 0) {
             console.log('unRemoveCardsBottom');
