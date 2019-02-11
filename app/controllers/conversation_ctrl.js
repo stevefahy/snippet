@@ -20,14 +20,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var UP_PERCENT = 90;
     var DOWN_PERCENT = 80;
 
-    var INIT_NUM_TO_LOAD = 30;
-    var NUM_TO_LOAD = 60;
-    var NUM_UPDATE_DISPLAY = 60;
-    var NUM_UPDATE_DISPLAY_INIT = 30;
+    var INIT_NUM_TO_LOAD = 60;
+    var NUM_TO_LOAD = 160;
+    var NUM_UPDATE_DISPLAY = 160;
+    var NUM_UPDATE_DISPLAY_INIT = 60;
 
     var REMOVE_BOTTOM = 10;
 
-    var MAX_DISPLAY = 30;
+    //var MAX_DISPLAY = 30;
 
     var MAX_OUT_BOUNDS = 30;
 
