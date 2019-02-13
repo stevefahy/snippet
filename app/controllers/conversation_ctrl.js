@@ -1,5 +1,7 @@
 cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$q', '$filter', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', 'Cropp', '$compile', 'ImageAdjustment', 'Keyboard', function($scope, $rootScope, $location, $http, $window, $q, $filter, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, Cropp, $compile, ImageAdjustment, Keyboard) {
 
+    //var initialized = false;
+
     openCrop = Cropp.openCrop;
     setCrop = Cropp.setCrop;
     editImage = Cropp.editImage;
@@ -12,29 +14,27 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Detect device user agent 
     var ua = navigator.userAgent;
-    /*
-        var INIT_NUM_TO_LOAD = 10;
-        var NUM_TO_LOAD = INIT_NUM_TO_LOAD;
-        */
 
-    var UP_PERCENT = 80;
+    var UP_PERCENT = 50;
     var DOWN_PERCENT = 80;
 
-    var INIT_NUM_TO_LOAD = 60;
-    var NUM_TO_LOAD = 60;
-    var NUM_UPDATE_DISPLAY = 90;
-    var NUM_UPDATE_DISPLAY_INIT = 60;
+    var UP_TOP = 1;
 
-    var MAX_TEMP = 100;
+    var INIT_NUM_TO_LOAD = 30;
+    var NUM_TO_LOAD = 30;
+    var NUM_UPDATE_DISPLAY = 30;
+    var NUM_UPDATE_DISPLAY_INIT = 30;
+
+    var MAX_TEMP = 30;
 
     var REMOVE_BOTTOM = 10;
 
     //var MAX_DISPLAY = 30;
 
-    var MAX_OUT_BOUNDS = 30;
+    var MAX_OUT_BOUNDS = 15;
 
     var INIT_NUM_TO_DISPLAY = 5000;
-    var NUM_TO_DISPLAY = INIT_NUM_TO_DISPLAY;
+    //var NUM_TO_DISPLAY = INIT_NUM_TO_DISPLAY;
 
     //var NEXT_LOAD = 20;
 
@@ -81,7 +81,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // DEBUGGING
 
     $scope.$watch('cards.length', function(newStatus) {
-        console.log(newStatus);
+        //console.log(newStatus);
         $rootScope.cards_length = newStatus;
 
     });
@@ -164,69 +164,21 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         return result;
     };
 
-    loadedToCards = function() {
-        var amount = $scope.total_to_display * -1;
-    };
-
-    Array.prototype.extend = function (other_array) {
-    /* You should include a test to check whether other_array really is an array */
-    other_array.forEach(function(v) {this.push(v)}, this);
-};
-
     var temp_working = false;
     tempToCards = function() {
         var deferred = $q.defer();
         if ($scope.cards_temp.length > 0 && !temp_working) {
             temp_working = true;
-            //var amount = NUM_TO_LOAD;
             var amount = NUM_UPDATE_DISPLAY;
-
             if ($scope.cards.length == 0) {
                 amount = NUM_UPDATE_DISPLAY_INIT;
             }
-            console.log('tempToCards: ' + amount);
-            console.log($scope.cards_temp.length);
-            //var spliced = $scope.cards_temp.splice(0, amount);
-
-            //spliced.map(function(key, index) {
-               // $scope.cards_temp.map(function(key, index) {
-               // $scope.cards.push(key);
-            //});
-
-            //$scope.cards.push.apply($scope.cards, $scope.cards_temp);
-
-            $scope.cards.extend($scope.cards_temp);
-
-               // $scope.cards_temp = [];
-            if (!$scope.$$phase) {
-                //console.log('apply');
-                //$scope.$apply();
-            }
-
+            $scope.cards = $scope.cards.concat($scope.cards_temp);
             $scope.cards_temp = [];
-             temp_working = false;
+            temp_working = false;
             deferred.resolve();
-
-            /*
-            var unbind = $rootScope.$watch('fully_loaded', function(n) {
-                if (!n) {
-                    console.log('all tempToCards loaded...proceed');
-                    // Stop watching.
-                    unbind();
-$scope.cards_temp = [];
-                   //$timeout(function() {
-                        temp_working = false;
-                    //}, 1000);
-
-
-                    deferred.resolve();
-                }
-            });*/
-
-            //
         } else {
             //console.log('no more cards_temp');
-            //$scope.scrollingdisabled = false;
             temp_working = false;
             deferred.resolve();
         }
@@ -234,131 +186,122 @@ $scope.cards_temp = [];
     };
 
 
-    var last_st;
+    // FAILING TO ADD MORE TEMP!
+    // TRY PUSH FOR ADDING CARDS
+    // USE PREFORMANECE TO TEST
+
+    addMoreTop = function() {
+        $scope.scrollingdisabled = true;
+        unRemoveCardsTop()
+            .then(function(result) {
+                //console.log(result);
+                if (result == 0 && !$scope.top_down) {
+                    tempToCards()
+                        .then(function(result) {
+                            console.log('result');
+                            //$scope.scrollingdisabled = false;
+                            if (!$scope.$$phase) {
+                                console.log('apply 2');
+                                $scope.$apply();
+                            }
+                            $timeout(function() {
+                                removeCardsBottom()
+                                    .then(function(result) {
+                                        console.log(result);
+                                        $timeout(function() {
+                                            $scope.scrollingdisabled = false;
+                                        }, 0);
+                                    });
+                            }, 100);
+                        });
+                } else {
+                    //$scope.scrollingdisabled = false; 
+                }
+            });
+    };
+
+
+    // as long as it continues to be invoked, it will not be triggered
+    function debounce(func, interval) {
+        var timeout;
+        return function() {
+            var context = this,
+                args = arguments;
+            var later = function() {
+                timeout = null;
+                func.apply(context, args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, interval || 200);
+        };
+    }
+
+    // as long as it continues to be invoked, raise on every interval
+    function throttle(func, interval) {
+        var timeout;
+        return function() {
+            var context = this,
+                args = arguments;
+            var later = function() {
+                timeout = false;
+            };
+            if (!timeout) {
+                func.apply(context, args);
+                timeout = true;
+                setTimeout(later, interval);
+            }
+        };
+    }
 
     $scope.scrollingdisabled = false;
+    var last_scrolled;
 
-    $('.content_cnv').bind('scroll', function() {
-        var st = $(this).scrollTop();
-        var currentScroll = st + $(this).innerHeight(),
-            maxScroll = this.scrollHeight;
+    var myHeavyFunction = throttle(function() {
+        var currentScroll = $(this).scrollTop();
+        var maxScroll = this.scrollHeight;
         var scrolled = (currentScroll / maxScroll) * 100;
-        //console.log(st + ' : ' + last_st);
-        if (st < last_st) {
+        console.log(scrolled + ' : ' + last_scrolled);
+        if (scrolled < last_scrolled) {
             dir = 1;
             //console.log('up: ' + scrolled);
-
         } else {
             dir = 0;
             //console.log('down: ' + scrolled);
         }
 
-        last_st = st;
+        last_scrolled = scrolled;
 
-        checkFireUp = function(stored_scrolled) {
-            // console.log('checkFireUp');
-            //if (firing) {
-            //firing = false;
-
-            //console.log(stored_scrolled + ' : ' + scrolled);
-            //if (stored_scrolled > scrolled && !$scope.scrollingdisabled) {
-            if (!$scope.scrollingdisabled && !temp_working) {
-                //$scope.scrollingdisabled = true;
-                //console.log('FIRE UP');
-                addMoreTop();
-                //firing = false;
-                // }
-            }
-        };
-
-        checkFireDown = function(stored_scrolled) {
-            console.log('checkFireDown');
-            //if (firing) {
-            //firing = false;
-
-            //console.log(stored_scrolled + ' : ' + scrolled);
-            if (!$scope.scrollingdisabled) {
-                //$scope.scrollingdisabled = true;
-                console.log('FIRE DOWN');
-                //addMoreBottom();
-                //firing = false;
-            }
-            //}
-        };
-
-        //var firing = false;
-
-
-        //if (scrolled != 100 && scrolled != 0) {
-        //console.log($scope.scrollingdisabled);
         if (!$scope.scrollingdisabled) {
             if (dir > 0 && scrolled <= UP_PERCENT) {
-                //firing = true;
-                $timeout(function() {
-                    var stored_scrolled = scrolled;
-                    checkFireUp(stored_scrolled);
-                }, 10);
+                if (!$scope.scrollingdisabled && !temp_working) {
+                    console.log('FIRE UP!!!');
+                    addMoreTop();
+                }
             }
         }
 
         if (!$scope.scrollingdisabled) {
             if (dir < 1 && scrolled >= DOWN_PERCENT) {
-                //firing = true;
-                $timeout(function() {
-                    var stored_scrolled = scrolled;
-                    checkFireDown(stored_scrolled);
-                }, 500);
+
             }
         }
-        //}
-
-    });
+    }, 10);
 
 
+    function wheelEvent(e) {
+        var currentScroll = $(this).scrollTop();
+        var maxScroll = this.scrollHeight - this.clientHeight;
+        var scrolled = (currentScroll / maxScroll) * 100;
+        console.log(scrolled);
+        if (scrolled < UP_TOP && !no_more_records) {
+            $('.content_cnv').scrollTop(maxScroll / 2);
+        }
+    }
 
-    /*
-    $scope.infiniteScroll = function() {
-        //if(!$rootScope.loading_cards){
-        console.log('infiniteScroll');
-        $scope.scrollingdisabled = true;
-        tempToCards();
-    };
-    */
-
-
-    addMoreTop = function() {
-        $scope.scrollingdisabled = true;
-
-        unRemoveCardsTop()
-            .then(function(result) {
-                //console.log(result);
+    $('.content_cnv').bind('scroll', myHeavyFunction);
+    $('.content_cnv').bind('scroll', wheelEvent);
 
 
-                if (result == 0 && !$scope.top_down) {
-                    tempToCards()
-                        .then(function(result) {
-                           // console.log('result');
-                            $scope.scrollingdisabled = false;
-                            
-                                                        removeCardsBottom()
-                                                            .then(function(result) {
-                                                                console.log(result);
-                                                                $timeout(function() {
-                                                                    $scope.scrollingdisabled = false;
-                                                                }, 0);
-                                                            });
-                            
-
-                        });
-                } else {
-                    //$scope.scrollingdisabled = false; 
-                }
-
-            });
-
-
-
-    };
 
     addMoreBottom = function() {
         //$scope.scrollingdisabled = true;
@@ -450,6 +393,9 @@ $scope.cards_temp = [];
         }
     };
 
+
+
+
     $scope.$on('$destroy', function() {
         //leaving controller.
         Cropp.destroyCrop();
@@ -482,44 +428,18 @@ $scope.cards_temp = [];
     };
 
     getCardAmount = function() {
+        console.log('getCardAmount');
         var amount = 0;
-        /*
-        var current_cards = $scope.cards.length;
-        var amount = 0;
-        if (current_cards > MAX_DISPLAY) {
-            //amount = current_cards - MAX_DISPLAY;
-            amount = REMOVE_BOTTOM;
-        }
-        return amount;
-        */
         var allElements = document.querySelectorAll('.content_cnv .card_temp');
-        console.log(allElements);
-
         $('.content_cnv .vis').last().addClass('removeCards');
         var last_index;
-        for (var i = 0; i < allElements.length; i++) {
-            // your index is inside here
-            //console.log(allElements[i]);
+        for (var i = 0, len = allElements.length; i < len; i++) {
             if ($(allElements[i]).hasClass('removeCards')) {
                 last_index = i;
                 break;
             }
         }
-
-
-
-        console.log(allElements.length);
-        var visibleElements = document.querySelectorAll('.content_cnv .vis');
-        console.log(visibleElements);
-        //var last = visibleElements[visibleElements.length - 1].id;
-        //console.log(last);
-        //var index = General.findWithAttr($scope.cards, '_id', last);
-        //console.log(index);
-        console.log(allElements.length);
-        console.log(last_index);
-        //MAX_OUT_BOUNDS
         amount = allElements.length - (last_index + MAX_OUT_BOUNDS);
-        console.log(amount);
         return amount;
 
 
@@ -534,7 +454,9 @@ $scope.cards_temp = [];
         if (removed_length > 0 && amount > 0) {
             console.log('unRemoveCardsBottom');
             var last_card = $scope.removed_cards_top[$scope.removed_cards_top.length - amount];
+
             var spliced = $scope.removed_cards_top.splice(last_card, amount);
+
             spliced.map(function(key, array) {
                 $scope.cards.push(key);
             });
@@ -571,41 +493,6 @@ $scope.cards_temp = [];
         return deferred.promise;
     };
 
-    /*
-        unRemoveCardsBottom = function() {
-            //console.log(removed_cards);
-            if ($scope.removed_cards_bottom.length > 0) {
-                console.log('unRemoveCardsBottom');
-                $scope.removed_cards_bottom.map(function(key, array) {
-                    $scope.cards.push(key);
-                });
-                $scope.removed_cards_bottom = [];
-                $scope.scrollingdisabled = false;
-                //removeCardsTop();
-                return true;
-            } else {
-                console.log('none removed');
-                return false;
-            }
-        };
-        */
-
-
-
-    /*
-    removeCardsTop = function() {
-        console.log('removeCardsTop');
-        var amount = INIT_NUM_TO_LOAD;
-        //if ($scope.cards.length > INIT_NUM_TO_LOAD * 4) {
-            //var last_card = sort_card[sort_card.length - 1].updatedAt;
-            var first_card = $scope.cards[0];
-            //console.log(first_card);
-            removed_cards = $scope.cards.splice(first_card, amount);
-            //console.log(removed_cards);
-        //}
-    };
-    */
-
     removeCardsTop = function() {
         var amount = INIT_NUM_TO_LOAD * 2;
         //if ($scope.cards.length > INIT_NUM_TO_LOAD * 4) {
@@ -620,36 +507,25 @@ $scope.cards_temp = [];
     };
 
     removeCardsBottom = function() {
+        console.log('removeCardsBottom');
         var deferred = $q.defer();
-        //var amount = INIT_NUM_TO_LOAD;
-        //var amount = NUM_TO_LOAD;
-        //var amount = getCardAmount();
-        var amount = 0;
+        var amount = getCardAmount();
         if (amount > 0) {
             //if ($scope.cards.length > INIT_NUM_TO_LOAD * 4) {
             console.log('removeCardsBottom: ' + amount);
             //var last_card = sort_card[sort_card.length - 1].updatedAt;
             var last_card = $scope.cards[$scope.cards.length - amount];
-            //console.log(last_card);
             var removed_cards_bottom_temp = $scope.cards.splice(last_card, amount);
-            console.log(removed_cards_bottom_temp);
-            removed_cards_bottom_temp.map(function(key, array) {
-                $scope.removed_cards_bottom.push(key);
-            });
+            $scope.removed_cards_bottom = $scope.removed_cards_bottom.concat(removed_cards_bottom_temp);
             deferred.resolve(amount);
         } else {
             console.log('dont removeCardsBottom: ' + amount);
             deferred.resolve(amount);
         }
-
         return deferred.promise;
-        //$scope.scrollingdisabled = false;
-
-
-        //}
     };
 
-    $scope.fully_loaded = false;
+    //$scope.fully_loaded = false;
     checkImagesLoaded = function(location) {
         //console.log(img_count + ' == ' + img_loaded);
         if (img_count == img_loaded || img_count == 0) {
@@ -664,9 +540,10 @@ $scope.cards_temp = [];
             if (location == 'content_cnv' && $scope.cards.length > 0) {
                 console.log('first_load: ' + first_load);
 
-                if (!first_load) {
+                if (first_load) {
                     console.log('ITEMS FIRED');
-                    //$scope.$broadcast("items_changed", scroll_direction);
+                    $scope.$broadcast("items_changed", scroll_direction);
+
                 }
 
                 first_load = false;
@@ -678,7 +555,7 @@ $scope.cards_temp = [];
                 //$scope.$broadcast("items_changed", scroll_direction);
                 $rootScope.loading_cards = false;
 
-                $scope.fully_loaded = true;
+                //$scope.fully_loaded = true;
                 //addObservers();
                 //$scope.scrollingdisabled = false;
                 checkNext();
@@ -690,35 +567,103 @@ $scope.cards_temp = [];
                 //$scope.$broadcast("items_changed", scroll_direction);
                 $rootScope.loading_cards_offscreen = false;
                 //$scope.scrollingdisabled = false;
+                checkNext();
             }
 
 
         }
     };
 
+    imagesLoaded = function(location) {
+        console.log(location);
+        //console.log(img_count + ' == ' + img_loaded);
+        //if (img_count == img_loaded || img_count == 0) {
+        console.log('all images loaded: ' + location);
+
+        // Check if first load.
+        if ($scope.cards.length == 0) {
+            tempToCards();
+        }
+        // Check if first load of content_cnv
+
+        if (location == 'content_cnv' && $scope.cards.length > 0) {
+            console.log('first_load: ' + first_load);
+
+            if (first_load) {
+                console.log('ITEMS FIRED');
+                $scope.$broadcast("items_changed", scroll_direction);
+            }
+
+            first_load = false;
+            //addObservers();
+            //intObservers();
+        }
+
+        if (location == 'content_cnv') {
+            //$scope.$broadcast("items_changed", scroll_direction);
+            $rootScope.loading_cards = false;
+
+            //$scope.fully_loaded = true;
+            //addObservers();
+            //$scope.scrollingdisabled = false;
+            checkNext();
+            // Remove cards
+            //removeCardsTop();
+        }
+
+        if (location == 'load_off_screen') {
+            //$scope.$broadcast("items_changed", scroll_direction);
+            $rootScope.loading_cards_offscreen = false;
+            //$scope.scrollingdisabled = false;
+            checkNext();
+        }
+
+
+        //}
+    };
+
+    var store = {};
     checkImages = function(location) {
-        //console.log(location);
-        img_loaded = 0;
-        img_count = $('.' + location + ' img').length;
-        //console.log(img_count);
-        if (img_count > 0) {
+
+        console.log(location);
+
+        store[location] = {};
+
+        //store[location] = location;
+
+        //store.location = location;
+        store[location].location = location;
+        store[location].img_loaded = 0;
+        store[location].img_count = $('.' + location + ' img').length;
+        console.log(store[location]);
+        if (store[location].img_count > 0) {
             $('.' + location).find('img').each(function() {
                 if (this.complete) {
                     // this image already loaded
                     //console.log('already loaded');
-                    img_loaded++;
-                    checkImagesLoaded(location);
+                    //var store = location + '_obj';
+
+                    store[location].img_loaded++;
+                    //checkImagesLoaded(location);
+                    if (store[location].img_count == store[location].img_loaded || store[location].img_count == 0) {
+                        imagesLoaded(store[location].location);
+                    }
                 } else {
                     $(this).on('load', function() {
+                        //var store = location + '_obj';
                         // image now loaded
                         //console.log('finally loaded');
-                        img_loaded++;
-                        checkImagesLoaded(location);
+                        store[location].img_loaded++;
+                        //checkImagesLoaded(location);
+                        if (store[location].img_count == store[location].img_loaded || store[location].img_count == 0) {
+                            imagesLoaded(store[location].location);
+                        }
                     });
                 }
             });
         } else {
-            checkImagesLoaded(location);
+            //checkImagesLoaded(location);
+            imagesLoaded(location);
         }
 
     };
@@ -1021,19 +966,22 @@ $scope.cards_temp = [];
     };
     $scope.cards_temp = [];
     $rootScope.loading_cards_offscreen = false;
+    var no_more_records = false;
     //var firsty = true;
     getCards = function(id, destination) {
-        console.log('getCards: ' + $rootScope.loading_cards + ', $scope.cards.length: ' + $scope.cards.length);
-        if (!$rootScope.loading_cards && !$rootScope.loading_cards_offscreen) {
+        console.log('getCards: ' + destination + ' : ' + $rootScope.loading_cards + ', ' + $rootScope.loading_cards_offscreen);
+
+
+        //if (!$rootScope.loading_cards && !$rootScope.loading_cards_offscreen) {
+        if ((destination == 'cards' && !$rootScope.loading_cards) || (destination == 'cache' && !$rootScope.loading_cards_offscreen)) {
             //$scope.cards_temp = [];
-            $rootScope.loading_cards_offscreen = true;
-            if (destination == 'cache') {
-                console.log('CACHE');
-                //$rootScope.loading_cards = false;
+            if (destination == 'cards') {
                 $rootScope.loading_cards = true;
-            } else {
-                $rootScope.loading_cards = true;
+            } else if (destination == 'cache') {
+                $rootScope.loading_cards_offscreen = true;
             }
+
+            $rootScope.loading_cards = true;
 
             var deferred = $q.defer();
             var promises = [];
@@ -1053,11 +1001,11 @@ $scope.cards_temp = [];
                     last_card = General.getISODate();
                     operand = '$lt';
                 }
-            } else if(destination == 'cache'){
+            } else if (destination == 'cache') {
                 if ($scope.cards_temp.length > 0) {
                     //var sort_card = $filter('orderBy')($scope.cards_temp, 'updatedAt');
                     var sort_card = $filter('orderBy')($scope.cards_temp, 'updatedAt');
-                    
+
                     //var sort_card = $scope.cards_temp;
 
                     last_card = sort_card[0].updatedAt;
@@ -1071,7 +1019,7 @@ $scope.cards_temp = [];
                     load_amount = NUM_TO_LOAD;
                     //last_card = General.getISODate();
                     operand = '$lt';
-                } 
+                }
             }
 
             var val = { id: id, amount: load_amount, last_card: last_card, operand: operand };
@@ -1080,17 +1028,24 @@ $scope.cards_temp = [];
                 .then(function(res) {
                     console.log(res);
                     if (res.data.length > 0) {
-                        res.data.map(function(key, array) {
-                            // Get the user for this card
-                            var users = UserData.getContacts();
+
+                        var t0 = performance.now();
+
+                        var users = UserData.getContacts();
+
+                        var user;
+
+                        for (var i = 0, len = res.data.length; i < len; i++) {
+
+                            var key = res.data[i];
+
                             var user_pos = General.findWithAttr(users, '_id', key.user);
-                            var user;
+                            // Get the user for this card
+
                             if (user_pos < 0) {
-                                /*
-                                Users.search_id(key.user)
-                                    .then(function(res) {
-                                    });
-                                    */
+                                //Users.search_id(key.user)
+                                //   .then(function(res) {
+                                //    });
                             } else {
                                 user = users[user_pos];
                                 // Store the original characters of the card.
@@ -1100,18 +1055,12 @@ $scope.cards_temp = [];
                                 key.avatar = user.avatar;
                                 $scope.cards_temp.push(key);
                             }
-                            //var user = users[user_pos];
-                            // Store the original characters of the card.
-                            //key.original_content = key.content;
-                            // Get the user name for the user id
-                            //key.user_name = user.user_name;
-                            //key.avatar = user.avatar;
-                            //$scope.cards_temp.push(key);
-                        });
+                        }
                     } else {
                         console.log('NO MORE RECORDS');
                         $rootScope.loading_cards = false;
                         $rootScope.loading_cards_offscreen = false;
+                        no_more_records = true;
                     }
                 })
                 .catch(function(error) {
@@ -1122,12 +1071,12 @@ $scope.cards_temp = [];
             $q.all(promises).then(function() {
                 console.log($scope.cards_temp);
                 //$scope.cards_temp.map(function(key, array) {
-                    // console.log(key);
-                    //$scope.cards.push(key);
-                    // if (!$scope.$$phase) {
-                    //   console.log('apply');
-                    // $scope.$apply();
-                    //}
+                // console.log(key);
+                //$scope.cards.push(key);
+                // if (!$scope.$$phase) {
+                //   console.log('apply');
+                // $scope.$apply();
+                //}
 
                 //});
 
@@ -1137,13 +1086,19 @@ $scope.cards_temp = [];
                 deferred.resolve();
             });
             return deferred.promise;
+        } else {
+            // Wait for loading to finish.
         }
     };
-    $scope.card_added = false;
-    $scope.cardCreated = function() {
-        //console.log('cardCreated');
-        $scope.card_added = true;
-    };
+
+
+    /*
+        $scope.card_added = false;
+        $scope.cardCreated = function() {
+            //console.log('cardCreated');
+            $scope.card_added = true;
+        };
+        */
 
     getPublicCards = function(id) {
         if (!$rootScope.loading_cards) {
@@ -1565,54 +1520,58 @@ $scope.cards_temp = [];
         }
     };
 
+
     // START - find the conversation id
-    getConversationId()
-        .then(function(res) {
-            //$scope.scrollingdisabled = true;
-            if (Conversations.getConversationType() == 'feed') {
-                $scope.feed = true;
-                $scope.top_down = true;
-                $rootScope.top_down = true;
-                $scope.total_to_display = INIT_NUM_TO_DISPLAY;
-                $scope.isMember = true;
-                scroll_direction = "top";
-            } else if (Conversations.getConversationType() == 'public') {
-                $scope.top_down = true;
-                $rootScope.top_down = true;
-                $scope.total_to_display = INIT_NUM_TO_DISPLAY;
-                $scope.isMember = checkPermit(res);
-                scroll_direction = "top";
-            } else if (Conversations.getConversationType() == 'private') {
-                $scope.total_to_display = -INIT_NUM_TO_DISPLAY;
-                $scope.isMember = checkPermit(res);
-                scroll_direction = "bottom";
-                $scope.top_down = false;
-                $rootScope.top_down = false;
-            }
-            // Load the public feed, public conversation or private conversation.
-            if (principal.isValid()) {
-                // Logged in
-                UserData.checkUser().then(function(result) {
-                    $scope.currentUser = UserData.getUser();
-                    if (Conversations.getConversationType() == 'feed') {
-                        // Display the users feed.
-                        loadFeed();
-                    } else if (Conversations.getConversationType() == 'public') {
-                        loadPublicConversation();
-                    } else if (Conversations.getConversationType() == 'private') {
-                        // Logged in.Load the conversation for the first time.
-                        loadConversation();
-                    }
-                });
-            } else {
-                $rootScope.dataLoading = false;
-                // Not logged in
-                if (Conversations.getConversationType() == 'public') {
-                    // Public route (Does not need to be logged in).
-                    loadPublicConversation();
-                } else {
-                    $location.path("/api/login/");
+    if (!initialized) {
+        var initialized = true;
+        getConversationId()
+            .then(function(res) {
+                //$scope.scrollingdisabled = true;
+                if (Conversations.getConversationType() == 'feed') {
+                    $scope.feed = true;
+                    $scope.top_down = true;
+                    $rootScope.top_down = true;
+                    //$scope.total_to_display = INIT_NUM_TO_DISPLAY;
+                    $scope.isMember = true;
+                    scroll_direction = "top";
+                } else if (Conversations.getConversationType() == 'public') {
+                    $scope.top_down = true;
+                    $rootScope.top_down = true;
+                    //$scope.total_to_display = INIT_NUM_TO_DISPLAY;
+                    $scope.isMember = checkPermit(res);
+                    scroll_direction = "top";
+                } else if (Conversations.getConversationType() == 'private') {
+                    //$scope.total_to_display = -INIT_NUM_TO_DISPLAY;
+                    $scope.isMember = checkPermit(res);
+                    scroll_direction = "bottom";
+                    $scope.top_down = false;
+                    $rootScope.top_down = false;
                 }
-            }
-        });
+                // Load the public feed, public conversation or private conversation.
+                if (principal.isValid()) {
+                    // Logged in
+                    UserData.checkUser().then(function(result) {
+                        $scope.currentUser = UserData.getUser();
+                        if (Conversations.getConversationType() == 'feed') {
+                            // Display the users feed.
+                            loadFeed();
+                        } else if (Conversations.getConversationType() == 'public') {
+                            loadPublicConversation();
+                        } else if (Conversations.getConversationType() == 'private') {
+                            // Logged in.Load the conversation for the first time.
+                            loadConversation();
+                        }
+                    });
+                } else {
+                    $rootScope.dataLoading = false;
+                    // Not logged in
+                    if (Conversations.getConversationType() == 'public') {
+                        // Public route (Does not need to be logged in).
+                        loadPublicConversation();
+                    } else {
+                        $location.path("/api/login/");
+                    }
+                }
+            });
+    }
 }]);

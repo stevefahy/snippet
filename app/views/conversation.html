@@ -12,7 +12,8 @@
     </div>
     <!-- Preloading offscreen -->
     <div class="content_cnv" in-view-container ng-class="{ 'content_cnv_conv': !feed, 'content_cnv_hide_footer': hide_footer, 'content_cnv_no_footer': no_footer}" scroll-to-top-when="items_changed">
-        <div infinite-scroll="infiniteScrollx" infinite-scroll-immediate-check='false' infinite-scroll-distance='.5' infinite-scroll-parent="true" infinite-scroll-down="{top_down}" infinite-scroll-disabled='scrollingdisabled'>
+        <!--
+        <div infinite-scroll="infiniteScrollx" infinite-scroll-immediate-check='false' infinite-scroll-distance='.5' infinite-scroll-parent="true" infinite-scroll-down="{top_down}" infinite-scroll-disabled='scrollingdisabled'>-->
             <div id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : top_down | limitTo:total_to_display" on-finish-render="ngRepeatFinished" in-view="lineInView($inview, card._id)" in-view-options="inviewoptions" ng-attr-id="{{ 'card_' + card._id }}" ng-init="addObserver('card_' + card._id)" class="card_temp">
 
                 <div class="label topLeft"></div>
@@ -57,7 +58,7 @@
                     <div class="likes">7,255 likes</div>
                 </div>
             </div>
-        </div>
+        <!--</div>-->
     </div>
     <div class="card_create_container" ng-if="isMember" ng-include src="'/views/card_create.html'"></div>
     <div ng-if="feed" ng-include src="'/views/footer.html'"></div>

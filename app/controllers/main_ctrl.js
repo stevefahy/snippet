@@ -257,6 +257,7 @@ $('.content_cnv').ready(function() {
         if (Conversations.getConversationType() == 'feed') {
             getFollowingUpdate();
         } else if (Conversations.getConversationType() == 'private') {
+            /*
             getCardsUpdate(id).then(function(result) {
                     $scope.$broadcast("items_changed", 'bottom');
                 })
@@ -264,6 +265,7 @@ $('.content_cnv').ready(function() {
                     $rootScope.loading_cards = false;
                     console.log(error);
                 });
+                */
         } else if (Conversations.getConversationType() == 'public') {
             getPublicCardsUpdate(id);
         }
