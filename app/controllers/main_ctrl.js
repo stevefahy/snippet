@@ -72,7 +72,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         //console.log(id);
 
         $('#' + id).ready(function() {
-            //console.log("ready!");
+            //console.log("ready: " + id);
             var target = document.querySelector('#' + id);
             var newObserver = new IntersectionObserver(intersectionCallback, $scope.observerOptions);
             //console.log($scope.observerOptions);
@@ -266,6 +266,7 @@ $('.content_cnv').ready(function() {
                     console.log(error);
                 });
                 */
+                getCardsUpdate(id, 'cards');
         } else if (Conversations.getConversationType() == 'public') {
             getPublicCardsUpdate(id);
         }
@@ -323,6 +324,16 @@ $('.content_cnv').ready(function() {
         }
     });
 
+/*
+        getCards(id, 'cards').then(function(result) {
+            if (result == undefined) {
+                $rootScope.pageLoading = false;
+
+            }
+            //scroll_direction = "bottom";
+            //$scope.$broadcast("items_changed", 'bottom');
+        });
+        */
     // NOTIFICATION for private conversation.
     $rootScope.$on('PRIVATE_NOTIFICATION_CREATED', function(event, msg) {
         console.log('PRIVATE_NOTIFICATION_CREATED');
@@ -331,13 +342,16 @@ $('.content_cnv').ready(function() {
         // only update the conversation if the user is currently in that conversation
         if (id === msg.conversation_id) {
             updateConversationViewed(id);
-            getCardsUpdate(id).then(function(result) {
+            /*
+            getCardsUpdate(id, 'cards').then(function(result) {
                     console.log(result);
                     $scope.$broadcast("items_changed", 'bottom');
                 })
                 .catch(function(error) {
                     console.log(error);
                 });
+                */
+                getCardsUpdate(id, 'cards');
         } else {
             Conversations.getConversationLatestCard(msg.conversation_id)
                 .then(function(res) {
