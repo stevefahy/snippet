@@ -18,7 +18,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var UP_PERCENT = 10;
     var DOWN_PERCENT = 90;
 
-    var UP_TOP = 1;
+    var UP_TOP = 5;
     var BOTTOM_END = 99;
 
     var INIT_NUM_TO_LOAD = 30;
@@ -392,6 +392,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
         if (content_adjust) {
             rebindScroll();
+            
         }
 
         var currentScroll = $(this).scrollTop();
@@ -399,15 +400,17 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var scrolled2 = (currentScroll / maxScroll) * 100;
         //console.log(scrolled);
         if (scrolled2 < UP_TOP && !no_more_records) {
-            $('.content_cnv').scrollTop(last_scroll);
-            e.preventDefault();
+            //$('.content_cnv').scrollTop(last_scroll);
+            //e.preventDefault();
+                //overflow-y: overlay
+                $('.content_cnv').addClass('disabled');
         }
 
         if (scrolled2 >= BOTTOM_END && $scope.removed_cards_bottom.length != 0) {
             console.log('bottom: ' + $scope.removed_cards_bottom.length);
             //$('.content_cnv').scrollTop(maxScroll / 2);
         }
-        var last_scroll = scrolled2;
+        //var last_scroll = scrolled2;
     }
 
     rebindScroll = function() {
@@ -416,6 +419,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         //$timeout(function() {
         content_adjust = false;
         bindScroll();
+        $('.content_cnv').removeClass('disabled');
         //}, 100);
     };
 
