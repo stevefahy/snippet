@@ -61,14 +61,14 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         observer_queue = [];
     };
 
-                   var observerOptions = {
-                    root: document.querySelector('.content_cnv'),
-                    rootMargin: '0px',
-                    threshold: 1.0
-                };
+    var observerOptions = {
+        root: document.querySelector('.content_cnv'),
+        rootMargin: '0px',
+        threshold: 1.0
+    };
 
     $scope.addObserver = function(id) {
-        
+
         //console.log(id);
 
         $('#' + id).ready(function() {
@@ -93,40 +93,40 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
 
 
-$('.content_cnv').ready(function() {
-            console.log("content_cnv ready!");
-    intObservers = function() {
-        observers = [];
+    $('.content_cnv').ready(function() {
+        console.log("content_cnv ready!");
+        intObservers = function() {
+            observers = [];
 
-        let thresholdSets = [
-            []
-        ];
+            let thresholdSets = [
+                []
+            ];
 
-        for (let i = 0; i <= 1.0; i += 0.01) {
-            thresholdSets[0].push(i);
-        }
-        
-                $scope.observerOptions = {
-                    root: document.querySelector('.content_cnv'),
-                    rootMargin: '0px',
-                    threshold: 1.0
-                };
-                
+            for (let i = 0; i <= 1.0; i += 0.01) {
+                thresholdSets[0].push(i);
+            }
 
-        $scope.observerOptions.threshold = thresholdSets[0];
+            $scope.observerOptions = {
+                root: document.querySelector('.content_cnv'),
+                rootMargin: '0px',
+                threshold: 1.0
+            };
 
-        /*
-                for (var i = 0; i < observer_queue.length; i++) {
-                    console.log(observer_queue[i]);
-                    var target = document.querySelector('#' + observer_queue[i]);
-                    observers[i] = new IntersectionObserver(intersectionCallback, observerOptions);
-                    observers[i].observe(target);
-                }
-                */
-    };
-    intObservers();
 
-});
+            $scope.observerOptions.threshold = thresholdSets[0];
+
+            /*
+                    for (var i = 0; i < observer_queue.length; i++) {
+                        console.log(observer_queue[i]);
+                        var target = document.querySelector('#' + observer_queue[i]);
+                        observers[i] = new IntersectionObserver(intersectionCallback, observerOptions);
+                        observers[i].observe(target);
+                    }
+                    */
+        };
+        intObservers();
+
+    });
 
 
     // Update User for current user and all this users conversation participants. 
@@ -266,7 +266,13 @@ $('.content_cnv').ready(function() {
                     console.log(error);
                 });
                 */
-                getCardsUpdate(id, 'cards');
+            console.log('called here');
+            getCardsUpdate(id, 'cards')
+                .then(function(result) {
+                    console.log(result);
+                });
+
+
         } else if (Conversations.getConversationType() == 'public') {
             getPublicCardsUpdate(id);
         }
@@ -324,16 +330,18 @@ $('.content_cnv').ready(function() {
         }
     });
 
-/*
-        getCards(id, 'cards').then(function(result) {
-            if (result == undefined) {
-                $rootScope.pageLoading = false;
+    /*
+            getCards(id, 'cards').then(function(result) {
+                if (result == undefined) {
+                    $rootScope.pageLoading = false;
 
-            }
-            //scroll_direction = "bottom";
-            //$scope.$broadcast("items_changed", 'bottom');
-        });
-        */
+                }
+                //scroll_direction = "bottom";
+                //$scope.$broadcast("items_changed", 'bottom');
+            });
+            */
+
+
     // NOTIFICATION for private conversation.
     $rootScope.$on('PRIVATE_NOTIFICATION_CREATED', function(event, msg) {
         console.log('PRIVATE_NOTIFICATION_CREATED');
@@ -351,7 +359,14 @@ $('.content_cnv').ready(function() {
                     console.log(error);
                 });
                 */
-                getCardsUpdate(id, 'cards');
+            getCardsUpdate(id, 'cards')
+                .then(function(result) {
+                    console.log(result);
+                    if(result.length > 0){
+                        updateCards(result);
+                    }
+                });
+
         } else {
             Conversations.getConversationLatestCard(msg.conversation_id)
                 .then(function(res) {
