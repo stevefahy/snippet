@@ -57,30 +57,20 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     var observer_queue = [];
 
     resetObserver_queue = function() {
-        console.log('resetObserver_queue');
+        //console.log('resetObserver_queue');
+        observers = [];
         observer_queue = [];
     };
 
-    var observerOptions = {
-        root: document.querySelector('.content_cnv'),
-        rootMargin: '0px',
-        threshold: 1.0
-    };
-
-    $scope.addObserver = function(id) {
-
-        //console.log(id);
-
-        $('#' + id).ready(function() {
+    createObserver = function(id) {
+        $('#card' + id).ready(function() {
             //console.log("ready: " + id);
-            var target = document.querySelector('#' + id);
+            var target = document.querySelector('#card_' + id);
             var newObserver = new IntersectionObserver(intersectionCallback, $scope.observerOptions);
             //console.log($scope.observerOptions);
             observers.push(newObserver);
             newObserver.observe(target);
         });
-        //observer_queue.push(id);
-        //console.log(observer_queue[i]);
 
     };
 
@@ -88,45 +78,24 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     var observers = [];
 
-
-
-
-
-
-    $('.content_cnv').ready(function() {
-        console.log("content_cnv ready!");
-        intObservers = function() {
+    intObservers = function() {
+        $('.content_cnv').ready(function() {
             observers = [];
-
             let thresholdSets = [
                 []
             ];
-
             for (let i = 0; i <= 1.0; i += 0.01) {
                 thresholdSets[0].push(i);
             }
-
             $scope.observerOptions = {
-                root: document.querySelector('.content_cnv'),
+                root: document.querySelector('.content_cnv.content_cnv_conv'),
                 rootMargin: '0px',
                 threshold: 1.0
             };
-
-
             $scope.observerOptions.threshold = thresholdSets[0];
+        });
+    };
 
-            /*
-                    for (var i = 0; i < observer_queue.length; i++) {
-                        console.log(observer_queue[i]);
-                        var target = document.querySelector('#' + observer_queue[i]);
-                        observers[i] = new IntersectionObserver(intersectionCallback, observerOptions);
-                        observers[i].observe(target);
-                    }
-                    */
-        };
-        intObservers();
-
-    });
 
 
     // Update User for current user and all this users conversation participants. 
@@ -362,7 +331,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             getCardsUpdate(id, 'cards')
                 .then(function(result) {
                     console.log(result);
-                    if(result.length > 0){
+                    if (result.length > 0) {
                         updateCards(result);
                     }
                 });

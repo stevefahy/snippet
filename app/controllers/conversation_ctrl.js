@@ -85,6 +85,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.$watch('cards.length', function(newStatus) {
         //console.log(newStatus);
         $rootScope.cards_length = newStatus;
+        upDateObservers();
 
     });
 
@@ -116,6 +117,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log('scrollingdisabled: ' + newStatus);
         $rootScope.scrollingdisabled_watch = newStatus;
     });
+
+    $scope.$watch('cards', function(newStatus) {
+        
+    });
+
+    
 
 
 
@@ -347,7 +354,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         if (scrolled < last_scrolled) {
             dir = 1;
 
-           //console.log('up: ' + scrolled + ' : ' + last_scrolled);
+            //console.log('up: ' + scrolled + ' : ' + last_scrolled);
         } else if (scrolled > last_scrolled) {
             dir = 0;
             scroll_distance = scrolled - last_scrolled;
@@ -392,7 +399,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
         if (content_adjust) {
             rebindScroll();
-            
+
         }
 
         var currentScroll = $(this).scrollTop();
@@ -402,8 +409,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         if (scrolled2 < UP_TOP && !no_more_records) {
             //$('.content_cnv').scrollTop(last_scroll);
             //e.preventDefault();
-                //overflow-y: overlay
-                $('.content_cnv').addClass('disabled');
+            //overflow-y: overlay
+            //$('.content_cnv').addClass('disabled');
+            $('.content_cnv').scrollTop(maxScroll / 6);
+            //$('.content_cnv').removeClass('disabled');
         }
 
         if (scrolled2 >= BOTTOM_END && $scope.removed_cards_bottom.length != 0) {
@@ -419,7 +428,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         //$timeout(function() {
         content_adjust = false;
         bindScroll();
-        $('.content_cnv').removeClass('disabled');
+
         //}, 100);
     };
 
@@ -684,12 +693,19 @@ getCards(id, 'cache');
         if (removed_length > 0) {
             console.log('unRemoveCardsTop!: ' + removed_length);
 
-            //$scope.removed_cards_top = $filter('orderBy')($scope.removed_cards_top, 'updatedAt');
+            $scope.removed_cards_top = $filter('orderBy')($scope.removed_cards_top, 'updatedAt', true);
 
             //var last_card = $scope.removed_cards_top[$scope.removed_cards_top.length - amount];
-            var last_card = $scope.removed_cards_top.length - amount;
+            //var last_card = $scope.removed_cards_top.length - amount;
 
-            var spliced = $scope.removed_cards_top.splice(last_card, amount);
+            //var spliced = $scope.removed_cards_top.splice(last_card, amount);
+            console.log(JSON.stringify($scope.cards));
+            console.log(JSON.stringify($scope.removed_cards_bottom));
+            console.log(JSON.stringify($scope.removed_cards_top));
+            var first_card = $scope.removed_cards_top[0];
+            console.log(JSON.stringify(first_card));
+
+            var spliced = $scope.removed_cards_top.splice(0, amount);
 
             content_adjust = true;
 
@@ -725,7 +741,8 @@ getCards(id, 'cache');
             //var last_card = $scope.removed_cards_bottom[$scope.removed_cards_bottom.length - amount];
             var last_card = $scope.removed_cards_bottom[0];
 
-            var spliced = $scope.removed_cards_bottom.splice(last_card, amount);
+            //var spliced = $scope.removed_cards_bottom.splice(last_card, amount);
+            var spliced = $scope.removed_cards_bottom.splice(0, amount);
 
             content_adjust = true;
 
@@ -818,13 +835,15 @@ getCards(id, 'cache');
             console.log('removeCardsBottom: ' + amount);
             //var last_card = sort_card[sort_card.length - 1].updatedAt;
 
-            //$scope.cards = $filter('orderBy')($scope.cards, 'updatedAt');
-
+            $scope.cards = $filter('orderBy')($scope.cards, 'updatedAt', true);
+            console.log(JSON .stringify($scope.cards));
             var last_card = $scope.cards[$scope.cards.length - amount];
+            console.log(JSON .stringify(last_card));
 
             content_adjust = true;
 
-            var removed_cards_bottom_temp = $scope.cards.splice(last_card, amount);
+            //var removed_cards_bottom_temp = $scope.cards.splice(last_card, amount);
+            var removed_cards_bottom_temp = $scope.cards.splice(0, amount);
             $scope.removed_cards_bottom = $scope.removed_cards_bottom.concat(removed_cards_bottom_temp);
             deferred.resolve(amount);
         } else {
@@ -835,6 +854,7 @@ getCards(id, 'cache');
     };
 
     //$scope.fully_loaded = false;
+    /*
     checkImagesLoaded = function(location) {
         //console.log(img_count + ' == ' + img_loaded);
         if (img_count == img_loaded || img_count == 0) {
@@ -883,6 +903,17 @@ getCards(id, 'cache');
 
         }
     };
+    */
+    upDateObservers = function() {
+        $timeout(function() {
+            resetObserver_queue();
+            intObservers();
+            for (var i = 0, len = $scope.cards.length; i < len; i++) {
+                createObserver($scope.cards[i]._id);
+            }
+        },100);
+    };
+
 
     imagesLoaded = function(location) {
         console.log(location);
@@ -917,9 +948,8 @@ getCards(id, 'cache');
             //$scope.$broadcast("items_changed", scroll_direction);
             $rootScope.loading_cards = false;
 
-            $timeout(function() {
-                // content_adjust = false;
-            }, 500);
+            //upDateObservers();
+
 
             //$scope.fully_loaded = true;
             //addObservers();
@@ -1283,7 +1313,7 @@ getCards(id, 'cache');
     updateCards = function(arr) {
         console.log($scope.top_down);
         if (!$scope.top_down) {
-            if($scope.removed_cards_bottom.length > 0){
+            if ($scope.removed_cards_bottom.length > 0) {
                 $scope.cards = $scope.cards.concat(arr, $scope.removed_cards_bottom);
                 $scope.removed_cards_bottom = [];
                 $scope.$broadcast("items_changed", 'bottom');
