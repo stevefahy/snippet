@@ -103,23 +103,16 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     });
 
     $scope.$watch('scrollingdisabled', function(newStatus) {
-        /*
-        if(watching_scroll){
-        if (newStatus) {
-            unbindScroll();
-        } else {
-            bindScroll();
-        }
-        }
-        */
-
-
         console.log('scrollingdisabled: ' + newStatus);
         $rootScope.scrollingdisabled_watch = newStatus;
     });
 
     $scope.$watch('cards', function(newStatus) {
         
+    });
+
+    $scope.$watch('online', function(newStatus) {
+        $rootScope.online = newStatus;
     });
 
     
