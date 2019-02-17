@@ -227,7 +227,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                         $('.' + parent_container + ' .cropper_cont #temp_image_filtered_' + id).remove();
                         $(this).insertBefore('.' + parent_container + ' .cropper_cont #image_' + id);
                         // SAVE
-                        image_edit_finished = true;
+                        //image_edit_finished = true;
+                        Format.setImageEditing(true);
                         $('.' + parent_container + ' #cropper_' + id).closest('div.ce').focus();
                         $('.' + parent_container + ' #cropper_' + id).closest('div.ce').blur();
                     };
@@ -527,7 +528,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         $('.' + parent_container + ' #cropper_' + id).removeClass('cropping');
         removeTempCanvas(id);
         // SAVE       
-        image_edit_finished = true;
+        //image_edit_finished = true;
+        Format.setImageEditing(true);
         $('.' + parent_container + ' #cropper_' + id).closest('div.ce').focus();
         $('.' + parent_container + ' #cropper_' + id).closest('div.ce').blur();
     };
@@ -545,7 +547,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             UserData.checkUser().then(function(result) {
                 // Logged in.
                 // Turn off content saving.
-                image_edit_finished = false;
+                //image_edit_finished = false;
+                Format.setImageEditing(false);
                 // Get the editable attibute for this card (for this user).
                 // check user has permision to edit.
                 if ($(scope).closest('div.ce').attr('editable') == 'true') {
@@ -767,7 +770,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
         $timeout(function() {
             // After image
-            image_edit_finished = true;
+            //image_edit_finished = true;
+            Format.setImageEditing(true);
             var dir;
             if ($rootScope.top_down) {
                 dir = 'top';

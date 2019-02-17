@@ -20,7 +20,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     $rootScope.deleting_card = false;
 
     var last_network_status = true;
-    var image_edit_finished = true;
+    //var image_edit_finished = true;
 
     var DEVICE_TYPE;
     var DEVICE_OS;

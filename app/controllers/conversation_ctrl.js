@@ -1074,11 +1074,25 @@ getCards(id, 'cache');
     };
 
     updateCard = function(card) {
-        var card_pos = General.findWithAttr($scope.cards, '_id', card._id);
-        if (card_pos >= 0) {
-            $scope.cards[card_pos].original_content = card.content;
-            $scope.cards[card_pos].content = card.content;
-            $scope.cards[card_pos].updatedAt = card.updatedAt;
+        // Check the existece of the card across all arrays.
+        var card_arrays = [$scope.cards, $scope.cards_temp, $scope.removed_cards_bottom, $scope.removed_cards_top];
+        var card_pos;
+        var found_pos = -1;
+        var arr;
+        for (var i = 0, len = card_arrays.length; i < len; i++) {
+            card_pos = General.findWithAttr(card_arrays[i], '_id', card._id);
+             if (card_pos >= 0) {
+                arr = i;
+                found_pos = card_pos;
+                break;
+             }
+        }
+        //var card_pos = General.findWithAttr($scope.cards, '_id', card._id);
+        console.log(arr + ' : ' + found_pos);
+        if (found_pos >= 0) {
+            card_arrays[arr][found_pos].original_content = card.content;
+            card_arrays[arr][found_pos].content = card.content;
+            card_arrays[arr][found_pos].updatedAt = card.updatedAt;
         }
     };
 
