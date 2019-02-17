@@ -233,26 +233,26 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                 console.log('apply 2');
                                 $scope.$apply();
                             }
-                            $timeout(function() {
+                            //$timeout(function() {
                                 removeCardsBottom()
                                     .then(function(result) {
                                         console.log(result);
-                                        $timeout(function() {
+                                        //$timeout(function() {
                                             $scope.scrollingdisabled = false;
-                                        }, 500);
+                                        //}, 500);
                                     });
-                            }, 100);
+                            //}, 100);
                         });
                 } else {
-                    $timeout(function() {
+                    //$timeout(function() {
                         removeCardsBottom()
                             .then(function(result) {
                                 console.log(result);
-                                $timeout(function() {
+                                //$timeout(function() {
                                     $scope.scrollingdisabled = false;
-                                }, 500);
+                                //}, 500);
                             });
-                    }, 100);
+                    //}, 100);
                 }
             });
     };
@@ -275,26 +275,26 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                 console.log('apply 2');
                                 $scope.$apply();
                             }
-                            $timeout(function() {
+                            //$timeout(function() {
                                 removeCardsTop()
                                     .then(function(result) {
                                         console.log(result);
-                                        $timeout(function() {
+                                        //$timeout(function() {
                                             $scope.scrollingdisabled = false;
-                                        }, 0);
+                                        //}, 0);
                                     });
-                            }, 100);
+                           // }, 100);
                         });
                 } else {
-                    $timeout(function() {
+                    //$timeout(function() {
                         removeCardsTop()
                             .then(function(result) {
                                 console.log(result);
-                                $timeout(function() {
+                                //$timeout(function() {
                                     $scope.scrollingdisabled = false;
-                                }, 0);
+                                //}, 0);
                             });
-                    }, 100);
+                    //}, 100);
                     //$scope.scrollingdisabled = false; 
                 }
 
@@ -399,7 +399,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 }
             }
         }
-    }, 5);
+    }, 1);
 
 
     function wheelEvent(e) {
@@ -706,18 +706,18 @@ getCards(id, 'cache');
             //var last_card = $scope.removed_cards_top.length - amount;
 
             //var spliced = $scope.removed_cards_top.splice(last_card, amount);
-            console.log(JSON.stringify($scope.cards));
-            console.log(JSON.stringify($scope.removed_cards_bottom));
-            console.log(JSON.stringify($scope.removed_cards_top));
+            //console.log(JSON.stringify($scope.cards));
+           // console.log(JSON.stringify($scope.removed_cards_bottom));
+            //console.log(JSON.stringify($scope.removed_cards_top));
             var first_card = $scope.removed_cards_top[0];
-            console.log(JSON.stringify(first_card));
+            //console.log(JSON.stringify(first_card));
 
             var spliced = $scope.removed_cards_top.splice(0, amount);
 
             content_adjust = true;
 
-            console.log($scope.removed_cards_top);
-            console.log(spliced);
+            //console.log($scope.removed_cards_top);
+            //console.log(spliced);
 
             /*
             spliced.map(function(key, array) {
@@ -747,12 +747,17 @@ getCards(id, 'cache');
         var removed_length = $scope.removed_cards_bottom.length;
         //var amount = getCardAmount();
         amount = NUM_UPDATE_DISPLAY;
-        if (removed_length > 0 && amount > 0) {
+
+                if (removed_length < amount) {
+            amount = removed_length;
+        }
+        //if (removed_length > 0 && amount > 0) {
+        if (amount > 0) {
             console.log('unRemoveCardsBottom');
 
             $scope.removed_cards_bottom = $filter('orderBy')($scope.removed_cards_bottom, 'updatedAt');
 
-            console.log(JSON.stringify($scope.removed_cards_bottom[0]));
+            //console.log(JSON.stringify($scope.removed_cards_bottom[0]));
 
             //var last_card = $scope.removed_cards_bottom[$scope.removed_cards_bottom.length - amount];
             var last_card = $scope.removed_cards_bottom[0];
@@ -833,9 +838,9 @@ getCards(id, 'cache');
 
             $scope.cards = $filter('orderBy')($scope.cards, 'updatedAt');
 
-            console.log(JSON.stringify($scope.cards[0]));
+            //console.log(JSON.stringify($scope.cards[0]));
             var removed_cards_top_temp = $scope.cards.splice(0, amount);
-            console.log(removed_cards_top_temp);
+            //console.log(removed_cards_top_temp);
             $scope.removed_cards_top = $scope.removed_cards_top.concat(removed_cards_top_temp);
             deferred.resolve(amount);
         } else {
@@ -855,9 +860,9 @@ getCards(id, 'cache');
             //var last_card = sort_card[sort_card.length - 1].updatedAt;
 
             $scope.cards = $filter('orderBy')($scope.cards, 'updatedAt', true);
-            console.log(JSON.stringify($scope.cards));
-            var last_card = $scope.cards[$scope.cards.length - amount];
-            console.log(JSON.stringify(last_card));
+            //console.log(JSON.stringify($scope.cards));
+            //var last_card = $scope.cards[$scope.cards.length - amount];
+            //console.log(JSON.stringify(last_card));
 
             content_adjust = true;
 
