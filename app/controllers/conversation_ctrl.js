@@ -21,12 +21,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var UP_TOP = 5;
     var BOTTOM_END = 99;
 
-    var INIT_NUM_TO_LOAD = 30;
-    var NUM_TO_LOAD = 30;
+    var INIT_NUM_TO_LOAD = 40;
+    var NUM_TO_LOAD = 40;
     var NUM_UPDATE_DISPLAY = 20;
     var NUM_UPDATE_DISPLAY_INIT = 30;
 
-    var MAX_TEMP = 30;
+    var MIN_TEMP = 20;
 
     var REMOVE_BOTTOM = 10;
 
@@ -48,6 +48,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var first_load = true;
     var watching_scroll = false;
 
+    
+
     $rootScope.pageLoading = true;
     $rootScope.last_win_width;
 
@@ -64,7 +66,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.pasteHtmlAtCaret = Format.pasteHtmlAtCaret;
     $scope.checkCursor = Format.checkCursor;
     $scope.isMember = false;
+
     $scope.cards = [];
+    $scope.removed_cards_top = [];
+    $scope.removed_cards_bottom = [];
+    $scope.cards_temp = [];
+
+    
 
     Keyboard.keyBoardListenStart();
 
@@ -77,8 +85,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var img_loaded;
     var scroll_direction;
 
-    $scope.removed_cards_top = [];
-    $scope.removed_cards_bottom = [];
+
 
     // DEBUGGING
 
@@ -108,15 +115,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     });
 
     $scope.$watch('cards', function(newStatus) {
-        
-    });
-/*
-    $scope.$watch('online', function(newStatus) {
-        $rootScope.online = newStatus;
-    });
-    */
 
-    
+    });
+    /*
+        $scope.$watch('online', function(newStatus) {
+            $rootScope.online = newStatus;
+        });
+        */
+
+
 
 
 
@@ -180,6 +187,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     var temp_working = false;
     tempToCards = function() {
+        console.log($scope.cards_temp);
+        console.log($scope.cards);
         var deferred = $q.defer();
         if ($scope.cards_temp.length > 0 && !temp_working) {
             temp_working = true;
@@ -190,8 +199,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
             content_adjust = true;
 
-            $scope.cards = $scope.cards.concat($scope.cards_temp);
-            $scope.cards_temp = [];
+            var cards_to_move = $scope.cards_temp.splice(0, amount);
+
+            //$scope.cards = $scope.cards.concat($scope.cards_temp);
+            $scope.cards = $scope.cards.concat(cards_to_move);
+
+            //$scope.cards_temp = [];
             temp_working = false;
             deferred.resolve();
         } else {
@@ -568,8 +581,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         if (Conversations.getConversationType() == 'feed') {
             getFollowing();
         } else if (Conversations.getConversationType() == 'private') {
-            console.log($scope.cards_temp.length + ' : ' + MAX_TEMP);
-            if ($scope.cards_temp.length < MAX_TEMP) {
+            console.log($scope.cards_temp.length + ' : ' + MIN_TEMP);
+            if ($scope.cards_temp.length < MIN_TEMP) {
                 // if going up
                 console.log(first_load);
                 console.log(dir + ' : ' + $scope.removed_cards_top + ' : ' + $scope.removed_cards_bottom);
@@ -830,9 +843,9 @@ getCards(id, 'cache');
             //var last_card = sort_card[sort_card.length - 1].updatedAt;
 
             $scope.cards = $filter('orderBy')($scope.cards, 'updatedAt', true);
-            console.log(JSON .stringify($scope.cards));
+            console.log(JSON.stringify($scope.cards));
             var last_card = $scope.cards[$scope.cards.length - amount];
-            console.log(JSON .stringify(last_card));
+            console.log(JSON.stringify(last_card));
 
             content_adjust = true;
 
@@ -905,7 +918,7 @@ getCards(id, 'cache');
             for (var i = 0, len = $scope.cards.length; i < len; i++) {
                 createObserver($scope.cards[i]._id);
             }
-        },100);
+        }, 100);
     };
 
 
@@ -1059,30 +1072,51 @@ getCards(id, 'cache');
     };
 
     deleteCard = function(id) {
+        // Check the existece of the card across all arrays.
+        //var card_pos;
+        var card_arrays = [$scope.cards, $scope.cards_temp, $scope.removed_cards_bottom, $scope.removed_cards_top];
+        var found_pos = -1;
+        var arr;
+        for (var i = 0, len = card_arrays.length; i < len; i++) {
+            found_pos = General.findWithAttr(card_arrays[i], '_id', id);
+            if (found_pos >= 0) {
+                arr = i;
+                //found_pos = card_pos;
+                break;
+            }
+        }
+        if (found_pos >= 0) {
+            $rootScope.deleting_card = true;
+            card_arrays[arr].splice(found_pos, 1);
+            $rootScope.deleting_card = false;
+        }
+        /*
         var card_pos = General.findWithAttr($scope.cards, '_id', id);
         if (card_pos >= 0) {
             $rootScope.deleting_card = true;
             $scope.cards.splice(card_pos, 1);
             $rootScope.deleting_card = false;
         }
+        */
     };
 
     updateCard = function(card) {
         // Check the existece of the card across all arrays.
+        //var card_pos;
         var card_arrays = [$scope.cards, $scope.cards_temp, $scope.removed_cards_bottom, $scope.removed_cards_top];
-        var card_pos;
         var found_pos = -1;
         var arr;
+        //var card_arrays = card_arrays;
+        console.log(card_arrays);
         for (var i = 0, len = card_arrays.length; i < len; i++) {
-            card_pos = General.findWithAttr(card_arrays[i], '_id', card._id);
-             if (card_pos >= 0) {
+            console.log(card_arrays[i]);
+            found_pos = General.findWithAttr(card_arrays[i], '_id', card._id);
+            if (found_pos >= 0) {
                 arr = i;
-                found_pos = card_pos;
+                //found_pos = card_pos;
                 break;
-             }
+            }
         }
-        //var card_pos = General.findWithAttr($scope.cards, '_id', card._id);
-        console.log(arr + ' : ' + found_pos);
         if (found_pos >= 0) {
             card_arrays[arr][found_pos].original_content = card.content;
             card_arrays[arr][found_pos].content = card.content;
