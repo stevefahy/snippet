@@ -418,8 +418,29 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             //e.preventDefault();
             //overflow-y: overlay
             //$('.content_cnv').addClass('disabled');
-            $('.content_cnv').scrollTop(maxScroll / 6);
+            //$('.content_cnv').scrollTop(currentScroll+1);
+            //addMoreTop();
             //$('.content_cnv').removeClass('disabled');
+
+            //var allElements = document.querySelectorAll('.content_cnv .card_temp');
+
+
+            $('.content_cnv').addClass('stop_scroll');
+
+
+
+            var unbind = $scope.$watch('cards.length', function(n) {
+
+                //if (!n) {
+                    $('.content_cnv').scrollTop(currentScroll+1);
+
+                    //console.log('loaded...proceed');
+                    // Stop watching.
+                    unbind();
+                    //deferred.resolve(true);
+                //}
+            });
+            
         }
 
         if (scrolled2 >= BOTTOM_END && $scope.removed_cards_bottom.length != 0) {
