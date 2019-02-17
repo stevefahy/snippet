@@ -719,10 +719,19 @@ getCards(id, 'cache');
             console.log($scope.removed_cards_top);
             console.log(spliced);
 
-
+            /*
             spliced.map(function(key, array) {
                 $scope.cards.push(key);
             });
+            */
+/*
+            for (var i = 0, len = spliced.length; i < len; i++) {
+                $scope.cards.push(spliced[i]);
+            }
+            */
+
+            $scope.cards = $scope.cards.concat(spliced);
+
             //$scope.scrollingdisabled = false;
             deferred.resolve(removed_length);
         } else {
@@ -753,9 +762,12 @@ getCards(id, 'cache');
 
             content_adjust = true;
 
+            /*
             spliced.map(function(key, array) {
                 $scope.cards.push(key);
             });
+            */
+            $scope.cards = $scope.cards.concat(spliced);
 
             //$scope.scrollingdisabled = false;
             deferred.resolve(amount);
