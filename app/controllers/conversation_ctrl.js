@@ -110,10 +110,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.$watch('cards', function(newStatus) {
         
     });
-
+/*
     $scope.$watch('online', function(newStatus) {
         $rootScope.online = newStatus;
     });
+    */
 
     
 
