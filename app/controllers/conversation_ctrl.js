@@ -582,7 +582,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             getFollowing();
         } else if (Conversations.getConversationType() == 'private') {
             console.log($scope.cards_temp.length + ' : ' + MIN_TEMP);
-            if ($scope.cards_temp.length < MIN_TEMP) {
+            if ($scope.cards_temp.length <= MIN_TEMP) {
                 // if going up
                 console.log(first_load);
                 console.log(dir + ' : ' + $scope.removed_cards_top + ' : ' + $scope.removed_cards_bottom);
