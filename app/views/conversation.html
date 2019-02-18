@@ -25,7 +25,6 @@
         <!--
         <div infinite-scroll="infiniteScrollx" infinite-scroll-immediate-check='false' infinite-scroll-distance='.5' infinite-scroll-parent="true" infinite-scroll-down="{top_down}" infinite-scroll-disabled='scrollingdisabled'>-->
         <div id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : top_down | limitTo:total_to_display" on-finish-render="ngRepeatFinished" in-view="lineInView($inview, card._id)" in-view-options="inviewoptions" ng-attr-id="{{ 'card_' + card._id }}" class="card_temp">
-            <div class="label topLeft"></div>
             <div class="label topRight"></div>
             <div id="user">
                 <img ng-if="card.avatar!='default'" alt="" class="card_avatar" ng-src="{{card.avatar}}" />
@@ -49,8 +48,6 @@
                     <button ng-attr-id="{{ 'upload-triggerce' + card._id }}" class="btn btn-sm upload-btn upload-trigger" type="button" ng-click="uploadFile(card._id, card, currentUser)">Upload File</button>
                 </form>
             </div>
-            <div class="label bottomLeft"></div>
-            <div class="label bottomRight"></div>
             <div class="card_footer">
                 <div class="c_footer_o">
                     <div class="card_footer_btns">

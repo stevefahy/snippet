@@ -3139,7 +3139,6 @@ span.after_image {
 }
 
 .card_temp {
-    max-width: 100vw;
     position: relative;
     clip-path: inset(0% 0% 0%);
 }
