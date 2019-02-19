@@ -1011,10 +1011,14 @@ div#user {
 }
 
 input#upload-input,
-.upload-trigger,
 #upload-input-settings {
     position: absolute;
     right: -1000px;
+    
+}
+
+.upload-trigger {
+    display: none;
 }
 
 a.btn.btn-block.btn-social.btn-google {
@@ -3059,7 +3063,7 @@ span.after_image {
 .load_off_screen {
     position: absolute;
     left: 200vw;
-    width: 10px;
+    width: 0px;
 }
 
 .debug {

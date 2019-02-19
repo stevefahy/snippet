@@ -21,6 +21,7 @@
 
     </div>
     <!-- Preloading offscreen -->
+
     <div class="content_cnv" in-view-container ng-class="{ 'content_cnv_conv': !feed, 'content_cnv_hide_footer': hide_footer, 'content_cnv_no_footer': no_footer}" scroll-to-top-when="items_changed">
         <!--
         <div infinite-scroll="infiniteScrollx" infinite-scroll-immediate-check='false' infinite-scroll-distance='.5' infinite-scroll-parent="true" infinite-scroll-down="{top_down}" infinite-scroll-disabled='scrollingdisabled'>-->
@@ -44,7 +45,10 @@
                 <form class="form-horizontal">
                     <div class='ce' ng-attr-id="{{ 'ce' + card._id }}" ng-attr-contenteditable="{{card.user == currentUser._id}}" ng-attr-editable="{{card.user == currentUser._id}}" ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id);" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce'+card._id);" ng-blur="getBlur(card._id, card, currentUser)" ng-model="card.content" ng-model-options="{ debounce: 1000 }"></div>
                     <input id="upload-input" type="file" name="uploads[]" multiple="multiple">
-                    <button ng-attr-id="{{ 'upload-triggerce' + card._id }}" class="btn btn-sm upload-btn upload-trigger" type="button" ng-click="uploadFile(card._id, card, currentUser)">Upload File</button>
+                    <!--
+                    <input ng-attr-id="{{ 'upload-inputce' + card._id }}" type="file" name="uploads[]" multiple="multiple">-->
+
+                    <button ng-attr-id="{{ 'upload-triggerce' + card._id }}" class="btn btn-sm upload-btn upload-trigger" type="button" ng-click="uploadFile(card._id, card, currentUser); ">Upload File</button>
                 </form>
             </div>
             <div class="card_footer">

@@ -85,6 +85,24 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var img_loaded;
     var scroll_direction;
 
+    hide = function() {
+        console.log('hide: ' + this.id);
+        $('#' + this.id).removeAttr("style");
+        $('#' + this.id).unbind('click', hide);
+    };
+
+    $scope.$on('uploadFired', function(event, data) {
+        console.log('fired: ' + data);
+        unbindScroll();
+    });
+
+    $scope.$on('imagePasted', function(event, data) {
+        console.log('pasted');
+        $timeout(function() {
+        rebindScroll();
+    }, 500);
+    });
+    
 
 
     // DEBUGGING
@@ -591,6 +609,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log('bind last_scrolled: ' + last_scrolled);
 
         $('.content_cnv').bind('scroll', myHeavyFunction);
+
         //$('.content_cnv').bind('scroll', wheelEvent);
     };
 
@@ -600,6 +619,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log('unbind last_scrolled: ' + last_scrolled);
         $('.content_cnv').unbind('scroll', myHeavyFunction);
         //$('.content_cnv').unbind('scroll', wheelEvent);
+    };
+
+    unbindAllScroll = function() {
+        $('.content_cnv').unbind('scroll', myHeavyFunction);
+        $('.content_cnv').unbind('scroll', wheelEvent);
     };
 
     $('.content_cnv').bind('scroll', wheelEvent);
@@ -1798,8 +1822,9 @@ getCards(id, 'cache');
                         //load_cards = false;
                     }
 
-                    var sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
-                    last_card = sort_card[0].updatedAt;
+        //var sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
+        //last_card = sort_card[0].updatedAt;
+        last_card = General.getISODate();
                     //load_amount = INIT_NUM_TO_LOAD;
                     load_amount = NUM_TO_LOAD;
                     //last_card = General.getISODate();

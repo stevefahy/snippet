@@ -41,13 +41,13 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 var elem = entry.target;
-                elem.querySelector(".topRight").innerHTML = 'vis';
+                //elem.querySelector(".topRight").innerHTML = 'vis';
                 $(elem).addClass('vis');
             }
 
             if (!entry.isIntersecting) {
                 var elem = entry.target;
-                elem.querySelector(".topRight").innerHTML = 'inv';
+                //elem.querySelector(".topRight").innerHTML = 'inv';
                 $(elem).removeClass('vis');
             }
         });
