@@ -1822,9 +1822,8 @@ getCards(id, 'cache');
                         //load_cards = false;
                     }
 
-        //var sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
-        //last_card = sort_card[0].updatedAt;
-        last_card = General.getISODate();
+                    var sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
+                    last_card = sort_card[0].updatedAt;
                     //load_amount = INIT_NUM_TO_LOAD;
                     load_amount = NUM_TO_LOAD;
                     //last_card = General.getISODate();
