@@ -333,6 +333,10 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                     console.log(result);
                     if (result.length > 0) {
                         updateCards(result);
+                        // Update Conversations
+                        for (var i = 0, len = result.length; i < len; i++) {
+                            UserData.conversationsLatestCardAdd(msg.conversation_id, result[i]);
+                        }
                     }
                 });
 

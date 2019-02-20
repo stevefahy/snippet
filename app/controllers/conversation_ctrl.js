@@ -618,7 +618,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     unbindScroll = function() {
         console.log('unbind last_scrolled: ' + last_scrolled);
         $('.content_cnv').unbind('scroll', myHeavyFunction);
-        
+
         $('.content_cnv').unbind('scroll', wheelEvent);
     };
     /*
@@ -816,7 +816,7 @@ getCards(id, 'cache');
 
     getCardAmountTop = function() {
         console.log('getCardAmountTop');
-        var amount;
+        var amount = 0;
         var allElements = document.querySelectorAll('.content_cnv .card_temp');
         $('.content_cnv .vis').first().addClass('removeCards');
         var last_index;
@@ -1808,7 +1808,7 @@ getCards(id, 'cache');
                     //last_card = $scope.cards[0].updatedAt;
                     operand = '$lt';
                     load_amount = NUM_TO_LOAD;
-                } else {
+                } else if($scope.cards.length > 0) {
                     // load up
                     /*
                     if (!$scope.top_down && $scope.removed_cards_top.length > 0) {
@@ -1825,10 +1825,17 @@ getCards(id, 'cache');
                     }
 
                     var sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
+                    console.log(sort_card);
+                    console.log(sort_card[0]);
                     last_card = sort_card[0].updatedAt;
                     //load_amount = INIT_NUM_TO_LOAD;
                     load_amount = NUM_TO_LOAD;
                     //last_card = General.getISODate();
+                    operand = '$lt';
+                } else {
+                    console.log('first_load');
+                    load_amount = NUM_TO_LOAD;
+                    last_card = General.getISODate();
                     operand = '$lt';
                 }
             }

@@ -1062,11 +1062,14 @@ module.exports = function(app, passport) {
     // Only add the card if it doesnt already exist in the array (for Updates).
     //Conversations.updateViewed(id, user_id, card_id);
     app.put('/chat/conversation_viewed/:id/:card_id', isLoggedIn, function(req, res) {
+        console.log('/chat/conversation_viewed');
         Conversation.findById({ _id: req.params.id }, function(err, conversation) {
             if (err) {
                 console.log('err: ' + err);
                 return res.send(err);
             }
+             console.log('conversation');
+            console.log(conversation);
             // Only update viewed for private conversations
             if (conversation.conversation_type != 'public') {
                 // Convert the conversation model to JSON so that findWithAttr functions.
