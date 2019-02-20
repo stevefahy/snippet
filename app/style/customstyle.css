@@ -1481,11 +1481,11 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 
 
 .content_cnv_hide_footer {
-    height: calc(100% - 125px);
+    height: calc(100% - 55px);
 }
 
 .content_cnv_conv {
-    height: calc(100% - 126px) !important;
+    height: calc(100% - 126px);
 }
 
 .convs {
