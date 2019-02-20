@@ -3062,7 +3062,6 @@ span.after_image {
 
 .load_off_screen {
     position: absolute;
-    left: 200vw;
     width: 0px;
 }
 
