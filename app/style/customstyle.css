@@ -3143,5 +3143,6 @@ span.after_image {
 
 .card_temp {
     position: relative;
-    clip-path: inset(0% 0% 0%);
+    /* Force scroll bar on chome mobile trick */
+    clip-path: inset(0px -2px 0px 0px);
 }
