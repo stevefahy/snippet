@@ -1793,6 +1793,9 @@ getCards(id, 'cache');
                     console.log('load more up');
                 }
 
+                console.log($scope.cards_temp.length);
+                console.log($scope.cards.length);
+                
                 if ($scope.cards_temp.length > 0) {
 
                     // Only get newer than temp but check removed cards
@@ -1820,9 +1823,11 @@ getCards(id, 'cache');
                         load_cards = false;
                     }
                     */
+                    /*
                     if ($scope.removed_cards_top.length > 0) {
                         //load_cards = false;
                     }
+                    */
 
                     var sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
                     console.log(sort_card);
@@ -2127,6 +2132,7 @@ getCards(id, 'cache');
         // Set the conversation profile
         setConversationProfile(id);
         getCards(id, 'cards').then(function(result) {
+            console.log(result);
             if (result == undefined) {
                 $rootScope.pageLoading = false;
 
