@@ -99,10 +99,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.$on('imagePasted', function(event, data) {
         console.log('pasted');
         $timeout(function() {
-        rebindScroll();
-    }, 500);
+            rebindScroll();
+        }, 500);
     });
-    
+
 
 
     // DEBUGGING
@@ -116,25 +116,18 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     });
 
-    $scope.$watch('cards_temp.length', function(newStatus) {
-        $rootScope.cards_temp_length = newStatus;
-        console.log('cards_temp.length: ' + newStatus + ' <= ' + MIN_TEMP);
-        if (newStatus <= MIN_TEMP && !$rootScope.loading_cards_offscreen) {
-            console.log('do checkNext');
-            checkNext();
-        } else {
-            /*
-                    var currentScroll = $('.content_cnv').scrollTop();
-        var maxScroll = $('.content_cnv')[0].scrollHeight - $('.content_cnv')[0].clientHeight;
-        var scrolled2 = (currentScroll / maxScroll) * 100;
-        //console.log(scrolled);
-        if (scrolled2 < UP_TOP && (!no_more_records || $scope.removed_cards_top.length > 0)) {
-        doTop();
-        }
-        */
-        }
+    watchCardsTemp = function() {
+        console.log('watchCardsTemp');
+        $scope.$watch('cards_temp.length', function(newStatus) {
+            $rootScope.cards_temp_length = newStatus;
+            console.log('cards_temp.length: ' + newStatus + ' <= ' + MIN_TEMP);
+            if (newStatus <= MIN_TEMP && !$rootScope.loading_cards_offscreen) {
+                console.log('do checkNext');
+                checkNext();
+            }
+        });
+    };
 
-    });
 
     $scope.$watch('removed_cards_top.length', function(newStatus) {
         $rootScope.removed_cards_top_length = newStatus;
@@ -1118,7 +1111,7 @@ getCards(id, 'cache');
         //}, 0);
     };
 
-
+var first_temp = true;
     imagesLoaded = function(obj) {
         console.log(obj);
         //console.log(img_count + ' == ' + img_loaded);
@@ -1183,6 +1176,11 @@ getCards(id, 'cache');
             //$scope.scrollingdisabled = false;
             delete obj;
             //checkNext();
+            if(first_temp){
+                watchCardsTemp();
+                first_temp = false;
+            }
+            
         }
 
 
@@ -1811,7 +1809,7 @@ getCards(id, 'cache');
                     //last_card = $scope.cards[0].updatedAt;
                     operand = '$lt';
                     load_amount = NUM_TO_LOAD;
-                } else if($scope.cards.length > 0) {
+                } else if ($scope.cards.length > 0) {
                     // load up
                     /*
                     if (!$scope.top_down && $scope.removed_cards_top.length > 0) {
@@ -2131,7 +2129,8 @@ getCards(id, 'cache');
         }
         // Set the conversation profile
         setConversationProfile(id);
-        getCards(id, 'cards').then(function(result) {
+        //getCards(id, 'cards').then(function(result) {
+        getCards(id, 'cache').then(function(result) {
             console.log(result);
             if (result == undefined) {
                 $rootScope.pageLoading = false;
