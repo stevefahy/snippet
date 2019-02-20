@@ -599,6 +599,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             //if (('ce' + card._id != active && (active != 'hidden_input_container')) && image_edit_finished == true) {
             console.log(!self.getImageEditing());
             if (('ce' + card._id != active && (active != 'hidden_input_container')) && !self.getImageEditing()) {
+                console.log('1');
                 // Card out of focus. Reset the marky_started_array.
                 marky_started_array = [];
                 // Check if there is a marky in progress
@@ -607,6 +608,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 // check the content has changed and not currently mid marky. Or that an image is being edited.
                 //if ((content != card.original_content && (found_marky == false)) && image_edit_finished == true) {
                 if ((content != card.original_content && (found_marky == false)) && !self.getImageEditing()) {
+                    console.log('2');
                     // Only do this if not in current card?
                     if ($('.cropper-container').length > 0) {
                         $('.cropper-container').remove();

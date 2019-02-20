@@ -196,8 +196,10 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
     };
 
     // UPDATE CARD
-    this.updateCard = function(card_id, card, currentUser) {;
+    this.updateCard = function(card_id, card, currentUser) {
+        console.log('updateCard?');
         if (!updateinprogress) {
+            console.log('updateCard!');
             updateinprogress = true;
             setTimeout(function() {
                 var promises = [];

@@ -431,7 +431,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log(scrolled + ' : ' + last_scrolled);
 
         var scroll_distance;
-
+        console.log('last_scrolled: ' + last_scrolled);
         if (scrolled < last_scrolled) {
             dir = 1;
 
@@ -604,13 +604,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var currentScroll = $('.content_cnv').scrollTop();
         var maxScroll = $('.content_cnv')[0].scrollHeight;
         var scrolled = (currentScroll / maxScroll) * 100;
-        last_scrolled = scrolled;
+        //last_scrolled = scrolled;
         $scope.scrollingdisabled = false;
         console.log('bind last_scrolled: ' + last_scrolled);
 
         $('.content_cnv').bind('scroll', myHeavyFunction);
 
-        //$('.content_cnv').bind('scroll', wheelEvent);
+        $('.content_cnv').bind('scroll', wheelEvent);
     };
 
     //bindScroll();
@@ -620,13 +620,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         $('.content_cnv').unbind('scroll', myHeavyFunction);
         //$('.content_cnv').unbind('scroll', wheelEvent);
     };
-
+    /*
     unbindAllScroll = function() {
         $('.content_cnv').unbind('scroll', myHeavyFunction);
         $('.content_cnv').unbind('scroll', wheelEvent);
     };
+    */
 
-    $('.content_cnv').bind('scroll', wheelEvent);
+    //$('.content_cnv').bind('scroll', wheelEvent);
 
     //$('.content_cnv').bind('touchmove', wheelEvent);
 
