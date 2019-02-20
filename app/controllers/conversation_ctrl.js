@@ -618,7 +618,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     unbindScroll = function() {
         console.log('unbind last_scrolled: ' + last_scrolled);
         $('.content_cnv').unbind('scroll', myHeavyFunction);
-        //$('.content_cnv').unbind('scroll', wheelEvent);
+        
+        $('.content_cnv').unbind('scroll', wheelEvent);
     };
     /*
     unbindAllScroll = function() {
