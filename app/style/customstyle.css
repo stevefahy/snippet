@@ -1013,7 +1013,7 @@ div#user {
 input#upload-input,
 #upload-input-settings {
     position: absolute;
-    right: -1000px;
+        opacity: 0;
     
 }
 
@@ -3080,7 +3080,7 @@ span.after_image {
 .debug_btn {
     position: absolute;
     right: 103px;
-    bottom: 12px;
+    top: 12px;
     z-index: 10000;
 }
 
