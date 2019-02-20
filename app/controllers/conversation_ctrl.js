@@ -119,7 +119,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.$watch('cards_temp.length', function(newStatus) {
         $rootScope.cards_temp_length = newStatus;
         console.log('cards_temp.length: ' + newStatus + ' <= ' + MIN_TEMP);
-        if (newStatus <= MIN_TEMP) {
+        if (newStatus <= MIN_TEMP && !$rootScope.loading_cards_offscreen) {
             console.log('do checkNext');
             checkNext();
         } else {
@@ -1182,7 +1182,7 @@ getCards(id, 'cache');
             $rootScope.loading_cards_offscreen = false;
             //$scope.scrollingdisabled = false;
             delete obj;
-            checkNext();
+            //checkNext();
         }
 
 
@@ -1795,7 +1795,7 @@ getCards(id, 'cache');
 
                 console.log($scope.cards_temp.length);
                 console.log($scope.cards.length);
-                
+
                 if ($scope.cards_temp.length > 0) {
 
                     // Only get newer than temp but check removed cards
