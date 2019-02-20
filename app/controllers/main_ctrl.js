@@ -343,6 +343,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         } else {
             Conversations.getConversationLatestCard(msg.conversation_id)
                 .then(function(res) {
+                    console.log(res);
                     UserData.conversationsLatestCardAdd(msg.conversation_id, res.data);
                     if ($location.url() == '/chat/conversations') {
                         loadConversations();
@@ -356,11 +357,23 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     // NOTIFICATION for private conversation.
     $rootScope.$on('PRIVATE_NOTIFICATION_UPDATED', function(event, msg) {
-        //console.log('PRIVATE_NOTIFICATION_UPDATED');
+        console.log('PRIVATE_NOTIFICATION_UPDATED');
+        console.log(msg);
+
         UserData.addConversationViewed(msg.conversation_id, msg.viewed_users);
         var id = Conversations.getConversationId();
         Conversations.getConversationLatestCard(msg.conversation_id)
             .then(function(res) {
+                console.log(res);
+                // If this user was the sender, then update their viewed user array
+                if (res.data.user == UserData.getUser()._id) {
+                    var current_user_index = General.findIncludesAttr(msg.viewed_users, '_id', UserData.getUser()._id);
+                    console.log(current_user_index);
+                    if (current_user_index >= 0) {
+                        msg.viewed_users[current_user_index].unviewed = [];
+                    }
+                    updateConversationViewed(msg.conversation_id);
+                }
                 UserData.conversationsLatestCardAdd(msg.conversation_id, res.data);
                 if (id == msg.conversation_id) {
                     updateConversationViewed(id);
