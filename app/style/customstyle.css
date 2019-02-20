@@ -1478,14 +1478,12 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     background-color: #FFFFFF;
 }
 
-
-
-.content_cnv_hide_footer {
-    height: calc(100% - 55px);
-}
-
 .content_cnv_conv {
     height: calc(100% - 126px);
+}
+
+.content_cnv_hide_footer {
+    height: calc(100% - 55px) !important;
 }
 
 .convs {
