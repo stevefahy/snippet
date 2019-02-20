@@ -116,18 +116,18 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     });
 
-    watchCardsTemp = function() {
+    //watchCardsTemp = function() {
         console.log('watchCardsTemp');
         $scope.$watch('cards_temp.length', function(newStatus) {
             $rootScope.cards_temp_length = newStatus;
             console.log('cards_temp.length: ' + newStatus + ' <= ' + MIN_TEMP);
             //if (newStatus <= MIN_TEMP && !$rootScope.loading_cards_offscreen) {
-            if (newStatus <= MIN_TEMP) {
-                console.log('do checkNext');
-                checkNext();
-            }
+            //if (newStatus <= MIN_TEMP) {
+            //    console.log('do checkNext');
+            //    checkNext();
+            //}
         });
-    };
+    //};
 
 
     $scope.$watch('removed_cards_top.length', function(newStatus) {
@@ -247,6 +247,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
             //console.log(JSON.stringify($scope.cards_temp));
             //console.log(JSON.stringify($scope.cards));
+            checkNext();
 
             deferred.resolve(true);
         } else {
@@ -746,7 +747,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             getFollowing();
         } else if (Conversations.getConversationType() == 'private') {
             console.log($scope.cards_temp.length + ' : ' + MIN_TEMP);
-            if ($scope.cards_temp.length <= MIN_TEMP) {
+            if ($scope.cards_temp.length < MIN_TEMP) {
                 // if going up
                 //console.log(first_load);
                 //console.log(dir + ' : ' + $scope.removed_cards_top + ' : ' + $scope.removed_cards_bottom);
@@ -829,7 +830,10 @@ getCards(id, 'cache');
         // 60 , 17 ,15
         // 15 ,2 , 15
         // 60, 15 ,15
-        amount = last_index <= MAX_OUT_BOUNDS ? 0 : last_index - MAX_OUT_BOUNDS;
+        if(last_index != undefined){
+            amount = last_index <= MAX_OUT_BOUNDS ? 0 : last_index - MAX_OUT_BOUNDS;
+        }
+        
         console.log('amount: ' + amount);
         //amount > 0 && $scope.cards.length > (amount + NUM_TO_LOAD)
         //amount = 10;
@@ -1176,11 +1180,11 @@ var first_temp = true;
             $rootScope.loading_cards_offscreen = false;
             //$scope.scrollingdisabled = false;
             delete obj;
-            //checkNext();
-            if(first_temp){
-                watchCardsTemp();
-                first_temp = false;
-            }
+            checkNext();
+           //if(first_temp){
+                //watchCardsTemp();
+                //first_temp = false;
+            //}
             
         }
 
