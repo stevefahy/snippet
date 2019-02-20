@@ -121,7 +121,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         $scope.$watch('cards_temp.length', function(newStatus) {
             $rootScope.cards_temp_length = newStatus;
             console.log('cards_temp.length: ' + newStatus + ' <= ' + MIN_TEMP);
-            if (newStatus <= MIN_TEMP && !$rootScope.loading_cards_offscreen) {
+            //if (newStatus <= MIN_TEMP && !$rootScope.loading_cards_offscreen) {
+            if (newStatus <= MIN_TEMP) {
                 console.log('do checkNext');
                 checkNext();
             }
