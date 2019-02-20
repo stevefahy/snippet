@@ -26,7 +26,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var NUM_UPDATE_DISPLAY = 20;
     var NUM_UPDATE_DISPLAY_INIT = 30;
 
-    var MIN_TEMP = 20;
+    var MIN_TEMP = 40;
 
     var REMOVE_BOTTOM = 10;
 
