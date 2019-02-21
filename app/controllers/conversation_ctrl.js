@@ -333,7 +333,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
                 //$scope.scrollingdisabled = false;
                 console.log($scope.top_down);
-                if (result == 0 && !$scope.top_down) {
+                if (result == 0 && $scope.top_down) {
                     console.log('temp1');
                     tempToCards()
                         .then(function(result) {
