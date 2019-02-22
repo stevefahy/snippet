@@ -481,7 +481,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     $('#card_' + id).unbind('click', doClick);
                 }
 
-                $rootScope.$broadcast('uploadFired', id);
+                $rootScope.$broadcast('imageUpload', id);
 
                 var files = $(this).get(0).files;
                 if (files.length > 0) {
