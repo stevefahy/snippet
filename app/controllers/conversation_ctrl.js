@@ -245,6 +245,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             //$scope.cards_temp = [];
             temp_working = false;
 
+
+
             //console.log(JSON.stringify($scope.cards_temp));
             //console.log(JSON.stringify($scope.cards));
             checkNext();
@@ -326,6 +328,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     addMoreBottom = function() {
+        var deferred = $q.defer();
         $scope.scrollingdisabled = true;
         unRemoveCardsBottom()
             .then(function(result) {
@@ -349,6 +352,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                     console.log(result);
                                     //$timeout(function() {
                                     $scope.scrollingdisabled = false;
+                                    deferred.resolve();
                                     //}, 0);
                                 });
                             // }, 100);
@@ -360,6 +364,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             console.log(result);
                             //$timeout(function() {
                             $scope.scrollingdisabled = false;
+                            deferred.resolve();
                             //}, 0);
                         });
                     //}, 100);
@@ -368,6 +373,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
 
             });
+            return deferred.promise;
     };
 
     // as long as it continues to be invoked, it will not be triggered
@@ -520,7 +526,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 */
                 $('.content_cnv').scrollTop(1);
                 if (!$scope.top_down) {
-                    if ($scope.cards_temp.length == 0) {
+                    console.log('no_more_records: ' + no_more_records);
+                    if ($scope.cards_temp.length == 0 && !no_more_records) {
                         var unbindtemp = $scope.$watch('cards_temp.length', function(n) {
                             console.log(n);
                             if (n > 0) {
@@ -553,6 +560,40 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         });
     }
 
+function doBottom() {
+        extremity = false;
+        var maxScroll = $('.content_cnv')[0].scrollHeight - $('.content_cnv')[0].clientHeight;
+        $timeout(function() {
+            $timeout(function() {
+                console.log($('.content_cnv').children().first());
+                //$('.content_cnv').children().lastt().addClass('topVisible');
+                $('.content_cnv').scrollTop(maxScroll /2);
+                if (!$scope.top_down) {
+                    if ($scope.cards_temp.length == 0) {
+                        var unbindtemp = $scope.$watch('cards_temp.length', function(n) {
+                            console.log(n);
+                            if (n > 0) {
+                                $('.content_cnv').scrollTop(20);
+                                addMoreBottom()
+                                    .then(function(result) {
+                                        scrollBack();
+                                    });
+                                unbindtemp();
+                            }
+                        });
+                    } else {
+                        addMoreBottom()
+                            .then(function(result) {
+                                scrollBack();
+                            });
+                    }
+
+                }
+            });
+
+        });
+    }
+
     function wheelEvent(e) {
         //console.log(e);
         if (content_adjust) {
@@ -563,7 +604,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var currentScroll = $(this).scrollTop();
         var maxScroll = this.scrollHeight - this.clientHeight;
         var scrolled2 = (currentScroll / maxScroll) * 100;
-        //console.log(scrolled);
+        console.log(scrolled2);
 
 
         if (scrolled2 == 0 && (!no_more_records || $scope.removed_cards_top.length > 0)) {
@@ -577,14 +618,20 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
 
 
-        if (scrolled2 >= BOTTOM_END && $scope.removed_cards_bottom.length != 0) {
-            console.log('bottom: ' + $scope.removed_cards_bottom.length);
-            //$('.content_cnv').scrollTop(maxScroll / 2);
+        if (scrolled2 >= 99 && (!$scope.top_down && $scope.removed_cards_bottom.length > 0)) {
+            console.log('BOTTOM!');
+            //$('.card_temp').css('background-color', 'blue');
+            extremity = true;
+            $('.content_cnv').unbind('scroll', wheelEvent);
+            unbindScroll();
+            //$timeout(function() {
+            doBottom();
+            //}, 100);
         }
-        //var last_scroll = scrolled2;
     }
 
     rebindScroll = function() {
+        console.log('rebindScroll');
         console.log('scrollingdisabled: ' + $scope.scrollingdisabled);
         unbindScroll();
         //$timeout(function() {
@@ -1136,9 +1183,11 @@ var first_temp = true;
             if (first_load) {
                 console.log('ITEMS FIRED');
                 $scope.$broadcast("items_changed", scroll_direction);
+
                 $timeout(function() {
+                    $rootScope.pageLoading = false;
                     bindScroll();
-                }, 500);
+                }, 100);
             }
 
             first_load = false;
@@ -2138,7 +2187,7 @@ var first_temp = true;
         getCards(id, 'cache').then(function(result) {
             console.log(result);
             if (result == undefined) {
-                $rootScope.pageLoading = false;
+                //$rootScope.pageLoading = false;
 
             }
             //scroll_direction = "bottom";

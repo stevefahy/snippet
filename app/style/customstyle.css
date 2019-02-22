@@ -1470,7 +1470,9 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 
 .content_cnv {
     width: 100vw;
-    overflow-y: overlay;
+    overflow-y: scroll;
+    overflow-anchor: auto;
+    /*overflow-y: overlay;*/
     /* DANGER added x 01/04/18 */
     overflow-x: hidden;
     height: calc(100% - 185px);
