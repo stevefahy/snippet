@@ -1413,7 +1413,7 @@ module.exports = function(app, passport) {
             'conversation_type': 'public'
         }, function(err, conversations) {
             if (err) {
-                //console.log(err);
+                console.log(err);
             }
             feed.conversations = conversations;
             Card.find({
