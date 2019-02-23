@@ -271,7 +271,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     $timeout(function() {
                         // scroll slightly so that the scroll bar adjusts when new content loaded.
                         $('.content_cnv').scrollTop(1);
-                        if (!$scope.top_down) {
+                        //if (!$scope.top_down) {
                             console.log('no_more_records: ' + no_more_records);
                             if ($scope.cards_temp.length == 0 && !no_more_records) {
                                 var unbindtemp = $scope.$watch('cards_temp.length', function(n) {
@@ -292,7 +292,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                         scrollBack();
                                     });
                             }
-                        }
+                        //}
                     });
                 });
             }
@@ -303,7 +303,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $timeout(function() {
                     $timeout(function() {
                         $('.content_cnv').scrollTop(maxScroll / 2);
-                        if (!$scope.top_down) {
+                        //if (!$scope.top_down) {
                             console.log('no_more_records: ' + no_more_records);
                             if ($scope.cards_temp.length == 0 && !no_more_records) {
                                 var unbindtemp = $scope.$watch('cards_temp.length', function(n) {
@@ -325,7 +325,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                     });
                             }
 
-                        }
+                        //}
                     });
 
                 });
