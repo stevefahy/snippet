@@ -303,6 +303,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     $rootScope.$on('PUBLIC_NOTIFICATION_CREATED', function(event, msg) {
         console.log('PUBLIC_NOTIFICATION_CREATED');
         var id = Conversations.getConversationId();
+        console.log(id);
         // only update the conversation if the user is currently in that conversation
         if (id === msg.conversation_id) {
             getPublicCardsUpdate(id).then(function(result) {
