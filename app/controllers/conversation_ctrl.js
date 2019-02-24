@@ -309,7 +309,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 var maxScroll = $('.content_cnv')[0].scrollHeight - $('.content_cnv')[0].clientHeight;
                 $timeout(function() {
                     $timeout(function() {
-                        $('.content_cnv').scrollTop(maxScroll / 4);
+                        $('.content_cnv').scrollTop(maxScroll-1);
                         //if (!$scope.top_down) {
                             console.log('no_more_records: ' + no_more_records);
                             if ($scope.cards_temp.length == 0 && !no_more_records) {
