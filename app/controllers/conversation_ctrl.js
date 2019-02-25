@@ -77,6 +77,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var scroll_direction;
     var temp_working = false;
     var content_adjust = false;
+    var update_adjust = false;
     var last_scrolled;
     var dir;
     var extremity = false;
@@ -210,16 +211,17 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // scroll listener unthrottled.
     function wheelEvent(e) {
 
-        /*if (content_adjust) {
+        if (content_adjust) {
             rebindScroll();
         }
-        */
+        
+        //console.log($scope.top_down);
 
         var currentScroll = $(this).scrollTop();
         var maxScroll = this.scrollHeight - this.clientHeight;
         var scrolled2 = (currentScroll / maxScroll) * 100;
         console.log('scrolled2: ' + scrolled2 + ' == TOP_END ' + TOP_END + ' no_more_records: ' + no_more_records + ' $scope.removed_cards_top.length: ' + $scope.removed_cards_top.length + ' $scope.removed_cards_bottom.length: ' + $scope.removed_cards_bottom.length);
-        if (scrolled2 <= TOP_END && (!no_more_records || $scope.removed_cards_top.length > 0) && !content_adjust) {
+        if (scrolled2 <= TOP_END && (!no_more_records || $scope.removed_cards_top.length > 0) && !update_adjust) {
             console.log('TOP!');
             extremity = true;
             $('.content_cnv').unbind('scroll', wheelEvent);
@@ -227,7 +229,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             doTop();
         }
 
-        if (scrolled2 >= BOTTOM_END && (!no_more_records || $scope.removed_cards_bottom.length > 0) && !content_adjust) {
+        if (scrolled2 >= BOTTOM_END && (!no_more_records || $scope.removed_cards_bottom.length > 0) && !update_adjust) {
             console.log('BOTTOM!');
             extremity = true;
             $('.content_cnv').unbind('scroll', wheelEvent);
@@ -235,9 +237,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             doBottom();
         }
 
+        update_adjust = false;
+/*
         if (content_adjust) {
             rebindScroll();
         }
+        */
     }
 
     // scroll binding
@@ -1178,7 +1183,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     updateCards = function(arr) {
         console.log($scope.top_down);
         // If content is being updated.
-        content_adjust = true;
+        update_adjust = true;
+        //$scope.scrollingdisabled = true;
         if (!$scope.top_down) {
             if ($scope.removed_cards_bottom.length > 0) {
                 //$scope.cards = $scope.cards.concat(arr, $scope.removed_cards_bottom);
@@ -1195,7 +1201,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $scope.cards = [];
                 $scope.cards_temp = [];
                 // If content is being updated.
-                content_adjust = true;
+                //content_adjust = true;
                 $scope.cards = $scope.cards.concat(arr, spliced);
                 checkNext();
 
@@ -1218,7 +1224,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $scope.cards = [];
                 $scope.cards_temp = [];
                 // If content is being updated.
-                content_adjust = true;
+                //content_adjust = true;
                 $scope.cards = $scope.cards.concat(arr, spliced);
                 checkNext();
 
