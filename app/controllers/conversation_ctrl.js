@@ -208,11 +208,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         //}
     }, 1);
 
-    checkBoundary = function(){
+    checkBoundary = function(scrolled2){
 
-             var currentScroll = $(this).scrollTop();
-        var maxScroll = this.scrollHeight - this.clientHeight;
-        var scrolled2 = (currentScroll / maxScroll) * 100;
+
 
         console.log('scrolled2: ' + scrolled2 + ' == TOP_END ' + TOP_END + ' no_more_records: ' + no_more_records + ' $scope.removed_cards_top.length: ' + $scope.removed_cards_top.length + ' $scope.removed_cards_bottom.length: ' + $scope.removed_cards_bottom.length + ' $scope.cards_temp.length: ' + $scope.cards_temp.length + ' update_adjust: ' + update_adjust);
         if (scrolled2 <= TOP_END && (!no_more_records || $scope.removed_cards_top.length > 0  || $scope.cards_temp.length > 0) && !update_adjust) {
@@ -243,9 +241,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         
         //console.log($scope.top_down);
 
-   
+                var currentScroll = $(this).scrollTop();
+        var maxScroll = this.scrollHeight - this.clientHeight;
+        var scrolled2 = (currentScroll / maxScroll) * 100;
 
-        checkBoundary();
+        checkBoundary(scrolled2);
 
 /*
         if (content_adjust) {
@@ -275,7 +275,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         $('.content_cnv').bind('scroll', myHeavyFunction);
         $('.content_cnv').bind('scroll', wheelEvent);
 // could be top or bottom but not scrolling.
-        checkBoundary();
+        checkBoundary(scrolled);
     };
 
     unbindScroll = function() {
