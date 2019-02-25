@@ -208,12 +208,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         //}
     }, 1);
 
-    checkBoundary = function(scrolled2){
+    checkBoundary = function(scrolled2) {
 
 
 
         console.log('scrolled2: ' + scrolled2 + ' == TOP_END ' + TOP_END + ' no_more_records: ' + no_more_records + ' $scope.removed_cards_top.length: ' + $scope.removed_cards_top.length + ' $scope.removed_cards_bottom.length: ' + $scope.removed_cards_bottom.length + ' $scope.cards_temp.length: ' + $scope.cards_temp.length + ' update_adjust: ' + update_adjust);
-        if (scrolled2 <= TOP_END && (!no_more_records || $scope.removed_cards_top.length > 0  || $scope.cards_temp.length > 0) && !update_adjust) {
+        if (scrolled2 <= TOP_END && (!no_more_records || $scope.removed_cards_top.length > 0 || $scope.cards_temp.length > 0) && !update_adjust) {
             console.log('TOP!');
             extremity = true;
             $('.content_cnv').unbind('scroll', wheelEvent);
@@ -238,20 +238,20 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         if (content_adjust) {
             rebindScroll();
         }
-        
+
         //console.log($scope.top_down);
 
-                var currentScroll = $(this).scrollTop();
+        var currentScroll = $(this).scrollTop();
         var maxScroll = this.scrollHeight - this.clientHeight;
         var scrolled2 = (currentScroll / maxScroll) * 100;
 
         checkBoundary(scrolled2);
 
-/*
-        if (content_adjust) {
-            rebindScroll();
-        }
-        */
+        /*
+                if (content_adjust) {
+                    rebindScroll();
+                }
+                */
     }
 
     // scroll binding
@@ -271,11 +271,16 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         $scope.scrollingdisabled = false;
         console.log('bind last_scrolled: ' + last_scrolled);
         console.log('scrolled: ' + scrolled);
-        
+
         $('.content_cnv').bind('scroll', myHeavyFunction);
         $('.content_cnv').bind('scroll', wheelEvent);
-// could be top or bottom but not scrolling.
-        checkBoundary(scrolled);
+        // could be top or bottom but not scrolling.
+        $timeout(function() {
+            var currentScroll = $('.content_cnv').scrollTop();
+            var maxScroll = $('.content_cnv')[0].scrollHeight;
+            var scrolled = (currentScroll / maxScroll) * 100;
+            checkBoundary(scrolled);
+        }, 500);
     };
 
     unbindScroll = function() {
@@ -1263,7 +1268,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var promises = [];
         var cards_new = [];
         console.log('getCardsUpdate: ' + destination + ' : ' + $rootScope.loading_cards + ', ' + $rootScope.loading_cards_offscreen);
-        if (!$rootScope.loading_cards ) {
+        if (!$rootScope.loading_cards) {
             //if (destination == 'cards') {
             $rootScope.loading_cards = true;
             //} else if (destination == 'cache') {
@@ -1274,17 +1279,17 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             var operand;
             var load_amount;
             //if (destination == 'cards') {
-                if ($scope.cards.length > 0) {
-                    var all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
-                    var sort_card = $filter('orderBy')(all_cards, 'updatedAt');
-                    last_card = sort_card[sort_card.length - 1].updatedAt;
-                    operand = '$gt';
-                    load_amount = NUM_TO_LOAD;
-                } else {
-                    load_amount = INIT_NUM_TO_LOAD;
-                    last_card = General.getISODate();
-                    operand = '$lt';
-                }
+            if ($scope.cards.length > 0) {
+                var all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
+                var sort_card = $filter('orderBy')(all_cards, 'updatedAt');
+                last_card = sort_card[sort_card.length - 1].updatedAt;
+                operand = '$gt';
+                load_amount = NUM_TO_LOAD;
+            } else {
+                load_amount = INIT_NUM_TO_LOAD;
+                last_card = General.getISODate();
+                operand = '$lt';
+            }
             //}
             /*else if (destination == 'cache') {
                 if ($scope.cards_temp.length > 0) {
@@ -1357,7 +1362,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var promises = [];
 
         console.log('getFollowing : ' + destination + ' : ' + $rootScope.loading_cards + ', ' + $rootScope.loading_cards_offscreen);
-        if ( !$rootScope.loading_cards_offscreen) {
+        if (!$rootScope.loading_cards_offscreen) {
             //if (destination == 'cards') {
             //    $rootScope.loading_cards = true;
             //} else if (destination == 'cache') {
