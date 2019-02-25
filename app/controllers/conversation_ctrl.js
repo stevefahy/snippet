@@ -222,7 +222,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var scrolled2 = (currentScroll / maxScroll) * 100;
 
         console.log('scrolled2: ' + scrolled2 + ' == TOP_END ' + TOP_END + ' no_more_records: ' + no_more_records + ' $scope.removed_cards_top.length: ' + $scope.removed_cards_top.length + ' $scope.removed_cards_bottom.length: ' + $scope.removed_cards_bottom.length + ' $scope.cards_temp.length: ' + $scope.cards_temp.length + ' update_adjust: ' + update_adjust);
-        if (scrolled2 <= TOP_END && (!no_more_records || $scope.removed_cards_top.length > 0  || $scope.card_temp.length > 0) && !update_adjust) {
+        if (scrolled2 <= TOP_END && (!no_more_records || $scope.removed_cards_top.length > 0  || $scope.cards_temp.length > 0) && !update_adjust) {
             console.log('TOP!');
             extremity = true;
             $('.content_cnv').unbind('scroll', wheelEvent);
@@ -230,7 +230,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             doTop();
         }
 
-        if (scrolled2 >= BOTTOM_END && (!no_more_records || $scope.removed_cards_bottom.length > 0 || $scope.card_temp.length > 0) && !update_adjust) {
+        if (scrolled2 >= BOTTOM_END && (!no_more_records || $scope.removed_cards_bottom.length > 0 || $scope.cards_temp.length > 0) && !update_adjust) {
             console.log('BOTTOM!');
             extremity = true;
             $('.content_cnv').unbind('scroll', wheelEvent);
