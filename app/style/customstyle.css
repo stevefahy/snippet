@@ -612,6 +612,7 @@ hr {
 }
 
 .card_avatar {
+    /*
     margin-left: 1.25em;
     align-self: center;
     float: left;
@@ -650,6 +651,7 @@ hr {
     border-top-right-radius: 50%;
     border-bottom-right-radius: 50%;
     border-bottom-left-radius: 50%;
+    */
 }
 
 .convs_avatar {
