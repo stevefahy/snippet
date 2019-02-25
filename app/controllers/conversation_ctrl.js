@@ -266,7 +266,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     bindScroll = function() {
         var currentScroll = $('.content_cnv').scrollTop();
-        var maxScroll = $('.content_cnv')[0].scrollHeight;
+        var maxScroll = $('.content_cnv')[0].scrollHeight - $('.content_cnv')[0].clientHeight;
         var scrolled = (currentScroll / maxScroll) * 100;
         $scope.scrollingdisabled = false;
         console.log('bind last_scrolled: ' + last_scrolled);
@@ -277,7 +277,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         // could be top or bottom but not scrolling.
         $timeout(function() {
             var currentScroll = $('.content_cnv').scrollTop();
-            var maxScroll = $('.content_cnv')[0].scrollHeight;
+            var maxScroll = $('.content_cnv')[0].scrollHeight - $('.content_cnv')[0].clientHeight;
             var scrolled = (currentScroll / maxScroll) * 100;
             checkBoundary(scrolled);
         }, 500);
