@@ -169,7 +169,6 @@ img.resize-drag.clip {
 }
 
 .cropper_cont {
-    /*
     margin-top: 10px;
     position: relative;
     width: calc(100% + 2.8em);
@@ -179,7 +178,6 @@ img.resize-drag.clip {
     background-color: #000000;
     margin-bottom: 10px;
     border-bottom: 1px solid #efefef;
-    */
 }
 
 .resize-drag {
@@ -612,7 +610,6 @@ hr {
 }
 
 .card_avatar {
-    /*
     margin-left: 1.25em;
     align-self: center;
     float: left;
@@ -651,7 +648,6 @@ hr {
     border-top-right-radius: 50%;
     border-bottom-right-radius: 50%;
     border-bottom-left-radius: 50%;
-    */
 }
 
 .convs_avatar {
