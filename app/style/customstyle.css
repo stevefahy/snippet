@@ -27,7 +27,7 @@ body {
 /* Limit image width to avoid overflow the container */
 /* This rule is very important, please do not ignore this! */
 img {
-    /*max-width: 100%;*/
+    max-width: 100%;
 }
 
 canvas {
