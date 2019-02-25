@@ -92,10 +92,6 @@ function isMember(req, res, next) {
     var token = req.headers['x-access-token'];
     if (req.principal) {
         req.principal.isAuthenticated = false;
-    } else {
-        // otherwise redirect to login
-        res.redirect('/api/login');
-        return res.status(401).json({ error: 'Invalid access token!' });
     }
     if (token) {
         try {
@@ -105,9 +101,9 @@ function isMember(req, res, next) {
                 _id: decoded.data.user._id
             };
         } catch (err) {
-            console.log('ERROR when parsing access token.', err);
-            res.redirect('/api/login');
+            //console.log('ERROR when parsing access token.', err);
             //req.principal.isAuthenticated = false;
+            res.redirect('/api/login');
         }
     }
 
@@ -116,7 +112,6 @@ function isMember(req, res, next) {
         var query = getConversationId(req.params.id);
         query.exec(function(err, conversation) {
             if (err) {
-                res.redirect('/api/login');
                 return console.log(err);
             }
             var user_pos = findWithAttr(conversation.participants, '_id', req.principal._id);
@@ -1076,7 +1071,7 @@ module.exports = function(app, passport) {
                 console.log('err: ' + err);
                 return res.send(err);
             }
-            console.log('conversation');
+             console.log('conversation');
             console.log(conversation);
             // Only update viewed for private conversations
             if (conversation.conversation_type != 'public') {

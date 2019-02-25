@@ -1,7 +1,5 @@
 cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$q', '$filter', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', 'Cropp', '$compile', 'ImageAdjustment', 'Keyboard', function($scope, $rootScope, $location, $http, $window, $q, $filter, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, Cropp, $compile, ImageAdjustment, Keyboard) {
 
-
-
     openCrop = Cropp.openCrop;
     setCrop = Cropp.setCrop;
     editImage = Cropp.editImage;
@@ -55,7 +53,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // Minimum number of $scope.cards_temp to keep loaded.
     var MIN_TEMP = 40;
     // The maximum number of cards to keep out of bounds.
-    var MAX_OUT_BOUNDS = 10;
+    var MAX_OUT_BOUNDS = 1;
 
     $rootScope.pageLoading = true;
     $rootScope.loading_cards = false;
@@ -174,7 +172,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var scrolled = (currentScroll / maxScroll) * 100;
         console.log(scrolled + ' : ' + last_scrolled);
         console.log('last_scrolled: ' + last_scrolled);
-        //if(last_scrolled != undefined){
         if (scrolled < last_scrolled) {
             dir = 1;
             console.log('up: ' + scrolled + ' : ' + last_scrolled);
@@ -205,12 +202,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 }
             }
         }
-        //}
     }, 1);
 
     checkBoundary = function(scrolled2) {
-
-
 
         console.log('scrolled2: ' + scrolled2 + ' == TOP_END ' + TOP_END + ' no_more_records: ' + no_more_records + ' $scope.removed_cards_top.length: ' + $scope.removed_cards_top.length + ' $scope.removed_cards_bottom.length: ' + $scope.removed_cards_bottom.length + ' $scope.cards_temp.length: ' + $scope.cards_temp.length + ' update_adjust: ' + update_adjust);
         if (scrolled2 <= TOP_END && (!no_more_records || $scope.removed_cards_top.length > 0 || $scope.cards_temp.length > 0) && !update_adjust) {
@@ -247,11 +241,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
         checkBoundary(scrolled2);
 
-        /*
-                if (content_adjust) {
-                    rebindScroll();
-                }
-                */
     }
 
     // scroll binding
@@ -290,8 +279,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     function scrollBack() {
-        //$('.content_cnv').bind('scroll', wheelEvent);
-        //rebindScroll();
         $timeout(function() {
             rebindScroll();
         }, 500);
@@ -304,7 +291,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             $timeout(function() {
                 // scroll slightly so that the scroll bar adjusts when new content loaded.
                 $('.content_cnv').scrollTop(1);
-                //if (!$scope.top_down) {
                 console.log('no_more_records: ' + no_more_records);
                 if ($scope.cards_temp.length == 0 && !no_more_records) {
                     var unbindtemp = $scope.$watch('cards_temp.length', function(n) {
@@ -318,7 +304,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                 .then(function(result) {
                                     scrollBack();
                                 });
-
                         }
                     });
                 } else {
@@ -327,7 +312,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             scrollBack();
                         });
                 }
-                //}
             });
         });
     }
@@ -338,7 +322,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         $timeout(function() {
             $timeout(function() {
                 $('.content_cnv').scrollTop(maxScroll - 1);
-                //if (!$scope.top_down) {
                 console.log('no_more_records: ' + no_more_records);
                 if ($scope.cards_temp.length == 0 && !no_more_records) {
                     var unbindtemp = $scope.$watch('cards_temp.length', function(n) {
@@ -361,8 +344,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             scrollBack();
                         });
                 }
-
-                //}
             });
 
         });
@@ -384,22 +365,19 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }
             // If content is being updated.
             content_adjust = true;
-            console.log($scope.cards);
-            console.log($scope.cards_temp);
             if (!$scope.top_down) {
                 var cards_to_move = $scope.cards_temp.splice(0, amount);
             } else {
                 var cards_to_move = $scope.cards_temp.splice(0, amount);
 
             }
-
             console.log(cards_to_move);
-
             $scope.cards = $scope.cards.concat(cards_to_move);
-
+            /*
             if (!$scope.$$phase) {
                 $scope.$apply();
             }
+            */
             temp_working = false;
             // Check if more temp cards need to be loaded.
             checkNext();
@@ -418,15 +396,19 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         unRemoveCardsTop()
             .then(function(result) {
                 console.log(result);
+                /*
                 if (!$scope.$$phase) {
                     $scope.$apply();
                 }
+                */
                 if (result == 0 && !$scope.top_down) {
                     tempToCards()
                         .then(function(result) {
+                            /*
                             if (!$scope.$$phase) {
                                 $scope.$apply();
                             }
+                            */
                             removeCardsBottom()
                                 .then(function(result) {
                                     $scope.scrollingdisabled = false;
@@ -454,9 +436,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 if (result == 0 && $scope.top_down) {
                     tempToCards()
                         .then(function(result) {
+                            /*
                             if (!$scope.$$phase) {
                                 $scope.$apply();
                             }
+                            */
                             removeCardsTop()
                                 .then(function(result) {
                                     $scope.scrollingdisabled = false;
@@ -604,7 +588,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             $scope.cards = $scope.cards.concat(spliced);
             deferred.resolve(amount);
         } else {
-            //console.log('none removed');
             deferred.resolve(0);
         }
         return deferred.promise;
@@ -618,9 +601,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         if (amount > 0 && !extremity) {
             console.log('removeCardsTop!: ' + amount);
             content_adjust = true;
-            if (!$scope.top_down) {
-
-            }
             if (!$scope.top_down) {
                 $scope.cards = $filter('orderBy')($scope.cards, 'updatedAt');
             } else {
@@ -650,7 +630,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             } else {
                 $scope.cards = $filter('orderBy')($scope.cards, 'updatedAt');
             }
-
             content_adjust = true;
             var removed_cards_bottom_temp = $scope.cards.splice(0, amount);
             console.log(removed_cards_bottom_temp);
@@ -685,9 +664,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 }, 500);
             }
             first_load = false;
+            /*
             if (!$scope.$$phase) {
                 $scope.$apply();
             }
+            */
         }
         if (obj.location == 'content_cnv') {
             $rootScope.loading_cards = false;
@@ -748,9 +729,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             $('.cropper-hidden').removeClass('cropper-hidden');
         }
     });
-
-
-
 
 
     // Find the conversation id.
@@ -1081,111 +1059,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         return deferred.promise;
     };
 
-    /*
-    getFollowingUpdate = function() {
-        if (!$rootScope.loading_cards) {
-            $scope.cards_temp = [];
-            $rootScope.loading_cards = true;
-            var deferred = $q.defer();
-            var promises = [];
-            var followed = UserData.getUser().following;
-            var last_card;
-            if ($scope.cards.length > 0) {
-                var sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
-                // newest card
-                last_card = sort_card[sort_card.length - 1].updatedAt;
-            }
-            var val = { ids: followed, amount: NUM_TO_LOAD, last_card: last_card };
-            var prom1 = Conversations.updateFeed(val)
-                .then(function(res) {
-                    if (res.data.cards.length > 0) {
-                        res.data.cards.map(function(key, array) {
-                            // Ckeck that this card does not already exist in scope.cards
-                            if (General.findWithAttr($scope.cards, '_id', key._id) < 0) {
-                                // Get the conversation for this card
-                                var conversation_pos = General.nestedArrayIndexOfValue(res.data.conversations, 'admin', key.user);
-                                var conversation = res.data.conversations[conversation_pos];
-                                // Store the original characters of the card.
-                                key.original_content = key.content;
-                                // Get the user name for the user id
-                                key.user_name = conversation.conversation_name;
-                                key.avatar = conversation.conversation_avatar;
-                                key.following = true;
-                                // Load any images offScreen
-                                $scope.cards_temp.push(key);
-                            }
-                        });
-                    } else {
-                        //console.log('NO MORE RECORDS');
-                    }
-                }).catch(function(error) {
-                    console.log(error);
-                });
-            promises.push(prom1);
-            // All the users contacts have been mapped.
-            $q.all(promises).then(function() {
-                $scope.cards_temp.map(function(key, array) {
-                    $scope.cards.push(key);
-                });
-                //$rootScope.loading_cards = false;
-            });
-            return deferred.promise;
-        }
-    };
-    */
-
-    /*
-    // TODO - If not following anyone suggest follow?
-    getFollowing = function() {
-        if (!$rootScope.loading_cards) {
-            $scope.cards_temp = [];
-            $rootScope.loading_cards = true;
-            var deferred = $q.defer();
-            var promises = [];
-            var followed = UserData.getUser().following;
-            var last_card;
-            if ($scope.cards.length > 0) {
-                var sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
-                last_card = sort_card[0].updatedAt;
-            } else {
-                last_card = General.getISODate();
-            }
-            var val = { ids: followed, amount: NUM_TO_LOAD, last_card: last_card };
-            var prom1 = Conversations.getFeed(val)
-                .then(function(res) {
-                    if (res.data.cards.length > 0) {
-                        res.data.cards.map(function(key, array) {
-                            // Get the conversation for this card
-                            var conversation_pos = General.nestedArrayIndexOfValue(res.data.conversations, 'admin', key.user);
-                            var conversation = res.data.conversations[conversation_pos];
-                            // Store the original characters of the card.
-                            key.original_content = key.content;
-                            // Get the user name for the user id
-                            key.user_name = conversation.conversation_name;
-                            key.avatar = conversation.conversation_avatar;
-                            key.following = true;
-                            // Load any images offScreen
-                            $scope.cards_temp.push(key);
-                        });
-                    } else {
-                        //console.log('NO MORE RECORDS');
-                        $rootScope.pageLoading = false;
-                    }
-                });
-            promises.push(prom1);
-            // All the users contacts have been mapped.
-            $q.all(promises).then(function() {
-                $scope.cards_temp.map(function(key, array) {
-                    $scope.cards.push(key);
-                });
-                //$rootScope.loading_cards = false;
-                //scroll_direction = "top";
-            });
-            return deferred.promise;
-        }
-    };
-    */
-
     updateCardsUser = function(arr, user, user_name, avatar) {
         array = $scope[arr];
         if (array.length > 0) {
@@ -1245,17 +1118,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 //content_adjust = true;
                 $scope.cards = $scope.cards.concat(arr, spliced);
                 checkNext();
-
-
                 $scope.$broadcast("items_changed", 'top');
-
-                /*
-                var spliced = $scope.removed_cards_top.splice(0, MAX_OUT_BOUNDS); 
-                console.log(spliced);
-                $scope.cards = $scope.cards.concat(arr, spliced);
-                //$scope.removed_cards_top = [];
-                $scope.$broadcast("items_changed", 'top');
-                */
             } else {
                 $scope.cards = $scope.cards.concat(arr);
                 $scope.$broadcast("items_changed", 'top');
@@ -1269,16 +1132,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var cards_new = [];
         console.log('getCardsUpdate: ' + destination + ' : ' + $rootScope.loading_cards + ', ' + $rootScope.loading_cards_offscreen);
         if (!$rootScope.loading_cards) {
-            //if (destination == 'cards') {
             $rootScope.loading_cards = true;
-            //} else if (destination == 'cache') {
-            //    $rootScope.loading_cards_offscreen = true;
-            //}
-            //$rootScope.loading_cards = true;
             var last_card;
             var operand;
             var load_amount;
-            //if (destination == 'cards') {
             if ($scope.cards.length > 0) {
                 var all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
                 var sort_card = $filter('orderBy')(all_cards, 'updatedAt');
@@ -1290,21 +1147,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 last_card = General.getISODate();
                 operand = '$lt';
             }
-            //}
-            /*else if (destination == 'cache') {
-                if ($scope.cards_temp.length > 0) {
-                    var sort_card = $filter('orderBy')($scope.cards_temp, 'updatedAt');
-                    last_card = sort_card[0].updatedAt;
-                    operand = '$lt';
-                    load_amount = NUM_TO_LOAD;
-                } else {
-                    var sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
-                    last_card = sort_card[0].updatedAt;
-                    load_amount = NUM_TO_LOAD;
-                    operand = '$lt';
-                }
-            }
-            */
             var val = { id: id, amount: load_amount, last_card: last_card, operand: operand };
             console.log(val);
             var prom1 = Conversations.getConversationCards(val)
@@ -1363,84 +1205,27 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
         console.log('getFollowing : ' + destination + ' : ' + $rootScope.loading_cards + ', ' + $rootScope.loading_cards_offscreen);
         if (!$rootScope.loading_cards_offscreen) {
-            //if (destination == 'cards') {
-            //    $rootScope.loading_cards = true;
-            //} else if (destination == 'cache') {
             $rootScope.loading_cards_offscreen = true;
-            //}
-
-
-            //if (!$rootScope.loading_cards) {
-            // $scope.cards_temp = [];
-            //$rootScope.loading_cards = true;
-
             var followed = UserData.getUser().following;
             var last_card;
             var operand;
             var load_amount;
             var sort_card;
 
-            console.log($scope.cards_temp.length);
-            console.log($scope.cards.length);
-
             if ($scope.cards.length > 0) {
                 // Only get newer than temp but check removed cards
                 var all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
-
                 sort_card = $filter('orderBy')(all_cards, 'updatedAt');
                 last_card = sort_card[0].updatedAt;
                 console.log(last_card);
                 operand = '$lt';
                 load_amount = NUM_TO_LOAD;
-                /*
-                } else if ($scope.cards.length > 0) {
-                    // load up
-                    sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
-                    last_card = sort_card[0].updatedAt;
-                    load_amount = NUM_TO_LOAD;
-                    operand = '$lt';
-                    */
             } else {
                 console.log('first_load');
                 load_amount = NUM_TO_LOAD;
                 last_card = General.getISODate();
                 operand = '$lt';
             }
-
-            /*
-            if ($scope.cards_temp.length > 0) {
-                // Only get newer than temp but check removed cards
-                sort_card = $filter('orderBy')($scope.cards_temp, 'updatedAt', true);
-                console.log(JSON.stringify(sort_card));
-                last_card = sort_card[sort_card.length - 1].updatedAt;
-                operand = '$lt';
-                load_amount = NUM_TO_LOAD;
-            } else if ($scope.cards.length > 0) {
-                // load up
-                sort_card = $filter('orderBy')($scope.cards, 'updatedAt', true);
-                //sort_card = $scope.cards;
-                console.log(JSON.stringify(sort_card));
-                last_card = sort_card[sort_card.length - 1].updatedAt;
-                console.log(JSON.stringify(last_card));
-                load_amount = NUM_TO_LOAD;
-                operand = '$lt';
-            } else {
-                console.log('first_load');
-                load_amount = NUM_TO_LOAD;
-                last_card = General.getISODate();
-                operand = '$lt';
-            }
-            */
-
-            /*
-            if ($scope.cards.length > 0) {
-                var sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
-                last_card = sort_card[0].updatedAt;
-            } else {
-                last_card = General.getISODate();
-            }
-            */
-            //var val = { ids: followed, amount: NUM_TO_LOAD, last_card: last_card };
             var val = { ids: followed, amount: load_amount, last_card: last_card, operand: operand };
             console.log(val);
             var prom1 = Conversations.getFeed(val)
@@ -1473,11 +1258,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             promises.push(prom1);
             // All the users contacts have been mapped.
             $q.all(promises).then(function() {
-                /*
-                $scope.cards_temp.map(function(key, array) {
-                    $scope.cards.push(key);
-                });
-                */
                 console.log($scope.cards_temp);
                 console.log('getCards fin');
                 deferred.resolve();
@@ -1491,76 +1271,25 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var promises = [];
         console.log('getCards: ' + destination + ' : ' + $rootScope.loading_cards + ', ' + $rootScope.loading_cards_offscreen);
         if (!$rootScope.loading_cards_offscreen) {
-            //if (destination == 'cards') {
-            //    $rootScope.loading_cards = true;
-            //} else if (destination == 'cache') {
+
             $rootScope.loading_cards_offscreen = true;
-            //}
             var last_card;
             var operand;
             var load_amount;
             var sort_card;
-            /*
-            if (destination == 'cards') {
-                if ($scope.cards.length > 0) {
-                    var sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
-                    last_card = sort_card[0].updatedAt;
-                    operand = '$lt';
-                    load_amount = NUM_TO_LOAD;
-                } else {
-                    load_amount = INIT_NUM_TO_LOAD;
-                    last_card = General.getISODate();
-                    operand = '$lt';
-                }
-            } else*/
-            //if (destination == 'cache') {
-
             if ($scope.cards.length > 0) {
                 // Only get newer than temp but check removed cards
                 var all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
-
                 sort_card = $filter('orderBy')(all_cards, 'updatedAt');
                 last_card = sort_card[0].updatedAt;
-                console.log(last_card);
                 operand = '$lt';
                 load_amount = NUM_TO_LOAD;
-                /*
-                } else if ($scope.cards.length > 0) {
-                    // load up
-                    sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
-                    last_card = sort_card[0].updatedAt;
-                    load_amount = NUM_TO_LOAD;
-                    operand = '$lt';
-                    */
             } else {
                 console.log('first_load');
                 load_amount = NUM_TO_LOAD;
                 last_card = General.getISODate();
                 operand = '$lt';
             }
-            /*
-            console.log($scope.cards_temp.length);
-            console.log($scope.cards.length);
-            if ($scope.cards_temp.length > 0) {
-                // Only get newer than temp but check removed cards
-                sort_card = $filter('orderBy')($scope.cards_temp, 'updatedAt');
-                last_card = sort_card[0].updatedAt;
-                operand = '$lt';
-                load_amount = NUM_TO_LOAD;
-            } else if ($scope.cards.length > 0) {
-                // load up
-                sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
-                last_card = sort_card[0].updatedAt;
-                load_amount = NUM_TO_LOAD;
-                operand = '$lt';
-            } else {
-                console.log('first_load');
-                load_amount = NUM_TO_LOAD;
-                last_card = General.getISODate();
-                operand = '$lt';
-            }
-            */
-            //}
             var val = { id: id, amount: load_amount, last_card: last_card, operand: operand };
             console.log(val);
             var prom1 = Conversations.getConversationCards(val)
@@ -1589,6 +1318,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         }
                     } else {
                         console.log('NO MORE RECORDS');
+                        $rootScope.pageLoading = false;
                         $rootScope.loading_cards = false;
                         $rootScope.loading_cards_offscreen = false;
                         no_more_records = true;
@@ -1616,65 +1346,27 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var promises = [];
         console.log('getPublicCards: ' + destination + ' : ' + $rootScope.loading_cards + ', ' + $rootScope.loading_cards_offscreen);
         if (!$rootScope.loading_cards_offscreen) {
-            //if (destination == 'cards') {
-            //$rootScope.loading_cards = true;
-            //} else if (destination == 'cache') {
             $rootScope.loading_cards_offscreen = true;
-            //}
             var last_card;
             var operand;
             var load_amount;
             var sort_card;
-            /*
-            if (destination == 'cards') {
-                if ($scope.cards.length > 0) {
-                    var all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
-                    //var sort_card = $filter('orderBy')(all_cards, 'updatedAt');
-
-                    var sort_card = $filter('orderBy')(all_cards, 'updatedAt', true);
-                    last_card = sort_card[0].updatedAt;
-                    console.log(last_card);
-                    operand = '$lt';
-                    load_amount = NUM_TO_LOAD;
-                } else {
-                    load_amount = INIT_NUM_TO_LOAD;
-                    last_card = General.getISODate();
-                    operand = '$lt';
-                }
-            } else*/
-            //if (destination == 'cache') {
-            // Check if top_down
-
             console.log($scope.cards_temp.length);
             console.log($scope.cards.length);
-            //if ($scope.cards_temp.length > 0) {
             if ($scope.cards.length > 0) {
                 // Only get newer than temp but check removed cards
                 var all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
-
                 sort_card = $filter('orderBy')(all_cards, 'updatedAt');
                 last_card = sort_card[0].updatedAt;
                 console.log(last_card);
                 operand = '$lt';
                 load_amount = NUM_TO_LOAD;
-                /*
-                } else if ($scope.cards.length > 0) {
-                    // load up
-                    sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
-                    last_card = sort_card[0].updatedAt;
-                    load_amount = NUM_TO_LOAD;
-                    operand = '$lt';
-                    */
             } else {
                 console.log('first_load');
                 load_amount = NUM_TO_LOAD;
                 last_card = General.getISODate();
                 operand = '$lt';
             }
-            //}
-            //var val = { id: id, amount: load_amount, last_card: last_card, operand: operand };
-            //console.log(val);
-            //var prom1 = Conversations.getConversationCards(val)
             var val = { id: id, amount: NUM_TO_LOAD, last_card: last_card, operand: operand };
             var prom1 = Conversations.getPublicConversationCards(val)
                 .then(function(res) {
@@ -1729,19 +1421,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var promises = [];
         var cards_new = [];
         if (!$rootScope.loading_cards) {
-            //$scope.cards_temp = [];
             $rootScope.loading_cards = true;
             var last_card;
             var operand;
             if ($scope.cards.length > 0) {
-                //var sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
-
                 var all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
                 var sort_card = $filter('orderBy')(all_cards, 'updatedAt');
-                //var sort_card = $filter('orderBy')(all_cards, 'updatedAt');
-                //last_card = sort_card[sort_card.length - 1].updatedAt;
-                //load_amount = NUM_TO_LOAD;
-
                 last_card = sort_card[sort_card.length - 1].updatedAt;
                 operand = '$gt';
             } else {
@@ -1770,7 +1455,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                         key.avatar = user.avatar;
                                         // Store the original characters of the card.
                                         key.original_content = key.content;
-                                        //$scope.cards_temp.push(key);
                                         cards_new.push(key);
                                     });
                                 promises.push(prom3);
@@ -1781,7 +1465,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                 key.avatar = user.avatar;
                                 // Store the original characters of the card.
                                 key.original_content = key.content;
-                                //$scope.cards_temp.push(key);
                                 cards_new.push(key);
                             }
                         }));
@@ -1790,11 +1473,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     }
                     // All the cards have been mapped.
                     $q.all(promises).then(function() {
-                        /*
-                        $scope.cards_temp.map(function(key, array) {
-                            $scope.cards.push(key);
-                        });
-                        */
                         var sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
                         last_card = sort_card[sort_card.length - 1];
                         //UserData.conversationsLatestCardAdd(id, last_card);

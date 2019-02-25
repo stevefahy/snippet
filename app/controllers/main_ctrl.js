@@ -286,7 +286,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     // NOTIFICATION for private conversation.
     $rootScope.$on('PRIVATE_CONVERSATION_CREATED', function(event, msg) {
-        //console.log('PRIVATE_CONVERSATION_CREATED');
+        console.log('PRIVATE_CONVERSATION_CREATED');
         // TODO - Show message to user that they have been added to a conversation.
         if (msg.admin != UserData.getUser()._id) {
             // Add the admin (creator of the conversation to contacts)
