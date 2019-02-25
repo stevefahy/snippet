@@ -11,7 +11,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     var reduce_height = false;
     var decrease_percent = 0;
 
-    var JPEG_COMPRESSION = 0.8;
+    var JPEG_COMPRESSION = 0.7;
 
     $rootScope.crop_on = false;
 
