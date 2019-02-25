@@ -360,19 +360,38 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         if ($scope.cards_temp.length > 0 && !temp_working) {
             temp_working = true;
             var amount = NUM_UPDATE_DISPLAY;
+            var cards_to_move;
             if ($scope.cards.length == 0) {
                 amount = NUM_UPDATE_DISPLAY_INIT;
             }
             // If content is being updated.
             content_adjust = true;
             if (!$scope.top_down) {
-                var cards_to_move = $scope.cards_temp.splice(0, amount);
+                cards_to_move = $scope.cards_temp.splice(0, amount);
             } else {
-                var cards_to_move = $scope.cards_temp.splice(0, amount);
+                cards_to_move = $scope.cards_temp.splice(0, amount);
 
             }
             console.log(cards_to_move);
-            $scope.cards = $scope.cards.concat(cards_to_move);
+
+            var t0 = performance.now();
+
+            //$scope.cards = $scope.cards.concat(cards_to_move);
+            //0.024999957531690598 milliseconds.
+            //0.019999919459223747 milliseconds.
+            //0.07499998901039362 milliseconds.
+
+            for (var i = 0, len = cards_to_move.length; i < len; i++) {
+                $scope.cards.push(cards_to_move[i]);
+            }
+            //0.014999997802078724 milliseconds.
+            //0.020000035874545574 milliseconds.
+            //0.05000003147870302 milliseconds.
+
+            var t1 = performance.now();
+            console.log("PERFORMANCE: " + (t1 - t0) + " milliseconds.");
+
+
             /*
             if (!$scope.$$phase) {
                 $scope.$apply();
@@ -554,10 +573,17 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             console.log(spliced);
             console.log($scope.removed_cards_top);
             content_adjust = true;
-            $scope.cards = $scope.cards.concat(spliced);
-            if (!$scope.$$phase) {
+
+            //$scope.cards = $scope.cards.concat(spliced);
+
+            for (var i = 0, len = spliced.length; i < len; i++) {
+                $scope.cards.push(spliced[i]);
+            }
+
+            /*if (!$scope.$$phase) {
                 $scope.$apply();
             }
+            */
             deferred.resolve(removed_length);
         } else {
             //console.log('none removed');
@@ -585,7 +611,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             console.log(spliced);
             console.log($scope.removed_cards_bottom);
             content_adjust = true;
-            $scope.cards = $scope.cards.concat(spliced);
+            //$scope.cards = $scope.cards.concat(spliced);
+            for (var i = 0, len = spliced.length; i < len; i++) {
+                $scope.cards.push(spliced[i]);
+            }
+
             deferred.resolve(amount);
         } else {
             deferred.resolve(0);
@@ -610,7 +640,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             var removed_cards_top_temp = $scope.cards.splice(0, amount);
             console.log(removed_cards_top_temp);
             console.log($scope.removed_cards_top);
-            $scope.removed_cards_top = $scope.removed_cards_top.concat(removed_cards_top_temp);
+            //$scope.removed_cards_top = $scope.removed_cards_top.concat(removed_cards_top_temp);
+
+            for (var i = 0, len = removed_cards_top_temp.length; i < len; i++) {
+                $scope.removed_cards_top.push(removed_cards_top_temp[i]);
+            }
+
             deferred.resolve(amount);
         } else {
             console.log('dont removeCardsTop: ' + amount);
@@ -633,7 +668,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             content_adjust = true;
             var removed_cards_bottom_temp = $scope.cards.splice(0, amount);
             console.log(removed_cards_bottom_temp);
-            $scope.removed_cards_bottom = $scope.removed_cards_bottom.concat(removed_cards_bottom_temp);
+            //$scope.removed_cards_bottom = $scope.removed_cards_bottom.concat(removed_cards_bottom_temp);
+            for (var i = 0, len = removed_cards_bottom_temp.length; i < len; i++) {
+                $scope.removed_cards_bottom.push(removed_cards_bottom_temp[i]);
+            }
+
             deferred.resolve(amount);
         } else {
             console.log('dont removeCardsBottom: ' + amount);
@@ -1093,7 +1132,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $scope.cards_temp = [];
                 // If content is being updated.
                 //content_adjust = true;
+
                 $scope.cards = $scope.cards.concat(arr, spliced);
+
+
+
                 checkNext();
 
                 $scope.$broadcast("items_changed", 'bottom');
