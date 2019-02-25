@@ -111,6 +111,7 @@ function isMember(req, res, next) {
         var query = getConversationId(req.params.id);
         query.exec(function(err, conversation) {
             if (err) {
+                res.redirect('/api/login');
                 return console.log(err);
             }
             var user_pos = findWithAttr(conversation.participants, '_id', req.principal._id);
@@ -144,9 +145,11 @@ function isLoggedIn(req, res, next) {
             // Authenticated, continue.
             return next();
         } catch (err) {
+            res.redirect('/api/login');
             //console.log('ERROR when parsing access token.', err);
         }
     }
+    res.redirect('/api/login');
     return res.status(401).json({ error: 'Invalid access token!' });
 }
 
