@@ -166,7 +166,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     }
 
     // scroll listener throttled.
-    var myHeavyFunction = throttle(function() {
+    //var myHeavyFunction = throttle(function() {
+    var myHeavyFunction = function() {
         var currentScroll = $(this).scrollTop();
         var maxScroll = this.scrollHeight - this.clientHeight;
         var scrolled = (currentScroll / maxScroll) * 100;
@@ -202,7 +203,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 }
             }
         }
-    }, 1);
+    //}, 1);
+};
 
     checkBoundary = function(scrolled2) {
 
@@ -238,8 +240,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var currentScroll = $(this).scrollTop();
         var maxScroll = this.scrollHeight - this.clientHeight;
         var scrolled2 = (currentScroll / maxScroll) * 100;
-
-        checkBoundary(scrolled2);
+        if(scrolled2 > 90 || scrolled2 < 10){
+            checkBoundary(scrolled2);
+        }
+        
 
     }
 
@@ -688,7 +692,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log(obj);
         console.log('all images loaded: ' + obj.location + ' : ' + obj.id);
         // Check if first load.
+        console.log($scope.cards.length);
         if ($scope.cards.length == 0) {
+
             tempToCards();
         }
         // Check if first load of content_cnv
@@ -1797,7 +1803,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     $scope.inviewoptions = { offset: [100, 0, 100, 0] };
-
+/*
     $scope.lineInView = function(data, id) {
         if (data) {
             $('#ce' + id).removeClass('outview');
@@ -1805,6 +1811,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             $('#ce' + id).addClass('outview');
         }
     };
+    */
 
 
     // START - find the conversation id

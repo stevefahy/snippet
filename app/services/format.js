@@ -1035,6 +1035,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     }
 
     this.contentChanged = function(content, elem) {
+        console.log(content);
+        console.log(elem);
         if (!self.paste_in_progress) {
             self.markyCheck(content, elem);
         } else {

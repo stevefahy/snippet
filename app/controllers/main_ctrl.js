@@ -69,7 +69,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             var newObserver = new IntersectionObserver(intersectionCallback, $scope.observerOptions);
             //console.log($scope.observerOptions);
             observers.push(newObserver);
-            newObserver.observe(target);
+            //newObserver.observe(target);
         });
 
     };

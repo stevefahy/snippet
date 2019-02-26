@@ -21,21 +21,26 @@
 
     </div>
     <!-- Preloading offscreen -->
-
+<!--
     <div class="content_cnv" in-view-container ng-class="{ 'content_cnv_conv': !feed, 'content_cnv_hide_footer': hide_footer, 'content_cnv_no_footer': no_footer}" scroll-to-top-when="items_changed">
-        <!--
-        <div infinite-scroll="infiniteScrollx" infinite-scroll-immediate-check='false' infinite-scroll-distance='.5' infinite-scroll-parent="true" infinite-scroll-down="{top_down}" infinite-scroll-disabled='scrollingdisabled'>-->
+    
         <div id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : top_down | limitTo:total_to_display track by card._id" on-finish-render="ngRepeatFinished" in-view="lineInView($inview, card._id)" in-view-options="inviewoptions" ng-attr-id="{{ 'card_' + card._id }}" class="card_temp">
+        -->
+
+        <div class="content_cnv" ng-class="{ 'content_cnv_conv': !feed, 'content_cnv_hide_footer': hide_footer, 'content_cnv_no_footer': no_footer}" scroll-to-top-when="items_changed">
+
+           <div id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : top_down" on-finish-render="ngRepeatFinished" ng-attr-id="card_{{::card._id }}" class="card_temp">
+
             <div id="user">
-                <img ng-if="card.avatar!='default'" alt="" class="card_avatar" ng-src="{{card.avatar}}" />
-                <img ng-if="card.avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="card_avatar" />
-                <div class="username">{{card.user_name}}</div>
-                <div ng-if="card.user == currentUser._id" class="edit">
-                    <div class="dropdown" ng-attr-id="{{ 'cem' + card._id }}">
+                <img ng-if="::card.avatar!='default'" alt="" class="card_avatar" ng-src="{{::card.avatar}}" />
+                <img ng-if="::card.avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="card_avatar" />
+                <div class="username">{{::card.user_name}}</div>
+                <div ng-if="::card.user == currentUser._id" class="edit">
+                    <div class="dropdown" ng-attr-id="cem{{::card._id}}">
                         <div ng-click="dropDownToggle('cem'+card._id)" class="dropbtn">
                             <i class="material-icons" id="mi-more_vert">&#xE5D4;</i>
                         </div>
-                        <div ng-attr-id="myDropdown{{ 'cem' + card._id }}" class="dropdown-content">
+                        <div ng-attr-id="myDropdowncem{{card._id}}" class="dropdown-content">
                             <div ng-click="deleteCard(card._id, card.conversationId)">Delete</div>
                         </div>
                     </div>
@@ -43,22 +48,22 @@
             </div>
             <div class=" resize-container" id="conversation_part" ng-init="disableCheckboxes(card._id); cardCreated();">
                 <form class="form-horizontal">
-                    <div class='ce' ng-attr-id="{{ 'ce' + card._id }}" ng-attr-contenteditable="{{card.user == currentUser._id}}" ng-attr-editable="{{card.user == currentUser._id}}" ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id);" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce'+card._id);" ng-blur="getBlur(card._id, card, currentUser)" ng-model="card.content" ng-model-options="{ debounce: 1 }"></div>
+                    <div class='ce' ng-attr-id="ce{{::card._id}}" ng-attr-contenteditable="{{::card.user == currentUser._id}}" ng-attr-editable="{{::card.user == currentUser._id}}" ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id);" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce'+card._id);" ng-blur="getBlur(card._id, card, currentUser)" ng-model="::card.content" ng-model-options="{ debounce: 1 }"></div>
                     <input id="upload-input" type="file" name="uploads[]" multiple="multiple">
                     <!--
                     <input ng-attr-id="{{ 'upload-inputce' + card._id }}" type="file" name="uploads[]" multiple="multiple">-->
 
-                    <button ng-attr-id="{{ 'upload-triggerce' + card._id }}" class="btn btn-sm upload-btn upload-trigger" type="button" ng-click="uploadFile(card._id, card, currentUser); ">Upload File</button>
+                    <button ng-attr-id="upload-triggerce{{::card._id}}" class="btn btn-sm upload-btn upload-trigger" type="button" ng-click="uploadFile(card._id, card, currentUser); ">Upload File</button>
                 </form>
             </div>
             <div class="card_footer">
                 <div class="c_footer_o">
                     <div class="card_footer_btns">
                         <div class="cf_btn"><i class="material-icons">favorite_border</i></div>
-                        <div class="cf_btn" ng-show="{{card.user != currentUser._id}}" ng-click="follow(card)"><i class="material-icons btn_follow" ng-class="{'following': card.following}">directions_walk</i></div>
+                        <div class="cf_btn" ng-show="{{::card.user != currentUser._id}}" ng-click="follow(card)"><i class="material-icons btn_follow" ng-class="{'following': card.following}">directions_walk</i></div>
                         <div class="cf_btn send"><i class="material-icons send">send</i></div>
-                        <div class="cf_btn"><i class="material-icons edit" ng-class="{'file_edit': {{card.user == currentUser._id}}}">edit</i></div>
-                        <div moment-time-conv="card.updatedAt" id="time"></div>
+                        <div class="cf_btn"><i class="material-icons edit" ng-class="{'file_edit': {{::card.user == currentUser._id}}}">edit</i></div>
+                        <div moment-time-conv="::card.updatedAt" id="time"></div>
                     </div>
                 </div>
                 <div class="likes">7,255 likes</div>
