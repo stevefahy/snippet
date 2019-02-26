@@ -1280,6 +1280,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             var prom1 = Conversations.getFeed(val)
                 .then(function(res) {
                     if (res.data.cards.length > 0) {
+                        no_more_records = false;
                         res.data.cards.map(function(key, array) {
                             // Get the conversation for this card
                             var conversation_pos = General.nestedArrayIndexOfValue(res.data.conversations, 'admin', key.user);
@@ -1309,6 +1310,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             $q.all(promises).then(function() {
                 console.log($scope.cards_temp);
                 console.log('getCards fin');
+                if(!no_more_records){
+                    $rootScope.$broadcast("ngRepeatFinishedTemp", { temp: "some value" });
+                }
+                
                 deferred.resolve();
             });
             return deferred.promise;
