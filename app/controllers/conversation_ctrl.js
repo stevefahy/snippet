@@ -166,8 +166,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     }
 
     // scroll listener throttled.
-    //var myHeavyFunction = throttle(function() {
-    var myHeavyFunction = function() {
+    var myHeavyFunction = throttle(function() {
+    //var myHeavyFunction = function() {
         var currentScroll = $(this).scrollTop();
         var maxScroll = this.scrollHeight - this.clientHeight;
         var scrolled = (currentScroll / maxScroll) * 100;
@@ -1280,7 +1280,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             var prom1 = Conversations.getFeed(val)
                 .then(function(res) {
                     if (res.data.cards.length > 0) {
-                        no_more_records = false;
+                        //no_more_records = false;
                         res.data.cards.map(function(key, array) {
                             // Get the conversation for this card
                             var conversation_pos = General.nestedArrayIndexOfValue(res.data.conversations, 'admin', key.user);
