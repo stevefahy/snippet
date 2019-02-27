@@ -48,7 +48,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // Numbers of cards to load or display.
     var INIT_NUM_TO_LOAD = 50;
     var NUM_TO_LOAD = 20;
-    var NUM_UPDATE_DISPLAY = 10; //20
+    var NUM_UPDATE_DISPLAY = 20; //20
     var NUM_UPDATE_DISPLAY_INIT = 30;
     // Minimum number of $scope.cards_temp to keep loaded.
     var MIN_TEMP = 40;
@@ -163,8 +163,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log('domUpdated');
         $('#delete_image').remove();
         $timeout(function() {
-        $rootScope.$broadcast("ngRepeatFinishedTemp", { temp: "some value" });
-});
+            $rootScope.$broadcast("ngRepeatFinishedTemp", { temp: "some value" });
+        }, 1000);
     };
 
 
@@ -1275,7 +1275,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
         return deferred.promise;
     };
-
+    var last_card_stored;
     // TODO - If not following anyone suggest follow?
     getFollowing = function(destination) {
         var deferred = $q.defer();
@@ -1304,51 +1304,57 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 last_card = General.getISODate();
                 operand = '$lt';
             }
+
             var val = { ids: followed, amount: load_amount, last_card: last_card, operand: operand };
             console.log(val);
-            var prom1 = Conversations.getFeed(val)
-                .then(function(res) {
-                    if (res.data.cards.length > 0) {
-                        //no_more_records = false;
-                        res.data.cards.map(function(key, array) {
-                            // Get the conversation for this card
-                            var conversation_pos = General.nestedArrayIndexOfValue(res.data.conversations, 'admin', key.user);
-                            var conversation = res.data.conversations[conversation_pos];
-                            // Store the original characters of the card.
-                            key.original_content = key.content;
-                            // Get the user name for the user id
-                            key.user_name = conversation.conversation_name;
-                            key.avatar = conversation.conversation_avatar;
-                            key.following = true;
-                            // Load any images offScreen
-                            $scope.cards_temp.push(key);
-                        });
-                    } else {
-                        //console.log('NO MORE RECORDS');
-                        //$rootScope.pageLoading = false;
-                        console.log('NO MORE RECORDS');
-                        $rootScope.loading_cards = false;
-                        $rootScope.loading_cards_offscreen = false;
-                        no_more_records = true;
+            if (last_card != last_card_stored) {
+                last_card_stored = last_card;
+                var prom1 = Conversations.getFeed(val)
+                    .then(function(res) {
+                        if (res.data.cards.length > 0) {
+                            //no_more_records = false;
+                            res.data.cards.map(function(key, array) {
+                                // Get the conversation for this card
+                                var conversation_pos = General.nestedArrayIndexOfValue(res.data.conversations, 'admin', key.user);
+                                var conversation = res.data.conversations[conversation_pos];
+                                // Store the original characters of the card.
+                                key.original_content = key.content;
+                                // Get the user name for the user id
+                                key.user_name = conversation.conversation_name;
+                                key.avatar = conversation.conversation_avatar;
+                                key.following = true;
+                                // Load any images offScreen
+                                $scope.cards_temp.push(key);
+                            });
+                        } else {
+                            //console.log('NO MORE RECORDS');
+                            //$rootScope.pageLoading = false;
+                            console.log('NO MORE RECORDS');
+                            $rootScope.loading_cards = false;
+                            $rootScope.loading_cards_offscreen = false;
+                            no_more_records = true;
+                        }
+                    }).catch(function(error) {
+                        console.log(error);
+                    });
+                promises.push(prom1);
+                // All the users contacts have been mapped.
+                $q.all(promises).then(function() {
+                    console.log($scope.cards_temp);
+                    console.log('getCards fin');
+                    /*
+                    if (!no_more_records) {
+                        $rootScope.$broadcast("ngRepeatFinishedTemp", { temp: "some value" });
                     }
-                }).catch(function(error) {
-                    console.log(error);
-                });
-            promises.push(prom1);
-            // All the users contacts have been mapped.
-            $q.all(promises).then(function() {
-                console.log($scope.cards_temp);
-                console.log('getCards fin');
-                /*
-                if (!no_more_records) {
-                    $rootScope.$broadcast("ngRepeatFinishedTemp", { temp: "some value" });
-                }
-                */
+                    */
 
-                deferred.resolve();
-            });
-            return deferred.promise;
+                    deferred.resolve();
+                });
+                
+            }
+
         }
+         return deferred.promise;
     };
 
     getCards = function(id, destination) {
