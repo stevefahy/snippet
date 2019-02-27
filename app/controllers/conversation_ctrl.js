@@ -431,7 +431,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             */
             temp_working = false;
             // Check if more temp cards need to be loaded.
-            //checkNext();
+            checkNext();
             deferred.resolve(true);
         } else {
             console.log('no more cards_temp');

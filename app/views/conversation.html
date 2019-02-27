@@ -22,7 +22,7 @@
      <!--
         <div do-repeat="cards_temp"></div>
         -->
-        <div id="conversation_card" ng-repeat="cardy in cards_temp" on-finish-render="ngRepeatFinished">
+        <div id="conversation_card" ng-repeat="cardy in cards_temp" on-finish-render="ngRepeatFinishedTemp">
                     <div class='ce'   contenteditable="true" ng-model="::cardy.content"></div>
         </div>
    
