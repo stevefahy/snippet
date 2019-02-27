@@ -19,15 +19,12 @@
             <div class='ce' ng-attr-id="{{ 'ce' + card._id }}" ng-model="card.content" ng-model-options="{ debounce: 1000 }"></div>
         </div>
     -->
-     
- <div do-repeat="cards_temp"></div>
-
-
-<!--
+     <!--
+        <div do-repeat="cards_temp"></div>
+        -->
         <div id="conversation_card" ng-repeat="cardy in cards_temp" on-finish-render="ngRepeatFinished">
                     <div class='ce'   contenteditable="true" ng-model="::cardy.content"></div>
         </div>
-    -->
    
     </div>
     <!-- Preloading offscreen -->

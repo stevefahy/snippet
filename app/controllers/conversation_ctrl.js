@@ -431,7 +431,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             */
             temp_working = false;
             // Check if more temp cards need to be loaded.
-            checkNext();
+            //checkNext();
             deferred.resolve(true);
         } else {
             console.log('no more cards_temp');
@@ -514,6 +514,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log('loading_cards: ' + $rootScope.loading_cards);
         console.log('loading_cards_offscreen: ' + $rootScope.loading_cards_offscreen);
         console.log('scrollingdisabled: ' + $scope.scrollingdisabled);
+        console.log('$scope.cards_temp.length: ' + $scope.cards_temp.length);
         var id = Conversations.getConversationId();
         if (Conversations.getConversationType() == 'feed') {
             if ($scope.cards_temp.length < MIN_TEMP) {
