@@ -162,9 +162,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     domUpdated = function() {
         console.log('domUpdated');
         $('#delete_image').remove();
-
+        $timeout(function() {
         $rootScope.$broadcast("ngRepeatFinishedTemp", { temp: "some value" });
-
+});
     };
 
 
