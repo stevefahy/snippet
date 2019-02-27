@@ -48,12 +48,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // Numbers of cards to load or display.
     var INIT_NUM_TO_LOAD = 50;
     var NUM_TO_LOAD = 20;
-    var NUM_UPDATE_DISPLAY = 10;//20
+    var NUM_UPDATE_DISPLAY = 10; //20
     var NUM_UPDATE_DISPLAY_INIT = 30;
     // Minimum number of $scope.cards_temp to keep loaded.
     var MIN_TEMP = 40;
     // The maximum number of cards to keep out of bounds.
-    var MAX_OUT_BOUNDS = 10;//10
+    var MAX_OUT_BOUNDS = 10; //10
 
     $rootScope.pageLoading = true;
     $rootScope.loading_cards = false;
@@ -90,22 +90,41 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // Use the urls username param from the route to load the conversation.
     var username = $routeParams.username;
 
+
     // DEBUGGING
+    $rootScope.$watch('debug', function(newStatus) {
+        var unbinddb1;
+        var unbinddb2;
+        var unbinddb3;
+        var unbinddb4;
+        if (newStatus) {
+            unbinddb1 = $scope.$watch('cards_temp.length', function(newStatus) {
+                $rootScope.cards_temp_length = newStatus;
+            });
 
-    $scope.$watch('cards_temp.length', function(newStatus) {
-        $rootScope.cards_temp_length = newStatus;
-    });
+            unbinddb2 = $scope.$watch('removed_cards_top.length', function(newStatus) {
+                $rootScope.removed_cards_top_length = newStatus;
+            });
 
-    $scope.$watch('removed_cards_top.length', function(newStatus) {
-        $rootScope.removed_cards_top_length = newStatus;
-    });
+            unbinddb3 = $scope.$watch('removed_cards_bottom.length', function(newStatus) {
+                $rootScope.removed_cards_bottom_length = newStatus;
+            });
 
-    $scope.$watch('removed_cards_bottom.length', function(newStatus) {
-        $rootScope.removed_cards_bottom_length = newStatus;
-    });
-
-    $scope.$watch('scrollingdisabled', function(newStatus) {
-        $rootScope.scrollingdisabled_watch = newStatus;
+            unbinddb4 = $scope.$watch('scrollingdisabled', function(newStatus) {
+                $rootScope.scrollingdisabled_watch = newStatus;
+            });
+        } else {
+            $rootScope.cards_temp_length = 'NA';
+            $rootScope.removed_cards_top_length = 'NA';
+            $rootScope.removed_cards_bottom_length = 'NA';
+            $rootScope.scrollingdisabled_watch = 'NA';
+            if (unbinddb1 != undefined) {
+                unbinddb1();
+                unbinddb2();
+                unbinddb3();
+                unbinddb4();
+            }
+        }
     });
 
 
@@ -140,6 +159,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     });
 
 
+    domUpdated = function() {
+        console.log('domUpdated');
+        $('#delete_image').remove();
+
+        $rootScope.$broadcast("ngRepeatFinishedTemp", { temp: "some value" });
+
+    };
+
+
     // scroll listener throttle.as long as it continues to be invoked, raise on every interval
     function throttle(func, interval) {
         var timeout;
@@ -167,7 +195,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // scroll listener throttled.
     var myHeavyFunction = throttle(function() {
-    //var myHeavyFunction = function() {
+        //var myHeavyFunction = function() {
         var currentScroll = $(this).scrollTop();
         var maxScroll = this.scrollHeight - this.clientHeight;
         var scrolled = (currentScroll / maxScroll) * 100;
@@ -203,8 +231,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 }
             }
         }
-    //}, 1);
-};
+    }, 1);
+    //};
 
     checkBoundary = function(scrolled2) {
 
@@ -240,10 +268,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var currentScroll = $(this).scrollTop();
         var maxScroll = this.scrollHeight - this.clientHeight;
         var scrolled2 = (currentScroll / maxScroll) * 100;
-        if(scrolled2 > 90 || scrolled2 < 10){
+        if (scrolled2 > 90 || scrolled2 < 10) {
             checkBoundary(scrolled2);
         }
-        
+
 
     }
 
@@ -1310,10 +1338,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             $q.all(promises).then(function() {
                 console.log($scope.cards_temp);
                 console.log('getCards fin');
-                if(!no_more_records){
+                /*
+                if (!no_more_records) {
                     $rootScope.$broadcast("ngRepeatFinishedTemp", { temp: "some value" });
                 }
-                
+                */
+
                 deferred.resolve();
             });
             return deferred.promise;
@@ -1808,15 +1838,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     $scope.inviewoptions = { offset: [100, 0, 100, 0] };
-/*
-    $scope.lineInView = function(data, id) {
-        if (data) {
-            $('#ce' + id).removeClass('outview');
-        } else {
-            $('#ce' + id).addClass('outview');
-        }
-    };
-    */
+    /*
+        $scope.lineInView = function(data, id) {
+            if (data) {
+                $('#ce' + id).removeClass('outview');
+            } else {
+                $('#ce' + id).addClass('outview');
+            }
+        };
+        */
 
 
     // START - find the conversation id

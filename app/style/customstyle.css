@@ -3061,8 +3061,16 @@ span.after_image {
 }
 
 .load_off_screen {
+
     position: absolute;
-    width: 0px;
+    z-index: -1;
+
+    /*
+    position: absolute;
+    height: 100vh;
+    z-index: 1000;
+    overflow-y: scroll;
+    */
 }
 
 .debug {

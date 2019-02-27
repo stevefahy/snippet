@@ -98,13 +98,13 @@ cardApp.directive('onFinishRender', function($timeout, $rootScope) {
             //console.log(scope.$index);
             //console.log(element);
             //console.log(attr.onFinishRender);
-            console.log('onFinishRender: ' + $rootScope.top_down);
+            //console.log('onFinishRender: ' + $rootScope.top_down);
 
             // ngRepeatFinishedTemp
             if (!$rootScope.deleting_card && ($rootScope.top_down && scope.$last === true) || !$rootScope.deleting_card && !$rootScope.top_down && scope.$first === true) {
                 $timeout(function() {
                     if (attr.onFinishRender == 'ngRepeatFinishedTemp') {
-                        //$rootScope.$broadcast("ngRepeatFinishedTemp", { temp: "some value" });
+                        $rootScope.$broadcast("ngRepeatFinishedTemp", { temp: "some value" });
                     } else {
                         $rootScope.$broadcast("ngRepeatFinished", { temp: "some value" });
                     }
@@ -304,4 +304,90 @@ cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$comp
         }
     };
 }]);
+*/
+
+cardApp.directive("doRepeat", function($compile, $log) {
+    return {
+        restrict: "A",
+        replace: true,
+        transclude: true,
+        scope: {
+            doRepeat: '='
+        },
+        template: "<div></div>",
+        link: function(scope, element, attrs) {
+
+
+
+            scope.$watch('doRepeat', function(newValue, oldValue) {
+                if (newValue) {
+                    //console.log("I see a data change!");
+                    //console.log(element.children());
+                    element.empty();
+                    //console.log(newValue.length);
+                    angular.forEach(newValue, function(value, index) {
+                        //console.log(index + ' : ' + value.content);
+                        //$log.error(value);
+                        if (index == newValue.length - 1) {
+                            element.append("<div>" + value.content + "</div><img id= \"delete_image\" src=\"/assets/images/bee_65.png\" onload=\"domUpdated()\">");
+                        } else {
+                            element.append("<div>" + value.content + "</div>");
+                        }
+
+                    });
+                    //console.log(element.children());
+                    //console.log(template);
+                }
+            }, true);
+
+
+
+
+
+            console.log(scope.doRepeat);
+            if (angular.isArray(scope.doRepeat)) {
+                console.log(angular.isArray(scope.doRepeat));
+                angular.forEach(scope.doRepeat, function(value, index) {
+                    console.log(value);
+                    //$log.error(value);
+                    //element.append("<type type='scope.type['"+index+"]'></type>");
+                });
+            } else if (angular.isObject(scope.type)) {
+                element.append("OBJECT");
+            } else {
+                element.append("<div>{{scope.type}}</div>");
+            }
+            $compile(element.contents())(scope);
+        }
+    };
+});
+
+/*
+cardApp.directive('doRepeat', function($timeout, $rootScope) {
+    return {
+        restrict: 'A',
+        link: function(scope, element, attr) {
+            console.log(scope);
+            //console.log(scope.$index);
+            //console.log(element);
+            console.log(attr.doRepeat);
+            console.log(scope[attr.doRepeat]);
+            //console.log('onFinishRender: ' + $rootScope.top_down);
+
+        scope.$watch(attr.doRepeat, function(value) {
+            //console.log(value);
+            //format = value;
+            //updateTime();
+                        angular.forEach(value, function(value2, index) {
+console.log(value2);
+                //$log.error(value);
+                //element.append("<type type='scope.type['" + index + "]'></type>");
+            });
+        });
+
+            // ngRepeatFinishedTemp
+
+        }
+    };
+});
 */

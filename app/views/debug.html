@@ -1,6 +1,6 @@
 <div ng-controller="debugCtrl">
     <div class="debug_btn">
-        <a ng-click="debug = !debug">
+        <a ng-click="changeDebug()">
         <div ng-show="!debug">
             <i class=" material-icons debug_icon">zoom_in</i>
         </div>
@@ -9,7 +9,7 @@
         </div>
         </a>
     </div>
-    <div ng-show="debug">
+    <div ng-if="debug">
         <div class="debug">
             <button ng-click="pause()">pause</button>
             <button ng-click="resume()">resume</button>
