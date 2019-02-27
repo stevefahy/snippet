@@ -306,6 +306,7 @@ cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$comp
 }]);
 */
 
+
 cardApp.directive("doRepeat", function($compile, $log) {
     return {
         restrict: "A",
@@ -314,24 +315,21 @@ cardApp.directive("doRepeat", function($compile, $log) {
         scope: {
             doRepeat: '='
         },
-        template: "<div></div>",
+        template: '<div ng-transclude=""></div>',
         link: function(scope, element, attrs) {
-
-
-
             scope.$watch('doRepeat', function(newValue, oldValue) {
                 if (newValue) {
                     //console.log("I see a data change!");
                     //console.log(element.children());
-                    element.empty();
+                    //element.empty();
                     //console.log(newValue.length);
                     angular.forEach(newValue, function(value, index) {
                         //console.log(index + ' : ' + value.content);
                         //$log.error(value);
                         if (index == newValue.length - 1) {
-                            element.append("<div>" + value.content + "</div><img id= \"delete_image\" src=\"/assets/images/bee_65.png\" onload=\"domUpdated()\">");
+                            element.append("<div id=\"" + value._id +  "\" ng-transclude>" + value.content + "</div><img id= \"delete_image\" src=\"/assets/images/bee_65.png\" onload=\"domUpdated()\">");
                         } else {
-                            element.append("<div>" + value.content + "</div>");
+                            element.append("<div id=\"" + value._id +  "\">"+ value.content + "</div>");
                         }
 
                     });
@@ -339,11 +337,6 @@ cardApp.directive("doRepeat", function($compile, $log) {
                     //console.log(template);
                 }
             }, true);
-
-
-
-
-
             console.log(scope.doRepeat);
             if (angular.isArray(scope.doRepeat)) {
                 console.log(angular.isArray(scope.doRepeat));
@@ -360,6 +353,54 @@ cardApp.directive("doRepeat", function($compile, $log) {
             $compile(element.contents())(scope);
         }
     };
+});
+
+/*
+cardApp.directive('doRepeat', function(){
+  return {
+    transclude : 'element',
+    compile : function(element, attr, linker){
+      return function($scope, $element, $attr){
+        var myLoop = $attr.lkRepeat,
+            match = myLoop.match(/^\s*(.+)\s+in\s+(.*?)\s*(\s+track\s+by\s+(.+)\s*)?$/),
+            indexString = match[1],
+            collectionString = match[2],
+            parent = $element.parent(),
+            elements = [];
+
+        // $watchCollection is called everytime the collection is modified
+        $scope.$watchCollection(collectionString, function(collection){
+          var i, block, childScope;
+
+          // check if elements have already been rendered
+          if(elements.length > 0){
+            // if so remove them from DOM, and destroy their scope
+            for (i = 0; i < elements.length; i++) {
+              elements[i].el.remove();
+              elements[i].scope.$destroy();
+            };
+            elements = [];
+          }
+
+          for (i = 0; i < collection.length; i++) {
+            // create a new scope for every element in the collection.
+            childScope = $scope.$new();
+            // pass the current element of the collection into that scope
+            childScope[indexString] = collection[i];
+
+            linker(childScope, function(clone){
+              // clone the transcluded element, passing in the new scope.
+              parent.append(clone); // add to DOM
+              block = {};
+              block.el = clone;
+              block.scope = childScope;
+              elements.push(block);
+            });
+          };
+        });
+      }
+    }
+  }
 });
 
 /*
