@@ -231,7 +231,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 }
             }
         }
-    }, 1);
+    });
     //};
 
     checkBoundary = function(scrolled2) {
