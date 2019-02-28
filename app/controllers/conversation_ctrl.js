@@ -73,7 +73,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     var first_load = true;
     var scroll_direction;
-    var temp_working = false;
+    //var temp_working = false;
     var content_adjust = false;
     //var update_adjust = false;
     var last_scrolled;
@@ -238,14 +238,14 @@ var maxScroll;
             //if (dir == 1 && scrolled <= UP_PERCENT) {
             if (scrolled < last_scrolled) {
                 if (scrolled <= UP_PERCENT) {
-                    if (!$scope.scrollingdisabled && !temp_working) {
+                    //if (!$scope.scrollingdisabled && !temp_working) {
                         console.log('FIRE UP!!!');
                         addMoreTop()
                             .then(function(result) {
                                 console.log('AMT END');
                                 scroll_updating = false;
                             });
-                    }
+                    //}
                 }
             }
             //}
@@ -255,14 +255,14 @@ var maxScroll;
             //if (dir == 0 && scrolled >= DOWN_PERCENT) {
             if (scrolled > last_scrolled) {
                 if (scrolled >= DOWN_PERCENT) {
-                    if (!$scope.scrollingdisabled && !temp_working) {
+                    //if (!$scope.scrollingdisabled && !temp_working) {
                         console.log('FIRE DOWN!!!');
                         addMoreBottom()
                             .then(function(result) {
                                 console.log('AMB END');
                                 scroll_updating = false;
                             });
-                    }
+                    //}
                 }
             }
         }
@@ -349,11 +349,13 @@ var maxScroll;
         }, 500);
     };
 
+    /*
     unbindScroll = function() {
         console.log('unbind last_scrolled: ' + last_scrolled);
         $('.content_cnv').unbind('scroll', myHeavyFunction);
         //$('.content_cnv').unbind('scroll', wheelEvent);
     };
+    */
 
     /*
     function scrollBack() {
