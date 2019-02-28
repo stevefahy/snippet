@@ -48,12 +48,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // Numbers of cards to load or display.
     var INIT_NUM_TO_LOAD = 50;
     var NUM_TO_LOAD = 20;
-    var NUM_UPDATE_DISPLAY = 20; //20
-    var NUM_UPDATE_DISPLAY_INIT = 30;
+    var NUM_UPDATE_DISPLAY = 10; //20
+    var NUM_UPDATE_DISPLAY_INIT = 20;//30
     // Minimum number of $scope.cards_temp to keep loaded.
     var MIN_TEMP = 40;
     // The maximum number of cards to keep out of bounds.
-    var MAX_OUT_BOUNDS = 10; //10
+    var MAX_OUT_BOUNDS = 5; //10
 
     $rootScope.pageLoading = true;
     $rootScope.loading_cards = false;
