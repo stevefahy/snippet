@@ -428,21 +428,18 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     // UPLOAD ==================================================================
     uploadClickListen = function(id) {
-
+        /*
         // Added for chrome bug 19/02/19
         if (ua.toLowerCase().indexOf('chrome') > 0) {
-            /*
             doClick = function() {
                 $('#upload-input').click();
             };
             $('#card_' + id).bind('click', doClick);
-            */
         }
-
+          */
         $('#upload-input').click();
         // Unbind the on change event to prevent it from firing twice after first call
         $('#upload-input').unbind();
-
     };
 
     // Save the card while a image is being taken (Android bug)
@@ -465,23 +462,17 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             }
             Android.choosePhoto();
         } else {
-            console.log(ua.toLowerCase());
-
-            if (ua.toLowerCase().indexOf('chrome') > 0) {
-                // Fix for chrome bug
-                //uploadClickListenChrome(id);
-                //$rootScope.$broadcast('uploadFired', id);
-            }
-
             // All browsers except MS Edge
             if (ua.toLowerCase().indexOf('edge') == -1) {
                 uploadClickListen(id);
             }
             $('#upload-input').on('change', function() {
+                /*
                 // Added for chrome bug 19/02/19
                 if (ua.toLowerCase().indexOf('chrome') > 0) {
-                    //$('#card_' + id).unbind('click', doClick);
+                    $('#card_' + id).unbind('click', doClick);
                 }
+                */
 
                 $rootScope.$broadcast('imageUpload', id);
 

@@ -130,13 +130,16 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // When an image is uploaded.
     $scope.$on('imageUpload', function(event, data) {
-        unbindScroll();
+        //unbindScroll();
+        scroll_updating = true;
+
     });
     // When an image is pasted
     $scope.$on('imagePasted', function(event, data) {
         $timeout(function() {
             //rebindScroll();
-            bindScroll();
+            //bindScroll();
+            scroll_updating = false;
         }, 500);
     });
 
