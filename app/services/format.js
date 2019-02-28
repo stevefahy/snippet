@@ -431,10 +431,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
         // Added for chrome bug 19/02/19
         if (ua.toLowerCase().indexOf('chrome') > 0) {
+            /*
             doClick = function() {
                 $('#upload-input').click();
             };
             $('#card_' + id).bind('click', doClick);
+            */
         }
 
         $('#upload-input').click();
@@ -478,7 +480,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             $('#upload-input').on('change', function() {
                 // Added for chrome bug 19/02/19
                 if (ua.toLowerCase().indexOf('chrome') > 0) {
-                    $('#card_' + id).unbind('click', doClick);
+                    //$('#card_' + id).unbind('click', doClick);
                 }
 
                 $rootScope.$broadcast('imageUpload', id);

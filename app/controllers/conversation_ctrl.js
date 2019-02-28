@@ -75,7 +75,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var scroll_direction;
     var temp_working = false;
     var content_adjust = false;
-    var update_adjust = false;
+    //var update_adjust = false;
     var last_scrolled;
     var dir;
     var extremity = false;
@@ -135,7 +135,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // When an image is pasted
     $scope.$on('imagePasted', function(event, data) {
         $timeout(function() {
-            rebindScroll();
+            //rebindScroll();
+            bindScroll();
         }, 500);
     });
 
@@ -148,12 +149,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             createObserver($scope.cards[i]._id);
         }
     };
-
+var maxScroll;
     $scope.$watch('cards.length', function(newStatus) {
         // Debugging
         $rootScope.cards_length = newStatus;
         $timeout(function() {
             upDateObservers();
+            //maxScroll = $('.content_cnv')[0].scrollHeight - $('.content_cnv')[0].clientHeight;
+            console.log('maxScroll: ' + maxScroll);
         }, 100);
 
     });
@@ -163,7 +166,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log('domUpdated');
         $('#delete_image').remove();
         //$timeout(function() {
-            $rootScope.$broadcast("ngRepeatFinishedTemp", { temp: "some value" });
+        $rootScope.$broadcast("ngRepeatFinishedTemp", { temp: "some value" });
         //}, 1000);
     };
 
@@ -192,15 +195,23 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }
         };
     }
-
+    /*
+ var maxScroll;
+     angular.element(document).ready(function () {
+    maxScroll = $('.content_cnv')[0].scrollHeight - $('.content_cnv')[0].clientHeight;
+    console.log(maxScroll);
+    });
+    */
     // scroll listener throttled.
-    var myHeavyFunction = throttle(function() {
-        //var myHeavyFunction = function() {
+    //var myHeavyFunction = throttle(function() {
+    var myHeavyFunction = function() {
         var currentScroll = $(this).scrollTop();
         var maxScroll = this.scrollHeight - this.clientHeight;
         var scrolled = (currentScroll / maxScroll) * 100;
+        console.log('maxScroll: ' + maxScroll);
         console.log(scrolled + ' : ' + last_scrolled);
         console.log('last_scrolled: ' + last_scrolled);
+        /*
         if (scrolled < last_scrolled) {
             dir = 1;
             console.log('up: ' + scrolled + ' : ' + last_scrolled);
@@ -211,72 +222,102 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             console.log('DONT FIRE');
             dir = 2;
         }
+        */
 
+        //last_scrolled = scrolled;
+        console.log('$scope.scrollingdisabled: ' + $scope.scrollingdisabled + ' content_adjust: ' + content_adjust + ' scroll_updating: ' + scroll_updating);
+        if (!scroll_updating) {
+
+                    if (scrolled > 90 || scrolled < 10) {
+            checkBoundary(scrolled);
+        }
+            //if (!$scope.scrollingdisabled && !content_adjust && !scroll_updating) {
+            //if (dir == 1 && scrolled <= UP_PERCENT) {
+            if (scrolled < last_scrolled) {
+                if (scrolled <= UP_PERCENT) {
+                    if (!$scope.scrollingdisabled && !temp_working) {
+                        console.log('FIRE UP!!!');
+                        addMoreTop()
+                            .then(function(result) {
+                                console.log('AMT END');
+                                scroll_updating = false;
+                            });
+                    }
+                }
+            }
+            //}
+
+            //if (!$scope.scrollingdisabled && !content_adjust && !scroll_updating) {
+            //if (!scroll_updating) {
+            //if (dir == 0 && scrolled >= DOWN_PERCENT) {
+            if (scrolled > last_scrolled) {
+                if (scrolled >= DOWN_PERCENT) {
+                    if (!$scope.scrollingdisabled && !temp_working) {
+                        console.log('FIRE DOWN!!!');
+                        addMoreBottom()
+                            .then(function(result) {
+                                console.log('AMB END');
+                                scroll_updating = false;
+                            });
+                    }
+                }
+            }
+        }
         last_scrolled = scrolled;
-
-        if (!$scope.scrollingdisabled && !content_adjust) {
-            if (dir == 1 && scrolled <= UP_PERCENT) {
-                if (!$scope.scrollingdisabled && !temp_working) {
-                    console.log('FIRE UP!!!');
-                    addMoreTop();
-                }
-            }
-        }
-
-        if (!$scope.scrollingdisabled && !content_adjust) {
-            if (dir == 0 && scrolled >= DOWN_PERCENT) {
-                if (!$scope.scrollingdisabled && !temp_working) {
-                    console.log('FIRE DOWN!!!');
-                    addMoreBottom();
-                }
-            }
-        }
-    }, 1);
-    //};
+        //}
+        //}, 1);
+    };
 
     checkBoundary = function(scrolled2) {
+        console.log('scrolled2: ' + scrolled2 + ' == TOP_END ' + TOP_END + ' no_more_records: ' + no_more_records + ' $scope.removed_cards_top.length: ' + $scope.removed_cards_top.length + ' $scope.removed_cards_bottom.length: ' + $scope.removed_cards_bottom.length + ' $scope.cards_temp.length: ' + $scope.cards_temp.length + ' scroll_updating: ' + scroll_updating + ' programmatic_scroll: ' + programmatic_scroll);
+        if ((!no_more_records || $scope.cards_temp.length > 0) && !programmatic_scroll) {
+            //if (scrolled2 <= TOP_END && (!no_more_records || $scope.removed_cards_top.length > 0 || $scope.cards_temp.length > 0) && !update_adjust && !programmatic_scroll) {
+            if (scrolled2 <= TOP_END && ($scope.removed_cards_top.length > 0)) {
+                scroll_updating = true;
+                console.log('TOP!');
+                extremity = true;
+                //$('.content_cnv').unbind('scroll', wheelEvent);
+                //unbindScroll();
+                doTop();
+            }
 
-        console.log('scrolled2: ' + scrolled2 + ' == TOP_END ' + TOP_END + ' no_more_records: ' + no_more_records + ' $scope.removed_cards_top.length: ' + $scope.removed_cards_top.length + ' $scope.removed_cards_bottom.length: ' + $scope.removed_cards_bottom.length + ' $scope.cards_temp.length: ' + $scope.cards_temp.length + ' update_adjust: ' + update_adjust);
-        if (scrolled2 <= TOP_END && (!no_more_records || $scope.removed_cards_top.length > 0 || $scope.cards_temp.length > 0) && !update_adjust) {
-            console.log('TOP!');
-            extremity = true;
-            $('.content_cnv').unbind('scroll', wheelEvent);
-            unbindScroll();
-            doTop();
+            //if (scrolled2 >= BOTTOM_END && (!no_more_records || $scope.removed_cards_bottom.length > 0 || $scope.cards_temp.length > 0) && !update_adjust && !programmatic_scroll) {
+            if (scrolled2 >= BOTTOM_END && ($scope.removed_cards_bottom.length > 0)) {
+                scroll_updating = true;
+                console.log('BOTTOM!');
+                extremity = true;
+                //$('.content_cnv').unbind('scroll', wheelEvent);
+                //unbindScroll();
+                doBottom();
+            }
         }
 
-        if (scrolled2 >= BOTTOM_END && (!no_more_records || $scope.removed_cards_bottom.length > 0 || $scope.cards_temp.length > 0) && !update_adjust) {
-            console.log('BOTTOM!');
-            extremity = true;
-            $('.content_cnv').unbind('scroll', wheelEvent);
-            unbindScroll();
-            doBottom();
-        }
+        //update_adjust = false;
 
-        update_adjust = false;
+        programmatic_scroll = false;
     };
 
     // scroll listener unthrottled.
+    /*
     function wheelEvent(e) {
 
         if (content_adjust) {
-            rebindScroll();
+           // rebindScroll();
         }
 
         //console.log($scope.top_down);
 
         var currentScroll = $(this).scrollTop();
-        var maxScroll = this.scrollHeight - this.clientHeight;
+        maxScroll = this.scrollHeight - this.clientHeight;
         var scrolled2 = (currentScroll / maxScroll) * 100;
         if (scrolled2 > 90 || scrolled2 < 10) {
             checkBoundary(scrolled2);
         }
-
-
     }
+    */
 
     // scroll binding
-
+    /*
     rebindScroll = function() {
         console.log('rebindScroll');
         console.log('scrollingdisabled: ' + $scope.scrollingdisabled);
@@ -284,6 +325,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         content_adjust = false;
         bindScroll();
     };
+    */
 
     bindScroll = function() {
         var currentScroll = $('.content_cnv').scrollTop();
@@ -294,7 +336,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log('scrolled: ' + scrolled);
 
         $('.content_cnv').bind('scroll', myHeavyFunction);
-        $('.content_cnv').bind('scroll', wheelEvent);
+        //$('.content_cnv').bind('scroll', wheelEvent);
         // could be top or bottom but not scrolling.
         $timeout(function() {
             var currentScroll = $('.content_cnv').scrollTop();
@@ -307,14 +349,16 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     unbindScroll = function() {
         console.log('unbind last_scrolled: ' + last_scrolled);
         $('.content_cnv').unbind('scroll', myHeavyFunction);
-        $('.content_cnv').unbind('scroll', wheelEvent);
+        //$('.content_cnv').unbind('scroll', wheelEvent);
     };
 
+    /*
     function scrollBack() {
         $timeout(function() {
             rebindScroll();
         }, 500);
     }
+    */
 
     function doTop() {
         console.log('doTop');
@@ -334,14 +378,21 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             $('.content_cnv').scrollTop(20);
                             addMoreTop()
                                 .then(function(result) {
-                                    scrollBack();
+                                    console.log('AMT END');
+                                    scroll_updating = false;
+                                    //scrollBack();
+
+
+
                                 });
                         }
                     });
                 } else {
                     addMoreTop()
                         .then(function(result) {
-                            scrollBack();
+                            console.log('AMT END');
+                            scroll_updating = false;
+                            //scrollBack();
                         });
                 }
             });
@@ -365,7 +416,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             $('.content_cnv').scrollTop(20);
                             addMoreBottom()
                                 .then(function(result) {
-                                    scrollBack();
+                                    console.log('AMB END');
+                                    scroll_updating = false;
+                                    //scrollBack();
                                 });
 
                         }
@@ -373,7 +426,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 } else {
                     addMoreBottom()
                         .then(function(result) {
-                            scrollBack();
+                            console.log('AMB END');
+                            scroll_updating = false;
+                            //scrollBack();
                         });
                 }
             });
@@ -386,11 +441,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     tempToCards = function() {
         console.log('tempToCards');
         var deferred = $q.defer();
-        // If temp cards are being transfered to cards.
-        temp_working = false;
 
-        if ($scope.cards_temp.length > 0 && !temp_working) {
-            temp_working = true;
+        scroll_updating = true;
+        // If temp cards are being transfered to cards.
+        //temp_working = false;
+
+        //if ($scope.cards_temp.length > 0 && !temp_working) {
+        if ($scope.cards_temp.length > 0) {
+            //temp_working = true;
             var amount = NUM_UPDATE_DISPLAY;
             var cards_to_move;
             if ($scope.cards.length == 0) {
@@ -406,7 +464,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }
             console.log(cards_to_move);
 
-            var t0 = performance.now();
+            //var t0 = performance.now();
 
             //$scope.cards = $scope.cards.concat(cards_to_move);
             //0.024999957531690598 milliseconds.
@@ -420,8 +478,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             //0.020000035874545574 milliseconds.
             //0.05000003147870302 milliseconds.
 
-            var t1 = performance.now();
-            console.log("PERFORMANCE: " + (t1 - t0) + " milliseconds.");
+            //var t1 = performance.now();
+            //console.log("PERFORMANCE: " + (t1 - t0) + " milliseconds.");
 
 
             /*
@@ -429,19 +487,21 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $scope.$apply();
             }
             */
-            temp_working = false;
+            //temp_working = false;
             // Check if more temp cards need to be loaded.
             checkNext();
             deferred.resolve(true);
         } else {
             console.log('no more cards_temp');
-            temp_working = false;
+            //temp_working = false;
             deferred.resolve(false);
         }
         return deferred.promise;
     };
 
     addMoreTop = function() {
+        scroll_updating = true;
+        console.log('AMT START');
         var deferred = $q.defer();
         $scope.scrollingdisabled = true;
         unRemoveCardsTop()
@@ -476,8 +536,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             });
         return deferred.promise;
     };
-
+    var scroll_updating = false;
     addMoreBottom = function() {
+        console.log('AMB START');
+        scroll_updating = true;
         var deferred = $q.defer();
         $scope.scrollingdisabled = true;
         console.log($scope.top_down);
@@ -717,6 +779,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // LOADING CHECK
 
+    var programmatic_scroll = false;
+
     imagesLoaded = function(obj) {
         console.log(obj);
         console.log('all images loaded: ' + obj.location + ' : ' + obj.id);
@@ -724,18 +788,22 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log($scope.cards.length);
         if ($scope.cards.length == 0) {
 
-            tempToCards();
+            tempToCards()
+                .then(function(res) {
+                    scroll_updating = false;
+                });
         }
         // Check if first load of content_cnv
         if (obj.location == 'content_cnv' && $scope.cards.length > 0) {
             console.log('first_load: ' + first_load);
             if (first_load) {
                 console.log('ITEMS FIRED');
+                programmatic_scroll = true;
                 $scope.$broadcast("items_changed", scroll_direction);
-                $timeout(function() {
-                    $rootScope.pageLoading = false;
-                    bindScroll();
-                }, 500);
+                //$timeout(function() {
+                $rootScope.pageLoading = false;
+                bindScroll();
+                // }, 500);
             }
             first_load = false;
             /*
@@ -1148,7 +1216,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     updateCards = function(arr) {
         console.log($scope.top_down);
         // If content is being updated.
-        update_adjust = true;
+        //update_adjust = true;
         //$scope.scrollingdisabled = true;
         if (!$scope.top_down) {
             if ($scope.removed_cards_bottom.length > 0) {
@@ -1173,10 +1241,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
 
                 checkNext();
-
+                programmatic_scroll = true;
                 $scope.$broadcast("items_changed", 'bottom');
             } else {
                 $scope.cards = $scope.cards.concat(arr);
+                programmatic_scroll = true;
                 $scope.$broadcast("items_changed", 'bottom');
             }
         } else {
@@ -1196,9 +1265,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 //content_adjust = true;
                 $scope.cards = $scope.cards.concat(arr, spliced);
                 checkNext();
+                programmatic_scroll = true;
                 $scope.$broadcast("items_changed", 'top');
             } else {
                 $scope.cards = $scope.cards.concat(arr);
+                programmatic_scroll = true;
                 $scope.$broadcast("items_changed", 'top');
             }
         }
@@ -1350,11 +1421,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
                     deferred.resolve();
                 });
-                
+
             }
 
         }
-         return deferred.promise;
+        return deferred.promise;
     };
 
     getCards = function(id, destination) {

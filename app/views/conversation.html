@@ -34,7 +34,7 @@
         <div id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : top_down | limitTo:total_to_display track by card._id" on-finish-render="ngRepeatFinished" in-view="lineInView($inview, card._id)" in-view-options="inviewoptions" ng-attr-id="{{ 'card_' + card._id }}" class="card_temp">
         -->
 
-        
+
     <div class="content_cnv" ng-class="{ 'content_cnv_conv': !feed, 'content_cnv_hide_footer': hide_footer, 'content_cnv_no_footer': no_footer}" scroll-to-top-when="items_changed">
         <div id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : top_down" on-finish-render="ngRepeatFinished" ng-attr-id="card_{{::card._id }}" class="card_temp">
             <div id="user">
@@ -54,7 +54,7 @@
             </div>
             <div class=" resize-container" id="conversation_part" ng-init="disableCheckboxes(card._id); cardCreated();">
                 <form class="form-horizontal">
-                    <div class='ce' ng-attr-id="ce{{::card._id}}" ng-attr-contenteditable="{{::card.user == currentUser._id}}" ng-attr-editable="{{::card.user == currentUser._id}}" ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id);" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce'+card._id);" ng-blur="getBlur(card._id, card, currentUser)" ng-model="::card.content" ng-model-options="{ debounce: 1 }"></div>
+                    <div class='ce' ng-attr-id="ce{{::card._id}}" ng-attr-contenteditable="{{::card.user == currentUser._id}}" ng-attr-editable="{{::card.user == currentUser._id}}" ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id);" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce'+card._id);" ng-blur="getBlur(card._id, card, currentUser)" ng-model="::card.content" ng-model-options="{ debounce: 500 }"></div>
                     <input id="upload-input" type="file" name="uploads[]" multiple="multiple">
                     <!--
                     <input ng-attr-id="{{ 'upload-inputce' + card._id }}" type="file" name="uploads[]" multiple="multiple">-->
