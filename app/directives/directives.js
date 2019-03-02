@@ -307,7 +307,7 @@ cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$comp
 */
 
 
-cardApp.directive("doRepeat", function($compile, $log) {
+cardApp.directive("doRepeat", function($compile, $log, UserData) {
     return {
         restrict: "A",
         replace: true,
@@ -315,43 +315,53 @@ cardApp.directive("doRepeat", function($compile, $log) {
         scope: {
             doRepeat: '='
         },
-        template: '<div ng-transclude=""></div>',
+        template: '<div ng-transclude="" class="conty"></div>',
+
+        
         link: function(scope, element, attrs) {
+            var currentUser = UserData.getUser();
             scope.$watch('doRepeat', function(newValue, oldValue) {
                 if (newValue) {
-                    //console.log("I see a data change!");
-                    //console.log(element.children());
-                    //element.empty();
-                    //console.log(newValue.length);
-                    angular.forEach(newValue, function(value, index) {
-                        //console.log(index + ' : ' + value.content);
-                        //$log.error(value);
-                        if (index == newValue.length - 1) {
-                            element.append("<div id=\"" + value._id +  "\" ng-transclude>" + value.content + "</div><img id= \"delete_image\" src=\"/assets/images/bee_65.png\" onload=\"domUpdated()\">");
+                    angular.forEach(newValue, function(card, index) {
+                        var avatar;
+                        if (card.avatar == 'default') {
+                            avatar = "/assets/images/default_avatar.jpg";
                         } else {
-                            element.append("<div id=\"" + value._id +  "\">"+ value.content + "</div>");
+                            avatar = card.avatar;
                         }
-
+                        var edit = "";
+                        var isUser = false;
+                        if (card.user == currentUser._id) {
+                            edit = "<div class=\"edit\"><div class=\"dropdown\" id=\"cem" + card._id + "\"><div onclick=\"dropDownToggle('cem" + card._id + "')\" class=\"dropbtn\"><i class=\"material-icons\" id=\"mi-more_vert\">&#xE5D4;</i></div> <div id=\"myDropdowncem" + card._id + "\" class=\"dropdown-content\"> <div click=\"deleteCard(" + card._id + "," + card.conversationId + ")\">Delete</div></div></div></div>";
+                            isUser = true;
+                        }
+                        var user_div = "<div id=\"user\">" +
+                            "<img  alt=\"\" class=\"card_avatar\" src=\"" + avatar + "\"/>" +
+                            "<div class=\"username\">" + card.user_name + "</div>" +
+                            edit +
+                            "</div>";
+                        //var card_inner = "<div class=\"resize-container\" id=\"conversation_part\" ng-init=\"disableCheckboxes(" + card._id + "); cardCreated();\"><form class=\"form-horizontal\">  <div class=\"ce\" id=\"ce" + card._id +"\" contenteditable=\"" + card.user == currentUser._id + "\" editable=\"" + card.user == currentUser._id + "\" ng-change=\"contentChanged(card.content" + "," + "\"ce\"" + card._id + ") ng-keydown=\"checkKey($event, \"ce\"" + card._id + "); ng-paste=\"handlePaste($event)\" ng-focus=\"getFocus(" + card._id + "," + card + "," + currentUser + ")\"; keyListen(\"ce\"" + card._id + "); ng-blur=\"getBlur(" + card._id + "," + card + "," + currentUser + ")\" ng-model=\"" + card.content +"\" ng-model-options=\"{ debounce: 1000 }\">";
+                        var footer = "<div class=\"card_footer\"><div class=\"c_footer_o\"><div class=\"card_footer_btns\"><div class=\"cf_btn\"><i class=\"material-icons\">favorite_border</i></div><div class=\"cf_btn\" ng-show=\"" + !isUser + "\" ng-click=\"follow(" + card + ")\"><i class=\"material-icons btn_follow\" ng-class=\"{\"following\":" + card.following + "}\">directions_walk</i></div><div class=\"cf_btn send\"><i class=\"material-icons send\">send</i></div><div class=\"cf_btn\"><i class=\"material-icons edit\" ng-class=\"{\"file_edit\": {{" + isUser + "}}}\">edit</i></div><div moment-time-conv=\"" + card.updatedAt + "\" id=\"time\"></div></div></div><div class=\"likes\">7,255 likes</div></div>";
+                        var card_inner = "<div class=\"resize-container\" id=\"conversation_part\" ng-init=\"disableCheckboxes(" + card._id + "); cardCreated();\"><form class=\"form-horizontal\">";
+                        var card_inner_2 = "<div class=\"ce\" id=\"ce" + card._id +"\" contenteditable=\"" + isUser + "\" editable=\"" + isUser + "\" ng-change=\"contentChanged(card.content" + "," + "ce" + card._id + ")\" ng-keydown=\"checkKey($event, ce" + card._id + ")\"; ng-paste=\"handlePaste($event)\" ng-focus=\"getFocus(" + card._id + "," + card + "," + currentUser + "); keyListen(ce" + card._id + ");\" ng-blur=\"getBlur(" + card._id + "," + card + "," + currentUser + ")\" ng-model=\"card.content\" ng-model-options=\"{ debounce: 1000 }\">";
+                        var card_div = "<div id=\"card_" + card._id + "\" class=\"card_temp\">" + user_div + card_inner + card_inner_2 +  card.content + "</form></div></div>" + footer + "</div>";
+                        
+                        var last_card = "<img id= \"delete_image\" src=\"/assets/images/bee_65.png\" onload=\"domUpdated()\">";
+                        if (index == newValue.length - 1) {
+                            //element.append("<div id=\"card_" + card._id + "\">" + card.content + "</div><img id= \"delete_image\" src=\"/assets/images/bee_65.png\" onload=\"domUpdated()\">");
+                            element.append(card_div + last_card);
+                            //scope.finished += card_div + last_card;
+                        } else {
+                            element.append(card_div);
+                            //scope.finished += card_div;
+                        }
                     });
-                    //console.log(element.children());
-                    //console.log(template);
+                   // $('.conty').unwrap();
                 }
             }, true);
-            console.log(scope.doRepeat);
-            if (angular.isArray(scope.doRepeat)) {
-                console.log(angular.isArray(scope.doRepeat));
-                angular.forEach(scope.doRepeat, function(value, index) {
-                    console.log(value);
-                    //$log.error(value);
-                    //element.append("<type type='scope.type['"+index+"]'></type>");
-                });
-            } else if (angular.isObject(scope.type)) {
-                element.append("OBJECT");
-            } else {
-                element.append("<div>{{scope.type}}</div>");
-            }
             $compile(element.contents())(scope);
         }
+        
     };
 });
 

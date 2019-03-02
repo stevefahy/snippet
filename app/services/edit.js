@@ -17,6 +17,7 @@ cardApp.service('Edit', function() {
     // EDIT Dropdown
     // On user click toggle between hiding and showing the dropdown content
     this.dropDownToggle = function(id) {
+        console.log('drop' + id);
         closeDropdowns();
         document.getElementById("myDropdown" + id).classList.toggle("show");
     };

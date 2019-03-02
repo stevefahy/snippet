@@ -20,8 +20,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.uploadFile = Format.uploadFile;
     $scope.myFunction = Edit.myFunction;
     $scope.dropDownToggle = Edit.dropDownToggle;
+    //dropDownToggle = Edit.dropDownToggle;
     $scope.pasteHtmlAtCaret = Format.pasteHtmlAtCaret;
     $scope.checkCursor = Format.checkCursor;
+
+    dropDownToggle = function(){
+        console.log('dropDownToggle');
+        $scope.dropDownToggle;
+    };
 
     $scope.$on('$destroy', function() {
         //leaving controller.
@@ -49,7 +55,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var INIT_NUM_TO_LOAD = 50;
     var NUM_TO_LOAD = 20;
     var NUM_UPDATE_DISPLAY = 10; //20
-    var NUM_UPDATE_DISPLAY_INIT = 20;//30
+    var NUM_UPDATE_DISPLAY_INIT = 20; //30
     // Minimum number of $scope.cards_temp to keep loaded.
     var MIN_TEMP = 40;
     // The maximum number of cards to keep out of bounds.
@@ -133,6 +139,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }, 500);
     });
 
+    $scope.getUser = function(){
+        return UserData.getUser()._id;
+    };
+
     // SCROLLING
 
     upDateObservers = function() {
@@ -155,11 +165,26 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log('domUpdated');
         $('#delete_image').remove();
         $rootScope.$broadcast("ngRepeatFinishedTemp", { temp: "some value" });
+        $rootScope.$broadcast("ngRepeatFinished", { temp: "some value" });
     };
 
+    var ticking = false;
+    var currentScrolly = 0;
+    var maxScroll = 0;
+
+    function requestTick() {
+        //if (!ticking) {
+        requestAnimationFrame(myHeavyFunction);
+        ticking = true;
+        //}
+    }
+
+
+
     var myHeavyFunction = function() {
-        var currentScroll = $(this).scrollTop();
-        var maxScroll = this.scrollHeight - this.clientHeight;
+        console.log(currentScroll);
+        //var currentScroll = $(this).scrollTop();
+        //var maxScroll = this.scrollHeight - this.clientHeight;
         var scrolled = (currentScroll / maxScroll) * 100;
         console.log(scrolled + ' : ' + last_scrolled);
         console.log('last_scrolled: ' + last_scrolled);
@@ -192,7 +217,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }
         }
         last_scrolled = scrolled;
+        ticking = false;
     };
+
+    function onScroll() {
+        currentScroll = $(this).scrollTop();
+        maxScroll = this.scrollHeight - this.clientHeight;
+        console.log(currentScroll);
+        requestTick();
+    }
 
     checkBoundary = function(scrolled2) {
         console.log('scrolled2: ' + scrolled2 + ' == TOP_END ' + TOP_END + ' no_more_records: ' + no_more_records + ' $scope.removed_cards_top.length: ' + $scope.removed_cards_top.length + ' $scope.removed_cards_bottom.length: ' + $scope.removed_cards_bottom.length + ' $scope.cards_temp.length: ' + $scope.cards_temp.length + ' scroll_updating: ' + scroll_updating + ' programmatic_scroll: ' + programmatic_scroll);
@@ -218,7 +251,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var currentScroll = $('.content_cnv').scrollTop();
         var maxScroll = $('.content_cnv')[0].scrollHeight - $('.content_cnv')[0].clientHeight;
         var scrolled = (currentScroll / maxScroll) * 100;
-        $('.content_cnv').bind('scroll', myHeavyFunction);
+        //$('.content_cnv').bind('scroll', myHeavyFunction);
+        var elem = $('.content_cnv')[0];
+        elem.addEventListener('scroll', onScroll, { passive: true });
         // could be top or bottom but not scrolling.
         $timeout(function() {
             var currentScroll = $('.content_cnv').scrollTop();
@@ -567,12 +602,23 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
         if (obj.location == 'content_cnv') {
             $rootScope.loading_cards = false;
+
             delete obj;
         }
         if (obj.location == 'load_off_screen') {
             console.log('HERE');
             $rootScope.loading_cards_offscreen = false;
             delete obj;
+            /*
+            $('.content_cnv').find('img').each(function() {
+                console.log(this.src);
+                console.log(this.clientWidth);
+                console.log(this.clientHeight);
+                this.width = this.clientWidth;
+                this.height = this.clientHeight;
+            });
+            */
+
             checkNext();
         }
     };
@@ -587,6 +633,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         store[loc].img_count = $('.' + location + ' img').length;
         if (store[loc].img_count > 0) {
             $('.' + location).find('img').each(function() {
+                //console.log(this.src);
+                // console.log(this.clientWidth);
+                // console.log(this.clientHeight);
                 if (this.complete) {
                     store[loc].img_loaded++;
                     if (store[loc].img_count == store[loc].img_loaded || store[loc].img_count == 0) {
