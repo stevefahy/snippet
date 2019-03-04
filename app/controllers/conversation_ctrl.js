@@ -52,7 +52,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var TOP_END = 0;
     var BOTTOM_END = 100;
     // Numbers of cards to load or display.
-    var INIT_NUM_TO_LOAD = 50;
+    var INIT_NUM_TO_LOAD = 150;
     var NUM_TO_LOAD = 20;
     var NUM_UPDATE_DISPLAY = 10; //20
     var NUM_UPDATE_DISPLAY_INIT = 20; //30
@@ -345,7 +345,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $scope.cards.push(cards_to_move[i]);
             }
             // Check if more temp cards need to be loaded.
-            checkNext();
+            //checkNext();
             deferred.resolve(true);
         } else {
             console.log('no more cards_temp');
@@ -629,7 +629,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             });
             */
 
-            checkNext();
+            //checkNext();
         }
     };
 
@@ -1138,7 +1138,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 load_amount = NUM_TO_LOAD;
             } else {
                 console.log('first_load');
-                load_amount = NUM_TO_LOAD;
+                load_amount = INIT_NUM_TO_LOAD;
                 last_card = General.getISODate();
                 operand = '$lt';
             }
