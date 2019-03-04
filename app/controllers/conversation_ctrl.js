@@ -40,8 +40,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // Scrolling
 
     // Percent from top and bottom after which a check for more cards is executed.
-    var UP_PERCENT = 10;
-    var DOWN_PERCENT = 90;
+    var UP_PERCENT = 1;//10
+    var DOWN_PERCENT = 99;//90
     // Percent from top and bottom after which a check to move the scroll position and check for mre cards is executed.
     var TOP_END = 0;
     var BOTTOM_END = 100;
@@ -794,6 +794,7 @@ var maxScroll;
                 .then(function(res) {
                     scroll_updating = false;
                 });
+                
         }
         // Check if first load of content_cnv
         if (obj.location == 'content_cnv' && $scope.cards.length > 0) {
@@ -817,12 +818,25 @@ var maxScroll;
         if (obj.location == 'content_cnv') {
             $rootScope.loading_cards = false;
             delete obj;
+
+                        $('.content_cnv').find('img').each(function() {
+                //console.log('img');
+                   console.log(this);
+                   var index = this.src.indexOf('.jpg?');
+                   if(index >= 0){
+                    console.log(this.src.substring(0, index+4));
+                    this.src = this.src.substring(0, index+4);
+                   }
+            });
         }
 
         if (obj.location == 'load_off_screen') {
             console.log('HERE');
             $rootScope.loading_cards_offscreen = false;
             delete obj;
+
+
+
             checkNext();
         }
     };
