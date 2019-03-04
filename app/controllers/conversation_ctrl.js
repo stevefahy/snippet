@@ -386,6 +386,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log('AMB START');
         scroll_updating = true;
         var deferred = $q.defer();
+               tempToCards()
+                        .then(function(result) {
+                                    deferred.resolve();
+                                });
+                                /*
         unRemoveCardsBottom()
             .then(function(result) {
                 if (result == 0 && $scope.top_down) {
@@ -403,6 +408,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         });
                 }
             });
+            */
         return deferred.promise;
     };
 
