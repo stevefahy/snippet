@@ -37,8 +37,9 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     // Intersection Observer
 
     intersectionCallback = function(entries, observer) {
-        //console.log('intersectionCallback');
+        console.log('intersectionCallback');
         entries.forEach(entry => {
+            console.log(entry);
             if (entry.isIntersecting) {
                 var elem = entry.target;
                 //elem.querySelector(".topRight").innerHTML = 'vis';
@@ -63,9 +64,8 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     };
 
     createObserver = function(id) {
-        $('#card' + id).ready(function() {
-            //console.log("ready: " + id);
-            var target = document.querySelector('#card_' + id);
+        $('.content_cnv #card' + id).ready(function() {
+            var target = document.querySelector('.content_cnv #card_' + id);
             var newObserver = new IntersectionObserver(intersectionCallback, $scope.observerOptions);
             //console.log($scope.observerOptions);
             observers.push(newObserver);
@@ -89,6 +89,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             }
             $scope.observerOptions = {
                 root: document.querySelector('.content_cnv.content_cnv_conv'),
+                //root: document.querySelector('.content_cnv'),
                 rootMargin: '0px',
                 threshold: 1.0
             };
