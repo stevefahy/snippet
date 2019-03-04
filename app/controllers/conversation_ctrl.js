@@ -530,6 +530,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     removeCardsTop = function() {
         console.log('removeCardsTop?');
         var deferred = $q.defer();
+        /*
         var amount = getCardAmountTop();
         console.log(amount);
         if (amount > 0 && !extremity) {
@@ -551,6 +552,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             console.log('dont removeCardsTop: ' + amount);
             deferred.resolve(amount);
         }
+        */
+        deferred.resolve(0);
         return deferred.promise;
     };
 

@@ -37,9 +37,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     // Intersection Observer
 
     intersectionCallback = function(entries, observer) {
-        console.log('intersectionCallback');
         entries.forEach(entry => {
-            console.log(entry);
             if (entry.isIntersecting) {
                 var elem = entry.target;
                 //elem.querySelector(".topRight").innerHTML = 'vis';
