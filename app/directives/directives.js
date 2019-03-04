@@ -307,20 +307,18 @@ cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$comp
 */
 
 
-cardApp.directive("doRepeat", function($compile, $log, UserData) {
+cardApp.directive("doScopeRepeat", function($compile, $log, UserData) {
     return {
         restrict: "A",
         replace: true,
         transclude: true,
         scope: {
-            doRepeat: '='
+            doScopeRepeat: '='
         },
         template: '<div ng-transclude="" class="conty"></div>',
-
-        
         link: function(scope, element, attrs) {
             var currentUser = UserData.getUser();
-            scope.$watch('doRepeat', function(newValue, oldValue) {
+            scope.$watch('doScopeRepeat', function(newValue, oldValue) {
                 if (newValue) {
                     angular.forEach(newValue, function(card, index) {
                         var avatar;
@@ -362,6 +360,34 @@ cardApp.directive("doRepeat", function($compile, $log, UserData) {
             $compile(element.contents())(scope);
         }
         
+    };
+});
+
+
+
+cardApp.directive("doRepeat", function($compile, $log, UserData) {
+    return {
+        restrict: "A",
+        replace: true,
+        transclude: true,
+        scope: {
+            doRepeat: '='
+        },
+        template: '<div ng-transclude="" class="conty"></div>',
+        link: function(scope, element, attrs) {
+            scope.$watch('doRepeat', function(newValue, oldValue) {
+                if (newValue) {
+                    angular.forEach(newValue, function(card, index) {
+                        if (index == newValue.length - 1) {
+                            element.append("<div id=\"card_" + card._id + "\">" + card.content + "</div><img id= \"delete_image\" src=\"/assets/images/bee_65.png\" onload=\"domUpdated()\">");
+                        } else {
+                            element.append("<div id=\"card_" + card._id + "\">" + card.content + "</div>");
+                        }
+                    });
+                }
+            }, true);
+            $compile(element.contents())(scope);
+        } 
     };
 });
 
@@ -412,7 +438,7 @@ cardApp.directive('doRepeat', function(){
     }
   }
 });
-
+*/
 /*
 cardApp.directive('doRepeat', function($timeout, $rootScope) {
     return {
