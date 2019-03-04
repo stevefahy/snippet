@@ -379,9 +379,9 @@ cardApp.directive("doRepeat", function($compile, $log, UserData) {
                 if (newValue) {
                     angular.forEach(newValue, function(card, index) {
                         if (index == newValue.length - 1) {
-                            element.append("<div id=\"card_" + card._id + "\">" + card.content + "</div><img id= \"delete_image\" src=\"/assets/images/bee_65.png\" onload=\"domUpdated()\">");
+                            element.append("<div class=\"card_temp\" id=\"card_" + card._id + "\">" + card.content + "</div><img id= \"delete_image\" src=\"/assets/images/bee_65.png\" onload=\"domUpdated()\">");
                         } else {
-                            element.append("<div id=\"card_" + card._id + "\">" + card.content + "</div>");
+                            element.append("<div class=\"card_temp\" id=\"card_" + card._id + "\">" + card.content + "</div>");
                         }
                     });
                 }

@@ -40,8 +40,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // Scrolling
 
     // Percent from top and bottom after which a check for more cards is executed.
-    var UP_PERCENT = 1;//10
-    var DOWN_PERCENT = 99;//90
+    var UP_PERCENT = 1; //10
+    var DOWN_PERCENT = 99; //90
     // Percent from top and bottom after which a check to move the scroll position and check for mre cards is executed.
     var TOP_END = 0;
     var BOTTOM_END = 100;
@@ -152,7 +152,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             createObserver($scope.cards[i]._id);
         }
     };
-var maxScroll;
+    var maxScroll;
     $scope.$watch('cards.length', function(newStatus) {
         // Debugging
         $rootScope.cards_length = newStatus;
@@ -231,20 +231,20 @@ var maxScroll;
         console.log('$scope.scrollingdisabled: ' + $scope.scrollingdisabled + ' content_adjust: ' + content_adjust + ' scroll_updating: ' + scroll_updating);
         if (!scroll_updating) {
 
-                    if (scrolled > 90 || scrolled < 10) {
-            checkBoundary(scrolled);
-        }
+            if (scrolled > 90 || scrolled < 10) {
+                checkBoundary(scrolled);
+            }
             //if (!$scope.scrollingdisabled && !content_adjust && !scroll_updating) {
             //if (dir == 1 && scrolled <= UP_PERCENT) {
             if (scrolled < last_scrolled) {
                 if (scrolled <= UP_PERCENT) {
                     //if (!$scope.scrollingdisabled && !temp_working) {
-                        console.log('FIRE UP!!!');
-                        addMoreTop()
-                            .then(function(result) {
-                                console.log('AMT END');
-                                scroll_updating = false;
-                            });
+                    console.log('FIRE UP!!!');
+                    addMoreTop()
+                        .then(function(result) {
+                            console.log('AMT END');
+                            scroll_updating = false;
+                        });
                     //}
                 }
             }
@@ -256,12 +256,12 @@ var maxScroll;
             if (scrolled > last_scrolled) {
                 if (scrolled >= DOWN_PERCENT) {
                     //if (!$scope.scrollingdisabled && !temp_working) {
-                        console.log('FIRE DOWN!!!');
-                        addMoreBottom()
-                            .then(function(result) {
-                                console.log('AMB END');
-                                scroll_updating = false;
-                            });
+                    console.log('FIRE DOWN!!!');
+                    addMoreBottom()
+                        .then(function(result) {
+                            console.log('AMB END');
+                            scroll_updating = false;
+                        });
                     //}
                 }
             }
@@ -778,6 +778,33 @@ var maxScroll;
         return deferred.promise;
     };
 
+    adjustTemp = function() {
+        var deferred = $q.defer();
+        console.log(JSON.stringify($scope.cards_temp));
+        $('.load_off_screen').find('img').each(function() {
+            //console.log('img');
+            //console.log(this);
+            var index = this.src.indexOf('.jpg?');
+            if (index >= 0) {
+
+                //console.log(this.src.substring(0, index+4));
+                this.src = this.src.substring(0, index + 4);
+                var card = $(this).closest('.card_temp').attr('id');
+                card = card.substr(5, card.length);
+                console.log(card);
+                console.log($('#card_' + card).html());
+                var pos = General.findWithAttr($scope.cards_temp, '_id', card);
+                console.log(pos);
+                if (pos >= 0) {
+                    console.log('found');
+                    $scope.cards_temp[pos].content = $('#card_'+card).html();
+                }
+            }
+        });
+        deferred.resolve();
+        return deferred.promise;
+    };
+
 
     // LOADING CHECK
 
@@ -789,12 +816,15 @@ var maxScroll;
         // Check if first load.
         console.log($scope.cards.length);
         if ($scope.cards.length == 0) {
-
-            tempToCards()
+            adjustTemp()
                 .then(function(res) {
-                    scroll_updating = false;
+
+                    tempToCards()
+                        .then(function(res) {
+                            scroll_updating = false;
+                        });
                 });
-                
+
         }
         // Check if first load of content_cnv
         if (obj.location == 'content_cnv' && $scope.cards.length > 0) {
@@ -818,16 +848,6 @@ var maxScroll;
         if (obj.location == 'content_cnv') {
             $rootScope.loading_cards = false;
             delete obj;
-
-                        $('.content_cnv').find('img').each(function() {
-                //console.log('img');
-                   console.log(this);
-                   var index = this.src.indexOf('.jpg?');
-                   if(index >= 0){
-                    console.log(this.src.substring(0, index+4));
-                    this.src = this.src.substring(0, index+4);
-                   }
-            });
         }
 
         if (obj.location == 'load_off_screen') {
@@ -835,9 +855,10 @@ var maxScroll;
             $rootScope.loading_cards_offscreen = false;
             delete obj;
 
-
-
+                adjustTemp()
+                .then(function(res) {
             checkNext();
+        });
         }
     };
 
