@@ -783,10 +783,18 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         //console.log(JSON.stringify($scope.cards_temp));
         $('.load_off_screen').find('img').each(function() {
             //console.log('img');
+            console.log(this.width);
+            console.log(this.height);
             console.log('CLIENT: ' + this.clientHeight);
-
-            this.height = this.clientHeight;
-            this.width = '300';
+            var ow = this.width;
+            var oh = this.height;
+            var cw = $('.content_cnv').width();
+            var ratio = ow / cw;
+            var ch = oh / ratio;
+            
+this.width = cw;
+            this.height = ch;
+            
 
             //$(this).attr('height',this.clientHeight);
 
