@@ -783,31 +783,38 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         //console.log(JSON.stringify($scope.cards_temp));
         $('.load_off_screen').find('img').each(function() {
             //console.log('img');
-            //console.log(this);
+            console.log('CLIENT: ' + this.clientHeight);
+
+            this.height = this.clientHeight;
+            this.width = '300';
+
+            //$(this).attr('height',this.clientHeight);
+
+
             var index = this.src.indexOf('.jpg?');
             if (index >= 0) {
 
                 //console.log(this.src.substring(0, index+4));
                 this.src = this.src.substring(0, index + 4);
             }
-                var card = $(this).closest('.card_temp').attr('id');
-                card = card.substr(5, card.length);
-                //console.log(card);
+            var card = $(this).closest('.card_temp').attr('id');
+            card = card.substr(5, card.length);
+            //console.log(card);
 
-//temp.find('.filter_div img').unwrap();
-                var t = $('#card_' + card + ' .cropper_cont img').unwrap();
-                //var x = $('#card_' + card + ' .cropper_cont .no_space img').unwrap();
-console.log(t);
-                //console.log($('#card_' + card).html());
+            //temp.find('.filter_div img').unwrap();
+            var t = $('#card_' + card + ' .cropper_cont img').unwrap();
+            //var x = $('#card_' + card + ' .cropper_cont .no_space img').unwrap();
+            console.log(t);
+            //console.log($('#card_' + card).html());
 
 
-                var pos = General.findWithAttr($scope.cards_temp, '_id', card);
-                //console.log(pos);
-                if (pos >= 0) {
-                    console.log('found');
-                    $scope.cards_temp[pos].content = $('#card_' + card).html();
-                    console.log($scope.cards_temp[pos]);
-                }
+            var pos = General.findWithAttr($scope.cards_temp, '_id', card);
+            //console.log(pos);
+            if (pos >= 0) {
+                console.log('found');
+                $scope.cards_temp[pos].content = $('#card_' + card).html();
+                console.log($scope.cards_temp[pos]);
+            }
             //}
         });
         deferred.resolve();
