@@ -12,11 +12,11 @@
 
     <!-- Preloading offscreen -->
 
-    <div class="content_cnv" ng-class="{ 'content_cnv_conv': !feed, 'content_cnv_hide_footer': hide_footer, 'content_cnv_no_footer': no_footer}" scroll-to-top-when="items_changed" do-scope-repeat="cards">
+    <div class="content_cnv" ng-class="{ 'content_cnv_conv': !feed, 'content_cnv_hide_footer': hide_footer, 'content_cnv_no_footer': no_footer}" scroll-to-top-when="items_changed">
 
         <!--<div do-repeat="cards"></div>-->
 
-        <!--
+        
         <div id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : top_down" on-finish-render="ngRepeatFinished" ng-attr-id="card_{{::card._id }}" class="card_temp">
 
             <div id="user">
@@ -57,7 +57,7 @@
                 <div class="likes">7,255 likes</div>
             </div>
         </div>
-        -->
+        
     
         <!--</div>-->
     </div>

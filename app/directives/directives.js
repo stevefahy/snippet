@@ -82,7 +82,7 @@ cardApp.directive('momentTimeConv', ['$interval', '$filter', function($interval,
         // start the UI update process; save the timeoutId for canceling
         timeoutId = $interval(function() {
             updateTime(); // update DOM
-        }, 10000);
+        }, 100000);
     }
 
     return {
