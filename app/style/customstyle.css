@@ -169,7 +169,6 @@ img.resize-drag.clip {
 }
 
 .cropper_cont {
-    /*
     margin-top: 10px;
     position: relative;
     width: calc(100% + 2.8em);
@@ -179,7 +178,6 @@ img.resize-drag.clip {
     background-color: #000000;
     margin-bottom: 10px;
     border-bottom: 1px solid #efefef;
-    */
 }
 
 .resize-drag {
@@ -2984,9 +2982,7 @@ div.after_image:empty {
 }
 
 .no_image_space {
-    /*
     margin-top: -10px;
-    */
 }
 
 .no_image_space_adjust {

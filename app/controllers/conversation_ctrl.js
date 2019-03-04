@@ -40,8 +40,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // Scrolling
 
     // Percent from top and bottom after which a check for more cards is executed.
-    var UP_PERCENT = 1; //10
-    var DOWN_PERCENT = 99; //90
+    var UP_PERCENT = 10; //10
+    var DOWN_PERCENT = 90; //90
     // Percent from top and bottom after which a check to move the scroll position and check for mre cards is executed.
     var TOP_END = 0;
     var BOTTOM_END = 100;
@@ -921,14 +921,29 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.$on('ngRepeatFinishedTemp', function(ngRepeatFinishedEvent) {
         console.log('ngRepeatFinishedTemp');
         image_check_counter++;
-        checkImages('load_off_screen', image_check_counter);
+
+        //checkImages('load_off_screen', image_check_counter);
+
+                if ($scope.cards.length == 0) {
+                    tempToCards()
+                        .then(function(res) {
+                            scroll_updating = false;
+                        });
+              
+
+        }
     });
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
         console.log('ngRepeatFinished');
         dir = 2;
         image_check_counter++;
-        checkImages('content_cnv', image_check_counter);
+
+        //checkImages('content_cnv', image_check_counter);
+         $rootScope.loading_cards = false;
+         $rootScope.pageLoading = false;
+         bindScroll();
+
         if ($('.cropper-container').length > 0) {
             $('.cropper-container').remove();
             $('.cropper-hidden').removeClass('cropper-hidden');
