@@ -47,7 +47,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var BOTTOM_END = 100;
     // Numbers of cards to load or display.
     var INIT_NUM_TO_LOAD = 50;
-    var NUM_TO_LOAD = 20;
+    var NUM_TO_LOAD = 200;
     var NUM_UPDATE_DISPLAY = 20; //20
     var NUM_UPDATE_DISPLAY_INIT = 30;
     // Minimum number of $scope.cards_temp to keep loaded.
@@ -780,6 +780,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     adjustTemp = function() {
         var deferred = $q.defer();
+        /*
         //console.log(JSON.stringify($scope.cards_temp));
         $('.load_off_screen').find('img').each(function() {
             //console.log('img');
@@ -791,10 +792,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             var cw = $('.content_cnv').width();
             var ratio = ow / cw;
             var ch = oh / ratio;
-            
-this.width = cw;
+
+            this.width = cw;
             this.height = ch;
-            
+
 
             //$(this).attr('height',this.clientHeight);
 
@@ -825,6 +826,7 @@ this.width = cw;
             }
             //}
         });
+        */
         deferred.resolve();
         return deferred.promise;
     };
