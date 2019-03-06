@@ -219,6 +219,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 Format.prepImage([blob], function(result) {
                     var img_new = new Image();
                     img_new.src = 'fileuploads/images/' + result.file + '?' + new Date();
+                    //img_new.src = 'fileuploads/images/' + result.file;
                     img_new.className = 'adjusted';
                     img_new.id = 'image_filtered_' + id;
                     img_new.onload = function() {
@@ -297,7 +298,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             // Hide original image
             //var src = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id).attr('src');
             //$('.' + parent_container + ' #cropper_' + id + ' #image_' + id).attr('data-src', src);
-            $('.' + parent_container + ' #cropper_' + id + ' #image_' + id).attr('src', 'data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==');
+            //$('.' + parent_container + ' #cropper_' + id + ' #image_' + id).attr('src', 'data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==');
             $('.' + parent_container + ' #cropper_' + id + ' #image_' + id).css('display', 'none');
 
 
