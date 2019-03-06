@@ -47,7 +47,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var BOTTOM_END = 100;
     // Numbers of cards to load or display.
     var INIT_NUM_TO_LOAD = 50;
-    var NUM_TO_LOAD = 200;
+    var NUM_TO_LOAD = 20;
     var NUM_UPDATE_DISPLAY = 20; //20
     var NUM_UPDATE_DISPLAY_INIT = 30;
     // Minimum number of $scope.cards_temp to keep loaded.
@@ -842,14 +842,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         // Check if first load.
         console.log($scope.cards.length);
         if ($scope.cards.length == 0) {
-            adjustTemp()
-                .then(function(res) {
+            //adjustTemp()
+               // .then(function(res) {
 
                     tempToCards()
                         .then(function(res) {
                             scroll_updating = false;
                         });
-                });
+                //});
 
         }
         // Check if first load of content_cnv
@@ -881,10 +881,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             $rootScope.loading_cards_offscreen = false;
             delete obj;
 
-            adjustTemp()
-                .then(function(res) {
+           // adjustTemp()
+                //.then(function(res) {
                     checkNext();
-                });
+               // });
         }
     };
 
@@ -921,29 +921,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.$on('ngRepeatFinishedTemp', function(ngRepeatFinishedEvent) {
         console.log('ngRepeatFinishedTemp');
         image_check_counter++;
-
-        //checkImages('load_off_screen', image_check_counter);
-
-                if ($scope.cards.length == 0) {
-                    tempToCards()
-                        .then(function(res) {
-                            scroll_updating = false;
-                        });
-              
-
-        }
+        checkImages('load_off_screen', image_check_counter);
     });
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
-        console.log('ngRepeatFinished');
+      console.log('ngRepeatFinished');
         dir = 2;
         image_check_counter++;
-
-        //checkImages('content_cnv', image_check_counter);
-         $rootScope.loading_cards = false;
-         $rootScope.pageLoading = false;
-         bindScroll();
-
+        checkImages('content_cnv', image_check_counter);
         if ($('.cropper-container').length > 0) {
             $('.cropper-container').remove();
             $('.cropper-hidden').removeClass('cropper-hidden');
