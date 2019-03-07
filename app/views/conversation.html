@@ -16,7 +16,7 @@
 
     <div class="content_cnv" ng-class="{ 'content_cnv_conv': !feed, 'content_cnv_hide_footer': hide_footer, 'content_cnv_no_footer': no_footer}" scroll-to-top-when="items_changed">
 
-        <div id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : top_down" on-finish-render="ngRepeatFinished" stop-digest ng-attr-id="card_{{::card._id }}" class="card_temp">
+        <div id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : top_down" on-finish-render="ngRepeatFinished" ng-attr-id="card_{{::card._id }}" class="card_temp">
 
             <div id="user">
                 <img ng-if="::card.avatar!='default'" alt="" class="card_avatar" ng-src="{{::card.avatar}}" />

@@ -278,7 +278,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         .then(function(result) {
                             console.log('AMT END');
                             scroll_updating = false;
-                            
+
                         });
                     //}
                 //}
@@ -292,11 +292,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 //if (scrolled >= DOWN_PERCENT) {
                     //if (!$scope.scrollingdisabled && !temp_working) {
                     console.log('FIRE DOWN!!!');
+                    var stored_scroll = currentScroll;
                     addMoreBottom()
                         .then(function(result) {
                             console.log('AMB END');
                             scroll_updating = false;
-$('.content_cnv').css('overflow-y','scroll');
+console.log(currentScroll + ' : ' + stored_scroll);
+                            $(this).scrollTop(stored_scroll);
+//$('.content_cnv').css('overflow-y','scroll');
                                 //$scope.$broadcast('stop');
     //$scope.$digest();
     $scope.$broadcast('resume');
@@ -615,7 +618,7 @@ $('.content_cnv').css('overflow-y','scroll');
                 }
             });
             */
-$('.content_cnv').css('overflow-y','hidden');
+//$('.content_cnv').css('overflow-y','hidden');
              tempToCards()
                         .then(function(result) {
  $scope.scrollingdisabled = false;
