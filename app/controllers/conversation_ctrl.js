@@ -582,7 +582,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     addMoreBottom = function() {
         console.log('AMB START');
 
-                                        $scope.$broadcast('stop');
+        $scope.$broadcast('stop');
     //$scope.$digest();
    //$scope.$broadcast('resume');
 
@@ -590,18 +590,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var deferred = $q.defer();
         $scope.scrollingdisabled = true;
         console.log($scope.top_down);
-        //unRemoveCardsBottom()
-            //.then(function(result) {
+        /*
+        unRemoveCardsBottom()
+            .then(function(result) {
                // console.log(result);
                result = 0;
                 if (result == 0 && $scope.top_down) {
                     tempToCards()
                         .then(function(result) {
-                            /*
-                            if (!$scope.$$phase) {
-                                $scope.$apply();
-                            }
-                            */
+                  
                             removeCardsTop()
                                 .then(function(result) {
                                     $scope.scrollingdisabled = false;
@@ -615,7 +612,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             deferred.resolve();
                         });
                 }
-           // });
+            });
+            */
+
+             tempToCards()
+                        .then(function(result) {
+ $scope.scrollingdisabled = false;
+                                    deferred.resolve();
+                        });
         return deferred.promise;
     };
 
