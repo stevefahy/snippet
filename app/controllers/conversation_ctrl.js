@@ -1044,7 +1044,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
         return result;
     };
-
+/*
     $scope.follow = function(card) {
         // Find the public conversation for the selected user.
         // LDB
@@ -1087,6 +1087,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 }
             });
     };
+    */
 
     $scope.addSlider = function(data) {
         if (data.last_position != undefined) {
