@@ -278,6 +278,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         .then(function(result) {
                             console.log('AMT END');
                             scroll_updating = false;
+                            
                         });
                     //}
                 //}
@@ -295,7 +296,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         .then(function(result) {
                             console.log('AMB END');
                             scroll_updating = false;
-
+$('.content_cnv').css('overflow-y','scroll');
                                 //$scope.$broadcast('stop');
     //$scope.$digest();
     $scope.$broadcast('resume');
@@ -614,7 +615,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 }
             });
             */
-
+$('.content_cnv').css('overflow-y','hidden');
              tempToCards()
                         .then(function(result) {
  $scope.scrollingdisabled = false;
