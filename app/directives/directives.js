@@ -306,6 +306,26 @@ cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$comp
 }]);
 */
 
+cardApp.directive('stopDigest', function() {
+    return {
+        link: function(scope) {
+            var watchers;
+
+            scope.$on('stop', function() {
+                watchers = scope.$$watchers;
+                console.log(watchers);
+                scope.$$watchers = [];
+                console.log(scope.$$watchers);
+            });
+
+            scope.$on('resume', function() {
+                if (watchers)
+                    scope.$$watchers = watchers;
+            });
+        }
+    };
+});
+
 
 cardApp.directive("doScopeRepeat", function($compile, $log, UserData) {
     return {
@@ -341,9 +361,9 @@ cardApp.directive("doScopeRepeat", function($compile, $log, UserData) {
                         //var card_inner = "<div class=\"resize-container\" id=\"conversation_part\" ng-init=\"disableCheckboxes(" + card._id + "); cardCreated();\"><form class=\"form-horizontal\">  <div class=\"ce\" id=\"ce" + card._id +"\" contenteditable=\"" + card.user == currentUser._id + "\" editable=\"" + card.user == currentUser._id + "\" ng-change=\"contentChanged(card.content" + "," + "\"ce\"" + card._id + ") ng-keydown=\"checkKey($event, \"ce\"" + card._id + "); ng-paste=\"handlePaste($event)\" ng-focus=\"getFocus(" + card._id + "," + card + "," + currentUser + ")\"; keyListen(\"ce\"" + card._id + "); ng-blur=\"getBlur(" + card._id + "," + card + "," + currentUser + ")\" ng-model=\"" + card.content +"\" ng-model-options=\"{ debounce: 1000 }\">";
                         var footer = "<div class=\"card_footer\"><div class=\"c_footer_o\"><div class=\"card_footer_btns\"><div class=\"cf_btn\"><i class=\"material-icons\">favorite_border</i></div><div class=\"cf_btn\" ng-show=\"" + !isUser + "\" ng-click=\"follow(" + card + ")\"><i class=\"material-icons btn_follow\" ng-class=\"{\"following\":" + card.following + "}\">directions_walk</i></div><div class=\"cf_btn send\"><i class=\"material-icons send\">send</i></div><div class=\"cf_btn\"><i class=\"material-icons edit\" ng-class=\"{\"file_edit\": {{" + isUser + "}}}\">edit</i></div><div moment-time-conv=\"" + card.updatedAt + "\" id=\"time\"></div></div></div><div class=\"likes\">7,255 likes</div></div>";
                         var card_inner = "<div class=\"resize-container\" id=\"conversation_part\" ng-init=\"disableCheckboxes(" + card._id + "); cardCreated();\"><form class=\"form-horizontal\">";
-                        var card_inner_2 = "<div class=\"ce\" id=\"ce" + card._id +"\" contenteditable=\"" + isUser + "\" editable=\"" + isUser + "\" ng-change=\"contentChanged(card.content" + "," + "ce" + card._id + ")\" ng-keydown=\"checkKey($event, ce" + card._id + ")\"; ng-paste=\"handlePaste($event)\" ng-focus=\"getFocus(" + card._id + "," + card + "," + currentUser + "); keyListen(ce" + card._id + ");\" ng-blur=\"getBlur(" + card._id + "," + card + "," + currentUser + ")\" ng-model=\"card.content\" ng-model-options=\"{ debounce: 1000 }\">";
-                        var card_div = "<div id=\"card_" + card._id + "\" class=\"card_temp\">" + user_div + card_inner + card_inner_2 +  card.content + "</form></div></div>" + footer + "</div>";
-                        
+                        var card_inner_2 = "<div class=\"ce\" id=\"ce" + card._id + "\" contenteditable=\"" + isUser + "\" editable=\"" + isUser + "\" ng-change=\"contentChanged(card.content" + "," + "ce" + card._id + ")\" ng-keydown=\"checkKey($event, ce" + card._id + ")\"; ng-paste=\"handlePaste($event)\" ng-focus=\"getFocus(" + card._id + "," + card + "," + currentUser + "); keyListen(ce" + card._id + ");\" ng-blur=\"getBlur(" + card._id + "," + card + "," + currentUser + ")\" ng-model=\"card.content\" ng-model-options=\"{ debounce: 1000 }\">";
+                        var card_div = "<div id=\"card_" + card._id + "\" class=\"card_temp\">" + user_div + card_inner + card_inner_2 + card.content + "</form></div></div>" + footer + "</div>";
+
                         var last_card = "<img id= \"delete_image\" src=\"/assets/images/bee_65.png\" onload=\"domUpdated()\">";
                         if (index == newValue.length - 1) {
                             //element.append("<div id=\"card_" + card._id + "\">" + card.content + "</div><img id= \"delete_image\" src=\"/assets/images/bee_65.png\" onload=\"domUpdated()\">");
@@ -354,12 +374,12 @@ cardApp.directive("doScopeRepeat", function($compile, $log, UserData) {
                             //scope.finished += card_div;
                         }
                     });
-                   // $('.conty').unwrap();
+                    // $('.conty').unwrap();
                 }
             }, true);
             $compile(element.contents())(scope);
         }
-        
+
     };
 });
 
@@ -387,7 +407,7 @@ cardApp.directive("doRepeat", function($compile, $log, UserData) {
                 }
             }, true);
             $compile(element.contents())(scope);
-        } 
+        }
     };
 });
 

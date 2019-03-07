@@ -207,7 +207,41 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     */
     // scroll listener throttled.
     //var myHeavyFunction = throttle(function() {
+
+    var getVisibleElements = function(){
+        var cards_visible = [];
+
+        //var allElements = document.querySelectorAll('.content_cnv .card_temp');
+        //$('.content_cnv .vis').last().addClass('removeCards');
+
+             $(".vis").each(function() {
+                console.log(this);
+                var id = $(this).attr('id');
+            id = id.substr(5, id.legth);
+            console.log(id);
+            var pos = General.findWithAttr($scope.cards, '_id', id);
+            cards_visible.push($scope.cards[pos-1]);
+            cards_visible.push($scope.cards[pos]);
+            cards_visible.push($scope.cards[pos+1]);
+
+     });
+
+         //for (var i = 0, len = allElements.length; i < len; i++) {
+          //  console.log(allElements[i]);
+            //if(allElements[i].visible){
+                //cards_visible.push($scope.cards[i]);
+            //}
+         //}
+         //return $scope.cards;
+         return cards_visible;
+    };
+
     var myHeavyFunction = function() {
+
+    //$scope.cards_vis = getVisibleElements();
+
+
+    
         var currentScroll = $(this).scrollTop();
         var maxScroll = this.scrollHeight - this.clientHeight;
         var scrolled = (currentScroll / maxScroll) * 100;
@@ -261,6 +295,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         .then(function(result) {
                             console.log('AMB END');
                             scroll_updating = false;
+
+                                //$scope.$broadcast('stop');
+    //$scope.$digest();
+    $scope.$broadcast('resume');
                         });
                     //}
                 }
@@ -476,6 +514,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             for (var i = 0, len = cards_to_move.length; i < len; i++) {
                 $scope.cards.push(cards_to_move[i]);
             }
+
+            //$scope.cards_vis = $scope.cards;
             //0.014999997802078724 milliseconds.
             //0.020000035874545574 milliseconds.
             //0.05000003147870302 milliseconds.
@@ -541,6 +581,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var scroll_updating = false;
     addMoreBottom = function() {
         console.log('AMB START');
+
+                                        $scope.$broadcast('stop');
+    //$scope.$digest();
+   //$scope.$broadcast('resume');
+
         scroll_updating = true;
         var deferred = $q.defer();
         $scope.scrollingdisabled = true;

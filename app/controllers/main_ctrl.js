@@ -39,17 +39,32 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     intersectionCallback = function(entries, observer) {
         entries.forEach(entry => {
             var elem = entry.target;
+            /*
+            var id = $(elem).attr('id');
+            id = id.substr(5, id.legth);
+             var pos = General.findWithAttr($scope.cards, '_id', id);
+             */
             if (entry.isIntersecting) {
                 //elem.querySelector(".topRight").innerHTML = 'vis';
                 $(elem).addClass('vis');
-                $(elem).removeClass('invis');
+                
+                
+                
+                
+            
+                //$scope.cards[pos].visible = true;
+                //$(elem).removeClass('invis');
             }
 
             if (!entry.isIntersecting) {
                 
                 //elem.querySelector(".topRight").innerHTML = 'inv';
                 $(elem).removeClass('vis');
-                $(elem).addClass('invis');
+                //$(elem).addClass('invis');
+                 
+                
+               
+                //$scope.cards[pos].visible = false;
             }
         });
 
