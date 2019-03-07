@@ -1042,8 +1042,17 @@ tempToCardsFirst = function() {
 
     $scope.$on('ngRepeatFinishedTemp', function(ngRepeatFinishedEvent) {
         console.log('ngRepeatFinishedTemp');
+        if($scope.cards.length == 0){
+        
         image_check_counter++;
         checkImages('load_off_screen', image_check_counter);
+        
+    } else {
+        
+        $rootScope.loading_cards_offscreen = false;
+        checkNext();
+    }
+
     });
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
