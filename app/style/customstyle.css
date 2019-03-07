@@ -3155,7 +3155,7 @@ span.after_image {
     /* Force scroll bar on chome mobile trick */
     clip-path: inset(0px -2px 0px 0px);
 }
-
+/*
 .invis .cropper_cont {
     display: none;
 }
@@ -3163,3 +3163,4 @@ span.after_image {
 .vis .cropper_cont {
     display: unset;
 }
+*/

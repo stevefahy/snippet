@@ -214,7 +214,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log('maxScroll: ' + maxScroll);
         console.log(scrolled + ' : ' + last_scrolled);
         console.log('last_scrolled: ' + last_scrolled);
-        /*
+        
         if (scrolled < last_scrolled) {
             dir = 1;
             console.log('up: ' + scrolled + ' : ' + last_scrolled);
@@ -225,7 +225,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             console.log('DONT FIRE');
             dir = 2;
         }
-        */
+        
 
         //last_scrolled = scrolled;
         console.log('$scope.scrollingdisabled: ' + $scope.scrollingdisabled + ' content_adjust: ' + content_adjust + ' scroll_updating: ' + scroll_updating);
@@ -235,9 +235,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 checkBoundary(scrolled);
             }
             //if (!$scope.scrollingdisabled && !content_adjust && !scroll_updating) {
-            //if (dir == 1 && scrolled <= UP_PERCENT) {
-            if (scrolled < last_scrolled) {
-                if (scrolled <= UP_PERCENT) {
+            if (dir == 1 && scrolled <= UP_PERCENT) {
+            //if (scrolled < last_scrolled) {
+                //if (scrolled <= UP_PERCENT) {
                     //if (!$scope.scrollingdisabled && !temp_working) {
                     console.log('FIRE UP!!!');
                     addMoreTop()
@@ -246,15 +246,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             scroll_updating = false;
                         });
                     //}
-                }
+                //}
             }
             //}
 
             //if (!$scope.scrollingdisabled && !content_adjust && !scroll_updating) {
             //if (!scroll_updating) {
-            //if (dir == 0 && scrolled >= DOWN_PERCENT) {
-            if (scrolled > last_scrolled) {
-                if (scrolled >= DOWN_PERCENT) {
+            if (dir == 0 && scrolled >= DOWN_PERCENT) {
+            //if (scrolled > last_scrolled) {
+                //if (scrolled >= DOWN_PERCENT) {
                     //if (!$scope.scrollingdisabled && !temp_working) {
                     console.log('FIRE DOWN!!!');
                     addMoreBottom()
@@ -264,7 +264,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         });
                     //}
                 }
-            }
+            //}
         }
         last_scrolled = scrolled;
         //}
@@ -545,9 +545,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var deferred = $q.defer();
         $scope.scrollingdisabled = true;
         console.log($scope.top_down);
-        unRemoveCardsBottom()
-            .then(function(result) {
-                console.log(result);
+        //unRemoveCardsBottom()
+            //.then(function(result) {
+               // console.log(result);
+               result = 0;
                 if (result == 0 && $scope.top_down) {
                     tempToCards()
                         .then(function(result) {
@@ -569,7 +570,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             deferred.resolve();
                         });
                 }
-            });
+           // });
         return deferred.promise;
     };
 
@@ -691,6 +692,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     unRemoveCardsBottom = function() {
         var deferred = $q.defer();
+        /*
         var removed_length = $scope.removed_cards_bottom.length;
         amount = NUM_UPDATE_DISPLAY;
         if (removed_length < amount) {
@@ -719,6 +721,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         } else {
             deferred.resolve(0);
         }
+        */
+        deferred.resolve(0);
         return deferred.promise;
     };
 
