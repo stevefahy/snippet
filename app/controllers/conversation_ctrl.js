@@ -208,47 +208,47 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // scroll listener throttled.
     //var myHeavyFunction = throttle(function() {
 
-    var getVisibleElements = function(){
+    var getVisibleElements = function() {
         var cards_visible = [];
 
         //var allElements = document.querySelectorAll('.content_cnv .card_temp');
         //$('.content_cnv .vis').last().addClass('removeCards');
 
-             $(".vis").each(function() {
-                console.log(this);
-                var id = $(this).attr('id');
+        $(".vis").each(function() {
+            console.log(this);
+            var id = $(this).attr('id');
             id = id.substr(5, id.legth);
             console.log(id);
             var pos = General.findWithAttr($scope.cards, '_id', id);
-            cards_visible.push($scope.cards[pos-1]);
+            cards_visible.push($scope.cards[pos - 1]);
             cards_visible.push($scope.cards[pos]);
-            cards_visible.push($scope.cards[pos+1]);
+            cards_visible.push($scope.cards[pos + 1]);
 
-     });
+        });
 
-         //for (var i = 0, len = allElements.length; i < len; i++) {
-          //  console.log(allElements[i]);
-            //if(allElements[i].visible){
-                //cards_visible.push($scope.cards[i]);
-            //}
-         //}
-         //return $scope.cards;
-         return cards_visible;
+        //for (var i = 0, len = allElements.length; i < len; i++) {
+        //  console.log(allElements[i]);
+        //if(allElements[i].visible){
+        //cards_visible.push($scope.cards[i]);
+        //}
+        //}
+        //return $scope.cards;
+        return cards_visible;
     };
 
     var myHeavyFunction = function() {
 
-    //$scope.cards_vis = getVisibleElements();
+        //$scope.cards_vis = getVisibleElements();
 
 
-    
+
         var currentScroll = $(this).scrollTop();
         var maxScroll = this.scrollHeight - this.clientHeight;
         var scrolled = (currentScroll / maxScroll) * 100;
         console.log('maxScroll: ' + maxScroll);
         console.log(scrolled + ' : ' + last_scrolled);
         console.log('last_scrolled: ' + last_scrolled);
-        
+
         if (scrolled < last_scrolled) {
             dir = 1;
             console.log('up: ' + scrolled + ' : ' + last_scrolled);
@@ -259,7 +259,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             console.log('DONT FIRE');
             dir = 2;
         }
-        
+
 
         //last_scrolled = scrolled;
         console.log('$scope.scrollingdisabled: ' + $scope.scrollingdisabled + ' content_adjust: ' + content_adjust + ' scroll_updating: ' + scroll_updating);
@@ -270,17 +270,17 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }
             //if (!$scope.scrollingdisabled && !content_adjust && !scroll_updating) {
             if (dir == 1 && scrolled <= UP_PERCENT) {
-            //if (scrolled < last_scrolled) {
+                //if (scrolled < last_scrolled) {
                 //if (scrolled <= UP_PERCENT) {
-                    //if (!$scope.scrollingdisabled && !temp_working) {
-                    console.log('FIRE UP!!!');
-                    addMoreTop()
-                        .then(function(result) {
-                            console.log('AMT END');
-                            scroll_updating = false;
+                //if (!$scope.scrollingdisabled && !temp_working) {
+                console.log('FIRE UP!!!');
+                addMoreTop()
+                    .then(function(result) {
+                        console.log('AMT END');
+                        scroll_updating = false;
 
-                        });
-                    //}
+                    });
+                //}
                 //}
             }
             //}
@@ -288,24 +288,24 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             //if (!$scope.scrollingdisabled && !content_adjust && !scroll_updating) {
             //if (!scroll_updating) {
             if (dir == 0 && scrolled >= DOWN_PERCENT) {
-            //if (scrolled > last_scrolled) {
+                //if (scrolled > last_scrolled) {
                 //if (scrolled >= DOWN_PERCENT) {
-                    //if (!$scope.scrollingdisabled && !temp_working) {
-                    console.log('FIRE DOWN!!!');
-                    //var stored_scroll = currentScroll;
-                    addMoreBottom()
-                        .then(function(result) {
-                            console.log('AMB END');
-                            scroll_updating = false;
-//console.log(currentScroll + ' : ' + stored_scroll);
-                            //$(this).scrollTop(stored_scroll-1000);
-//$('.content_cnv').css('overflow-y','scroll');
-                                //$scope.$broadcast('stop');
-    //$scope.$digest();
-    //$scope.$broadcast('resume');
-                        });
-                    //}
-                }
+                //if (!$scope.scrollingdisabled && !temp_working) {
+                console.log('FIRE DOWN!!!');
+                //var stored_scroll = currentScroll;
+                addMoreBottom()
+                    .then(function(result) {
+                        console.log('AMB END');
+                        scroll_updating = false;
+                        //console.log(currentScroll + ' : ' + stored_scroll);
+                        //$(this).scrollTop(stored_scroll-1000);
+                        //$('.content_cnv').css('overflow-y','scroll');
+                        //$scope.$broadcast('stop');
+                        //$scope.$digest();
+                        //$scope.$broadcast('resume');
+                    });
+                //}
+            }
             //}
         }
         last_scrolled = scrolled;
@@ -520,7 +520,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }
 
 
-            
+
 
             //$scope.cards_vis = $scope.cards;
             //0.014999997802078724 milliseconds.
@@ -549,7 +549,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
 
-tempToCardsFirst = function() {
+    tempToCardsFirst = function() {
         console.log('tempToCards');
         var deferred = $q.defer();
 
@@ -656,8 +656,8 @@ tempToCardsFirst = function() {
         console.log('AMB START');
 
         //$scope.$broadcast('stop');
-    //$scope.$digest();
-   //$scope.$broadcast('resume');
+        //$scope.$digest();
+        //$scope.$broadcast('resume');
 
         scroll_updating = true;
         var deferred = $q.defer();
@@ -666,12 +666,12 @@ tempToCardsFirst = function() {
 
         unRemoveCardsBottom()
             .then(function(result) {
-               // console.log(result);
-               result = 0;
+                // console.log(result);
+                result = 0;
                 if (result == 0 && $scope.top_down) {
                     tempToCards()
                         .then(function(result) {
-                  
+
                             removeCardsTop()
                                 .then(function(result) {
                                     $scope.scrollingdisabled = false;
@@ -686,7 +686,7 @@ tempToCardsFirst = function() {
                         });
                 }
             });
-    
+
         return deferred.promise;
     };
 
@@ -808,14 +808,14 @@ tempToCardsFirst = function() {
 
     unRemoveCardsBottom = function() {
         var deferred = $q.defer();
-        
+
         var removed_length = $scope.removed_cards_bottom.length;
         amount = NUM_UPDATE_DISPLAY;
         if (removed_length < amount) {
             amount = removed_length;
         }
         //if (amount > 0) {
-         if (removed_length > 0) {
+        if (removed_length > 0) {
             console.log('unRemoveCardsBottom');
             if (!$scope.top_down) {
                 $scope.removed_cards_bottom = $filter('orderBy')($scope.removed_cards_bottom, 'updatedAt');
@@ -837,7 +837,7 @@ tempToCardsFirst = function() {
         } else {
             deferred.resolve(0);
         }
-        
+
         //deferred.resolve(0);
         return deferred.promise;
     };
@@ -965,13 +965,13 @@ tempToCardsFirst = function() {
         console.log($scope.cards.length);
         if ($scope.cards.length == 0) {
             //adjustTemp()
-               // .then(function(res) {
+            // .then(function(res) {
 
-                    tempToCardsFirst()
-                        .then(function(res) {
-                            scroll_updating = false;
-                        });
-                //});
+            tempToCardsFirst()
+                .then(function(res) {
+                    scroll_updating = false;
+                });
+            //});
 
         }
         // Check if first load of content_cnv
@@ -1003,10 +1003,10 @@ tempToCardsFirst = function() {
             $rootScope.loading_cards_offscreen = false;
             delete obj;
 
-           // adjustTemp()
-                //.then(function(res) {
-                    checkNext();
-               // });
+            // adjustTemp()
+            //.then(function(res) {
+            checkNext();
+            // });
         }
     };
 
@@ -1042,12 +1042,28 @@ tempToCardsFirst = function() {
 
     $scope.$on('ngRepeatFinishedTemp', function(ngRepeatFinishedEvent) {
         console.log('ngRepeatFinishedTemp');
+
+
+
         image_check_counter++;
         checkImages('load_off_screen', image_check_counter);
     });
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
-      console.log('ngRepeatFinished');
+        console.log('ngRepeatFinished');
+        var w = $('.content_cnv').width();
+        $(".content_cnv .cropper_cont").each(function(index, value) {
+            console.log($(this).attr('image-original'));
+
+            var a = JSON.parse($(this).attr('image-original'));
+            console.log(a.nat_width);
+            var i = $(this).children().first();
+            console.log(i);
+            i.attr('width', w);
+            var r = a.nat_width / w;
+            var h = a.nat_height / r;
+            i.attr('height', h);
+        });
         dir = 2;
         image_check_counter++;
         checkImages('content_cnv', image_check_counter);
@@ -1115,50 +1131,50 @@ tempToCardsFirst = function() {
         }
         return result;
     };
-/*
-    $scope.follow = function(card) {
-        // Find the public conversation for the selected user.
-        // LDB
-        Conversations.find_user_public_conversation_by_id(card.user)
-            .then(function(result) {
-                if (result.conversation_type == 'public') {
-                    // If following then unfollow
-                    var conversation_id = result._id;
-                    var pms = { 'id': conversation_id, 'user': UserData.getUser()._id };
-                    if (card.following) {
-                        // Update the Conversation in the DB.
-                        // LDB
-                        Conversations.deleteFollower(pms)
-                            .then(function(conversation) {
-                                // Update the User in the DB.
-                                // LDB
-                                Users.unfollow_conversation(conversation._id)
-                                    .then(function(user) {
-                                        UserData.setUser(user);
-                                        $scope.currentUser = UserData.getUser();
-                                        removeUserCards(conversation_id);
-                                        updateFollowingIcons($scope.cards);
-                                    });
-                            });
-                    } else {
-                        // If not following then follow. Update the Conversation in the DB.
-                        // LDB
-                        Conversations.addFollower(pms)
-                            .then(function(conversation) {
-                                // Update the User in the DB.
-                                // LDB
-                                Users.follow_conversation(conversation._id)
-                                    .then(function(user) {
-                                        UserData.setUser(user);
-                                        $scope.currentUser = UserData.getUser();
-                                        updateFollowingIcons($scope.cards);
-                                    });
-                            });
+    /*
+        $scope.follow = function(card) {
+            // Find the public conversation for the selected user.
+            // LDB
+            Conversations.find_user_public_conversation_by_id(card.user)
+                .then(function(result) {
+                    if (result.conversation_type == 'public') {
+                        // If following then unfollow
+                        var conversation_id = result._id;
+                        var pms = { 'id': conversation_id, 'user': UserData.getUser()._id };
+                        if (card.following) {
+                            // Update the Conversation in the DB.
+                            // LDB
+                            Conversations.deleteFollower(pms)
+                                .then(function(conversation) {
+                                    // Update the User in the DB.
+                                    // LDB
+                                    Users.unfollow_conversation(conversation._id)
+                                        .then(function(user) {
+                                            UserData.setUser(user);
+                                            $scope.currentUser = UserData.getUser();
+                                            removeUserCards(conversation_id);
+                                            updateFollowingIcons($scope.cards);
+                                        });
+                                });
+                        } else {
+                            // If not following then follow. Update the Conversation in the DB.
+                            // LDB
+                            Conversations.addFollower(pms)
+                                .then(function(conversation) {
+                                    // Update the User in the DB.
+                                    // LDB
+                                    Users.follow_conversation(conversation._id)
+                                        .then(function(user) {
+                                            UserData.setUser(user);
+                                            $scope.currentUser = UserData.getUser();
+                                            updateFollowingIcons($scope.cards);
+                                        });
+                                });
+                        }
                     }
-                }
-            });
-    };
-    */
+                });
+        };
+        */
 
     $scope.addSlider = function(data) {
         if (data.last_position != undefined) {
@@ -1599,6 +1615,9 @@ tempToCardsFirst = function() {
                 $q.all(promises).then(function() {
                     console.log($scope.cards_temp);
                     console.log('getCards fin');
+
+
+
                     /*
                     if (!no_more_records) {
                         $rootScope.$broadcast("ngRepeatFinishedTemp", { temp: "some value" });
