@@ -696,7 +696,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         if (removed_length < amount) {
             amount = removed_length;
         }
-        if (amount > 0) {
+        //if (amount > 0) {
+         if (removed_length > 0) {
             console.log('unRemoveCardsBottom');
             if (!$scope.top_down) {
                 $scope.removed_cards_bottom = $filter('orderBy')($scope.removed_cards_bottom, 'updatedAt');
@@ -713,7 +714,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $scope.cards.push(spliced[i]);
             }
 
-            deferred.resolve(amount);
+            //deferred.resolve(amount);
+            deferred.resolve(removed_length);
         } else {
             deferred.resolve(0);
         }

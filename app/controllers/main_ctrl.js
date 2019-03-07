@@ -38,16 +38,18 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     intersectionCallback = function(entries, observer) {
         entries.forEach(entry => {
+            var elem = entry.target;
             if (entry.isIntersecting) {
-                var elem = entry.target;
                 //elem.querySelector(".topRight").innerHTML = 'vis';
                 $(elem).addClass('vis');
+                $(elem).removeClass('invis');
             }
 
             if (!entry.isIntersecting) {
-                var elem = entry.target;
+                
                 //elem.querySelector(".topRight").innerHTML = 'inv';
                 $(elem).removeClass('vis');
+                $(elem).addClass('invis');
             }
         });
 
