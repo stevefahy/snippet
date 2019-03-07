@@ -7,7 +7,8 @@
     <!-- Preloading offscreen -->
 
     <div class="load_off_screen">
-        <div do-repeat="cards_temp"></div>
+        <!--<div do-repeat="cards_temp"></div>-->
+        <div ng-repeat="card in cards_temp" on-finish-render="ngRepeatFinishedTemp"></div>
     </div>
 
     <!-- Preloading offscreen -->
