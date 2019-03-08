@@ -301,7 +301,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             // Hide original image
             //var src = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id).attr('src');
             //$('.' + parent_container + ' #cropper_' + id + ' #image_' + id).attr('data-src', src);
-            $('.' + parent_container + ' #cropper_' + id + ' #image_' + id).attr('src', 'data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==');
+            //$('.' + parent_container + ' #cropper_' + id + ' #image_' + id).attr('src', 'data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==');
+            $('.' + parent_container + ' #cropper_' + id + ' #image_' + id).attr('src', '/assets/images/transparent.gif');
             $('.' + parent_container + ' #cropper_' + id + ' #image_' + id).css('display', 'none');
 
 
@@ -566,7 +567,9 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         var id = ImageAdjustment.getImageId();
         //var src = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id).attr('src');
         //$('.' + parent_container + ' #cropper_' + id + ' #image_' + id).attr('data-src', src);
-        $('.' + parent_container + ' #cropper_' + id + ' #image_' + id).attr('src', 'data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==');
+        //$('.' + parent_container + ' #cropper_' + id + ' #image_' + id).attr('src', 'data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==');
+        $('.' + parent_container + ' #cropper_' + id + ' #image_' + id).attr('src', '/assets/images/transparent.gif');
+
         $('.' + parent_container + ' #cropper_' + id + ' #image_' + id).css('display', 'none');
 
 
@@ -841,7 +844,9 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             // If Adjusted exists hide original.
             if ($('.' + parent_container + ' #cropper_' + image_id + ' .adjusted').length > 0) {
 
-                $('.' + parent_container + ' #cropper_' + image_id + ' #image_' + image_id).attr('src', 'data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==');
+                //$('.' + parent_container + ' #cropper_' + image_id + ' #image_' + image_id).attr('src', 'data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==');
+                $('.' + parent_container + ' #cropper_' + image_id + ' #image_' + image_id).attr('src', '/assets/images/transparent.gif');
+                
                 $("." + parent_container + ' #cropper_' + image_id + " #image_" + image_id).css('display', 'none');
             }
             cropper.destroy();

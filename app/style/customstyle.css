@@ -1468,20 +1468,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 }
 
 
-.content_cnv {
-    width: 100vw;
-    overflow-y: scroll;
-    overflow-anchor: auto;
-    /*overflow-y: overlay;*/
-    /* DANGER added x 01/04/18 */
-    overflow-x: hidden;
-    /*height: calc(100% - 185px);*/
-    border-radius: 1px;
-    background-color: #FFFFFF;
-    margin-bottom: 132px;
 
-
-}
 
 .content_cnv_conv {
     height: calc(100% - 126px);
@@ -3155,9 +3142,13 @@ span.after_image {
 }
 
 .card_temp {
-    position: relative;
+will-change: content;
+
+position: relative;
+    /*will-change: transform;*/
+    
     /* Force scroll bar on chome mobile trick */
-    /*clip-path: inset(0px -2px 0px 0px);*/
+   /* clip-path: inset(0px -2px 0px 0px);*/
 }
 /*
 .invis .cropper_cont {
@@ -3170,5 +3161,24 @@ span.after_image {
 */
 
 .force_scrollbar{
-    clip-path: inset(0px -2px 0px 0px);
+
+    /*clip-path: inset(0px -2px 0px 0px);*/
+
+}
+
+.content_cnv {
+
+    width: 100vw;
+    overflow-y: scroll;
+    overflow-anchor: auto;
+    /*overflow-y: overlay;*/
+    /* DANGER added x 01/04/18 */
+    overflow-x: hidden;
+    /*height: calc(100% - 185px);*/
+    /*border-radius: 1px;*/
+    background-color: #FFFFFF;
+   margin-bottom: 132px;
+will-change: scroll-position;
+    
+ /*transform: translateZ(0);*/
 }
