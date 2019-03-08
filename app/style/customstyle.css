@@ -261,11 +261,17 @@ hr {
 
 .header {
     display: flex;
-    top: 0;
-    background-color: #FFFFFF;
+    /*top: 0;
+    background-color: #FFFFFF;*/
     height: 55px;
+
+    /*
     padding-left: 1.25em;
     padding-right: 1.25em;
+    */
+    padding-left: 20px;
+    padding-right: 20px;
+
     align-items: center;
 }
 
@@ -278,13 +284,17 @@ hr {
 }
 
 .logo {
+    /*
     margin-left: 5px;
     margin-top: 3px;
+    */
 }
 
 .logo img {
+    /*
     width: 30px;
     height: 30px;
+    */
 }
 
 .user_right {
@@ -319,9 +329,11 @@ hr {
     width: 100%;
     z-index: 1000;
     height: 55px;
-    left: 0px;
+    /*left: 0px;*/
+    /*
     box-shadow: rgba(0, 0, 0, 0.14) 0px 4px 5px 0px, ;
     box-shadow: rgba(0, 0, 0, 0.14) 0px 4px 5px 0px, rgba(0, 0, 0, 0.12) 0px 1px 10px 0px, rgba(0, 0, 0, 0.2) 0px 2px 4px -1px;
+*/
 }
 
 /* HEADER SETTINGS */
@@ -594,6 +606,7 @@ hr {
 }
 
 .heading_avatar {
+    /*
     width: 45px;
     height: 45px;
     border-radius: 50%;
@@ -606,6 +619,14 @@ hr {
     flex: 0 0 auto;
     overflow: hidden;
     position: relative;
+    border: 1px solid #9E9E9E;
+    */
+width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    cursor: pointer;
     border: 1px solid #9E9E9E;
 }
 
@@ -3142,7 +3163,7 @@ span.after_image {
 }
 
 .card_temp {
-will-change: content;
+/*will-change: content;*/
 
 position: relative;
     /*will-change: transform;*/
