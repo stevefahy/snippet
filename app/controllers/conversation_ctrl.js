@@ -1042,15 +1042,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     $scope.$on('ngRepeatFinishedTemp', function(ngRepeatFinishedEvent) {
         console.log('ngRepeatFinishedTemp');
-
-
-
         image_check_counter++;
         checkImages('load_off_screen', image_check_counter);
     });
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
         console.log('ngRepeatFinished');
+        /*
         var w = $('.content_cnv').width();
         $(".content_cnv .cropper_cont").each(function(index, value) {
             console.log($(this).attr('image-original'));
@@ -1064,6 +1062,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             var h = a.nat_height / r;
             i.attr('height', h);
         });
+        */
         dir = 2;
         image_check_counter++;
         checkImages('content_cnv', image_check_counter);
