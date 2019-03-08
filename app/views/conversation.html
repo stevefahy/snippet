@@ -1,9 +1,11 @@
 <div class="container_cnv">
+    <!--
     <div class="slide-animate header_container" ng-if="feed" ng-include="'/views/header.html'"></div>
     <div class="slide-animate header_container" ng-if="!feed" ng-include="'/views/header_conv.html'"></div>
     <div ng-if="$root.pageLoading" class="loading_screen">
         <div ng-include="'/views/spinner.html'"></div>
     </div>
+-->
     <!-- Preloading offscreen -->
     <div class="load_off_screen">
         <div do-repeat="cards_temp"></div>
@@ -54,6 +56,7 @@
             </div>
         </div>
     </div>
+    <!--
     <div class="card_create_container" ng-if="isMember" ng-include src="'/views/card_create.html'"></div>
     <div class="footerinc" ng-if="feed" ng-include src="'/views/footer.html'"></div>
     <div class="image_adjust"></div>
@@ -66,6 +69,7 @@
             </div>
         </div>
     </div>
+-->
     <div class="image_adjust_div">
         <div class='close_adjust' onclick='closeFilters(event)'><i class='material-icons image_edit' id='ie_close'>&#xE14C;</i></div>
         <div class="image_adjust_sharpen">
