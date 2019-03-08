@@ -1475,12 +1475,9 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     /*overflow-y: overlay;*/
     /* DANGER added x 01/04/18 */
     overflow-x: hidden;
-    /*height: calc(100% - 185px);*/
+    height: calc(100% - 185px);
     border-radius: 1px;
     background-color: #FFFFFF;
-    margin-bottom: 132px;
-
-
 }
 
 .content_cnv_conv {
@@ -3069,7 +3066,6 @@ span.after_image {
     z-index: -1;
     bottom: 100vh;
 
-    overflow: hidden;
     /*
     position: absolute;
     height: 100vh;
@@ -3157,7 +3153,7 @@ span.after_image {
 .card_temp {
     position: relative;
     /* Force scroll bar on chome mobile trick */
-    /*clip-path: inset(0px -2px 0px 0px);*/
+    clip-path: inset(0px -2px 0px 0px);
 }
 /*
 .invis .cropper_cont {
@@ -3168,7 +3164,3 @@ span.after_image {
     display: unset;
 }
 */
-
-.force_scrollbar{
-    clip-path: inset(0px -2px 0px 0px);
-}

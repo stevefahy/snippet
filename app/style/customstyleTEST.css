@@ -1,9 +1,13 @@
 html,
 body {
+    /*
     overflow: hidden;
     position: relative;
     height: 100%;
     width: 100%;
+    */
+    height: 100%;
+    overflow: hidden;
 }
 
 html {
@@ -11,6 +15,7 @@ html {
 }
 
 body {
+    /*
     background-color: #FFFFFF;
     word-wrap: normal;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arimo, Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
@@ -22,12 +27,16 @@ body {
     margin: 0;
     padding: 0;
     overflow: hidden;
+    */
+     display: flex;
 }
 
 /* Limit image width to avoid overflow the container */
 /* This rule is very important, please do not ignore this! */
 img {
+    
     max-width: 100%;
+    
 }
 
 canvas {
@@ -260,6 +269,7 @@ hr {
 /* HEADER */
 
 .header {
+    /*
     display: flex;
     top: 0;
     background-color: #FFFFFF;
@@ -267,6 +277,9 @@ hr {
     padding-left: 1.25em;
     padding-right: 1.25em;
     align-items: center;
+    */
+    height: 55px;
+        will-change: transform;
 }
 
 .header_text {
@@ -278,13 +291,17 @@ hr {
 }
 
 .logo {
+    /*
     margin-left: 5px;
     margin-top: 3px;
+    */
 }
 
 .logo img {
+    /*
     width: 30px;
     height: 30px;
+    */
 }
 
 .user_right {
@@ -1440,13 +1457,16 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 }
 
 .container_cnv {
+    /*
     position: fixed;
     width: 100%;
     display: flex;
     flex: auto;
     flex-direction: column;
-    height: 100%;
+   
     background-color: #FFFFFF;
+    */
+     height: 100%;
 }
 
 .container_cnv2 {
@@ -1475,12 +1495,9 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     /*overflow-y: overlay;*/
     /* DANGER added x 01/04/18 */
     overflow-x: hidden;
-    /*height: calc(100% - 185px);*/
+    height: calc(100% - 185px);
     border-radius: 1px;
     background-color: #FFFFFF;
-    margin-bottom: 132px;
-
-
 }
 
 .content_cnv_conv {
@@ -2616,11 +2633,13 @@ span#header b.header_3 {
 */
 
 .page {
+    /*
     bottom: 0;
     top: 0;
     position: absolute;
     width: 100%;
     transform: translate3d(0, 0, 0);
+    */
 }
 
 .z5000 {
@@ -3069,7 +3088,6 @@ span.after_image {
     z-index: -1;
     bottom: 100vh;
 
-    overflow: hidden;
     /*
     position: absolute;
     height: 100vh;
@@ -3157,7 +3175,7 @@ span.after_image {
 .card_temp {
     position: relative;
     /* Force scroll bar on chome mobile trick */
-    /*clip-path: inset(0px -2px 0px 0px);*/
+    clip-path: inset(0px -2px 0px 0px);
 }
 /*
 .invis .cropper_cont {
@@ -3168,7 +3186,3 @@ span.after_image {
     display: unset;
 }
 */
-
-.force_scrollbar{
-    clip-path: inset(0px -2px 0px 0px);
-}

@@ -325,10 +325,30 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     insertImage = function(data) {
         if (data.response === 'saved') {
-            data.file_name = data.file.substring(0, data.file.indexOf('.'));
-            var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src='" + IMAGES_URL + data.file + "'></div><slider></slider><span class='after_image' id='after_image_" + data.file_name + "'>&#x200b;&#10;</span><span class='clear_after_image'></span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
-            self.pasteHtmlAtCaret(new_image);
 
+            //var img = document.getElementById('imageid');
+            //or however you get a handle to the IMG
+            //var width = img.clientWidth;
+            //var height = img.clientHeight;
+
+            console.log(data);
+
+//var i = new Image(); 
+//var w;
+//var h;
+//i.onload = function(){
+ //console.log( i.width+", "+i.height );
+//w= i.width;
+// h= i.height;
+
+
+
+            data.file_name = data.file.substring(0, data.file.indexOf('.'));
+            //var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src=\"" + IMAGES_URL + data.file + "\" width=\"" + w + "\" height=\"" + h + "\"'></div><slider></slider><span class='after_image' id='after_image_" + data.file_name + "'>&#x200b;&#10;</span><span class='clear_after_image'></span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
+            var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src=\"" + IMAGES_URL + data.file + "\"></div><slider></slider><span class='after_image' id='after_image_" + data.file_name + "'>&#x200b;&#10;</span><span class='clear_after_image'></span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
+            self.pasteHtmlAtCaret(new_image);
+//};
+//i.src = IMAGES_URL + data.file; 
 
             // commented out because it causes an issue with onblur which is used to update card.
             /*
