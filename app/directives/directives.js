@@ -184,7 +184,7 @@ cardApp.directive("scrollTrigger", function() {
 
 cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$compile', '$rootScope', function($window, $document, $timeout, $compile, $rootScope) {
     var defaults = {
-        delay: 100,
+        delay: 0,
         start_delay: 1000,
         init_scroll_delay: 3000,
         scroll_delay: 1000,
