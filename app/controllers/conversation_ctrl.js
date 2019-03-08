@@ -48,7 +48,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // Numbers of cards to load or display.
     var INIT_NUM_TO_LOAD = 50;
     var NUM_TO_LOAD = 20;
-    var NUM_UPDATE_DISPLAY = 5; //20
+    var NUM_UPDATE_DISPLAY = 5; //20 5
     var NUM_UPDATE_DISPLAY_INIT = 30;
     // Minimum number of $scope.cards_temp to keep loaded.
     var MIN_TEMP = 40;
@@ -153,16 +153,19 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     };
     var maxScroll;
+    
     $scope.$watch('cards.length', function(newStatus) {
         // Debugging
         $rootScope.cards_length = newStatus;
+        /*
         $timeout(function() {
             upDateObservers();
             //maxScroll = $('.content_cnv')[0].scrollHeight - $('.content_cnv')[0].clientHeight;
             console.log('maxScroll: ' + maxScroll);
         }, 100);
-
+*/
     });
+    
 
 
     domUpdated = function() {
@@ -737,6 +740,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             // check for undefined
             amount = amount != undefined ? amount : 0;
         }
+
+        amount = 5;
+
         return amount;
     };
 
@@ -761,6 +767,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log('amount: ' + amount);
         // check less than zero
         amount = amount < 0 ? 0 : amount;
+
+        amount = 5;
         return amount;
     };
 
