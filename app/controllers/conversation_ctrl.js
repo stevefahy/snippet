@@ -153,11 +153,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     };
     var maxScroll;
-    
+
     $scope.$watch('cards.length', function(newStatus) {
         // Debugging
         $rootScope.cards_length = newStatus;
-        
+
         $timeout(function() {
             upDateObservers();
             //maxScroll = $('.content_cnv')[0].scrollHeight - $('.content_cnv')[0].clientHeight;
@@ -165,7 +165,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }, 100);
 
     });
-    
+
 
 
     domUpdated = function() {
@@ -239,6 +239,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         return cards_visible;
     };
 
+    var pb = document.getElementById('progress-thumb');
+
     var myHeavyFunction = function() {
 
         //$scope.cards_vis = getVisibleElements();
@@ -262,6 +264,45 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             console.log('DONT FIRE');
             dir = 2;
         }
+
+        //values.height = element[0].scrollHeight - element[0].clientHeight;
+        //values.scrolled_max = 100 - thumb_height;
+        // Calculate scroll
+        //var winScroll = document.getElementById(options.element_id).scrollTop;
+        //var scrolled = (winScroll / (values.height) * 100);
+        //scrolled = (scrolled * values.scrolled_max) / 100;
+        //document.getElementById(options.progress_thumb_id).style.top = scrolled + "%";
+
+        /*
+        values.content_div_height = $('#' + options.element_id).height();
+        values.content_height = element[0].scrollHeight;
+        if (values.content_height > values.content_div_height) {
+        values.height = element[0].scrollHeight - element[0].clientHeight;
+        values.scroll_thumb_height = (100 / (((values.content_height / values.content_div_height) * 100) / 100));
+        
+        // Set the progress thumb height.
+        $(progressBar[0]).css('height', thumb_height + "%");
+        // Set scrolled max value.
+        values.scrolled_max = 100 - thumb_height;
+        */
+
+        var cdh = $('.content_cnv').height();
+        var ch = this.scrollHeight;
+        var he = maxScroll;
+        var sth = (100 / (((ch / cdh) * 100) / 100));
+
+         // Set the progress thumb height.
+
+        $(pb).css('height', sth + "%");
+    
+
+        var h = maxScroll;
+        var sm = 100 - sth;
+        var ws = currentScroll;
+        var s = (ws / (h) * 100);
+        s = (s * sm) / 100;
+
+        pb.style.top = s + "%";
 
 
         //last_scrolled = scrolled;
@@ -372,7 +413,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
     */
 
+    setUpScrollBar = function() {
+        $('.progress-container').css('top', $('.content_cnv').offset().top);
+        $('.progress-container').css('height', $('.content_cnv').height());
+    };
+
     bindScroll = function() {
+        setUpScrollBar();
+
+
         var currentScroll = $('.content_cnv').scrollTop();
         var maxScroll = $('.content_cnv')[0].scrollHeight - $('.content_cnv')[0].clientHeight;
         var scrolled = (currentScroll / maxScroll) * 100;
@@ -381,7 +430,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log('scrolled: ' + scrolled);
 
         //$('.content_cnv').bind('scroll', myHeavyFunction);
-        $('.content_cnv')[0].addEventListener('scroll', myHeavyFunction, {passive: true});
+        $('.content_cnv')[0].addEventListener('scroll', myHeavyFunction, { passive: true });
 
         //$('.content_cnv').bind('scroll', wheelEvent);
         // could be top or bottom but not scrolling.
