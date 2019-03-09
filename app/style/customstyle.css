@@ -3196,7 +3196,7 @@ position: relative;
     overflow-anchor: auto;
     /*overflow-y: overlay;*/
     /* DANGER added x 01/04/18 */
-   /* overflow-x: hidden;*/
+    overflow-x: hidden;
     /*height: calc(100% - 185px);*/
     /*border-radius: 1px;*/
     background-color: #FFFFFF;

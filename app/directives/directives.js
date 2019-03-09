@@ -251,7 +251,7 @@ cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$comp
                                 $(progressBar[0]).css('visibility', 'visible');
                                 // bind scroll
                                 //wrapperDomElement.bind('scroll', doScroll);
-                                wrapperDomElement.addEventListener('scroll', doScroll, {passive: true});
+                                $(wrapperDomElement)[0].addEventListener('touchstart', doScroll, {passive: true});
                                 doScroll();
                             }, options.start_delay);
                         }
