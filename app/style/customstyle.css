@@ -21,7 +21,9 @@ body {
     display: flex;
     margin: 0;
     padding: 0;
-    overflow: hidden;
+    /*overflow: hidden;*/
+
+
 }
 
 /* Limit image width to avoid overflow the container */
@@ -330,10 +332,10 @@ hr {
     z-index: 1000;
     height: 55px;
     /*left: 0px;*/
-    /*
+    
     box-shadow: rgba(0, 0, 0, 0.14) 0px 4px 5px 0px, ;
     box-shadow: rgba(0, 0, 0, 0.14) 0px 4px 5px 0px, rgba(0, 0, 0, 0.12) 0px 1px 10px 0px, rgba(0, 0, 0, 0.2) 0px 2px 4px -1px;
-*/
+
 }
 
 /* HEADER SETTINGS */
@@ -3183,7 +3185,7 @@ position: relative;
 
 .force_scrollbar{
 
-    /*clip-path: inset(0px -2px 0px 0px);*/
+   /* clip-path: inset(0px -2px 0px 0px);*/
 
 }
 
@@ -3194,12 +3196,15 @@ position: relative;
     overflow-anchor: auto;
     /*overflow-y: overlay;*/
     /* DANGER added x 01/04/18 */
-    overflow-x: hidden;
+   /* overflow-x: hidden;*/
     /*height: calc(100% - 185px);*/
     /*border-radius: 1px;*/
     background-color: #FFFFFF;
    margin-bottom: 132px;
 will-change: scroll-position;
+ /*-webkit-overflow-scrolling: auto;*/
+  -webkit-overflow-scrolling: touch;
     
  /*transform: translateZ(0);*/
+
 }

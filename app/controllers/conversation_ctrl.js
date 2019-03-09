@@ -380,7 +380,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log('bind last_scrolled: ' + last_scrolled);
         console.log('scrolled: ' + scrolled);
 
-        $('.content_cnv').bind('scroll', myHeavyFunction);
+        //$('.content_cnv').bind('scroll', myHeavyFunction);
+        $('.content_cnv')[0].addEventListener('scroll', myHeavyFunction, {passive: true});
+
         //$('.content_cnv').bind('scroll', wheelEvent);
         // could be top or bottom but not scrolling.
         $timeout(function() {

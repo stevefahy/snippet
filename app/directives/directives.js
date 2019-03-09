@@ -184,7 +184,7 @@ cardApp.directive("scrollTrigger", function() {
 
 cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$compile', '$rootScope', function($window, $document, $timeout, $compile, $rootScope) {
     var defaults = {
-        delay: 0,
+        delay: 100,
         start_delay: 1000,
         init_scroll_delay: 3000,
         scroll_delay: 1000,
@@ -250,7 +250,8 @@ cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$comp
                             $timeout(function() {
                                 $(progressBar[0]).css('visibility', 'visible');
                                 // bind scroll
-                                wrapperDomElement.bind('scroll', doScroll);
+                                //wrapperDomElement.bind('scroll', doScroll);
+                                wrapperDomElement.addEventListener('scroll', doScroll, {passive: true});
                                 doScroll();
                             }, options.start_delay);
                         }
