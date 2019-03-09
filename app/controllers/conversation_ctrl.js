@@ -241,6 +241,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     var pb = document.getElementById('progress-thumb');
 
+
     var myHeavyFunction = function() {
 
         //$scope.cards_vis = getVisibleElements();
@@ -416,6 +417,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     setUpScrollBar = function() {
         $('.progress-container').css('top', $('.content_cnv').offset().top);
         $('.progress-container').css('height', $('.content_cnv').height());
+        $('#progress-thumb').addClass('fade_in');
     };
 
     bindScroll = function() {
