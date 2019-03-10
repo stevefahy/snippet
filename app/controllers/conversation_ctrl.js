@@ -289,7 +289,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
         var cdh = $('.content_cnv').height();
         var ch = this.scrollHeight;
-        var he = maxScroll;
+        //var he = maxScroll;
         var sth = (100 / (((ch / cdh) * 100) / 100));
 
          // Set the progress thumb height.
@@ -299,8 +299,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
         var h = maxScroll;
         var sm = 100 - sth;
-        var ws = currentScroll;
-        var s = (ws / (h) * 100);
+        //var ws = currentScroll;
+        var s = (currentScroll / (h) * 100);
         s = (s * sm) / 100;
 
         pb.style.top = s + "%";
