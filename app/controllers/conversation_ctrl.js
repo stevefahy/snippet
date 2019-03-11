@@ -91,6 +91,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var no_more_records = false;
 
     var pb;
+    var cdh;
 
     Keyboard.keyBoardListenStart();
 
@@ -248,7 +249,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         return cards_visible;
     };
 
-    
+
 
 
     var myHeavyFunction = function() {
@@ -296,20 +297,20 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         values.scrolled_max = 100 - thumb_height;
         */
 
-        var cdh = $('.content_cnv').height();
+
         var ch = this.scrollHeight;
         //var he = maxScroll;
         var sth = (100 / (((ch / cdh) * 100) / 100));
-
-         // Set the progress thumb height.
+        console.log(sth);
+        // Set the progress thumb height.
 
         $(pb).css('height', sth + "%");
-    
 
-        var h = maxScroll;
+
+        //var h = maxScroll;
         var sm = 100 - sth;
         //var ws = currentScroll;
-        var s = (currentScroll / (h) * 100);
+        var s = (currentScroll / (maxScroll) * 100);
         s = (s * sm) / 100;
 
         pb.style.top = s + "%";
@@ -423,20 +424,24 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
     */
 
+
+
     setUpScrollBar = function() {
         $('.progress-container').css('top', $('.content_cnv').offset().top);
         $('.progress-container').css('height', $('.content_cnv').height());
         $('#progress-thumb').removeClass('fade_in');
         $('#progress-thumb').addClass('fade_in');
+        $('.progress-container').addClass('active');
         pb = document.getElementById('progress-thumb');
+        cdh = $('.content_cnv').height();
     };
 
     bindScroll = function() {
         console.log('BIND SCROLL');
-       // if (ua.indexOf('AndroidApp') >= 0) {
+        // if (ua.indexOf('AndroidApp') >= 0) {
         setUpScrollBar();
-    //}
-console.log($('.content_cnv')[0]);
+        //}
+
 
         var currentScroll = $('.content_cnv').scrollTop();
         var maxScroll = $('.content_cnv')[0].scrollHeight - $('.content_cnv')[0].clientHeight;
@@ -447,7 +452,7 @@ console.log($('.content_cnv')[0]);
 
         //$('.content_cnv').bind('scroll', myHeavyFunction);
         //$('.content_cnv')[0].removeEventListener('scroll', myHeavyFunction, { passive: true });
-        $('.content_cnv')[0].addEventListener('scroll', myHeavyFunction, { passive: true }, {once: true});
+        $('.content_cnv')[0].addEventListener('scroll', myHeavyFunction, { passive: true }, { once: true });
 
         //$('.content_cnv').bind('scroll', wheelEvent);
         // could be top or bottom but not scrolling.
@@ -459,14 +464,14 @@ console.log($('.content_cnv')[0]);
         }, 500);
     };
 
-    
+
     unbindScroll = function() {
         //console.log('unbind last_scrolled: ' + last_scrolled);
         //$('.content_cnv').unbind('scroll', myHeavyFunction);
         //$('.content_cnv').unbind('scroll', wheelEvent);
         $('.content_cnv')[0].removeEventListener('scroll', myHeavyFunction, { passive: true });
     };
-    
+
 
     /*
     function scrollBack() {
@@ -1062,8 +1067,8 @@ console.log($('.content_cnv')[0]);
                 $rootScope.pageLoading = false;
                 // Wait for the page transition animation to end before applying scroll.
                 $timeout(function() {
-                bindScroll();
-                 }, 1000);
+                    bindScroll();
+                }, 1000);
             }
             first_load = false;
             /*
@@ -1118,6 +1123,12 @@ console.log($('.content_cnv')[0]);
             imagesLoaded(store[loc]);
         }
     };
+
+    $scope.$on('window_resize', function(ngRepeatFinishedEvent) {
+        setUpScrollBar();
+    });
+
+    
 
     $scope.$on('ngRepeatFinishedTemp', function(ngRepeatFinishedEvent) {
         console.log('ngRepeatFinishedTemp');

@@ -332,7 +332,7 @@ hr {
     z-index: 1000;
     height: 55px;
     /*left: 0px;*/
-    
+
     box-shadow: rgba(0, 0, 0, 0.14) 0px 4px 5px 0px, ;
     box-shadow: rgba(0, 0, 0, 0.14) 0px 4px 5px 0px, rgba(0, 0, 0, 0.12) 0px 1px 10px 0px, rgba(0, 0, 0, 0.2) 0px 2px 4px -1px;
 
@@ -623,7 +623,7 @@ hr {
     position: relative;
     border: 1px solid #9E9E9E;
     */
-width: 45px;
+    width: 45px;
     height: 45px;
     border-radius: 50%;
     -webkit-box-sizing: border-box;
@@ -1036,8 +1036,8 @@ div#user {
 input#upload-input,
 #upload-input-settings {
     position: absolute;
-        opacity: 0;
-    
+    opacity: 0;
+
 }
 
 .upload-trigger {
@@ -2607,19 +2607,26 @@ span#header b.header_3 {
 }
 
 .progress-container {
-    width: 6px;
+    width: 5px;
     right: 0px;
     z-index: 1000;
     position: absolute;
     mix-blend-mode: difference;
+    visibility: hidden;
+}
+
+.progress-container.active {
+    visibility: visible;
 }
 
 .progress_bar {
     position: relative;
     height: 20px;
-    background-color: rgba(90, 90, 90, .6);
+    background-color: rgba(90, 90, 90, .8);
     opacity: 0;
+    will-change: scroll-position;
 }
+
 
 /* ANIMATIONS
 ============================================================================= 
@@ -3172,14 +3179,15 @@ span.after_image {
 }
 
 .card_temp {
-/*will-change: content;*/
+    /*will-change: content;*/
 
-position: relative;
+    position: relative;
     /*will-change: transform;*/
-    
+
     /* Force scroll bar on chome mobile trick */
-   /* clip-path: inset(0px -2px 0px 0px);*/
+    /* clip-path: inset(0px -2px 0px 0px);*/
 }
+
 /*
 .invis .cropper_cont {
     display: none;
@@ -3190,9 +3198,9 @@ position: relative;
 }
 */
 
-.force_scrollbar{
+.force_scrollbar {
 
-   /* clip-path: inset(0px -2px 0px 0px);*/
+    /* clip-path: inset(0px -2px 0px 0px);*/
 
 }
 
@@ -3207,12 +3215,12 @@ position: relative;
     /*height: calc(100% - 185px);*/
     /*border-radius: 1px;*/
     background-color: #FFFFFF;
-   margin-bottom: 132px;
-will-change: scroll-position;
- /*-webkit-overflow-scrolling: auto;*/
-  -webkit-overflow-scrolling: touch;
-    
- /*transform: translateZ(0);*/
+    margin-bottom: 132px;
+    will-change: scroll-position;
+    /*-webkit-overflow-scrolling: auto;*/
+    -webkit-overflow-scrolling: touch;
+
+    /*transform: translateZ(0);*/
 
 }
 
