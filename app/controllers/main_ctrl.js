@@ -487,6 +487,10 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     // ROUTE ANIMATION
     //
 
+    customFunction = function(){
+        console.log('ANIM END');
+    };
+
     var from;
     var to;
 
@@ -494,6 +498,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         if (prev != undefined) {
             $rootScope.prev_route = prev.$$route.originalPath;
         }
+        console.log('VIEW COMPLETE');
     });
 
     $scope.$on('$routeChangeStart', function($event, next, current) {
@@ -588,6 +593,8 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             viewAnimationsService.setEnterAnimation('page-static z5000');
             viewAnimationsService.setLeaveAnimation('page-anim z9000');
         }
+
+
 
     });
 

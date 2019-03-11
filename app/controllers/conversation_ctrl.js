@@ -32,7 +32,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         Conversations.setConversationId('');
         Conversations.setConversationType('');
         resetObserver_queue();
+        //unbindScroll();
+        $scope.cards = [];
+        first_load = false;
     });
+
+
+
+
 
     // Detect device user agent 
     var ua = navigator.userAgent;
@@ -82,6 +89,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var store = {};
     var image_check_counter = 0;
     var no_more_records = false;
+
+    var pb;
 
     Keyboard.keyBoardListenStart();
 
@@ -239,7 +248,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         return cards_visible;
     };
 
-    var pb = document.getElementById('progress-thumb');
+    
 
 
     var myHeavyFunction = function() {
@@ -417,12 +426,17 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     setUpScrollBar = function() {
         $('.progress-container').css('top', $('.content_cnv').offset().top);
         $('.progress-container').css('height', $('.content_cnv').height());
+        $('#progress-thumb').removeClass('fade_in');
         $('#progress-thumb').addClass('fade_in');
+        pb = document.getElementById('progress-thumb');
     };
 
     bindScroll = function() {
+        console.log('BIND SCROLL');
+       // if (ua.indexOf('AndroidApp') >= 0) {
         setUpScrollBar();
-
+    //}
+console.log($('.content_cnv')[0]);
 
         var currentScroll = $('.content_cnv').scrollTop();
         var maxScroll = $('.content_cnv')[0].scrollHeight - $('.content_cnv')[0].clientHeight;
@@ -432,7 +446,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log('scrolled: ' + scrolled);
 
         //$('.content_cnv').bind('scroll', myHeavyFunction);
-        $('.content_cnv')[0].addEventListener('scroll', myHeavyFunction, { passive: true });
+        //$('.content_cnv')[0].removeEventListener('scroll', myHeavyFunction, { passive: true });
+        $('.content_cnv')[0].addEventListener('scroll', myHeavyFunction, { passive: true }, {once: true});
 
         //$('.content_cnv').bind('scroll', wheelEvent);
         // could be top or bottom but not scrolling.
@@ -444,13 +459,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }, 500);
     };
 
-    /*
+    
     unbindScroll = function() {
-        console.log('unbind last_scrolled: ' + last_scrolled);
-        $('.content_cnv').unbind('scroll', myHeavyFunction);
+        //console.log('unbind last_scrolled: ' + last_scrolled);
+        //$('.content_cnv').unbind('scroll', myHeavyFunction);
         //$('.content_cnv').unbind('scroll', wheelEvent);
+        $('.content_cnv')[0].removeEventListener('scroll', myHeavyFunction, { passive: true });
     };
-    */
+    
 
     /*
     function scrollBack() {
@@ -1042,10 +1058,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 console.log('ITEMS FIRED');
                 programmatic_scroll = true;
                 $scope.$broadcast("items_changed", scroll_direction);
-                //$timeout(function() {
+                //
                 $rootScope.pageLoading = false;
+                // Wait for the page transition animation to end before applying scroll.
+                $timeout(function() {
                 bindScroll();
-                // }, 500);
+                 }, 1000);
             }
             first_load = false;
             /*

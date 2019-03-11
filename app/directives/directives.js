@@ -181,7 +181,7 @@ cardApp.directive("scrollTrigger", function() {
 */
 
 // scrollIndicator directive
-
+/*
 cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$compile', '$rootScope', function($window, $document, $timeout, $compile, $rootScope) {
     var defaults = {
         delay: 100,
@@ -305,7 +305,7 @@ cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$comp
         }
     };
 }]);
-
+*/
 
 cardApp.directive('stopDigest', function() {
     return {

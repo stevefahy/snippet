@@ -2611,13 +2611,13 @@ span#header b.header_3 {
     right: 0px;
     z-index: 1000;
     position: absolute;
-    mix-blend-mode: multiply;
+    mix-blend-mode: difference;
 }
 
-.progress-bar {
+.progress_bar {
     position: relative;
     height: 20px;
-    background-color: rgba(90, 90, 90, .4);
+    background-color: rgba(90, 90, 90, .6);
     opacity: 0;
 }
 
@@ -2650,6 +2650,13 @@ span#header b.header_3 {
 }
 
 /* NEW */
+
+/*
+.contacts_transition {
+    -webkit-transition: all .3s cubic-bezier(.4, 0, .2, 1);
+    transition: all .3s cubic-bezier(.4, 0, .2, 1);
+}
+*/
 
 .page-anim.ng-leave {
     -webkit-animation: slideOutRight .7s cubic-bezier(0.19, 1, 0.22, 1);
@@ -3207,4 +3214,12 @@ will-change: scroll-position;
     
  /*transform: translateZ(0);*/
 
+}
+
+#crop_box {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background-color: red;
+    z-index: 10000;
 }

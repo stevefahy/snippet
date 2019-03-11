@@ -9,7 +9,7 @@
 <!--
 <div class="progress-container" style="top: 55px; height: 423px;"><div id="progress-thumb" class="progress-bar fade_out" style="visibility: visible; height: 3.66044%; top: 0%;"></div></div>-->
 <div class="progress-container">
-    <div id="progress-thumb" class="progress-bar"></div>
+    <div id="progress-thumb" class="progress_bar"></div>
 </div>
 
     <!-- Preloading offscreen -->
@@ -45,7 +45,7 @@
                 <div class='ce' ng-attr-id="ce{{::card._id}}" ng-attr-contenteditable="false" ng-model="::card.content"></div>-->
                 
                     <div class='ce' ng-attr-id="ce{{::card._id}}" ng-attr-contenteditable="{{::card.user == currentUser._id}}" ng-attr-editable="{{::card.user == currentUser._id}}" ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id);" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce'+card._id);" ng-blur="getBlur(card._id, card, currentUser)" ng-model="::card.content" ng-model-options="{ debounce: 1000 }"></div>
-                    
+
                 <input id="upload-input" type="file" name="uploads[]" multiple="multiple">
                 <button ng-attr-id="upload-triggerce{{::card._id}}" class="btn btn-sm upload-btn upload-trigger" type="button" ng-click="uploadFile(card._id, card, currentUser); ">Upload File</button>
                 <!-- </form>-->
@@ -82,4 +82,5 @@
         <div class="image_adjust_sharpen">
         </div>
     </div>
+
 </div>

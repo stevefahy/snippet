@@ -62,9 +62,6 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             parent_container = 'content_cnv';
         }
         ImageAdjustment.setImageParent(parent_container);
-
-
-
         var img_height;
         // If filtered image exists
         if ($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length > 0) {
@@ -168,9 +165,6 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             cropper = new Cropper(image, options, {});
         } else {
             // New Crop
-
-
-
             resetContainer(id);
             image = $('.' + parent_container + ' #image_' + id)[0];
             console.log(image);
@@ -188,6 +182,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             });
         }
     };
+    
 
     function b64toBlob(b64Data, contentType, sliceSize) {
         contentType = contentType || '';
@@ -625,7 +620,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                     $('.' + parent_container + ' #image_' + id).attr('src', src);
                 }
 
-                
+
                 console.log(src);
 
                 // Logged in.
@@ -814,7 +809,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             var per_left = (gcbd.left / gcd.width) * 100;
             var per_top_margin = (gcbd.top / gcd.width) * 100;
             var per_bottom_margin = ((gcd.height - (gcbd.top + gcbd.height)) / gcd.width) * 100;
-            //image.style.clipPath = "inset(" + per_top + "% " + per_right + "% " + per_bottom + "% " + per_left + "%)";
+            image.style.clipPath = "inset(" + per_top + "% " + per_right + "% " + per_bottom + "% " + per_left + "%)";
             var zoom_amount = ((((gcd.width - gcbd.width) / gcbd.width) * 100) + 100);
             image.style.maxWidth = zoom_amount + '%';
             image.style.width = zoom_amount + '%';
@@ -847,7 +842,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
                 //$('.' + parent_container + ' #cropper_' + image_id + ' #image_' + image_id).attr('src', 'data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==');
                 $('.' + parent_container + ' #cropper_' + image_id + ' #image_' + image_id).attr('src', '/assets/images/transparent.gif');
-                
+
                 $("." + parent_container + ' #cropper_' + image_id + " #image_" + image_id).css('display', 'none');
             }
             cropper.destroy();
