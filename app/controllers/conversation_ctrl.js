@@ -32,7 +32,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         Conversations.setConversationId('');
         Conversations.setConversationType('');
         resetObserver_queue();
-        //unbindScroll();
+        unbindScroll();
         $scope.cards = [];
         first_load = false;
     });
@@ -61,6 +61,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var MIN_TEMP = 40;
     // The maximum number of cards to keep out of bounds.
     var MAX_OUT_BOUNDS = 10; //10 20
+    var SCROLL_THUMB_MIN = 5;
 
     $rootScope.pageLoading = true;
     $rootScope.loading_cards = false;
@@ -92,6 +93,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     var pb;
     var cdh;
+    var currentScroll;
+    var maxScroll;
+    var ch;
 
     Keyboard.keyBoardListenStart();
 
@@ -174,6 +178,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             //console.log('maxScroll: ' + maxScroll);
         }, 100);
 
+        if (maxScroll > 0) {
+            setUpScrollBar();
+        }
+
     });
 
 
@@ -250,16 +258,39 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
 
+    var updateScrollBar = function() {
+        //var ch = this.scrollHeight;
+        //var he = maxScroll;
+        console.log(ch);
+        console.log(cdh);
+        var sth = (100 / (((ch / cdh) * 100) / 100));
+        console.log(sth);
+        if (sth < SCROLL_THUMB_MIN) {
+            sth = SCROLL_THUMB_MIN;
+        }
+        // Set the progress thumb height.
+
+        $(pb).css('height', sth + "%");
+
+
+        //var h = maxScroll;
+        var sm = 100 - sth;
+        //var ws = currentScroll;
+        var s = (currentScroll / (maxScroll) * 100);
+        s = (s * sm) / 100;
+
+        pb.style.top = s + "%";
+    };
 
 
     var myHeavyFunction = function() {
 
         //$scope.cards_vis = getVisibleElements();
 
+        ch = this.scrollHeight;
 
-
-        var currentScroll = $(this).scrollTop();
-        var maxScroll = this.scrollHeight - this.clientHeight;
+        currentScroll = $(this).scrollTop();
+        maxScroll = this.scrollHeight - this.clientHeight;
         var scrolled = (currentScroll / maxScroll) * 100;
         console.log('maxScroll: ' + maxScroll);
         console.log(scrolled + ' : ' + last_scrolled);
@@ -298,22 +329,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         */
 
 
-        var ch = this.scrollHeight;
-        //var he = maxScroll;
-        var sth = (100 / (((ch / cdh) * 100) / 100));
-        console.log(sth);
-        // Set the progress thumb height.
-
-        $(pb).css('height', sth + "%");
-
-
-        //var h = maxScroll;
-        var sm = 100 - sth;
-        //var ws = currentScroll;
-        var s = (currentScroll / (maxScroll) * 100);
-        s = (s * sm) / 100;
-
-        pb.style.top = s + "%";
+        updateScrollBar();
 
 
         //last_scrolled = scrolled;
@@ -427,27 +443,48 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
 
     setUpScrollBar = function() {
+        if (ua.indexOf('AndroidApp') >= 0) {
         $('.progress-container').css('top', $('.content_cnv').offset().top);
         $('.progress-container').css('height', $('.content_cnv').height());
-        $('#progress-thumb').removeClass('fade_in');
-        $('#progress-thumb').addClass('fade_in');
-        $('.progress-container').addClass('active');
+
+
         pb = document.getElementById('progress-thumb');
+        $(pb).css('height', SCROLL_THUMB_MIN + "%");
         cdh = $('.content_cnv').height();
+        ch = $('.content_cnv')[0].scrollHeight;
+        console.log(ch);
+        currentScroll = $('.content_cnv').scrollTop();
+        console.log(currentScroll);
+        maxScroll = $('.content_cnv')[0].scrollHeight - $('.content_cnv')[0].clientHeight;
+        console.log(maxScroll);
+
+        if (maxScroll > 0) {
+            $('.progress-container').addClass('active');
+            $('#progress-thumb').removeClass('fade_in');
+            $('#progress-thumb').addClass('fade_in');
+            updateScrollBar();
+        }
+
+}
     };
 
     bindScroll = function() {
         console.log('BIND SCROLL');
+        var currentScroll = $('.content_cnv').scrollTop();
+        var maxScroll = $('.content_cnv')[0].scrollHeight - $('.content_cnv')[0].clientHeight;
+
         // if (ua.indexOf('AndroidApp') >= 0) {
+        //if (maxScroll > 0) {
         setUpScrollBar();
         //}
 
+        //}
 
-        var currentScroll = $('.content_cnv').scrollTop();
-        var maxScroll = $('.content_cnv')[0].scrollHeight - $('.content_cnv')[0].clientHeight;
         var scrolled = (currentScroll / maxScroll) * 100;
         $scope.scrollingdisabled = false;
         console.log('bind last_scrolled: ' + last_scrolled);
+        console.log(currentScroll);
+        console.log(maxScroll);
         console.log('scrolled: ' + scrolled);
 
         //$('.content_cnv').bind('scroll', myHeavyFunction);
@@ -466,10 +503,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
 
     unbindScroll = function() {
-        //console.log('unbind last_scrolled: ' + last_scrolled);
-        //$('.content_cnv').unbind('scroll', myHeavyFunction);
-        //$('.content_cnv').unbind('scroll', wheelEvent);
-        $('.content_cnv')[0].removeEventListener('scroll', myHeavyFunction, { passive: true });
+        console.log('UNBIND');
+        $('.content_cnv')[0].removeEventListener('scroll', myHeavyFunction, { passive: true }, { once: true });
+        $('.progress-container').removeClass('active');
     };
 
 
@@ -1128,7 +1164,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         setUpScrollBar();
     });
 
-    
+
 
     $scope.$on('ngRepeatFinishedTemp', function(ngRepeatFinishedEvent) {
         console.log('ngRepeatFinishedTemp');

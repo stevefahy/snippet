@@ -24,6 +24,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     var DEVICE_TYPE;
     var DEVICE_OS;
+   
     // variable which stores whether the mobile app is currently running in the foreground.
     var mobile_active = false;
 
