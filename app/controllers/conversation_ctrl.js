@@ -44,6 +44,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // Detect device user agent 
     var ua = navigator.userAgent;
 
+
+
     // Scrolling
 
     // Percent from top and bottom after which a check for more cards is executed.
@@ -96,6 +98,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var currentScroll;
     var maxScroll;
     var ch;
+    var mobile = false;
+
+    if (ua.indexOf('AndroidApp') >= 0) {
+        mobile = true;
+    }
 
     Keyboard.keyBoardListenStart();
 
@@ -166,7 +173,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             createObserver($scope.cards[i]._id);
         }
     };
-    var maxScroll;
+    
 
     $scope.$watch('cards.length', function(newStatus) {
         // Debugging
@@ -328,8 +335,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         values.scrolled_max = 100 - thumb_height;
         */
 
-
-        updateScrollBar();
+        if(mobile){
+            updateScrollBar();
+        }
+        
 
 
         //last_scrolled = scrolled;
@@ -443,7 +452,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
 
     setUpScrollBar = function() {
-        if (ua.indexOf('AndroidApp') >= 0) {
+        if (mobile) {
         $('.progress-container').css('top', $('.content_cnv').offset().top);
         $('.progress-container').css('height', $('.content_cnv').height());
 

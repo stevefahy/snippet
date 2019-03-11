@@ -11,6 +11,11 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
     var maxScroll;
     var ch;
     var pb;
+    var mobile = false;
+
+    if (ua.indexOf('AndroidApp') >= 0) {
+        mobile = true;
+    }
 
     // Continue chat
     $scope.chat = function(conversation_id, conversation, index) {
@@ -63,7 +68,7 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
         console.log('BIND SCROLL');
         // if (ua.indexOf('AndroidApp') >= 0) {
         setUpScrollBar();
-        $('.content_cnv')[0].addEventListener('scroll', myHeavyFunction, { passive: true }, { once: true });
+        
     };
 
     // Wait for the page transition animation to end before applying scroll.
@@ -101,7 +106,9 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
 
 
     setUpScrollBar = function() {
-        if (ua.indexOf('AndroidApp') >= 0) {
+        if (mobile) {
+
+            $('.content_cnv')[0].addEventListener('scroll', myHeavyFunction, { passive: true }, { once: true });
             $('.progress-container').css('top', $('.content_cnv').offset().top);
             $('.progress-container').css('height', $('.content_cnv').height());
 
@@ -114,13 +121,15 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
             currentScroll = $('.content_cnv').scrollTop();
             console.log(currentScroll);
             maxScroll = $('.content_cnv')[0].scrollHeight - $('.content_cnv')[0].clientHeight;
+            console.log($('.content_cnv')[0].scrollHeight);
+            console.log($('.content_cnv')[0].clientHeight);
             console.log(maxScroll);
 
             if (maxScroll > 0) {
                 $('.progress-container').addClass('active');
-                $('#progress-thumb').removeClass('fade_in');
-                $('#progress-thumb').addClass('fade_in');
-                updateScrollBar();
+            $('#progress-thumb').removeClass('fade_in');
+            $('#progress-thumb').addClass('fade_in');
+            updateScrollBar();
             }
         }
 
@@ -132,7 +141,9 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
         var scrolled = (currentScroll / maxScroll) * 100;
         console.log('maxScroll: ' + maxScroll);
         console.log(scrolled);
+        
         updateScrollBar();
+
     };
 
 
