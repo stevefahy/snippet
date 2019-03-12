@@ -457,6 +457,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             $('#card_' + id).bind('click', doClick);
         }
           */
+        $('#upload-input').addClass('active');
         $('#upload-input').click();
         // Unbind the on change event to prevent it from firing twice after first call
         $('#upload-input').unbind();
@@ -502,6 +503,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 }
                 // reset the input value to null so that files of the same name can be uploaded.
                 this.value = null;
+                $('#upload-input').removeClass('active');
             });
             // MS Edge only
             if (ua.toLowerCase().indexOf('edge') > -1) {

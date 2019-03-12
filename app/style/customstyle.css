@@ -1037,8 +1037,14 @@ input#upload-input,
 #upload-input-settings {
     position: absolute;
     opacity: 0;
+    visibility: hidden;
 
 }
+
+input#upload-input.active,
+#upload-input-settings {
+visibility: visible;
+    }
 
 .upload-trigger {
     display: none;
@@ -3202,11 +3208,7 @@ span.after_image {
 }
 */
 
-.force_scrollbar {
 
-    /* clip-path: inset(0px -2px 0px 0px);*/
-
-}
 
 .content_cnv {
 

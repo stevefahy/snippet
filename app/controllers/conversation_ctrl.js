@@ -37,32 +37,28 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         first_load = false;
     });
 
-
-
-
-
     // Detect device user agent 
     var ua = navigator.userAgent;
-
-
 
     // Scrolling
 
     // Percent from top and bottom after which a check for more cards is executed.
-    var UP_PERCENT = 10; //10
-    var DOWN_PERCENT = 90; //90
+    var UP_PERCENT = 10;
+    var DOWN_PERCENT = 90;
     // Percent from top and bottom after which a check to move the scroll position and check for mre cards is executed.
     var TOP_END = 0;
     var BOTTOM_END = 100;
     // Numbers of cards to load or display.
     var INIT_NUM_TO_LOAD = 50;
     var NUM_TO_LOAD = 20;
-    var NUM_UPDATE_DISPLAY = 10; //20 5
+    var NUM_UPDATE_DISPLAY = 10;
     var NUM_UPDATE_DISPLAY_INIT = 30;
     // Minimum number of $scope.cards_temp to keep loaded.
     var MIN_TEMP = 40;
     // The maximum number of cards to keep out of bounds.
-    var MAX_OUT_BOUNDS = 10; //10 20
+    var MAX_OUT_BOUNDS = 10;
+
+    // SCROLL INDICATOR
     var SCROLL_THUMB_MIN = 5;
 
     $rootScope.pageLoading = true;
@@ -73,7 +69,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $rootScope.last_win_width;
     $rootScope.loading_cards_offscreen = false;
 
-
     $scope.isMember = false;
     $scope.cards = [];
     $scope.removed_cards_top = [];
@@ -83,7 +78,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     var first_load = true;
     var scroll_direction;
-    //var temp_working = false;
     var content_adjust = false;
     //var update_adjust = false;
     var last_scrolled;
