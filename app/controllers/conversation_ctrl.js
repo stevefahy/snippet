@@ -173,7 +173,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             createObserver($scope.cards[i]._id);
         }
     };
-    
+
 
     $scope.$watch('cards.length', function(newStatus) {
         // Debugging
@@ -288,9 +288,65 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
         pb.style.top = s + "%";
     };
+    /*
+     currentScroll = $(this).scrollTop();
+            maxScroll = this.scrollHeight - this.clientHeight;
+            var scrolled = (currentScroll / maxScroll) * 100;
+            */
+    var time_1;
+    var time_2;
+    var checkScrolling = function() {
+        var last_scrolled;
+        //var currentScroll;
+        //var maxScroll;
+        // 0 100
+        //console.log(scrolled);
+        var currentScroll = $(".content_cnv").scrollTop();
+        var maxScroll = $(".content_cnv")[0].scrollHeight - $(".content_cnv")[0].clientHeight;
+        var scrolled = (currentScroll / maxScroll) * 100;
+        console.log(scrolled);
+        $timeout.cancel(time_1);
+        $timeout.cancel(time_2);
+        if (scrolled != TOP_END && scrolled != BOTTOM_END) {
+            console.log('check');
+            //last_scrolled = scrolled;
+            time_1 = $timeout(function() {
+                //last_scrolled = $(".content_cnv").scrollTop();
+                var currentScroll = $(".content_cnv").scrollTop();
+                var maxScroll = $(".content_cnv")[0].scrollHeight - $(".content_cnv")[0].clientHeight;
+                last_scrolled = (currentScroll / maxScroll) * 100;
+
+                time_2 = $timeout(function() {
+                    //var currentScroll = $(".content_cnv").scrollTop();
+                    var currentScroll = $(".content_cnv").scrollTop();
+                    var maxScroll = $(".content_cnv")[0].scrollHeight - $(".content_cnv")[0].clientHeight;
+                    var scrollednew = (currentScroll / maxScroll) * 100;
+                    console.log(last_scrolled + ' : ' + scrollednew);
+                    if (last_scrolled == scrollednew) {
+                        //var maxScroll = $(".content_cnv")[0].scrollHeight - $(".content_cnv")[0].clientHeight;
+                        //$(".content_cnv").css('background-color', 'red');
+                        var change;
+                        if (dir == 0) {
+                            //down
+                            change = currentScroll + 200;
+                        } else if (dir == 1) {
+                            //up
+                            change = currentScroll - 200;
+                        }
+                        $(".content_cnv").animate({
+                            scrollTop: change
+                        }, 500);
+
+                    }
+                }, 200);
+            }, 200);
+        }
+    };
 
 
     var myHeavyFunction = function() {
+
+
 
         //$scope.cards_vis = getVisibleElements();
 
@@ -335,19 +391,23 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         values.scrolled_max = 100 - thumb_height;
         */
 
-        if(mobile){
+        if (mobile) {
             updateScrollBar();
         }
-        
+
 
 
         //last_scrolled = scrolled;
         console.log('$scope.scrollingdisabled: ' + $scope.scrollingdisabled + ' content_adjust: ' + content_adjust + ' scroll_updating: ' + scroll_updating);
         if (!scroll_updating) {
 
-            if (scrolled > 90 || scrolled < 10) {
+            /*
+                        if (scrolled > 90 || scrolled < 10) {
                 checkBoundary(scrolled);
             }
+            */
+
+
             //if (!$scope.scrollingdisabled && !content_adjust && !scroll_updating) {
             if (dir == 1 && scrolled <= UP_PERCENT) {
                 //if (scrolled < last_scrolled) {
@@ -358,6 +418,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     .then(function(result) {
                         console.log('AMT END');
                         scroll_updating = false;
+                        checkScrolling();
 
                     });
                 //}
@@ -372,7 +433,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 //if (scrolled >= DOWN_PERCENT) {
                 //if (!$scope.scrollingdisabled && !temp_working) {
                 console.log('FIRE DOWN!!!');
-                //var stored_scroll = currentScroll;
+
+
+
                 addMoreBottom()
                     .then(function(result) {
                         console.log('AMB END');
@@ -383,8 +446,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         //$scope.$broadcast('stop');
                         //$scope.$digest();
                         //$scope.$broadcast('resume');
+                        checkScrolling();
                     });
                 //}
+
             }
             //}
         }
@@ -407,7 +472,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }
 
             //if (scrolled2 >= BOTTOM_END && (!no_more_records || $scope.removed_cards_bottom.length > 0 || $scope.cards_temp.length > 0) && !update_adjust && !programmatic_scroll) {
-            if (scrolled2 >= BOTTOM_END && ($scope.removed_cards_bottom.length > 0)) {
+            //if (scrolled2 >= BOTTOM_END && ($scope.removed_cards_bottom.length > 0)) {
+            if (scrolled2 >= BOTTOM_END) {
                 scroll_updating = true;
                 console.log('BOTTOM!');
                 extremity = true;
@@ -453,28 +519,28 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     setUpScrollBar = function() {
         if (mobile) {
-        $('.progress-container').css('top', $('.content_cnv').offset().top);
-        $('.progress-container').css('height', $('.content_cnv').height());
+            $('.progress-container').css('top', $('.content_cnv').offset().top);
+            $('.progress-container').css('height', $('.content_cnv').height());
 
 
-        pb = document.getElementById('progress-thumb');
-        $(pb).css('height', SCROLL_THUMB_MIN + "%");
-        cdh = $('.content_cnv').height();
-        ch = $('.content_cnv')[0].scrollHeight;
-        console.log(ch);
-        currentScroll = $('.content_cnv').scrollTop();
-        console.log(currentScroll);
-        maxScroll = $('.content_cnv')[0].scrollHeight - $('.content_cnv')[0].clientHeight;
-        console.log(maxScroll);
+            pb = document.getElementById('progress-thumb');
+            $(pb).css('height', SCROLL_THUMB_MIN + "%");
+            cdh = $('.content_cnv').height();
+            ch = $('.content_cnv')[0].scrollHeight;
+            console.log(ch);
+            currentScroll = $('.content_cnv').scrollTop();
+            console.log(currentScroll);
+            maxScroll = $('.content_cnv')[0].scrollHeight - $('.content_cnv')[0].clientHeight;
+            console.log(maxScroll);
 
-        if (maxScroll > 0) {
-            $('.progress-container').addClass('active');
-            $('#progress-thumb').removeClass('fade_in');
-            $('#progress-thumb').addClass('fade_in');
-            updateScrollBar();
+            if (maxScroll > 0) {
+                $('.progress-container').addClass('active');
+                $('#progress-thumb').removeClass('fade_in');
+                $('#progress-thumb').addClass('fade_in');
+                updateScrollBar();
+            }
+
         }
-
-}
     };
 
     bindScroll = function() {
@@ -568,38 +634,53 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     function doBottom() {
         extremity = false;
         var maxScroll = $('.content_cnv')[0].scrollHeight - $('.content_cnv')[0].clientHeight;
-        $timeout(function() {
-            $timeout(function() {
-                $('.content_cnv').scrollTop(maxScroll - 1);
-                console.log('no_more_records: ' + no_more_records);
-                if ($scope.cards_temp.length == 0 && !no_more_records) {
-                    var unbindtemp = $scope.$watch('cards_temp.length', function(n) {
-                        console.log(n);
+        //$timeout(function() {
+        //$timeout(function() {
+        $('.content_cnv').scrollTop(maxScroll - 100);
+        console.log('no_more_records: ' + no_more_records);
+        if ($scope.cards_temp.length == 0 && !no_more_records) {
+            var unbindtemp = $scope.$watch('cards_temp.length', function(n) {
+                console.log(n);
 
-                        if (n > 0) {
-                            // Stop watching.
-                            unbindtemp();
-                            $('.content_cnv').scrollTop(20);
-                            addMoreBottom()
-                                .then(function(result) {
-                                    console.log('AMB END');
-                                    scroll_updating = false;
-                                    //scrollBack();
-                                });
-
-                        }
-                    });
-                } else {
+                if (n > 0) {
+                    // Stop watching.
+                    unbindtemp();
+                    $('.content_cnv').scrollTop(20);
                     addMoreBottom()
                         .then(function(result) {
                             console.log('AMB END');
                             scroll_updating = false;
+
+
                             //scrollBack();
+
+                            //body.stop().animate({ scrollTop: 0 }, 500, 'swing', function() {
+                            //   alert("Finished animating");
+                            //});
+                            $(".content_cnv").css('background-color', 'red');
+                            $(".content_cnv").animate({
+                                scrollTop: 1000
+                            }, 2000);
+
                         });
+
                 }
             });
+        } else {
+            addMoreBottom()
+                .then(function(result) {
+                    console.log('AMB END');
+                    scroll_updating = false;
+                    //scrollBack();
+                    $(".content_cnv").css('background-color', 'red');
+                    $(".content_cnv").animate({
+                        scrollTop: 1000
+                    }, 2000);
+                });
+        }
+        //});
 
-        });
+        //});
     }
 
     // UPDATING CARDS
@@ -1125,6 +1206,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         if (obj.location == 'content_cnv') {
             $rootScope.loading_cards = false;
             delete obj;
+            //checkScrolling();
         }
 
         if (obj.location == 'load_off_screen') {
@@ -1793,52 +1875,55 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }
             var val = { id: id, amount: load_amount, last_card: last_card, operand: operand };
             console.log(val);
-            var prom1 = Conversations.getConversationCards(val)
-                .then(function(res) {
-                    console.log(res);
-                    if (res.data.length > 0) {
-                        var users = UserData.getContacts();
-                        var user;
-                        for (var i = 0, len = res.data.length; i < len; i++) {
-                            var key = res.data[i];
-                            var user_pos = General.findWithAttr(users, '_id', key.user);
-                            // Get the user for this card
-                            if (user_pos < 0) {
-                                //Users.search_id(key.user)
-                                //   .then(function(res) {
-                                //    });
-                            } else {
-                                user = users[user_pos];
-                                // Store the original characters of the card.
-                                key.original_content = key.content;
-                                // Get the user name for the user id
-                                key.user_name = user.user_name;
-                                key.avatar = user.avatar;
-                                $scope.cards_temp.push(key);
+            if (last_card != last_card_stored) {
+                last_card_stored = last_card;
+                var prom1 = Conversations.getConversationCards(val)
+                    .then(function(res) {
+                        console.log(res);
+                        if (res.data.length > 0) {
+                            var users = UserData.getContacts();
+                            var user;
+                            for (var i = 0, len = res.data.length; i < len; i++) {
+                                var key = res.data[i];
+                                var user_pos = General.findWithAttr(users, '_id', key.user);
+                                // Get the user for this card
+                                if (user_pos < 0) {
+                                    //Users.search_id(key.user)
+                                    //   .then(function(res) {
+                                    //    });
+                                } else {
+                                    user = users[user_pos];
+                                    // Store the original characters of the card.
+                                    key.original_content = key.content;
+                                    // Get the user name for the user id
+                                    key.user_name = user.user_name;
+                                    key.avatar = user.avatar;
+                                    $scope.cards_temp.push(key);
+                                }
                             }
+                        } else {
+                            console.log('NO MORE RECORDS');
+                            $rootScope.pageLoading = false;
+                            $rootScope.loading_cards = false;
+                            $rootScope.loading_cards_offscreen = false;
+                            no_more_records = true;
                         }
-                    } else {
-                        console.log('NO MORE RECORDS');
-                        $rootScope.pageLoading = false;
-                        $rootScope.loading_cards = false;
-                        $rootScope.loading_cards_offscreen = false;
-                        no_more_records = true;
-                    }
-                })
-                .catch(function(error) {
-                    console.log(error);
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                    });
+                promises.push(prom1);
+                // All the cards have been mapped.
+                $q.all(promises).then(function() {
+                    console.log($scope.cards_temp);
+                    console.log('getCards fin');
+                    deferred.resolve();
                 });
-            promises.push(prom1);
-            // All the cards have been mapped.
-            $q.all(promises).then(function() {
-                console.log($scope.cards_temp);
-                console.log('getCards fin');
+                return deferred.promise;
+            } else {
+                // Wait for loading to finish?
                 deferred.resolve();
-            });
-            return deferred.promise;
-        } else {
-            // Wait for loading to finish?
-            deferred.resolve();
+            }
         }
     };
 
@@ -1869,51 +1954,54 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 operand = '$lt';
             }
             var val = { id: id, amount: NUM_TO_LOAD, last_card: last_card, operand: operand };
-            var prom1 = Conversations.getPublicConversationCards(val)
-                .then(function(res) {
-                    console.log(res);
-                    if (res.data.length > 0) {
-                        var users = UserData.getContacts();
-                        var user;
-                        for (var i = 0, len = res.data.length; i < len; i++) {
-                            var key = res.data[i];
-                            var user_pos = General.findWithAttr(users, '_id', key.user);
-                            // Get the user for this card
-                            if (user_pos < 0) {
-                                //Users.search_id(key.user)
-                                //   .then(function(res) {
-                                //    });
-                            } else {
-                                user = users[user_pos];
-                                // Store the original characters of the card.
-                                key.original_content = key.content;
-                                // Get the user name for the user id
-                                key.user_name = user.user_name;
-                                key.avatar = user.avatar;
-                                $scope.cards_temp.push(key);
+            if (last_card != last_card_stored) {
+                last_card_stored = last_card;
+                var prom1 = Conversations.getPublicConversationCards(val)
+                    .then(function(res) {
+                        console.log(res);
+                        if (res.data.length > 0) {
+                            var users = UserData.getContacts();
+                            var user;
+                            for (var i = 0, len = res.data.length; i < len; i++) {
+                                var key = res.data[i];
+                                var user_pos = General.findWithAttr(users, '_id', key.user);
+                                // Get the user for this card
+                                if (user_pos < 0) {
+                                    //Users.search_id(key.user)
+                                    //   .then(function(res) {
+                                    //    });
+                                } else {
+                                    user = users[user_pos];
+                                    // Store the original characters of the card.
+                                    key.original_content = key.content;
+                                    // Get the user name for the user id
+                                    key.user_name = user.user_name;
+                                    key.avatar = user.avatar;
+                                    $scope.cards_temp.push(key);
+                                }
                             }
+                        } else {
+                            console.log('NO MORE RECORDS');
+                            $rootScope.loading_cards = false;
+                            $rootScope.loading_cards_offscreen = false;
+                            no_more_records = true;
                         }
-                    } else {
-                        console.log('NO MORE RECORDS');
-                        $rootScope.loading_cards = false;
-                        $rootScope.loading_cards_offscreen = false;
-                        no_more_records = true;
-                    }
-                })
-                .catch(function(error) {
-                    console.log(error);
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                    });
+                promises.push(prom1);
+                // All the cards have been mapped.
+                $q.all(promises).then(function() {
+                    console.log($scope.cards_temp);
+                    console.log('getCards fin');
+                    deferred.resolve();
                 });
-            promises.push(prom1);
-            // All the cards have been mapped.
-            $q.all(promises).then(function() {
-                console.log($scope.cards_temp);
-                console.log('getCards fin');
+                return deferred.promise;
+            } else {
+                // Wait for loading to finish?
                 deferred.resolve();
-            });
-            return deferred.promise;
-        } else {
-            // Wait for loading to finish?
-            deferred.resolve();
+            }
         }
     };
 

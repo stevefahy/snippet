@@ -2817,7 +2817,7 @@ scrollIndicator directive
 */
 
 .fade_in {
-    -webkit-animation: fade-in 5s linear forwards;
+    -webkit-animation: fade-in 1s linear forwards;
 }
 
 .fade_out {
@@ -3218,7 +3218,7 @@ span.after_image {
     overflow-x: hidden;
     /*height: calc(100% - 185px);*/
     /*border-radius: 1px;*/
-    background-color: #FFFFFF;
+   /* background-color: #FFFFFF;*/
     margin-bottom: 132px;
     will-change: scroll-position;
     /*-webkit-overflow-scrolling: auto;*/
