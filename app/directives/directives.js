@@ -327,7 +327,7 @@ cardApp.directive('stopDigest', function() {
     };
 });
 
-
+/*
 cardApp.directive("doScopeRepeat", function($compile, $log, UserData) {
     return {
         restrict: "A",
@@ -383,6 +383,7 @@ cardApp.directive("doScopeRepeat", function($compile, $log, UserData) {
 
     };
 });
+*/
 
 
 

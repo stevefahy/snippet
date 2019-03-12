@@ -13,7 +13,6 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     $scope.debug = true;
 
-    //$scope.scrollingdisabled = false;
 
     var ua = navigator.userAgent;
 
