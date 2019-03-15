@@ -95,12 +95,6 @@ cardApp.directive('onFinishRender', function($timeout, $rootScope) {
     return {
         restrict: 'A',
         link: function(scope, element, attr) {
-            //console.log(scope.$index);
-            //console.log(element);
-            //console.log(attr.onFinishRender);
-            //console.log('onFinishRender: ' + $rootScope.top_down);
-
-            // ngRepeatFinishedTemp
             if (!$rootScope.deleting_card && ($rootScope.top_down && scope.$last === true) || !$rootScope.deleting_card && !$rootScope.top_down && scope.$first === true) {
                 $timeout(function() {
                     if (attr.onFinishRender == 'ngRepeatFinishedTemp') {
@@ -108,7 +102,6 @@ cardApp.directive('onFinishRender', function($timeout, $rootScope) {
                     } else {
                         $rootScope.$broadcast("ngRepeatFinished", { temp: "some value" });
                     }
-
                 });
             }
         }
@@ -145,7 +138,6 @@ cardApp.directive("scrollToTopWhen", function($timeout) {
         link: function(scope, element, attrs) {
             scope.$on(attrs.scrollToTopWhen, function(event, data) {
                 $timeout(function() {
-                    console.log('scrollToTopWhen');
                     if (data == 'top') {
                         angular.element(element)[0].scrollTop = 0;
                     } else {
@@ -158,27 +150,7 @@ cardApp.directive("scrollToTopWhen", function($timeout) {
     };
 });
 
-/*
-cardApp.directive("scrollTrigger", function() {
-    return {
-        scope: {
-            callback: '=scrollTrigger'
-        },
-        link: function(scope, element, attrs) {
-            var offset = parseInt(attrs.threshold) || 0;
-            var container = angular.element(element);
-            container.bind("scroll mousewheel touchstart", function(evt) {
-                if (container[0].scrollTop <= (0 + offset)) {
-                    scope.callback('top');
-                }
-                if (container[0].offsetHeight + container[0].scrollTop >= (container[0].scrollHeight - offset)) {
-                    scope.callback('bottom');
-                }
-            });
-        }
-    };
-});
-*/
+
 
 // scrollIndicator directive
 /*
