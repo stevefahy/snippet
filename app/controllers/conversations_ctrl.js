@@ -44,13 +44,9 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
     });
 
     $scope.$watch('conversations.length', function(newStatus) {
-        // Debugging
-        //$rootScope.cards_length = newStatus;
-
         if (maxScroll > 0) {
             setUpScrollBar();
         }
-
     });
 
     $scope.$on('$destroy', function() {
@@ -59,96 +55,54 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
     });
 
     unbindScroll = function() {
-        console.log('UNBIND');
-        $('.content_cnv')[0].removeEventListener('scroll', myHeavyFunction, { passive: true }, { once: true });
+        $('.content_cnv')[0].removeEventListener('scroll', scrollFunction, { passive: true }, { once: true });
         $('.progress-container').removeClass('active');
     };
 
     bindScroll = function() {
-        console.log('BIND SCROLL');
-        // if (ua.indexOf('AndroidApp') >= 0) {
         setUpScrollBar();
-        
+        $('.content_cnv')[0].addEventListener('scroll', scrollFunction, { passive: true }, { once: true });
     };
 
-    // Wait for the page transition animation to end before applying scroll.
-    $timeout(function() {
-        bindScroll();
-    }, 1000);
-
     var updateScrollBar = function() {
-        //var ch = this.scrollHeight;
-        //var he = maxScroll;
-        console.log(ch);
-        console.log(cdh);
         var sth = (100 / (((ch / cdh) * 100) / 100));
-        console.log(sth);
         if (sth < SCROLL_THUMB_MIN) {
             sth = SCROLL_THUMB_MIN;
         }
         // Set the progress thumb height.
-
         $(pb).css('height', sth + "%");
-
-
-        //var h = maxScroll;
         var sm = 100 - sth;
-        //var ws = currentScroll;
-        console.log(currentScroll);
-
         var s = (currentScroll / (maxScroll) * 100);
-        console.log(s);
         s = (s * sm) / 100;
-        console.log(s);
+        // Set the progress thumb position.
         pb.style.top = s + "%";
     };
 
-
-
     setUpScrollBar = function() {
         if (mobile) {
-
-            $('.content_cnv')[0].addEventListener('scroll', myHeavyFunction, { passive: true }, { once: true });
             $('.progress-container').css('top', $('.content_cnv').offset().top);
             $('.progress-container').css('height', $('.content_cnv').height());
-
-
             pb = document.getElementById('progress-thumb');
             $(pb).css('height', SCROLL_THUMB_MIN + "%");
             cdh = $('.content_cnv').height();
             ch = $('.content_cnv')[0].scrollHeight;
-            console.log(ch);
             currentScroll = $('.content_cnv').scrollTop();
-            console.log(currentScroll);
             maxScroll = $('.content_cnv')[0].scrollHeight - $('.content_cnv')[0].clientHeight;
-            console.log($('.content_cnv')[0].scrollHeight);
-            console.log($('.content_cnv')[0].clientHeight);
-            console.log(maxScroll);
-
             if (maxScroll > 0) {
                 $('.progress-container').addClass('active');
-            $('#progress-thumb').removeClass('fade_in');
-            $('#progress-thumb').addClass('fade_in');
-            updateScrollBar();
+                $('#progress-thumb').removeClass('fade_in');
+                $('#progress-thumb').addClass('fade_in');
+                updateScrollBar();
             }
         }
-
     };
 
-    var myHeavyFunction = function() {
+    var scrollFunction = function() {
         currentScroll = $(this).scrollTop();
         maxScroll = this.scrollHeight - this.clientHeight;
         var scrolled = (currentScroll / maxScroll) * 100;
-        console.log('maxScroll: ' + maxScroll);
-        console.log(scrolled);
-        
         updateScrollBar();
-
     };
-
-
-
-
 
     loadConversations = function() {
         var deferred = $q.defer();
@@ -161,6 +115,7 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
             formatted_conversations = result;
             formatted_conversations.map(function(key, array) {
                 var prom2 = UserData.getConversationLatestCardById(key._id).then(function(result) {
+                    var user_unviewed;
                     if (result.data == null) {
                         result.data = key;
                         sender_name = "";
@@ -172,7 +127,7 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
                     var user_pos = General.findWithAttr(key.participants, '_id', UserData.getUser()._id);
                     if (user_pos >= 0) {
                         // get the currently stored unviewed cards for the current user
-                        var user_unviewed = key.participants[user_pos].unviewed;
+                        user_unviewed = key.participants[user_pos].unviewed;
                         // Set the new_messages number.
                         key.new_messages = user_unviewed.length;
                     }
@@ -204,7 +159,7 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
                     if (key.conversation_name == '') {
                         if (user_pos >= 0) {
                             // get the currently stored unviewed cards for the current user
-                            var user_unviewed = key.participants[user_pos].unviewed;
+                            user_unviewed = key.participants[user_pos].unviewed;
                             // Set the new_messages number.
                             key.new_messages = user_unviewed.length;
                         }
@@ -234,6 +189,10 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
         promises.push(prom1);
         $q.all(promises).then(function() {
             $scope.conversations = formatted_conversations;
+            // Wait for the page transition animation to end before applying scroll.
+            $timeout(function() {
+                bindScroll();
+            }, 1000);
         });
     };
 
@@ -253,7 +212,6 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
                 Profile.setProfile(profile);
                 $rootScope.$broadcast('PROFILE_SET');
                 // get the local conversations
-                //$scope.conversations = UserData.getConversationsBuild();
                 loadConversations();
                 //
             } else {

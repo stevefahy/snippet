@@ -181,8 +181,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     };
 
-
-
     $scope.$watch('cards.length', function(newStatus) {
         // Debugging
         $rootScope.cards_length = newStatus;
@@ -1379,14 +1377,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Called as each card is loaded.
     // Disable checkboxes if the contenteditable is set to false.
-    $scope.disableCheckboxes = function(id) {
-        $timeout(function() {
-            var el = document.getElementById('ce' + id);
-            console.log(el);
-            if ($(el).attr('contenteditable') == 'false') {
-                $(el).find('input[type=checkbox]').attr('disabled', 'disabled');
-            }
-        }, 0);
+    var disableCheckboxes = function(id) {
+        var el = document.getElementById('ce' + id);
+        if ($(el).attr('contenteditable') == 'false') {
+            $(el).find('input[type=checkbox]').attr('disabled', 'disabled');
+        }
     };
 
     // TODO - make service (also in card_create.js)
@@ -1445,104 +1440,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     };
 
-    // Find the conversation id.
-    findConversationId = function(callback) {
-        // Use the id from $routeParams.id if it exists. 
-        // The conversation may have been loaded by username.
-        if (id === undefined) {
-            // Use the username from $routeParams.username to load that users Public conversation.
-            if (username != undefined) {
-                // Public
-                // LDB
-                Conversations.find_user_public_conversation_id(username)
-                    .then(function(res) {
-                        // check if this is a valid username
-                        if (res.error) {
-                            $location.path("/api/login");
-                        } else {
-                            callback(res._id);
-                        }
-                    })
-                    .catch(function(error) {
-                        console.log(error);
-                    });
-            }
-        } else {
-            // TODO - no longer needed?
-            // Check if this is a public conversation.
-            Conversations.find_public_conversation_id(id)
-                .then(function(result) {
-                    if (result != null && result.conversation_type == 'public') {
-                        getPublicConversation(id, result);
-                    } else {
-                        // private.
-                        callback(id);
-                    }
-                });
-        }
-    };
-
-
-    // TODO - no longer needed?
-    getPublicConversation = function(id, conv) {
-        var profile = {};
-        Conversations.getPublicConversationById(id)
-            .then(function(result) {
-                $scope.cards = result.data;
-                // Map relevant data to the loaded cards.
-                if ($scope.cards.length > 0) {
-                    $scope.cards.map(function(key, array) {
-                        // Store the original characters of the card.
-                        key.original_content = key.content;
-                        // Get the user name for the user id
-                        key.user_name = conv.conversation_name;
-                        key.avatar = conv.conversation_avatar;
-                        profile.user_name = conv.conversation_name;
-                        profile.avatar = conv.conversation_avatar;
-                        Profile.setConvProfile(profile);
-                        $rootScope.$broadcast('PROFILE_SET');
-                    });
-                } else {
-                    $rootScope.pageLoading = false;
-                }
-            })
-            .catch(function(error) {
-                console.log('error: ' + error);
-            });
-
-    };
-
     // clear the participants unviewed array by conversation id
     updateConversationViewed = function(id) {
         UserData.updateConversationViewed(id);
-    };
-
-    adjustCropped = function() {
-        if (!$rootScope.crop_on) {
-            var win_width = $(window).width();
-            if ($rootScope.last_win_width != win_width) {
-                last_win_width = win_width;
-                $(".cropped").each(function(index, value) {
-                    var stored = $(value).attr('cbd-data');
-                    var stored_image = $(value).attr('image-data');
-                    stored_image = JSON.parse(stored_image);
-                    if (stored) {
-                        stored = JSON.parse(stored);
-                        if (stored_image.naturalWidth < win_width) {
-                            $(value).parent().css("height", stored_image.height);
-                            $(value).parent().css("width", stored_image.naturalWidth);
-                            var zoom = stored_image.naturalWidth / (stored.right - stored.left);
-                            $(value).css("zoom", zoom);
-                        } else {
-                            var zoom = win_width / (stored.right - stored.left);
-                            $(value).css("zoom", zoom);
-                            var height = (stored.bottom - stored.top) * zoom;
-                            $(value).parent().css("height", height);
-                        }
-                    }
-                });
-            }
-        }
     };
 
     $scope.inviewoptions = { offset: [100, 0, 100, 0] };
@@ -1554,17 +1454,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $scope.feed = true;
                 $scope.top_down = true;
                 $rootScope.top_down = true;
-                //$scope.total_to_display = INIT_NUM_TO_DISPLAY;
                 $scope.isMember = true;
                 scroll_direction = "top";
             } else if (Conversations.getConversationType() == 'public') {
                 $scope.top_down = true;
                 $rootScope.top_down = true;
-                //$scope.total_to_display = INIT_NUM_TO_DISPLAY;
                 $scope.isMember = checkPermit(res);
                 scroll_direction = "top";
             } else if (Conversations.getConversationType() == 'private') {
-                //$scope.total_to_display = -INIT_NUM_TO_DISPLAY;
                 $scope.isMember = checkPermit(res);
                 scroll_direction = "bottom";
                 $scope.top_down = false;
