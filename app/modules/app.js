@@ -1,9 +1,8 @@
-//var cardApp = angular.module("cardApp", ['ngSanitize', 'ngRoute', 'angularMoment', 'ngAnimate', 'ngImgCrop', 'ngCookies', 'angular-jwt', 'angular-inview', 'rzModule']);
-var cardApp = angular.module("cardApp", ['ngSanitize', 'ngRoute', 'angularMoment', 'ngAnimate', 'ngImgCrop', 'ngCookies', 'angular-jwt', 'rzModule', 'QuickList']);
+var cardApp = angular.module("cardApp", ['ngSanitize', 'ngRoute', 'angularMoment', 'ngAnimate', 'ngImgCrop', 'ngCookies', 'angular-jwt', 'angular-inview', 'rzModule']);
+
 //
 // ROUTES
 //
-
 
 cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
     $routeProvider

@@ -28,7 +28,6 @@ cardApp.directive("contenteditable", function() {
 
 
 cardApp.directive('momentTime', ['$interval', '$filter', function($interval, $filter) {
-
     function link(scope, element, attrs) {
         var format,
             timeoutId;
@@ -37,22 +36,18 @@ cardApp.directive('momentTime', ['$interval', '$filter', function($interval, $fi
         function updateTime() {
             element.text((new Date(), momentFilter(format)));
         }
-
         scope.$watch(attrs.momentTime, function(value) {
             format = value;
             updateTime();
         });
-
         element.on('$destroy', function() {
             $interval.cancel(timeoutId);
         });
-
         // start the UI update process; save the timeoutId for canceling
         timeoutId = $interval(function() {
             updateTime(); // update DOM
         }, 10000);
     }
-
     return {
         link: link
     };
@@ -60,7 +55,6 @@ cardApp.directive('momentTime', ['$interval', '$filter', function($interval, $fi
 
 
 cardApp.directive('momentTimeConv', ['$interval', '$filter', function($interval, $filter) {
-
     function link(scope, element, attrs) {
         var format,
             timeoutId;
@@ -69,27 +63,22 @@ cardApp.directive('momentTimeConv', ['$interval', '$filter', function($interval,
         function updateTime() {
             element.text((new Date(), momentFilterConv(format)));
         }
-
         scope.$watch(attrs.momentTimeConv, function(value) {
             format = value;
             updateTime();
         });
-
         element.on('$destroy', function() {
             $interval.cancel(timeoutId);
         });
-
         // start the UI update process; save the timeoutId for canceling
         timeoutId = $interval(function() {
             updateTime(); // update DOM
         }, 100000);
     }
-
     return {
         link: link
     };
 }]);
-
 
 cardApp.directive('onFinishRender', function($timeout, $rootScope) {
     return {
@@ -108,21 +97,17 @@ cardApp.directive('onFinishRender', function($timeout, $rootScope) {
     };
 });
 
-
 cardApp.directive('viewAnimations', function(viewAnimationsService, $rootScope) {
     return {
         restrict: 'A',
         link: function(scope, element) {
-
             var previousEnter, previousLeave;
-
             var enterAnimation = viewAnimationsService.getEnterAnimation();
             if (enterAnimation) {
                 if (previousEnter) element.removeClass(previousEnter);
                 previousEnter = enterAnimation;
                 element.addClass(enterAnimation);
             }
-
             $rootScope.$on('event:newLeaveAnimation', function(event, leaveAnimation) {
                 if (previousLeave) element.removeClass(previousLeave);
                 previousLeave = leaveAnimation;
@@ -131,7 +116,6 @@ cardApp.directive('viewAnimations', function(viewAnimationsService, $rootScope) 
         }
     };
 });
-
 
 cardApp.directive("scrollToTopWhen", function($timeout) {
     return {
@@ -150,7 +134,31 @@ cardApp.directive("scrollToTopWhen", function($timeout) {
     };
 });
 
-
+cardApp.directive("doRepeat", function($compile, $log, UserData) {
+    return {
+        restrict: "A",
+        replace: true,
+        transclude: true,
+        scope: {
+            doRepeat: '='
+        },
+        template: '<div ng-transclude="" class="conty"></div>',
+        link: function(scope, element, attrs) {
+            scope.$watch('doRepeat', function(newValue, oldValue) {
+                if (newValue) {
+                    angular.forEach(newValue, function(card, index) {
+                        if (index == newValue.length - 1) {
+                            element.append("<div class=\"card_temp\" id=\"card_" + card._id + "\">" + card.content + "</div><img id= \"delete_image\" src=\"/assets/images/bee_65.png\" onload=\"domUpdated()\">");
+                        } else {
+                            element.append("<div class=\"card_temp\" id=\"card_" + card._id + "\">" + card.content + "</div>");
+                        }
+                    });
+                }
+            }, true);
+            $compile(element.contents())(scope);
+        }
+    };
+});
 
 // scrollIndicator directive
 /*
@@ -278,7 +286,7 @@ cardApp.directive('scrollIndicator', ['$window', '$document', '$timeout', '$comp
     };
 }]);
 */
-
+/*
 cardApp.directive('stopDigest', function() {
     return {
         link: function(scope) {
@@ -286,9 +294,7 @@ cardApp.directive('stopDigest', function() {
 
             scope.$on('stop', function() {
                 watchers = scope.$$watchers;
-                console.log(watchers);
                 scope.$$watchers = [];
-                console.log(scope.$$watchers);
             });
 
             scope.$on('resume', function() {
@@ -298,6 +304,7 @@ cardApp.directive('stopDigest', function() {
         }
     };
 });
+*/
 
 /*
 cardApp.directive("doScopeRepeat", function($compile, $log, UserData) {
@@ -351,113 +358,6 @@ cardApp.directive("doScopeRepeat", function($compile, $log, UserData) {
                 }
             }, true);
             $compile(element.contents())(scope);
-        }
-
-    };
-});
-*/
-
-
-
-cardApp.directive("doRepeat", function($compile, $log, UserData) {
-    return {
-        restrict: "A",
-        replace: true,
-        transclude: true,
-        scope: {
-            doRepeat: '='
-        },
-        template: '<div ng-transclude="" class="conty"></div>',
-        link: function(scope, element, attrs) {
-            scope.$watch('doRepeat', function(newValue, oldValue) {
-                if (newValue) {
-                    angular.forEach(newValue, function(card, index) {
-                        if (index == newValue.length - 1) {
-                            element.append("<div class=\"card_temp\" id=\"card_" + card._id + "\">" + card.content + "</div><img id= \"delete_image\" src=\"/assets/images/bee_65.png\" onload=\"domUpdated()\">");
-                        } else {
-                            element.append("<div class=\"card_temp\" id=\"card_" + card._id + "\">" + card.content + "</div>");
-                        }
-                    });
-                }
-            }, true);
-            $compile(element.contents())(scope);
-        }
-    };
-});
-
-/*
-cardApp.directive('doRepeat', function(){
-  return {
-    transclude : 'element',
-    compile : function(element, attr, linker){
-      return function($scope, $element, $attr){
-        var myLoop = $attr.lkRepeat,
-            match = myLoop.match(/^\s*(.+)\s+in\s+(.*?)\s*(\s+track\s+by\s+(.+)\s*)?$/),
-            indexString = match[1],
-            collectionString = match[2],
-            parent = $element.parent(),
-            elements = [];
-
-        // $watchCollection is called everytime the collection is modified
-        $scope.$watchCollection(collectionString, function(collection){
-          var i, block, childScope;
-
-          // check if elements have already been rendered
-          if(elements.length > 0){
-            // if so remove them from DOM, and destroy their scope
-            for (i = 0; i < elements.length; i++) {
-              elements[i].el.remove();
-              elements[i].scope.$destroy();
-            };
-            elements = [];
-          }
-
-          for (i = 0; i < collection.length; i++) {
-            // create a new scope for every element in the collection.
-            childScope = $scope.$new();
-            // pass the current element of the collection into that scope
-            childScope[indexString] = collection[i];
-
-            linker(childScope, function(clone){
-              // clone the transcluded element, passing in the new scope.
-              parent.append(clone); // add to DOM
-              block = {};
-              block.el = clone;
-              block.scope = childScope;
-              elements.push(block);
-            });
-          };
-        });
-      }
-    }
-  }
-});
-*/
-/*
-cardApp.directive('doRepeat', function($timeout, $rootScope) {
-    return {
-        restrict: 'A',
-        link: function(scope, element, attr) {
-            console.log(scope);
-            //console.log(scope.$index);
-            //console.log(element);
-            console.log(attr.doRepeat);
-            console.log(scope[attr.doRepeat]);
-            //console.log('onFinishRender: ' + $rootScope.top_down);
-
-        scope.$watch(attr.doRepeat, function(value) {
-            //console.log(value);
-            //format = value;
-            //updateTime();
-                        angular.forEach(value, function(value2, index) {
-console.log(value2);
-                //$log.error(value);
-                //element.append("<type type='scope.type['" + index + "]'></type>");
-            });
-        });
-
-            // ngRepeatFinishedTemp
-
         }
     };
 });

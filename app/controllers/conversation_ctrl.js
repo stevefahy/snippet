@@ -248,7 +248,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     var scrollFunction = function() {
-        $scope.$broadcast("stop");
         ch = this.scrollHeight;
         currentScroll = $(this).scrollTop();
         maxScroll = this.scrollHeight - this.clientHeight;
