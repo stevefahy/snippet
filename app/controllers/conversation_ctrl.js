@@ -956,7 +956,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     };
 
-    getCardsUpdate = function(id, destination) {
+    getCardsUpdate = function(id) {
         var deferred = $q.defer();
         var promises = [];
         var cards_new = [];
