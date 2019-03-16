@@ -197,9 +197,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
     // UPDATE CARD
     this.updateCard = function(card_id, card, currentUser) {
-        console.log('updateCard?');
         if (!updateinprogress) {
-            console.log('updateCard!');
             updateinprogress = true;
             setTimeout(function() {
                 var promises = [];
@@ -212,7 +210,6 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 // Remove any temp filtered images
                 card.content = Format.removeTempFiltered(card.content);
                 // Get the Conversation in which this card is being created.
-                //var current_conversation_id = Conversations.getConversationId();
                 var current_conversation_id = card.conversationId;
                 var sent_content;
                 var notification_title;
@@ -228,7 +225,6 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                         // Update the participants viewed array for this conversation with this card (Conversation updateAt time is also updated.). Public conversations do not store viewed data.
                         Conversations.updateViewed(current_conversation_id, card_id)
                             .then(function(response) {
-                                console.log(response);
                                 updated_viewed_users = response.participants;
                                 var notification = self.setNotification(response, currentUser, card_content);
                                 notification_title = notification.title;
@@ -260,7 +256,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                                     Users.send_notification(optionsObj.options)
                                                         .then(function(res) {
                                                             if (res.error) {
-
+                                                                console.log(res.error);
                                                             }
                                                         });
                                                 }

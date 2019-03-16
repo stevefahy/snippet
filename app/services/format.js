@@ -13,8 +13,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     var start_key = false;
     var ua = navigator.userAgent;
     // Image resize max width or height
-    var MAX_WIDTH = 640; //1080
-    var MAX_HEIGHT = 640; //1080
+    var MAX_WIDTH = 640;
+    var MAX_HEIGHT = 640;
     var JPEG_COMPRESSION = 0.7;
     var IMAGES_URL = 'fileuploads/images/';
     var refreshedToken;
@@ -319,48 +319,14 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         }
         // Move the cursor into the after image span
         moveCaretInto('after_image_' + unique_id);
-        //
         $rootScope.$broadcast('imagePasted');
     };
 
     insertImage = function(data) {
         if (data.response === 'saved') {
-
-            //var img = document.getElementById('imageid');
-            //or however you get a handle to the IMG
-            //var width = img.clientWidth;
-            //var height = img.clientHeight;
-
-            console.log(data);
-
-//var i = new Image(); 
-//var w;
-//var h;
-//i.onload = function(){
- //console.log( i.width+", "+i.height );
-//w= i.width;
-// h= i.height;
-
-
-
             data.file_name = data.file.substring(0, data.file.indexOf('.'));
-            //var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src=\"" + IMAGES_URL + data.file + "\" width=\"" + w + "\" height=\"" + h + "\"'></div><slider></slider><span class='after_image' id='after_image_" + data.file_name + "'>&#x200b;&#10;</span><span class='clear_after_image'></span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
             var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src=\"" + IMAGES_URL + data.file + "\"></div><slider></slider><span class='after_image' id='after_image_" + data.file_name + "'>&#x200b;&#10;</span><span class='clear_after_image'></span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
             self.pasteHtmlAtCaret(new_image);
-//};
-//i.src = IMAGES_URL + data.file; 
-
-            // commented out because it causes an issue with onblur which is used to update card.
-            /*
-            // remove zero width space above image if it exists 
-            var clone = $('#cecard_create').clone();
-            //clone.find('#delete').remove();
-            var old_text = clone.html();
-            var new_text = old_text.replace(/\u200B/g, '');
-            new_text += "<span id='delete_image'>&#x200b</span>";
-            $window.document.getElementById("cecard_create").innerHTML = new_text;
-            moveCaretInto('delete_image');
-            */
         }
     };
 
@@ -448,15 +414,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     // UPLOAD ==================================================================
     uploadClickListen = function(id) {
-        /*
-        // Added for chrome bug 19/02/19
-        if (ua.toLowerCase().indexOf('chrome') > 0) {
-            doClick = function() {
-                $('#upload-input').click();
-            };
-            $('#card_' + id).bind('click', doClick);
-        }
-          */
+        // make the button active temporarily so that it functions.
         $('#upload-input').addClass('active');
         $('#upload-input').click();
         // Unbind the on change event to prevent it from firing twice after first call
@@ -475,7 +433,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.uploadFile = function(id, card, currentUser) {
-        console.log('uploadfile');
         if (ua.indexOf('AndroidApp') >= 0) {
             if (document.activeElement.id != 'cecard_create' && id != undefined && id != 'card_create') {
                 // save the card first (Android bug)
@@ -488,15 +445,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 uploadClickListen(id);
             }
             $('#upload-input').on('change', function() {
-                /*
-                // Added for chrome bug 19/02/19
-                if (ua.toLowerCase().indexOf('chrome') > 0) {
-                    $('#card_' + id).unbind('click', doClick);
-                }
-                */
-
                 $rootScope.$broadcast('imageUpload', id);
-
                 var files = $(this).get(0).files;
                 if (files.length > 0) {
                     self.prepareImage(files);
@@ -604,32 +553,25 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.getBlur = function(id, card, currentUser) {
-
         // Add slight delay so that document.activeElement works
         setTimeout(function() {
             var content = $('.content_cnv #ce' + card._id).html();
             // Get the element currently in focus
             var active = $(document.activeElement).closest("div").attr('id');
             // If the blurred card is not the current card or the hidden input.
-            //if (('ce' + card._id != active && (active != 'hidden_input_container')) && image_edit_finished == true) {
-            console.log(!self.getImageEditing());
             if (('ce' + card._id != active && (active != 'hidden_input_container')) && !self.getImageEditing()) {
-                console.log('1');
                 // Card out of focus. Reset the marky_started_array.
                 marky_started_array = [];
                 // Check if there is a marky in progress
                 // zm launching image capture should not trigger an update. It causes error.
                 found_marky = findMarky(card.content);
                 // check the content has changed and not currently mid marky. Or that an image is being edited.
-                //if ((content != card.original_content && (found_marky == false)) && image_edit_finished == true) {
                 if ((content != card.original_content && (found_marky == false)) && !self.getImageEditing()) {
-                    console.log('2');
                     // Only do this if not in current card?
                     if ($('.cropper-container').length > 0) {
                         $('.cropper-container').remove();
                         card.content = $('.content_cnv #ce' + card._id).html();
                     }
-                    //if (image_edit_finished) {
                     if (!self.getImageEditing()) {
                         card.content = $('.content_cnv #ce' + card._id).html();
                     }
@@ -1020,7 +962,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     }, 0)
                     .then(
                         function() {
-                            //self.pasteHtmlAtCaret('&#x200b');
                             self.pasteHtmlAtCaret('');
                         }
                     );
@@ -1050,8 +991,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     }
 
     this.contentChanged = function(content, elem) {
-        console.log(content);
-        console.log(elem);
         if (!self.paste_in_progress) {
             self.markyCheck(content, elem);
         } else {

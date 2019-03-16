@@ -233,11 +233,9 @@ cardApp.factory('Conversations', ['$http', '$q', 'LocalDB', function($http, $q, 
             return deferred.promise;
         },
         updateViewed: function(id, card_id) {
-            console.log(id + ' : ' + card_id);
             var deferred = $q.defer();
             $http.put('chat/conversation_viewed/' + id + '/' + card_id)
                 .then(function(response) {
-                    console.log(response);
                     LocalDB.updateConversation(response.data);
                     deferred.resolve(response.data);
                 });
@@ -1128,7 +1126,6 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                 res.avatar = profile.avatar;
                 res.conversation_avatar = profile.avatar;
                 res.conversation_name = profile.user_name;
-                //UserData.updateConversationById(res._id, res);
                 UserData.conversationsAdd(res);
                 deferred.resolve(res);
             });
