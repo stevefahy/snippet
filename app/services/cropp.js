@@ -64,38 +64,17 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     function dragElement(elmnt) {
 
         //unbindScroll();
+        var elmnt = elmnt;
 
         var pos1 = 0,
             pos2 = 0,
             pos3 = 0,
             pos4 = 0;
 
-         elmnt.onmousedown = dragMouseDown;
-        //elmnt.addEventListener("mousedown", dragMouseDown, false);
-        //elmnt.touchstart = dragMouseDown;
-        //elmnt.addEventListener("touchstart", dragMouseDown, true);
-        //elmnt.addEventListener("touchmove", elementDrag, false);
-        elmnt.addEventListener("touchend", closeDragElement, true);
+        elmnt.onmousedown = dragMouseDown;
 
-        elmnt.addEventListener("touchmove", elementDrag, false);
+        elmnt.addEventListener("touchstart", dragMouseDown, false);
 
-
-        //var src = document.getElementById("source");
-        //var clientX, clientY;
-
-        elmnt.addEventListener('touchstart', function(e) {
-            console.log('start drag');
-            e = e || window.event;
-            //e.preventDefault();
-            if (e.cancelable) {
-                e.preventDefault();
-            }
-            // get the mouse cursor position at startup:
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-        }, false);
-
-        
 
         function dragMouseDown(e) {
             console.log('start drag');
@@ -107,16 +86,19 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             // get the mouse cursor position at startup:
             pos3 = e.clientX;
             pos4 = e.clientY;
-            document.onmouseup = closeDragElement;
-            //e.addEventListener("touchend", closeDragElement, false);
-            //document.ontouchend = closeDragElement;
-            // call a function whenever the cursor moves:
 
-            document.onmousemove = elementDrag;
-            //document.ontouchmove = elementDrag;
-            //e.addEventListener("touchmove", elementDrag, false);
+            if (!mobile) {
+                document.onmouseup = closeDragElement;
+                // call a function whenever the cursor moves:
+                document.onmousemove = elementDrag;
+            }
+
+            if (mobile) {
+                elmnt.addEventListener("touchend", closeDragElement, true);
+                elmnt.addEventListener("touchmove", elementDrag, false);
+            }
+
         }
-
 
         function elementDrag(e) {
             console.log('drag');
@@ -124,34 +106,19 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             if (e.cancelable) {
                 e.preventDefault();
             }
-            //e.preventDefault();
-            if(!mobile){
             // calculate the new cursor position:
-            pos1 = pos3 - e.clientX;
-            //pos1 = pos3 - e.touches[0].clientX;
-
-            pos2 = pos4 - e.clientY;
-            //pos2 = pos4 - e.touches[0].clientY;
-
-            pos3 = e.clientX;
-            //pos3 = e.touches[0].clientX;
-
-            pos4 = e.clientY;
-            //pos4 = e.touches[0].clientY;
-        }
-
-            if(mobile){
+            if (!mobile) {
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+            }
+            if (mobile) {
                 pos1 = pos3 - e.touches[0].clientX;
                 pos2 = pos4 - e.touches[0].clientY;
                 pos3 = e.touches[0].clientX;
                 pos4 = e.touches[0].clientY;
             }
-
-
-
-
-
-            console.log(pos1 + ' : ' + pos2 + ' : ' + pos3 + ' : ' + pos4);
             // set the element's new position:
             elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
             elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
@@ -160,18 +127,21 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             var per_left = elmnt.offsetLeft - pos1;
             var per_bottom = $('#crop_src').height() - (per_top + 100);
             var per_right = $('#crop_src').width() - (per_left + 100);
-            console.log($('#crop_src').width());
-            //$('.crop_area').css('clipPath', elmnt.offsetTop - pos2);
+
             $('.crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
         }
 
         function closeDragElement() {
             console.log('close drag');
             /* stop moving when mouse button is released:*/
-            document.onmouseup = null;
-            document.onmousemove = null;
-            //document.ontouchstart = null;
-            //document.ontouchmove = null;
+            if (!mobile) {
+                document.onmouseup = null;
+                document.onmousemove = null;
+            }
+            if (mobile) {
+                elmnt.removeEventListener("touchend", closeDragElement, true);
+                elmnt.removeEventListener("touchmove", elementDrag, false);
+            }
         }
     }
 
@@ -188,9 +158,34 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         var crop = $('.crop_box').clone().prependTo('.' + parent_container + ' #cropper_' + id);
         crop.addClass('active');
         $('.image_adjust_on').remove();
-        var img = $('.' + parent_container + ' #image_' + id).clone().appendTo('.' + parent_container + ' #cropper_' + id + ' .crop_area');
-        $(img).attr('id', 'crop_src');
+
+        // Store editImage
+        var stored_clck = $('.' + parent_container + ' #cropper_' + id).attr("onclick");
+        $('.' + parent_container + ' #cropper_' + id).attr("onclick", null);
+        //$('.' + parent_container + ' #cropper_' + id).attr("onclick",stored_clck);
+
+        // If filtered image exists
+        if ($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length > 0) {
+            $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').css('display', 'none');
+            $('.' + parent_container + ' #image_' + id).css('display', 'inline');
+            //img_height = $('.' + parent_container + ' #image_' + id).height();
+            // Get the filter and set it to cropper
+            var filter = $('.' + parent_container + ' #image_' + id).attr('adjustment-data');
+            //$('.' + parent_container + ' #cropper_' + id).addClass(filter);
+            filter = JSON.parse(filter);
+            var img = $('.' + parent_container + ' #image_' + id).clone().appendTo('.' + parent_container + ' #cropper_' + id + ' .crop_area');
+        $(img).addClass(filter.filter);
+         $('.' + parent_container + ' #image_' + id).css('display', 'inline');
+         $('.' + parent_container + ' #image_' + id).addClass(filter.filter);
+
+        } else {
+            var img = $('.' + parent_container + ' #image_' + id).clone().appendTo('.' + parent_container + ' #cropper_' + id + ' .crop_area');
+        
+        }
+
+                $(img).attr('id', 'crop_src');
         $('.' + parent_container + ' #cropper_' + id + ' .crop_adjust').attr('id', 'drag');
+
 
         //Make the DIV element draggagle:
         dragElement(document.getElementById("drag"));

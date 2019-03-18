@@ -3126,7 +3126,7 @@ span.after_image {
 
 .crop_area {
     /* values are from-top, from-right, from-bottom, from-left */
-    clip-path: inset(10px 141px 167px 254px);
+    /*clip-path: inset(10px 141px 167px 254px);*/
 }
 
 .crop_adjust {
