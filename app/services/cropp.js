@@ -53,6 +53,56 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         }
     };
 
+
+
+    function dragElement(elmnt) {
+        var pos1 = 0,
+            pos2 = 0,
+            pos3 = 0,
+            pos4 = 0;
+
+            elmnt.onmousedown = dragMouseDown;
+
+        function dragMouseDown(e) {
+            e = e || window.event;
+            e.preventDefault();
+            // get the mouse cursor position at startup:
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.onmouseup = closeDragElement;
+            // call a function whenever the cursor moves:
+            document.onmousemove = elementDrag;
+        }
+
+        function elementDrag(e) {
+            e = e || window.event;
+            e.preventDefault();
+            // calculate the new cursor position:
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            console.log(pos1 + ' : ' + pos2 + ' : ' + pos3 + ' : ' + pos4);
+            // set the element's new position:
+            elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+            elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+
+            var per_top = elmnt.offsetTop - pos2;
+            var per_left = elmnt.offsetLeft - pos1;
+            var per_bottom = $('#crop_src').height() - (per_top + 100);
+            var per_right = $('#crop_src').width() - (per_left + 100);
+            console.log($('#crop_src').width());
+            //$('.crop_area').css('clipPath', elmnt.offsetTop - pos2);
+            $('.crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
+        }
+
+        function closeDragElement() {
+            /* stop moving when mouse button is released:*/
+            document.onmouseup = null;
+            document.onmousemove = null;
+        }
+    }
+
     this.openCrop = function(e, id) {
         var parent_container;
         // Get the context of the image (content_cnv or card_create_container)
@@ -62,125 +112,147 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             parent_container = 'content_cnv';
         }
         ImageAdjustment.setImageParent(parent_container);
-        var img_height;
-        // If filtered image exists
-        if ($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length > 0) {
-            $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').css('display', 'none');
-            $('.' + parent_container + ' #image_' + id).css('display', 'inline');
-            img_height = $('.' + parent_container + ' #image_' + id).height();
-            // Get the filter and set it to cropper
-            var filter = $('.' + parent_container + ' #image_' + id).attr('adjustment-data');
-            $('.' + parent_container + ' #cropper_' + id).addClass(filter);
-        }
-        $('.image_edit_btns').css('display', 'none');
-        $('.crop_edit').css('display', 'flex');
-        $rootScope.crop_on = true;
-        var wrapper = $('.' + parent_container + ' #cropper_' + id)[0];
-        $(wrapper).addClass('cropping');
-        wrapper.style.maxWidth = '';
-        wrapper.style.cssFloat = 'none';
 
-        if ($('.' + parent_container + ' #cropper_' + id).attr('class').indexOf('no_image_space') >= 0) {
-            $('.' + parent_container + ' #image_adjust_' + id).addClass('no_image_space_adjust_crop');
-        }
+        var crop = $('.crop_box').clone().prependTo('.' + parent_container + ' #cropper_' + id);
+        crop.addClass('active');
+        $('.image_adjust_on').remove();
+        var img = $('.' + parent_container + ' #image_' + id).clone().appendTo('.' + parent_container + ' #cropper_' + id + ' .crop_area');
+        $(img).attr('id', 'crop_src');
+        $('.' + parent_container + ' #cropper_' + id + ' .crop_adjust').attr('id', 'drag');
 
-        // Turn off contenteditable for this card
-        var card = $(wrapper).parent().closest('div').attr('id');
-        $('#' + card).attr('contenteditable', 'false');
-        // Manually set the container width and height.
-        var win_width = $(window).width();
-        var stored_image = $('.' + parent_container + ' #image_' + id).attr('image-data');
-        var avail_height = $(window).height() - ($('.header').height() + $('.create_container').height() + $('.footer').height());
-        if (stored_image != undefined) {
-            stored_image = JSON.parse(stored_image);
-            var image_scale;
-            if (win_width < avail_height) {
-                // Portrait
-                if (stored_image.naturalWidth > stored_image.naturalHeight) {
-                    image_scale = win_width / stored_image.naturalWidth;
-                } else {
-                    image_scale = avail_height / stored_image.naturalHeight;
-                }
+        //Make the DIV element draggagle:
+        dragElement(document.getElementById("drag"));
+    };
+
+    /*
+        this.openCrop = function(e, id) {
+            var parent_container;
+            // Get the context of the image (content_cnv or card_create_container)
+            if ($(e.target).parents('div.card_create_container').length > 0) {
+                parent_container = 'card_create_container';
             } else {
-                // Landscape
-                if (stored_image.naturalWidth > stored_image.naturalHeight) {
-                    image_scale = win_width / stored_image.naturalWidth;
-                    if (stored_image.naturalHeight * image_scale > avail_height) {
+                parent_container = 'content_cnv';
+            }
+            ImageAdjustment.setImageParent(parent_container);
+            var img_height;
+            // If filtered image exists
+            if ($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length > 0) {
+                $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').css('display', 'none');
+                $('.' + parent_container + ' #image_' + id).css('display', 'inline');
+                img_height = $('.' + parent_container + ' #image_' + id).height();
+                // Get the filter and set it to cropper
+                var filter = $('.' + parent_container + ' #image_' + id).attr('adjustment-data');
+                $('.' + parent_container + ' #cropper_' + id).addClass(filter);
+            }
+            $('.image_edit_btns').css('display', 'none');
+            $('.crop_edit').css('display', 'flex');
+            $rootScope.crop_on = true;
+            var wrapper = $('.' + parent_container + ' #cropper_' + id)[0];
+            $(wrapper).addClass('cropping');
+            wrapper.style.maxWidth = '';
+            wrapper.style.cssFloat = 'none';
+
+            if ($('.' + parent_container + ' #cropper_' + id).attr('class').indexOf('no_image_space') >= 0) {
+                $('.' + parent_container + ' #image_adjust_' + id).addClass('no_image_space_adjust_crop');
+            }
+
+            // Turn off contenteditable for this card
+            var card = $(wrapper).parent().closest('div').attr('id');
+            $('#' + card).attr('contenteditable', 'false');
+            // Manually set the container width and height.
+            var win_width = $(window).width();
+            var stored_image = $('.' + parent_container + ' #image_' + id).attr('image-data');
+            var avail_height = $(window).height() - ($('.header').height() + $('.create_container').height() + $('.footer').height());
+            if (stored_image != undefined) {
+                stored_image = JSON.parse(stored_image);
+                var image_scale;
+                if (win_width < avail_height) {
+                    // Portrait
+                    if (stored_image.naturalWidth > stored_image.naturalHeight) {
+                        image_scale = win_width / stored_image.naturalWidth;
+                    } else {
                         image_scale = avail_height / stored_image.naturalHeight;
                     }
                 } else {
-                    image_scale = avail_height / stored_image.naturalHeight;
+                    // Landscape
+                    if (stored_image.naturalWidth > stored_image.naturalHeight) {
+                        image_scale = win_width / stored_image.naturalWidth;
+                        if (stored_image.naturalHeight * image_scale > avail_height) {
+                            image_scale = avail_height / stored_image.naturalHeight;
+                        }
+                    } else {
+                        image_scale = avail_height / stored_image.naturalHeight;
+                    }
                 }
+                var scaled_height = stored_image.naturalHeight * image_scale;
+                var scaled_width = stored_image.naturalWidth * image_scale;
+                // Set the height of the container
+                crop_in_progress = id;
+                var img_width = stored_image.width;
+                var inc = win_width / img_width;
+                // get the actual screen height from the scaled width.
+                var current_height = (stored_image.height * inc);
+                if (avail_height < current_height) {
+                    decrease_percent = (avail_height / img_height);
+                    var decreased_height = (img_height * decrease_percent);
+                    wrapper.style.height = decreased_height + 'px';
+                }
+                if (stored_image.width < win_width) {
+                    wrapper.style.height = stored_image.height + 'px';
+                    wrapper.style.width = stored_image.width + 'px';
+                }
+                wrapper.style.maxWidth = '';
+                wrapper.style.height = scaled_height + 'px';
+                wrapper.style.width = scaled_width + 'px';
             }
-            var scaled_height = stored_image.naturalHeight * image_scale;
-            var scaled_width = stored_image.naturalWidth * image_scale;
-            // Set the height of the container
-            crop_in_progress = id;
-            var img_width = stored_image.width;
-            var inc = win_width / img_width;
-            // get the actual screen height from the scaled width.
-            var current_height = (stored_image.height * inc);
-            if (avail_height < current_height) {
-                decrease_percent = (avail_height / img_height);
-                var decreased_height = (img_height * decrease_percent);
-                wrapper.style.height = decreased_height + 'px';
-            }
-            if (stored_image.width < win_width) {
-                wrapper.style.height = stored_image.height + 'px';
-                wrapper.style.width = stored_image.width + 'px';
-            }
-            wrapper.style.maxWidth = '';
-            wrapper.style.height = scaled_height + 'px';
-            wrapper.style.width = scaled_width + 'px';
-        }
 
-        // TODO - do not enable crop if image less than min
-        var options = {
-            zoomable: false,
-            minContainerWidth: 100,
-            minContainerHeight: 100,
-            ready: function() {
-                $('.' + parent_container + ' #cropper_' + id + ' .cropper-canvas').addClass(filter);
-                $('.' + parent_container + ' #cropper_' + id + ' .cropper-view-box').addClass(filter);
-                $('.' + parent_container + ' #cropper_' + id).removeClass(filter);
+            // TODO - do not enable crop if image less than min
+            var options = {
+                zoomable: false,
+                minContainerWidth: 100,
+                minContainerHeight: 100,
+                ready: function() {
+                    $('.' + parent_container + ' #cropper_' + id + ' .cropper-canvas').addClass(filter);
+                    $('.' + parent_container + ' #cropper_' + id + ' .cropper-view-box').addClass(filter);
+                    $('.' + parent_container + ' #cropper_' + id).removeClass(filter);
+                }
+            };
+
+            // Check for stored crop data
+            var stored = $('.' + parent_container + ' #image_' + id).attr('crop-data');
+            var reduced = $('.' + parent_container + ' #image_' + id).attr('reduce-data');
+
+            if (reduced != undefined) {
+                // Set the height of the container
+                var wrapper = $('.' + parent_container + ' #cropper_' + id)[0];
+                var d = JSON.parse(reduced);
+                var decreased_width = d.width;
+                reduce_height = true;
+            }
+            // Previously cropped.
+            if (stored != undefined) {
+                options.data = JSON.parse(stored);
+                image = $('.' + parent_container + ' #image_' + id)[0];
+                cropper = new Cropper(image, options, {});
+            } else {
+                // New Crop
+                resetContainer(id);
+                image = $('.' + parent_container + ' #image_' + id)[0];
+                var init_img_width = $('.' + parent_container + ' #image_' + id).width();
+                // If image smaller than screen width then reduce container width
+                if (init_img_width < win_width) {
+                    $('.' + parent_container + ' #cropper_' + id).css('width', init_img_width);
+                }
+
+                cropper = new Cropper(image, options, {
+                    crop(event) {
+                        var wrapper = $('.' + parent_container + ' #cropper_' + id)[0];
+                        wrapper.style.width = '';
+                    }
+                });
             }
         };
-
-        // Check for stored crop data
-        var stored = $('.' + parent_container + ' #image_' + id).attr('crop-data');
-        var reduced = $('.' + parent_container + ' #image_' + id).attr('reduce-data');
-
-        if (reduced != undefined) {
-            // Set the height of the container
-            var wrapper = $('.' + parent_container + ' #cropper_' + id)[0];
-            var d = JSON.parse(reduced);
-            var decreased_width = d.width;
-            reduce_height = true;
-        }
-        // Previously cropped.
-        if (stored != undefined) {
-            options.data = JSON.parse(stored);
-            image = $('.' + parent_container + ' #image_' + id)[0];
-            cropper = new Cropper(image, options, {});
-        } else {
-            // New Crop
-            resetContainer(id);
-            image = $('.' + parent_container + ' #image_' + id)[0];
-            var init_img_width = $('.' + parent_container + ' #image_' + id).width();
-            // If image smaller than screen width then reduce container width
-            if (init_img_width < win_width) {
-                $('.' + parent_container + ' #cropper_' + id).css('width', init_img_width);
-            }
-
-            cropper = new Cropper(image, options, {
-                crop(event) {
-                    var wrapper = $('.' + parent_container + ' #cropper_' + id)[0];
-                    wrapper.style.width = '';
-                }
-            });
-        }
-    };
-
+    */
     function b64toBlob(b64Data, contentType, sliceSize) {
         contentType = contentType || '';
         sliceSize = sliceSize || 512;

@@ -3108,3 +3108,34 @@ span.after_image {
     background-color: red;
     z-index: 10000;
 }
+
+.crop_box {
+    visibility: hidden;
+}
+
+.crop_box.active {
+    visibility: visible;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(25,25,25,0.3);
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 1;
+}
+
+.crop_area {
+    /* values are from-top, from-right, from-bottom, from-left */
+    clip-path: inset(10px 141px 167px 254px);
+}
+
+.crop_adjust {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    top: 10px;
+    left: 254px;
+    z-index: 1;
+    outline-color: rgba(51, 153, 255, 0.75);
+    outline: 1px solid #39f;
+}
