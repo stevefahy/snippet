@@ -3139,3 +3139,7 @@ span.after_image {
     outline-color: rgba(51, 153, 255, 0.75);
     outline: 1px solid #39f;
 }
+
+#crop_src {
+    visibility: visible;
+}
