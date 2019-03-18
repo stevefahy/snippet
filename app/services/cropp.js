@@ -4,12 +4,14 @@
 
 cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', 'General', 'UserData', 'principal', 'ImageAdjustment', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML, General, UserData, principal, ImageAdjustment) {
 
+    var ua = navigator.userAgent;
     var self = this;
     var cropper;
     var image;
     var crop_in_progress;
     var reduce_height = false;
     var decrease_percent = 0;
+    var mobile = false;
 
     var JPEG_COMPRESSION = 0.7;
 
@@ -17,6 +19,10 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
     if (cropper != undefined) {
         cropper.destroy();
+    }
+
+    if (ua.indexOf('AndroidApp') >= 0) {
+        mobile = true;
     }
 
     this.destroyCrop = function() {
@@ -119,6 +125,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 e.preventDefault();
             }
             //e.preventDefault();
+            if(!mobile){
             // calculate the new cursor position:
             pos1 = pos3 - e.clientX;
             //pos1 = pos3 - e.touches[0].clientX;
@@ -131,6 +138,18 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
             pos4 = e.clientY;
             //pos4 = e.touches[0].clientY;
+        }
+
+            if(mobile){
+                pos1 = pos3 - e.touches[0].clientX;
+                pos2 = pos4 - e.touches[0].clientY;
+                pos3 = e.touches[0].clientX;
+                pos4 = e.touches[0].clientY;
+            }
+
+
+
+
 
             console.log(pos1 + ' : ' + pos2 + ' : ' + pos3 + ' : ' + pos4);
             // set the element's new position:
