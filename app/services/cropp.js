@@ -148,7 +148,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     /*Make resizable div by Hung Nguyen*/
     function makeResizableDiv(div) {
         const element = document.querySelector(div);
-        const resizers = document.querySelectorAll(div + ' .resizer')
+        const resizers = document.querySelectorAll(div + ' .resizer');
         const minimum_size = 20;
         let original_width = 0;
         let original_height = 0;
@@ -160,8 +160,13 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             const currentResizer = resizers[i];
 
             //elmnt.addEventListener("touchstart", dragMouseDown, false);
-            currentResizer.addEventListener("mousedown", sizeMouseDown, false);
-            currentResizer.addEventListener("touchstart", sizeMouseDown, false);
+            if (!mobile) {
+                currentResizer.addEventListener("mousedown", sizeMouseDown, false);
+            } else {
+                currentResizer.addEventListener("touchstart", sizeMouseDown, false);
+            }
+
+
 
             /*
             currentResizer.addEventListener('mousedown', function(e) {
@@ -178,26 +183,39 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             */
 
             function sizeMouseDown(e) {
+                console.log('size');
                 original_width = parseFloat(getComputedStyle(element, null).getPropertyValue('width').replace('px', ''));
                 original_height = parseFloat(getComputedStyle(element, null).getPropertyValue('height').replace('px', ''));
                 original_x = element.getBoundingClientRect().left;
                 original_y = element.getBoundingClientRect().top;
-                original_mouse_x = e.pageX;
-                original_mouse_y = e.pageY;
+                if (!mobile) {
+                    original_mouse_x = e.pageX;
+                    original_mouse_y = e.pageY;
+                } else {
+                    original_mouse_x = e.touches[0].pageX;
+                    original_mouse_y = e.touches[0].pageY;
+                }
                 if (!mobile) {
                     window.addEventListener('mousemove', resize);
                     window.addEventListener('mouseup', stopResize);
                 } else {
                     currentResizer.addEventListener("touchmove", resize, false);
-                    currentResizer.addEventListener("touchend", stopResize, false);
+                    currentResizer.addEventListener("touchend", stopResize, true);
                 }
 
             }
 
             function resize(e) {
                 if (currentResizer.classList.contains('bottom-right')) {
-                    const width = original_width + (e.pageX - original_mouse_x);
-                    const height = original_height + (e.pageY - original_mouse_y)
+                    var width;
+                    var height;
+                    if (!mobile) {
+                        width = original_width + (e.pageX - original_mouse_x);
+                        height = original_height + (e.pageY - original_mouse_y);
+                    } else {
+                        width = original_width + (e.touches[0].pageX - original_mouse_x);
+                        height = original_height + (e.touches[0].pageY - original_mouse_y);
+                    }
                     if (width > minimum_size) {
                         element.style.width = width + 'px'
                     }
@@ -205,46 +223,82 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                         element.style.height = height + 'px'
                     }
                 } else if (currentResizer.classList.contains('bottom-left')) {
-                    const height = original_height + (e.pageY - original_mouse_y)
-                    const width = original_width - (e.pageX - original_mouse_x)
+                    if (!mobile) {
+                        const height = original_height + (e.pageY - original_mouse_y);
+                        const width = original_width - (e.pageX - original_mouse_x);
+                    } else {
+                        const height = original_height + (e.touches[0].pageY - original_mouse_y);
+                        const width = original_width - (e.touches[0].pageX - original_mouse_x);
+                    }
+
                     if (height > minimum_size) {
-                        element.style.height = height + 'px'
+                        element.style.height = height + 'px';
                     }
                     if (width > minimum_size) {
-                        element.style.width = width + 'px'
-                        element.style.left = original_x + (e.pageX - original_mouse_x) + 'px'
+                        element.style.width = width + 'px';
+                        if (!mobile) {
+                            element.style.left = original_x + (e.pageX - original_mouse_x) + 'px';
+                        } else {
+                            element.style.left = original_x + (e.touches[0].pageX - original_mouse_x) + 'px';
+                        }
                     }
                 } else if (currentResizer.classList.contains('top-right')) {
-                    const width = original_width + (e.pageX - original_mouse_x)
-                    const height = original_height - (e.pageY - original_mouse_y)
+                    if (!mobile) {
+                        const width = original_width + (e.pageX - original_mouse_x);
+                        const height = original_height - (e.pageY - original_mouse_y);
+                    } else {
+                        const width = original_width + (e.touches[0].pageX - original_mouse_x);
+                        const height = original_height - (e.touches[0].pageY - original_mouse_y);
+                    }
+
                     if (width > minimum_size) {
-                        element.style.width = width + 'px'
+                        element.style.width = width + 'px';
                     }
                     if (height > minimum_size) {
-                        element.style.height = height + 'px'
-                        element.style.top = original_y + (e.pageY - original_mouse_y) + 'px'
+                        element.style.height = height + 'px';
+                        if (!mobile) {
+                            element.style.top = original_y + (e.pageY - original_mouse_y) + 'px';
+                        } else {
+                            element.style.top = original_y + (e.touches[0].pageY - original_mouse_y) + 'px';
+                        }
                     }
                 } else {
-                    const width = original_width - (e.pageX - original_mouse_x)
-                    const height = original_height - (e.pageY - original_mouse_y)
+                    if (!mobile) {
+                        const width = original_width - (e.pageX - original_mouse_x);
+                        const height = original_height - (e.pageY - original_mouse_y);
+                    } else {
+                        const width = original_width - (e.touches[0].pageX - original_mouse_x);
+                        const height = original_height - (e.touches[0].pageY - original_mouse_y);
+                    }
+
                     if (width > minimum_size) {
-                        element.style.width = width + 'px'
-                        element.style.left = original_x + (e.pageX - original_mouse_x) + 'px'
+                        element.style.width = width + 'px';
+                        if (!mobile) {
+                            element.style.left = original_x + (e.pageX - original_mouse_x) + 'px';
+                        } else {
+                            element.style.left = original_x + (e.touches[0].pageX - original_mouse_x) + 'px';
+                        }
+
                     }
                     if (height > minimum_size) {
-                        element.style.height = height + 'px'
-                        element.style.top = original_y + (e.pageY - original_mouse_y) + 'px'
+                        element.style.height = height + 'px';
+                        if(!mobile){
+                            element.style.top = original_y + (e.pageY - original_mouse_y) + 'px';
+                        } else {
+                            element.style.top = original_y + (e.touches[0].pageY - original_mouse_y) + 'px';
+                        }
+                        
                     }
                 }
             }
 
             function stopResize() {
-                if(!mobile){
+                if (!mobile) {
                     window.removeEventListener('mousemove', resize);
                 } else {
-                     currentResizer.removeEventListener("touchmove", resize, false);
+                    currentResizer.removeEventListener("touchmove", resize, false);
                 }
-                
+
             }
         }
     }
@@ -296,7 +350,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         //Make the DIV element draggagle:
         dragElement(document.getElementById("drag"));
 
-        makeResizableDiv('.crop_adjust');
+        makeResizableDiv('.resizers');
     };
 
     /*
