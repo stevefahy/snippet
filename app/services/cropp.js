@@ -57,26 +57,47 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
     function dragElement(elmnt) {
 
-        unbindScroll();
+        //unbindScroll();
 
         var pos1 = 0,
             pos2 = 0,
             pos3 = 0,
             pos4 = 0;
 
-           // elmnt.onmousedown = dragMouseDown;
-            elmnt.addEventListener("mousedown", dragMouseDown, false);
-            //elmnt.touchstart = dragMouseDown;
-            elmnt.addEventListener("touchstart", dragMouseDown, true);
-            elmnt.addEventListener("touchmove", elementDrag, true);
-            elmnt.addEventListener("touchend", closeDragElement, true);
+         elmnt.onmousedown = dragMouseDown;
+        //elmnt.addEventListener("mousedown", dragMouseDown, false);
+        //elmnt.touchstart = dragMouseDown;
+        //elmnt.addEventListener("touchstart", dragMouseDown, true);
+        //elmnt.addEventListener("touchmove", elementDrag, false);
+        elmnt.addEventListener("touchend", closeDragElement, true);
+
+        elmnt.addEventListener("touchmove", elementDrag, false);
+
+
+        //var src = document.getElementById("source");
+        //var clientX, clientY;
+
+        elmnt.addEventListener('touchstart', function(e) {
+            console.log('start drag');
+            e = e || window.event;
+            //e.preventDefault();
+            if (e.cancelable) {
+                e.preventDefault();
+            }
+            // get the mouse cursor position at startup:
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+        }, false);
+
+        
+
         function dragMouseDown(e) {
             console.log('start drag');
             e = e || window.event;
             //e.preventDefault();
             if (e.cancelable) {
-   e.preventDefault();
-}
+                e.preventDefault();
+            }
             // get the mouse cursor position at startup:
             pos3 = e.clientX;
             pos4 = e.clientY;
@@ -95,21 +116,21 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             console.log('drag');
             e = e || window.event;
             if (e.cancelable) {
-   e.preventDefault();
-}
+                e.preventDefault();
+            }
             //e.preventDefault();
             // calculate the new cursor position:
             pos1 = pos3 - e.clientX;
-            pos1 = pos3 - e.touches[0].clientX;
+            //pos1 = pos3 - e.touches[0].clientX;
 
             pos2 = pos4 - e.clientY;
-            pos2 = pos4 - e.touches[0].clientY;
+            //pos2 = pos4 - e.touches[0].clientY;
 
             pos3 = e.clientX;
-            pos3 = e.touches[0].clientX;
+            //pos3 = e.touches[0].clientX;
 
             pos4 = e.clientY;
-            pos4 = e.touches[0].clientY;
+            //pos4 = e.touches[0].clientY;
 
             console.log(pos1 + ' : ' + pos2 + ' : ' + pos3 + ' : ' + pos4);
             // set the element's new position:
