@@ -3141,5 +3141,5 @@ span.after_image {
 }
 
 #crop_src {
-    display: unset;
+    display: unset !important;
 }

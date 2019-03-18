@@ -62,6 +62,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             pos4 = 0;
 
             elmnt.onmousedown = dragMouseDown;
+            elmnt.touchstart = dragMouseDown;
 
         function dragMouseDown(e) {
             e = e || window.event;
@@ -70,9 +71,12 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             pos3 = e.clientX;
             pos4 = e.clientY;
             document.onmouseup = closeDragElement;
+            document.ontouchend = closeDragElement;
             // call a function whenever the cursor moves:
             document.onmousemove = elementDrag;
+            document.ontouchmove = elementDrag;
         }
+
 
         function elementDrag(e) {
             e = e || window.event;
@@ -100,6 +104,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             /* stop moving when mouse button is released:*/
             document.onmouseup = null;
             document.onmousemove = null;
+            document.ontouchstart = null;
+            document.ontouchmove = null;
         }
     }
 
