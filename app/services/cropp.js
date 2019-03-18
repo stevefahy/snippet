@@ -56,37 +56,55 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
 
     function dragElement(elmnt) {
+
+        unbindScroll();
+
         var pos1 = 0,
             pos2 = 0,
             pos3 = 0,
             pos4 = 0;
 
-            elmnt.onmousedown = dragMouseDown;
+           // elmnt.onmousedown = dragMouseDown;
+            elmnt.addEventListener("mousedown", dragMouseDown, false);
             //elmnt.touchstart = dragMouseDown;
-            elmnt.addEventListener("touchstart", dragMouseDown, false);
-            elmnt.addEventListener("touchmove", elementDrag, false);
+            elmnt.addEventListener("touchstart", dragMouseDown, true);
+            elmnt.addEventListener("touchmove", elementDrag, true);
+            elmnt.addEventListener("touchend", closeDragElement, true);
         function dragMouseDown(e) {
+            console.log('start drag');
             e = e || window.event;
             e.preventDefault();
             // get the mouse cursor position at startup:
             pos3 = e.clientX;
             pos4 = e.clientY;
             document.onmouseup = closeDragElement;
-            document.ontouchend = closeDragElement;
+            //e.addEventListener("touchend", closeDragElement, false);
+            //document.ontouchend = closeDragElement;
             // call a function whenever the cursor moves:
+
             document.onmousemove = elementDrag;
-            document.ontouchmove = elementDrag;
+            //document.ontouchmove = elementDrag;
+            //e.addEventListener("touchmove", elementDrag, false);
         }
 
 
         function elementDrag(e) {
+            console.log('drag');
             e = e || window.event;
             e.preventDefault();
             // calculate the new cursor position:
             pos1 = pos3 - e.clientX;
+            pos1 = pos3 - e.touches[0].clientX;
+
             pos2 = pos4 - e.clientY;
+            pos2 = pos4 - e.touches[0].clientY;
+
             pos3 = e.clientX;
+            pos3 = e.touches[0].clientX;
+
             pos4 = e.clientY;
+            pos4 = e.touches[0].clientY;
+
             console.log(pos1 + ' : ' + pos2 + ' : ' + pos3 + ' : ' + pos4);
             // set the element's new position:
             elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
@@ -102,6 +120,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         }
 
         function closeDragElement() {
+            console.log('close drag');
             /* stop moving when mouse button is released:*/
             document.onmouseup = null;
             document.onmousemove = null;
