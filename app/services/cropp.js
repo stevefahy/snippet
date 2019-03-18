@@ -73,7 +73,10 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         function dragMouseDown(e) {
             console.log('start drag');
             e = e || window.event;
-            e.preventDefault();
+            //e.preventDefault();
+            if (e.cancelable) {
+   e.preventDefault();
+}
             // get the mouse cursor position at startup:
             pos3 = e.clientX;
             pos4 = e.clientY;
@@ -91,7 +94,10 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         function elementDrag(e) {
             console.log('drag');
             e = e || window.event;
-            e.preventDefault();
+            if (e.cancelable) {
+   e.preventDefault();
+}
+            //e.preventDefault();
             // calculate the new cursor position:
             pos1 = pos3 - e.clientX;
             pos1 = pos3 - e.touches[0].clientX;
@@ -124,8 +130,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             /* stop moving when mouse button is released:*/
             document.onmouseup = null;
             document.onmousemove = null;
-            document.ontouchstart = null;
-            document.ontouchmove = null;
+            //document.ontouchstart = null;
+            //document.ontouchmove = null;
         }
     }
 
