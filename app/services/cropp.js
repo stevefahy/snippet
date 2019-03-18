@@ -62,8 +62,9 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             pos4 = 0;
 
             elmnt.onmousedown = dragMouseDown;
-            elmnt.touchstart = dragMouseDown;
-
+            //elmnt.touchstart = dragMouseDown;
+            elmnt.addEventListener("touchstart", dragMouseDown, false);
+            elmnt.addEventListener("touchmove", elementDrag, false);
         function dragMouseDown(e) {
             e = e || window.event;
             e.preventDefault();
