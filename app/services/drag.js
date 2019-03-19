@@ -44,8 +44,8 @@ cardApp.service('Drag', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Us
         }
 
         if (mobile) {
-            elmnt.addEventListener("touchend", closeDragElement, true);
-            elmnt.addEventListener("touchmove", elementDrag, false);
+            self.elmnt.addEventListener("touchend", closeDragElement, true);
+            self.elmnt.addEventListener("touchmove", elementDrag, false);
         }
 
     }
