@@ -107,7 +107,7 @@ cardApp.service('Drag', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Us
             document.onmousemove = null;
         }
         if (mobile) {
-            self.elmnt.removeEventListener("touchend", closeDragElement, true);
+            self.elmnt.removeEventListener("touchend", self.closeDragElement, true);
             self.elmnt.removeEventListener("touchmove", elementDrag, false);
         }
     };
