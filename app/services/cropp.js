@@ -189,7 +189,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 original_x = element.getBoundingClientRect().left;
                 original_y = element.getBoundingClientRect().top;
 
-                original_y_h  = element.getBoundingClientRect().bottom - element.getBoundingClientRect().top;
+                //original_y_h  = element.getBoundingClientRect().bottom - element.getBoundingClientRect().top;
                 if (!mobile) {
                     original_mouse_x = e.pageX;
                     original_mouse_y = e.pageY;
@@ -242,12 +242,12 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                          //top = original_y + (e.pageY - original_mouse_y)  - height;
                          //var t =(original_y - height) ;
                          console.log(original_y + ' : ' + original_mouse_y + ' : ' + e.clientY  + ' : ' + e.pageY);
-                         top = e.clientY - (original_height +15);
+                         top = e.clientY - (original_height );
                     } else {
                         //width = original_width + (e.touches[0].pageX - original_mouse_x);
                         //height = original_height + (e.touches[0].pageY - original_mouse_y);
                         height = original_height - (e.touches[0].pageY - original_mouse_y);
-                        top = e.touches[0].clientY - (original_height +15);
+                        top = e.touches[0].clientY - (height );
                     }
                     //if (height > minimum_size) {
                         element.style.top = top + 'px';
