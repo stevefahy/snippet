@@ -177,6 +177,8 @@ var elmnt = elmnt;
 
             function sizeMouseDown(e) {
                 console.log('size');
+
+                $('.content_cnv').css('overflow-y', 'hidden');
                 elmnt = document.getElementById("drag");
                 Drag.stopDragElement();
                 //elmnt = document.getElementById("drag");
@@ -302,6 +304,8 @@ var elmnt = elmnt;
             }
 
             function stopResize() {
+                console.log('stopResize');
+                $('.content_cnv').css('overflow-y', 'unset');
                 if (!mobile) {
                     window.removeEventListener('mousemove', resize);
                     Drag.resume();
