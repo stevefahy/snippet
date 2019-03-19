@@ -60,95 +60,95 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     };
 
 
-/*
-    this.dragElement = function() {
-        console.log('dragElement');
-        var self = this;
-        //unbindScroll();
-        self.setUp = function(elmnt){
-var elmnt = elmnt;
+    /*
+        this.dragElement = function() {
+            console.log('dragElement');
+            var self = this;
+            //unbindScroll();
+            self.setUp = function(elmnt){
+    var elmnt = elmnt;
 
-        var pos1 = 0,
-            pos2 = 0,
-            pos3 = 0,
-            pos4 = 0;
+            var pos1 = 0,
+                pos2 = 0,
+                pos3 = 0,
+                pos4 = 0;
 
-        elmnt.onmousedown = dragMouseDown;
+            elmnt.onmousedown = dragMouseDown;
 
-        elmnt.addEventListener("touchstart", dragMouseDown, false);
-        };
-        
+            elmnt.addEventListener("touchstart", dragMouseDown, false);
+            };
+            
 
 
-        function dragMouseDown(e) {
-            console.log('start drag');
-            e = e || window.event;
-            //e.preventDefault();
-            if (e.cancelable) {
-                e.preventDefault();
-            }
-            // get the mouse cursor position at startup:
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-
-            if (!mobile) {
-                document.onmouseup = self.closeDragElement;
-                // call a function whenever the cursor moves:
-                document.onmousemove = elementDrag;
-            }
-
-            if (mobile) {
-                elmnt.addEventListener("touchend", closeDragElement, true);
-                elmnt.addEventListener("touchmove", elementDrag, false);
-            }
-
-        }
-
-        function elementDrag(e) {
-            console.log('drag');
-            e = e || window.event;
-            if (e.cancelable) {
-                e.preventDefault();
-            }
-            // calculate the new cursor position:
-            if (!mobile) {
-                pos1 = pos3 - e.clientX;
-                pos2 = pos4 - e.clientY;
+            function dragMouseDown(e) {
+                console.log('start drag');
+                e = e || window.event;
+                //e.preventDefault();
+                if (e.cancelable) {
+                    e.preventDefault();
+                }
+                // get the mouse cursor position at startup:
                 pos3 = e.clientX;
                 pos4 = e.clientY;
-            }
-            if (mobile) {
-                pos1 = pos3 - e.touches[0].clientX;
-                pos2 = pos4 - e.touches[0].clientY;
-                pos3 = e.touches[0].clientX;
-                pos4 = e.touches[0].clientY;
-            }
-            // set the element's new position:
-            elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-            elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
 
-            var per_top = elmnt.offsetTop - pos2;
-            var per_left = elmnt.offsetLeft - pos1;
-            var per_bottom = $('#crop_src').height() - (per_top + 100);
-            var per_right = $('#crop_src').width() - (per_left + 100);
+                if (!mobile) {
+                    document.onmouseup = self.closeDragElement;
+                    // call a function whenever the cursor moves:
+                    document.onmousemove = elementDrag;
+                }
 
-            $('.crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
-        }
+                if (mobile) {
+                    elmnt.addEventListener("touchend", closeDragElement, true);
+                    elmnt.addEventListener("touchmove", elementDrag, false);
+                }
 
-        this.closeDragElement = function() {
-            console.log('close drag');
-            // stop moving when mouse button is released:
-            if (!mobile) {
-                document.onmouseup = null;
-                document.onmousemove = null;
             }
-            if (mobile) {
-                elmnt.removeEventListener("touchend", closeDragElement, true);
-                elmnt.removeEventListener("touchmove", elementDrag, false);
+
+            function elementDrag(e) {
+                console.log('drag');
+                e = e || window.event;
+                if (e.cancelable) {
+                    e.preventDefault();
+                }
+                // calculate the new cursor position:
+                if (!mobile) {
+                    pos1 = pos3 - e.clientX;
+                    pos2 = pos4 - e.clientY;
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                }
+                if (mobile) {
+                    pos1 = pos3 - e.touches[0].clientX;
+                    pos2 = pos4 - e.touches[0].clientY;
+                    pos3 = e.touches[0].clientX;
+                    pos4 = e.touches[0].clientY;
+                }
+                // set the element's new position:
+                elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+                elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+
+                var per_top = elmnt.offsetTop - pos2;
+                var per_left = elmnt.offsetLeft - pos1;
+                var per_bottom = $('#crop_src').height() - (per_top + 100);
+                var per_right = $('#crop_src').width() - (per_left + 100);
+
+                $('.crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
             }
+
+            this.closeDragElement = function() {
+                console.log('close drag');
+                // stop moving when mouse button is released:
+                if (!mobile) {
+                    document.onmouseup = null;
+                    document.onmousemove = null;
+                }
+                if (mobile) {
+                    elmnt.removeEventListener("touchend", closeDragElement, true);
+                    elmnt.removeEventListener("touchmove", elementDrag, false);
+                }
+            };
         };
-    };
-    */
+        */
 
     /*Make resizable div by Hung Nguyen*/
     function makeResizableDiv(div) {
@@ -188,6 +188,8 @@ var elmnt = elmnt;
                 original_height = parseFloat(getComputedStyle(element, null).getPropertyValue('height').replace('px', ''));
                 original_x = element.getBoundingClientRect().left;
                 original_y = element.getBoundingClientRect().top;
+
+                original_y_h  = element.getBoundingClientRect().bottom - element.getBoundingClientRect().top;
                 if (!mobile) {
                     original_mouse_x = e.pageX;
                     original_mouse_y = e.pageY;
@@ -207,9 +209,11 @@ var elmnt = elmnt;
 
             function resize(e) {
                 console.log('resize');
-                if (currentResizer.classList.contains('bottom-right')) {
+                //if (currentResizer.classList.contains('bottom-right')) {
+                if (currentResizer.classList.contains('bottom-middle')) {
                     var width;
                     var height;
+                    var top;
                     if (!mobile) {
                         //width = original_width + (e.pageX - original_mouse_x);
                         height = original_height + (e.pageY - original_mouse_y);
@@ -217,23 +221,43 @@ var elmnt = elmnt;
                         //width = original_width + (e.touches[0].pageX - original_mouse_x);
                         height = original_height + (e.touches[0].pageY - original_mouse_y);
                     }
-                    /*
-                    if (width > minimum_size) {
-                        element.style.width = width + 'px';
-                    }
-                    */
                     if (height > minimum_size) {
                         element.style.height = height + 'px';
                     }
-
-                    //document.getElementById("drag");
                     var per_top = elmnt.offsetTop;
-                    console.log(per_top);
                     var per_left = elmnt.offsetLeft;
                     var per_bottom = $('#crop_src').height() - (per_top + $('.crop_adjust').height());
                     var per_right = $('#crop_src').width() - (per_left + 100);
-
                     $('.crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
+
+                } else if (currentResizer.classList.contains('top-middle')) {
+                    var width;
+                    var height;
+                    var top;
+                    if (!mobile) {
+                        height = original_height - (e.pageY - original_mouse_y);
+                         //top = e.pageY - height;
+                         //original_y + (e.pageY - original_mouse_y) 
+                         //top = e.pageY;
+                         //top = original_y + (e.pageY - original_mouse_y)  - height;
+                         //var t =(original_y - height) ;
+                         console.log(original_y + ' : ' + original_mouse_y + ' : ' + e.clientY  + ' : ' + e.pageY);
+                         top = e.clientY - (original_height +15);
+                    } else {
+                        //width = original_width + (e.touches[0].pageX - original_mouse_x);
+                        height = original_height + (e.touches[0].pageY - original_mouse_y);
+                    }
+                    //if (height > minimum_size) {
+                        element.style.top = top + 'px';
+                        element.style.height = height + 'px';
+                    //}
+                    var per_top = elmnt.offsetTop;
+                    var per_left = elmnt.offsetLeft;
+                    var per_bottom = $('#crop_src').height() - (per_top + $('.crop_adjust').height());
+                    var per_right = $('#crop_src').width() - (per_left + 100);
+                    $('.crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
+
+
 
                 } else if (currentResizer.classList.contains('bottom-left')) {
                     if (!mobile) {
