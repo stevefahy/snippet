@@ -307,6 +307,7 @@ var elmnt = elmnt;
                     Drag.resume();
                 } else {
                     currentResizer.removeEventListener("touchmove", resize, false);
+                    Drag.resume();
                 }
 
             }
