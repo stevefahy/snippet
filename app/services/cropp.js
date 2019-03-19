@@ -196,8 +196,8 @@ var elmnt = elmnt;
                     original_mouse_y = e.touches[0].pageY;
                 }
                 if (!mobile) {
-                    window.addEventListener('mousemove', resize);
-                    window.addEventListener('mouseup', stopResize);
+                    document.addEventListener('mousemove', resize, false);
+                    document.addEventListener('mouseup', stopResize, false);
                 } else {
                     currentResizer.addEventListener("touchmove", resize, false);
                     currentResizer.addEventListener("touchend", stopResize, true);
@@ -206,6 +206,7 @@ var elmnt = elmnt;
             }
 
             function resize(e) {
+                console.log('resize');
                 if (currentResizer.classList.contains('bottom-right')) {
                     var width;
                     var height;
@@ -307,7 +308,7 @@ var elmnt = elmnt;
                 console.log('stopResize');
                 $('.content_cnv').css('overflow-y', 'unset');
                 if (!mobile) {
-                    window.removeEventListener('mousemove', resize);
+                    document.removeEventListener('mousemove', resize);
                     Drag.resume();
                 } else {
                     currentResizer.removeEventListener("touchmove", resize, false);
