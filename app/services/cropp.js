@@ -228,8 +228,9 @@ var elmnt = elmnt;
 
                     //document.getElementById("drag");
                     var per_top = elmnt.offsetTop;
+                    console.log(per_top);
                     var per_left = elmnt.offsetLeft;
-                    var per_bottom = $('#crop_src').height() - (per_top + 100);
+                    var per_bottom = $('#crop_src').height() - (per_top + $('.crop_adjust').height());
                     var per_right = $('#crop_src').width() - (per_left + 100);
 
                     $('.crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
