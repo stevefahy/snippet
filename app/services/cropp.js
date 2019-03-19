@@ -245,7 +245,9 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                          top = e.clientY - (original_height +15);
                     } else {
                         //width = original_width + (e.touches[0].pageX - original_mouse_x);
-                        height = original_height + (e.touches[0].pageY - original_mouse_y);
+                        //height = original_height + (e.touches[0].pageY - original_mouse_y);
+                        height = original_height - (e.touches[0].pageY - original_mouse_y);
+                        top = e.touches[0].clientY - (original_height +15);
                     }
                     //if (height > minimum_size) {
                         element.style.top = top + 'px';
