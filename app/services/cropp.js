@@ -2,7 +2,7 @@
 // Cropper Service
 //
 
-cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', 'General', 'UserData', 'principal', 'ImageAdjustment', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML, General, UserData, principal, ImageAdjustment) {
+cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', 'General', 'UserData', 'principal', 'ImageAdjustment', 'Drag', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML, General, UserData, principal, ImageAdjustment, Drag) {
 
     var ua = navigator.userAgent;
     var self = this;
@@ -60,11 +60,13 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     };
 
 
-
-    function dragElement(elmnt) {
-
+/*
+    this.dragElement = function() {
+        console.log('dragElement');
+        var self = this;
         //unbindScroll();
-        var elmnt = elmnt;
+        self.setUp = function(elmnt){
+var elmnt = elmnt;
 
         var pos1 = 0,
             pos2 = 0,
@@ -74,6 +76,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         elmnt.onmousedown = dragMouseDown;
 
         elmnt.addEventListener("touchstart", dragMouseDown, false);
+        };
+        
 
 
         function dragMouseDown(e) {
@@ -88,7 +92,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             pos4 = e.clientY;
 
             if (!mobile) {
-                document.onmouseup = closeDragElement;
+                document.onmouseup = self.closeDragElement;
                 // call a function whenever the cursor moves:
                 document.onmousemove = elementDrag;
             }
@@ -131,9 +135,9 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             $('.crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
         }
 
-        function closeDragElement() {
+        this.closeDragElement = function() {
             console.log('close drag');
-            /* stop moving when mouse button is released:*/
+            // stop moving when mouse button is released:
             if (!mobile) {
                 document.onmouseup = null;
                 document.onmousemove = null;
@@ -142,11 +146,13 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 elmnt.removeEventListener("touchend", closeDragElement, true);
                 elmnt.removeEventListener("touchmove", elementDrag, false);
             }
-        }
-    }
+        };
+    };
+    */
 
     /*Make resizable div by Hung Nguyen*/
     function makeResizableDiv(div) {
+        //var self = this;
         const element = document.querySelector(div);
         const resizers = document.querySelectorAll(div + ' .resizer');
         const minimum_size = 20;
@@ -156,6 +162,9 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         let original_y = 0;
         let original_mouse_x = 0;
         let original_mouse_y = 0;
+
+        var elmnt = document.getElementById("drag");
+
         for (let i = 0; i < resizers.length; i++) {
             const currentResizer = resizers[i];
 
@@ -166,24 +175,13 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 currentResizer.addEventListener("touchstart", sizeMouseDown, false);
             }
 
-
-
-            /*
-            currentResizer.addEventListener('mousedown', function(e) {
-                e.preventDefault()
-                original_width = parseFloat(getComputedStyle(element, null).getPropertyValue('width').replace('px', ''));
-                original_height = parseFloat(getComputedStyle(element, null).getPropertyValue('height').replace('px', ''));
-                original_x = element.getBoundingClientRect().left;
-                original_y = element.getBoundingClientRect().top;
-                original_mouse_x = e.pageX;
-                original_mouse_y = e.pageY;
-                window.addEventListener('mousemove', resize)
-                window.addEventListener('mouseup', stopResize)
-            });
-            */
-
             function sizeMouseDown(e) {
                 console.log('size');
+                elmnt = document.getElementById("drag");
+                Drag.stopDragElement();
+                //elmnt = document.getElementById("drag");
+                //elmnt.removeEventListener("touchstart", dragMouseDown, false);
+
                 original_width = parseFloat(getComputedStyle(element, null).getPropertyValue('width').replace('px', ''));
                 original_height = parseFloat(getComputedStyle(element, null).getPropertyValue('height').replace('px', ''));
                 original_x = element.getBoundingClientRect().left;
@@ -210,18 +208,29 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                     var width;
                     var height;
                     if (!mobile) {
-                        width = original_width + (e.pageX - original_mouse_x);
+                        //width = original_width + (e.pageX - original_mouse_x);
                         height = original_height + (e.pageY - original_mouse_y);
                     } else {
-                        width = original_width + (e.touches[0].pageX - original_mouse_x);
+                        //width = original_width + (e.touches[0].pageX - original_mouse_x);
                         height = original_height + (e.touches[0].pageY - original_mouse_y);
                     }
+                    /*
                     if (width > minimum_size) {
-                        element.style.width = width + 'px'
+                        element.style.width = width + 'px';
                     }
+                    */
                     if (height > minimum_size) {
-                        element.style.height = height + 'px'
+                        element.style.height = height + 'px';
                     }
+
+                    //document.getElementById("drag");
+                    var per_top = elmnt.offsetTop;
+                    var per_left = elmnt.offsetLeft;
+                    var per_bottom = $('#crop_src').height() - (per_top + 100);
+                    var per_right = $('#crop_src').width() - (per_left + 100);
+
+                    $('.crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
+
                 } else if (currentResizer.classList.contains('bottom-left')) {
                     if (!mobile) {
                         const height = original_height + (e.pageY - original_mouse_y);
@@ -282,12 +291,12 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                     }
                     if (height > minimum_size) {
                         element.style.height = height + 'px';
-                        if(!mobile){
+                        if (!mobile) {
                             element.style.top = original_y + (e.pageY - original_mouse_y) + 'px';
                         } else {
                             element.style.top = original_y + (e.touches[0].pageY - original_mouse_y) + 'px';
                         }
-                        
+
                     }
                 }
             }
@@ -295,6 +304,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             function stopResize() {
                 if (!mobile) {
                     window.removeEventListener('mousemove', resize);
+                    Drag.resume();
                 } else {
                     currentResizer.removeEventListener("touchmove", resize, false);
                 }
@@ -324,31 +334,34 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         $('.' + parent_container + ' #cropper_' + id).attr("onclick", null);
         //$('.' + parent_container + ' #cropper_' + id).attr("onclick",stored_clck);
 
-        // If filtered image exists
-        if ($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length > 0) {
-            $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').css('display', 'none');
-            $('.' + parent_container + ' #image_' + id).css('display', 'inline');
-            //img_height = $('.' + parent_container + ' #image_' + id).height();
-            // Get the filter and set it to cropper
-            var filter = $('.' + parent_container + ' #image_' + id).attr('adjustment-data');
-            //$('.' + parent_container + ' #cropper_' + id).addClass(filter);
-            filter = JSON.parse(filter);
-            var img = $('.' + parent_container + ' #image_' + id).clone().appendTo('.' + parent_container + ' #cropper_' + id + ' .crop_area');
-            $(img).addClass(filter.filter);
-            $('.' + parent_container + ' #image_' + id).css('display', 'inline');
-            $('.' + parent_container + ' #image_' + id).addClass(filter.filter);
+        // Create canvas with all current adjustments (uncropped).
+        self.adjustedCanvas(parent_container, id).then(function(canvas) {
+            // Turn the canvas into an image.
+            self.canvasToImage(canvas, id).then(function(image) {
+                // If filtered image exists
+                if ($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length > 0) {
+                    $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').css('display', 'none');
+                    $('.' + parent_container + ' #image_' + id).css('display', 'none');
+                    var img = $(image).clone().appendTo('.' + parent_container + ' #cropper_' + id + ' .crop_area');
+                    var img_bg = $(image).appendTo('.' + parent_container + ' #cropper_' + id);
+                    $(img_bg).addClass('crop_bg');
+                    $(img).attr('id', 'crop_src');
+                } else {
+                    var img = $(image).appendTo('.' + parent_container + ' #cropper_' + id + ' .crop_area');
+                    $(img).attr('id', 'crop_src');
+                }
+            });
+        });
 
-        } else {
-            var img = $('.' + parent_container + ' #image_' + id).clone().appendTo('.' + parent_container + ' #cropper_' + id + ' .crop_area');
 
-        }
-
-        $(img).attr('id', 'crop_src');
         $('.' + parent_container + ' #cropper_' + id + ' .crop_adjust').attr('id', 'drag');
 
 
         //Make the DIV element draggagle:
-        dragElement(document.getElementById("drag"));
+        //self.dragElement(document.getElementById("drag"));
+        //self.dragElement.setUp(document.getElementById("drag"));
+        //self.dragElement(document.getElementById("drag"));
+        Drag.setUp(document.getElementById("drag"));
 
         makeResizableDiv('.resizers');
     };
@@ -500,11 +513,64 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         return blob;
     }
 
+    this.canvasToImage = function(canvas, id) {
+        var deferred = $q.defer();
+        var dataUrl = canvas.toDataURL('image/jpeg', JPEG_COMPRESSION);
+        Format.dataURItoBlob(dataUrl).then(function(blob) {
+            blob.name = 'image_filtered_' + id + '.jpg';
+            blob.renamed = true;
+            Format.prepImage([blob], function(result) {
+                var img_new = new Image();
+                img_new.src = 'fileuploads/images/' + result.file + '?' + new Date();
+                img_new.className = 'adjusted';
+                img_new.id = 'image_filtered_' + id;
+                img_new.onload = function() {
+                    deferred.resolve(this);
+                    //$('#temp_canvas_filtered_' + id).remove();
+                    // Remove current filter.
+                    //if ($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length > 0) {
+                    //    $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').remove();
+                    //}
+                    // Get image Styles
+                    //var cssStyleParsed = getStyles(id);
+                    //$(this).attr("style", cssStyleParsed);
+                    //$('.' + parent_container + ' .cropper_cont #temp_image_filtered_' + id).remove();
+                    //$(this).insertBefore('.' + parent_container + ' .cropper_cont #image_' + id);
+                    // SAVE
+                    //Format.setImageEditing(false);
+                    //$('.' + parent_container + ' #cropper_' + id).closest('div.ce').focus();
+                    //$('.' + parent_container + ' #cropper_' + id).closest('div.ce').blur();
+                };
+            });
+        });
+
+        return deferred.promise;
+    };
+
     this.saveImage = function(id, parent_container) {
+        console.log('saveImage');
         var canv = $('canvas.temp_canvas_filtered').attr('id');
         if (canv != undefined) {
             id = canv.substr(21, canv.length - 20);
             var canvasFilter = document.getElementById('temp_canvas_filtered_' + id);
+
+            self.canvasToImage(canvasFilter, id).then(function(image) {
+                $('#temp_canvas_filtered_' + id).remove();
+                // Remove current filter.
+                if ($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length > 0) {
+                    $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').remove();
+                }
+                // Get image Styles
+                var cssStyleParsed = getStyles(id);
+                $(image).attr("style", cssStyleParsed);
+                $('.' + parent_container + ' .cropper_cont #temp_image_filtered_' + id).remove();
+                $(image).insertBefore('.' + parent_container + ' .cropper_cont #image_' + id);
+                // SAVE
+                Format.setImageEditing(false);
+                $('.' + parent_container + ' #cropper_' + id).closest('div.ce').focus();
+                $('.' + parent_container + ' #cropper_' + id).closest('div.ce').blur();
+            });
+            /*
             var dataUrl = canvasFilter.toDataURL('image/jpeg', JPEG_COMPRESSION);
             Format.dataURItoBlob(dataUrl).then(function(blob) {
                 blob.name = 'image_filtered_' + id + '.jpg';
@@ -532,6 +598,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                     };
                 });
             });
+            */
         }
     };
 
@@ -680,13 +747,67 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         ImageAdjustment.setSource(source);
     };
 
+    this.adjustedCanvas = function(parent_container, id) {
+        var deferred = $q.defer();
+
+        var canvas = imageToCanvas(parent_container, id);
+        canvas.setAttribute('id', 'temp_canvas_filtered_' + id);
+        canvas.setAttribute('class', 'resize-drag temp_canvas_filtered');
+        // Get image Styles
+        cssStyleParsed = getStyles(id);
+        // Apply original style to the new canvas.
+        canvas.setAttribute("style", cssStyleParsed);
+        // Get image-adjustments object
+        var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
+        // If this image has any adjustments.
+        if (ia != undefined) {
+            // If there is a filter applied.
+            if (ia.filter != undefined) {
+                // Create a canvas with the filter effect and return the canvas.
+                self.createFilter(parent_container, id, ia.filter).then(function(canvasFilter) {
+                    var ctx = canvas.getContext('2d');
+                    ctx.drawImage(canvasFilter, 0, 0);
+                    ImageAdjustment.setSource(canvasFilter);
+                    ImageAdjustment.setTarget(canvas);
+                    // Apply other image adjustments to the filtered canvas.
+                    self.applyAdjustments(parent_container, id, canvas, ia).then(function(result) {
+                        // Add the adjusted canvas and hide the original image.
+                        //$(canvas).insertBefore('.' + parent_container + ' #image_' + id);
+                        //$('.' + parent_container + ' #cropper_' + id + ' .adjusted').css('display', 'none');
+                        deferred.resolve(canvas);
+                    });
+                });
+            } else {
+                // No Filter but other image adjustments.
+                var source_image = $('.' + parent_container + ' #image_' + id)[0];
+                ImageAdjustment.setSource(source_image);
+                ImageAdjustment.setTarget(canvas);
+                self.applyAdjustments(parent_container, id, canvas, ia).then(function(result) {
+                    deferred.resolve(canvas);
+                });
+                //$(canvas).insertBefore('.' + parent_container + ' #image_' + id);
+                //$('.' + parent_container + ' #cropper_' + id + ' .adjusted').css('display', 'none');
+            }
+        } else {
+            // Not previously adjusted.
+            // Use the original image as the source.
+            //$(canvas).insertBefore('.' + parent_container + ' #image_' + id);
+            //$('.' + parent_container + ' #cropper_' + id + ' #image_' + id).css('display', 'none');
+            var source_image = $('.' + parent_container + ' #image_' + id)[0];
+            ImageAdjustment.setSource(source_image);
+            ImageAdjustment.setTarget(canvas);
+            deferred.resolve(canvas);
+        }
+        return deferred.promise;
+    };
+
     this.settingsImage = function(parent_container, id) {
         var canvas = imageToCanvas(parent_container, id);
         canvas.setAttribute('id', 'temp_canvas_filtered_' + id);
         canvas.setAttribute('class', 'resize-drag temp_canvas_filtered');
         // Get image Styles
         cssStyleParsed = getStyles(id);
-        // Apply original style to thee new canvas.
+        // Apply original style to the new canvas.
         canvas.setAttribute("style", cssStyleParsed);
         // Get image-adjustments object
         var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
@@ -753,6 +874,42 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 data.last_position = ia.sharpen;
             }
             $rootScope.$broadcast('rzSliderRender', data);
+        }
+        // TODO - function to handle all adjustments minus filter.
+        this.settingsImage(parent_container, id);
+        e.stopPropagation();
+    };
+
+    this.cropImage = function(e, id) {
+        var parent_container;
+        // Get the context of the image (content_cnv or card_create_container)
+        if ($(e.target).parents('div.card_create_container').length > 0) {
+            parent_container = 'card_create_container';
+        } else {
+            parent_container = 'content_cnv';
+        }
+        $('.image_adjust_on').remove();
+        if ($('.' + parent_container + ' #cropper_' + id + ' .image_adjust_div').length <= 0) {
+            /*
+            var filt = $('.image_adjust_div').clone().insertAfter('.' + parent_container + ' #cropper_' + id);
+            filt.attr('id', 'adjust_' + id);
+            filt.css('position', 'relative');
+            filt.addClass('filters_active');
+            filt.css('visibility', 'visible');
+            */
+            // TODO - function to handle all adjustments minus filter.
+            ImageAdjustment.setImageId(id);
+            ImageAdjustment.setImageParent(parent_container);
+            /*
+            var data = { 'id': id };
+            // Get the last position of the slider.
+            var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
+            if (ia != undefined) {
+                // TODO store as slider pos.
+                data.last_position = ia.sharpen;
+            }
+            $rootScope.$broadcast('rzSliderRender', data);
+            */
         }
         // TODO - function to handle all adjustments minus filter.
         this.settingsImage(parent_container, id);
@@ -886,7 +1043,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                         $('#image_adjust_' + id).css('visibility', 'visible');
                         $('#image_adjust_' + id).css('position', 'relative');
                         var edit_btns = "<div class='image_editor'><div class='image_edit_btns'><div class='' onclick='adjustImage(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_tune'>tune</i></div><div class='' onclick='filterImage(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_filter'>filter</i></div><div class='' onclick='openCrop(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_crop' >crop</i></div><div class='close_image_edit' onclick='closeEdit(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_close'>&#xE14C;</i></div></div><div class='crop_edit'><div class='set_crop' onclick='setCrop(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_accept'>&#xe876;</i></div></div></div>";
-                        var edit_btns = "<div class='image_editor'><div class='image_edit_btns'><div class='' onclick='adjustImage(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_tune'>tune</i></div><div class='' onclick='filterImage(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_filter'>filter</i></div><div class='' onclick='openCrop(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_crop' >crop</i></div><div class='close_image_edit' onclick='closeEdit(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_close'>&#xE14C;</i></div></div><div class='crop_edit'><div class='set_crop' onclick='setCrop(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_accept'>&#xe876;</i></div></div></div>";
+                        //var edit_btns = "<div class='image_editor'><div class='image_edit_btns'><div class='' onclick='adjustImage(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_tune'>tune</i></div><div class='' onclick='filterImage(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_filter'>filter</i></div><div class='' onclick='openCrop(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_crop' >crop</i></div><div class='close_image_edit' onclick='closeEdit(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_close'>&#xE14C;</i></div></div><div class='crop_edit'><div class='set_crop' onclick='setCrop(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_accept'>&#xe876;</i></div></div></div>";
                         // set this to active
                         $('#image_adjust_' + id).addClass('image_adjust_on');
                         $('#image_adjust_' + id).append(edit_btns);
