@@ -148,50 +148,288 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 }
             };
         };
-        */
+        
+/*
+    function makeResizableDiv(div) {
+        console.log(div);
+        // Minimum resizable area
+        var minWidth = 60;
+        var minHeight = 40;
+
+        // Thresholds
+        var FULLSCREEN_MARGINS = -10;
+        var MARGINS = 4;
+
+        // End of what's configurable.
+        var clicked = null;
+        var onRightEdge, onBottomEdge, onLeftEdge, onTopEdge;
+        var rightScreenEdge, bottomScreenEdge;
+        var preSnapped;
+        var b, x, y;
+        var redraw = false;
+
+        var pane = document.getElementById(div);
+        var ghostpane = document.getElementById('ghostpane');
+
+        function setBounds(element, x, y, w, h) {
+            element.style.left = x + 'px';
+            element.style.top = y + 'px';
+            element.style.width = w + 'px';
+            element.style.height = h + 'px';
+        }
+
+        function hintHide() {
+            setBounds(ghostpane, b.left, b.top, b.width, b.height);
+            ghostpane.style.opacity = 0;
+
+            // var b = ghostpane.getBoundingClientRect();
+            // ghostpane.style.top = b.top + b.height / 2;
+            // ghostpane.style.left = b.left + b.width / 2;
+            // ghostpane.style.width = 0;
+            // ghostpane.style.height = 0;
+        }
+
+
+        // Mouse events
+        pane.addEventListener('mousedown', onMouseDown);
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+
+        // Touch events 
+        pane.addEventListener('touchstart', onTouchDown);
+        document.addEventListener('touchmove', onTouchMove);
+        document.addEventListener('touchend', onTouchEnd);
+
+
+        function onTouchDown(e) {
+            onDown(e.touches[0]);
+            e.preventDefault();
+        }
+
+        function onTouchMove(e) {
+            onMove(e.touches[0]);
+        }
+
+        function onTouchEnd(e) {
+            if (e.touches.length == 0) onUp(e.changedTouches[0]);
+        }
+
+        function onMouseDown(e) {
+            Drag.stopDragElement();
+            onDown(e);
+            e.preventDefault();
+        }
+
+        function onDown(e) {
+            calc(e);
+
+            var isResizing = onRightEdge || onBottomEdge || onTopEdge || onLeftEdge;
+
+            clicked = {
+                x: x,
+                y: y,
+                cx: e.clientX,
+                cy: e.clientY,
+                w: b.width,
+                h: b.height,
+                isResizing: isResizing,
+                isMoving: !isResizing && canMove(),
+                onTopEdge: onTopEdge,
+                onLeftEdge: onLeftEdge,
+                onRightEdge: onRightEdge,
+                onBottomEdge: onBottomEdge
+            };
+        }
+
+        function canMove() {
+            return x > 0 && x < b.width && y > 0 && y < b.height &&
+                y < 30;
+        }
+
+        function calc(e) {
+            b = pane.getBoundingClientRect();
+            x = e.clientX - b.left;
+            y = e.clientY - b.top;
+
+            onTopEdge = y < MARGINS;
+            onLeftEdge = x < MARGINS;
+            onRightEdge = x >= b.width - MARGINS;
+            onBottomEdge = y >= b.height - MARGINS;
+
+            rightScreenEdge = window.innerWidth - MARGINS;
+            bottomScreenEdge = window.innerHeight - MARGINS;
+        }
+
+        var e;
+
+        function onMove(ee) {
+            calc(ee);
+            e = ee;
+            redraw = true;
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if (!redraw) return;
+            redraw = false;
+
+            if (clicked && clicked.isResizing) {
+                if (clicked.onRightEdge) pane.style.width = Math.max(x, minWidth) + 'px';
+                if (clicked.onBottomEdge) pane.style.height = Math.max(y, minHeight) + 'px';
+                if (clicked.onLeftEdge) {
+                    var currentWidth = Math.max(clicked.cx - e.clientX + clicked.w, minWidth);
+                    if (currentWidth > minWidth) {
+                        pane.style.width = currentWidth + 'px';
+                        pane.style.left = e.clientX + 'px';
+                    }
+                }
+
+                if (clicked.onTopEdge) {
+                    var currentHeight = Math.max(clicked.cy - e.clientY + clicked.h, minHeight);
+                    if (currentHeight > minHeight) {
+                        pane.style.height = currentHeight + 'px';
+                        pane.style.top = e.clientY + 'px';
+                    }
+                }
+                hintHide();
+                return;
+            }
+
+            if (clicked && clicked.isMoving) {
+                if (b.top < FULLSCREEN_MARGINS || b.left < FULLSCREEN_MARGINS || b.right > window.innerWidth - FULLSCREEN_MARGINS || b.bottom > window.innerHeight - FULLSCREEN_MARGINS) {
+                    // hintFull();
+                    setBounds(ghostpane, 0, 0, window.innerWidth, window.innerHeight);
+                    ghostpane.style.opacity = 0.2;
+                } else if (b.top < MARGINS) {
+                    // hintTop();
+                    setBounds(ghostpane, 0, 0, window.innerWidth, window.innerHeight / 2);
+                    ghostpane.style.opacity = 0.2;
+                } else if (b.left < MARGINS) {
+                    // hintLeft();
+                    setBounds(ghostpane, 0, 0, window.innerWidth / 2, window.innerHeight);
+                    ghostpane.style.opacity = 0.2;
+                } else if (b.right > rightScreenEdge) {
+                    // hintRight();
+                    setBounds(ghostpane, window.innerWidth / 2, 0, window.innerWidth / 2, window.innerHeight);
+                    ghostpane.style.opacity = 0.2;
+                } else if (b.bottom > bottomScreenEdge) {
+                    // hintBottom();
+                    setBounds(ghostpane, 0, window.innerHeight / 2, window.innerWidth, window.innerWidth / 2);
+                    ghostpane.style.opacity = 0.2;
+                } else {
+                    hintHide();
+                }
+
+                if (preSnapped) {
+                    setBounds(pane,
+                        e.clientX - preSnapped.width / 2,
+                        e.clientY - Math.min(clicked.y, preSnapped.height),
+                        preSnapped.width,
+                        preSnapped.height
+                    );
+                    return;
+                }
+                // moving
+                pane.style.top = (e.clientY - clicked.y) + 'px';
+                pane.style.left = (e.clientX - clicked.x) + 'px';
+                return;
+            }
+
+            // This code executes when mouse moves without clicking
+            // style cursor
+            if (onRightEdge && onBottomEdge || onLeftEdge && onTopEdge) {
+                pane.style.cursor = 'nwse-resize';
+            } else if (onRightEdge && onTopEdge || onBottomEdge && onLeftEdge) {
+                pane.style.cursor = 'nesw-resize';
+            } else if (onRightEdge || onLeftEdge) {
+                pane.style.cursor = 'ew-resize';
+            } else if (onBottomEdge || onTopEdge) {
+                pane.style.cursor = 'ns-resize';
+            } else if (canMove()) {
+                pane.style.cursor = 'move';
+            } else {
+                pane.style.cursor = 'default';
+            }
+        }
+        animate();
+
+        function onUp(e) {
+            Drag.resume();
+            calc(e);
+            if (clicked && clicked.isMoving) {
+                // Snap
+                var snapped = {
+                    width: b.width,
+                    height: b.height
+                };
+                if (b.top < FULLSCREEN_MARGINS || b.left < FULLSCREEN_MARGINS || b.right > window.innerWidth - FULLSCREEN_MARGINS || b.bottom > window.innerHeight - FULLSCREEN_MARGINS) {
+                    // hintFull();
+                    setBounds(pane, 0, 0, window.innerWidth, window.innerHeight);
+                    preSnapped = snapped;
+                } else if (b.top < MARGINS) {
+                    // hintTop();
+                    setBounds(pane, 0, 0, window.innerWidth, window.innerHeight / 2);
+                    preSnapped = snapped;
+                } else if (b.left < MARGINS) {
+                    // hintLeft();
+                    setBounds(pane, 0, 0, window.innerWidth / 2, window.innerHeight);
+                    preSnapped = snapped;
+                } else if (b.right > rightScreenEdge) {
+                    // hintRight();
+                    setBounds(pane, window.innerWidth / 2, 0, window.innerWidth / 2, window.innerHeight);
+                    preSnapped = snapped;
+                } else if (b.bottom > bottomScreenEdge) {
+                    // hintBottom();
+                    setBounds(pane, 0, window.innerHeight / 2, window.innerWidth, window.innerWidth / 2);
+                    preSnapped = snapped;
+                } else {
+                    preSnapped = null;
+                }
+                hintHide();
+            }
+            clicked = null;
+        }
+    }
+    */
 
     /*Make resizable div by Hung Nguyen*/
+    
     function makeResizableDiv(div) {
-        //var self = this;
-        const element = document.querySelector(div);
-        const resizers = document.querySelectorAll(div + ' .resizer');
-        const minimum_size = 20;
-        let original_width = 0;
-        let original_height = 0;
-        let original_x = 0;
-        let original_y = 0;
-        let original_mouse_x = 0;
-        let original_mouse_y = 0;
+        var element = document.querySelector(div);
+        var resizers = document.querySelectorAll(div + ' .resizer');
+        var minimum_size = 20;
+        var original_width = 0;
+        var original_height = 0;
+        var original_x = 0;
+        var original_y = 0;
+        var original_mouse_x = 0;
+        var original_mouse_y = 0;
+        var offset_top;
 
         var elmnt = document.getElementById("drag");
 
         for (let i = 0; i < resizers.length; i++) {
             const currentResizer = resizers[i];
-
-            //elmnt.addEventListener("touchstart", dragMouseDown, false);
             if (!mobile) {
-                currentResizer.addEventListener("mousedown", sizeMouseDown, false);
+                currentResizer.addEventListener("mousedown", sizeMouseDown, true);
             } else {
                 currentResizer.addEventListener("touchstart", sizeMouseDown, false);
             }
 
             function sizeMouseDown(e) {
-                console.log('size');
-
+                // Stop scroll
                 $('.content_cnv').css('overflow-y', 'hidden');
-                elmnt = document.getElementById("drag");
+                // Stop Drag
                 Drag.stopDragElement();
-                //elmnt = document.getElementById("drag");
-                //elmnt.removeEventListener("touchstart", dragMouseDown, false);
 
                 original_width = parseFloat(getComputedStyle(element, null).getPropertyValue('width').replace('px', ''));
                 original_height = parseFloat(getComputedStyle(element, null).getPropertyValue('height').replace('px', ''));
                 original_x = element.getBoundingClientRect().left;
                 original_y = element.getBoundingClientRect().top;
 
-                console.log((original_y + ' : ' + original_height));
+                var cropper_loc = $(element).closest('.cropper_cont');
+                offset_top = $(cropper_loc).offset().top;
 
-                //original_y_h  = element.getBoundingClientRect().bottom - element.getBoundingClientRect().top;
                 if (!mobile) {
                     original_mouse_x = e.pageX;
                     original_mouse_y = e.pageY;
@@ -242,32 +480,62 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                          //original_y + (e.pageY - original_mouse_y) 
                          //top = e.pageY;
                          //top = (original_y - original_height) - (original_y - e.pageY) ;
-                         console.log('bottom: ' + (original_y - original_height));
+                         //console.log('bottom: ' + (original_y - original_height));
                          //height = original_height + (original_y - e.pageY);
                          //height = parseFloat(getComputedStyle(element, null).getPropertyValue('height').replace('px', ''));
                          //top = original_y + (e.pageY - original_mouse_y)  ;
                          //var t =(original_y - height) ;
-                         console.log(original_y + ' : ' + original_mouse_y + ' : ' + e.clientY  + ' : ' + e.pageY);
+                         //console.log(original_y + ' : ' + original_mouse_y + ' : ' + e.clientY  + ' : ' + e.pageY);
                          //top = e.pageY - original_y    ;
                          //height = original_height - (e.pageY - original_mouse_y);
                          //top = original_y + (e.pageY - original_mouse_y) - original_height;
-                        bottom = original_y - original_height;
+                        //bottom = original_y - (original_height);
 
+                        
+//console.log(original_top);
+                        //bottom = original_bottom;
 
-                        height = original_height - (e.pageY - original_mouse_y);
-                        top = bottom-height+original_height;
+                        current_height = parseFloat(getComputedStyle(element, null).getPropertyValue('height').replace('px', ''));
+////height = original_height + (e.pageY - original_mouse_y);
+//height = original_height + (e.pageY - original_mouse_y);
+                        //var change = (e.pageY - original_mouse_y);
+                        var change = (e.pageY - original_y);
+                        //console.log(change);
+                        //height =  original_height - (e.pageY - original_mouse_y) ;
+                        //top = (e.pageY - original_mouse_y) + original_height ;
+                        
+                        //bottom = original_bottom;
+                        //top =   original_mouse_y - height  ;
+                        var ct = $(element).position().top;
+                       //console.log($(element).position().top);
+                        
+                        //change = (e.pageY - original_mouse_y);
+                        height =  (original_height - change );
+
+                        //top = ((original_y ) + (change ) ) ;
+                        top =  e.pageY - offset_top;
+
+                        //height =  current_height - change;
+                       // console.log(change);
+                       // console.log(top);
+                        //height = original_height - (e.pageY - original_mouse_y);
+                       // height = (original_height +top );
+                        //top= original_height + (e.pageY - original_mouse_y) ;
+                        //top = height + original_height;
+                        //top= (height-original_height) ;
                     } else {
                         //width = original_width + (e.touches[0].pageX - original_mouse_x);
                         //height = original_height + (e.touches[0].pageY - original_mouse_y);
                         //height = original_height - (e.touches[0].pageY - original_mouse_y);
-                        bottom = original_y - original_height;
+                        //bottom = original_y - original_height;
                         height = original_height - (e.touches[0].pageY - original_mouse_y);
                         top = bottom-height+original_height;
                     }
                     //if (height > minimum_size) {
-                        //element.style.bottom = bottom + 'px';
+                       // element.style.bottom = bottom + 'px';
+                       element.style.height = height + 'px';
                        element.style.top = top + 'px';
-                        element.style.height = height + 'px';
+                       
                     //}
                     var per_top = elmnt.offsetTop;
                     var per_left = elmnt.offsetLeft;
@@ -354,6 +622,9 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 if (!mobile) {
                        // window.removeEventListener('mousemove', resize);
                     document.removeEventListener('mousemove', resize);
+
+                      //document.addEventListener('mousemove', resize);
+                    document.removeEventListener('mouseup', stopResize);
                     Drag.resume();
                 } else {
                     currentResizer.removeEventListener("touchmove", resize, false);
@@ -363,6 +634,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             }
         }
     }
+    
 
 
 
@@ -415,6 +687,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         Drag.setUp(document.getElementById("drag"));
 
         makeResizableDiv('.resizers');
+        //makeResizableDiv('pane');
     };
 
     /*
