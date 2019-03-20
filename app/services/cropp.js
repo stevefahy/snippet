@@ -189,6 +189,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 original_x = element.getBoundingClientRect().left;
                 original_y = element.getBoundingClientRect().top;
 
+                console.log((original_y + ' : ' + original_height));
+
                 //original_y_h  = element.getBoundingClientRect().bottom - element.getBoundingClientRect().top;
                 if (!mobile) {
                     original_mouse_x = e.pageX;
@@ -240,24 +242,31 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                          //original_y + (e.pageY - original_mouse_y) 
                          //top = e.pageY;
                          //top = (original_y - original_height) - (original_y - e.pageY) ;
-                         console.log(original_y - e.pageY);
+                         console.log('bottom: ' + (original_y - original_height));
                          //height = original_height + (original_y - e.pageY);
                          //height = parseFloat(getComputedStyle(element, null).getPropertyValue('height').replace('px', ''));
                          //top = original_y + (e.pageY - original_mouse_y)  ;
                          //var t =(original_y - height) ;
                          console.log(original_y + ' : ' + original_mouse_y + ' : ' + e.clientY  + ' : ' + e.pageY);
                          //top = e.pageY - original_y    ;
-                         height = original_height - (e.pageY - original_mouse_y);
-                         top = original_height + (e.pageY - original_mouse_y);
+                         //height = original_height - (e.pageY - original_mouse_y);
+                         //top = original_y + (e.pageY - original_mouse_y) - original_height;
+                        bottom = original_y - original_height;
+
+
+                        height = original_height - (e.pageY - original_mouse_y);
+                        top = bottom-height+original_height;
                     } else {
                         //width = original_width + (e.touches[0].pageX - original_mouse_x);
                         //height = original_height + (e.touches[0].pageY - original_mouse_y);
+                        //height = original_height - (e.touches[0].pageY - original_mouse_y);
+                        bottom = original_y - original_height;
                         height = original_height - (e.touches[0].pageY - original_mouse_y);
-                        top = original_height + (e.touches[0].pageY - original_mouse_y);
+                        top = bottom-height+original_height;
                     }
                     //if (height > minimum_size) {
-                        element.style.top = top + 'px';
-                       //element.style.top = top + 'px';
+                        //element.style.bottom = bottom + 'px';
+                       element.style.top = top + 'px';
                         element.style.height = height + 'px';
                     //}
                     var per_top = elmnt.offsetTop;
