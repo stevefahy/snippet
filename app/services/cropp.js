@@ -253,7 +253,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                         //width = original_width + (e.touches[0].pageX - original_mouse_x);
                         //height = original_height + (e.touches[0].pageY - original_mouse_y);
                         height = original_height - (e.touches[0].pageY - original_mouse_y);
-                        top = e.touches[0].clientY - (height );
+                        top = original_height + (e.touches[0].pageY - original_mouse_y);
                     }
                     //if (height > minimum_size) {
                         element.style.top = top + 'px';
