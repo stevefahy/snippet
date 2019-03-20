@@ -198,8 +198,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                     original_mouse_y = e.touches[0].pageY;
                 }
                 if (!mobile) {
-                    document.addEventListener('mousemove', resize, false);
-                    document.addEventListener('mouseup', stopResize, false);
+                    document.addEventListener('mousemove', resize);
+                    document.addEventListener('mouseup', stopResize);
                 } else {
                     currentResizer.addEventListener("touchmove", resize, false);
                     currentResizer.addEventListener("touchend", stopResize, true);
@@ -235,14 +235,18 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                     var height;
                     var top;
                     if (!mobile) {
-                        height = original_height - (e.pageY - original_mouse_y);
+                        //height = original_height - (e.pageY - original_mouse_y);
                          //top = e.pageY - height;
                          //original_y + (e.pageY - original_mouse_y) 
                          //top = e.pageY;
-                         //top = original_y + (e.pageY - original_mouse_y)  - height;
+                         top = (original_y - original_height) - (original_y - e.pageY) ;
+                         console.log(original_y - e.pageY);
+                         height = original_height + (original_y - e.pageY);
+                         //height = parseFloat(getComputedStyle(element, null).getPropertyValue('height').replace('px', ''));
+                         //top = original_y + (e.pageY - original_mouse_y)  ;
                          //var t =(original_y - height) ;
                          console.log(original_y + ' : ' + original_mouse_y + ' : ' + e.clientY  + ' : ' + e.pageY);
-                         top = e.clientY - (original_height );
+                         //top = e.pageY - original_y    ;
                     } else {
                         //width = original_width + (e.touches[0].pageX - original_mouse_x);
                         //height = original_height + (e.touches[0].pageY - original_mouse_y);
@@ -251,6 +255,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                     }
                     //if (height > minimum_size) {
                         element.style.top = top + 'px';
+                       //element.style.top = top + 'px';
                         element.style.height = height + 'px';
                     //}
                     var per_top = elmnt.offsetTop;
@@ -302,6 +307,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                         }
                     }
                 } else {
+                    console.log('HERE');
                     if (!mobile) {
                         const width = original_width - (e.pageX - original_mouse_x);
                         const height = original_height - (e.pageY - original_mouse_y);
@@ -335,6 +341,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 console.log('stopResize');
                 $('.content_cnv').css('overflow-y', 'unset');
                 if (!mobile) {
+                       // window.removeEventListener('mousemove', resize);
                     document.removeEventListener('mousemove', resize);
                     Drag.resume();
                 } else {
