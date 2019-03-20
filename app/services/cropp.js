@@ -239,14 +239,16 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                          //top = e.pageY - height;
                          //original_y + (e.pageY - original_mouse_y) 
                          //top = e.pageY;
-                         top = (original_y - original_height) - (original_y - e.pageY) ;
+                         //top = (original_y - original_height) - (original_y - e.pageY) ;
                          console.log(original_y - e.pageY);
-                         height = original_height + (original_y - e.pageY);
+                         //height = original_height + (original_y - e.pageY);
                          //height = parseFloat(getComputedStyle(element, null).getPropertyValue('height').replace('px', ''));
                          //top = original_y + (e.pageY - original_mouse_y)  ;
                          //var t =(original_y - height) ;
                          console.log(original_y + ' : ' + original_mouse_y + ' : ' + e.clientY  + ' : ' + e.pageY);
                          //top = e.pageY - original_y    ;
+                         height = original_height - (e.pageY - original_mouse_y);
+                         top = original_height + (e.pageY - original_mouse_y);
                     } else {
                         //width = original_width + (e.touches[0].pageX - original_mouse_x);
                         //height = original_height + (e.touches[0].pageY - original_mouse_y);
