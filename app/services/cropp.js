@@ -495,24 +495,23 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 //console.log(original_top);
                         //bottom = original_bottom;
 
-                        current_height = parseFloat(getComputedStyle(element, null).getPropertyValue('height').replace('px', ''));
+                        //current_height = parseFloat(getComputedStyle(element, null).getPropertyValue('height').replace('px', ''));
 ////height = original_height + (e.pageY - original_mouse_y);
 //height = original_height + (e.pageY - original_mouse_y);
                         //var change = (e.pageY - original_mouse_y);
-                        var change = (e.pageY - original_y);
+                        
                         //console.log(change);
                         //height =  original_height - (e.pageY - original_mouse_y) ;
                         //top = (e.pageY - original_mouse_y) + original_height ;
                         
                         //bottom = original_bottom;
                         //top =   original_mouse_y - height  ;
-                        var ct = $(element).position().top;
+                        //var ct = $(element).position().top;
                        //console.log($(element).position().top);
                         
                         //change = (e.pageY - original_mouse_y);
-                        height =  (original_height - change );
-
-                        //top = ((original_y ) + (change ) ) ;
+                        //var change = (e.pageY - original_y);
+                        height =  (original_height - (e.pageY - original_y) );
                         top =  e.pageY - offset_top;
 
                         //height =  current_height - change;
@@ -528,8 +527,11 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                         //height = original_height + (e.touches[0].pageY - original_mouse_y);
                         //height = original_height - (e.touches[0].pageY - original_mouse_y);
                         //bottom = original_y - original_height;
-                        height = original_height - (e.touches[0].pageY - original_mouse_y);
-                        top = bottom-height+original_height;
+                        //height = original_height - (e.touches[0].pageY - original_mouse_y);
+                        //top = bottom-height+original_height;
+
+                        height =  (original_height - (e.touches[0].pageY - original_y) );
+                        top =  e.touches[0].pageY - offset_top;
                     }
                     //if (height > minimum_size) {
                        // element.style.bottom = bottom + 'px';
