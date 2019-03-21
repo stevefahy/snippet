@@ -3127,14 +3127,14 @@ span.after_image {
 .crop_area {
     /* values are from-top, from-right, from-bottom, from-left */
     /*clip-path: inset(10px 141px 167px 254px);*/
+        /*clip-path: inset(33% 40% 32% 40%);*/
 }
 
 .crop_adjust {
     position: absolute;
     width: 100px;
-    height: 200px;
-    top: 10px;
-    left: 254px;
+    height: 100px;
+    top: 33%;
     z-index: 1;
     outline-color: rgba(51, 153, 255, 0.75);
     outline: 1px solid #39f;
@@ -3153,6 +3153,8 @@ span.after_image {
   top: 100px;
   left: 100px;
   */
+  display: flex;
+    justify-content: center;
 }
 
 .resizable .resizers {
@@ -3220,47 +3222,33 @@ span.after_image {
 }
 
 
-#pane {
+.crop_decide {
     position: absolute;
-    width: 45%;
-    height: 45%;
-    top: 20%;
-    left: 20%;
-    
-    
-    margin: 0;
-    padding: 0;
-    z-index: 99;
-    border: 2px solid purple;
-    background: #fefefe;
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+    padding-right: 25px;
 }
 
-#title {
-    font-family: monospace;
-    background: purple;
-    color: white;
-    font-size: 24px;
-    height: 30px;
-    text-align: center;
+.crop_accept {
+    z-index: 1001;
+    text-align: right;
+    margin-right: 15px;
 }
 
-#ghostpane {
-    background: #999;
-    opacity: 0.2;
-
-    width: 45%;
-    height: 45%;
-    top: 20%;
-    left: 20%;
-    
-    position: absolute;
-    margin: 0;
-    padding: 0;
-    z-index: 98;
-
-    -webkit-transition: all 0.25s ease-in-out;
-    -moz-transition: all 0.25s ease-in-out;
-    -ms-transition: all 0.25s ease-in-out;
-    -o-transition: all 0.25s ease-in-out;
-    transition: all 0.25s ease-in-out;
+.crop_cancel {
+    text-align: right;
+    z-index: 1001;
 }
+
+.mi-done_crop {
+    color: green;
+    font-size: 30px !important;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.crop_cancel #mi-clear {
+    cursor: pointer;
+}
+

@@ -10,6 +10,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     settingsImage = Cropp.settingsImage;
     adjustImage = Cropp.adjustImage;
 
+    cancelCrop = Cropp.cancelCrop;
+
     $scope.getFocus = Format.getFocus;
     $scope.getBlur = Format.getBlur;
     $scope.contentChanged = Format.contentChanged;
@@ -22,6 +24,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.dropDownToggle = Edit.dropDownToggle;
     $scope.pasteHtmlAtCaret = Format.pasteHtmlAtCaret;
     $scope.checkCursor = Format.checkCursor;
+
+    
+
+/*
+    $scope.cancelCrop = function(e){
+        e.preventDefault();
+        console.log('cancel');
+    };
+    */
 
     $scope.$on('$destroy', function() {
         //leaving controller.

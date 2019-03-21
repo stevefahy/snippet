@@ -75,7 +75,16 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         var offset_top;
 
         var elmnt = document.getElementById("drag");
-
+        console.log(JSON.stringify($(elmnt).attr('id')));
+        // Set the initial clip path.
+        //$timeout(function() {
+        var per_top = elmnt.offsetTop;
+        var per_left = elmnt.offsetLeft;
+        var per_bottom = $('#crop_src').height() - (per_top + $('.crop_adjust').height());
+        var per_right = $('#crop_src').width() - (per_left + $('.crop_adjust').width());
+        $('.crop_box.active .crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
+        console.log($('.crop_box.active .crop_area'));
+        //}, 100);
         for (let i = 0; i < resizers.length; i++) {
             const currentResizer = resizers[i];
             if (!mobile) {
@@ -169,19 +178,20 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                     var top;
                     if (!mobile) {
                         width = (original_width + (e.pageX - original_x) - original_width);
+                        left = original_x;
                     } else {
                         width = (original_width + (e.touches[0].pageX - original_x) - original_width);
+                        left = original_x;
                     }
                     if (width > minimum_size) {
                         element.style.width = width + 'px';
-
+                        element.style.left = left + 'px';
                         var per_top = elmnt.offsetTop;
                         var per_left = elmnt.offsetLeft;
                         var per_bottom = $('#crop_src').height() - (per_top + $('.crop_adjust').height());
                         var per_right = $('#crop_src').width() - (per_left + $('.crop_adjust').width());
                         $('.crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
                     }
-
 
                 } else if (currentResizer.classList.contains('left-middle')) {
                     var width;
@@ -298,35 +308,63 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
 
     function cloneCanvas(oldCanvas) {
-
         //create a new canvas
         var newCanvas = document.createElement('canvas');
         var context = newCanvas.getContext('2d');
-
         //set dimensions
         newCanvas.width = oldCanvas.width;
         newCanvas.height = oldCanvas.height;
-
         //apply the old canvas to the new one
         context.drawImage(oldCanvas, 0, 0);
-
         //return the new canvas
         return newCanvas;
     }
 
-    this.clipImage = function(trgt, coords) {
+    /*
+        this.clipImage = function(trgt, coords) {
+            var c = document.getElementById(trgt);
+            console.log(c);
+            var ctx = c.getContext("2d");
 
+            var orig = cloneCanvas(c);
+            console.log(orig);
+            //var img = document.getElementById(image);
+            ctx.drawImage(orig, 90, 130, 50, 60, 10, 10, 50, 60);
+        }
+        */
 
-        var c = document.getElementById(trgt);
-        console.log(c);
-        var ctx = c.getContext("2d");
+    this.cancelCrop = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $('.crop_box.active').remove();
 
-        var orig = cloneCanvas(c);
-        console.log(orig);
-        //var img = document.getElementById(image);
-        ctx.drawImage(orig, 90, 130, 50, 60, 10, 10, 50, 60);
+        if ($('.temp_canvas_filtered').length > 0) {
+            $('.temp_canvas_filtered').remove();
+        }
+
+        if ($('.temp_crop_hide').length > 0) {
+            $('.temp_crop_hide').css('display', 'unset');
+            $('.temp_crop_hide').removeClass('temp_crop_hide');
+        }
+
+        self.restoreCropClick();
+    };
+
+    this.setCropClick = function(val, container, id) {
+        this.click_val = val;
+        this.container = container;
+        this.id = id;
     }
 
+    /*
+    this.getCropClick = function() {
+        return this.click_val;
+    }
+    */
+
+    this.restoreCropClick = function() {
+        $('.' + this.container + ' #cropper_' + this.id).attr("onclick", this.click_val);
+    }
 
     this.openCrop = function(e, id) {
         var parent_container;
@@ -344,6 +382,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
         // Store editImage
         var stored_clck = $('.' + parent_container + ' #cropper_' + id).attr("onclick");
+        self.setCropClick(stored_clck, parent_container, id);
         $('.' + parent_container + ' #cropper_' + id).attr("onclick", null);
         //$('.' + parent_container + ' #cropper_' + id).attr("onclick",stored_clck);
 
@@ -354,10 +393,11 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 // If filtered image exists
                 if ($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length > 0) {
                     $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').css('display', 'none');
+                    $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').addClass('temp_crop_hide')
                     $('.' + parent_container + ' #image_' + id).css('display', 'none');
 
                     //var img = $(canvas).clone().appendTo('.' + parent_container + ' #cropper_' + id + ' .crop_area');
-                    
+
                     var new_canvas = cloneCanvas(canvas);
                     var img = $(new_canvas).appendTo('.' + parent_container + ' #cropper_' + id + ' .crop_area');
                     $(img).addClass('temp_canvas_filtered');
@@ -369,18 +409,33 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                     var img = $(canvas).appendTo('.' + parent_container + ' #cropper_' + id + ' .crop_area');
                     $(img).attr('id', 'crop_src');
                 }
+
+
+                $('.' + parent_container + ' #cropper_' + id + ' .crop_adjust').attr('id', 'drag');
+
+
+                //Make the DIV element draggagle:
+                Drag.setUp(document.getElementById("drag"));
+                // Make resizable.
+                makeResizableDiv('.resizers');
+
             });
         });
 
 
-        $('.' + parent_container + ' #cropper_' + id + ' .crop_adjust').attr('id', 'drag');
 
-
-        //Make the DIV element draggagle:
-        Drag.setUp(document.getElementById("drag"));
-        // Make resizable.
-        makeResizableDiv('.resizers');
     };
+
+    /*
+    this.cancelCrop = function() {
+        console.log($('.crop_box.active'));
+       //$('.crop_box.active').remove();
+    };
+    */
+
+    this.makeCrop = function() {
+
+    }
 
     /*
         this.openCrop = function(e, id) {
