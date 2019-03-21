@@ -135,6 +135,10 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                         var per_bottom = $('#crop_src').height() - (per_top + $('.crop_adjust').height());
                         var per_right = $('#crop_src').width() - (per_left + $('.crop_adjust').width());
                         $('.crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
+
+
+                        //self.clipImage('crop_src', 'coords');
+
                     }
                 } else if (currentResizer.classList.contains('top-middle')) {
                     var width;
@@ -184,10 +188,10 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                     var height;
                     var top;
                     if (!mobile) {
-                        width = (original_width - (e.pageX - original_mouse_x) );
+                        width = (original_width - (e.pageX - original_mouse_x));
                         left = original_x + (e.pageX - original_mouse_x);
                     } else {
-                        width = (original_width - (e.touches[0].pageX - original_mouse_x) );
+                        width = (original_width - (e.touches[0].pageX - original_mouse_x));
                         left = original_x + (e.touches[0].pageX - original_mouse_x);
                     }
                     if (width > minimum_size) {
@@ -293,6 +297,35 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     }
 
 
+    function cloneCanvas(oldCanvas) {
+
+        //create a new canvas
+        var newCanvas = document.createElement('canvas');
+        var context = newCanvas.getContext('2d');
+
+        //set dimensions
+        newCanvas.width = oldCanvas.width;
+        newCanvas.height = oldCanvas.height;
+
+        //apply the old canvas to the new one
+        context.drawImage(oldCanvas, 0, 0);
+
+        //return the new canvas
+        return newCanvas;
+    }
+
+    this.clipImage = function(trgt, coords) {
+
+
+        var c = document.getElementById(trgt);
+        console.log(c);
+        var ctx = c.getContext("2d");
+
+        var orig = cloneCanvas(c);
+        console.log(orig);
+        //var img = document.getElementById(image);
+        ctx.drawImage(orig, 90, 130, 50, 60, 10, 10, 50, 60);
+    }
 
 
     this.openCrop = function(e, id) {
@@ -322,12 +355,18 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 if ($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length > 0) {
                     $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').css('display', 'none');
                     $('.' + parent_container + ' #image_' + id).css('display', 'none');
-                    var img = $(image).clone().appendTo('.' + parent_container + ' #cropper_' + id + ' .crop_area');
-                    var img_bg = $(image).appendTo('.' + parent_container + ' #cropper_' + id);
+
+                    //var img = $(canvas).clone().appendTo('.' + parent_container + ' #cropper_' + id + ' .crop_area');
+                    
+                    var new_canvas = cloneCanvas(canvas);
+                    var img = $(new_canvas).appendTo('.' + parent_container + ' #cropper_' + id + ' .crop_area');
+                    $(img).addClass('temp_canvas_filtered');
+
+                    var img_bg = $(canvas).appendTo('.' + parent_container + ' #cropper_' + id);
                     $(img_bg).addClass('crop_bg');
                     $(img).attr('id', 'crop_src');
                 } else {
-                    var img = $(image).appendTo('.' + parent_container + ' #cropper_' + id + ' .crop_area');
+                    var img = $(canvas).appendTo('.' + parent_container + ' #cropper_' + id + ' .crop_area');
                     $(img).attr('id', 'crop_src');
                 }
             });
@@ -338,13 +377,9 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
 
         //Make the DIV element draggagle:
-        //self.dragElement(document.getElementById("drag"));
-        //self.dragElement.setUp(document.getElementById("drag"));
-        //self.dragElement(document.getElementById("drag"));
         Drag.setUp(document.getElementById("drag"));
-
+        // Make resizable.
         makeResizableDiv('.resizers');
-        //makeResizableDiv('pane');
     };
 
     /*
