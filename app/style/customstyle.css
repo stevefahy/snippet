@@ -158,7 +158,7 @@ input[type="checkbox"] {
     position: relative;
     left: -1.38em;
     overflow: hidden;
-    background-color: #000000;
+    /*background-color: #000000;*/
     margin-bottom: 10px;
     border-bottom: 1px solid #efefef;
 }
@@ -2914,7 +2914,11 @@ div.after_image:empty {
 }
 
 .temp_canvas_filtered {
-    width: 100%;
+    max-width: 100%;
+}
+
+.temp_canvas_filtered.unset {
+    max-width: unset;
 }
 
 .filter_title {
@@ -2930,6 +2934,7 @@ div.after_image:empty {
     flex-direction: row;
     flex-wrap: wrap;
     margin-right: 5px;
+
 }
 
 .filter_container:first-child {
@@ -3142,6 +3147,7 @@ span.after_image {
 
 #crop_src {
     display: unset !important;
+        max-width: 100%;
 }
 
 .resizable {
@@ -3252,3 +3258,19 @@ span.after_image {
     cursor: pointer;
 }
 
+.hide{
+    display: none;
+}
+
+.source_canvas {
+     max-width: 100%;
+     display: none;
+}
+
+.target_canvas {
+    max-width: 100%;
+}
+
+.crop_bg {
+    max-width: 100%
+}

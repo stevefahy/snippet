@@ -211,15 +211,326 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         return source;
     };
 
+    this.applyCrop = function(target, crop) {
+        var deferred = $q.defer();
+        if (crop != undefined) {
+            var cropped_canvas = document.createElement("canvas");
+
+            var sx = crop.x;
+            var sy = crop.y;
+            var swidth = crop.width;
+            var sheight = crop.height;
+
+
+
+            cropped_canvas.width = swidth;
+            cropped_canvas.height = sheight;
+            //cropped_canvas.width = target.width;
+            //cropped_canvas.height = target.height;
+            var ctx = cropped_canvas.getContext('2d');
+            ctx.drawImage(target, sx, sy, swidth, sheight, 0, 0, swidth, sheight);
+
+
+            target.width = swidth;
+            target.height = sheight;
+
+            var ctx2 = target.getContext('2d');
+            ctx2.drawImage(cropped_canvas, 0, 0);
+            //ctx2.drawImage(cropped_canvas, 0, 0 );
+            console.log(target);
+            console.log(cropped_canvas);
+            deferred.resolve();
+            //deferred.resolve(cropped_canvas);  
+        } else {
+            deferred.resolve();
+        }
+
+        return deferred.promise;
+    };
+
+    this.returnCrop = function(source, crop) {
+        var deferred = $q.defer();
+        var cropped_canvas = document.createElement("canvas");
+
+        var sx = crop.x;
+        var sy = crop.y;
+        var swidth = crop.width;
+        var sheight = crop.height;
+
+        cropped_canvas.width = swidth;
+        cropped_canvas.height = sheight;
+        var ctx = cropped_canvas.getContext('2d');
+        ctx.drawImage(source, sx, sy, swidth, sheight, 0, 0, swidth, sheight);
+        console.log(source);
+        console.log(cropped_canvas);
+        deferred.resolve(cropped_canvas);
+        return deferred.promise;
+    };
+
     this.setSharpen = function(parent_container, id, target, source, amount) {
-        target.width = source.width;
-        target.height = source.height;
-        var sharpen = amount;
-        var adjacent = (1 - sharpen) / 4;
-        var matrix = [0, adjacent, 0, adjacent, sharpen, adjacent, 0, adjacent, 0];
-        var res = self.filterImage(self.convolute, source, matrix);
-        var ctx = target.getContext('2d');
-        ctx.putImageData(res, 0, 0);
-        this.setImageAdjustment(parent_container, id, 'sharpen', amount);
+        var deferred = $q.defer();
+        if (amount != undefined) {
+            var sharpen = amount;
+            console.log(sharpen);
+            var adjacent = (1 - sharpen) / 4;
+            var matrix = [0, adjacent, 0, adjacent, sharpen, adjacent, 0, adjacent, 0];
+            var res = self.filterImage(self.convolute, source, matrix);
+            var ctx = target.getContext('2d');
+            ctx.putImageData(res, 0, 0);
+            $('.' + parent_container + ' #cropper_' + id + ' .target_canvas').addClass('adjusted');
+            this.setImageAdjustment(parent_container, id, 'sharpen', amount);
+            deferred.resolve();
+        } else {
+            deferred.resolve();
+        }
+        return deferred.promise;
+    };
+
+    function getFilter(filter) {
+        var result = [];
+        var index = General.findWithAttr(filter_array, 'filter_css_name', filter);
+        if (index >= 0) {
+            result = filter_array[index];
+        } else {
+            result = -1;
+        }
+        return result;
+    }
+
+    function applyBlendingNew(bottomImage, topImage, id, type, w, h) {
+        var deferred = $q.defer();
+        // create the canvas
+        var canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        var ctx = canvas.getContext('2d');
+        // Multiply
+        if (type == 'multiply') {
+            ctx.globalCompositeOperation = 'multiply';
+            ctx.drawImage(bottomImage, 0, 0, w, h);
+            ctx.drawImage(topImage, 0, 0, w, h);
+        }
+        // Overlay
+        if (type == 'overlay') {
+            ctx.globalCompositeOperation = 'overlay';
+            ctx.drawImage(topImage, 0, 0, w, h);
+            ctx.drawImage(bottomImage, 0, 0, w, h);
+        }
+        // Lighten
+        if (type == 'lighten') {
+            ctx.globalCompositeOperation = 'lighten';
+            ctx.drawImage(bottomImage, 0, 0, w, h);
+            ctx.drawImage(topImage, 0, 0, w, h);
+        }
+        // Darken
+        if (type == 'darken') {
+            ctx.globalCompositeOperation = 'darken';
+            ctx.drawImage(bottomImage, 0, 0, w, h);
+            ctx.drawImage(topImage, 0, 0, w, h);
+        }
+        // Screen
+        if (type == 'screen') {
+            ctx.globalCompositeOperation = 'screen';
+            ctx.drawImage(bottomImage, 0, 0, w, h);
+            ctx.drawImage(topImage, 0, 0, w, h);
+        }
+        // Screen
+        if (type == 'soft-light') {
+            ctx.globalCompositeOperation = 'soft-light';
+            ctx.drawImage(topImage, 0, 0, w, h);
+            ctx.drawImage(bottomImage, 0, 0, w, h);
+        }
+        deferred.resolve(canvas);
+        return deferred.promise;
+    }
+
+    this.filterLayers = function(canvas, filter) {
+        console.log('filterLayers');
+        var deferred = $q.defer();
+        console.log(canvas);
+        var dataimage = $(canvas).attr('data-image');
+        dataimage = JSON.parse(dataimage);
+        //var w = dataimage.width;
+        //var h = dataimage.height;
+        var w = canvas.width;
+        var h = canvas.height;
+        console.log(w + ' : ' + h);
+
+        var targetCtx = canvas.getContext('2d');
+
+        var filter_data = getFilter(filter);
+        // Convert image to canvas
+        var topImage = canvas;
+        var topCanvas = document.createElement("canvas");
+        topCanvas.width = w;
+        topCanvas.height = h;
+        var topCtx = topCanvas.getContext('2d');
+        //topCtx.drawImage(topImage, 0, 0, w, h);
+        topCtx.drawImage(topImage, 0, 0);
+        // If there is a blend to be applied.
+        if (filter_data.blend != 'none') {
+            var grd;
+            var canvas_gradient = document.createElement('canvas');
+            canvas_gradient.width = w;
+            canvas_gradient.height = h;
+            var ctx_gradient = canvas_gradient.getContext('2d');
+            // Gradients
+            if (filter_data.gradient == 'radial') {
+                // radial gradient, gradient_percent
+                if (filter_data.gradient_percent != undefined) {
+                    var penultimate_percent = filter_data.gradient_percent[filter_data.gradient_percent.length - 2];
+                    var final_radius = w * (penultimate_percent / 100);
+                    grd = ctx_gradient.createRadialGradient((w / 2), (h / 2), 0, (w / 2), (h / 2), final_radius);
+                } else {
+                    grd = ctx_gradient.createRadialGradient((w / 2), (h / 2), (w / 100), (w / 2), (h / 2), w);
+                }
+                for (var i = 0; i < filter_data.gradient_stops.length; i++) {
+                    grd.addColorStop(filter_data.gradient_stops[i][0], "rgba(" + filter_data.gradient_stops[i][1] + "," + filter_data.gradient_stops[i][2] + "," + filter_data.gradient_stops[i][3] + "," + filter_data.gradient_stops[i][4] + ")");
+                }
+                // Fill with gradient
+                ctx_gradient.fillStyle = grd;
+                ctx_gradient.fillRect(0, 0, w, h);
+            }
+            if (filter_data.gradient == 'solid') {
+                // Fill with colour
+                ctx_gradient.fillStyle = "rgba(" + filter_data.gradient_stops[0][0] + "," + filter_data.gradient_stops[0][1] + "," + filter_data.gradient_stops[0][2] + "," + filter_data.gradient_stops[0][3] + ")";
+                ctx_gradient.fillRect(0, 0, w, h);
+            }
+            if (filter_data.gradient == 'linear') {
+                // radial gradient
+                grd = ctx_gradient.createLinearGradient(0, 0, 0, w);
+                for (var i = 0; i < filter_data.gradient_stops.length; i++) {
+                    grd.addColorStop(filter_data.gradient_stops[i][0], "rgba(" + filter_data.gradient_stops[i][1] + "," + filter_data.gradient_stops[i][2] + "," + filter_data.gradient_stops[i][3] + "," + filter_data.gradient_stops[i][4] + ")");
+                }
+                // Fill with gradient
+                ctx_gradient.fillStyle = grd;
+                ctx_gradient.fillRect(0, 0, w, h);
+            }
+            bottomImage = canvas_gradient;
+            var bottomCanvas = document.createElement("canvas");
+            bottomCanvas.width = w;
+            bottomCanvas.height = h;
+            // get the 2d context to draw
+            var bottomCtx = bottomCanvas.getContext('2d');
+            bottomCtx.drawImage(bottomImage, 0, 0, w, h);
+            var id = 'steve';
+            applyBlendingNew(bottomImage, topImage, id, filter_data.blend, w, h).then(function(result) {
+                targetCtx.drawImage(result, 0, 0, w, h);
+                console.log('filterLayers done 2');
+                deferred.resolve(result);
+            });
+        } else {
+            console.log('filterLayers done 1');
+            targetCtx.drawImage(topCanvas, 0, 0, w, h);
+            deferred.resolve(topCanvas);
+        }
+        return deferred.promise;
+    };
+
+    this.composeFilter = function(target, filter) {
+        console.log('composeFilter');
+        var deferred = $q.defer();
+        var promises = [];
+        if (filter != undefined) {
+            //var selfy = self;
+            prom1 = self.filterLayers(target, filter).then(function(canvas) {
+                console.log(canvas);
+                var dataimage = $(target).attr('data-image');
+                dataimage = JSON.parse(dataimage);
+                var w = dataimage.width;
+                var h = dataimage.height;
+                console.log(w + ' : ' + h);
+
+                var ctx = target.getContext('2d');
+                var filter_data = getFilter(filter);
+                if (filter_data.filter != undefined) {
+                    ctx.filter = filter_data.filter;
+                }
+                //ctx.drawImage(target, 0, 0, w, h);
+                ctx.drawImage(target, 0, 0);
+                // Get image Styles
+                //var cssStyleParsed = getStyles(id);
+                //$(canvasFilter).attr("style", cssStyleParsed);
+                //canvasFilter.setAttribute('id', 'temp_canvas_filtered_' + id);
+                //canvasFilter.setAttribute('class', 'resize-drag temp_canvas_filtered');
+                console.log('composeFilter fin');
+                //console.log(self);
+                //
+                //deferred.resolve();
+                //return self;
+
+            });
+            promises.push(prom1);
+        } else {
+            console.log('composefilter undefined fin');
+            deferred.resolve();
+        }
+        $q.all(promises).then(function() {
+            console.log('composefilter all promise');
+            deferred.resolve();
+            //return selfy;
+        });
+        return deferred.promise;
+        //return self;
+    };
+
+    this.cloneCanvas = function(oldCanvas) {
+        //create a new canvas
+        var newCanvas = document.createElement('canvas');
+        var context = newCanvas.getContext('2d');
+        //set dimensions
+        newCanvas.width = oldCanvas.width;
+        newCanvas.height = oldCanvas.height;
+        //apply the old canvas to the new one
+        context.drawImage(oldCanvas, 0, 0);
+        //return the new canvas
+        return newCanvas;
+    };
+
+    //
+    this.crop = function(parent_container, id, target, source, crop) {
+        var deferred = $q.defer();
+        if (crop != undefined) {
+            console.log('ai crop');
+            console.log(source);
+
+            var source = self.cloneCanvas(target);
+            console.log(source);
+            nat_w = source.width;
+            //nat_h = orig_image.naturalHeight;
+            console.log(nat_w);
+            //var crop_image = document.getElementById('crop_src');
+            //cur_w = $(crop_image).outerWidth();
+            console.log(target);
+            cur_w = target.width;
+            console.log(cur_w);
+            var scale = nat_w / cur_w;
+            console.log(scale);
+
+            console.log(crop);
+            var sx = crop.x;
+            var sy = crop.y;
+            var swidth = crop.width;
+            var sheight = crop.height;
+
+            var source_canvas = source;
+            var cropped_canvas = target;
+
+            target.width = swidth;
+            target.height = sheight;
+            var ctx = target.getContext('2d');
+            ctx.drawImage(source, sx, sy, swidth, sheight, 0, 0, swidth, sheight);
+            // ctx.drawImage(source, 0, 0);
+            // img, sx, sy, swidth, sheight, x, y, width, height
+            self.setImageAdjustment(parent_container, id, 'crop', crop);
+
+            var data = { width: swidth, height: sheight };
+            $(target).attr('data-image', JSON.stringify(data));
+            console.log('crop fin');
+            deferred.resolve();
+        } else {
+            deferred.resolve();
+        }
+        return deferred.promise;
     };
 }]);

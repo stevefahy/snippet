@@ -75,8 +75,8 @@ cardApp.service('Drag', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Us
 
         var per_top = self.elmnt.offsetTop - pos2;
         var per_left = self.elmnt.offsetLeft - pos1;
-        var per_bottom = $('#crop_src').height() - (per_top + $('.crop_adjust').height());
-        var per_right = $('#crop_src').width() - (per_left + $('.crop_adjust').width());
+        var per_bottom = $('#crop_src').height() - (per_top + $('.crop_adjust').outerHeight());
+        var per_right = $('#crop_src').width() - (per_left + $('.crop_adjust').outerWidth());
 
         $('.crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
     }

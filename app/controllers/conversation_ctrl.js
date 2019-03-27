@@ -11,6 +11,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     adjustImage = Cropp.adjustImage;
 
     cancelCrop = Cropp.cancelCrop;
+    makeCrop = Cropp.makeCrop;
 
     $scope.getFocus = Format.getFocus;
     $scope.getBlur = Format.getBlur;

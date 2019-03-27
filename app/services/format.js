@@ -566,6 +566,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 // zm launching image capture should not trigger an update. It causes error.
                 found_marky = findMarky(card.content);
                 // check the content has changed and not currently mid marky. Or that an image is being edited.
+                console.log(content);
+                console.log(card.original_content);
                 if ((content != card.original_content && (found_marky == false)) && !self.getImageEditing()) {
                     // Only do this if not in current card?
                     if ($('.cropper-container').length > 0) {
