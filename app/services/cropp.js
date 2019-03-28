@@ -875,6 +875,16 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         return blob;
     }
 
+    this.canvasToTempImage = function(canvas, id){
+        var deferred = $q.defer();
+        var deferred = $q.defer();
+        var dataUrl = canvas.toDataURL('image/jpeg', JPEG_COMPRESSION);
+        var image = document.createElement('img');
+        image.src = dataUrl;
+        deferred.resolve(image);
+        return deferred.promise;
+    }
+
     this.canvasToImage = function(canvas, id) {
         var deferred = $q.defer();
         var dataUrl = canvas.toDataURL('image/jpeg', JPEG_COMPRESSION);
@@ -887,6 +897,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 img_new.className = 'adjusted';
                 img_new.id = 'image_filtered_' + id;
                 img_new.onload = function() {
+                    console.log('NEW IMAGE ON SERVER!');
+                    console.log(this);
                     deferred.resolve(this);
                     //$('#temp_canvas_filtered_' + id).remove();
                     // Remove current filter.
@@ -1632,13 +1644,13 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                         return ImageAdjustment.applyCrop(source, ia['crop'])
                     }).then(function() {
                         console.log('buildFilters');
-                        self.canvasToImage(source, id).then(function(image) {
+                        self.canvasToTempImage(source, id).then(function(image) {
                             self.buildFilters(parent_container, id, image);
                         });
                     })
             } else {
                 console.log('buildFilters');
-                self.canvasToImage(source, id).then(function(image) {
+                self.canvasToTempImage(source, id).then(function(image) {
                     self.buildFilters(parent_container, id, image);
                 });
             }
