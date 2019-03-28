@@ -1654,6 +1654,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     };
 
     this.closeFilters = function(e) {
+        var deferred = $q.defer();
+        var promises = [];
         var parent_container;
         // Get the context of the image (content_cnv or card_create_container)
         if ($(e.target).parents('div.card_create_container').length > 0) {
@@ -1700,13 +1702,16 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             }
             // Save the canvas to image
             //self.saveImage('id', parent_container);
-            self.canvasToImage(current_adjusted, id).then(function(image) {
+            var prom = self.canvasToImage(current_adjusted, id).then(function(image) {
                 console.log(image);
                 var img_new = $(image).prependTo('.content_cnv #cropper_' + id);
                 $(current_canvas).remove();
                 $(source_canvas).remove();
                 $('.' + parent_container + ' #cropper_' + id).css('height', '');
+                console.log('image created');
+                deferred.resolve();
             });
+            promises.push(prom);
 
         } else {
             // No filter added
@@ -1724,20 +1729,38 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             $(current_canvas).remove();
             $(source_canvas).remove();
             $('.' + parent_container + ' #cropper_' + id).css('height', '');
-
+            console.log('image restored');
+                deferred.resolve();
         }
+
+
+        $q.all(promises).then(function() {
+            console.log('all done');
+            // DONT SAVE UNTIL EVERYTHING DONE!
+        self.restoreEditClick();
+        // SAVE
+        Format.setImageEditing(false);
+        $timeout(function() {
+        $('.' + parent_container + ' #cropper_' + id).closest('div.ce').focus();
+        $('.' + parent_container + ' #cropper_' + id).closest('div.ce').blur();
+            },1000);
+            deferred.resolve();
+        });
 
         //$('.' + parent_container + ' #cropper_' + id + ' #image_' + id).addClass('hide');
         // Save the canvas to image
         //self.saveImage('id', parent_container);
 
-        
+        // DONT SAVE UNTIL EVERYTHING DONE!
+        /*
         self.restoreEditClick();
         // SAVE
         Format.setImageEditing(false);
         $('.' + parent_container + ' #cropper_' + id).closest('div.ce').focus();
         $('.' + parent_container + ' #cropper_' + id).closest('div.ce').blur();
+        */
         e.stopPropagation();
+         return deferred.promise;
     };
 
     this.closeEdit = function(e, id) {
