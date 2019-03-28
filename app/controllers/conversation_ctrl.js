@@ -226,6 +226,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     var checkScrolling = function() {
+        /*
         var last_scrolled;
         var currentScroll = $(".content_cnv").scrollTop();
         var maxScroll = $(".content_cnv")[0].scrollHeight - $(".content_cnv")[0].clientHeight;
@@ -257,6 +258,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 }, 200);
             }, 200);
         }
+        */
     };
 
     var scrollFunction = function() {
