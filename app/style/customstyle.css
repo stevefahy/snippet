@@ -3106,6 +3106,11 @@ span.after_image {
     -webkit-overflow-scrolling: touch;
 }
 
+.content_cnv.user_setting {
+    height: 100%;
+    margin-bottom: 60px;
+}
+
 #crop_box {
     position: absolute;
     width: 100px;

@@ -72,6 +72,7 @@ cardApp.service('replaceTags', function() {
         }
     };
 
+    /*
     this.removeCropper = function(str) {
         console.log('removeCropper');
         str = $("<div>" + str + "</div>");
@@ -81,5 +82,6 @@ cardApp.service('replaceTags', function() {
         str = str.html();
         return str;
     };
+    */
 
 });
