@@ -121,7 +121,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                         //$('.filters_active').remove();
                         var ia = $('.image_adjust').clone();
                         $(ia).attr('id', 'image_adjust_' + id);
-                        ia.insertAfter('.' + parent_container + ' #cropper_' + id);
+                        ia.insertBefore('.' + parent_container + ' #cropper_' + id);
 
                         //$('#image_adjust_' + id).css('visibility', 'visible');
                         //$('#image_adjust_' + id).css('position', 'relative');
