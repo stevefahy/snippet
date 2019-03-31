@@ -743,7 +743,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             },
             onEnd: function(id) {
                 //console.log('on end ' + $scope.adjust.sharpen);
-                ImageAdjustment.setSharpen(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), ImageAdjustment.getTarget(), ImageAdjustment.getSource(), $scope.adjust.sharpen);
+                //ImageAdjustment.setSharpen(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), ImageAdjustment.getTarget(), ImageAdjustment.getSource(), $scope.adjust.sharpen);
+                
+                ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'sharpen', $scope.adjust.sharpen);
+                ImageAdjustment.dosetSharpen(ImageAdjustment.getSource(), ImageAdjustment.getTarget(), ImageAdjustment.getImageAdjustments(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId()));
             }
         }
     };

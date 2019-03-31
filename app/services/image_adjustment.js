@@ -245,13 +245,79 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             target.height = sheight;
             var ctx2 = target.getContext('2d');
             ctx2.drawImage(cropped_canvas, 0, 0);
-            deferred.resolve(); 
+            deferred.resolve();
         } else {
             deferred.resolve();
         }
         return deferred.promise;
     };
 
+    this.applyFilters = function(source, filters) {
+        var deferred = $q.defer();
+        console.log(filters);
+        if(filters == undefined){
+            filters = {sharpen:undefined, filter:undefined, crop: undefined};
+        }
+        // Sharpen from source first
+        // Crop last.
+        self.filter(source, filters.filter)
+            .then(function(result) {
+                console.log(result);
+                return self.sharpen(result, filters.sharpen)
+            }).then(function(result) {
+                console.log(result);
+                return self.mycrop(result, filters.crop);
+            }).then(function(result) {
+                console.log(result);
+                deferred.resolve(result);
+            });
+        return deferred.promise;
+
+    };
+
+    this.sharpen = function(source, amount) {
+        var deferred = $q.defer();
+        var new_canvas = document.createElement("canvas");
+        new_canvas.width = source.width;
+        new_canvas.height = source.height;
+        var ctx = new_canvas.getContext('2d');
+        ctx.drawImage(source, 0, 0);
+        if (amount != undefined) {
+            var sharpen = amount;
+            var adjacent = (1 - sharpen) / 4;
+            var matrix = [0, adjacent, 0, adjacent, sharpen, adjacent, 0, adjacent, 0];
+            var res = self.filterImage(self.convolute, source, matrix);
+            //var ctx = target.getContext('2d');
+            ctx.putImageData(res, 0, 0);
+            deferred.resolve(new_canvas);
+        } else {
+            deferred.resolve(new_canvas);
+        }
+        return deferred.promise;
+    };
+
+
+    this.dosetSharpen = function(source, target, filters) {
+        var deferred = $q.defer();
+        console.log(filters);
+        this.applyFilters(source, filters).then(function(result) {
+            console.log(result);
+            console.log(target);
+
+            target.width = result.width;
+            target.height = result.height;
+            var ctx = target.getContext('2d');
+            ctx.drawImage(result, 0, 0);
+
+            $(target).addClass('adjusted');
+
+            deferred.resolve(result);
+        });
+        return deferred.promise;
+    };
+
+
+    
     this.setSharpen = function(parent_container, id, target, source, amount) {
         var deferred = $q.defer();
         if (amount != undefined) {
@@ -269,6 +335,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         }
         return deferred.promise;
     };
+    
 
     function getFilter(filter) {
         var result = [];
@@ -332,8 +399,8 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         console.log('filterLayers');
         var deferred = $q.defer();
         console.log(canvas);
-        var dataimage = $(canvas).attr('data-image');
-        dataimage = JSON.parse(dataimage);
+        //var dataimage = $(canvas).attr('data-image');
+        //dataimage = JSON.parse(dataimage);
         //var w = dataimage.width;
         //var h = dataimage.height;
         var w = canvas.width;
@@ -411,6 +478,34 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         return deferred.promise;
     };
 
+    this.filter = function(source, filter) {
+        var deferred = $q.defer();
+        var promises = [];
+        var new_canvas = document.createElement("canvas");
+        new_canvas.width = source.width;
+        new_canvas.height = source.height;
+        var ctx = new_canvas.getContext('2d');
+        // reset filter
+        ctx.filter = "none";
+        ctx.drawImage(source, 0, 0);
+        if (filter != undefined) {
+            prom1 = self.filterLayers(new_canvas, filter).then(function(canvas) {
+                var filter_data = getFilter(filter);
+                if (filter_data.filter != undefined) {
+                    ctx.filter = filter_data.filter;
+                }
+                ctx.drawImage(canvas, 0, 0);
+            });
+            promises.push(prom1);
+        } else {
+            deferred.resolve(new_canvas);
+        }
+        $q.all(promises).then(function() {
+            deferred.resolve(new_canvas);
+        });
+        return deferred.promise;
+    };
+
     this.composeFilter = function(target, filter) {
         console.log('composeFilter');
         var deferred = $q.defer();
@@ -430,19 +525,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
                 if (filter_data.filter != undefined) {
                     ctx.filter = filter_data.filter;
                 }
-                //ctx.drawImage(target, 0, 0, w, h);
                 ctx.drawImage(target, 0, 0);
-                // Get image Styles
-                //var cssStyleParsed = getStyles(id);
-                //$(canvasFilter).attr("style", cssStyleParsed);
-                //canvasFilter.setAttribute('id', 'temp_canvas_filtered_' + id);
-                //canvasFilter.setAttribute('class', 'resize-drag temp_canvas_filtered');
-                console.log('composeFilter fin');
-                //console.log(self);
-                //
-                //deferred.resolve();
-                //return self;
-
             });
             promises.push(prom1);
         } else {
@@ -514,6 +597,28 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             deferred.resolve();
         } else {
             deferred.resolve();
+        }
+        return deferred.promise;
+    };
+
+    this.mycrop = function(source, crop) {
+        var deferred = $q.defer();
+        var new_canvas = document.createElement("canvas");
+        new_canvas.width = source.width;
+        new_canvas.height = source.height;
+        var ctx = new_canvas.getContext('2d');
+        ctx.drawImage(source, 0, 0);
+        if (crop != undefined) {
+            var sx = crop.x;
+            var sy = crop.y;
+            var swidth = crop.width;
+            var sheight = crop.height;
+            new_canvas.width = swidth;
+            new_canvas.height = sheight;
+            ctx.drawImage(source, sx, sy, swidth, sheight, 0, 0, swidth, sheight);
+            deferred.resolve(new_canvas);
+        } else {
+            deferred.resolve(new_canvas);
         }
         return deferred.promise;
     };
