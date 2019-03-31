@@ -667,12 +667,15 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         $('.' + parent_container + ' #cropper_' + id).removeClass('cropping');
         removeTempCanvas(id);
         self.restoreEditClick();
+        var image_original = $('.content_cnv #cropper_' + id + ' #image_' + id)[0];
+        self.adjustSrc(image_original, 'hide');
         Format.setImageEditing(false);
+        console.log(ImageAdjustment.getImageAdjusted());
         if (ImageAdjustment.getImageAdjusted()) {
             // SAVE       
-
             $('.' + parent_container + ' #cropper_' + id).closest('div.ce').focus();
             $('.' + parent_container + ' #cropper_' + id).closest('div.ce').blur();
+            ImageAdjustment.setImageAdjusted(false);
         }
     };
 
