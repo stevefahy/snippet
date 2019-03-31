@@ -79,8 +79,10 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         return canvas;
     };
 
+    var image_edited = false;
     // TODO - make getting parent container a function.
     this.editImage = function(scope, id) {
+        ImageAdjustment.setImageAdjusted(false);
         var parent_container;
         // Get the context of the image (content_cnv or card_create_container)
         if ($(scope).parents('div.card_create_container').length > 0) {
@@ -118,7 +120,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                         var ia = $('.image_adjust').clone();
                         $(ia).attr('id', 'image_adjust_' + id);
                         ia.insertBefore('.' + parent_container + ' #cropper_' + id);
-                        
+
                         //$('#image_adjust_' + id).css('visibility', 'visible');
                         //$('#image_adjust_' + id).css('position', 'relative');
                         var edit_btns = "<div class='image_editor'><div class='image_edit_btns'><div class='' onclick='adjustImage(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_tune'>tune</i></div><div class='' onclick='filterImage(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_filter'>filter</i></div><div class='' onclick='openCrop(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_crop' >crop</i></div><div class='close_image_edit' onclick='closeEdit(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_close'>&#xE14C;</i></div></div><div class='crop_edit'><div class='set_crop' onclick='setCrop(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_accept'>&#xe876;</i></div></div></div>";
@@ -187,6 +189,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             var img_new = $(image).prependTo('.content_cnv #cropper_' + id);
             var crop_data = { 'x': sx, 'y': sy, 'width': swidth, 'height': sheight };
             ImageAdjustment.setImageAdjustment('content_cnv', id, 'crop', crop_data);
+            ImageAdjustment.setImageAdjusted(true);
             var image_original = $('.content_cnv #cropper_' + id + ' #image_' + id)[0];
             self.adjustSrc(image_original, 'hide');
             // SAVE    
@@ -224,8 +227,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         } else {
             $(image_original).removeClass('.hide');
         }
-       
-        
+
+
         self.removeCrop();
     };
 
@@ -347,6 +350,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             var ctx = target.getContext('2d');
             ctx.drawImage(result, 0, 0);
         });
+
+        ImageAdjustment.setImageAdjusted(true);
 
 
 
@@ -656,15 +661,19 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             parent_container = 'content_cnv';
         }
         e.stopPropagation();
+        //console.log(Format.getImageEditing());
         $('.' + parent_container + ' #' + e.target.id).closest('div.ce').attr('contenteditable', 'true');
         $('.image_adjust_on').remove();
         $('.' + parent_container + ' #cropper_' + id).removeClass('cropping');
         removeTempCanvas(id);
         self.restoreEditClick();
-        // SAVE       
         Format.setImageEditing(false);
-        $('.' + parent_container + ' #cropper_' + id).closest('div.ce').focus();
-        $('.' + parent_container + ' #cropper_' + id).closest('div.ce').blur();
+        if (ImageAdjustment.getImageAdjusted()) {
+            // SAVE       
+
+            $('.' + parent_container + ' #cropper_' + id).closest('div.ce').focus();
+            $('.' + parent_container + ' #cropper_' + id).closest('div.ce').blur();
+        }
     };
 
     this.adjustSrc = function(image, state) {

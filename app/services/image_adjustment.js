@@ -9,6 +9,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
     var source;
     var target;
     var image_parent;
+    var image_adjusted;
 
     this.setImageAdjustment = function(parent_container, id, name, value) {
         var ia = this.getImageAdjustments(parent_container, id);
@@ -316,7 +317,13 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         return deferred.promise;
     };
 
+    this.getImageAdjusted = function(){
+        return image_adjusted;
+    };
 
+    this.setImageAdjusted = function(boo){
+        image_adjusted = boo;
+    };
     
     this.setSharpen = function(parent_container, id, target, source, amount) {
         var deferred = $q.defer();
@@ -329,6 +336,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             ctx.putImageData(res, 0, 0);
             $('.' + parent_container + ' #cropper_' + id + ' .target_canvas').addClass('adjusted');
             this.setImageAdjustment(parent_container, id, 'sharpen', amount);
+            this.setImageAdjusted(true);
             deferred.resolve();
         } else {
             deferred.resolve();
