@@ -3279,3 +3279,9 @@ span.after_image {
 .crop_bg {
     max-width: 100%
 }
+
+.image_adjust_on {
+    position: relative;
+    visibility: visible;
+
+}

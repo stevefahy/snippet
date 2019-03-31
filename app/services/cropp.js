@@ -116,18 +116,21 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                         $('.image_adjust_on').remove();
                         $('.filters_active').remove();
                         var ia = $('.image_adjust').clone();
-                        ia.insertBefore('.' + parent_container + ' #cropper_' + id);
                         $(ia).attr('id', 'image_adjust_' + id);
-                        $('#image_adjust_' + id).css('visibility', 'visible');
-                        $('#image_adjust_' + id).css('position', 'relative');
+                        ia.insertBefore('.' + parent_container + ' #cropper_' + id);
+                        
+                        //$('#image_adjust_' + id).css('visibility', 'visible');
+                        //$('#image_adjust_' + id).css('position', 'relative');
                         var edit_btns = "<div class='image_editor'><div class='image_edit_btns'><div class='' onclick='adjustImage(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_tune'>tune</i></div><div class='' onclick='filterImage(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_filter'>filter</i></div><div class='' onclick='openCrop(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_crop' >crop</i></div><div class='close_image_edit' onclick='closeEdit(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_close'>&#xE14C;</i></div></div><div class='crop_edit'><div class='set_crop' onclick='setCrop(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_accept'>&#xe876;</i></div></div></div>";
                         // set this to active
-                        $('#image_adjust_' + id).addClass('image_adjust_on');
+                        //$('#image_adjust_' + id).addClass('image_adjust_on');
                         $('#image_adjust_' + id).append(edit_btns);
                         // Adjust marging top if this is the topmost image.
                         if ($('.' + parent_container + ' #cropper_' + id).attr('class').indexOf('no_image_space') >= 0) {
                             $('#image_adjust_' + id).addClass('no_image_space_adjust');
                         }
+                        // set this to active
+                        $('#image_adjust_' + id).addClass('image_adjust_on');
                     }
                 }
             });
