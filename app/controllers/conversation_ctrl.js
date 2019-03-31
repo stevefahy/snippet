@@ -322,11 +322,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     bindScroll = function() {
+        console.log('bind');
         setUpScrollBar();
         $('.content_cnv')[0].addEventListener('scroll', scrollFunction, { passive: true }, { once: true });
     };
 
     unbindScroll = function() {
+        console.log('unbind');
         $('.content_cnv')[0].removeEventListener('scroll', scrollFunction, { passive: true }, { once: true });
         $('.progress-container').removeClass('active');
     };

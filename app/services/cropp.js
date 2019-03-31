@@ -82,6 +82,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     var image_edited = false;
     // TODO - make getting parent container a function.
     this.editImage = function(scope, id) {
+        unbindScroll();
         ImageAdjustment.setImageAdjusted(false);
         var parent_container;
         // Get the context of the image (content_cnv or card_create_container)
@@ -683,6 +684,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             $('.' + parent_container + ' #cropper_' + id).closest('div.ce').blur();
             ImageAdjustment.setImageAdjusted(false);
         }
+        bindScroll();
     };
 
     this.adjustSrc = function(image, state) {
