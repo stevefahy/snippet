@@ -464,6 +464,9 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     hideOriginal = function(parent_container, id) {
         // Hide the original image.
         $('.' + parent_container + ' #cropper_' + id + ' #image_' + id).addClass('hide');
+        var image_original = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
+        self.adjustSrc(image_original, 'hide');
+
     };
 
     this.buildFilters = function(parent_container, id, image) {
@@ -667,8 +670,11 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         $('.' + parent_container + ' #cropper_' + id).removeClass('cropping');
         removeTempCanvas(id);
         self.restoreEditClick();
-        var image_original = $('.content_cnv #cropper_' + id + ' #image_' + id)[0];
-        self.adjustSrc(image_original, 'hide');
+
+        if ($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length > 0) {
+            hideOriginal(parent_container, id);
+        }
+
         Format.setImageEditing(false);
         console.log(ImageAdjustment.getImageAdjusted());
         if (ImageAdjustment.getImageAdjusted()) {
