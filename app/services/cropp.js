@@ -651,8 +651,9 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             Format.setImageEditing(true);
             //$('.' + parent_container + ' #cropper_' + id).closest('div.ce').focus();
             //$('.' + parent_container + ' #cropper_' + id).closest('div.ce').blur();
-
-            $('#hidden_input_container').focus();
+            console.log( $('.' + parent_container + ' #cropper_' + id).closest('div#user'));
+            $('.' + parent_container + ' #cropper_' + id).closest('div#user').focus();
+            //$('#hidden_input_container').focus();
             
             $timeout(function() {
                 //$('.' + parent_container + ' #cropper_' + id).closest('div.ce').focus();
