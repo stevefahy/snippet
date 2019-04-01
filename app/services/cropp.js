@@ -117,8 +117,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                     // Only open editing if not already open.
                     if ($('#image_adjust_' + id).length <= 0) {
                         // Close existing
-                        //$('.image_adjust_on').remove();
-                        //$('.filters_active').remove();
+                        $('.image_adjust_on').remove();
+                        $('.filters_active').remove();
                         var ia = $('.image_adjust').clone();
                         $(ia).attr('id', 'image_adjust_' + id);
                         ia.insertBefore('.' + parent_container + ' #cropper_' + id);
@@ -684,6 +684,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             $('.' + parent_container + ' #cropper_' + id).closest('div.ce').focus();
             $('.' + parent_container + ' #cropper_' + id).closest('div.ce').blur();
             ImageAdjustment.setImageAdjusted(false);
+        } else {
+            $('.' + parent_container + ' #cropper_' + id).closest('div.ce').blur();
         }
         //bindScroll();
     };
