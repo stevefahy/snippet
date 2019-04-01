@@ -82,6 +82,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     var image_edited = false;
     // TODO - make getting parent container a function.
     this.editImage = function(scope, id) {
+        $('span.after_image').addClass('disable');
         if ($(scope).closest('div.ce').attr('editable') == 'true') {
             $(scope).closest('div.ce').attr('contenteditable', 'false');
         }
@@ -125,6 +126,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                     // Only open editing if not already open.
                     if ($('#image_adjust_' + id).length <= 0) {
                         // Close existing
+                        $('span.after_image').removeClass('disable');
                         $('.image_adjust_on').remove();
                         $('.filters_active').remove();
                         var ia = $('.image_adjust').clone();
@@ -148,6 +150,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 }
             });
         }
+
     };
 
     this.setEditClick = function(val, container, id) {
@@ -285,6 +288,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         var crop = $('.crop_box').clone().prependTo('.' + parent_container + ' #cropper_' + id);
         crop.addClass('active');
         $('.' + parent_container + ' #cropper_' + id + ' #make_crop').attr("onclick", 'makeCrop(event, \'' + id + '\')');
+        $('span.after_image').removeClass('disable');
         $('.image_adjust_on').remove();
         // Create canvas with all current adjustments (uncropped).
         var image = $('.' + parent_container + ' #image_' + id)[0];
@@ -383,6 +387,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         } else {
             parent_container = 'content_cnv';
         }
+        $('span.after_image').removeClass('disable');
         $('.image_adjust_on').remove();
         if ($('.' + parent_container + ' #cropper_' + id + ' .image_adjust_div').length <= 0) {
             var filt = $('.image_adjust_div').clone().insertAfter('.' + parent_container + ' #cropper_' + id);
@@ -520,6 +525,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         } else {
             parent_container = 'content_cnv';
         }
+        $('span.after_image').removeClass('disable');
         $('.image_adjust_on').remove();
         ImageAdjustment.setImageId(id);
         // Hide the original image.
@@ -688,6 +694,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     };
 
     this.closeEdit = function(e, id) {
+
         var parent_container;
         // Get the context of the image (content_cnv or card_create_container)
         if ($(e.target).parents('div.card_create_container').length > 0) {
@@ -698,8 +705,10 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         e.stopPropagation();
         //console.log(Format.getImageEditing());
         $('.' + parent_container + ' #' + e.target.id).closest('div.ce').attr('contenteditable', 'true');
+        $('span.after_image').removeClass('disable');
         $('.image_adjust_on').remove();
         $('.' + parent_container + ' #cropper_' + id).removeClass('cropping');
+        
         removeTempCanvas(id);
         self.restoreEditClick();
 

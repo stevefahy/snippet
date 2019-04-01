@@ -2967,10 +2967,12 @@ div.after_image:empty {
 }
 
 span.after_image {
-    /*
     float: left;
     width: 100%
-    */
+}
+
+span.after_image.disable {
+    float: unset;
 }
 
 .clear_after_image {
