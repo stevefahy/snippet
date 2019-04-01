@@ -80,6 +80,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     };
 
     var image_edited = false;
+    $rootScope.intersection_observe = true;
     // TODO - make getting parent container a function.
     this.editImage = function(scope, id) {
         //unbindScroll();
@@ -93,6 +94,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         }
         if (principal.isValid()) {
             UserData.checkUser().then(function(result) {
+                $rootScope.intersection_observe = false;
                 // Turn off content saving.
                 Format.setImageEditing(true);
                 // Store editImage
