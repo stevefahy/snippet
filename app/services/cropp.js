@@ -80,7 +80,6 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     };
 
     var image_edited = false;
-    $rootScope.intersection_observe = true;
     // TODO - make getting parent container a function.
     this.editImage = function(scope, id) {
         //unbindScroll();
@@ -94,7 +93,6 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         }
         if (principal.isValid()) {
             UserData.checkUser().then(function(result) {
-                $rootScope.intersection_observe = false;
                 // Turn off content saving.
                 Format.setImageEditing(true);
                 // Store editImage
@@ -648,7 +646,11 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         $q.all(promises).then(function() {
             self.restoreEditClick();
             // SAVE
-            Format.setImageEditing(false);
+            //Format.setImageEditing(false);
+
+            Format.setImageEditing(true);
+            $('.' + parent_container + ' #cropper_' + id).closest('div.ce').blur();
+            
             $timeout(function() {
                 //$('.' + parent_container + ' #cropper_' + id).closest('div.ce').focus();
                 //$('.' + parent_container + ' #cropper_' + id).closest('div.ce').blur();

@@ -35,7 +35,6 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     // Intersection Observer
 
     intersectionCallback = function(entries, observer) {
-        if($rootScope.intersection_observe){
         entries.forEach(entry => {
             var elem = entry.target;
             if (entry.isIntersecting) {
@@ -45,7 +44,6 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                 $(elem).removeClass('vis');
             }
         });
-    }
     };
 
     var observer;
