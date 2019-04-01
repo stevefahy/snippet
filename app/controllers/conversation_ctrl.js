@@ -196,11 +196,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.$watch('cards.length', function(newStatus) {
         // Debugging
         $rootScope.cards_length = newStatus;
-
+        console.log(newStatus);
         $timeout(function() {
             upDateObservers();
         }, 100);
         if (maxScroll > 0) {
+            console.log('setUpScrollBar');
             setUpScrollBar();
         }
     });
