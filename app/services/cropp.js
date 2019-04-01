@@ -648,8 +648,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             // SAVE
             Format.setImageEditing(false);
             $timeout(function() {
-                $('.' + parent_container + ' #cropper_' + id).closest('div.ce').focus();
-                $('.' + parent_container + ' #cropper_' + id).closest('div.ce').blur();
+                //$('.' + parent_container + ' #cropper_' + id).closest('div.ce').focus();
+                //$('.' + parent_container + ' #cropper_' + id).closest('div.ce').blur();
             }, 1000);
             deferred.resolve();
         });
@@ -681,12 +681,10 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         console.log(ImageAdjustment.getImageAdjusted());
         if (ImageAdjustment.getImageAdjusted()) {
             // SAVE       
-            $('.' + parent_container + ' #cropper_' + id).closest('div.ce').focus();
-            $('.' + parent_container + ' #cropper_' + id).closest('div.ce').blur();
+            //$('.' + parent_container + ' #cropper_' + id).closest('div.ce').focus();
+            //$('.' + parent_container + ' #cropper_' + id).closest('div.ce').blur();
             ImageAdjustment.setImageAdjusted(false);
-        } else {
-            $('.' + parent_container + ' #cropper_' + id).closest('div.ce').blur();
-        }
+        } 
         //bindScroll();
     };
 
