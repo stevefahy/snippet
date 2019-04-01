@@ -2967,15 +2967,23 @@ div.after_image:empty {
 }
 
 span.after_image {
+    /*
     display: block;
     float: left;
     width: 100%;
     min-height: 1px;
+    */
+
+    clear: both;
+    display: block;
+    width: 100%;
 }
 
 span.after_image.disable {
+    /*
     clear: both;
     float: unset;
+    */
 }
 
 .clear_after_image {
