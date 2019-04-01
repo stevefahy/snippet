@@ -82,9 +82,9 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     var image_edited = false;
     // TODO - make getting parent container a function.
     this.editImage = function(scope, id) {
-                        if ($(scope).closest('div.ce').attr('editable') == 'true') {
-                    $(scope).closest('div.ce').attr('contenteditable', 'false');
-                }
+        if ($(scope).closest('div.ce').attr('editable') == 'true') {
+            $(scope).closest('div.ce').attr('contenteditable', 'false');
+        }
         //unbindScroll();
         ImageAdjustment.setImageAdjusted(false);
         var parent_container;
@@ -94,16 +94,19 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         } else {
             parent_container = 'content_cnv';
         }
+        console.log($('.' + parent_container + ' #cropper_' + id).height());
+        // Set the cropper height to avoid jump when adding removing images.
+        //$('.' + parent_container + ' #cropper_' + id).css('height', $('.' + parent_container + ' #cropper_' + id).height());
         if (principal.isValid()) {
             UserData.checkUser().then(function(result) {
                 // Turn off content saving.
                 Format.setImageEditing(true);
                 // Store editImage
-                
+
                 var stored_clck = $('.' + parent_container + ' #cropper_' + id).attr("onclick");
                 self.setEditClick(stored_clck, parent_container, id);
                 $('.' + parent_container + ' #cropper_' + id).attr("onclick", null);
-                
+
                 // Only do this here? Check if data-src exists, if not create it.
                 // restore image
                 var src = $('.' + parent_container + ' #image_' + id).attr('data-src');
@@ -114,11 +117,11 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 } else {
                     $('.' + parent_container + ' #image_' + id).attr('src', src);
                 }
-                
+
                 // Get the editable attibute for this card (for this user).
                 // check user has permision to edit.
                 if ($(scope).closest('div.ce').attr('editable') == 'true') {
-                    $(scope).closest('div.ce').attr('contenteditable', 'false');
+                    //$(scope).closest('div.ce').attr('contenteditable', 'false');
                     // Only open editing if not already open.
                     if ($('#image_adjust_' + id).length <= 0) {
                         // Close existing
@@ -127,7 +130,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                         var ia = $('.image_adjust').clone();
                         $(ia).attr('id', 'image_adjust_' + id);
                         ia.insertBefore('.' + parent_container + ' #cropper_' + id);
-
+                        //ia.insertBefore('.content_cnv');
+//$('.' + parent_container + ' #cropper_' + id).prepend(ia);
                         //$('#image_adjust_' + id).css('visibility', 'visible');
                         //$('#image_adjust_' + id).css('position', 'relative');
                         var edit_btns = "<div class='image_editor'><div class='image_edit_btns'><div class='' onclick='adjustImage(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_tune'>tune</i></div><div class='' onclick='filterImage(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_filter'>filter</i></div><div class='' onclick='openCrop(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_crop' >crop</i></div><div class='close_image_edit' onclick='closeEdit(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_close'>&#xE14C;</i></div></div><div class='crop_edit'><div class='set_crop' onclick='setCrop(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_accept'>&#xe876;</i></div></div></div>";
@@ -656,13 +660,13 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             Format.setImageEditing(true);
             //$('.' + parent_container + ' #cropper_' + id).closest('div.ce').focus();
             //$('.' + parent_container + ' #cropper_' + id).closest('div.ce').blur();
-            console.log( $('.' + parent_container + ' #cropper_' + id).closest('div.card_temp'));
+            console.log($('.' + parent_container + ' #cropper_' + id).closest('div.card_temp'));
             $('.' + parent_container + ' #cropper_' + id).closest('div.card_temp').focus();
             //$('#hidden_input_container').focus();
-            
+
             //$timeout(function() {
-                $('.' + parent_container + ' #cropper_' + id).closest('div.ce').focus();
-                $('.' + parent_container + ' #cropper_' + id).closest('div.ce').blur();
+            $('.' + parent_container + ' #cropper_' + id).closest('div.ce').focus();
+            $('.' + parent_container + ' #cropper_' + id).closest('div.ce').blur();
             //}, 1000);
 
 
@@ -700,7 +704,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             //$('.' + parent_container + ' #cropper_' + id).closest('div.ce').focus();
             //$('.' + parent_container + ' #cropper_' + id).closest('div.ce').blur();
             ImageAdjustment.setImageAdjusted(false);
-        } 
+        }
         //bindScroll();
     };
 
