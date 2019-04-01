@@ -131,7 +131,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                         $(ia).attr('id', 'image_adjust_' + id);
                         ia.insertBefore('.' + parent_container + ' #cropper_' + id);
                         //ia.insertBefore('.content_cnv');
-//$('.' + parent_container + ' #cropper_' + id).prepend(ia);
+                        //$('.' + parent_container + ' #cropper_' + id).prepend(ia);
                         //$('#image_adjust_' + id).css('visibility', 'visible');
                         //$('#image_adjust_' + id).css('position', 'relative');
                         var edit_btns = "<div class='image_editor'><div class='image_edit_btns'><div class='' onclick='adjustImage(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_tune'>tune</i></div><div class='' onclick='filterImage(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_filter'>filter</i></div><div class='' onclick='openCrop(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_crop' >crop</i></div><div class='close_image_edit' onclick='closeEdit(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_close'>&#xE14C;</i></div></div><div class='crop_edit'><div class='set_crop' onclick='setCrop(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_accept'>&#xe876;</i></div></div></div>";
@@ -206,8 +206,10 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             // SAVE    
             $('.content_cnv #cropper_' + id).closest('div.ce').attr('contenteditable', 'true');
             Format.setImageEditing(false);
-            $('.content_cnv #cropper_' + id).closest('div.ce').focus();
-            $('.content_cnv #cropper_' + id).closest('div.ce').blur();
+
+            saveCropper($('.content_cnv #cropper_' + id));
+            //$('.content_cnv #cropper_' + id).closest('div.ce').focus();
+            //$('.content_cnv #cropper_' + id).closest('div.ce').blur();
 
         });
     };
@@ -596,6 +598,14 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         e.stopPropagation();
     };
 
+    saveCropper = function(cropper) {
+        if (ImageAdjustment.getImageAdjusted()) {
+            $(cropper).closest('div.ce').focus();
+            $(cropper).closest('div.ce').blur();
+            ImageAdjustment.setImageAdjusted(false);
+        }
+    };
+
     this.closeFilters = function(e) {
         var deferred = $q.defer();
         var promises = [];
@@ -655,18 +665,18 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         $q.all(promises).then(function() {
             self.restoreEditClick();
             // SAVE
-            //Format.setImageEditing(false);
+            Format.setImageEditing(false);
 
-            Format.setImageEditing(true);
+            //Format.setImageEditing(true);
             //$('.' + parent_container + ' #cropper_' + id).closest('div.ce').focus();
             //$('.' + parent_container + ' #cropper_' + id).closest('div.ce').blur();
-            console.log($('.' + parent_container + ' #cropper_' + id).closest('div.card_temp'));
-            $('.' + parent_container + ' #cropper_' + id).closest('div.card_temp').focus();
+            //console.log($('.' + parent_container + ' #cropper_' + id).closest('div.card_temp'));
+            //$('.' + parent_container + ' #cropper_' + id).closest('div.card_temp').focus();
             //$('#hidden_input_container').focus();
 
             //$timeout(function() {
-            $('.' + parent_container + ' #cropper_' + id).closest('div.ce').focus();
-            $('.' + parent_container + ' #cropper_' + id).closest('div.ce').blur();
+            saveCropper($('.' + parent_container + ' #cropper_' + id));
+
             //}, 1000);
 
 

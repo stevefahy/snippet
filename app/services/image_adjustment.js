@@ -277,6 +277,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
     };
 
     this.sharpen = function(source, amount) {
+        console.log('sharpen');
         var deferred = $q.defer();
         var new_canvas = document.createElement("canvas");
         new_canvas.width = source.width;
@@ -298,22 +299,18 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
     };
 
 
-    this.dosetSharpen = function(source, target, filters) {
+    this.setSharpenUpdate = function(source, target, filters) {
+        console.log('sharpenUpdate');
         var deferred = $q.defer();
-        console.log(filters);
         this.applyFilters(source, filters).then(function(result) {
-            console.log(result);
-            console.log(target);
-
             target.width = result.width;
             target.height = result.height;
             var ctx = target.getContext('2d');
             ctx.drawImage(result, 0, 0);
-
             $(target).addClass('adjusted');
-
             deferred.resolve(result);
         });
+        this.setImageAdjusted(true);
         return deferred.promise;
     };
 
@@ -325,6 +322,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         image_adjusted = boo;
     };
     
+    /*
     this.setSharpen = function(parent_container, id, target, source, amount) {
         var deferred = $q.defer();
         if (amount != undefined) {
@@ -343,6 +341,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         }
         return deferred.promise;
     };
+    */
     
 
     function getFilter(filter) {
