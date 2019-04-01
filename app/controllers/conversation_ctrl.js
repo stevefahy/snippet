@@ -36,6 +36,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     */
 
     $scope.$on('$destroy', function() {
+        console.log('destroy');
         //leaving controller.
         Cropp.destroyCrop();
         $('.image_adjust_on').remove();
@@ -159,16 +160,19 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }, 500);
     });
 
-    $scope.$on('window_resize', function(ngRepeatFinishedEvent) {
-        setUpScrollBar();
+    $scope.$on('window_resize', function() {
+        console.log('resize');
+        //setUpScrollBar();
     });
 
     $scope.$on('ngRepeatFinishedTemp', function(ngRepeatFinishedEvent) {
+        console.log('ngRepeatFinishedTemp');
         image_check_counter++;
         checkImages('load_off_screen', image_check_counter);
     });
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
+        console.log('ngRepeatFinished');
         dir = 2;
         image_check_counter++;
         checkImages('content_cnv', image_check_counter);
@@ -329,7 +333,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     unbindScroll = function() {
-        console.log('unbind');
+        console.log('unbind here');
         $('.content_cnv')[0].removeEventListener('scroll', scrollFunction, { passive: true }, { once: true });
         $('.progress-container').removeClass('active');
     };

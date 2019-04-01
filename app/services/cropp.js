@@ -2,7 +2,7 @@
 // Cropper Service
 //
 
-cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', 'General', 'UserData', 'principal', 'ImageAdjustment', 'Drag', 'Resize', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML, General, UserData, principal, ImageAdjustment, Drag, Resize) {
+cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', 'General', 'UserData', 'principal', 'ImageAdjustment', 'Drag', 'Resize', 'Keyboard', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML, General, UserData, principal, ImageAdjustment, Drag, Resize, Keyboard) {
 
     var ua = navigator.userAgent;
     var self = this;
@@ -96,9 +96,11 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                 // Turn off content saving.
                 Format.setImageEditing(true);
                 // Store editImage
+                
                 var stored_clck = $('.' + parent_container + ' #cropper_' + id).attr("onclick");
                 self.setEditClick(stored_clck, parent_container, id);
                 $('.' + parent_container + ' #cropper_' + id).attr("onclick", null);
+                
                 // Only do this here? Check if data-src exists, if not create it.
                 // restore image
                 var src = $('.' + parent_container + ' #image_' + id).attr('data-src');
@@ -655,10 +657,13 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
             $('.' + parent_container + ' #cropper_' + id).closest('div.card_temp').focus();
             //$('#hidden_input_container').focus();
             
-            $timeout(function() {
-                //$('.' + parent_container + ' #cropper_' + id).closest('div.ce').focus();
-                //$('.' + parent_container + ' #cropper_' + id).closest('div.ce').blur();
-            }, 1000);
+            //$timeout(function() {
+                $('.' + parent_container + ' #cropper_' + id).closest('div.ce').focus();
+                $('.' + parent_container + ' #cropper_' + id).closest('div.ce').blur();
+            //}, 1000);
+
+
+
             deferred.resolve();
         });
         e.stopPropagation();
