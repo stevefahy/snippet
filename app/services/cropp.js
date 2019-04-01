@@ -82,6 +82,9 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     var image_edited = false;
     // TODO - make getting parent container a function.
     this.editImage = function(scope, id) {
+                        if ($(scope).closest('div.ce').attr('editable') == 'true') {
+                    $(scope).closest('div.ce').attr('contenteditable', 'false');
+                }
         //unbindScroll();
         ImageAdjustment.setImageAdjusted(false);
         var parent_container;
