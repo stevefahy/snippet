@@ -2967,11 +2967,14 @@ div.after_image:empty {
 }
 
 span.after_image {
+    display: block;
     float: left;
-    width: 100%
+    width: 100%;
+    min-height: 1px;
 }
 
 span.after_image.disable {
+    clear: both;
     float: unset;
 }
 

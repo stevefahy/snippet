@@ -126,7 +126,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
                     // Only open editing if not already open.
                     if ($('#image_adjust_' + id).length <= 0) {
                         // Close existing
-                        $('span.after_image').removeClass('disable');
+                        //$('span.after_image').removeClass('disable');
                         $('.image_adjust_on').remove();
                         $('.filters_active').remove();
                         var ia = $('.image_adjust').clone();
@@ -170,6 +170,9 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     };
 
     this.makeCrop = function(e, id) {
+        $('span.after_image').removeClass('disable');
+        var parent_container = ImageAdjustment.getImageParent();
+        $('.' + parent_container + ' #cropper_' + e.target.id).closest('div.ce').attr('contenteditable', 'true');
         e.preventDefault();
         e.stopPropagation();
         // TODO ImageAdjustment function Get the scale ratio
@@ -232,10 +235,13 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
     };
 
     this.cancelCrop = function(e) {
+       // $('span.after_image').removeClass('disable');
+
         e.preventDefault();
         e.stopPropagation();
         var parent_container = ImageAdjustment.getImageParent();
         var id = ImageAdjustment.getImageId();
+        $('.' + parent_container + ' #cropper_' + id).closest('div.ce').attr('contenteditable', 'true');
         var image_original = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
         if ($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length > 0) {
             $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').removeClass('hide');
@@ -273,6 +279,7 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
 
     // openCrop - composeFilter target, composeFilter source, setSharpen(target, source(canvas of orig))
     this.openCrop = function(e, id) {
+        //$('span.after_image').addClass('disable');
         console.log('openCrop');
         var deferred = $q.defer();
         var promises = [];
