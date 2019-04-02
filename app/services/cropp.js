@@ -79,6 +79,8 @@ cardApp.service('Cropp', ['$window', '$rootScope', '$timeout', '$q', '$http', 'U
         return canvas;
     };
 
+    // Change Format.getImageEditing() and Format.setImageEditing() to ImageAdjustment
+    
     var image_edited = false;
     // TODO - make getting parent container a function.
     this.editImage = function(scope, id) {

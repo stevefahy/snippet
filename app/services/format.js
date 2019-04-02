@@ -1,6 +1,6 @@
 // Format Service
 
-cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', 'Cards', 'replaceTags', 'socket', '$injector', function($window, $rootScope, $timeout, $q, Users, Cards, replaceTags, socket, $injector) {
+cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', 'Cards', 'replaceTags', 'socket', '$injector', 'ImageAdjustment', function($window, $rootScope, $timeout, $q, Users, Cards, replaceTags, socket, $injector, ImageAdjustment) {
 
     var self = this;
     var tag_count_previous;
