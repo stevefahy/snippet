@@ -115,6 +115,10 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
     this.editImage = function(scope, id) {
+        var parent_container = getParentContainer(scope);
+        var cropper = $('.' + parent_container + ' #cropper_' + id)[0];
+         // Turn off contenteditable for this card.
+        setContenteditable(cropper, false);
         // Check if this is new image to be edited.
         if (id != ImageAdjustment.getImageId()) {
             // Set the new ID.
@@ -134,11 +138,10 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                         ImageAdjustment.setImageEditing(true);
                         ImageAdjustment.setImageId(id);
                         ImageAdjustment.setImageAdjusted(false);
-                        var parent_container = getParentContainer(scope);
-                        var cropper = $('.' + parent_container + ' #cropper_' + id)[0];
+                        
+                        
                         var image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
-                        // Turn off contenteditable for this card.
-                        setContenteditable(cropper, false);
+                       
                         // restore image so that it can be accessed as a source.
                         adjustSrc(image, 'show');
                         // Only open editing if not already open.
