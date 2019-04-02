@@ -3300,3 +3300,8 @@ span.after_image.disable {
     visibility: visible;
 
 }
+
+.filters_active {
+    position: relative;
+    visibility: visible;
+}

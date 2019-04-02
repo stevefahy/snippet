@@ -1,4 +1,4 @@
-var filter_array = [{
+var FILTERS = [{
         filter_css_name: 'filter-original',
         filter_name: 'original',
         blend: 'none'

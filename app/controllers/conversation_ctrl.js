@@ -1,17 +1,17 @@
-cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$q', '$filter', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', 'Cropp', '$compile', 'ImageAdjustment', 'Keyboard', function($scope, $rootScope, $location, $http, $window, $q, $filter, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, Cropp, $compile, ImageAdjustment, Keyboard) {
+cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$q', '$filter', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', 'ImageEdit', '$compile', 'ImageAdjustment', 'Keyboard', function($scope, $rootScope, $location, $http, $window, $q, $filter, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, ImageEdit, $compile, ImageAdjustment, Keyboard) {
 
-    openCrop = Cropp.openCrop;
-    setCrop = Cropp.setCrop;
-    editImage = Cropp.editImage;
-    closeEdit = Cropp.closeEdit;
-    filterImage = Cropp.filterImage;
-    closeFilters = Cropp.closeFilters;
-    filterClick = Cropp.filterClick;
-    settingsImage = Cropp.settingsImage;
-    adjustImage = Cropp.adjustImage;
+    openCrop = ImageEdit.openCrop;
+    setCrop = ImageEdit.setCrop;
+    editImage = ImageEdit.editImage;
+    closeEdit = ImageEdit.closeEdit;
+    filterImage = ImageEdit.filterImage;
+    closeFilters = ImageEdit.closeFilters;
+    filterClick = ImageEdit.filterClick;
+    settingsImage = ImageEdit.settingsImage;
+    adjustImage = ImageEdit.adjustImage;
 
-    cancelCrop = Cropp.cancelCrop;
-    makeCrop = Cropp.makeCrop;
+    cancelCrop = ImageEdit.cancelCrop;
+    makeCrop = ImageEdit.makeCrop;
 
     $scope.getFocus = Format.getFocus;
     $scope.getBlur = Format.getBlur;
@@ -26,19 +26,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.pasteHtmlAtCaret = Format.pasteHtmlAtCaret;
     $scope.checkCursor = Format.checkCursor;
 
-    
-
-/*
-    $scope.cancelCrop = function(e){
-        e.preventDefault();
-        console.log('cancel');
-    };
-    */
-
     $scope.$on('$destroy', function() {
         console.log('destroy');
         //leaving controller.
-        Cropp.destroyCrop();
         $('.image_adjust_on').remove();
         NUM_TO_LOAD = INIT_NUM_TO_LOAD;
         $rootScope.top_down = false;

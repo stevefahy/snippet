@@ -4,12 +4,14 @@
 
 //cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', 'General', 'UserData', 'principal', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML, General, UserData, principal) {
 cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'General', 'UserData', 'principal', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, General, UserData, principal) {
+    
     var self = this;
     var image_id;
     var source;
     var target;
     var image_parent;
     var image_adjusted;
+    var image_edit_finished = false;
 
     this.setImageAdjustment = function(parent_container, id, name, value) {
         var ia = this.getImageAdjustments(parent_container, id);
@@ -61,6 +63,14 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
 
     this.getTarget = function() {
         return target;
+    };
+
+    this.setImageEditing = function(bool) {
+        image_edit_finished = bool;
+    };
+
+    this.getImageEditing = function(bool) {
+        return image_edit_finished;
     };
 
     this.getPixels = function(img) {
@@ -267,7 +277,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
                 return self.sharpen(result, filters.sharpen)
             }).then(function(result) {
                 console.log(result);
-                return self.mycrop(result, filters.crop);
+                return self.crop(result, filters.crop);
             }).then(function(result) {
                 console.log(result);
                 deferred.resolve(result);
@@ -346,9 +356,9 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
 
     function getFilter(filter) {
         var result = [];
-        var index = General.findWithAttr(filter_array, 'filter_css_name', filter);
+        var index = General.findWithAttr(FILTERS, 'filter_css_name', filter);
         if (index >= 0) {
-            result = filter_array[index];
+            result = FILTERS[index];
         } else {
             result = -1;
         }
@@ -513,6 +523,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         return deferred.promise;
     };
 
+    /*
     this.composeFilter = function(target, filter) {
         console.log('composeFilter');
         var deferred = $q.defer();
@@ -547,6 +558,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         return deferred.promise;
         //return self;
     };
+    */
 
     this.cloneCanvas = function(oldCanvas) {
         //create a new canvas
@@ -561,7 +573,14 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         return newCanvas;
     };
 
-    //
+    this.getScale = function(original_image, crop_image){
+        var nat_w = original_image.naturalWidth;
+        var cur_w = $(crop_image).outerWidth();
+        var scale = nat_w / cur_w;
+        return scale;
+    };
+
+    /*
     this.crop = function(parent_container, id, target, source, crop) {
         var deferred = $q.defer();
         if (crop != undefined) {
@@ -598,8 +617,8 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             // img, sx, sy, swidth, sheight, x, y, width, height
             self.setImageAdjustment(parent_container, id, 'crop', crop);
 
-            var data = { width: swidth, height: sheight };
-            $(target).attr('data-image', JSON.stringify(data));
+            //var data = { width: swidth, height: sheight };
+            //$(target).attr('data-image', JSON.stringify(data));
             console.log('crop fin');
             deferred.resolve();
         } else {
@@ -607,8 +626,10 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         }
         return deferred.promise;
     };
+    */
 
-    this.mycrop = function(source, crop) {
+    this.crop = function(source, crop) {
+        console.log('mycrop');
         var deferred = $q.defer();
         var new_canvas = document.createElement("canvas");
         new_canvas.width = source.width;

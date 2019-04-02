@@ -24,7 +24,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     var focused_user;
     var savedSelection;
 
-    this.image_edit_finished = false;
 
     $window.imageUploaded = self.imageUploaded;
 
@@ -230,14 +229,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             var newBlob = new Blob([ia], { type: mimeString });
             resolve(newBlob);
         });
-    };
-
-    this.setImageEditing = function(bool) {
-        this.image_edit_finished = bool;
-    };
-
-    this.getImageEditing = function(bool) {
-        return this.image_edit_finished;
     };
 
     this.removeDeleteIds = function() {
@@ -559,7 +550,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             // Get the element currently in focus
             var active = $(document.activeElement).closest("div").attr('id');
             // If the blurred card is not the current card or the hidden input.
-            if (('ce' + card._id != active && (active != 'hidden_input_container')) && !self.getImageEditing()) {
+            if (('ce' + card._id != active && (active != 'hidden_input_container')) && !ImageAdjustment.getImageEditing()) {
                 // Card out of focus. Reset the marky_started_array.
                 marky_started_array = [];
                 // Check if there is a marky in progress
@@ -568,13 +559,13 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 // check the content has changed and not currently mid marky. Or that an image is being edited.
                 console.log(content);
                 console.log(card.original_content);
-                if ((content != card.original_content && (found_marky == false)) && !self.getImageEditing()) {
+                if ((content != card.original_content && (found_marky == false)) && !ImageAdjustment.getImageEditing()) {
                     // Only do this if not in current card?
                     if ($('.cropper-container').length > 0) {
                         $('.cropper-container').remove();
                         card.content = $('.content_cnv #ce' + card._id).html();
                     }
-                    if (!self.getImageEditing()) {
+                    if (!ImageAdjustment.getImageEditing()) {
                         card.content = $('.content_cnv #ce' + card._id).html();
                     }
                     // Inject the Database Service

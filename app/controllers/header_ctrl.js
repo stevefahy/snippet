@@ -1,4 +1,4 @@
-cardApp.controller("headerCtrl", ['Profile', 'Conversations', '$scope', '$rootScope', '$location', '$http', '$window', 'Cropp', function(Profile, Conversations, $scope, $rootScope, $location, $http, $window, Cropp) {
+cardApp.controller("headerCtrl", ['Profile', 'Conversations', '$scope', '$rootScope', '$location', '$http', '$window', 'ImageEdit', function(Profile, Conversations, $scope, $rootScope, $location, $http, $window, ImageEdit) {
 
     $scope.no_back = false;
 
@@ -64,7 +64,6 @@ cardApp.controller("headerCtrl", ['Profile', 'Conversations', '$scope', '$rootSc
     };
 
     $scope.changePath = function(path) {
-        Cropp.destroyCrop();
         $location.path(path);
     };
 
