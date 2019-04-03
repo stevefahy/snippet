@@ -72,16 +72,4 @@ cardApp.service('replaceTags', function() {
         }
     };
 
-    /*
-    this.removeCropper = function(str) {
-        console.log('removeCropper');
-        str = $("<div>" + str + "</div>");
-        $('.cropper-container', str).each(function(e) {
-            $(this).replaceWith($(this).html());
-        });
-        str = str.html();
-        return str;
-    };
-    */
-
 });

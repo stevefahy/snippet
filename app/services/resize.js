@@ -1,8 +1,8 @@
 //
 // Resize Service
 //
-cardApp.service('Resize', [ 'Drag', 'ImageAdjustment',  function(Drag, ImageAdjustment) {
-    
+cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjustment) {
+
     var ua = navigator.userAgent;
     var mobile = false;
     if (ua.indexOf('AndroidApp') >= 0) {
@@ -10,7 +10,6 @@ cardApp.service('Resize', [ 'Drag', 'ImageAdjustment',  function(Drag, ImageAdju
     }
 
     this.makeResizableDiv = function(div, id) {
-        // TODO - element and elmnt dupes?
         var element = document.querySelector(div);
         var resizers = document.querySelectorAll(div + ' .resizer');
         var minimum_size = 20;
@@ -21,7 +20,6 @@ cardApp.service('Resize', [ 'Drag', 'ImageAdjustment',  function(Drag, ImageAdju
         var original_mouse_x = 0;
         var original_mouse_y = 0;
         var offset_top;
-        var elmnt = document.getElementById("drag");
 
         // Set the initial clip path.
 
@@ -31,24 +29,22 @@ cardApp.service('Resize', [ 'Drag', 'ImageAdjustment',  function(Drag, ImageAdju
         var per_bottom;
         var per_right;
         var previously_cropped = false;
+
         if (ia != undefined) {
             if (ia.crop != undefined) {
                 previously_cropped = true;
             }
         }
         if (previously_cropped) {
-            // TODO - make get scale a function or imagedjustment service function.
-            // Get the scale ratio
-            var orig_image = $('.content_cnv #cropper_' + id + ' #image_' + id)[0];
-            nat_w = orig_image.naturalWidth;
+            var original_image = $('.content_cnv #cropper_' + id + ' #image_' + id)[0];
             var crop_image = document.getElementById('crop_src');
-            cur_w = $(crop_image).outerWidth();
-            var scale = nat_w / cur_w;
+            // Get scale ratio of the image (as displayed which may be scaled to fit compared to the original image).
+            var scale = ImageAdjustment.getScale(original_image, crop_image);
 
-            elmnt.style.width = ia.crop.width / scale + 'px';
-            elmnt.style.height = ia.crop.height / scale + 'px';
-            elmnt.style.top = ia.crop.y / scale + 'px';
-            elmnt.style.left = ia.crop.x / scale + 'px';
+            element.style.width = ia.crop.width / scale + 'px';
+            element.style.height = ia.crop.height / scale + 'px';
+            element.style.top = ia.crop.y / scale + 'px';
+            element.style.left = ia.crop.x / scale + 'px';
 
             per_top = ia.crop.y / scale;
             per_left = ia.crop.x / scale;
@@ -57,11 +53,10 @@ cardApp.service('Resize', [ 'Drag', 'ImageAdjustment',  function(Drag, ImageAdju
 
         } else {
             // Not previously cropped. Set crop box to a default size.
-            per_top = elmnt.offsetTop;
-            per_left = elmnt.offsetLeft;
+            per_top = element.offsetTop;
+            per_left = element.offsetLeft;
             per_bottom = $('#crop_src').outerHeight() - (per_top + $('.crop_adjust').outerHeight());
             per_right = $('#crop_src').outerWidth() - (per_left + $('.crop_adjust').outerWidth());
-        console.log(per_top + ' : ' + per_left + ' : ' + per_bottom + ' : ' + per_right);
         }
         // Set the clip path for the crop area.
         $('.crop_box.active .crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
@@ -115,8 +110,8 @@ cardApp.service('Resize', [ 'Drag', 'ImageAdjustment',  function(Drag, ImageAdju
                     }
                     if (height > minimum_size) {
                         element.style.height = height + 'px';
-                        var per_top = elmnt.offsetTop;
-                        var per_left = elmnt.offsetLeft;
+                        var per_top = element.offsetTop;
+                        var per_left = element.offsetLeft;
                         var per_bottom = $('#crop_src').height() - (per_top + $('.crop_adjust').height());
                         var per_right = $('#crop_src').width() - (per_left + $('.crop_adjust').width());
                         $('.crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
@@ -135,8 +130,8 @@ cardApp.service('Resize', [ 'Drag', 'ImageAdjustment',  function(Drag, ImageAdju
                     if (height > minimum_size) {
                         element.style.height = height + 'px';
                         element.style.top = top + 'px';
-                        var per_top = elmnt.offsetTop;
-                        var per_left = elmnt.offsetLeft;
+                        var per_top = element.offsetTop;
+                        var per_left = element.offsetLeft;
                         var per_bottom = $('#crop_src').height() - (per_top + $('.crop_adjust').height());
                         var per_right = $('#crop_src').width() - (per_left + $('.crop_adjust').width());
                         $('.crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
@@ -155,8 +150,8 @@ cardApp.service('Resize', [ 'Drag', 'ImageAdjustment',  function(Drag, ImageAdju
                     if (width > minimum_size) {
                         element.style.width = width + 'px';
                         element.style.left = left + 'px';
-                        var per_top = elmnt.offsetTop;
-                        var per_left = elmnt.offsetLeft;
+                        var per_top = element.offsetTop;
+                        var per_left = element.offsetLeft;
                         var per_bottom = $('#crop_src').height() - (per_top + $('.crop_adjust').height());
                         var per_right = $('#crop_src').width() - (per_left + $('.crop_adjust').width());
                         $('.crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
@@ -175,8 +170,8 @@ cardApp.service('Resize', [ 'Drag', 'ImageAdjustment',  function(Drag, ImageAdju
                     if (width > minimum_size) {
                         element.style.width = width + 'px';
                         element.style.left = left + 'px';
-                        var per_top = elmnt.offsetTop;
-                        var per_left = elmnt.offsetLeft;
+                        var per_top = element.offsetTop;
+                        var per_left = element.offsetLeft;
                         var per_bottom = $('#crop_src').height() - (per_top + $('.crop_adjust').height());
                         var per_right = $('#crop_src').width() - (per_left + $('.crop_adjust').width());
                         $('.crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
@@ -258,6 +253,6 @@ cardApp.service('Resize', [ 'Drag', 'ImageAdjustment',  function(Drag, ImageAdju
                 }
             }
         }
-    }
+    };
 
 }]);

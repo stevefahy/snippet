@@ -6,24 +6,15 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     var tag_count_previous;
     var paste_in_progress = false;
     var marky_started_array = [];
-    var INITIAL_KEY = 'z';
-    var INITIAL_KEY_CODE = INITIAL_KEY.toUpperCase().charCodeAt(0);
-    var ESCAPE_KEY = '\\';
     var marky_char_array = [];
     var start_key = false;
     var ua = navigator.userAgent;
-    // Image resize max width or height
-    var MAX_WIDTH = 640;
-    var MAX_HEIGHT = 640;
-    var JPEG_COMPRESSION = 0.7;
-    var IMAGES_URL = 'fileuploads/images/';
     var refreshedToken;
     var marky_found = false;
     var focused_id;
     var focused_card;
     var focused_user;
     var savedSelection;
-
 
     $window.imageUploaded = self.imageUploaded;
 
@@ -145,6 +136,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     }
 
     function resizeImage(img, exif) {
+        console.log('resizeImage');
         return $q(function(resolve, reject) {
             var canvas = document.createElement('canvas');
             var ctx = canvas.getContext('2d');
@@ -557,8 +549,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 // zm launching image capture should not trigger an update. It causes error.
                 found_marky = findMarky(card.content);
                 // check the content has changed and not currently mid marky. Or that an image is being edited.
-                console.log(content);
-                console.log(card.original_content);
                 if ((content != card.original_content && (found_marky == false)) && !ImageAdjustment.getImageEditing()) {
                     // Only do this if not in current card?
                     if ($('.cropper-container').length > 0) {

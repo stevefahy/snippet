@@ -681,7 +681,7 @@ cardApp.factory('principal', function($cookies, jwtHelper, $q, $rootScope) {
 //
 
 //cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $http, $cookies, $location, jwtHelper, $q, principal, Users, Conversations, FormatHTML, General, socket, $filter, LocalDB) {
-    cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $http, $cookies, $location, jwtHelper, $q, principal, Users, Conversations, General, socket, $filter, LocalDB) {
+cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $http, $cookies, $location, jwtHelper, $q, principal, Users, Conversations, General, socket, $filter, LocalDB) {
     var self = this;
     var user;
     var contacts = [];

@@ -1,15 +1,12 @@
 cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$q', '$filter', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', 'ImageEdit', '$compile', 'ImageAdjustment', 'Keyboard', function($scope, $rootScope, $location, $http, $window, $q, $filter, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, ImageEdit, $compile, ImageAdjustment, Keyboard) {
 
     openCrop = ImageEdit.openCrop;
-    setCrop = ImageEdit.setCrop;
     editImage = ImageEdit.editImage;
     closeEdit = ImageEdit.closeEdit;
     filterImage = ImageEdit.filterImage;
     closeFilters = ImageEdit.closeFilters;
     filterClick = ImageEdit.filterClick;
-    settingsImage = ImageEdit.settingsImage;
     adjustImage = ImageEdit.adjustImage;
-
     cancelCrop = ImageEdit.cancelCrop;
     makeCrop = ImageEdit.makeCrop;
 
@@ -27,7 +24,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.checkCursor = Format.checkCursor;
 
     $scope.$on('$destroy', function() {
-        console.log('destroy');
         //leaving controller.
         $('.image_adjust_on').remove();
         NUM_TO_LOAD = INIT_NUM_TO_LOAD;
@@ -151,18 +147,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     });
 
     $scope.$on('window_resize', function() {
-        console.log('resize');
-        //setUpScrollBar();
+        setUpScrollBar();
     });
 
     $scope.$on('ngRepeatFinishedTemp', function(ngRepeatFinishedEvent) {
-        console.log('ngRepeatFinishedTemp');
         image_check_counter++;
         checkImages('load_off_screen', image_check_counter);
     });
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
-        console.log('ngRepeatFinished');
         dir = 2;
         image_check_counter++;
         checkImages('content_cnv', image_check_counter);
@@ -190,12 +183,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.$watch('cards.length', function(newStatus) {
         // Debugging
         $rootScope.cards_length = newStatus;
-        console.log(newStatus);
         $timeout(function() {
             upDateObservers();
         }, 100);
         if (maxScroll > 0) {
-            console.log('setUpScrollBar');
             setUpScrollBar();
         }
     });
@@ -317,13 +308,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     bindScroll = function() {
-        console.log('bind');
         setUpScrollBar();
         $('.content_cnv')[0].addEventListener('scroll', scrollFunction, { passive: true }, { once: true });
     };
 
     unbindScroll = function() {
-        console.log('unbind here');
         $('.content_cnv')[0].removeEventListener('scroll', scrollFunction, { passive: true }, { once: true });
         $('.progress-container').removeClass('active');
     };
@@ -740,8 +729,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             },
             onEnd: function(id) {
                 //console.log('on end ' + $scope.adjust.sharpen);
-                //ImageAdjustment.setSharpen(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), ImageAdjustment.getTarget(), ImageAdjustment.getSource(), $scope.adjust.sharpen);
-                
                 ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'sharpen', $scope.adjust.sharpen);
                 ImageAdjustment.setSharpenUpdate(ImageAdjustment.getSource(), ImageAdjustment.getTarget(), ImageAdjustment.getImageAdjustments(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId()));
             }

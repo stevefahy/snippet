@@ -2,9 +2,8 @@
 // ImageAdjustment Service
 //
 
-//cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', 'General', 'UserData', 'principal', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML, General, UserData, principal) {
 cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'General', 'UserData', 'principal', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, General, UserData, principal) {
-    
+
     var self = this;
     var image_id;
     var source;
@@ -72,6 +71,76 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
     this.getImageEditing = function(bool) {
         return image_edit_finished;
     };
+
+    this.getImageAdjusted = function() {
+        return image_adjusted;
+    };
+
+    this.setImageAdjusted = function(boo) {
+        image_adjusted = boo;
+    };
+
+    // Helper functions
+
+    var getFilter = function(filter) {
+        var result = [];
+        var index = General.findWithAttr(FILTERS, 'filter_css_name', filter);
+        if (index >= 0) {
+            result = FILTERS[index];
+        } else {
+            result = -1;
+        }
+        return result;
+    };
+
+    var applyBlending = function(bottomImage, topImage, id, type, w, h) {
+        var deferred = $q.defer();
+        // create the canvas
+        var canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        var ctx = canvas.getContext('2d');
+        // Multiply
+        if (type == 'multiply') {
+            ctx.globalCompositeOperation = 'multiply';
+            ctx.drawImage(bottomImage, 0, 0, w, h);
+            ctx.drawImage(topImage, 0, 0, w, h);
+        }
+        // Overlay
+        if (type == 'overlay') {
+            ctx.globalCompositeOperation = 'overlay';
+            ctx.drawImage(topImage, 0, 0, w, h);
+            ctx.drawImage(bottomImage, 0, 0, w, h);
+        }
+        // Lighten
+        if (type == 'lighten') {
+            ctx.globalCompositeOperation = 'lighten';
+            ctx.drawImage(bottomImage, 0, 0, w, h);
+            ctx.drawImage(topImage, 0, 0, w, h);
+        }
+        // Darken
+        if (type == 'darken') {
+            ctx.globalCompositeOperation = 'darken';
+            ctx.drawImage(bottomImage, 0, 0, w, h);
+            ctx.drawImage(topImage, 0, 0, w, h);
+        }
+        // Screen
+        if (type == 'screen') {
+            ctx.globalCompositeOperation = 'screen';
+            ctx.drawImage(bottomImage, 0, 0, w, h);
+            ctx.drawImage(topImage, 0, 0, w, h);
+        }
+        // Screen
+        if (type == 'soft-light') {
+            ctx.globalCompositeOperation = 'soft-light';
+            ctx.drawImage(topImage, 0, 0, w, h);
+            ctx.drawImage(bottomImage, 0, 0, w, h);
+        }
+        deferred.resolve(canvas);
+        return deferred.promise;
+    };
+
+    // Image processing.
 
     this.getPixels = function(img) {
         var c = this.getCanvas(img.width, img.height);
@@ -215,79 +284,51 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         return output;
     };
 
-    /*
-    this.createTemp = function(id) {
-        var source = $('temp_canvas_filtered_' + id).clone().appendTo('#cropper_' + id);
-        $(source).removeAttr('id');
-        $(source).attr('id', 'source');
-        return source;
-    };
-    */
-    /*
-    this.returnCrop = function(source, crop) {
-        var deferred = $q.defer();
-        var cropped_canvas = document.createElement("canvas");
-        var sx = crop.x;
-        var sy = crop.y;
-        var swidth = crop.width;
-        var sheight = crop.height;
-        cropped_canvas.width = swidth;
-        cropped_canvas.height = sheight;
-        var ctx = cropped_canvas.getContext('2d');
-        ctx.drawImage(source, sx, sy, swidth, sheight, 0, 0, swidth, sheight);
-        deferred.resolve(cropped_canvas);
-        return deferred.promise;
-    };
-    */
+    // General
 
-    this.applyCrop = function(target, crop) {
-        var deferred = $q.defer();
-        if (crop != undefined) {
-            var cropped_canvas = document.createElement("canvas");
-            var sx = crop.x;
-            var sy = crop.y;
-            var swidth = crop.width;
-            var sheight = crop.height;
-            cropped_canvas.width = swidth;
-            cropped_canvas.height = sheight;
-            var ctx = cropped_canvas.getContext('2d');
-            ctx.drawImage(target, sx, sy, swidth, sheight, 0, 0, swidth, sheight);
-            target.width = swidth;
-            target.height = sheight;
-            var ctx2 = target.getContext('2d');
-            ctx2.drawImage(cropped_canvas, 0, 0);
-            deferred.resolve();
-        } else {
-            deferred.resolve();
-        }
-        return deferred.promise;
+    this.cloneCanvas = function(oldCanvas) {
+        //create a new canvas
+        var newCanvas = document.createElement('canvas');
+        var context = newCanvas.getContext('2d');
+        //set dimensions
+        newCanvas.width = oldCanvas.width;
+        newCanvas.height = oldCanvas.height;
+        //apply the old canvas to the new one
+        context.drawImage(oldCanvas, 0, 0);
+        //return the new canvas
+        return newCanvas;
     };
+
+    this.getScale = function(original_image, crop_image) {
+        var nat_w = original_image.naturalWidth;
+        var cur_w = $(crop_image).outerWidth();
+        var scale = nat_w / cur_w;
+        return scale;
+    };
+
+    // Apply all image adjustments passed in the filters object.
 
     this.applyFilters = function(source, filters) {
         var deferred = $q.defer();
-        console.log(filters);
-        if(filters == undefined){
-            filters = {sharpen:undefined, filter:undefined, crop: undefined};
+        if (filters == undefined) {
+            filters = { sharpen: undefined, filter: undefined, crop: undefined };
         }
-        // Sharpen from source first
-        // Crop last.
+        // Sharpen from source first, Crop last. Pass each adjustment to the next filter.
         self.filter(source, filters.filter)
             .then(function(result) {
-                console.log(result);
-                return self.sharpen(result, filters.sharpen)
+                return self.sharpen(result, filters.sharpen);
             }).then(function(result) {
-                console.log(result);
                 return self.crop(result, filters.crop);
             }).then(function(result) {
-                console.log(result);
                 deferred.resolve(result);
             });
         return deferred.promise;
-
     };
 
+    // Sharpen
+
+    // Return the sharpened canvas.
     this.sharpen = function(source, amount) {
-        console.log('sharpen');
         var deferred = $q.defer();
         var new_canvas = document.createElement("canvas");
         new_canvas.width = source.width;
@@ -299,7 +340,6 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             var adjacent = (1 - sharpen) / 4;
             var matrix = [0, adjacent, 0, adjacent, sharpen, adjacent, 0, adjacent, 0];
             var res = self.filterImage(self.convolute, source, matrix);
-            //var ctx = target.getContext('2d');
             ctx.putImageData(res, 0, 0);
             deferred.resolve(new_canvas);
         } else {
@@ -308,9 +348,8 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         return deferred.promise;
     };
 
-
+    // Apply directly to the target canvas. Changed sharpen amount.
     this.setSharpenUpdate = function(source, target, filters) {
-        console.log('sharpenUpdate');
         var deferred = $q.defer();
         this.applyFilters(source, filters).then(function(result) {
             target.width = result.width;
@@ -324,108 +363,42 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         return deferred.promise;
     };
 
-    this.getImageAdjusted = function(){
-        return image_adjusted;
-    };
+    // Filter
 
-    this.setImageAdjusted = function(boo){
-        image_adjusted = boo;
-    };
-    
-    /*
-    this.setSharpen = function(parent_container, id, target, source, amount) {
+    this.filter = function(source, filter) {
         var deferred = $q.defer();
-        if (amount != undefined) {
-            var sharpen = amount;
-            var adjacent = (1 - sharpen) / 4;
-            var matrix = [0, adjacent, 0, adjacent, sharpen, adjacent, 0, adjacent, 0];
-            var res = self.filterImage(self.convolute, source, matrix);
-            var ctx = target.getContext('2d');
-            ctx.putImageData(res, 0, 0);
-            $('.' + parent_container + ' #cropper_' + id + ' .target_canvas').addClass('adjusted');
-            this.setImageAdjustment(parent_container, id, 'sharpen', amount);
-            this.setImageAdjusted(true);
-            deferred.resolve();
+        var promises = [];
+        var new_canvas = document.createElement("canvas");
+        new_canvas.width = source.width;
+        new_canvas.height = source.height;
+        var ctx = new_canvas.getContext('2d');
+        // reset filter
+        ctx.filter = "none";
+        ctx.drawImage(source, 0, 0);
+        if (filter != undefined) {
+            prom1 = self.filterLayers(new_canvas, filter).then(function(canvas) {
+                var filter_data = getFilter(filter);
+                if (filter_data.filter != undefined) {
+                    ctx.filter = filter_data.filter;
+                }
+                ctx.drawImage(canvas, 0, 0);
+            });
+            promises.push(prom1);
         } else {
-            deferred.resolve();
+            deferred.resolve(new_canvas);
         }
+        $q.all(promises).then(function() {
+            deferred.resolve(new_canvas);
+        });
         return deferred.promise;
     };
-    */
-    
 
-    function getFilter(filter) {
-        var result = [];
-        var index = General.findWithAttr(FILTERS, 'filter_css_name', filter);
-        if (index >= 0) {
-            result = FILTERS[index];
-        } else {
-            result = -1;
-        }
-        return result;
-    }
-
-    function applyBlendingNew(bottomImage, topImage, id, type, w, h) {
-        var deferred = $q.defer();
-        // create the canvas
-        var canvas = document.createElement('canvas');
-        canvas.width = w;
-        canvas.height = h;
-        var ctx = canvas.getContext('2d');
-        // Multiply
-        if (type == 'multiply') {
-            ctx.globalCompositeOperation = 'multiply';
-            ctx.drawImage(bottomImage, 0, 0, w, h);
-            ctx.drawImage(topImage, 0, 0, w, h);
-        }
-        // Overlay
-        if (type == 'overlay') {
-            ctx.globalCompositeOperation = 'overlay';
-            ctx.drawImage(topImage, 0, 0, w, h);
-            ctx.drawImage(bottomImage, 0, 0, w, h);
-        }
-        // Lighten
-        if (type == 'lighten') {
-            ctx.globalCompositeOperation = 'lighten';
-            ctx.drawImage(bottomImage, 0, 0, w, h);
-            ctx.drawImage(topImage, 0, 0, w, h);
-        }
-        // Darken
-        if (type == 'darken') {
-            ctx.globalCompositeOperation = 'darken';
-            ctx.drawImage(bottomImage, 0, 0, w, h);
-            ctx.drawImage(topImage, 0, 0, w, h);
-        }
-        // Screen
-        if (type == 'screen') {
-            ctx.globalCompositeOperation = 'screen';
-            ctx.drawImage(bottomImage, 0, 0, w, h);
-            ctx.drawImage(topImage, 0, 0, w, h);
-        }
-        // Screen
-        if (type == 'soft-light') {
-            ctx.globalCompositeOperation = 'soft-light';
-            ctx.drawImage(topImage, 0, 0, w, h);
-            ctx.drawImage(bottomImage, 0, 0, w, h);
-        }
-        deferred.resolve(canvas);
-        return deferred.promise;
-    }
-
+    // Create any layers required by a filter.
     this.filterLayers = function(canvas, filter) {
-        console.log('filterLayers');
         var deferred = $q.defer();
-        console.log(canvas);
-        //var dataimage = $(canvas).attr('data-image');
-        //dataimage = JSON.parse(dataimage);
-        //var w = dataimage.width;
-        //var h = dataimage.height;
         var w = canvas.width;
         var h = canvas.height;
-        console.log(w + ' : ' + h);
-
         var targetCtx = canvas.getContext('2d');
-
         var filter_data = getFilter(filter);
         // Convert image to canvas
         var topImage = canvas;
@@ -433,7 +406,6 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         topCanvas.width = w;
         topCanvas.height = h;
         var topCtx = topCanvas.getContext('2d');
-        //topCtx.drawImage(topImage, 0, 0, w, h);
         topCtx.drawImage(topImage, 0, 0);
         // If there is a blend to be applied.
         if (filter_data.blend != 'none') {
@@ -482,154 +454,20 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             var bottomCtx = bottomCanvas.getContext('2d');
             bottomCtx.drawImage(bottomImage, 0, 0, w, h);
             var id = 'steve';
-            applyBlendingNew(bottomImage, topImage, id, filter_data.blend, w, h).then(function(result) {
+            applyBlending(bottomImage, topImage, id, filter_data.blend, w, h).then(function(result) {
                 targetCtx.drawImage(result, 0, 0, w, h);
-                console.log('filterLayers done 2');
                 deferred.resolve(result);
             });
         } else {
-            console.log('filterLayers done 1');
             targetCtx.drawImage(topCanvas, 0, 0, w, h);
             deferred.resolve(topCanvas);
         }
         return deferred.promise;
     };
 
-    this.filter = function(source, filter) {
-        var deferred = $q.defer();
-        var promises = [];
-        var new_canvas = document.createElement("canvas");
-        new_canvas.width = source.width;
-        new_canvas.height = source.height;
-        var ctx = new_canvas.getContext('2d');
-        // reset filter
-        ctx.filter = "none";
-        ctx.drawImage(source, 0, 0);
-        if (filter != undefined) {
-            prom1 = self.filterLayers(new_canvas, filter).then(function(canvas) {
-                var filter_data = getFilter(filter);
-                if (filter_data.filter != undefined) {
-                    ctx.filter = filter_data.filter;
-                }
-                ctx.drawImage(canvas, 0, 0);
-            });
-            promises.push(prom1);
-        } else {
-            deferred.resolve(new_canvas);
-        }
-        $q.all(promises).then(function() {
-            deferred.resolve(new_canvas);
-        });
-        return deferred.promise;
-    };
-
-    /*
-    this.composeFilter = function(target, filter) {
-        console.log('composeFilter');
-        var deferred = $q.defer();
-        var promises = [];
-        if (filter != undefined) {
-            //var selfy = self;
-            prom1 = self.filterLayers(target, filter).then(function(canvas) {
-                console.log(canvas);
-                var dataimage = $(target).attr('data-image');
-                dataimage = JSON.parse(dataimage);
-                var w = dataimage.width;
-                var h = dataimage.height;
-                console.log(w + ' : ' + h);
-
-                var ctx = target.getContext('2d');
-                var filter_data = getFilter(filter);
-                if (filter_data.filter != undefined) {
-                    ctx.filter = filter_data.filter;
-                }
-                ctx.drawImage(target, 0, 0);
-            });
-            promises.push(prom1);
-        } else {
-            console.log('composefilter undefined fin');
-            deferred.resolve();
-        }
-        $q.all(promises).then(function() {
-            console.log('composefilter all promise');
-            deferred.resolve();
-            //return selfy;
-        });
-        return deferred.promise;
-        //return self;
-    };
-    */
-
-    this.cloneCanvas = function(oldCanvas) {
-        //create a new canvas
-        var newCanvas = document.createElement('canvas');
-        var context = newCanvas.getContext('2d');
-        //set dimensions
-        newCanvas.width = oldCanvas.width;
-        newCanvas.height = oldCanvas.height;
-        //apply the old canvas to the new one
-        context.drawImage(oldCanvas, 0, 0);
-        //return the new canvas
-        return newCanvas;
-    };
-
-    this.getScale = function(original_image, crop_image){
-        var nat_w = original_image.naturalWidth;
-        var cur_w = $(crop_image).outerWidth();
-        var scale = nat_w / cur_w;
-        return scale;
-    };
-
-    /*
-    this.crop = function(parent_container, id, target, source, crop) {
-        var deferred = $q.defer();
-        if (crop != undefined) {
-            console.log('ai crop');
-            console.log(source);
-
-            var source = self.cloneCanvas(target);
-            console.log(source);
-            nat_w = source.width;
-            //nat_h = orig_image.naturalHeight;
-            console.log(nat_w);
-            //var crop_image = document.getElementById('crop_src');
-            //cur_w = $(crop_image).outerWidth();
-            console.log(target);
-            cur_w = target.width;
-            console.log(cur_w);
-            var scale = nat_w / cur_w;
-            console.log(scale);
-
-            console.log(crop);
-            var sx = crop.x;
-            var sy = crop.y;
-            var swidth = crop.width;
-            var sheight = crop.height;
-
-            var source_canvas = source;
-            var cropped_canvas = target;
-
-            target.width = swidth;
-            target.height = sheight;
-            var ctx = target.getContext('2d');
-            ctx.drawImage(source, sx, sy, swidth, sheight, 0, 0, swidth, sheight);
-            // ctx.drawImage(source, 0, 0);
-            // img, sx, sy, swidth, sheight, x, y, width, height
-            self.setImageAdjustment(parent_container, id, 'crop', crop);
-
-            //var data = { width: swidth, height: sheight };
-            //$(target).attr('data-image', JSON.stringify(data));
-            console.log('crop fin');
-            deferred.resolve();
-        } else {
-            deferred.resolve();
-        }
-        return deferred.promise;
-    };
-    */
+    // Crop
 
     this.crop = function(source, crop) {
-        console.log('mycrop');
         var deferred = $q.defer();
         var new_canvas = document.createElement("canvas");
         new_canvas.width = source.width;
@@ -650,4 +488,5 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         }
         return deferred.promise;
     };
+
 }]);
