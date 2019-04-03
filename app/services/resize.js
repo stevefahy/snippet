@@ -282,7 +282,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                         top = original_y - offset_top;
                     } else {
                         //width = original_width - (e.touches[0].pageX - original_mouse_x) - original_width;
-                        width = original_width + (e.pageX - original_x) - original_width;
+                        width = original_width + (e.touches[0].pageX - original_x) - original_width;
                         height = original_height + (e.touches[0].pageY - original_mouse_y);
                         left = original_x;
                         top = original_y - offset_top;
