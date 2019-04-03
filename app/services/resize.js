@@ -3,6 +3,10 @@
 //
 cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjustment) {
 
+    // TODO 
+    // min size
+    // limit to bounds (also drag);
+
     var ua = navigator.userAgent;
     var mobile = false;
     if (ua.indexOf('AndroidApp') >= 0) {
@@ -74,13 +78,23 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                 $('.content_cnv').css('overflow-y', 'hidden');
                 // Stop Drag
                 Drag.stopDragElement();
+
+                var cropper_loc = $(element).closest('.cropper_cont');
+                offset_top = $(cropper_loc).offset().top;
+
+                var crop_area = document.querySelector('.crop_area');
+                bound_r = crop_area.getBoundingClientRect().right;
+                bound_l = crop_area.getBoundingClientRect().left;
+                bound_t = crop_area.getBoundingClientRect().top - offset_top;
+                bound_b = crop_area.getBoundingClientRect().bottom - offset_top;
+                bound_offset_top = $(crop_area).offset().top;
+
+                console.log(bound_l + ' : ' + bound_r + ' : ' + bound_t + ' : ' + bound_b);
+
                 original_width = parseFloat(getComputedStyle(element, null).getPropertyValue('width').replace('px', ''));
                 original_height = parseFloat(getComputedStyle(element, null).getPropertyValue('height').replace('px', ''));
                 original_x = element.getBoundingClientRect().left;
                 original_y = element.getBoundingClientRect().top;
-
-                var cropper_loc = $(element).closest('.cropper_cont');
-                offset_top = $(cropper_loc).offset().top;
 
                 if (!mobile) {
                     original_mouse_x = e.pageX;
@@ -99,14 +113,21 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
             }
 
             function resize(e) {
+                console.log('t: ' + (e.pageY - offset_top) + ' l: ' + (e.pageX - original_x) + ' r: ' + (e.pageX - original_x));
                 if (currentResizer.classList.contains('bottom-middle')) {
                     var width;
                     var height;
                     var top;
+                    var bottom;
                     if (!mobile) {
                         height = original_height + (e.pageY - original_mouse_y);
+                        bottom = e.pageY - offset_top;
                     } else {
                         height = original_height + (e.touches[0].pageY - original_mouse_y);
+                        bottom = e.touches[0].pageY - offset_top;
+                    }
+                    if ((height + element.offsetTop) > bound_b) {
+                        height = bound_b - element.offsetTop;
                     }
                     if (height > minimum_size) {
                         element.style.height = height + 'px';
@@ -127,7 +148,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                         height = (original_height - (e.touches[0].pageY - original_y));
                         top = e.touches[0].pageY - offset_top;
                     }
-                    if (height > minimum_size) {
+                    if (height > minimum_size && top >= bound_t) {
                         element.style.height = height + 'px';
                         element.style.top = top + 'px';
                         var per_top = element.offsetTop;
@@ -146,6 +167,9 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                     } else {
                         width = (original_width + (e.touches[0].pageX - original_x) - original_width);
                         left = original_x;
+                    }
+                    if(left+width > bound_r){
+                        width = bound_r - left;
                     }
                     if (width > minimum_size) {
                         element.style.width = width + 'px';
@@ -167,6 +191,12 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                         width = (original_width - (e.touches[0].pageX - original_mouse_x));
                         left = original_x + (e.touches[0].pageX - original_mouse_x);
                     }
+                    if(left < 0){
+                        width = width+left;
+                        left = 0;
+                    }
+                    
+
                     if (width > minimum_size) {
                         element.style.width = width + 'px';
                         element.style.left = left + 'px';
@@ -175,6 +205,8 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                         var per_bottom = $('#crop_src').height() - (per_top + $('.crop_adjust').height());
                         var per_right = $('#crop_src').width() - (per_left + $('.crop_adjust').width());
                         $('.crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
+                    } else {
+                        left = 0;
                     }
                 } else if (currentResizer.classList.contains('bottom-left')) {
                     var width;
@@ -187,16 +219,27 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                         height = original_height + (e.touches[0].pageY - original_mouse_y);
                         width = original_width - (e.touches[0].pageX - original_mouse_x);
                     }
+                    if ((height + element.offsetTop) > bound_b) {
+                        height = bound_b - element.offsetTop;
+                    }
                     if (height > minimum_size) {
                         element.style.height = height + 'px';
                     }
                     if (width > minimum_size) {
-                        element.style.width = width + 'px';
+                        
                         if (!mobile) {
-                            element.style.left = original_x + (e.pageX - original_mouse_x) + 'px';
+                            calc_left = original_x + (e.pageX - original_mouse_x);
                         } else {
-                            element.style.left = original_x + (e.touches[0].pageX - original_mouse_x) + 'px';
+                            calc_left = original_x + (e.touches[0].pageX - original_mouse_x);
                         }
+
+                        if(calc_left < 0){
+                            width = width+calc_left;
+                            calc_left = 0;
+                        } 
+                        element.style.width = width + 'px';
+                        element.style.left = calc_left + 'px';
+
                     }
                     var per_top = element.offsetTop;
                     var per_left = element.offsetLeft;
@@ -207,6 +250,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                     var width;
                     var height;
                     var top;
+                    var calc_top;
                     if (!mobile) {
                         width = original_width + (e.pageX - original_mouse_x);
                         height = original_height - (e.pageY - original_mouse_y);
@@ -214,16 +258,26 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                         width = original_width + (e.touches[0].pageX - original_mouse_x);
                         height = original_height - (e.touches[0].pageY - original_mouse_y);
                     }
+                    left = original_x;
+                    if(left+width > bound_r){
+                        width = bound_r - left;
+                    }
+
                     if (width > minimum_size) {
                         element.style.width = width + 'px';
                     }
                     if (height > minimum_size) {
-                        element.style.height = height + 'px';
                         if (!mobile) {
-                            element.style.top = original_y + (e.pageY - original_mouse_y) - offset_top + 'px';
+                            calc_top = original_y + (e.pageY - original_mouse_y) - offset_top;
                         } else {
-                            element.style.top = original_y + (e.touches[0].pageY - original_mouse_y) - offset_top + 'px';
+                            calc_top = original_y + (e.touches[0].pageY - original_mouse_y) - offset_top;
                         }
+                        if (calc_top > 0) {
+                            element.style.top = calc_top + 'px';
+                        } else {
+                            element.style.top = 0 + 'px';
+                        }
+                        element.style.height = height + 'px';
                     }
                     var per_top = element.offsetTop;
                     var per_left = element.offsetLeft;
@@ -234,6 +288,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                     var width;
                     var height;
                     var top;
+                    var calc_top;
                     if (!mobile) {
                         width = original_width - (e.pageX - original_mouse_x);
                         height = original_height - (e.pageY - original_mouse_y);
@@ -241,21 +296,32 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                         width = original_width - (e.touches[0].pageX - original_mouse_x);
                         height = original_height - (e.touches[0].pageY - original_mouse_y);
                     }
+
+       
                     if (width > minimum_size) {
                         element.style.width = width + 'px';
                         if (!mobile) {
-                            element.style.left = original_x + (e.pageX - original_mouse_x) + 'px';
+                            calc_left = original_x + (e.pageX - original_mouse_x);
                         } else {
-                            element.style.left = original_x + (e.touches[0].pageX - original_mouse_x) + 'px';
+                            calc_left = original_x + (e.touches[0].pageX - original_mouse_x);
                         }
+                        if(calc_left < 0){
+                            calc_left = 0;
+                        } 
+                        element.style.left = calc_left + 'px';
                     }
                     if (height > minimum_size) {
-                        element.style.height = height + 'px';
                         if (!mobile) {
-                            element.style.top = original_y + (e.pageY - original_mouse_y) - offset_top + 'px';
+                            calc_top = original_y + (e.pageY - original_mouse_y) - offset_top;
                         } else {
-                            element.style.top = original_y + (e.touches[0].pageY - original_mouse_y) - offset_top + 'px';
+                            calc_top = original_y + (e.touches[0].pageY - original_mouse_y) - offset_top;
                         }
+                        if (calc_top > 0) {
+                            element.style.top = calc_top + 'px';
+                        } else {
+                            element.style.top = 0 + 'px';
+                        }
+                        element.style.height = height + 'px';
                     }
                     var per_top = element.offsetTop;
                     var per_left = element.offsetLeft;
@@ -277,6 +343,12 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                         left = original_x;
                         top = original_y - offset_top;
                     }
+
+                    left = original_x;
+                    if(left+width > bound_r){
+                        width = bound_r - left;
+                    }
+
                     if (width > minimum_size) {
                         element.style.width = width + 'px';
                         if (!mobile) {
@@ -284,6 +356,9 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                         } else {
                             element.style.left = left + 'px';
                         }
+                    }
+                    if ((height + element.offsetTop) > bound_b) {
+                        height = bound_b - element.offsetTop;
                     }
                     if (height > minimum_size) {
                         element.style.height = height + 'px';
