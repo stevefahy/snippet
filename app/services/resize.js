@@ -422,20 +422,20 @@ left = original_x - offset_left;
                     var height;
                     var top;
                     if (!mobile) {
-                         width = original_width + (e.pageX - original_mouse_x) + offset_left;
+                         width = original_width + (e.pageX - original_mouse_x) ;
                        // width = original_width + (e.pageX - original_x) - original_width;
                         height = original_height + (e.pageY - original_mouse_y);
                         //left = original_x;
                         top = original_y - offset_top;
                     } else {
                         //width = original_width + (e.touches[0].pageX - original_x) - original_width;
-                        width = original_width + (e.touches[0].pageX - original_mouse_x) + offset_left;
+                        width = original_width + (e.touches[0].pageX - original_mouse_x) ;
                         height = original_height + (e.touches[0].pageY - original_mouse_y);
                         //left = original_x;
                         top = original_y - offset_top;
                     }
 
-                    left = original_x - offset_left;
+                    left = original_x ;
                     if (left + width > bound_r) {
                         width = bound_r - left;
                     }
@@ -460,9 +460,12 @@ left = original_x - offset_left;
                         }
                     }
                     var per_top = element.offsetTop;
-                    var per_left = left;
+                    var per_left = left - offset_left;
+                    if(per_left <0 ){
+                        per_left = 0;
+                    }
                     var per_bottom = $('#crop_src').outerHeight() - (per_top + $('.crop_adjust').outerHeight());
-                    var per_right = Math.round($('#crop_src').outerWidth() - (per_left + $('.crop_adjust').outerWidth()) + offset_left);
+                    var per_right = Math.round($('#crop_src').outerWidth() - (per_left + $('.crop_adjust').outerWidth()));
                     $('.crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
                 }
             }
