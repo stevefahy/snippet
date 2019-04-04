@@ -3173,46 +3173,46 @@ span.after_image {
 }
 
 .resizable .resizers .resizer.top-left {
-    left: -30px;
-    top: -30px;
+    left: -15px;
+    top: -15px;
     cursor: nwse-resize;
 }
 
 .resizable .resizers .resizer.top-middle {
-    top: -30px;
+    top: -15px;
     cursor: n-resize;
 }
 
 .resizable .resizers .resizer.top-right {
-    right: -30px;
-    top: -30px;
+    right: -15px;
+    top: -15px;
     cursor: nesw-resize;
 }
 
 .resizable .resizers .resizer.bottom-left {
-    left: -30px;
-    bottom: -30px;
+    left: -15px;
+    bottom: -15px;
     cursor: nesw-resize;
 }
 
 .resizable .resizers .resizer.bottom-middle {
-    bottom: -30px;
+    bottom: -15px;
     cursor: n-resize;
 }
 
 .resizable .resizers .resizer.bottom-right {
-    right: -30px;
-    bottom: -30px;
+    right: -15px;
+    bottom: -15px;
     cursor: nwse-resize;
 }
 
 .resizable .resizers .resizer.right-middle {
-    right: -30px;
+    right: -15px;
     cursor: e-resize;
 }
 
 .resizable .resizers .resizer.left-middle {
-    left: -30px;
+    left: -15px;
     cursor: e-resize;
 }
 
