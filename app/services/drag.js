@@ -19,9 +19,13 @@ cardApp.service('Drag', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Us
     var bound_h;
 
     var drag_w;
+    var drag_h;
+
+    var boundary = null;
 
     this.setUp = function(elmnt, boundary) {
         self.elmnt = elmnt;
+        self.boundary = boundary;
         var pos1 = 0,
             pos2 = 0,
             pos3 = 0,
@@ -55,6 +59,10 @@ cardApp.service('Drag', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Us
         pos4 = e.clientY;
 
         drag_w = $(self.elmnt).outerWidth();
+        drag_h = $(self.elmnt).height();
+
+        source_h = $(self.boundary).height();
+        source_w = $(self.boundary).width();
 
         if (!mobile) {
             document.onmouseup = self.closeDragElement;
@@ -90,26 +98,46 @@ cardApp.service('Drag', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Us
         var per_top;
         var per_left;
         // set the element's new position:
-        var pos = $(self.elmnt).position();
+        /*var pos = $(self.elmnt).position();
         var new_top = pos.top - pos2;
         var new_left = pos.left - pos1;
-        //var new_top = self.elmnt.offsetTop - pos2;
-        //var new_left = self.elmnt.offsetLeft - pos1;
+        */
+        var new_top = self.elmnt.offsetTop - pos2;
+        var new_left = self.elmnt.offsetLeft - pos1;
         var current_right = drag_w + new_left;
+        var current_bottom = drag_h + new_top;
         //console.log(current_right);
         //console.log(bound_w);
+/*
+        var drag = true;
+        if(new_top < 0){
+            drag = false;
+        } 
+        if(new_left < 0){
+            drag = false;
+        }
+        if(current_right > bound_w){
+            drag = false;
+        }
+        if(current_bottom > bound_h){
+            drag = false;
+        }
+        */
         
 
 
 
         //self.closeDragElement
-        if (new_top >= 0 && (new_left >= 0 && current_right <= bound_w)) {
+        if (new_top >= 0 && (new_left >= 0) && (current_right <= bound_w) && (current_bottom <= bound_h)) {
+        //if(drag){
             self.elmnt.style.top = new_top + "px";
-            per_top = new_top;
             self.elmnt.style.left = new_left + "px";
+            per_top = new_top;
             per_left = new_left;
-            var per_bottom = $('#crop_src').height() - (per_top + $('.crop_adjust').outerHeight());
-            var per_right = $('#crop_src').width() - (per_left + $('.crop_adjust').outerWidth());
+            //var per_bottom = $('#crop_src').height() - (per_top + $('.crop_adjust').outerHeight());
+            //var per_right = $('#crop_src').width() - (per_left + $('.crop_adjust').outerWidth());
+            var per_bottom = source_h - (per_top + drag_h);
+            var per_right = source_w - (per_left + drag_w);
             $('.crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
         }
         //var per_top = self.elmnt.offsetTop - pos2;
