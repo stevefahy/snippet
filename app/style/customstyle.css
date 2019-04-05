@@ -3167,7 +3167,7 @@ span.after_image {
     height: 60px;
     /*border-radius: 50%;*/
     /*magic to turn square into circle*/
-    background: white;
+    /*background: white;*/
     border: 3px solid #4286f4;
     position: absolute;
 }
