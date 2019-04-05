@@ -281,7 +281,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                         width = original_width + (e.touches[0].pageX - original_mouse_x);
                         height = original_height - (e.touches[0].pageY - original_mouse_y);
                     }
-                    left = original_x - offset_left;
+                    left = original_x - offset_left ;
                     if (left + width > bound_r) {
                         width = bound_r - left;
                     }
@@ -292,7 +292,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                         height = bound_h;
                     }
                     if (left < 0) {
-                        left = 0;
+                        left = 0 - offset_left;
                     }
                     element.style.left = left + 'px';
                     if (width > MIN_CROP_SIZE) {
@@ -300,22 +300,18 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                     }
                     if (height > MIN_CROP_SIZE) {
                         if (!mobile) {
-                            calc_top = original_y + (e.pageY - original_mouse_y) - offset_top;
+                            calc_top = original_y + (e.pageY - original_mouse_y) - offset_top ;
                         } else {
-                            calc_top = original_y + (e.touches[0].pageY - original_mouse_y) - offset_top;
+                            calc_top = original_y + (e.touches[0].pageY - original_mouse_y) - offset_top ;
                         }
                         if (calc_top < 0) {
-                            calc_top = 0;
+                            calc_top = 0 ;
                         }
                         element.style.top = calc_top + 'px';
-                        // maintain bottom position
-                        if (height > original_height + (original_y - offset_top)) {
-                            height = original_height + (original_y - offset_top);
-                        }
                         element.style.height = height + 'px';
                     }
-                    per_top = element.offsetTop;
-                    per_left = left - offset_left;
+                    per_top = calc_top;
+                    per_left = left ;
                     per_bottom = $('#crop_src').outerHeight() - (per_top + $('.crop_adjust').outerHeight());
                     per_right = Math.round($('#crop_src').outerWidth() - (per_left + $('.crop_adjust').outerWidth()));
                     $('.crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
