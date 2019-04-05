@@ -93,11 +93,34 @@ cardApp.service('Drag', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Us
             new_top = bound_h - drag_h;
         }
 
+        var per_bottom = bound_h - (new_top + drag_h);
+        var per_right = bound_w - (new_left + drag_w);
+
+        if(new_top == 0){
+            $(self.elmnt).addClass('crop_top_max');
+        } else {
+            $(self.elmnt).removeClass('crop_top_max');
+        }
+        if(new_left == 0){
+            $(self.elmnt).addClass('crop_left_max');
+        } else {
+            $(self.elmnt).removeClass('crop_left_max');
+        }
+        if(per_bottom == 0){
+            $(self.elmnt).addClass('crop_bottom_max');
+        } else {
+            $(self.elmnt).removeClass('crop_bottom_max');
+        }
+        if(per_right == 0){
+            $(self.elmnt).addClass('crop_right_max');
+        } else {
+            $(self.elmnt).removeClass('crop_right_max');
+        }
+
         self.elmnt.style.top = new_top + "px";
         self.elmnt.style.left = new_left + "px";
 
-        var per_bottom = bound_h - (new_top + drag_h);
-        var per_right = bound_w - (new_left + drag_w);
+
 
         $('.crop_area')[0].style.clipPath = "inset(" + new_top + "px " + per_right + "px " + per_bottom + "px " + new_left + "px)";
     }
