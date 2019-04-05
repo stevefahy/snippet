@@ -114,6 +114,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                 original_y = element.getBoundingClientRect().top;
                 original_offset_left = $(element).offset().left;
                 original_bottom = element.getBoundingClientRect().bottom;
+                original_right = element.getBoundingClientRect().right;
 
                 if (!mobile) {
                     original_mouse_x = e.pageX;
@@ -236,7 +237,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                         per_top = element.offsetTop;
                         per_left = left;
                         per_bottom = $('#crop_src').outerHeight() - (per_top + $('.crop_adjust').outerHeight());
-                        per_right = Math.round($('#crop_src').outerWidth() - (per_left + $('.crop_adjust').outerWidth()));
+                        per_right = Math.round($('#crop_src').outerWidth() - (per_left + $('.crop_adjust').outerWidth() - offset_left));
                         $('.crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
                     }
 
@@ -269,9 +270,9 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                         element.style.left = calc_left + 'px';
                     }
                     per_top = element.offsetTop;
-                    per_left = element.offsetLeft;
+                    per_left = calc_left;
                     per_bottom = $('#crop_src').outerHeight() - (per_top + $('.crop_adjust').outerHeight());
-                    per_right = $('#crop_src').outerWidth() - (per_left + $('.crop_adjust').outerWidth());
+                    per_right = Math.round(($('#crop_src').outerWidth()) - (per_left + ($('.crop_adjust').outerWidth() - offset_left)));
                     $('.crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
 
                 } else if (currentResizer.classList.contains('top-right')) {
@@ -365,7 +366,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                     per_top = calc_top;
                     per_left = left;
                     per_bottom = $('#crop_src').outerHeight() - (per_top + $('.crop_adjust').outerHeight());
-                    per_right = $('#crop_src').outerWidth() - (per_left + $('.crop_adjust').outerWidth());
+                    per_right = Math.round($('#crop_src').outerWidth() - (per_left + $('.crop_adjust').outerWidth()) + offset_left);
                     $('.crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
 
                 } else if (currentResizer.classList.contains('bottom-right')) {
