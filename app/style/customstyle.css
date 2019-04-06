@@ -3128,7 +3128,7 @@ span.after_image {
     visibility: visible;
     width: 100%;
     height: 100%;
-    background-color: rgba(25, 25, 25, 0.5);
+    background-color: rgba(25, 25, 25, 0.6);
     position: absolute;
     top: 0px;
     left: 0px;
@@ -3142,7 +3142,7 @@ span.after_image {
     top: 33%;
     z-index: 1;
     /* outline-color: #9E9E9E; */
-    outline: 1.5px solid #FFFFFF;
+    border: 2px solid #e8e8e8;
 }
 
 #crop_src {
@@ -3173,7 +3173,6 @@ span.after_image {
 
 .resizable .resizers {
     display: flex;
-    /* border: 1px solid #E91E63; */
     align-items: center;
     justify-content: center;
 }
@@ -3181,10 +3180,6 @@ span.after_image {
 .resizable .resizers .resizer {
     width: 60px;
     height: 60px;
-    /*border-radius: 50%;*/
-    /*magic to turn square into circle*/
-    /*background: white;*/
-    /* border: 3px solid #4286f4; */
     position: absolute;
     z-index: 1;
 }
@@ -3234,46 +3229,53 @@ span.after_image {
 }
 
 .resizable .resizers .point {
-    width: 20px;
-    height: 20px;
+    width: 30px;
+    height: 30px;
     position: absolute;
     border-color: #FFFFFF;
 }
 
 .resizable .resizers .point.top-left {
-    left: 0px;
-    top: 0px;
-    border-top-width: 3px;
+    left: -2px;
+    top: -2px;
+    border-top-width: 4px;
     border-top-style: solid;
-    border-left-width: 3px;
+    border-left-width: 4px;
     border-left-style: solid;
 }
 
+.crop_adjust.active .point {
+    border-color: #39f;
+}
+
+.crop_adjust.active_resize .point {
+    border-color: #39f;
+}
+
 .resizable .resizers .point.top-right {
-    right: 0px;
-    top: 0px;
-    border-top-width: 3px;
+    right: -2px;
+    top: -2px;
+    border-top-width: 4px;
     border-top-style: solid;
-    border-right-width: 3px;
+    border-right-width: 4px;
     border-right-style: solid;
 }
 
 .resizable .resizers .point.bottom-left {
-    left: 0px;
-    bottom: 0px;
-    /* top: 0px; */
-    border-bottom-width: 3px;
+    left: -2px;
+    bottom: -2px;
+    border-bottom-width: 4px;
     border-bottom-style: solid;
-    border-left-width: 3px;
+    border-left-width: 4px;
     border-left-style: solid;
 }
 
 .resizable .resizers .point.bottom-right {
-    right: 0px;
-    bottom: 0px;
-    border-bottom-width: 3px;
+    right: -2px;
+    bottom: -2px;
+    border-bottom-width: 4px;
     border-bottom-style: solid;
-    border-right-width: 3px;
+    border-right-width: 4px;
     border-right-style: solid;
 }
 .resizable .resizers .point.top-middle {
@@ -3285,9 +3287,6 @@ span.after_image {
 }
 
 .resizable .resizers .line {
-    /* border-left: 1px dashed #FFFFFF; */
-    /* border-right: 1px dashed #FFFFFF; */
-    /* border-top: navy; */
     opacity: 1;
     position: absolute;
 }
@@ -3296,8 +3295,8 @@ span.after_image {
     width: calc(100% / 3);
     left: calc(100% / 3);
     height: 100%;
-    border-left: 1px dashed #FFFFFF;
-    border-right: 1px dashed #FFFFFF;
+    border-left: 1.5px dashed #FFFFFF;
+    border-right: 1.5px dashed #FFFFFF;
 }
 
 .resizable .resizers .line.left-middle {
@@ -3305,8 +3304,8 @@ span.after_image {
     left: 0;
     top: calc(100% / 3);
     width: 100%;
-    border-top: 1px dashed #FFFFFF;
-    border-bottom: 1px dashed #FFFFFF;
+    border-top: 1.5px dashed #FFFFFF;
+    border-bottom: 1.5px dashed #FFFFFF;
 }
 
 .crop_decide {

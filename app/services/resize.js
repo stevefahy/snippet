@@ -97,6 +97,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
             function sizeMouseDown(e) {
                 // Stop scroll
                 $('.content_cnv').css('overflow-y', 'hidden');
+                $('.crop_adjust').addClass('active_resize');
                 // Stop Drag
                 Drag.stopDragElement();
 
@@ -107,6 +108,9 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                 var crop_adjust = $(element).closest('.crop_adjust');
 
                 var crop_area = document.querySelector('.crop_area');
+
+                
+
                 bound_r = crop_area.getBoundingClientRect().right;
                 bound_l = crop_area.getBoundingClientRect().left;
                 bound_t = crop_area.getBoundingClientRect().top - offset_top;
@@ -456,6 +460,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
 
             function stopResize() {
                 $('.content_cnv').css('overflow-y', 'unset');
+                $('.crop_adjust').removeClass('active_resize');
                 if (!mobile) {
                     document.removeEventListener('mousemove', resize);
                     document.removeEventListener('mouseup', stopResize);

@@ -54,6 +54,8 @@ cardApp.service('Drag', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Us
             self.elmnt.addEventListener("touchend", self.closeDragElement, true);
             self.elmnt.addEventListener("touchmove", elementDrag, false);
         }
+
+        $('.crop_adjust').addClass('active');
     }
 
     function elementDrag(e) {
@@ -152,6 +154,8 @@ cardApp.service('Drag', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Us
             self.elmnt.removeEventListener("touchend", self.closeDragElement, true);
             self.elmnt.removeEventListener("touchmove", elementDrag, false);
         }
+
+        $('.crop_adjust').removeClass('active');
     };
 
 }]);
