@@ -70,6 +70,14 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
 
         } else {
             // Not previously cropped. Set crop box to a default size.
+            var crop_area = document.querySelector('.crop_area');
+            var init_width = $(crop_area ).width();
+            var init_height = $(crop_area ).height();
+            element.style.width = (init_width / 2)  + 'px';
+            element.style.height = (init_height / 2)  + 'px';
+            element.style.top = (init_height / 4)  + 'px';
+            element.style.left = (init_width / 4)   + 'px';
+
             per_top = element.offsetTop;
             per_left = element.offsetLeft;
             per_bottom = $('#crop_src').outerHeight() - (per_top + $('.crop_adjust').outerHeight());
@@ -202,8 +210,8 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                         element.style.height = height + 'px';
                         per_top = top;
                         per_left = element.offsetLeft;
-                        per_bottom = $('#crop_src').outerHeight() - (per_top + $('.crop_adjust').outerHeight());
-                        per_right = $('#crop_src').outerWidth() - (per_left + $('.crop_adjust').outerWidth());
+                        per_bottom = Math.round($('#crop_src').outerHeight() - (per_top + $('.crop_adjust').outerHeight()));
+                        per_right = Math.round($('#crop_src').outerWidth() - (per_left + $('.crop_adjust').outerWidth()));
                         $('.crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
                     }
 
@@ -223,7 +231,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                         element.style.left = left + 'px';
                         per_top = element.offsetTop;
                         per_left = left;
-                        per_bottom = $('#crop_src').outerHeight() - (per_top + $('.crop_adjust').outerHeight());
+                        per_bottom = Math.round($('#crop_src').outerHeight() - (per_top + $('.crop_adjust').outerHeight()));
                         per_right = Math.round($('#crop_src').outerWidth() - (per_left + $('.crop_adjust').outerWidth()));
                         $('.crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
                     }
@@ -245,7 +253,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                         element.style.left = left + 'px';
                         per_top = element.offsetTop;
                         per_left = left;
-                        per_bottom = $('#crop_src').outerHeight() - (per_top + $('.crop_adjust').outerHeight());
+                        per_bottom = Math.round($('#crop_src').outerHeight() - (per_top + $('.crop_adjust').outerHeight()));
                         per_right = Math.round($('#crop_src').outerWidth() - (per_left + $('.crop_adjust').outerWidth()));
                         $('.crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
                     }
@@ -280,7 +288,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                     }
                     per_top = element.offsetTop;
                     per_left = calc_left;
-                    per_bottom = $('#crop_src').outerHeight() - (per_top + $('.crop_adjust').outerHeight());
+                    per_bottom = Math.round($('#crop_src').outerHeight() - (per_top + $('.crop_adjust').outerHeight()));
                     per_right = Math.round(($('#crop_src').outerWidth()) - (per_left + ($('.crop_adjust').outerWidth())));
                     $('.crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
 
@@ -328,7 +336,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                     }
                     per_top = calc_top;
                     per_left = left;
-                    per_bottom = $('#crop_src').outerHeight() - (per_top + $('.crop_adjust').outerHeight());
+                    per_bottom = Math.round($('#crop_src').outerHeight() - (per_top + $('.crop_adjust').outerHeight()));
                     per_right = Math.round($('#crop_src').outerWidth() - (per_left + $('.crop_adjust').outerWidth()));
                     $('.crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
 
@@ -378,7 +386,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                     }
                     per_top = calc_top;
                     per_left = left;
-                    per_bottom = $('#crop_src').outerHeight() - (per_top + $('.crop_adjust').outerHeight());
+                    per_bottom = Math.round($('#crop_src').outerHeight() - (per_top + $('.crop_adjust').outerHeight()));
                     per_right = Math.round($('#crop_src').outerWidth() - (per_left + $('.crop_adjust').outerWidth()));
                     $('.crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
 
@@ -421,7 +429,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                     if (per_left < 0) {
                         per_left = 0 - offset_left;
                     }
-                    per_bottom = $('#crop_src').outerHeight() - (per_top + $('.crop_adjust').outerHeight());
+                    per_bottom = Math.round($('#crop_src').outerHeight() - (per_top + $('.crop_adjust').outerHeight()));
                     per_right = Math.round($('#crop_src').outerWidth() - (per_left + ($('.crop_adjust').outerWidth())));
                     $('.crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
                 }
