@@ -172,8 +172,8 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                         element.style.height = height + 'px';
                         per_top = element.offsetTop;
                         per_left = element.offsetLeft;
-                        per_bottom = $('#crop_src').outerHeight() - (per_top + $('.crop_adjust').outerHeight());
-                        per_right = $('#crop_src').outerWidth() - (per_left + $('.crop_adjust').outerWidth());
+                        per_bottom = Math.round($('#crop_src').outerHeight() - (per_top + $('.crop_adjust').outerHeight()));
+                        per_right = Math.round($('#crop_src').outerWidth() - (per_left + $('.crop_adjust').outerWidth()));
                         $('.crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
                     }
 
