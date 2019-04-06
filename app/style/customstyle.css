@@ -3156,23 +3156,19 @@ span.after_image {
 }
 
 .crop_top_max {
-    border-top-color: green !important;
-    border-top-style: solid;
+    border-top: 3px solid green !important;
 }
 
 .crop_bottom_max {
-    border-bottom-color: green !important;
-    border-bottom-style: solid;
+    border-bottom: 3px solid green !important;
 }
 
 .crop_left_max {
-    border-left-color: green !important;
-    border-left-style: solid;
+    border-left: 3px solid green !important;
 }
 
 .crop_right_max {
-    border-right-color: green !important;
-    border-right-style: solid;
+    border-right: 3px solid green !important;
 }
 
 .resizable .resizers {
