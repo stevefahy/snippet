@@ -3173,7 +3173,7 @@ span.after_image {
 
 .resizable .resizers {
     display: flex;
-    border: 3px solid #4286f4;
+    border: 6px solid #4286f4;
     align-items: center;
     justify-content: center;
 }
