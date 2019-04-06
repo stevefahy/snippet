@@ -172,11 +172,15 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                 } else if (currentResizer.classList.contains('top-middle')) {
 
                     if (!mobile) {
-                        height = (original_height - (e.pageY - original_y));
-                        top = e.pageY - offset_top;
+                        height = original_height - (e.pageY - original_mouse_y);
+                        top = original_y + (e.pageY - original_mouse_y) - offset_top;
+                        //height = (original_height - (e.pageY - original_y));
+                        //top = e.pageY - offset_top;
                     } else {
-                        height = (original_height - (e.touches[0].pageY - original_y));
-                        top = e.touches[0].pageY - offset_top;
+                        //height = (original_height - (e.touches[0].pageY - original_y));
+                        //top = e.touches[0].pageY - offset_top;
+                        height = original_height - (e.touches[0].pageY - original_mouse_y);
+                        top = original_y + (e.touches[0].pageY - original_mouse_y) - offset_top;
                     }
                     if (top < 0) {
                         top = 0;
@@ -186,7 +190,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                     }
                     // maintain bottom position
                     if (height > original_height + (original_y - offset_top)) {
-                        height = original_height + (original_y - offset_top);
+                        //height = original_height + (original_y - offset_top);
                     }
                     if (height > MIN_CROP_SIZE) {
                         element.style.height = height + 'px';
@@ -237,7 +241,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                         per_top = element.offsetTop;
                         per_left = left;
                         per_bottom = $('#crop_src').outerHeight() - (per_top + $('.crop_adjust').outerHeight());
-                        per_right = Math.round($('#crop_src').outerWidth() - (per_left + $('.crop_adjust').outerWidth() - offset_left));
+                        per_right = Math.round($('#crop_src').outerWidth() - (per_left + $('.crop_adjust').outerWidth()));
                         $('.crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
                     }
 
@@ -272,7 +276,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                     per_top = element.offsetTop;
                     per_left = calc_left;
                     per_bottom = $('#crop_src').outerHeight() - (per_top + $('.crop_adjust').outerHeight());
-                    per_right = Math.round(($('#crop_src').outerWidth()) - (per_left + ($('.crop_adjust').outerWidth() - offset_left)));
+                    per_right = Math.round(($('#crop_src').outerWidth()) - (per_left + ($('.crop_adjust').outerWidth())));
                     $('.crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
 
                 } else if (currentResizer.classList.contains('top-right')) {
@@ -286,7 +290,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                     }
                     left = original_x - offset_left;
                     if (left + width > bound_r) {
-                        width = bound_r - left;
+                        width = bound_r - left - offset_left;
                     }
                     if (left > bound_w) {
                         width = bound_w;
@@ -366,7 +370,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                     per_top = calc_top;
                     per_left = left;
                     per_bottom = $('#crop_src').outerHeight() - (per_top + $('.crop_adjust').outerHeight());
-                    per_right = Math.round($('#crop_src').outerWidth() - (per_left + $('.crop_adjust').outerWidth()) + offset_left);
+                    per_right = Math.round($('#crop_src').outerWidth() - (per_left + $('.crop_adjust').outerWidth()));
                     $('.crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
 
                 } else if (currentResizer.classList.contains('bottom-right')) {
@@ -382,7 +386,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                     }
                     left = original_x - offset_left;
                     if (left + width > bound_r) {
-                        width = bound_r - left;
+                        width = bound_r - left - offset_left;
                     }
                     if (width > MIN_CROP_SIZE) {
                         element.style.width = width + 'px';
@@ -409,7 +413,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                         per_left = 0 - offset_left;
                     }
                     per_bottom = $('#crop_src').outerHeight() - (per_top + $('.crop_adjust').outerHeight());
-                    per_right = Math.round($('#crop_src').outerWidth() - (per_left + ($('.crop_adjust').outerWidth()) - offset_left));
+                    per_right = Math.round($('#crop_src').outerWidth() - (per_left + ($('.crop_adjust').outerWidth())));
                     $('.crop_area')[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
                 }
 
