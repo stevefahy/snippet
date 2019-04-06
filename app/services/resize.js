@@ -182,11 +182,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                     if (!mobile) {
                         height = original_height - (e.pageY - original_mouse_y);
                         top = original_y + (e.pageY - original_mouse_y) - offset_top;
-                        //height = (original_height - (e.pageY - original_y));
-                        //top = e.pageY - offset_top;
                     } else {
-                        //height = (original_height - (e.touches[0].pageY - original_y));
-                        //top = e.touches[0].pageY - offset_top;
                         height = original_height - (e.touches[0].pageY - original_mouse_y);
                         top = original_y + (e.touches[0].pageY - original_mouse_y) - offset_top;
                     }
@@ -242,7 +238,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                         left = original_x + (e.pageX - original_mouse_x) - offset_left;
                     } else {
                         width = (original_width - (e.touches[0].pageX - original_mouse_x));
-                        left = original_x + (e.touches[0].pageX - original_mouse_x);
+                        left = original_x + (e.touches[0].pageX - original_mouse_x) - offset_left;
                     }
                     if (left < 0) {
                         width = width + left;
@@ -360,7 +356,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                         if (!mobile) {
                             calc_left = original_x + (e.pageX - original_mouse_x) - bound_l;
                         } else {
-                            calc_left = original_x + (e.touches[0].pageX - original_mouse_x);
+                            calc_left = original_x + (e.touches[0].pageX - original_mouse_x) - bound_l;
                         }
                         if (calc_left < 0) {
                             calc_left = 0;
