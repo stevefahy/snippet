@@ -193,8 +193,13 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                         //height = original_height + (original_y - offset_top);
                     }
                     if (height > MIN_CROP_SIZE) {
-                        element.style.height = height + 'px';
+
                         element.style.top = top + 'px';
+                        // maintain bottom position
+                        if (height > original_height + (original_y - offset_top)) {
+                            height = original_height + (original_y - offset_top);
+                        }
+                        element.style.height = height + 'px';
                         per_top = top;
                         per_left = element.offsetLeft;
                         per_bottom = $('#crop_src').outerHeight() - (per_top + $('.crop_adjust').outerHeight());
@@ -315,6 +320,10 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', function(Drag, ImageAdjust
                             calc_top = 0;
                         }
                         element.style.top = calc_top + 'px';
+                        // maintain bottom position
+                        if (height > original_height + (original_y - offset_top)) {
+                            height = original_height + (original_y - offset_top);
+                        }
                         element.style.height = height + 'px';
                     }
                     per_top = calc_top;
