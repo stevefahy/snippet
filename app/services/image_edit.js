@@ -186,7 +186,40 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var y = 0;
         var crop_data = { 'x': sx, 'y': sy, 'width': swidth, 'height': sheight };
         //
-        $(cropper).css('height', sheight);
+        //$(cropper).css('height', sheight);
+        //$(cropper).animate({height: sheight+'px'});
+
+        $(cropper).animate({ height: sheight, width: swidth, scale: scale }, {
+            duration: 100,
+            complete: function() { 
+                 //$(cropper).css("height", "");
+                //$this.removeAttr('style'); 
+                ImageAdjustment.crop(source_canvas, crop_data).then(function(canvas) {
+            self.canvasToImage(canvas, id).then(function(image) {
+                // If Adjusted exists hide original.
+                if ($('.content_cnv #cropper_' + id + ' .adjusted').length > 0) {
+                    $('.content_cnv #cropper_' + id + ' .adjusted').remove();
+                }
+                // remove the crop box
+                self.removeCrop();
+                // add the new image
+                var img_new = $(image).prependTo('.content_cnv #cropper_' + id);
+                console.log(cropper);
+                $(cropper).css('height', '');
+                $(cropper).css('width', '');
+                $(cropper).css('transform', '');
+                //$(cropper).css('left', '-1.38em');
+                ImageAdjustment.setImageAdjustment('content_cnv', id, 'crop', crop_data);
+                ImageAdjustment.setImageAdjusted(true);
+                adjustSrc(original_image, 'hide');
+                // SAVE    
+                ImageAdjustment.setImageEditing(false);
+                saveCropper(cropper);
+            });
+        });
+            }
+        });
+/*
         ImageAdjustment.crop(source_canvas, crop_data).then(function(canvas) {
             self.canvasToImage(canvas, id).then(function(image) {
                 // If Adjusted exists hide original.
@@ -197,7 +230,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 self.removeCrop();
                 // add the new image
                 var img_new = $(image).prependTo('.content_cnv #cropper_' + id);
-                $(cropper).css('height', '');
+                console.log(cropper);
+                //$(cropper)[0].css('height', 'auto');
                 ImageAdjustment.setImageAdjustment('content_cnv', id, 'crop', crop_data);
                 ImageAdjustment.setImageAdjusted(true);
                 adjustSrc(original_image, 'hide');
@@ -206,6 +240,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 saveCropper(cropper);
             });
         });
+        */
     };
 
     this.removeCrop = function() {
