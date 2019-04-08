@@ -224,7 +224,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         //$this.removeAttr('style'); 
         ImageAdjustment.crop(source_canvas, crop_data).then(function(canvas) {
             
-        $(cropper).animate({ height: sheight, width: swidth }, {
+        $(cropper).animate({ height: sheight }, {
             duration: 3000,
             complete: function() {
 
@@ -242,7 +242,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 console.log(cropper);
                 $timeout(function() {
                          $(cropper).css('height', '');
-                $(cropper).css('width', '');
+                //$(cropper).css('width', '');
             },1000);
                 //$(cropper).css('transform', '');
                 //$(cropper).css('left', '-1.38em');
