@@ -252,10 +252,16 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             $(img).attr('id', 'crop_src');
         }
         $('.' + parent_container + ' #cropper_' + id + ' .crop_adjust').attr('id', 'drag');
+        var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
+        var crop_data;
+        if (ia != undefined) {
+            crop_data = ia.crop;
+        }
+        var original_image = $('.content_cnv #cropper_' + id + ' #image_' + id)[0];
         //Make the DIV element draggagle:
         Drag.setUp(document.getElementById("drag"), document.getElementById("crop_src"));
         // Make resizable.
-        Resize.makeResizableDiv('.resizers', '.crop_area', '#crop_src', id);
+        Resize.makeResizableDiv('.resizers', '.crop_area', '#crop_src', original_image, crop_data, id);
     };
 
     this.openCrop = function(e, id) {

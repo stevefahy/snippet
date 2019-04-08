@@ -3,28 +3,18 @@
 //
 cardApp.service('Resize', ['Drag', 'ImageAdjustment', 'Scroll', function(Drag, ImageAdjustment, Scroll) {
 
-    //var original_image = $('.content_cnv #cropper_' + id + ' #image_' + id)[0];
-    //var crop_source = document.getElementById('crop_src');
-    //var ia = ImageAdjustment.getImageAdjustments('content_cnv', id);
-    // Stop scroll
-    //$('.content_cnv').css('overflow-y', 'hidden');
-
-    // crop image
-    // TODO 
-    // min size
-    // limit to bounds (also drag);
-
     var ua = navigator.userAgent;
     var mobile = false;
     if (ua.indexOf('AndroidApp') >= 0) {
         mobile = true;
     }
 
-    this.makeResizableDiv = function(cropping_box, cropping_area, cropping_source, id) {
+    this.makeResizableDiv = function(cropping_box, cropping_area, cropping_source, cropping_original_image, crop_data, id) {
         var crop_box = document.querySelector(cropping_box);
         var resizers = document.querySelectorAll(cropping_box + ' .resizer');
         var crop_area = document.querySelector(cropping_area);
         var crop_source = document.querySelector(cropping_source);
+        var original_image = cropping_original_image;
         var MIN_CROP_SIZE = 40;
         var original_width = 0;
         var original_height = 0;
@@ -48,7 +38,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', 'Scroll', function(Drag, I
 
         // Set the initial clip path.
 
-        var ia = ImageAdjustment.getImageAdjustments('content_cnv', id);
+        //var ia = ImageAdjustment.getImageAdjustments('content_cnv', id);
         var per_top;
         var per_left;
         var per_bottom;
@@ -56,37 +46,43 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', 'Scroll', function(Drag, I
 
         var previously_cropped = false;
 
+        /*
         if (ia != undefined) {
             if (ia.crop != undefined) {
                 previously_cropped = true;
             }
         }
+        */
+        if (crop_data != undefined) {
+            previously_cropped = true;
+        }
+
         if (previously_cropped) {
-            var original_image = $('.content_cnv #cropper_' + id + ' #image_' + id)[0];
+            //var original_image = $('.content_cnv #cropper_' + id + ' #image_' + id)[0];
             //var crop_source = crop_area;//document.querySelector(cropping_source);
             //var crop_source = document.getElementById('crop_src');
             // Get scale ratio of the image (as displayed which may be scaled to fit compared to the original image).
             var scale = ImageAdjustment.getScale(original_image, crop_source);
 
-            crop_box.style.width = ia.crop.width / scale + 'px';
-            crop_box.style.height = ia.crop.height / scale + 'px';
-            crop_box.style.top = ia.crop.y / scale + 'px';
-            crop_box.style.left = ia.crop.x / scale + 'px';
+            crop_box.style.width = crop_data.width / scale + 'px';
+            crop_box.style.height = crop_data.height / scale + 'px';
+            crop_box.style.top = crop_data.y / scale + 'px';
+            crop_box.style.left = crop_data.x / scale + 'px';
 
-            per_top = ia.crop.y / scale;
-            per_left = ia.crop.x / scale;
+            per_top = crop_data.y / scale;
+            per_left = crop_data.x / scale;
             per_bottom = $(crop_source).outerHeight() - (per_top + $(crop_box).outerHeight());
             per_right = $(crop_source).outerWidth() - (per_left + $(crop_box).outerWidth());
 
         } else {
             // Not previously cropped. Set crop box to a default size.
             //var crop_area = document.querySelector('.crop_area');
-            var init_width = $(crop_source ).width();
-            var init_height = $(crop_source ).height();
-            crop_box.style.width = (init_width / 2)  + 'px';
-            crop_box.style.height = (init_height / 2)  + 'px';
-            crop_box.style.top = (init_height / 4)  + 'px';
-            crop_box.style.left = (init_width / 4)   + 'px';
+            var init_width = $(crop_source).width();
+            var init_height = $(crop_source).height();
+            crop_box.style.width = (init_width / 2) + 'px';
+            crop_box.style.height = (init_height / 2) + 'px';
+            crop_box.style.top = (init_height / 4) + 'px';
+            crop_box.style.left = (init_width / 4) + 'px';
 
             per_top = crop_box.offsetTop;
             per_left = crop_box.offsetLeft;
@@ -106,7 +102,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', 'Scroll', function(Drag, I
 
             function sizeMouseDown(e) {
                 // Stop scroll
-                //Scroll.disable('.content_cnv');
+                Scroll.disable('.content_cnv');
                 //$('.content_cnv').css('overflow-y', 'hidden');
                 $(crop_box).addClass('active_resize');
                 // Stop Drag
@@ -120,7 +116,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', 'Scroll', function(Drag, I
 
                 //var crop_source = document.querySelector('#crop_src');
 
-                
+
 
                 bound_r = crop_source.getBoundingClientRect().right;
                 bound_l = crop_source.getBoundingClientRect().left;
