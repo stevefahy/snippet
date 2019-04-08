@@ -185,6 +185,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var x = 0;
         var y = 0;
         var crop_data = { 'x': sx, 'y': sy, 'width': swidth, 'height': sheight };
+        //
+        $(cropper).css('height', sheight);
         ImageAdjustment.crop(source_canvas, crop_data).then(function(canvas) {
             self.canvasToImage(canvas, id).then(function(image) {
                 // If Adjusted exists hide original.
@@ -195,6 +197,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 self.removeCrop();
                 // add the new image
                 var img_new = $(image).prependTo('.content_cnv #cropper_' + id);
+                $(cropper).css('height', '');
                 ImageAdjustment.setImageAdjustment('content_cnv', id, 'crop', crop_data);
                 ImageAdjustment.setImageAdjusted(true);
                 adjustSrc(original_image, 'hide');
