@@ -3173,6 +3173,8 @@ span.after_image {
 }
 */
 
+/* Maximum crop extremities */
+
 .resizable .resizers.crop_left_max .point.top-left {
     height: calc(100%);
 }
@@ -3191,18 +3193,24 @@ span.after_image {
 
 .resizable .resizers.crop_right_max .point.top-right {
     height: calc(100%);
+        border-right-color: green;
+
 }
 
 .resizable .resizers.crop_right_max .point.bottom-right {
     height: calc(100%);
+        border-right-color: green;
 }
 
 .resizable .resizers.crop_bottom_max .point.bottom-left {
     width: calc(100%);
+        border-bottom-color: green;
+
 }
 
 .resizable .resizers.crop_bottom_max .point.bottom-right {
     width: calc(100%);
+        border-bottom-color: green;
 }
 
 
