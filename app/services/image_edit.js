@@ -241,8 +241,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 console.log('fin2');
                 console.log(cropper);
                 $timeout(function() {
-                         $(cropper).css('height', 'auto');
-                $(cropper).css('width', 'auto');
+                         $(cropper).css('height', '');
+                $(cropper).css('width', '');
             },1000);
                 //$(cropper).css('transform', '');
                 //$(cropper).css('left', '-1.38em');
