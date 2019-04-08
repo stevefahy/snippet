@@ -201,6 +201,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
         $(cropper).css('height', $(cropper).outerHeight());
         self.removeCrop();
+        $('.crop_bg').remove();
         /*
         $(cropper).animate({ height: sheight, width: swidth }, {
             duration: 1000,
@@ -219,7 +220,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         ImageAdjustment.crop(source_canvas, crop_data).then(function(canvas) {
             
         $(cropper).animate({ height: sheight, width: swidth }, {
-            duration: 300,
+            duration: 3000,
             complete: function() {
 
 
