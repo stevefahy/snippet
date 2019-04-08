@@ -3141,7 +3141,6 @@ span.after_image {
     height: 100px;
     top: 33%;
     z-index: 1;
-    /* outline-color: #9E9E9E; */
     border: 2px solid #e8e8e8;
 }
 
@@ -3154,24 +3153,6 @@ span.after_image {
     display: flex;
     justify-content: center;
 }
-
-/*
-.crop_top_max {
-    border-top: 6px solid green !important;
-}
-
-.crop_bottom_max {
-    border-bottom: 6px solid green !important;
-}
-
-.crop_left_max {
-    border-left: 6px solid green !important;
-}
-
-.crop_right_max {
-    border-right: 6px solid green !important;
-}
-*/
 
 /* Maximum crop extremities */
 
@@ -3206,38 +3187,6 @@ span.after_image {
 .resizable .resizers.crop_bottom_max .point.bottom-right {
     width: calc(100%);
 }
-
-
-
-/*
-.resizable .resizers.crop_left_max .border_left {
-    position: absolute;
-    height: 100%;
-    left: 0px;
-    border-left: 2px solid green;
-}
-
-.resizable .resizers.crop_right_max .border_right {
-    position: absolute;
-    height: 100%;
-    right: 0px;
-    border-right: 2px solid #e8e8e8;
-}
-
-.resizable .resizers.crop_top_max .border_top {
-    position: absolute;
-    width: 100%;
-    top: 0px;
-    border-top: 2px solid #e8e8e8;
-}
-
-.resizable .resizers.crop_bottom_max .border_bottom {
-    position: absolute;
-    width: : 100%;
-    bottom: : 0px;
-    border-bottom: : 2px solid #e8e8e8;
-}
-*/
 
 .resizable .resizers {
     display: flex;
@@ -3346,6 +3295,7 @@ span.after_image {
     border-right-width: 4px;
     border-right-style: solid;
 }
+
 .resizable .resizers .point.top-middle {
     top: -5px;
 }

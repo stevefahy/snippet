@@ -259,7 +259,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         }
         var original_image = $('.content_cnv #cropper_' + id + ' #image_' + id)[0];
         //Make the DIV element draggagle:
-        Drag.setUp(document.getElementById("drag"), document.getElementById("crop_src"));
+        Drag.setUp(document.getElementById("drag"), document.getElementById("crop_src"), document.querySelector('.crop_area'));
         // Make resizable.
         Resize.makeResizableDiv('.resizers', '.crop_area', '#crop_src', original_image, crop_data, id);
     };

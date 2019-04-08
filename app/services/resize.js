@@ -9,28 +9,28 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', 'Scroll', function(Drag, I
         mobile = true;
     }
 
-    var checkEdges = function(crop_box, l, r, t, b){
-        
+    var checkEdges = function(crop_box, l, r, t, b) {
+
         if (t == 0) {
-                    $(crop_box).addClass('crop_top_max');
-                } else {
-                    $(crop_box).removeClass('crop_top_max');
-                }
-                if (l == 0) {
-                    $(crop_box).addClass('crop_left_max');
-                } else {
-                    $(crop_box).removeClass('crop_left_max');
-                }
-                if (b == 0) {
-                    $(crop_box).addClass('crop_bottom_max');
-                } else {
-                    $(crop_box).removeClass('crop_bottom_max');
-                }
-                if (r == 0) {
-                    $(crop_box).addClass('crop_right_max');
-                } else {
-                    $(crop_box).removeClass('crop_right_max');
-                }
+            $(crop_box).addClass('crop_top_max');
+        } else {
+            $(crop_box).removeClass('crop_top_max');
+        }
+        if (l == 0) {
+            $(crop_box).addClass('crop_left_max');
+        } else {
+            $(crop_box).removeClass('crop_left_max');
+        }
+        if (b == 0) {
+            $(crop_box).addClass('crop_bottom_max');
+        } else {
+            $(crop_box).removeClass('crop_bottom_max');
+        }
+        if (r == 0) {
+            $(crop_box).addClass('crop_right_max');
+        } else {
+            $(crop_box).removeClass('crop_right_max');
+        }
     };
 
     this.makeResizableDiv = function(cropping_box, cropping_area, cropping_source, cropping_original_image, crop_data, id) {
@@ -46,23 +46,15 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', 'Scroll', function(Drag, I
         var original_y = 0;
         var original_mouse_x = 0;
         var original_mouse_y = 0;
-        //var original_offset_left;
         var offset_top;
         var offset_left;
-        //var original_bottom;
 
         var bound_r;
         var bound_l;
         var bound_b;
-        //var bound_t;
         var bound_w;
         var bound_h;
-        //var bound_offset_left;
-        //var bound_offset_top;
 
-        // Set the initial clip path.
-
-        //var ia = ImageAdjustment.getImageAdjustments('content_cnv', id);
         var per_top;
         var per_left;
         var per_bottom;
@@ -70,21 +62,11 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', 'Scroll', function(Drag, I
 
         var previously_cropped = false;
 
-        /*
-        if (ia != undefined) {
-            if (ia.crop != undefined) {
-                previously_cropped = true;
-            }
-        }
-        */
         if (crop_data != undefined) {
             previously_cropped = true;
         }
 
         if (previously_cropped) {
-            //var original_image = $('.content_cnv #cropper_' + id + ' #image_' + id)[0];
-            //var crop_source = crop_area;//document.querySelector(cropping_source);
-            //var crop_source = document.getElementById('crop_src');
             // Get scale ratio of the image (as displayed which may be scaled to fit compared to the original image).
             var scale = ImageAdjustment.getScale(original_image, crop_source);
 
@@ -100,9 +82,9 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', 'Scroll', function(Drag, I
 
         } else {
             // Not previously cropped. Set crop box to a default size.
-            //var crop_area = document.querySelector('.crop_area');
             var init_width = $(crop_source).width();
             var init_height = $(crop_source).height();
+
             crop_box.style.width = (init_width / 2) + 'px';
             crop_box.style.height = (init_height / 2) + 'px';
             crop_box.style.top = (init_height / 4) + 'px';
@@ -114,8 +96,9 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', 'Scroll', function(Drag, I
             per_right = $(crop_source).outerWidth() - (per_left + $(crop_box).outerWidth());
         }
 
+        // Check whether any of the sides of the crop box are touching the extremity of the image.
         checkEdges(crop_box, per_left, per_right, per_top, per_bottom);
-        
+
         // Set the clip path for the crop area.
         $(crop_area)[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
 
@@ -130,7 +113,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', 'Scroll', function(Drag, I
             function sizeMouseDown(e) {
                 // Stop scroll
                 Scroll.disable('.content_cnv');
-                //$('.content_cnv').css('overflow-y', 'hidden');
+                // Change the colour of the borders of the crop box on touch.
                 $(crop_box).addClass('active_resize');
                 // Stop Drag
                 Drag.stopDragElement();
@@ -139,27 +122,16 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', 'Scroll', function(Drag, I
                 offset_top = $(cropper_loc).offset().top;
                 offset_left = $(cropper_loc).offset().left;
 
-                //var crop_adjust = $(crop_box).closest('.crop_adjust');
-
-                //var crop_source = document.querySelector('#crop_src');
-
-
-
                 bound_r = crop_source.getBoundingClientRect().right;
                 bound_l = crop_source.getBoundingClientRect().left;
-                //bound_t = crop_source.getBoundingClientRect().top - offset_top;
                 bound_b = crop_source.getBoundingClientRect().bottom - offset_top;
                 bound_w = $(crop_source).outerWidth();
                 bound_h = $(crop_source).outerHeight();
-                //bound_offset_top = $(crop_source).offset().top;
-                //bound_offset_left = $(crop_source).offset().left;
 
                 original_width = parseFloat(getComputedStyle(crop_box, null).getPropertyValue('width').replace('px', ''));
                 original_height = parseFloat(getComputedStyle(crop_box, null).getPropertyValue('height').replace('px', ''));
                 original_x = crop_box.getBoundingClientRect().left;
                 original_y = crop_box.getBoundingClientRect().top;
-                //original_offset_left = $(crop_box).offset().left;
-                //original_bottom = crop_box.getBoundingClientRect().bottom;
                 original_right = crop_box.getBoundingClientRect().right;
 
                 if (!mobile) {
@@ -231,12 +203,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', 'Scroll', function(Drag, I
                     if (height > bound_h) {
                         height = bound_h;
                     }
-                    // maintain bottom position
-                    if (height > original_height + (original_y - offset_top)) {
-                        //height = original_height + (original_y - offset_top);
-                    }
                     if (height > MIN_CROP_SIZE) {
-
                         crop_box.style.top = top + 'px';
                         // maintain bottom position
                         if (height > original_height + (original_y - offset_top)) {
@@ -474,7 +441,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', 'Scroll', function(Drag, I
             }
 
             function stopResize() {
-                //$('.content_cnv').css('overflow-y', 'unset');
+                // Reenable scroll
                 Scroll.enable('.content_cnv');
                 $(crop_box).removeClass('active_resize');
                 if (!mobile) {
