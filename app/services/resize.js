@@ -9,6 +9,30 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', 'Scroll', function(Drag, I
         mobile = true;
     }
 
+    var checkEdges = function(crop_box, l, r, t, b){
+        
+        if (t == 0) {
+                    $(crop_box).addClass('crop_top_max');
+                } else {
+                    $(crop_box).removeClass('crop_top_max');
+                }
+                if (l == 0) {
+                    $(crop_box).addClass('crop_left_max');
+                } else {
+                    $(crop_box).removeClass('crop_left_max');
+                }
+                if (b == 0) {
+                    $(crop_box).addClass('crop_bottom_max');
+                } else {
+                    $(crop_box).removeClass('crop_bottom_max');
+                }
+                if (r == 0) {
+                    $(crop_box).addClass('crop_right_max');
+                } else {
+                    $(crop_box).removeClass('crop_right_max');
+                }
+    };
+
     this.makeResizableDiv = function(cropping_box, cropping_area, cropping_source, cropping_original_image, crop_data, id) {
         var crop_box = document.querySelector(cropping_box);
         var resizers = document.querySelectorAll(cropping_box + ' .resizer');
@@ -89,6 +113,9 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', 'Scroll', function(Drag, I
             per_bottom = $(crop_source).outerHeight() - (per_top + $(crop_box).outerHeight());
             per_right = $(crop_source).outerWidth() - (per_left + $(crop_box).outerWidth());
         }
+
+        checkEdges(crop_box, per_left, per_right, per_top, per_bottom);
+        
         // Set the clip path for the crop area.
         $(crop_area)[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
 
@@ -442,26 +469,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', 'Scroll', function(Drag, I
                     $(crop_area)[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
                 }
 
-                if (per_top == 0) {
-                    $(crop_box).addClass('crop_top_max');
-                } else {
-                    $(crop_box).removeClass('crop_top_max');
-                }
-                if (per_left == 0) {
-                    $(crop_box).addClass('crop_left_max');
-                } else {
-                    $(crop_box).removeClass('crop_left_max');
-                }
-                if (per_bottom == 0) {
-                    $(crop_box).addClass('crop_bottom_max');
-                } else {
-                    $(crop_box).removeClass('crop_bottom_max');
-                }
-                if (per_right == 0) {
-                    $(crop_box).addClass('crop_right_max');
-                } else {
-                    $(crop_box).removeClass('crop_right_max');
-                }
+                checkEdges(crop_box, per_left, per_right, per_top, per_bottom);
 
             }
 
