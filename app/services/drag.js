@@ -88,6 +88,7 @@ cardApp.service('Drag', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Us
         if (new_left < 0) {
             new_left = 0;
         }
+
         if (current_right > bound_w) {
             new_left = bound_w - drag_w;
         }
@@ -97,6 +98,14 @@ cardApp.service('Drag', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Us
 
         var per_bottom = bound_h - (new_top + drag_h);
         var per_right = bound_w - (new_left + drag_w);
+
+        if (per_bottom < 0) {
+            per_bottom = 0;
+        }
+
+        if (per_right < 0) {
+            per_right= 0;
+        }
 
         if(new_top == 0){
             $(self.elmnt).addClass('crop_top_max');
