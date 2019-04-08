@@ -189,9 +189,23 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         //$(cropper).css('height', sheight);
         //$(cropper).animate({height: sheight+'px'});
 
-        $(cropper).animate({ height: sheight, width: swidth, left: swidth  -$(source_canvas).outerWidth()  }, {
-            duration: 100,
+       
+/*
+        $('.crop_bg').animate({ height: sheight, width: swidth, left: 0   }, {
+            duration: 5000,
             complete: function() { 
+                console.log('bg complete');
+            }
+            });
+*/
+
+        $(cropper).css('height', $(cropper).outerHeight());
+         self.removeCrop();
+        $(cropper).animate({ height: sheight, width: swidth   }, {
+            duration: 300,
+            complete: function() {
+
+
                  //$(cropper).css("height", "");
                 //$this.removeAttr('style'); 
                 ImageAdjustment.crop(source_canvas, crop_data).then(function(canvas) {
