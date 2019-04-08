@@ -255,7 +255,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         //Make the DIV element draggagle:
         Drag.setUp(document.getElementById("drag"), document.getElementById("crop_src"));
         // Make resizable.
-        Resize.makeResizableDiv('.resizers', id);
+        Resize.makeResizableDiv('.resizers', '.crop_area', '#crop_src', id);
     };
 
     this.openCrop = function(e, id) {
