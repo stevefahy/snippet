@@ -206,7 +206,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 if ($('.content_cnv #cropper_' + id + ' .adjusted').length > 0) {
                     $('.content_cnv #cropper_' + id + ' .adjusted').remove();
                 }
-                
+
         /*
         $(cropper).animate({ height: sheight, width: swidth }, {
             duration: 1000,
@@ -240,10 +240,10 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 var img_new = $(image).prependTo('.content_cnv #cropper_' + id);
                 console.log('fin2');
                 console.log(cropper);
-                         $(cropper).css('height', '');
-                $(cropper).css('width', '');
+                 //        $(cropper).css('height', '');
+                //$(cropper).css('width', '');
                 //$(cropper).css('transform', '');
-                $(cropper).css('left', '-1.38em');
+                //$(cropper).css('left', '-1.38em');
                 ImageAdjustment.setImageAdjustment('content_cnv', id, 'crop', crop_data);
                 ImageAdjustment.setImageAdjusted(true);
                 adjustSrc(original_image, 'hide');
