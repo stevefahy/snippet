@@ -202,6 +202,11 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         $(cropper).css('height', $(cropper).outerHeight());
         self.removeCrop();
         $('.crop_bg').remove();
+               // If Adjusted exists hide original.
+                if ($('.content_cnv #cropper_' + id + ' .adjusted').length > 0) {
+                    $('.content_cnv #cropper_' + id + ' .adjusted').remove();
+                }
+                
         /*
         $(cropper).animate({ height: sheight, width: swidth }, {
             duration: 1000,
@@ -226,9 +231,9 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
             self.canvasToImage(canvas, id).then(function(image) {
                 // If Adjusted exists hide original.
-                if ($('.content_cnv #cropper_' + id + ' .adjusted').length > 0) {
-                    $('.content_cnv #cropper_' + id + ' .adjusted').remove();
-                }
+                //if ($('.content_cnv #cropper_' + id + ' .adjusted').length > 0) {
+                //    $('.content_cnv #cropper_' + id + ' .adjusted').remove();
+                //}
                 // remove the crop box
                 self.removeCrop();
                 // add the new image
