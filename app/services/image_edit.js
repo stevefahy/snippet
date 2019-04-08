@@ -240,8 +240,10 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 var img_new = $(image).prependTo('.content_cnv #cropper_' + id);
                 console.log('fin2');
                 console.log(cropper);
+                $timeout(function() {
                          $(cropper).css('height', 'auto');
                 $(cropper).css('width', 'auto');
+            },1000);
                 //$(cropper).css('transform', '');
                 //$(cropper).css('left', '-1.38em');
                 ImageAdjustment.setImageAdjustment('content_cnv', id, 'crop', crop_data);
