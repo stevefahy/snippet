@@ -287,14 +287,14 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             $(canvas_copy).addClass('crop_temp');
             $(original_image).addClass('hide');
             $(cc).animate({ height: anim_h, width:swidth }, {
-                duration: 10000,
+                duration: 300,
                 easing: "easeOutExpo",
                 start: function() {}
             });
             
 
             $(cropper).animate({ height: anim_h }, {
-                duration: 10000,
+                duration: 300,
                 easing: "easeOutExpo",
                 start: function() {
 
