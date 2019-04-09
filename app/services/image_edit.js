@@ -293,7 +293,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             //$('#cropper_' + id + ' .adjusted').remove();
 
             $(cc).animate({ height: anim_h, width:swidth }, {
-                duration: 200,
+                duration: 100,
                 easing: "easeOutExpo",
                 start: function() {}
             });
