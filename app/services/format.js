@@ -454,6 +454,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     this.removeTempFiltered = function(content) {
         var content_less_pre;
+        /*
         if (content !== undefined) {
             var reg_pre = /(<img src="data:image.*?>)(.*?)(>)/ig;
             content_less_pre = content;
@@ -462,6 +463,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 content_less_pre = content_less_pre.replace(pre_match[v], '');
             }
         }
+        */
         return content_less_pre;
     };
 
