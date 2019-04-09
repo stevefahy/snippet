@@ -3389,3 +3389,7 @@ span.after_image {
     left:0;
 
 }
+
+.opacity_0 {
+    opacity: 0;
+}

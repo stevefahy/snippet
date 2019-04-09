@@ -37,7 +37,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
             //Format.saveCard(id, card, currentUser);
             // }, 3000);
-            ImageAdjustment.setImageAdjusted(false);
+           // ImageAdjustment.setImageAdjusted(false);
+            //ImageAdjustment.setImageEditing(false);
         }
     };
 
@@ -184,7 +185,27 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         }
     };
 
+    showImage = function(image) {
+        var deferred = $q.defer();
+        console.log($(image));
+
+
+        $(image).animate({
+            opacity: 1
+        }, 500, function() {
+            $(this).removeClass('show_image');
+            $(this).css('opacity', '');
+            // Animation complete.
+            console.log('op comp');
+            deferred.resolve();
+        });
+        return deferred.promise;
+
+        //$(image).animate({ opacity: 1 }, 5000);
+    };
+
     this.makeCrop = function(e, id) {
+        console.log('MAKE CROP');
         e.preventDefault();
         e.stopPropagation();
         var parent_container = ImageAdjustment.getImageParent();
@@ -277,7 +298,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         ImageAdjustment.crop(source_canvas, crop_data).then(function(canvas) {
 
             //$('#cropper_' + id + ' .adjusted').remove();
-            
+            /*
             var canvas_copy = ImageAdjustment.cloneCanvas(canvas);
             canvas_copy.width = swidth * canvas_scale;
             canvas_copy.height = init_h;
@@ -291,7 +312,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 easing: "easeOutExpo",
                 start: function() {}
             });
-            
+            */
+
 
             $(cropper).animate({ height: anim_h }, {
                 duration: 300,
@@ -308,21 +330,46 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                         // add the new image
 
                         // Try adding it as display none!
-                        $(image).addClass('hide');
-                        $(image).addClass('temp_hide');
+                        //$(image).addClass('opacity_0');
+
+                        //$(image).addClass('temp_hide');
+
+
 
                         var img_new = $(image).prependTo('.content_cnv #cropper_' + id);
+                        $(img_new).css('opacity', 0);
+                        $(img_new).addClass('show_image');
                         console.log('fin2');
                         console.log(cropper);
+
+
+                        showImage('.show_image').then(function(canvas) {
+                            // SAVE    
+                            console.log('save');
+                            //ImageAdjustment.setImageEditing(false);
+                            saveCropper(cropper);
+                        });
+
+                        /*
+                                                                     $(img_new).animate({
+                                                    opacity: 1
+                                                }, 5000, function() {
+                                                    // Animation complete.
+                                                    console.log('op comp');
+                                               });
+                                               */
                         //$timeout(function() {
 
                         //$(cropper).css('width', '');
-                        $('.temp_hide').removeClass('hide');
-                        $('.temp_hide').removeClass('temp_hide');
+                        //$('.temp_hide').removeClass('hide');
+                        //$('.temp_hide').removeClass('temp_hide');
+
+
 
                     });
                 },
                 complete: function() {
+                    console.log($('.show_image'));
 
                     console.log('anim complete');
 
@@ -340,9 +387,13 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                     adjustSrc(original_image, 'hide');
 
                     $('.crop_temp').remove();
-                    // SAVE    
-                    ImageAdjustment.setImageEditing(false);
-                    saveCropper(cropper);
+
+
+
+
+
+
+
 
 
                 }

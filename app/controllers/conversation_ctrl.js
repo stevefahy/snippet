@@ -145,6 +145,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     var card = $scope.cards[pos];
                     //var currentUser;
                     Format.saveCard(msg.data, card, $scope.currentUser);
+                    ImageAdjustment.setImageAdjusted(false);
+            ImageAdjustment.setImageEditing(false);
                 }
 
 
