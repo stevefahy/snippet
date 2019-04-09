@@ -274,10 +274,9 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         ImageAdjustment.crop(source_canvas, crop_data).then(function(canvas) {
 
             $(cropper).animate({ height: anim_h }, {
-                duration: 200,
-                complete: function() {
-
-
+                duration: 500,
+                easing: "easeOutExpo",
+                start: function() {
                     self.canvasToImage(canvas, id).then(function(image) {
                         // If Adjusted exists hide original.
                         //if ($('.content_cnv #cropper_' + id + ' .adjusted').length > 0) {
@@ -299,7 +298,14 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                             //$(cropper).css('width', '');
                             $('.temp_hide').removeClass('hide');
                             $('.temp_hide').removeClass('temp_hide');
-                            //$('.content_cnv #cropper_' + id).css('height', '');
+                       
+                    });
+                },
+                complete: function() {
+
+                    console.log('anim complete');
+
+                         //$('.content_cnv #cropper_' + id).css('height', '');
                             // remove the crop box
                             //self.removeCrop();
                         //}, 500);
@@ -314,7 +320,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                         // SAVE    
                         ImageAdjustment.setImageEditing(false);
                         saveCropper(cropper);
-                    });
+                    
 
                 }
             });
