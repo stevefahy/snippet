@@ -277,7 +277,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         ImageAdjustment.crop(source_canvas, crop_data).then(function(canvas) {
 
             //$('#cropper_' + id + ' .adjusted').remove();
-            /*
+            
             var canvas_copy = ImageAdjustment.cloneCanvas(canvas);
             canvas_copy.width = swidth * canvas_scale;
             canvas_copy.height = init_h;
@@ -287,11 +287,11 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             $(canvas_copy).addClass('crop_temp');
             $(original_image).addClass('hide');
             $(cc).animate({ height: anim_h, width:swidth }, {
-                duration: 100,
+                duration: 10000,
                 easing: "easeOutExpo",
                 start: function() {}
             });
-            */
+            
 
             $(cropper).animate({ height: anim_h }, {
                 duration: 10000,
