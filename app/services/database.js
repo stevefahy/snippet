@@ -208,7 +208,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 card.content = replaceTags.removeDeleteId(card.content);
                 card.content = replaceTags.removeFocusIds(card.content);
                 // Remove any temp filtered images
-                card.content = Format.removeTempFiltered(card.content);
+                //card.content = Format.removeTempFiltered(card.content);
                 // Get the Conversation in which this card is being created.
                 var current_conversation_id = card.conversationId;
                 var sent_content;
