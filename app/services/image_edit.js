@@ -270,7 +270,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 $(cropper).css('left', '-1.38em');
             }
         });*/
-
+        $(original_image).addClass('hide');
 
         //$(cropper).css("height", "");
         //$this.removeAttr('style'); 
