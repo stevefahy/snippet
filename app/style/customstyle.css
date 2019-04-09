@@ -3382,3 +3382,10 @@ span.after_image {
     position: relative;
     visibility: visible;
 }
+
+.crop_temp {
+    position: absolute;
+    top:0;
+    left:0;
+
+}
