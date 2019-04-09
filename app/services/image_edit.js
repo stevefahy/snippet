@@ -276,19 +276,16 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         //$this.removeAttr('style'); 
         ImageAdjustment.crop(source_canvas, crop_data).then(function(canvas) {
 
+            /*
             var canvas_copy = ImageAdjustment.cloneCanvas(canvas);
-
-
             canvas_copy.width = swidth * canvas_scale;
             canvas_copy.height = init_h;
             var ctx = canvas_copy.getContext('2d');
             ctx.drawImage(canvas, 0, 0, swidth * canvas_scale, init_h);
-
-
-
             var cc =$(canvas_copy).prependTo('.content_cnv #cropper_' + id);
             $(canvas_copy).addClass('crop_temp');
             $(original_image).addClass('hide');
+            */
 
             //$('#cropper_' + id + ' .adjusted').remove();
 
