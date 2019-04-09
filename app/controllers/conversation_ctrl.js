@@ -782,10 +782,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         if (found_pos >= 0) {
             //card_arrays[arr][found_pos].original_content = card.content;
             console.log('update content');
-           // if(card_arrays[arr][found_pos].content != card.content){
+            if(card_arrays[arr][found_pos].content != card.content){
                 console.log('need to update');
                 card_arrays[arr][found_pos].content = card.content;
-            //}
+            }
             //card_arrays[arr][found_pos].updatedAt = card.updatedAt;
         }
     };
