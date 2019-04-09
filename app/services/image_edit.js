@@ -294,7 +294,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             */
 
             $(cropper).animate({ height: anim_h }, {
-                duration: 200,
+                duration: 10000,
                 easing: "easeOutExpo",
                 start: function() {
 
