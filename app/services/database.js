@@ -206,7 +206,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 card.content = replaceTags.replace(card.content);
                 // DANGER These had been removed for android image save bug
                 card.content = replaceTags.removeDeleteId(card.content);
-                card.content = replaceTags.removeFocusIds(card.content);
+                //card.content = replaceTags.removeFocusIds(card.content);
                 // Remove any temp filtered images
                 //card.content = Format.removeTempFiltered(card.content);
                 // Get the Conversation in which this card is being created.
