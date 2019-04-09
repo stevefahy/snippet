@@ -203,12 +203,12 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 var promises = [];
                 var promises_followers = [];
                 // Get the Conversation in which this card is being created.
-                card.content = replaceTags.replace(card.content);
+                //card.content = replaceTags.replace(card.content);
                 // DANGER These had been removed for android image save bug
-                card.content = replaceTags.removeDeleteId(card.content);
-                card.content = replaceTags.removeFocusIds(card.content);
+               //card.content = replaceTags.removeDeleteId(card.content);
+                //card.content = replaceTags.removeFocusIds(card.content);
                 // Remove any temp filtered images
-                card.content = Format.removeTempFiltered(card.content);
+                //card.content = Format.removeTempFiltered(card.content);
                 // Get the Conversation in which this card is being created.
                 var current_conversation_id = card.conversationId;
                 var sent_content;

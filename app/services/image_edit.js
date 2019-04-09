@@ -16,9 +16,21 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
     var saveCropper = function(cropper) {
         if (ImageAdjustment.getImageAdjusted()) {
-            $timeout(function() {            
-            $(cropper).closest('div.ce.focus').focus();
-            $(cropper).closest('div.ce.focus').blur();
+            $timeout(function() {   
+            console.log($(cropper).closest('div.ce'));         
+            $(cropper).closest('div.ce').focus();
+            $(cropper).closest('div.ce').blur();
+            //$(cropper).closest('div.card_temp').focus();
+            //$(cropper).closest('div.ce').blur();
+            /*
+            console.log($(cropper).closest('div.ce').attr('id').substr(2,$(cropper).closest('div.ce').attr('id').length));
+            var id = $(cropper).closest('div.ce').attr('id').substr(2,$(cropper).closest('div.ce').attr('id').length);
+            console.log(UserData.getUser());
+            var currentUser = UserData.getUser();
+            console.log($scope.cards);
+            */
+
+            //Format.saveCard(id, card, currentUser);
         }, 3000);
             ImageAdjustment.setImageAdjusted(false);
         }
@@ -257,7 +269,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         ImageAdjustment.crop(source_canvas, crop_data).then(function(canvas) {
 
             $(cropper).animate({ height: anim_h }, {
-                duration: 5000,
+                duration: 3000,
                 complete: function() {
 
 
