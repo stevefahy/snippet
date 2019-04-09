@@ -135,6 +135,22 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     });
 
+    $scope.$on('saveCropper', function(event, msg) {
+        console.log('saveCropper');
+        console.log(msg);
+        //console.log($scope.cards);
+         var pos = General.findWithAttr($scope.cards, '_id', msg.data);
+                if (pos >= 0) {
+                    console.log($scope.cards[pos]);
+                    var card = $scope.cards[pos];
+                    //var currentUser;
+                    Format.saveCard(msg.data, card, $scope.currentUser);
+                }
+
+
+        //checkDataUpdate(true);
+    });
+
     // When an image is uploaded.
     $scope.$on('imageUpload', function(event, data) {
         scroll_updating = true;

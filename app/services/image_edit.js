@@ -17,9 +17,14 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     var saveCropper = function(cropper) {
         if (ImageAdjustment.getImageAdjusted()) {
             $timeout(function() {   
-            console.log($(cropper).closest('div.ce'));         
-            $(cropper).closest('div.ce').focus();
-            $(cropper).closest('div.ce').blur();
+
+            var id = $(cropper).closest('div.ce').attr('id').substr(2,$(cropper).closest('div.ce').attr('id').length);
+
+            $rootScope.$broadcast('saveCropper', {data: id});
+
+            //console.log($(cropper).closest('div.ce'));         
+            //$(cropper).closest('div.ce').focus();
+            //$(cropper).closest('div.ce').blur();
             //$(cropper).closest('div.card_temp').focus();
             //$(cropper).closest('div.ce').blur();
             /*
