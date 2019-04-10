@@ -31,7 +31,6 @@
             </div>
             <div class="resize-container" id="conversation_part">
                 <div class='ce' ng-attr-id="ce{{::card._id}}" ng-attr-contenteditable="{{::card.user == currentUser._id}}" ng-attr-editable="{{::card.user == currentUser._id}}" ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id);" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce'+card._id);" ng-blur="getBlur(card._id, card, currentUser)" ng-model="::card.content" ng-model-options="{ debounce: 1000 }"></div>
-                <div class="focus"></div>
                 <input id="upload-input" type="file" name="uploads[]" multiple="multiple">
                 <button ng-attr-id="upload-triggerce{{::card._id}}" class="btn btn-sm upload-btn upload-trigger" type="button" ng-click="uploadFile(card._id, card, currentUser); ">Upload File</button>
             </div>

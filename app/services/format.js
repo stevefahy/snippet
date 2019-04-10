@@ -538,13 +538,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     this.saveCard = function(id, card, currentUser) {
         var content = $('.content_cnv #ce' + card._id).html();
         if ((content != card.original_content) && !ImageAdjustment.getImageEditing()) {
-            // Only do this if not in current card?
-            /*
-            if ($('.cropper-container').length > 0) {
-                $('.cropper-container').remove();
-                card.content = $('.content_cnv #ce' + card._id).html();
-            }
-            */
             if (!ImageAdjustment.getImageEditing()) {
                 card.content = $('.content_cnv #ce' + card._id).html();
             }

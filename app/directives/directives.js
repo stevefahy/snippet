@@ -11,7 +11,6 @@ cardApp.directive("contenteditable", function() {
         require: "ngModel",
         link: function(scope, element, attrs, ngModel) {
             function read() {
-                //console.log(element.html());
                 ngModel.$setViewValue(element.html());
             }
             ngModel.$render = function() {

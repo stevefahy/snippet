@@ -137,20 +137,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     $scope.$on('saveCropper', function(event, msg) {
         console.log('saveCropper');
-        console.log(msg);
-        //console.log($scope.cards);
-         var pos = General.findWithAttr($scope.cards, '_id', msg.data);
-                if (pos >= 0) {
-                    console.log($scope.cards[pos]);
-                    var card = $scope.cards[pos];
-                    //var currentUser;
-                    Format.saveCard(msg.data, card, $scope.currentUser);
-                    ImageAdjustment.setImageAdjusted(false);
+        // Find the card which contains the cropper to be saved by id.
+        var pos = General.findWithAttr($scope.cards, '_id', msg.data);
+        if (pos >= 0) {
+            var card = $scope.cards[pos];
+            // Save the card.
+            Format.saveCard(msg.data, card, $scope.currentUser);
+            ImageAdjustment.setImageAdjusted(false);
             ImageAdjustment.setImageEditing(false);
-                }
-
-
-        //checkDataUpdate(true);
+        }
     });
 
     // When an image is uploaded.
@@ -798,14 +793,16 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }
         }
         if (found_pos >= 0) {
-            //card_arrays[arr][found_pos].original_content = card.content;
-            console.log('update content');
-            if(card_arrays[arr][found_pos].content != card.content){
-                console.log('need to update');
+            card_arrays[arr][found_pos].original_content = card.content;
+            card_arrays[arr][found_pos].content = card.content;
+            card_arrays[arr][found_pos].updatedAt = card.updatedAt;
+        }
+        /*
+        if (found_pos >= 0) {
+            if (card_arrays[arr][found_pos].content != card.content) {
                 card_arrays[arr][found_pos].content = card.content;
             }
-            //card_arrays[arr][found_pos].updatedAt = card.updatedAt;
-        }
+        }*/
     };
 
     updateFollowingIcons = function(newValue) {

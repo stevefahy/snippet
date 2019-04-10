@@ -3385,11 +3385,7 @@ span.after_image {
 
 .crop_temp {
     position: absolute;
-    top:0;
-    left:0;
+    top: 0;
+    left: 0;
 
-}
-
-.opacity_0 {
-    opacity: 0;
 }
