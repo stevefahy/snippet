@@ -15,30 +15,9 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     // Helper functions
 
     var saveCropper = function(cropper) {
-        if (ImageAdjustment.getImageAdjusted()) {
-            // $timeout(function() {   
-
+        if (ImageAdjustment.getImageAdjusted()) { 
             var id = $(cropper).closest('div.ce').attr('id').substr(2, $(cropper).closest('div.ce').attr('id').length);
-
-            $rootScope.$broadcast('saveCropper', { data: id });
-
-            //console.log($(cropper).closest('div.ce'));         
-            //$(cropper).closest('div.ce').focus();
-            //$(cropper).closest('div.ce').blur();
-            //$(cropper).closest('div.card_temp').focus();
-            //$(cropper).closest('div.ce').blur();
-            /*
-            console.log($(cropper).closest('div.ce').attr('id').substr(2,$(cropper).closest('div.ce').attr('id').length));
-            var id = $(cropper).closest('div.ce').attr('id').substr(2,$(cropper).closest('div.ce').attr('id').length);
-            console.log(UserData.getUser());
-            var currentUser = UserData.getUser();
-            console.log($scope.cards);
-            */
-
-            //Format.saveCard(id, card, currentUser);
-            // }, 3000);
-           // ImageAdjustment.setImageAdjusted(false);
-            //ImageAdjustment.setImageEditing(false);
+            $rootScope.$broadcast('saveCropper', { data: id });       
         }
     };
 
@@ -186,22 +165,19 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
     showImage = function(image) {
+        console.log('showImage');
         var deferred = $q.defer();
         console.log($(image));
-
-
         $(image).animate({
             opacity: 1
         }, 500, function() {
             $(this).removeClass('show_image');
             $(this).css('opacity', '');
             // Animation complete.
-            console.log('op comp');
+            console.log('showImage complete');
             deferred.resolve();
         });
         return deferred.promise;
-
-        //$(image).animate({ opacity: 1 }, 5000);
     };
 
     this.makeCrop = function(e, id) {
@@ -226,175 +202,59 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var y = 0;
         var crop_data = { 'x': sx, 'y': sy, 'width': swidth, 'height': sheight };
 
-
         // USE ratio of swidth to browser width to find out how much sheight needs to be scaled within the browser!!!
-
         cropper_width = $(cropper).width();
         image_width = original_image.naturalWidth;
-        //var width_scale = image_width / cropper_width;
-
-
 
         if (swidth > cropper_width) {
             var width_scale = cropper_width / swidth;
-            console.log(width_scale);
             anim_h = sheight * width_scale;
         } else {
             anim_h = sheight;
         }
-        /*
-        if(width_scale > 1){
-            anim_h = sheight*width_scale;
-        } else {
-            anim_h = sheight/width_scale;
-        }
-        */
-
-
-        //
-        //$(cropper).css('height', sheight);
-        //$(cropper).animate({height: sheight+'px'});
-
-
-        /*
-                $('.crop_bg').animate({ height: sheight, width: swidth, left: 0   }, {
-                    duration: 5000,
-                    complete: function() { 
-                        console.log('bg complete');
-                    }
-                    });
-        */
         var init_h = $(cropper).outerHeight();
-
-        var canvas_scale = init_h / sheight;
-        console.log(canvas_scale);
+        //var canvas_scale = init_h / sheight;
         $(cropper).css('height', init_h);
 
-        //$('.after_image').css('height', $('.after_image').outerHeight());
-
-        console.log($('.' + parent_container + ' #cropper_' + id + ' .after_image'));
-        self.removeCrop();
-        //$('.crop_bg').remove();
         // If Adjusted exists hide original.
         if ($('.content_cnv #cropper_' + id + ' .adjusted').length > 0) {
             $('.content_cnv #cropper_' + id + ' .adjusted').remove();
         }
 
-        /*
-        $(cropper).animate({ height: sheight, width: swidth }, {
-            duration: 1000,
-            complete: function() {
-                console.log('fin1');
-                  $(cropper).css('height', '');
-                $(cropper).css('width', '');
-                //$(cropper).css('transform', '');
-                $(cropper).css('left', '-1.38em');
-            }
-        });*/
         $(original_image).addClass('hide');
 
-        //$(cropper).css("height", "");
-        //$this.removeAttr('style'); 
         ImageAdjustment.crop(source_canvas, crop_data).then(function(canvas) {
 
-            //$('#cropper_' + id + ' .adjusted').remove();
-            /*
-            var canvas_copy = ImageAdjustment.cloneCanvas(canvas);
-            canvas_copy.width = swidth * canvas_scale;
-            canvas_copy.height = init_h;
-            var ctx = canvas_copy.getContext('2d');
-            ctx.drawImage(canvas, 0, 0, swidth * canvas_scale, init_h);
-            var cc =$(canvas_copy).prependTo('.content_cnv #cropper_' + id);
-            $(canvas_copy).addClass('crop_temp');
-            $(original_image).addClass('hide');
-            $(cc).animate({ height: anim_h, width:swidth }, {
-                duration: 300,
-                easing: "easeOutExpo",
-                start: function() {}
-            });
-            */
-
+            // remove the crop box
+            self.removeCrop();
 
             $(cropper).animate({ height: anim_h }, {
                 duration: 300,
                 easing: "easeOutExpo",
                 start: function() {
-
+                    console.log('cropper anim start');
                     self.canvasToImage(canvas, id).then(function(image) {
-                        // If Adjusted exists hide original.
-                        //if ($('.content_cnv #cropper_' + id + ' .adjusted').length > 0) {
-                        //    $('.content_cnv #cropper_' + id + ' .adjusted').remove();
-                        //}
-                        // remove the crop box
-                        //self.removeCrop();
-                        // add the new image
-
-                        // Try adding it as display none!
-                        //$(image).addClass('opacity_0');
-
-                        //$(image).addClass('temp_hide');
-
-
-
+                 
                         var img_new = $(image).prependTo('.content_cnv #cropper_' + id);
                         $(img_new).css('opacity', 0);
                         $(img_new).addClass('show_image');
-                        console.log('fin2');
-                        console.log(cropper);
-
 
                         showImage('.show_image').then(function(canvas) {
                             // SAVE    
                             console.log('save');
                             //ImageAdjustment.setImageEditing(false);
+                            $('.content_cnv #cropper_' + id).css('height', '');
                             saveCropper(cropper);
                         });
-
-                        /*
-                                                                     $(img_new).animate({
-                                                    opacity: 1
-                                                }, 5000, function() {
-                                                    // Animation complete.
-                                                    console.log('op comp');
-                                               });
-                                               */
-                        //$timeout(function() {
-
-                        //$(cropper).css('width', '');
-                        //$('.temp_hide').removeClass('hide');
-                        //$('.temp_hide').removeClass('temp_hide');
-
-
 
                     });
                 },
                 complete: function() {
-                    console.log($('.show_image'));
-
-                    console.log('anim complete');
-
-                    //$('.content_cnv #cropper_' + id).css('height', '');
-                    // remove the crop box
-                    //self.removeCrop();
-                    //}, 500);
-                    //$timeout(function() {
-                    $('.content_cnv #cropper_' + id).css('height', '');
-                    // }, 1000);
-                    //$(cropper).css('transform', '');
-                    //$(cropper).css('left', '-1.38em');
+                    console.log('cropper anim complete');
+        
                     ImageAdjustment.setImageAdjustment('content_cnv', id, 'crop', crop_data);
                     ImageAdjustment.setImageAdjusted(true);
                     adjustSrc(original_image, 'hide');
-
-                    $('.crop_temp').remove();
-
-
-
-
-
-
-
-
 
                 }
             });
