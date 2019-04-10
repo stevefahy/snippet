@@ -25,6 +25,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     $scope.$on('$destroy', function() {
         //leaving controller.
+        //
+        // If Image editing in progress, then restore.
+        // Reset image editing to false
+        ImageAdjustment.setImageEditing(false);
+        
         $('.image_adjust_on').remove();
         NUM_TO_LOAD = INIT_NUM_TO_LOAD;
         $rootScope.top_down = false;
@@ -144,7 +149,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             // Update the card.
             Format.updateCard(msg.data, card, $scope.currentUser);
             ImageAdjustment.setImageAdjusted(false);
-            ImageAdjustment.setImageEditing(false);
+            //ImageAdjustment.setImageEditing(false);
             Scroll.enable('.content_cnv');
         }
     });

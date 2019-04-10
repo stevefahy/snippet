@@ -28,10 +28,19 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
     var saveCropper = function(cropper) {
+        var deferred = $q.defer();
+        console.log(cropper);
+        // Turn off contenteditable for this card.
+        setContenteditable($(cropper)[0], true);
         if (ImageAdjustment.getImageAdjusted()) {
             var id = $(cropper).closest('div.ce').attr('id').substr(2, $(cropper).closest('div.ce').attr('id').length);
+            console.log(id);
             $rootScope.$broadcast('saveCropper', { data: id });
+            deferred.resolve();
+        } else {
+            deferred.resolve();
         }
+        return deferred.promise;
     };
 
     var hideAdjusted = function(parent_container, id) {
@@ -128,9 +137,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
     this.editImage = function(scope, id) {
         var parent_container = getParentContainer(scope);
-        var cropper = $('.' + parent_container + ' #cropper_' + id)[0];
-        // Turn off contenteditable for this card.
-        setContenteditable(cropper, false);
+        var cropper = $('.' + parent_container + ' #cropper_' + id);
+
         // Check if this is new image to be edited.
         if (id != ImageAdjustment.getImageId()) {
             // Set the new ID.
@@ -144,6 +152,12 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 // Get the editable attibute for this card (for this user).
                 // check user has permision to edit this image.
                 if ($(scope).closest('div.ce').attr('editable') == 'true') {
+                    // Save any changes made to this card in case the user navigates away from conversations before finishing editing image.
+                    // Set adjusted to true temporarily so that the card will save.
+                    ImageAdjustment.setImageAdjusted(true);
+                    saveCropper(cropper).then(function() {
+                    // Turn off contenteditable for this card.
+                    setContenteditable($(cropper)[0], false);
                     // If this image is not already being edited then allow it to be edited.
                     if (!ImageAdjustment.getImageEditing()) {
                         // Turn off content saving.
@@ -172,6 +186,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                             $('#image_adjust_' + id).addClass('image_adjust_on');
                         }
                     }
+                });
                 }
             });
         }
@@ -280,7 +295,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var cropper = $('.' + parent_container + ' #cropper_' + id);
         var original_image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
         // Use ratio of swidth to browser width to find out how much sheight needs to be scaled within the browser!!!
-        
+
         var scale = ImageAdjustment.getScale(original_image, cropper);
         console.log(scale);
         //var nat_w = original_image.naturalWidth;
@@ -301,44 +316,44 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var init_h = $(cropper).outerHeight();
         // Set the cropper height to its current height so that it can be animated.
         $(cropper).css('height', init_h);
-        
-              $(cropper).animate({ height: anim_h }, {
-                duration: 300,
-                easing: "easeOutExpo",
-                start: function() {
 
-        // If filtered image exists
-        if ($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length > 0) {
-            $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').addClass('hide');
-            $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').addClass('temp_crop_hide');
-            $('.' + parent_container + ' #image_' + id).addClass('hide');
-            var new_canvas = ImageAdjustment.cloneCanvas(target);
-            var img = $(new_canvas).appendTo('.' + parent_container + ' #cropper_' + id + ' .crop_area');
-            $(img).addClass('temp_canvas_filtered');
-            var img_bg = $(target).appendTo('.' + parent_container + ' #cropper_' + id);
-            $(img_bg).addClass('crop_bg');
-            $(img).attr('id', 'crop_src');
-        } else {
-            var img = $(target).appendTo('.' + parent_container + ' #cropper_' + id + ' .crop_area');
-            $(img).attr('id', 'crop_src');
-        }
-        $('.' + parent_container + ' #cropper_' + id + ' .crop_adjust').attr('id', 'drag');
-        var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
-        var crop_data;
-        if (ia != undefined) {
-            crop_data = ia.crop;
-        }
-        var original_image = $('.content_cnv #cropper_' + id + ' #image_' + id)[0];
-        //Make the DIV element draggagle:
-        Drag.setUp(document.getElementById("drag"), document.getElementById("crop_src"), document.querySelector('.crop_area'));
-        // Make resizable.
-        Resize.makeResizableDiv('.resizers', '.crop_area', '#crop_src', original_image, crop_data, id);
-    
-            },
-                complete: function() {
-                    //
+        $(cropper).animate({ height: anim_h }, {
+            duration: 300,
+            easing: "easeOutExpo",
+            start: function() {
+
+                // If filtered image exists
+                if ($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length > 0) {
+                    $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').addClass('hide');
+                    $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').addClass('temp_crop_hide');
+                    $('.' + parent_container + ' #image_' + id).addClass('hide');
+                    var new_canvas = ImageAdjustment.cloneCanvas(target);
+                    var img = $(new_canvas).appendTo('.' + parent_container + ' #cropper_' + id + ' .crop_area');
+                    $(img).addClass('temp_canvas_filtered');
+                    var img_bg = $(target).appendTo('.' + parent_container + ' #cropper_' + id);
+                    $(img_bg).addClass('crop_bg');
+                    $(img).attr('id', 'crop_src');
+                } else {
+                    var img = $(target).appendTo('.' + parent_container + ' #cropper_' + id + ' .crop_area');
+                    $(img).attr('id', 'crop_src');
                 }
-            });
+                $('.' + parent_container + ' #cropper_' + id + ' .crop_adjust').attr('id', 'drag');
+                var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
+                var crop_data;
+                if (ia != undefined) {
+                    crop_data = ia.crop;
+                }
+                var original_image = $('.content_cnv #cropper_' + id + ' #image_' + id)[0];
+                //Make the DIV element draggagle:
+                Drag.setUp(document.getElementById("drag"), document.getElementById("crop_src"), document.querySelector('.crop_area'));
+                // Make resizable.
+                Resize.makeResizableDiv('.resizers', '.crop_area', '#crop_src', original_image, crop_data, id);
+
+            },
+            complete: function() {
+                //
+            }
+        });
 
 
     };
