@@ -564,13 +564,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 found_marky = findMarky(card.content);
                 // check the content has changed and not currently mid marky. Or that an image is being edited.
                 if ((content != card.original_content && (found_marky == false)) && !ImageAdjustment.getImageEditing()) {
-                    // Only do this if not in current card?
-                    /*
-                    if ($('.cropper-container').length > 0) {
-                        $('.cropper-container').remove();
-                        card.content = $('.content_cnv #ce' + card._id).html();
-                    }
-                    */
                     if (!ImageAdjustment.getImageEditing()) {
                         card.content = $('.content_cnv #ce' + card._id).html();
                     }

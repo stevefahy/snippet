@@ -3195,53 +3195,53 @@ span.after_image {
 }
 
 .resizable .resizers .resizer {
-    width: 60px;
-    height: 60px;
+    width: 35%;
+    height: 35%;
     position: absolute;
     z-index: 1;
 }
 
 .resizable .resizers .resizer.top-left {
-    left: -15px;
-    top: -15px;
+    left: -15%;
+    top: -15%;
     cursor: nwse-resize;
 }
 
 .resizable .resizers .resizer.top-middle {
-    top: -15px;
+    top: -15%;
     cursor: n-resize;
 }
 
 .resizable .resizers .resizer.top-right {
-    right: -15px;
-    top: -15px;
+    right: -15%;
+    top: -15%;
     cursor: nesw-resize;
 }
 
 .resizable .resizers .resizer.bottom-left {
-    left: -15px;
-    bottom: -15px;
+    left: -15%;
+    bottom: -15%;
     cursor: nesw-resize;
 }
 
 .resizable .resizers .resizer.bottom-middle {
-    bottom: -15px;
+    bottom: -15%;
     cursor: n-resize;
 }
 
 .resizable .resizers .resizer.bottom-right {
-    right: -15px;
-    bottom: -15px;
+    right: -15%;
+    bottom: -15%;
     cursor: nwse-resize;
 }
 
 .resizable .resizers .resizer.right-middle {
-    right: -15px;
+    right: -15%;
     cursor: e-resize;
 }
 
 .resizable .resizers .resizer.left-middle {
-    left: -15px;
+    left: -15%;
     cursor: e-resize;
 }
 

@@ -135,6 +135,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     });
 
+    // When cropper image has been changed save the card.
     $scope.$on('saveCropper', function(event, msg) {
         // Find the card which contains the cropper to be saved by id.
         var pos = General.findWithAttr($scope.cards, '_id', msg.data);
