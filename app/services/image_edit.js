@@ -276,6 +276,37 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
     this.buildCrop = function(parent_container, id, target) {
+
+        var cropper = $('.' + parent_container + ' #cropper_' + id);
+        var original_image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
+        // Use ratio of swidth to browser width to find out how much sheight needs to be scaled within the browser!!!
+        
+        var scale = ImageAdjustment.getScale(original_image, cropper);
+        console.log(scale);
+        //var nat_w = original_image.naturalWidth;
+        //var cur_w = $(crop_image).outerWidth();
+
+        //cropper_width = $(cropper).width();
+        //image_width = original_image.naturalWidth;
+        /*
+        if (swidth > cropper_width) {
+            var width_scale = cropper_width / swidth;
+            anim_h = sheight * width_scale;
+        } else {
+            anim_h = sheight;
+        }
+        */
+
+        var anim_h = original_image.naturalHeight / scale;
+        var init_h = $(cropper).outerHeight();
+        // Set the cropper height to its current height so that it can be animated.
+        $(cropper).css('height', init_h);
+        
+              $(cropper).animate({ height: anim_h }, {
+                duration: 300,
+                easing: "easeOutExpo",
+                start: function() {
+
         // If filtered image exists
         if ($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length > 0) {
             $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').addClass('hide');
@@ -302,6 +333,14 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         Drag.setUp(document.getElementById("drag"), document.getElementById("crop_src"), document.querySelector('.crop_area'));
         // Make resizable.
         Resize.makeResizableDiv('.resizers', '.crop_area', '#crop_src', original_image, crop_data, id);
+    
+            },
+                complete: function() {
+                    //
+                }
+            });
+
+
     };
 
     this.openCrop = function(e, id) {
