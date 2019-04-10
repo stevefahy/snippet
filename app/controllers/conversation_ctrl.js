@@ -136,13 +136,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     });
 
     $scope.$on('saveCropper', function(event, msg) {
-        console.log('saveCropper');
         // Find the card which contains the cropper to be saved by id.
         var pos = General.findWithAttr($scope.cards, '_id', msg.data);
         if (pos >= 0) {
             var card = $scope.cards[pos];
-            // Save the card.
-            Format.saveCard(msg.data, card, $scope.currentUser);
+            // Update the card.
+            Format.updateCard(msg.data, card, $scope.currentUser);
             ImageAdjustment.setImageAdjusted(false);
             ImageAdjustment.setImageEditing(false);
             Scroll.enable('.content_cnv');

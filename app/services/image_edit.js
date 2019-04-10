@@ -165,25 +165,22 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
     showImage = function(image) {
-        console.log('showImage');
         var deferred = $q.defer();
-        console.log($(image));
         $(image).animate({
             opacity: 1
         }, 500, function() {
+            // Animation complete.
             $(this).removeClass('show_image');
             $(this).css('opacity', '');
-            // Animation complete.
-            console.log('showImage complete');
             deferred.resolve();
         });
         return deferred.promise;
     };
 
     this.makeCrop = function(e, id) {
-        console.log('MAKE CROP');
         e.preventDefault();
         e.stopPropagation();
+        // Disable scrolling until the crop has been saved.
         Scroll.disable('.content_cnv');
         var parent_container = ImageAdjustment.getImageParent();
         // make the div contenteditable again.
@@ -214,14 +211,14 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             anim_h = sheight;
         }
         var init_h = $(cropper).outerHeight();
-        //var canvas_scale = init_h / sheight;
+        // Set the cropper height to its current height so that it can be animated.
         $(cropper).css('height', init_h);
 
         // If Adjusted exists hide original.
         if ($('.content_cnv #cropper_' + id + ' .adjusted').length > 0) {
             $('.content_cnv #cropper_' + id + ' .adjusted').remove();
         }
-
+        // Hide the original image.
         $(original_image).addClass('hide');
 
         ImageAdjustment.crop(source_canvas, crop_data).then(function(canvas) {
@@ -233,17 +230,19 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 duration: 300,
                 easing: "easeOutExpo",
                 start: function() {
-                    console.log('cropper anim start');
+
                     self.canvasToImage(canvas, id).then(function(image) {
                  
                         var img_new = $(image).prependTo('.content_cnv #cropper_' + id);
                         $(img_new).css('opacity', 0);
                         $(img_new).addClass('show_image');
 
+                          ImageAdjustment.setImageAdjustment('content_cnv', id, 'crop', crop_data);
+                    ImageAdjustment.setImageAdjusted(true);
+                    adjustSrc(original_image, 'hide');
+
                         showImage('.show_image').then(function(canvas) {
                             // SAVE    
-                            console.log('save');
-                            //ImageAdjustment.setImageEditing(false);
                             $('.content_cnv #cropper_' + id).css('height', '');
                             saveCropper(cropper);
                         });
@@ -251,11 +250,11 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                     });
                 },
                 complete: function() {
-                    console.log('cropper anim complete');
-        
+        /*
                     ImageAdjustment.setImageAdjustment('content_cnv', id, 'crop', crop_data);
                     ImageAdjustment.setImageAdjusted(true);
                     adjustSrc(original_image, 'hide');
+                    */
 
                 }
             });

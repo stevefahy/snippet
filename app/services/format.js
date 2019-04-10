@@ -535,7 +535,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         }
     };
 
-    this.saveCard = function(id, card, currentUser) {
+    this.updateCard = function(id, card, currentUser) {
         var content = $('.content_cnv #ce' + card._id).html();
         if ((content != card.original_content) && !ImageAdjustment.getImageEditing()) {
             if (!ImageAdjustment.getImageEditing()) {
