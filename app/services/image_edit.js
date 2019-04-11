@@ -240,12 +240,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var crop_data = { 'x': sx, 'y': sy, 'width': swidth, 'height': sheight };
         // Use ratio of swidth to browser width to find out how much sheight needs to be scaled within the browser!!!
         cropper_width = $(cropper).outerWidth().toFixed(2);
-
-        console.log(cropper_width);
-        //console.log($(cropper).height());
         var pad = $(cropper).outerHeight() - $(cropper).height();
-        //cropper_width = $('.header_bottom').width();
-        //console.log(cropper_width);
         image_width = original_image.naturalWidth;
         if (swidth > cropper_width) {
             var width_scale = cropper_width / swidth;
@@ -344,15 +339,25 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var id = ImageAdjustment.getImageId();
         var cropper = $('.' + parent_container + ' #cropper_' + id);
         setContenteditable(cropper, true);
+        var anim_h;
         var image_original = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
         if ($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length > 0) {
             $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').removeClass('hide');
             adjustSrc(image_original, 'hide');
+            anim_h = $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').height();
         } else {
             $(image_original).removeClass('.hide');
+            anim_h = $(image_original).height();
         }
         self.removeCrop();
         ImageAdjustment.setImageEditing(false);
+
+              $(cropper).animate({ height: anim_h }, {
+                duration: 300,
+                easing: "easeOutExpo",
+                start: function() {
+                }
+            });
     };
 
     this.buildCrop = function(parent_container, id, target) {
