@@ -149,7 +149,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             // Update the card.
             Format.updateCard(msg.data, card, $scope.currentUser);
             ImageAdjustment.setImageAdjusted(false);
-            //ImageAdjustment.setImageEditing(false);
+            ImageAdjustment.setImageEditing(false);
             Scroll.enable('.content_cnv');
         }
     });

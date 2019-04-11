@@ -538,10 +538,14 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     this.updateCard = function(id, card, currentUser) {
         var content = $('.content_cnv #ce' + card._id).html();
         console.log('Save?');
+        console.log(ImageAdjustment.getImageEditing());
+        console.log(content != card.original_content);
         if ((content != card.original_content) && !ImageAdjustment.getImageEditing()) {
             console.log('Do save');
+
             if (!ImageAdjustment.getImageEditing()) {
                 card.content = $('.content_cnv #ce' + card._id).html();
+                card.original_content = card.content;
             }
             // Inject the Database Service
             var Database = $injector.get('Database');
