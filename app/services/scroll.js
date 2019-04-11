@@ -5,7 +5,7 @@
 cardApp.service('Scroll', function() {
 
     this.enable = function(target) {
-        $(target).css('overflow-y', 'unset');
+        $(target).css('overflow-y', '');
     };
 
     this.disable = function(target) {

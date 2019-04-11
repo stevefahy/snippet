@@ -180,6 +180,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                             $('#image_adjust_' + id).append(edit_btns);
                             // Adjust marging top if this is the topmost image.
                             if ($('.' + parent_container + ' #cropper_' + id).attr('class').indexOf('no_image_space') >= 0) {
+                                console.log('no image space');
                                 $('#image_adjust_' + id).addClass('no_image_space_adjust');
                             }
                             // set this menu to active

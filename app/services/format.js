@@ -571,6 +571,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 // check the content has changed and not currently mid marky. Or that an image is being edited.
                 if ((content != card.original_content && (found_marky == false)) && !ImageAdjustment.getImageEditing()) {
                     if (!ImageAdjustment.getImageEditing()) {
+                        console.log('update card content');
                         card.content = $('.content_cnv #ce' + card._id).html();
                     }
                     // Inject the Database Service
