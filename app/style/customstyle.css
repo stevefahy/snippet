@@ -1649,8 +1649,12 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 }
 
 span#scroll_latest_footer {
-    display: inline-block;
-    width: 0px;
+    /*display: inline-block;
+    width: 0px;*/
+
+    clear: both;
+    display: block;
+    width: 100%;
 }
 
 span#scroll_image_latest {
