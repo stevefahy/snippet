@@ -222,19 +222,23 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var crop_area = $('.crop_box.active .crop_adjust')[0];
         var source_canvas = document.getElementById('crop_src');
         // Get scale ratio of the image (as displayed which may be scaled to fit compared to the original image).
-        //var scale = ImageAdjustment.getScale(original_image, source_canvas);
-
+        var scale = ImageAdjustment.getScale(original_image, source_canvas);
+        console.log('scale:' + scale);
+        /*
         var nat_w = original_image.naturalWidth;
-        var cur_w = $(source_canvas).width();
+        var cur_w = $(source_canvas).outerWidth().toFixed(2);
         var scale = nat_w / cur_w;
+        console.log(nat_w + ' : ' + cur_w + ' : ' + scale);
+        */
 
-
+        //var awidth = $(crop_area).width() * scale;
+        var aheight = Math.round($(crop_area).outerHeight() * scale);
 
         // Set the crop parmater values.
         var sx = crop_area.offsetLeft * scale;
         var sy = crop_area.offsetTop * scale;
-        var swidth = Math.round($(crop_area).width() * scale);
-        var sheight = Math.round($(crop_area).height() * scale);
+        var swidth = Math.round($(crop_area).outerWidth() * scale);
+        var sheight = Math.round($(crop_area).outerHeight() * scale);
         var x = 0;
         var y = 0;
         var crop_data = { 'x': sx, 'y': sy, 'width': swidth, 'height': sheight };
@@ -244,9 +248,9 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         image_width = original_image.naturalWidth;
         if (swidth > cropper_width) {
             var width_scale = cropper_width / swidth;
-            anim_h = ((sheight * width_scale) + pad).toFixed(2);
+            anim_h = ((aheight * width_scale) + pad).toFixed(2);
         } else {
-            anim_h = (sheight + pad).toFixed(2);
+            anim_h = (aheight + pad).toFixed(2);
         }
 
         console.log(anim_h);
@@ -388,7 +392,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         $(cropper).css('height', init_h);
 
         $(cropper).animate({ height: anim_h }, {
-            duration: 300,
+            duration: 500,
             easing: "easeOutExpo",
             start: function() {
 

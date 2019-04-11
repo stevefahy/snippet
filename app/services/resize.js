@@ -69,16 +69,16 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', 'Scroll', function(Drag, I
         if (previously_cropped) {
             // Get scale ratio of the image (as displayed which may be scaled to fit compared to the original image).
             var scale = ImageAdjustment.getScale(original_image, crop_source);
-
+            console.log('scale: ' + scale);
             crop_box.style.width = crop_data.width / scale + 'px';
             crop_box.style.height = crop_data.height / scale + 'px';
             crop_box.style.top = crop_data.y / scale + 'px';
             crop_box.style.left = crop_data.x / scale + 'px';
 
-            per_top = crop_data.y / scale;
-            per_left = crop_data.x / scale;
-            per_bottom = $(crop_source).outerHeight() - (per_top + $(crop_box).outerHeight());
-            per_right = $(crop_source).outerWidth() - (per_left + $(crop_box).outerWidth());
+            per_top = Math.round(crop_data.y / scale);
+            per_left = Math.round(crop_data.x / scale);
+            per_bottom = Math.round($(crop_source).outerHeight() - (per_top + $(crop_box).outerHeight()));
+            per_right = Math.round($(crop_source).outerWidth() - (per_left + $(crop_box).outerWidth()));
 
         } else {
             // Not previously cropped. Set crop box to a default size.
