@@ -798,17 +798,23 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 break;
             }
         }
+        /*
         if (found_pos >= 0) {
             card_arrays[arr][found_pos].original_content = card.content;
             card_arrays[arr][found_pos].content = card.content;
             card_arrays[arr][found_pos].updatedAt = card.updatedAt;
         }
-        /*
+        */
+        console.log('notification');
         if (found_pos >= 0) {
+
             if (card_arrays[arr][found_pos].content != card.content) {
+                console.log('notification update');
+                 card_arrays[arr][found_pos].original_content = card.content;
                 card_arrays[arr][found_pos].content = card.content;
+                card_arrays[arr][found_pos].updatedAt = card.updatedAt;
             }
-        }*/
+        }
     };
 
     updateFollowingIcons = function(newValue) {

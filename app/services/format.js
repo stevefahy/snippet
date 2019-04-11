@@ -572,6 +572,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     // Inject the Database Service
                     var Database = $injector.get('Database');
                     // Update the card
+                    console.log('do update');
                     Database.updateCard(id, card, currentUser);
                 }
             }
