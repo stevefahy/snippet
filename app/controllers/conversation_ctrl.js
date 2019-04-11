@@ -201,6 +201,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     $scope.$watch('cards.length', function(newStatus) {
         // Debugging
+        console.log(newStatus);
         $rootScope.cards_length = newStatus;
         $timeout(function() {
             upDateObservers();

@@ -1658,8 +1658,13 @@ span#scroll_latest_footer {
 }
 
 span#scroll_image_latest {
+    /*
     display: inline-block;
     width: 0px;
+    */
+        clear: both;
+    display: block;
+    width: 100%;
 }
 
 /* CONTACTS */

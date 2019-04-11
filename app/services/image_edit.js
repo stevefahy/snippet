@@ -578,10 +578,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         $q.all(promises).then(function() {
             // SAVE
             ImageAdjustment.setImageEditing(false);
-            if(ImageAdjustment.getImageAdjusted()){
-                saveCropper($('.' + parent_container + ' #cropper_' + id));
-            }
-            
+            saveCropper($('.' + parent_container + ' #cropper_' + id));
             deferred.resolve();
         });
         e.stopPropagation();
