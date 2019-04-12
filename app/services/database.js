@@ -197,6 +197,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
     // UPDATE CARD
     this.updateCard = function(card_id, card, currentUser) {
+        var deferred = $q.defer();
         if (!updateinprogress) {
             updateinprogress = true;
             setTimeout(function() {
@@ -282,12 +283,16 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                     updateinprogress = false;
                                 }
                             });
+  deferred.resolve();
                     })
                     .catch(function(error) {
                         console.log('error: ' + error);
+                          deferred.resolve();
                     });
             }, 0);
         }
+
+return deferred.promise;
     };
 
     // DELETE CARD

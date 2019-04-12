@@ -958,10 +958,12 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
         var index = General.findWithAttr(conversationsLatestCard, '_id', id);
         // Add if conversationsLatestCard for with this id doesnt exist. otherwise update
         if (index >= 0) {
+            console.log('update');
             // Update.
             conversationsLatestCard[index].data = data;
             deferred.resolve(conversationsLatestCard);
         } else {
+            console.log('add');
             // Add.
             var card = { _id: id, data: data };
             conversationsLatestCard.push(card);

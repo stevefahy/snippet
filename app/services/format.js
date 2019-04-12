@@ -536,6 +536,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.updateCard = function(id, card, currentUser) {
+        var deferred = $q.defer();
+
+
         var content = $('.content_cnv #ce' + card._id).html();
         console.log('Save?');
         console.log(ImageAdjustment.getImageEditing());
@@ -551,12 +554,17 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             // Inject the Database Service
             var Database = $injector.get('Database');
             // Update the card
-            Database.updateCard(id, card, currentUser);
+            Database.updateCard(id, card, currentUser).then(function() {
+            deferred.resolve();
+        });
+        } else {
+            deferred.resolve();
         }
-
+return deferred.promise;
     };
 
     this.getBlur = function(id, card, currentUser) {
+        console.log('getBlur');
         // Add slight delay so that document.activeElement works
         setTimeout(function() {
             var content = $('.content_cnv #ce' + card._id).html();
@@ -570,11 +578,13 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 // zm launching image capture should not trigger an update. It causes error.
                 found_marky = findMarky(card.content);
                 // check the content has changed and not currently mid marky. Or that an image is being edited.
+                console.log(ImageAdjustment.getImageEditing());
                 if ((content != card.original_content && (found_marky == false)) && !ImageAdjustment.getImageEditing()) {
                     if (!ImageAdjustment.getImageEditing()) {
                         console.log('update card content');
                         card.content = $('.content_cnv #ce' + card._id).html();
                     }
+                    console.log('blur save');
                     // Inject the Database Service
                     var Database = $injector.get('Database');
                     // Update the card

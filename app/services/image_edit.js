@@ -30,18 +30,46 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
     var saveCropper = function(cropper) {
         var deferred = $q.defer();
+
+/*
+console.log($(cropper)[0].closest('div.ce'));
+              //  if (ImageAdjustment.getImageAdjusted()) {
+            $(cropper)[0].closest('div.ce').focus();
+            $(cropper)[0].closest('div.ce').blur();
+          //  ImageAdjustment.setImageAdjusted(false);
+       // }
+        Scroll.enable('.content_cnv');
+         deferred.resolve();
+         */
+        
+        
         console.log(cropper);
         // Turn off contenteditable for this card.
         setContenteditable($(cropper)[0], true);
         if (ImageAdjustment.getImageAdjusted() || temp_save) {
+         
             var id = $(cropper).closest('div.ce').attr('id').substr(2, $(cropper).closest('div.ce').attr('id').length);
             console.log(id);
-            $rootScope.$broadcast('saveCropper', { data: id });
+            //$rootScope.$broadcast('saveCropper', { data: id });
+            saveCropper1(id).then(function() {
             temp_save = false;
+            console.log('cropper saved');
             deferred.resolve();
+        });
         } else {
             deferred.resolve();
         }
+        
+
+        
+        /*
+        setContenteditable($(cropper)[0], true);
+        temp_save = false;
+         ImageAdjustment.setImageAdjusted(false);
+            //ImageAdjustment.setImageEditing(false);
+            Scroll.enable('.content_cnv');
+         deferred.resolve();
+         */
         return deferred.promise;
     };
 
@@ -169,7 +197,9 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                         // Set adjusted to true temporarily so that the card will save.
                         //ImageAdjustment.setImageAdjusted(true);
                         temp_save = true;
+                        console.log('before save');
                         saveCropper(cropper).then(function() {
+                            console.log('after save');
                             // Turn off contenteditable for this card.
                             setContenteditable($(cropper)[0], false);
 

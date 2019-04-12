@@ -29,7 +29,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         // If Image editing in progress, then restore.
         // Reset image editing to false
         ImageAdjustment.setImageEditing(false);
-        
+
         $('.image_adjust_on').remove();
         NUM_TO_LOAD = INIT_NUM_TO_LOAD;
         $rootScope.top_down = false;
@@ -141,18 +141,31 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     });
 
     // When cropper image has been changed save the card.
-    $scope.$on('saveCropper', function(event, msg) {
+    //$scope.$on('saveCropper', function(event, msg) {
+        saveCropper1 = function(id){
+var deferred = $q.defer();
+
+
         // Find the card which contains the cropper to be saved by id.
-        var pos = General.findWithAttr($scope.cards, '_id', msg.data);
+        //var pos = General.findWithAttr($scope.cards, '_id', msg.data);
+        var pos = General.findWithAttr($scope.cards, '_id', id);
         if (pos >= 0) {
             var card = $scope.cards[pos];
             // Update the card.
-            Format.updateCard(msg.data, card, $scope.currentUser);
-            ImageAdjustment.setImageAdjusted(false);
             //ImageAdjustment.setImageEditing(false);
+            Format.updateCard(id, card, $scope.currentUser).then(function() {
             Scroll.enable('.content_cnv');
+            deferred.resolve();
+            });
+            ImageAdjustment.setImageAdjusted(false);
+            
+
+        } else {
+            deferred.resolve();
         }
-    });
+        return deferred.promise;
+    };
+    //});
 
     // When an image is uploaded.
     $scope.$on('imageUpload', function(event, data) {
@@ -808,13 +821,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         */
         console.log('notification');
         if (found_pos >= 0) {
-
+            console.log('found');
             if (card_arrays[arr][found_pos].content != card.content) {
-                console.log('notification update');
-                 card_arrays[arr][found_pos].original_content = card.content;
+                console.log('notification update content');
+                card_arrays[arr][found_pos].original_content = card.content;
                 card_arrays[arr][found_pos].content = card.content;
-                card_arrays[arr][found_pos].updatedAt = card.updatedAt;
+                //card_arrays[arr][found_pos].updatedAt = card.updatedAt;
             }
+            console.log('update updatedAt');
+            card_arrays[arr][found_pos].updatedAt = card.updatedAt;
         }
     };
 
@@ -1256,7 +1271,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             if ($scope.cards.length > 0) {
                 var all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
                 var sort_card = $filter('orderBy')(all_cards, 'updatedAt');
+                console.log(sort_card);
                 last_card = sort_card[sort_card.length - 1].updatedAt;
+                console.log(sort_card[sort_card.length - 1]);
                 operand = '$gt';
             } else {
                 last_card = General.getISODate();
@@ -1266,6 +1283,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             promises.push(Conversations.getPublicConversationCards(val)
                 .then(function(res) {
                     if (res.data.length > 0) {
+                        console.log(res.data);
                         promises.push(res.data.map(function(key, array) {
                             // Get the user for this card
                             var users = UserData.getContacts();
