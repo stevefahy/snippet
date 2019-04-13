@@ -624,7 +624,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var source_canvas = $('.source_canvas')[0];
         var image_original = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
         // Set the cropper height to avoid jump when adding removing images.
-        $('.' + parent_container + ' #cropper_' + id).css('height', $(current_canvas).height());
+        //$('.' + parent_container + ' #cropper_' + id).css('height', $(current_canvas).height());
         adjustSrc(image_original, 'hide');
         // Filter added.
         if (current_adjusted != undefined) {
@@ -652,7 +652,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             }
             $(current_canvas).remove();
             $(source_canvas).remove();
-            $('.' + parent_container + ' #cropper_' + id).css('height', '');
+            //$('.' + parent_container + ' #cropper_' + id).css('height', '');
             deferred.resolve();
         }
         $q.all(promises).then(function() {
