@@ -7,6 +7,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     var ua = navigator.userAgent;
     var self = this;
     var mobile = false;
+    var temp_save = false;
 
     if (ua.indexOf('AndroidApp') >= 0) {
         mobile = true;
@@ -22,7 +23,6 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             // Animation complete.
             $(this).removeClass('show_image');
             $(this).css('opacity', '');
-            console.log('show complete');
             deferred.resolve();
         });
         return deferred.promise;
@@ -30,46 +30,18 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
     var saveCropper = function(cropper) {
         var deferred = $q.defer();
-
-/*
-console.log($(cropper)[0].closest('div.ce'));
-              //  if (ImageAdjustment.getImageAdjusted()) {
-            $(cropper)[0].closest('div.ce').focus();
-            $(cropper)[0].closest('div.ce').blur();
-          //  ImageAdjustment.setImageAdjusted(false);
-       // }
-        Scroll.enable('.content_cnv');
-         deferred.resolve();
-         */
-        
-        
-        console.log(cropper);
-        // Turn off contenteditable for this card.
+        // Turn on contenteditable for this card before saving
         setContenteditable($(cropper)[0], true);
+        // Save if the image has been adjusted. Or if this is a temp save of content before editing image.
         if (ImageAdjustment.getImageAdjusted() || temp_save) {
-         
             var id = $(cropper).closest('div.ce').attr('id').substr(2, $(cropper).closest('div.ce').attr('id').length);
-            console.log(id);
-            //$rootScope.$broadcast('saveCropper', { data: id });
-            saveCropper1(id).then(function() {
-            temp_save = false;
-            console.log('cropper saved');
-            deferred.resolve();
-        });
+            saveCard(id).then(function() {
+                temp_save = false;
+                deferred.resolve();
+            });
         } else {
             deferred.resolve();
         }
-        
-
-        
-        /*
-        setContenteditable($(cropper)[0], true);
-        temp_save = false;
-         ImageAdjustment.setImageAdjusted(false);
-            //ImageAdjustment.setImageEditing(false);
-            Scroll.enable('.content_cnv');
-         deferred.resolve();
-         */
         return deferred.promise;
     };
 
@@ -165,7 +137,7 @@ console.log($(cropper)[0].closest('div.ce'));
         return canvas;
     };
 
-    var temp_save = false;
+
 
     this.editImage = function(scope, id) {
         var parent_container = getParentContainer(scope);
@@ -324,14 +296,14 @@ console.log($(cropper)[0].closest('div.ce'));
                                 //code here
                                 console.log('aims finished');
 
-                                  ImageAdjustment.setImageAdjustment('content_cnv', id, 'crop', crop_data);
-                    ImageAdjustment.setImageAdjusted(true);
-                    // Unset the height of the cropper.
-                    $('.content_cnv #cropper_' + id).css('height', '');
-                                 // Save
-                    ImageAdjustment.setImageEditing(false);
-                    console.log('save');
-                    saveCropper(cropper);
+                                ImageAdjustment.setImageAdjustment('content_cnv', id, 'crop', crop_data);
+                                ImageAdjustment.setImageAdjusted(true);
+                                // Unset the height of the cropper.
+                                $('.content_cnv #cropper_' + id).css('height', '');
+                                // Save
+                                ImageAdjustment.setImageEditing(false);
+                                console.log('save');
+                                saveCropper(cropper);
                             });
                         });
                     });
@@ -341,7 +313,7 @@ console.log($(cropper)[0].closest('div.ce'));
                     //ImageAdjustment.setImageAdjustment('content_cnv', id, 'crop', crop_data);
                     //ImageAdjustment.setImageAdjusted(true);
                     // Unset the height of the cropper.
-                   // $('.content_cnv #cropper_' + id).css('height', '');
+                    // $('.content_cnv #cropper_' + id).css('height', '');
                     // Save
                     //ImageAdjustment.setImageEditing(false);
                     //console.log('save');
@@ -386,12 +358,11 @@ console.log($(cropper)[0].closest('div.ce'));
         self.removeCrop();
         ImageAdjustment.setImageEditing(false);
 
-              $(cropper).animate({ height: anim_h }, {
-                duration: 300,
-                easing: "easeOutExpo",
-                start: function() {
-                }
-            });
+        $(cropper).animate({ height: anim_h }, {
+            duration: 300,
+            easing: "easeOutExpo",
+            start: function() {}
+        });
     };
 
     this.buildCrop = function(parent_container, id, target) {
@@ -665,7 +636,7 @@ console.log($(cropper)[0].closest('div.ce'));
                 var img_new = $(image).prependTo('.content_cnv #cropper_' + id);
                 $(current_canvas).remove();
                 $(source_canvas).remove();
-                $('.' + parent_container + ' #cropper_' + id).css('height', '');
+                //$('.' + parent_container + ' #cropper_' + id).css('height', '');
                 deferred.resolve();
             });
             promises.push(prom);
