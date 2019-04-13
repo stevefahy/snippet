@@ -832,18 +832,22 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             // Animation complete.
                             card_arrays[arr][found_pos].original_content = card.content;
                             card_arrays[arr][found_pos].content = card.content;
-                            if (!$scope.$$phase) {
-                                $scope.$apply();
-                            }
+
                             if (new_h != old_h) {
-                                $(this).animate({ height: new_h }, 300, function() {
+                                $($('#ce' + card._id)).animate({ height: new_h }, 500, function() {
                                     // Animation complete.
-                                    $(this).animate({ opacity: 1 }, 300, function() {
+                                    if (!$scope.$$phase) {
+                                        $scope.$apply();
+                                    }
+                                    $(this).animate({ opacity: 1 }, 400, function() {
                                         $(this).css('opacity', '');
                                         $(this).css('height', '');
                                     });
                                 });
                             } else {
+                                 if (!$scope.$$phase) {
+                                        $scope.$apply();
+                                    }
                                 $(this).animate({ opacity: 1 }, 300, function() {
                                     $(this).css('opacity', '');
                                 });
