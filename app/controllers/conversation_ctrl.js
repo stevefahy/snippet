@@ -812,14 +812,86 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             card_arrays[arr][found_pos].updatedAt = card.updatedAt;
         }
         */
+        $scope.test = [];
         console.log('notification');
         if (found_pos >= 0) {
             console.log('found');
             if (card_arrays[arr][found_pos].content != card.content) {
                 console.log('notification update content');
-                card_arrays[arr][found_pos].original_content = card.content;
-                card_arrays[arr][found_pos].content = card.content;
+                console.log(card._id);
+
+                //$('#ce'+card._id).css('height', $('#ce'+card._id).height());
+                $scope.test.content = card.content;
+                $timeout(function() {
+                    var old_h = $('#ce' + card._id).height().toFixed(2);
+                    var new_h = $('#test_card').height().toFixed(2);
+                    console.log(new_h);
+
+                    $($('#ce' + card._id))
+                        .animate({ opacity: 0 }, 300, function() {
+                            // Animation complete.
+                            card_arrays[arr][found_pos].original_content = card.content;
+                            card_arrays[arr][found_pos].content = card.content;
+                            if (!$scope.$$phase) {
+                                $scope.$apply();
+                            }
+                            if (new_h != old_h) {
+                                $(this).animate({ height: new_h }, 300, function() {
+                                    // Animation complete.
+                                    $(this).animate({ opacity: 1 }, 300, function() {
+                                        $(this).css('opacity', '');
+                                        $(this).css('height', '');
+                                    });
+                                });
+                            } else {
+                                $(this).animate({ opacity: 1 }, 300, function() {
+                                    $(this).css('opacity', '');
+                                });
+                            }
+                        });
+
+
+
+
+
+                    /*
+                    $($('#ce' + card._id)).animate({
+                        opacity: 0
+                    }, 200, function() {
+                        // Animation complete.
+                        card_arrays[arr][found_pos].original_content = card.content;
+                        card_arrays[arr][found_pos].content = card.content;
+                        if (!$scope.$$phase) {
+                            $scope.$apply();
+                        }
+
+                        $($('#ce' + card._id)).animate({
+                        height: new_h
+                           // height: 1000
+                        }, 1000, function() {
+                            // Animation complete.
+                            $($('#ce' + card._id)).animate({
+                                opacity: 1
+                            }, 200, function() {
+                                // Animation complete.
+                                $(this).css('opacity', '');
+                                //$(this).css('height', '');
+                            });
+
+                        });
+
+                    });
+                    */
+
+                }, 100);
+
+
+                //card_arrays[arr][found_pos].original_content = card.content;
+                //card_arrays[arr][found_pos].content = card.content;
+
+
                 //card_arrays[arr][found_pos].updatedAt = card.updatedAt;
+                //$('#ce'+card._id).css('height', '');
             }
             console.log('update updatedAt');
             card_arrays[arr][found_pos].updatedAt = card.updatedAt;

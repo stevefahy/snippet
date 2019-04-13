@@ -3396,5 +3396,11 @@ span.after_image {
     position: absolute;
     top: 0;
     left: 0;
+}
 
+.test_card {
+    position: absolute;
+    z-index: -1;
+    bottom: 100vh;
+    overflow: hidden;
 }
