@@ -887,7 +887,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     });
                     */
 
-                }, 100);
+                }, 500);
 
 
                 //card_arrays[arr][found_pos].original_content = card.content;
