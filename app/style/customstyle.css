@@ -3417,3 +3417,25 @@ span.after_image {
     top: 0px;
     
 }
+
+/*
+.card_temp.ng-leave {
+    left: 0vw;
+    transition: all .5s ease;
+}
+
+.card_temp.ng-leave-active {
+    left: -100vw;
+}
+*/
+
+/*
+.card_temp.ng-move {
+    top: -150px;
+    transition: all .5s ease;
+}
+
+.card_temp.ng-move-active {
+    top: 0px;
+}
+*/
