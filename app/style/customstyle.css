@@ -3404,3 +3404,16 @@ span.after_image {
     bottom: 100vh;
     overflow: hidden;
 }
+
+
+.card_temp.ng-enter {
+      /*  left: -100vw;*/
+          top: -150px;
+    
+    transition: all .5s ease;
+}
+.card_temp.ng-enter-active {
+    /*left: 0;*/
+    top: 0px;
+    
+}

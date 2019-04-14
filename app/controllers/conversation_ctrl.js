@@ -22,6 +22,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.dropDownToggle = Edit.dropDownToggle;
     $scope.pasteHtmlAtCaret = Format.pasteHtmlAtCaret;
     $scope.checkCursor = Format.checkCursor;
+    $scope.test_card = [];
 
     $scope.$on('$destroy', function() {
         //leaving controller.
@@ -812,7 +813,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             card_arrays[arr][found_pos].updatedAt = card.updatedAt;
         }
         */
-        $scope.test = [];
+        
         console.log('notification');
         if (found_pos >= 0) {
             console.log('found');
@@ -820,8 +821,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 console.log('notification update content');
                 console.log(card._id);
 
-                //$('#ce'+card._id).css('height', $('#ce'+card._id).height());
-                $scope.test.content = card.content;
+                $scope.test_card.content = card.content;
                 $timeout(function() {
                     var old_h = $('#ce' + card._id).height().toFixed(2);
                     var new_h = $('#test_card').height().toFixed(2);
@@ -845,57 +845,16 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                     });
                                 });
                             } else {
-                                 if (!$scope.$$phase) {
-                                        $scope.$apply();
-                                    }
+                                if (!$scope.$$phase) {
+                                    $scope.$apply();
+                                }
                                 $(this).animate({ opacity: 1 }, 300, function() {
                                     $(this).css('opacity', '');
                                 });
                             }
                         });
 
-
-
-
-
-                    /*
-                    $($('#ce' + card._id)).animate({
-                        opacity: 0
-                    }, 200, function() {
-                        // Animation complete.
-                        card_arrays[arr][found_pos].original_content = card.content;
-                        card_arrays[arr][found_pos].content = card.content;
-                        if (!$scope.$$phase) {
-                            $scope.$apply();
-                        }
-
-                        $($('#ce' + card._id)).animate({
-                        height: new_h
-                           // height: 1000
-                        }, 1000, function() {
-                            // Animation complete.
-                            $($('#ce' + card._id)).animate({
-                                opacity: 1
-                            }, 200, function() {
-                                // Animation complete.
-                                $(this).css('opacity', '');
-                                //$(this).css('height', '');
-                            });
-
-                        });
-
-                    });
-                    */
-
                 }, 500);
-
-
-                //card_arrays[arr][found_pos].original_content = card.content;
-                //card_arrays[arr][found_pos].content = card.content;
-
-
-                //card_arrays[arr][found_pos].updatedAt = card.updatedAt;
-                //$('#ce'+card._id).css('height', '');
             }
             console.log('update updatedAt');
             card_arrays[arr][found_pos].updatedAt = card.updatedAt;
@@ -1035,6 +994,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var sort_card;
         var spliced;
         if (!$scope.top_down) {
+            console.log(arr);
             if ($scope.removed_cards_bottom.length > 0) {
                 all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
                 sort_card = $filter('orderBy')(all_cards, 'updatedAt', true);
@@ -1053,6 +1013,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $scope.$broadcast("items_changed", 'bottom');
             }
         } else {
+            console.log(arr);
             if ($scope.removed_cards_top.length > 0) {
                 all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
                 sort_card = $filter('orderBy')(all_cards, 'updatedAt', true);
