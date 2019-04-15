@@ -18,10 +18,10 @@
         </div>
     </div>
     <!-- Content onscreen -->
-    <div class="content_cnv" ng-class="{ 'content_cnv_conv': !feed, 'content_cnv_hide_footer': hide_footer, 'content_cnv_no_footer': no_footer}" scroll-to-top-when="items_changed">
+    <div class="content_cnv first_load_start first_load_transition" ng-class="{ 'content_cnv_conv': !feed, 'content_cnv_hide_footer': hide_footer, 'content_cnv_no_footer': no_footer}" scroll-to-top-when="items_changed" ng-class="{'first_load_anim': card.first_load}" class="first_load_start first_load_transition">
         <div id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : top_down " on-finish-render="ngRepeatFinished" ng-attr-id="card_{{::card._id }}" class="card_temp"  ng-class="{'first_load_anim': card.first_load}" class="first_load_start first_load_transition">
 
-            <div ng-class="{'first_load_anim': card.first_load}" class="first_load_start first_load_transition">
+            <div >
                 <div id="user" ng-init="init(card._id)">
 
                     <img ng-if="::card.avatar!='default'" alt="" class="card_avatar" ng-src="{{::card.avatar}}" />

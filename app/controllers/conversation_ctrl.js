@@ -1607,7 +1607,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 var pos = General.findWithAttr($scope.cards, '_id', id);
                 if (pos >= 0) {
                     console.log($scope.cards[pos]);
-                    delete $scope.cards[pos].first_load;
+                    //delete $scope.cards[pos].first_load;
                     console.log($scope.cards[pos]);
                 }
             });

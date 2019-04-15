@@ -3418,15 +3418,17 @@ span.after_image {
 }
 
 @keyframes slideCard {
+from { margin-top: -100%; }
+  to   { margin-top: 0%; }
+    /*
     0% {
-     
         transform: translateY(-100%);
     }
 
     100% {
-       
         transform: translateY(0);
     }
+    */
 }
 
 .first_load_anim {
