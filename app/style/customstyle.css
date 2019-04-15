@@ -2713,8 +2713,8 @@ Transitions
 }
 
 .contacts_transition {
-    -webkit-transition: all .3s cubic-bezier(.4, 0, .2, 1);
-    transition: all .3s cubic-bezier(.4, 0, .2, 1);
+    -webkit-transition: all 3s cubic-bezier(.4, 0, .2, 1);
+    transition: all 3s cubic-bezier(.4, 0, .2, 1);
 }
 
 .show_image_transition {
@@ -3406,17 +3406,51 @@ span.after_image {
 }
 
 
-.card_temp.ng-enter {
-      /*  left: -100vw;*/
-          top: -150px;
-    
-    transition: all .5s ease;
+.first_load_transition{
+    position: relative;
+    -webkit-transition: all 6s cubic-bezier(.4, 0, .2, 1);
+    transition: all 6s cubic-bezier(.4, 0, .2, 1);
 }
-.card_temp.ng-enter-active {
-    /*left: 0;*/
+
+.first_load_start {
     top: 0px;
     
 }
+
+@keyframes slideCard {
+    0% {
+     
+        transform: translateY(-100%);
+    }
+
+    100% {
+       
+        transform: translateY(0);
+    }
+}
+
+.first_load_anim {
+       -webkit-animation: slideCard .7s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/*
+.first_load.ng-enter-prepare {
+   
+}
+
+.first_load.ng-enter {
+          top: -150px;
+}
+.first_load.ng-enter-active {
+    top: 0px;
+    
+}
+*/
+
+
+
+
+
 
 /*
 .card_temp.ng-leave {

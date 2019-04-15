@@ -1,4 +1,4 @@
-cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$q', '$filter', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', 'ImageEdit', '$compile', 'ImageAdjustment', 'Keyboard', 'Scroll', function($scope, $rootScope, $location, $http, $window, $q, $filter, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, ImageEdit, $compile, ImageAdjustment, Keyboard, Scroll) {
+cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$q', '$filter', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', 'ImageEdit', '$compile', 'ImageAdjustment', 'Keyboard', 'Scroll', '$animate', function($scope, $rootScope, $location, $http, $window, $q, $filter, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, ImageEdit, $compile, ImageAdjustment, Keyboard, Scroll, $animate) {
 
     openCrop = ImageEdit.openCrop;
     editImage = ImageEdit.editImage;
@@ -23,6 +23,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.pasteHtmlAtCaret = Format.pasteHtmlAtCaret;
     $scope.checkCursor = Format.checkCursor;
     $scope.test_card = [];
+
+
 
     $scope.$on('$destroy', function() {
         //leaving controller.
@@ -161,6 +163,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         return deferred.promise;
     };
 
+
     // When an image is uploaded.
     $scope.$on('imageUpload', function(event, data) {
         scroll_updating = true;
@@ -182,6 +185,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     });
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
+        console.log('here');
         dir = 2;
         image_check_counter++;
         checkImages('content_cnv', image_check_counter);
@@ -189,6 +193,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             $('.cropper-container').remove();
             $('.cropper-hidden').removeClass('cropper-hidden');
         }
+        //console.log('remove first_load');
+        //$('.first_load').removeClass('first_load');
     });
 
     $scope.$on('rzSliderRender', function(event, data) {
@@ -813,7 +819,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             card_arrays[arr][found_pos].updatedAt = card.updatedAt;
         }
         */
-        
+
         console.log('notification');
         if (found_pos >= 0) {
             console.log('found');
@@ -1014,6 +1020,17 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }
         } else {
             console.log(arr);
+
+            for (var i = 0, len = arr.length; i < len; i++) {
+                arr[i].first_load = true;
+                console.log(arr[i]);
+            }
+
+
+            /*
+            <div ng-class="{'first_load_anim': card.first_load}" class="first_load_start first_load_transition" id="fl">
+            <div id="user" ng-init="init()" ng-attr-id="card_{{::card._id }}">*/
+
             if ($scope.removed_cards_top.length > 0) {
                 all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
                 sort_card = $filter('orderBy')(all_cards, 'updatedAt', true);
@@ -1574,4 +1591,57 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 }
             }
         });
+    //webkitAnimationEnd
+    angular.element(document).ready(function() {
+
+    });
+
+    $scope.init = function(id) {
+        console.log('init: ' + id);
+        $(".first_load_transition").bind('webkitAnimationEnd oAnimationEnd animationend ', function() {
+            console.log('fl');
+            console.log(this);
+            $scope.$apply(function($scope) {
+                console.log('end');
+                //$scope.cards.
+                var pos = General.findWithAttr($scope.cards, '_id', id);
+                if (pos >= 0) {
+                    console.log($scope.cards[pos]);
+                    delete $scope.cards[pos].first_load;
+                    console.log($scope.cards[pos]);
+                }
+            });
+
+        });
+    };
+
+
+    /*
+    myEndFunction = function(){
+        console.log('end');
+    };
+
+    $(".first_load_transition")[0].addEventListener("webkitAnimationEnd", myEndFunction);
+*/
+
+    /*
+$scope.card_on = false;
+
+    $(".steve").bind('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function() {
+        console.log('fl');
+        $scope.$apply(function($scope) {
+            console.log('end');
+        });
+
+    });
+
+    $(".card_on").bind('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function() {
+        console.log('fl');
+        $scope.$apply(function($scope) {
+            console.log('end');
+        });
+
+    });
+    */
+
 }]);
