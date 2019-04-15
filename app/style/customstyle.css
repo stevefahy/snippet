@@ -3418,7 +3418,7 @@ span.after_image {
 }
 
 @keyframes slideCard {
-
+/*
     from {
         
         margin-top: -100%;
@@ -3428,8 +3428,8 @@ span.after_image {
        
         margin-top: 0;
     }
-
-    /*    
+*/
+     
     0% {
         transform: translateY(-100%);
     }
@@ -3437,12 +3437,12 @@ span.after_image {
     100% {
         transform: translateY(0);
     }
-    */
+    
 
 }
 
 .first_load_anim {
-    -webkit-animation: slideCard 10s cubic-bezier(0.19, 1, 0.22, 1);
+    -webkit-animation: slideCard 1s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 /*
