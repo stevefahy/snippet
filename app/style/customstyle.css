@@ -3405,17 +3405,20 @@ span.after_image {
     overflow: hidden;
 }
 
-
+/*
 .first_load_transition {
-    position: relative;
+ 
     -webkit-transition: all 6s cubic-bezier(.4, 0, .2, 1);
     transition: all 6s cubic-bezier(.4, 0, .2, 1);
 }
+*/
 
+/*
 .first_load_start {
     top: 0px;
 
 }
+*/
 
 @keyframes slideCard {
 /*
