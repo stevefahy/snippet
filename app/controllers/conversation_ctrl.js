@@ -795,7 +795,21 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
         if (found_pos >= 0) {
             $rootScope.deleting_card = true;
+
+             $timeout(function () {
+            //$scope.$apply(function() {
+                console.log('delete');
+                console.log(card_arrays[arr][found_pos]);
             card_arrays[arr].splice(found_pos, 1);
+
+             $scope.$apply();
+   // card_arrays[arr].refresh();
+
+           // this.rows.splice(this.rows.length - 1, 1);
+//this.rows = [...this.rows];
+//$scope.cards = card_arrays[arr];
+        //});
+         });
             $rootScope.deleting_card = false;
         }
     };
@@ -1470,6 +1484,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // DELETE ==================================================================
     $scope.deleteCard = function(card_id, conversation_id) {
+        console.log('del');
         Database.deleteCard(card_id, conversation_id, $scope.currentUser);
     };
 
