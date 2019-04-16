@@ -1036,7 +1036,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             console.log(arr);
 
             for (var i = 0, len = arr.length; i < len; i++) {
-                arr[i].first_load = true;
+                arr[i].new_card = true;
                 console.log(arr[i]);
             }
 
@@ -1062,6 +1062,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 programmatic_scroll = true;
                 $scope.$broadcast("items_changed", 'top');
             }
+            // Listen for the card load animation to end.
+            anim_listen();
+
         }
     };
 
@@ -1606,16 +1609,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 }
             }
         });
-    //webkitAnimationEnd
-    angular.element(document).ready(function() {
 
-    });
-
-    $scope.init = function(id) {
-        console.log('init: ' + id);
-        $(".first_load_transition").bind('webkitAnimationEnd oAnimationEnd animationend ', function() {
+        var cardAnimEnd = function(){
             console.log('fl');
-            console.log(this);
+            console.log(this.id);
+            var id = (this.id).substr(5, (this.id).length);
+            console.log(id);
+            // reomve the animation end listener which called this function.
+            $(this).off('webkitAnimationEnd oAnimationEnd animationend ', cardAnimEnd);
+            $(this).css('margin-top', '');
             $scope.$apply(function($scope) {
                 console.log('end');
                 //$scope.cards.
@@ -1623,41 +1625,20 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 console.log(pos);
                 if (pos >= 0) {
                     console.log($scope.cards[pos]);
-                    delete $scope.cards[pos].first_load;
+                    delete $scope.cards[pos].new_card;
                     console.log($scope.cards[pos]);
                 }
             });
+        };
 
+        var anim_listen = function(){
+            console.log('anim_listen');
+            $timeout(function() {  
+                console.log($(".first_load_anim").outerHeight());
+                $(".first_load_anim").css('margin-top', $(".first_load_anim").outerHeight()*-1);
+                $(".first_load_anim").on('webkitAnimationEnd oAnimationEnd animationend ', cardAnimEnd);
         });
-    };
+        };
 
-
-    /*
-    myEndFunction = function(){
-        console.log('end');
-    };
-
-    $(".first_load_transition")[0].addEventListener("webkitAnimationEnd", myEndFunction);
-*/
-
-    /*
-$scope.card_on = false;
-
-    $(".steve").bind('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function() {
-        console.log('fl');
-        $scope.$apply(function($scope) {
-            console.log('end');
-        });
-
-    });
-
-    $(".card_on").bind('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function() {
-        console.log('fl');
-        $scope.$apply(function($scope) {
-            console.log('end');
-        });
-
-    });
-    */
 
 }]);

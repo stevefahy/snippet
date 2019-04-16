@@ -1286,6 +1286,7 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     border-radius: 1px;
     position: absolute;
     bottom: 60px;
+    z-index: 20;
 }
 
 .create_container_conv {
@@ -3421,18 +3422,16 @@ span.after_image {
 */
 
 @keyframes slideCard {
-/*
     from {
-        
-        margin-top: -100%;
+        /*margin-top: 100%;*/
     }
 
     to {
-       
         margin-top: 0;
     }
-*/
+
      
+/*
     0% {
         transform: translateY(-100%);
     }
@@ -3440,7 +3439,7 @@ span.after_image {
     100% {
         transform: translateY(0);
     }
-    
+    */
 
 }
 
