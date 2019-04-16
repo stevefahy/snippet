@@ -3440,11 +3440,17 @@ span.after_image {
         transform: translateY(0);
     }
     */
+    
 
 }
 
 .first_load_anim {
-    -webkit-animation: slideCard .8s cubic-bezier(0.19, 1, 0.22, 1);
+    /*
+   0.19, 1, 0.22, 1
+.
+    */
+    
+    -webkit-animation: slideCard .8s cubic-bezier(.17,.57,.47,.94);
 }
 
 /*
