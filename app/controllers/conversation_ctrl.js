@@ -209,6 +209,19 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         for (var i = 0, len = $scope.cards.length; i < len; i++) {
             createObserver($scope.cards[i]._id);
             disableCheckboxes($scope.cards[i]._id);
+            if ($scope.cards[i].new_card) {
+
+                //$('.content_cnv #card_' +$scope.cards[0]._id).addClass('sticky_scroll');
+                
+                          
+
+                //console.log('new_card');
+                //console.log($(".first_load_anim").outerHeight());
+                //$(".first_load_anim").css('height','0px');
+                $(".first_load_anim").css('margin-top', $(".first_load_anim").outerHeight() * -1);
+                //$(".first_load_anim").css('visibility','hidden');
+                $(".first_load_anim").on('webkitAnimationEnd oAnimationEnd animationend ', cardAnimEnd);
+            }
         }
     };
 
@@ -796,20 +809,20 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         if (found_pos >= 0) {
             $rootScope.deleting_card = true;
 
-             $timeout(function () {
-            //$scope.$apply(function() {
+            $timeout(function() {
+                //$scope.$apply(function() {
                 console.log('delete');
                 console.log(card_arrays[arr][found_pos]);
-            card_arrays[arr].splice(found_pos, 1);
+                card_arrays[arr].splice(found_pos, 1);
 
-             $scope.$apply();
-   // card_arrays[arr].refresh();
+                $scope.$apply();
+                // card_arrays[arr].refresh();
 
-           // this.rows.splice(this.rows.length - 1, 1);
-//this.rows = [...this.rows];
-//$scope.cards = card_arrays[arr];
-        //});
-         });
+                // this.rows.splice(this.rows.length - 1, 1);
+                //this.rows = [...this.rows];
+                //$scope.cards = card_arrays[arr];
+                //});
+            });
             $rootScope.deleting_card = false;
         }
     };
@@ -1058,12 +1071,19 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 programmatic_scroll = true;
                 $scope.$broadcast("items_changed", 'top');
             } else {
-                $scope.cards = $scope.cards.concat(arr);
-                programmatic_scroll = true;
-                $scope.$broadcast("items_changed", 'top');
+                console.log('HERE');
+                //$scope.cards = $scope.cards.concat(arr);
+                //$scope.cards[0].scrollTop(0);
+                //console.log($scope.cards[0]);
+                
+                for (var i = 0, len = arr.length; i < len; i++) {
+                    $scope.cards.push(arr[i]);
+                }
+                //programmatic_scroll = true;
+                //$scope.$broadcast("items_changed", 'top');
             }
             // Listen for the card load animation to end.
-            anim_listen();
+            //anim_listen();
 
         }
     };
@@ -1610,35 +1630,35 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }
         });
 
-        var cardAnimEnd = function(){
-            console.log('fl');
-            console.log(this.id);
-            var id = (this.id).substr(5, (this.id).length);
-            console.log(id);
-            // reomve the animation end listener which called this function.
-            $(this).off('webkitAnimationEnd oAnimationEnd animationend ', cardAnimEnd);
-            $(this).css('margin-top', '');
-            $scope.$apply(function($scope) {
-                console.log('end');
-                //$scope.cards.
-                var pos = General.findWithAttr($scope.cards, '_id', id);
-                console.log(pos);
-                if (pos >= 0) {
-                    console.log($scope.cards[pos]);
-                    delete $scope.cards[pos].new_card;
-                    console.log($scope.cards[pos]);
-                }
-            });
-        };
-
-        var anim_listen = function(){
-            console.log('anim_listen');
-            $timeout(function() {  
-                console.log($(".first_load_anim").outerHeight());
-                $(".first_load_anim").css('margin-top', $(".first_load_anim").outerHeight()*-1);
-                $(".first_load_anim").on('webkitAnimationEnd oAnimationEnd animationend ', cardAnimEnd);
+    var cardAnimEnd = function() {
+        console.log('fl');
+        console.log(this.id);
+        var id = (this.id).substr(5, (this.id).length);
+        console.log(id);
+        // reomve the animation end listener which called this function.
+        $(this).off('webkitAnimationEnd oAnimationEnd animationend ', cardAnimEnd);
+        $(this).css('margin-top', '');
+        $scope.$apply(function($scope) {
+            console.log('end');
+            //$scope.cards.
+            var pos = General.findWithAttr($scope.cards, '_id', id);
+            console.log(pos);
+            if (pos >= 0) {
+                console.log($scope.cards[pos]);
+                delete $scope.cards[pos].new_card;
+                console.log($scope.cards[pos]);
+            }
         });
-        };
+    };
+
+    var anim_listen = function() {
+        console.log('anim_listen');
+        $timeout(function() {
+            //console.log($(".first_load_anim").outerHeight());
+            //$(".first_load_anim").css('margin-top', $(".first_load_anim").outerHeight() * -1);
+            //$(".first_load_anim").on('webkitAnimationEnd oAnimationEnd animationend ', cardAnimEnd);
+        });
+    };
 
 
 }]);

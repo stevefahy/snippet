@@ -3421,6 +3421,16 @@ span.after_image {
 }
 */
 
+@keyframes scrollTop {
+    from {
+        top: 0px;
+    }
+
+    to {
+        top:0px;
+    }
+}
+
 @keyframes slideCard {
     from {
         /*margin-top: 100%;*/
@@ -3451,6 +3461,10 @@ span.after_image {
     */
     
     -webkit-animation: slideCard .8s cubic-bezier(.17,.57,.47,.94);
+}
+
+.sticky_scroll {
+     -webkit-animation: scrollTop 2s cubic-bezier(.17,.57,.47,.94);
 }
 
 /*
