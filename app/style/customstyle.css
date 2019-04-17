@@ -3421,19 +3421,11 @@ span.after_image {
 }
 */
 
-@keyframes scrollTop {
-    from {
-        top: 0px;
-    }
 
-    to {
-        top:0px;
-    }
-}
 
 @keyframes slideCard {
     from {
-        /*margin-top: 100%;*/
+        margin-top: -100%;
     }
 
     to {
@@ -3454,18 +3446,27 @@ span.after_image {
 
 }
 
+.zero_height {
+    display: block;
+    line-height: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+.animate {
+     -webkit-animation: slideCard .8s cubic-bezier(.17,.57,.47,.94);
+}
 .first_load_anim {
     /*
    0.19, 1, 0.22, 1
 .
     */
-    
-    -webkit-animation: slideCard .8s cubic-bezier(.17,.57,.47,.94);
+
+   
+    /*-webkit-animation: slideCard .8s cubic-bezier(.17,.57,.47,.94);*/
 }
 
-.sticky_scroll {
-     -webkit-animation: scrollTop 2s cubic-bezier(.17,.57,.47,.94);
-}
+
 
 /*
 .first_load.ng-enter-prepare {

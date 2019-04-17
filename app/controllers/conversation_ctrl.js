@@ -214,11 +214,17 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 //$('.content_cnv #card_' +$scope.cards[0]._id).addClass('sticky_scroll');
                 
                           
-
+                //$(".content_cnv").css('margin-top', $(".first_load_anim").outerHeight() * -1);
                 //console.log('new_card');
                 //console.log($(".first_load_anim").outerHeight());
                 //$(".first_load_anim").css('height','0px');
                 $(".first_load_anim").css('margin-top', $(".first_load_anim").outerHeight() * -1);
+                
+                
+                $(".first_load_anim").addClass('animate');
+                $(".first_load_anim").removeClass('zero_height');
+                //$(".content_cnv").css('margin-top', '');
+                
                 //$(".first_load_anim").css('visibility','hidden');
                 $(".first_load_anim").on('webkitAnimationEnd oAnimationEnd animationend ', cardAnimEnd);
             }
