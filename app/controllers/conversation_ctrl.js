@@ -210,41 +210,73 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             createObserver($scope.cards[i]._id);
             disableCheckboxes($scope.cards[i]._id);
             if ($scope.cards[i].new_card) {
-
-                // Get height
+                var card_id = $scope.cards[i]._id;
+                //$scope.cards[i].scrolling = true;
+                console.log($scope.cards[i]);
+                // Get the height of the new card.
                 $scope.test_card.content = $scope.cards[i].content;
                 $timeout(function() {
                     var new_h = Number($('.test_card').outerHeight(true).toFixed(2));
-                    console.log(new_h);
-                    console.log(84 + 57.33 + new_h);
-                    var h = new_h;
-               
+                    //$(".first_load_anim").css('margin-top', new_h * -1);
+                    //$(".first_load_anim").removeClass('zero_height');
 
 
-                //$('.content_cnv #card_' +$scope.cards[0]._id).addClass('sticky_scroll');
-                
-                          
-                //$(".content_cnv").css('margin-top', $(".first_load_anim").outerHeight() * -1);
-                //console.log('new_card');
-                //console.log($(".first_load_anim").outerHeight());
-                //$(".first_load_anim").css('height','0px');
-                $(".first_load_anim").css('margin-top', h * -1);
-                
-
-                $(".first_load_anim").removeClass('zero_height');
-
-               // $timeout(function() {
-                $(".first_load_anim").addClass('animate');
-           // },1000);
+                    // What to do if not  first card or not displayed?
 
 
-                
+                    if ($scope.top_down) {
+                        //var max_s = $(".content_cnv")[0].scrollHeight - $(".content_cnv")[0].clientHeight;
+                        var cur_s = $(".content_cnv").scrollTop();
+                        console.log(cur_s);
+                        if(cur_s == 0){
+                                                 // If at top
+                        $(".first_load_anim").css('margin-top', new_h * -1);
+                        $(".first_load_anim").addClass('animate_down');
+                        $(".first_load_anim").removeClass('zero_height');
+                        $(".first_load_anim").on('webkitAnimationEnd oAnimationEnd animationend ', cardAnimEnd);   
+                    } else {
+                        // not top
+                         unbindScroll();
+                        $(".first_load_anim").removeClass('zero_height');
 
-                //$(".content_cnv").css('margin-top', '');
-                
-                //$(".first_load_anim").css('visibility','hidden');
-                $(".first_load_anim").on('webkitAnimationEnd oAnimationEnd animationend ', cardAnimEnd);
-             });
+                        $(".content_cnv").animate({
+                            scrollTop: 0
+                        }, 800, "easeOutQuad", function() {
+                            // Animation complete.
+                            console.log(card_id);
+                            var pos = General.findWithAttr($scope.cards, '_id', card_id);
+                            if (pos >= 0) {
+                                delete $scope.cards[pos].new_card;
+                                console.log($scope.cards[pos]);
+                            }
+                            bindScroll();
+                        });
+                    }
+
+                        
+
+                    } else {
+
+                        unbindScroll();
+                        $(".first_load_anim").removeClass('zero_height');
+
+                        var max_s = $(".content_cnv")[0].scrollHeight - $(".content_cnv")[0].clientHeight;
+
+                        $(".content_cnv").animate({
+                            scrollTop: max_s
+                        }, 800, "easeOutQuad", function() {
+                            // Animation complete.
+                            console.log(card_id);
+                            var pos = General.findWithAttr($scope.cards, '_id', card_id);
+                            if (pos >= 0) {
+                                delete $scope.cards[pos].new_card;
+                                console.log($scope.cards[pos]);
+                            }
+                            bindScroll();
+                        });
+                    }
+
+                });
             }
         }
     };
@@ -881,7 +913,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $scope.test_card.content = card.content;
                 $timeout(function() {
                     var old_h = $('#ce' + card._id).height().toFixed(2);
-                    var new_h = $('#test_card').height().toFixed(2);
+                    var new_h = $('.test_card .ce').height().toFixed(2);
                     console.log(new_h);
 
                     $($('#ce' + card._id))
@@ -1050,6 +1082,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var all_cards;
         var sort_card;
         var spliced;
+
+        for (var i = 0, len = arr.length; i < len; i++) {
+            arr[i].new_card = true;
+            console.log(arr[i]);
+        }
+
         if (!$scope.top_down) {
             console.log(arr);
             if ($scope.removed_cards_bottom.length > 0) {
@@ -1065,17 +1103,24 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 programmatic_scroll = true;
                 $scope.$broadcast("items_changed", 'bottom');
             } else {
+                /*
                 $scope.cards = $scope.cards.concat(arr);
                 programmatic_scroll = true;
                 $scope.$broadcast("items_changed", 'bottom');
+                */
+                for (var i = 0, len = arr.length; i < len; i++) {
+                    $scope.cards.push(arr[i]);
+                }
             }
         } else {
             console.log(arr);
 
+            /*
             for (var i = 0, len = arr.length; i < len; i++) {
                 arr[i].new_card = true;
                 console.log(arr[i]);
             }
+            */
 
 
             /*
@@ -1099,7 +1144,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 //$scope.cards = $scope.cards.concat(arr);
                 //$scope.cards[0].scrollTop(0);
                 //console.log($scope.cards[0]);
-                
+
                 for (var i = 0, len = arr.length; i < len; i++) {
                     $scope.cards.push(arr[i]);
                 }
@@ -1655,26 +1700,20 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         });
 
     var cardAnimEnd = function() {
-        console.log('fl');
-        console.log(this.id);
         var id = (this.id).substr(5, (this.id).length);
-        console.log(id);
-        // reomve the animation end listener which called this function.
+        // remove the animation end listener which called this function.
         $(this).off('webkitAnimationEnd oAnimationEnd animationend ', cardAnimEnd);
         $(this).css('margin-top', '');
         $scope.$apply(function($scope) {
-            console.log('end');
-            //$scope.cards.
             var pos = General.findWithAttr($scope.cards, '_id', id);
-            console.log(pos);
             if (pos >= 0) {
-                console.log($scope.cards[pos]);
                 delete $scope.cards[pos].new_card;
                 console.log($scope.cards[pos]);
             }
         });
     };
 
+    /*
     var anim_listen = function() {
         console.log('anim_listen');
         $timeout(function() {
@@ -1683,6 +1722,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             //$(".first_load_anim").on('webkitAnimationEnd oAnimationEnd animationend ', cardAnimEnd);
         });
     };
+    */
 
 
 }]);

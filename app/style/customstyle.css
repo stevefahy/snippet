@@ -3425,7 +3425,7 @@ span.after_image {
 
 
 
-@keyframes slideCard {
+@keyframes slideCardDown {
     from {
         
     }
@@ -3455,9 +3455,12 @@ span.after_image {
     overflow: hidden;
 }
 
-.animate {
-     -webkit-animation: slideCard .8s cubic-bezier(.17,.57,.47,.94);
+.animate_down {
+     -webkit-animation: slideCardDown .8s cubic-bezier(.17,.57,.47,.94);
 }
+
+
+
 .first_load_anim {
     /*
    0.19, 1, 0.22, 1
