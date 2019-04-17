@@ -211,6 +211,16 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             disableCheckboxes($scope.cards[i]._id);
             if ($scope.cards[i].new_card) {
 
+                // Get height
+                $scope.test_card.content = $scope.cards[i].content;
+                $timeout(function() {
+                    var new_h = Number($('.test_card').outerHeight(true).toFixed(2));
+                    console.log(new_h);
+                    console.log(84 + 57.33 + new_h);
+                    var h = new_h;
+               
+
+
                 //$('.content_cnv #card_' +$scope.cards[0]._id).addClass('sticky_scroll');
                 
                           
@@ -218,15 +228,23 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 //console.log('new_card');
                 //console.log($(".first_load_anim").outerHeight());
                 //$(".first_load_anim").css('height','0px');
-                $(".first_load_anim").css('margin-top', $(".first_load_anim").outerHeight() * -1);
+                $(".first_load_anim").css('margin-top', h * -1);
                 
-                
-                $(".first_load_anim").addClass('animate');
+
                 $(".first_load_anim").removeClass('zero_height');
+
+               // $timeout(function() {
+                $(".first_load_anim").addClass('animate');
+           // },1000);
+
+
+                
+
                 //$(".content_cnv").css('margin-top', '');
                 
                 //$(".first_load_anim").css('visibility','hidden');
                 $(".first_load_anim").on('webkitAnimationEnd oAnimationEnd animationend ', cardAnimEnd);
+             });
             }
         }
     };
