@@ -24,17 +24,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.checkCursor = Format.checkCursor;
     $scope.test_card = [];
 
-
-
     $scope.$on('$destroy', function() {
         //leaving controller.
         //
-        // If Image editing in progress, then restore.
-        // Reset image editing to false
+        // If Image editing in progress, then restore.Reset image editing to false
         ImageAdjustment.setImageEditing(false);
-
         $('.image_adjust_on').remove();
-        NUM_TO_LOAD = INIT_NUM_TO_LOAD;
+        //NUM_TO_LOAD = INIT_NUM_TO_LOAD;
         $rootScope.top_down = false;
         Conversations.setConversationId('');
         Conversations.setConversationType('');
@@ -50,8 +46,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // SCROLLING
 
     // Percent from top and bottom after which a check for more cards is executed.
-    var UP_PERCENT = 10;
-    var DOWN_PERCENT = 90;
+    var UP_PERCENT = 20; //10
+    var DOWN_PERCENT = 80; // 90
     // Percent from top and bottom after which a check to move the scroll position and check for mre cards is executed.
     var TOP_END = 0;
     var BOTTOM_END = 100;
@@ -209,6 +205,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         for (var i = 0, len = $scope.cards.length; i < len; i++) {
             createObserver($scope.cards[i]._id);
             disableCheckboxes($scope.cards[i]._id);
+            // If a new card has been posted.
             if ($scope.cards[i].new_card) {
                 var card_id = $scope.cards[i]._id;
                 //$scope.cards[i].scrolling = true;
@@ -238,6 +235,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             // not top
 
                             // TOD0 - notify and button to scroll to new card?
+                            // Need to combine with updateCards
 
                             unbindScroll();
                             $(".first_load_anim").removeClass('zero_height');
