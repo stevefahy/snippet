@@ -210,6 +210,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     if ($scope.top_down) {
                         var cur_s = $(".content_cnv").scrollTop();
                         if (cur_s == 0) {
+                            unbindScroll();
+                            Scroll.disable('.content_cnv');
                             // If at top - animate the card into position.
                             var new_h = Number($('.test_card').outerHeight(true).toFixed(2));
                             $(".first_load_anim").css('margin-top', new_h * -1);
@@ -1621,6 +1623,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 delete $scope.cards[pos].new_card;
             }
         });
+        bindScroll();
+        Scroll.enable('.content_cnv');
     };
 
 }]);
