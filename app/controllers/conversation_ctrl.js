@@ -195,8 +195,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         resetObserver_queue();
         intObservers();
         for (var i = 0, len = $scope.cards.length; i < len; i++) {
-            createObserver($scope.cards[i]._id);
-            disableCheckboxes($scope.cards[i]._id);
+            //createObserver($scope.cards[i]._id);
+            //disableCheckboxes($scope.cards[i]._id);
             //
             // If a new card has been posted.
             //
@@ -231,6 +231,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                 var pos = General.findWithAttr($scope.cards, '_id', card_id);
                                 if (pos >= 0) {
                                     delete $scope.cards[pos].new_card;
+                                    createObserver($scope.cards[pos]._id);
+                                    disableCheckboxes($scope.cards[pos]._id);
                                 }
                                 bindScroll();
                             });
@@ -247,11 +249,16 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             var pos = General.findWithAttr($scope.cards, '_id', card_id);
                             if (pos >= 0) {
                                 delete $scope.cards[pos].new_card;
+                                createObserver($scope.cards[pos]._id);
+                                disableCheckboxes($scope.cards[pos]._id);
                             }
                             bindScroll();
                         });
                     }
                 });
+            } else {
+                createObserver($scope.cards[i]._id);
+                disableCheckboxes($scope.cards[i]._id);
             }
         }
     };
@@ -1624,6 +1631,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             var pos = General.findWithAttr($scope.cards, '_id', id);
             if (pos >= 0) {
                 delete $scope.cards[pos].new_card;
+                createObserver($scope.cards[pos]._id);
+                disableCheckboxes($scope.cards[pos]._id);
             }
         });
         bindScroll();
