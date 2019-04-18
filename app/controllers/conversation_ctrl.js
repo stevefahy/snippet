@@ -215,11 +215,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             $(".first_load_anim").css('margin-top', new_h * -1);
                             $(".first_load_anim").removeClass('zero_height');
                             
-$timeout(function() {
+                            //$timeout(function() {
                             $(".first_load_anim").addClass('animate_down');
-                            },100);
-                            //$(".first_load_anim").on('webkitAnimationEnd oAnimationEnd animationend ', cardAnimEnd);
-                            $(".first_load_anim").on('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', cardAnimEnd);
+                            //},100);
+                            $(".first_load_anim").on('webkitAnimationEnd oAnimationEnd animationend ', cardAnimEnd);
+                            //$(".first_load_anim").on('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', cardAnimEnd);
                         } else {
                             // not top
                             unbindScroll();

@@ -3456,11 +3456,13 @@ span.after_image {
 }
 
 .animate_down {
+    -webkit-animation: slideCardDown .8s ease-in-out;
      /*-webkit-animation: slideCardDown .8s cubic-bezier(.17,.57,.47,.94);*/
      /*ease-in-out*/
-
+     /*
      margin-top: 0 !important;
      transition: margin-top .6s ease-out;
+     */
 }
 
 
