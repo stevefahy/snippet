@@ -3458,8 +3458,7 @@ span.after_image {
 .animate_down {
      /*-webkit-animation: slideCardDown .8s cubic-bezier(.17,.57,.47,.94);*/
      /*ease-in-out*/
-         will-change: transform;
-    transform: translateZ(0);
+
      margin-top: 0 !important;
      transition: margin-top .6s ease-out;
 }
