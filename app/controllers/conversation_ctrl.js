@@ -79,7 +79,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.removed_cards_bottom = [];
     $scope.cards_temp = [];
 
-
     var first_load = true;
     var scroll_direction;
     var last_scrolled;
@@ -140,7 +139,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     });
 
     // When cropper image has been changed save the card.
-    //$scope.$on('saveCropper', function(event, msg) {
     saveCard = function(id) {
         var deferred = $q.defer();
         // Find the card which contains the cropper to be saved by id.
