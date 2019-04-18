@@ -215,6 +215,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             // If at top - animate the card into position.
                             var new_h = Number($('.test_card').outerHeight(true).toFixed(2));
                             $(".first_load_anim").css('margin-top', new_h * -1);
+                            $(".first_load_anim").addClass('will_transform');
                             $(".first_load_anim").removeClass('zero_height');
                             $(".first_load_anim").addClass('animate_down');
                             $(".first_load_anim").on('webkitAnimationEnd oAnimationEnd animationend ', cardAnimEnd);
@@ -1616,6 +1617,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         // remove the animation end listener which called this function.
         $(this).off('webkitAnimationEnd oAnimationEnd animationend ', cardAnimEnd);
         $(this).css('margin-top', '');
+        $(this).removeClass('animate_down');
+        $(this).removeClass('will_transform');
         $scope.$apply(function($scope) {
             // Delete the new card value.
             var pos = General.findWithAttr($scope.cards, '_id', id);

@@ -3414,3 +3414,7 @@ span.after_image {
 .animate_down {
     -webkit-animation: slideCardDown .8s ease-in-out;
 }
+
+.will_transform {
+    will-change: margin-top;
+}
