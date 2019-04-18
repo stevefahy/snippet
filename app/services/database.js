@@ -283,16 +283,15 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                     updateinprogress = false;
                                 }
                             });
-  deferred.resolve();
+                        deferred.resolve();
                     })
                     .catch(function(error) {
                         console.log('error: ' + error);
-                          deferred.resolve();
+                        deferred.resolve();
                     });
             }, 0);
         }
-
-return deferred.promise;
+        return deferred.promise;
     };
 
     // DELETE CARD

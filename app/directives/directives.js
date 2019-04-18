@@ -26,7 +26,6 @@ cardApp.directive("contenteditable", function() {
     };
 });
 
-
 cardApp.directive('momentTime', ['$interval', '$filter', function($interval, $filter) {
     function link(scope, element, attrs) {
         var format,
@@ -52,7 +51,6 @@ cardApp.directive('momentTime', ['$interval', '$filter', function($interval, $fi
         link: link
     };
 }]);
-
 
 cardApp.directive('momentTimeConv', ['$interval', '$filter', function($interval, $filter) {
     function link(scope, element, attrs) {
@@ -96,7 +94,6 @@ cardApp.directive('onFinishRender', function($timeout, $rootScope) {
         }
     };
 });
-
 
 cardApp.directive('viewAnimations', function(viewAnimationsService, $rootScope) {
     return {
@@ -306,7 +303,6 @@ cardApp.directive('stopDigest', function() {
     };
 });
 */
-
 /*
 cardApp.directive("doScopeRepeat", function($compile, $log, UserData) {
     return {

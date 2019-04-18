@@ -23,8 +23,6 @@ body {
     padding: 0;
 }
 
-/* Limit image width to avoid overflow the container for cropping */
-/* This rule is very important, please do not ignore this! */
 img {
     max-width: 100%;
 }
@@ -1650,19 +1648,12 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
 }
 
 span#scroll_latest_footer {
-    /*display: inline-block;
-    width: 0px;*/
-
     clear: both;
     display: block;
     width: 100%;
 }
 
 span#scroll_image_latest {
-    /*
-    display: inline-block;
-    width: 0px;
-    */
     clear: both;
     display: block;
     width: 100%;
@@ -2944,7 +2935,6 @@ div.after_image:empty {
     flex-direction: row;
     flex-wrap: wrap;
     margin-right: 5px;
-
 }
 
 .filter_container:first-child {
@@ -3400,52 +3390,18 @@ span.after_image {
 }
 
 .test_card {
-    
     position: absolute;
     z-index: -1;
     bottom: 100vh;
     overflow: hidden;
-    
 }
-
-/*
-.first_load_transition {
- 
-    -webkit-transition: all 6s cubic-bezier(.4, 0, .2, 1);
-    transition: all 6s cubic-bezier(.4, 0, .2, 1);
-}
-*/
-
-/*
-.first_load_start {
-    top: 0px;
-
-}
-*/
-
-
 
 @keyframes slideCardDown {
-    from {
-        
-    }
+    from {}
 
     to {
         margin-top: 0;
     }
-
-     
-/*
-    0% {
-        transform: translateY(-100%);
-    }
-
-    100% {
-        transform: translateY(0);
-    }
-    */
-    
-
 }
 
 .content_cnv .zero_height {
@@ -3457,65 +3413,4 @@ span.after_image {
 
 .animate_down {
     -webkit-animation: slideCardDown .8s ease-in-out;
-     /*-webkit-animation: slideCardDown .8s cubic-bezier(.17,.57,.47,.94);*/
-     /*ease-in-out*/
-     /*
-     margin-top: 0 !important;
-     transition: margin-top .6s ease-out;
-     */
 }
-
-
-
-.first_load_anim {
-    /*
-   0.19, 1, 0.22, 1
-.
-    */
-
-   
-    /*-webkit-animation: slideCard .8s cubic-bezier(.17,.57,.47,.94);*/
-}
-
-
-
-/*
-.first_load.ng-enter-prepare {
-   
-}
-
-.first_load.ng-enter {
-          top: -150px;
-}
-.first_load.ng-enter-active {
-    top: 0px;
-    
-}
-*/
-
-
-
-
-
-
-/*
-.card_temp.ng-leave {
-    left: 0vw;
-    transition: all .5s ease;
-}
-
-.card_temp.ng-leave-active {
-    left: -100vw;
-}
-*/
-
-/*
-.card_temp.ng-move {
-    top: -150px;
-    transition: all .5s ease;
-}
-
-.card_temp.ng-move-active {
-    top: 0px;
-}
-*/

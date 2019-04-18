@@ -27,10 +27,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.$on('$destroy', function() {
         //leaving controller.
         //
-        // If Image editing in progress, then restore.Reset image editing to false
+        // Reset image editing to false
         ImageAdjustment.setImageEditing(false);
         $('.image_adjust_on').remove();
-        //NUM_TO_LOAD = INIT_NUM_TO_LOAD;
         $rootScope.top_down = false;
         Conversations.setConversationId('');
         Conversations.setConversationType('');
@@ -110,7 +109,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // Use the urls username param from the route to load the conversation.
     var username = $routeParams.username;
 
-
     // DEBUGGING
     $rootScope.$watch('debug', function(newStatus) {
         var unbinddb1;
@@ -141,7 +139,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // When cropper image has been changed save the card.
     saveCard = function(id) {
         var deferred = $q.defer();
-        // Find the card which contains the cropper to be saved by id.
+        // Find the card to be saved by id.
         var pos = General.findWithAttr($scope.cards, '_id', id);
         if (pos >= 0) {
             var card = $scope.cards[pos];
@@ -199,7 +197,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         for (var i = 0, len = $scope.cards.length; i < len; i++) {
             createObserver($scope.cards[i]._id);
             disableCheckboxes($scope.cards[i]._id);
+            //
             // If a new card has been posted.
+            //
             // TODO - If not at top or bottom add dialogue to notify user of new post
             // but only scroll to the card if the user chooses. Requires change to updateCards also.
             if ($scope.cards[i].new_card) {
@@ -207,19 +207,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 // Get the height of the new card.
                 $scope.test_card.content = $scope.cards[i].content;
                 $timeout(function() {
-                    var new_h = Number($('.test_card').outerHeight(true).toFixed(2));
                     if ($scope.top_down) {
                         var cur_s = $(".content_cnv").scrollTop();
                         if (cur_s == 0) {
                             // If at top - animate the card into position.
+                            var new_h = Number($('.test_card').outerHeight(true).toFixed(2));
                             $(".first_load_anim").css('margin-top', new_h * -1);
                             $(".first_load_anim").removeClass('zero_height');
-                            
-                            //$timeout(function() {
                             $(".first_load_anim").addClass('animate_down');
-                            //},100);
                             $(".first_load_anim").on('webkitAnimationEnd oAnimationEnd animationend ', cardAnimEnd);
-                            //$(".first_load_anim").on('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', cardAnimEnd);
                         } else {
                             // not top
                             unbindScroll();
@@ -229,46 +225,29 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                 scrollTop: 0
                             }, 800, "easeOutQuad", function() {
                                 // Animation complete.
-                                console.log(card_id);
                                 var pos = General.findWithAttr($scope.cards, '_id', card_id);
                                 if (pos >= 0) {
                                     delete $scope.cards[pos].new_card;
-                                    console.log($scope.cards[pos]);
                                 }
                                 bindScroll();
                             });
                         }
-
-
-
                     } else {
                         // If at top 
-                        // cur_s + new_h >= max_s
-
-                        // TOD0 - notify and button to scroll to new card?
-
                         unbindScroll();
                         $(".first_load_anim").removeClass('zero_height');
-
                         var max_s = $(".content_cnv")[0].scrollHeight - $(".content_cnv")[0].clientHeight;
-                        var cur_s = $(".content_cnv").scrollTop();
-                        
-                        console.log(max_s + ' : ' + cur_s + ' : ' + new_h);
-
                         $(".content_cnv").animate({
                             scrollTop: max_s
                         }, 800, "easeOutQuad", function() {
                             // Animation complete.
-                            console.log(card_id);
                             var pos = General.findWithAttr($scope.cards, '_id', card_id);
                             if (pos >= 0) {
                                 delete $scope.cards[pos].new_card;
-                                console.log($scope.cards[pos]);
                             }
                             bindScroll();
                         });
                     }
-
                 });
             }
         }
@@ -276,7 +255,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     $scope.$watch('cards.length', function(newStatus) {
         // Debugging
-        console.log(newStatus);
         $rootScope.cards_length = newStatus;
         $timeout(function() {
             upDateObservers();
@@ -857,20 +835,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
         if (found_pos >= 0) {
             $rootScope.deleting_card = true;
-
             $timeout(function() {
-                //$scope.$apply(function() {
-                console.log('delete');
-                console.log(card_arrays[arr][found_pos]);
                 card_arrays[arr].splice(found_pos, 1);
-
                 $scope.$apply();
-                // card_arrays[arr].refresh();
-
-                // this.rows.splice(this.rows.length - 1, 1);
-                //this.rows = [...this.rows];
-                //$scope.cards = card_arrays[arr];
-                //});
             });
             $rootScope.deleting_card = false;
         }
@@ -888,33 +855,19 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 break;
             }
         }
-        /*
         if (found_pos >= 0) {
-            card_arrays[arr][found_pos].original_content = card.content;
-            card_arrays[arr][found_pos].content = card.content;
-            card_arrays[arr][found_pos].updatedAt = card.updatedAt;
-        }
-        */
-
-        console.log('notification');
-        if (found_pos >= 0) {
-            console.log('found');
             if (card_arrays[arr][found_pos].content != card.content) {
-                console.log('notification update content');
-                console.log(card._id);
-
+                // Get the card height.
                 $scope.test_card.content = card.content;
+                // Animate the change onscreen.
                 $timeout(function() {
                     var old_h = $('#ce' + card._id).height().toFixed(2);
                     var new_h = $('.test_card .ce').height().toFixed(2);
-                    console.log(new_h);
-
                     $($('#ce' + card._id))
                         .animate({ opacity: 0 }, 300, function() {
                             // Animation complete.
                             card_arrays[arr][found_pos].original_content = card.content;
                             card_arrays[arr][found_pos].content = card.content;
-
                             if (new_h != old_h) {
                                 $($('#ce' + card._id)).animate({ height: new_h }, 500, function() {
                                     // Animation complete.
@@ -935,10 +888,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                 });
                             }
                         });
-
                 }, 500);
             }
-            console.log('update updatedAt');
             card_arrays[arr][found_pos].updatedAt = card.updatedAt;
         }
     };
@@ -1071,18 +1022,16 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     };
 
+    // TODO - change if adding button to notify user of new card.
     updateCards = function(arr) {
         var all_cards;
         var sort_card;
         var spliced;
-
+        // Set this as a new card (for animating onscreen).
         for (var i = 0, len = arr.length; i < len; i++) {
             arr[i].new_card = true;
-            console.log(arr[i]);
         }
-
         if (!$scope.top_down) {
-            console.log(arr);
             if ($scope.removed_cards_bottom.length > 0) {
                 all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
                 sort_card = $filter('orderBy')(all_cards, 'updatedAt', true);
@@ -1096,30 +1045,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 programmatic_scroll = true;
                 $scope.$broadcast("items_changed", 'bottom');
             } else {
-                /*
-                $scope.cards = $scope.cards.concat(arr);
-                programmatic_scroll = true;
-                $scope.$broadcast("items_changed", 'bottom');
-                */
+                // No cards have been removed due to scrolling.
                 for (var i = 0, len = arr.length; i < len; i++) {
                     $scope.cards.push(arr[i]);
                 }
             }
         } else {
-            console.log(arr);
-
-            /*
-            for (var i = 0, len = arr.length; i < len; i++) {
-                arr[i].new_card = true;
-                console.log(arr[i]);
-            }
-            */
-
-
-            /*
-            <div ng-class="{'first_load_anim': card.first_load}" class="first_load_start first_load_transition" id="fl">
-            <div id="user" ng-init="init()" ng-attr-id="card_{{::card._id }}">*/
-
             if ($scope.removed_cards_top.length > 0) {
                 all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
                 sort_card = $filter('orderBy')(all_cards, 'updatedAt', true);
@@ -1133,20 +1064,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 programmatic_scroll = true;
                 $scope.$broadcast("items_changed", 'top');
             } else {
-                console.log('HERE');
-                //$scope.cards = $scope.cards.concat(arr);
-                //$scope.cards[0].scrollTop(0);
-                //console.log($scope.cards[0]);
-
+                // No cards have been removed due to scrolling.
                 for (var i = 0, len = arr.length; i < len; i++) {
                     $scope.cards.push(arr[i]);
                 }
-                //programmatic_scroll = true;
-                //$scope.$broadcast("items_changed", 'top');
             }
-            // Listen for the card load animation to end.
-            //anim_listen();
-
         }
     };
 
@@ -1213,7 +1135,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
         return deferred.promise;
     };
-
 
     // TODO - If not following anyone suggest follow?
     getFollowing = function() {
@@ -1417,9 +1338,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             if ($scope.cards.length > 0) {
                 var all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
                 var sort_card = $filter('orderBy')(all_cards, 'updatedAt');
-                console.log(sort_card);
                 last_card = sort_card[sort_card.length - 1].updatedAt;
-                console.log(sort_card[sort_card.length - 1]);
                 operand = '$gt';
             } else {
                 last_card = General.getISODate();
@@ -1429,7 +1348,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             promises.push(Conversations.getPublicConversationCards(val)
                 .then(function(res) {
                     if (res.data.length > 0) {
-                        console.log(res.data);
                         promises.push(res.data.map(function(key, array) {
                             // Get the user for this card
                             var users = UserData.getContacts();
@@ -1569,7 +1487,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // DELETE ==================================================================
     $scope.deleteCard = function(card_id, conversation_id) {
-        console.log('del');
         Database.deleteCard(card_id, conversation_id, $scope.currentUser);
     };
 
@@ -1698,24 +1615,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         $(this).off('webkitAnimationEnd oAnimationEnd animationend ', cardAnimEnd);
         $(this).css('margin-top', '');
         $scope.$apply(function($scope) {
+            // Delete the new card value.
             var pos = General.findWithAttr($scope.cards, '_id', id);
             if (pos >= 0) {
                 delete $scope.cards[pos].new_card;
-                console.log($scope.cards[pos]);
             }
         });
     };
-
-    /*
-    var anim_listen = function() {
-        console.log('anim_listen');
-        $timeout(function() {
-            //console.log($(".first_load_anim").outerHeight());
-            //$(".first_load_anim").css('margin-top', $(".first_load_anim").outerHeight() * -1);
-            //$(".first_load_anim").on('webkitAnimationEnd oAnimationEnd animationend ', cardAnimEnd);
-        });
-    };
-    */
-
 
 }]);

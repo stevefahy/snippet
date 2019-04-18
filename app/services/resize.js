@@ -10,7 +10,6 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', 'Scroll', function(Drag, I
     }
 
     var checkEdges = function(crop_box, l, r, t, b) {
-
         if (t == 0) {
             $(crop_box).addClass('crop_top_max');
         } else {
@@ -69,7 +68,6 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', 'Scroll', function(Drag, I
         if (previously_cropped) {
             // Get scale ratio of the image (as displayed which may be scaled to fit compared to the original image).
             var scale = ImageAdjustment.getScale(original_image, crop_source);
-            console.log('scale: ' + scale);
             crop_box.style.width = crop_data.width / scale + 'px';
             crop_box.style.height = crop_data.height / scale + 'px';
             crop_box.style.top = crop_data.y / scale + 'px';

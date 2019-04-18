@@ -104,7 +104,6 @@ cardApp.config(['$httpProvider', function($httpProvider) {
     $httpProvider.interceptors.push(interceptor);
 }]);
 
-
 //
 // DETECT NETWORK STATUS
 //
@@ -123,61 +122,3 @@ cardApp.run(function($window, $rootScope) {
         });
     }, false);
 });
-
-
-cardApp.animation('.first_load', ['$animateCss', function($animateCss) {
-    return {
-        enter: function(element, done) {
-            //element.css('display', 'none');
-            /*$(element).fadeIn(1000, function() {
-              console.log('anim done');
-              $(element).removeClass('first_load');
-              done();
-            });
-            */
-            element.css('top', '-150px');
-            $(element).animate({ top: 0 }, 300, function() {
-                // Animation complete.
-                $(element).removeClass('first_load');
-                console.log('anim done');
-
-            });
-
-
-            return $animateCss(element, {
-                event: 'enter',
-                structural: true,
-                from: { top: -150 },
-                to: { top: 0 }
-            });
-
-        },
-        leave: function(element, done) {
-            $(element).fadeOut(1000, function() {
-                done();
-            });
-        },
-        move: function(element, done) {
-            element.css('display', 'none');
-            $(element).slideDown(500, function() {
-                done();
-            });
-        }
-    };
-}]);
-
-
-/*
-cardApp.animation('.first_load', ['$animateCss', function($animateCss) {
-  return {
-    enter: function(element,done) {
-       // this will trigger `.slide.ng-enter` and `.slide.ng-enter-active`.
-      return $animateCss(element, {
-        event: 'enter',
-        structural: true,
-        addClass: 'steve'
-      });
-    }
-  };
-}]);
-*/

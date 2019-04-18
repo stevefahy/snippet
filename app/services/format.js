@@ -136,7 +136,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     }
 
     function resizeImage(img, exif) {
-        console.log('resizeImage');
         return $q(function(resolve, reject) {
             var canvas = document.createElement('canvas');
             var ctx = canvas.getContext('2d');
@@ -537,34 +536,23 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     this.updateCard = function(id, card, currentUser) {
         var deferred = $q.defer();
-
-
         var content = $('.content_cnv #ce' + card._id).html();
-        console.log('Save?');
-        console.log(ImageAdjustment.getImageEditing());
-        console.log(content != card.original_content);
-        //if ((content != card.original_content) && !ImageAdjustment.getImageEditing()) {
         if ((content != card.original_content)) {
-            console.log('Do save');
-
-            //if (!ImageAdjustment.getImageEditing()) {
-                card.content = $('.content_cnv #ce' + card._id).html();
-                card.original_content = card.content;
-            //}
+            card.content = $('.content_cnv #ce' + card._id).html();
+            card.original_content = card.content;
             // Inject the Database Service
             var Database = $injector.get('Database');
             // Update the card
             Database.updateCard(id, card, currentUser).then(function() {
-            deferred.resolve();
-        });
+                deferred.resolve();
+            });
         } else {
             deferred.resolve();
         }
-return deferred.promise;
+        return deferred.promise;
     };
 
     this.getBlur = function(id, card, currentUser) {
-        console.log('getBlur');
         // Add slight delay so that document.activeElement works
         setTimeout(function() {
             var content = $('.content_cnv #ce' + card._id).html();
@@ -578,17 +566,13 @@ return deferred.promise;
                 // zm launching image capture should not trigger an update. It causes error.
                 found_marky = findMarky(card.content);
                 // check the content has changed and not currently mid marky. Or that an image is being edited.
-                console.log(ImageAdjustment.getImageEditing());
                 if ((content != card.original_content && (found_marky == false)) && !ImageAdjustment.getImageEditing()) {
                     if (!ImageAdjustment.getImageEditing()) {
-                        console.log('update card content');
                         card.content = $('.content_cnv #ce' + card._id).html();
                     }
-                    console.log('blur save');
                     // Inject the Database Service
                     var Database = $injector.get('Database');
                     // Update the card
-                    console.log('do update');
                     Database.updateCard(id, card, currentUser);
                 }
             }
