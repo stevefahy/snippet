@@ -3103,6 +3103,8 @@ span.after_image {
 }
 
 .card_temp {
+    will-change: transform;
+    transform: translateZ(0);
     position: relative;
 }
 
@@ -3456,7 +3458,10 @@ span.after_image {
 }
 
 .animate_down {
-     -webkit-animation: slideCardDown .8s cubic-bezier(.17,.57,.47,.94);
+     /*-webkit-animation: slideCardDown .8s cubic-bezier(.17,.57,.47,.94);*/
+     /*ease-in-out*/
+     margin-top: 0 !important;
+     transition: margin-top .6s ease-out;
 }
 
 

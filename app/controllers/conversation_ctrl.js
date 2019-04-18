@@ -157,7 +157,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         return deferred.promise;
     };
 
-
     // When an image is uploaded.
     $scope.$on('imageUpload', function(event, data) {
         scroll_updating = true;
@@ -179,7 +178,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     });
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
-        console.log('here');
         dir = 2;
         image_check_counter++;
         checkImages('content_cnv', image_check_counter);
@@ -187,8 +185,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             $('.cropper-container').remove();
             $('.cropper-hidden').removeClass('cropper-hidden');
         }
-        //console.log('remove first_load');
-        //$('.first_load').removeClass('first_load');
     });
 
     $scope.$on('rzSliderRender', function(event, data) {
@@ -204,40 +200,31 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             createObserver($scope.cards[i]._id);
             disableCheckboxes($scope.cards[i]._id);
             // If a new card has been posted.
+            // TODO - If not at top or bottom add dialogue to notify user of new post
+            // but only scroll to the card if the user chooses. Requires change to updateCards also.
             if ($scope.cards[i].new_card) {
                 var card_id = $scope.cards[i]._id;
-                //$scope.cards[i].scrolling = true;
-                console.log($scope.cards[i]);
                 // Get the height of the new card.
                 $scope.test_card.content = $scope.cards[i].content;
                 $timeout(function() {
                     var new_h = Number($('.test_card').outerHeight(true).toFixed(2));
-                    //$(".first_load_anim").css('margin-top', new_h * -1);
-                    //$(".first_load_anim").removeClass('zero_height');
-
-
-                    // What to do if not  first card or not displayed?
-
-
                     if ($scope.top_down) {
-                        //var max_s = $(".content_cnv")[0].scrollHeight - $(".content_cnv")[0].clientHeight;
                         var cur_s = $(".content_cnv").scrollTop();
-                        console.log(cur_s);
                         if (cur_s == 0) {
-                            // If at top
+                            // If at top - animate the card into position.
                             $(".first_load_anim").css('margin-top', new_h * -1);
-                            $(".first_load_anim").addClass('animate_down');
                             $(".first_load_anim").removeClass('zero_height');
-                            $(".first_load_anim").on('webkitAnimationEnd oAnimationEnd animationend ', cardAnimEnd);
+                            
+$timeout(function() {
+                            $(".first_load_anim").addClass('animate_down');
+                            },100);
+                            //$(".first_load_anim").on('webkitAnimationEnd oAnimationEnd animationend ', cardAnimEnd);
+                            $(".first_load_anim").on('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', cardAnimEnd);
                         } else {
                             // not top
-
-                            // TOD0 - notify and button to scroll to new card?
-                            // Need to combine with updateCards
-
                             unbindScroll();
                             $(".first_load_anim").removeClass('zero_height');
-
+                            // Animate the card into position
                             $(".content_cnv").animate({
                                 scrollTop: 0
                             }, 800, "easeOutQuad", function() {
