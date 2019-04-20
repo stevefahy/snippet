@@ -368,6 +368,13 @@ hr {
     font-weight: 900;
 }
 
+#mi-crop_rotate {
+    color: green;
+    font-size: 30px !important;
+    font-weight: 900;
+    cursor: pointer;
+}
+
 #mi-account_circle {
     line-height: 50px;
     font-size: 50px;
@@ -3417,4 +3424,16 @@ span.after_image {
 
 .will_transform {
     will-change: margin-top;
+}
+
+.crop_rotate {
+    z-index: 1001;
+    text-align: right;
+    margin-right: 15px;
+}
+
+.md_slider.active{
+    width: 100%;
+    float: left;
+    clear: both;
 }

@@ -2,7 +2,7 @@
 // ImageEdit Service
 //
 
-cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', 'General', 'UserData', 'principal', 'ImageAdjustment', 'Drag', 'Resize', 'Keyboard', 'Scroll', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML, General, UserData, principal, ImageAdjustment, Drag, Resize, Keyboard, Scroll) {
+cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', 'General', 'UserData', 'principal', 'ImageAdjustment', 'Drag', 'Resize', 'Keyboard', 'Scroll', '$compile', '$mdCompiler', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML, General, UserData, principal, ImageAdjustment, Drag, Resize, Keyboard, Scroll, $compile, $mdCompiler) {
 
     var ua = navigator.userAgent;
     var self = this;
@@ -347,6 +347,77 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 //
             }
         });
+    };
+
+
+
+    this.openRotate = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var parent_container = ImageAdjustment.getImageParent();
+        var id = ImageAdjustment.getImageId();
+
+
+        var myElement = '<div class="md_slider hide" id="slider"><md-slider-container><md-slider min="{{SliderDTO.min}}" max="{{SliderDTO.max}}" ng-model="SliderDTO.value" aria-label="red" id="" class="md-warn"></md-slider><md-input-container><input type="number" ng-model="SliderDTO.value" aria-label="red" aria-controls="red-slider"></md-input-container></md-slider-container></div>';
+
+       // var s = $(myElement).insertAfter('.' + parent_container + ' #cropper_' + id);
+
+        //s.addClass('active');
+       //s.removeClass('hide');
+        addMSlider(myElement, parent_container, id);
+
+        /*
+        var slider_i = $('.md_slider');
+        //slider_i = $('.md_slider.active #steve');
+        slider_i.attr('min', '{{SliderDTO.min}}');
+        slider_i.attr('max', '{{SliderDTO.max}}');
+        slider_i.attr('ng-model', '{{SliderDTO.value}}');
+
+
+
+        var myElement = $compile(slider)($rootScope);
+
+        $mdCompiler.compile({
+            contentElement: myElement
+        }).then(function(compileData) {
+            compileData.element // Content Element (same as above)
+            compileData.link // This does nothing when using a contentElement.
+        });
+    */
+        //$scope.SliderDTO = 
+        //if ($('.' + parent_container + ' #cropper_' + id + ' .image_adjust_div').length <= 0) {
+        
+        /*
+        if ($('.slider.active').length <= 0) {
+            console.log('ADD SLIDER');
+            console.log($('.md_slider'));
+        var slider = $('.md_slider').insertAfter('.' + parent_container + ' #cropper_' + id);
+        slider.addClass('active');
+        slider.removeClass('hide');
+    }
+    */
+        
+
+        /*
+        $rootScope.myValue = 35;
+        var slider = '<div class="md_slider hide" id="slider"><md-slider-container><md-slider min="{{SliderDTO.min}}" max="{{SliderDTO.max}}" ng-model="SliderDTO.value" aria-label="red" id="" class="md-warn"></md-slider><md-input-container><input type="number" ng-model="SliderDTO.value" aria-label="red" aria-controls="red-slider"></md-input-container></md-slider-container></div>';
+        slider1 = $(slider).insertAfter('.' + parent_container + ' #cropper_' + id);
+        slider1.addClass('active');
+        slider1.removeClass('hide');
+        addMSlider(slider1);
+        */
+        
+
+
+        /*
+        min="{{SliderDTO.min}}" max="{{SliderDTO.max}}" ng-model="SliderDTO.value"
+        */
+    //}
+
+        //addMSlider(slider);
+        //$compile(slider)($scope);
+
+
     };
 
     this.openCrop = function(e, id) {
