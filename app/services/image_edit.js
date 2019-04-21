@@ -349,6 +349,151 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         });
     };
 
+/*
+    function rotate(angle, canvas_original) {
+        var scale = 4;
+        var y_scale = 0
+        var x_scale = 0;
+        var canvas = $('.crop_bg')[0];
+        var context = canvas.getContext('2d');
+        context.webkitImageSmoothingEnabled = false;
+        context.mozImageSmoothingEnabled = false;
+        context.imageSmoothingEnabled = false;
+
+        canvasWidth = canvas.width;
+        canvasHeight = canvas.height;
+        // Clear the canvas
+        context.clearRect(0, 0, canvasWidth, canvasHeight);
+
+        context.save();
+
+        // Move registration point to the center of the canvas
+        context.translate(canvasWidth / 2, canvasWidth / 2);
+        // Rotate 1 degree
+        context.rotate(angle * Math.PI / 180);
+        // Move registration point back to the top left corner of canvas
+        context.translate(-canvasWidth / 2, -canvasWidth / 2);
+
+        context.drawImage(canvas_original, (angle*x_scale), (angle*y_scale), canvas_original.width +  (angle*scale), canvas_original.height  +  (angle*scale));
+
+        context.restore();
+
+
+    }
+*/
+
+    function drawBestFit(ctx, angle, image){
+
+               var  w = image.width;
+     var h = image.height;
+    var cw = w / 2;  // half canvas width and height
+    var ch = h / 2;
+
+        var iw = image.width / 2;  // half image width and height
+        var ih = image.height / 2;
+        // get the length C-B
+        var dist = Math.sqrt(Math.pow(cw,2) + Math.pow(ch,2));
+        // get the angle A
+        var diagAngle = Math.asin(ch/dist);
+
+        // Do the symmetry on the angle
+        a1 = ((angle % (Math.PI *2))+ Math.PI*4) % (Math.PI * 2);
+        if(a1 > Math.PI){
+            a1 -= Math.PI;
+        }
+        if(a1 > Math.PI/2 && a1 <= Math.PI){
+            a1 = (Math.PI/2) - (a1-(Math.PI/2));
+        }
+        // get angles A1, A2
+        var ang1 = Math.PI/2 - diagAngle - Math.abs(a1);
+        var ang2 = Math.abs(diagAngle - Math.abs(a1));
+        // get lenghts C-E and C-F
+        var dist1 = Math.cos(ang1) * dist;
+        var dist2 = Math.cos(ang2) * dist;
+        // get the max scale
+        var scale = Math.max(dist2/(iw),dist1/(ih));
+        // create the transform
+        var dx = Math.cos(angle) * scale;
+        var dy = Math.sin(angle) * scale; 
+        ctx.setTransform(dx, dy, -dy, dx, cw, ch);
+        ctx.drawImage(image, -iw, - ih);
+
+
+        // draw outline of image half size
+        /*
+        ctx.strokeStyle = "red";
+        ctx.lineWidth = 2 * (1/scale);
+        ctx.strokeRect(-iw / 2, -ih / 2, iw, ih);
+        */
+
+        // reset the transform
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+        // draw outline of canvas half size
+        /*
+        ctx.strokeStyle = "blue";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(cw - cw / 2, ch - ch / 2, cw, ch) ;
+        */
+
+    }
+
+/*
+function drawToFitRotated(ctx, angle, image){
+    angle = angle /100;
+    var dist = Math.sqrt(Math.pow(ctx.canvas.width /2, 1.9 ) + Math.pow(ctx.canvas.height / 2, 1.9));
+    var imgDist = Math.min(image.width, image.height) / 2;
+    var minScale = dist / imgDist;
+    var dx = Math.cos(angle) * minScale;
+    var dy = Math.sin(angle) * minScale; 
+    ctx.setTransform(dx, dy, -dy, dx, ctx.canvas.width / 2, ctx.canvas.height / 2);
+    ctx.drawImage(image, -image.width / 2, - image.height / 2);
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+}
+*/
+
+    this.sliderRotateChange = function() {
+        console.log('src: ' + $rootScope.SliderDTO.value);
+        var canvas = $('.crop_bg')[0];
+        var ctx = canvas.getContext('2d');
+
+        var canvas2 = $('#crop_src')[0];
+        var ctx2 = canvas2.getContext('2d');
+
+
+        //var img = ImageAdjustment.cloneCanvas(canvas);
+        //var img = ImageAdjustment.cloneCanvas(canvas);
+       //rotate($rootScope.SliderDTO.value, canvas_original);
+
+ 
+       
+       drawBestFit(ctx, $rootScope.SliderDTO.value/100, canvas_original);
+       drawBestFit(ctx2, $rootScope.SliderDTO.value/100, crop_area_original);
+//drawToFitRotated(ctx, $rootScope.SliderDTO.value, canvas_original);
+        /*
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.save();
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+        ctx.rotate($rootScope.SliderDTO.value);
+        ctx.drawImage(img, -img.width / 2, -img.height / 2);
+        ctx.restore();
+        */
+
+        //ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        //ctx.setTransform(1, 0, 0, 1, canvas.width / 2, canvas.height / 2); // set position of image center
+        //ctx.rotate($rootScope.SliderDTO.value * Math.PI / 180); // rotate
+        //ctx.drawImage(img, -img.width / 2, -img.height / 2); // draw image offset so its center is at x,y
+        //ctx.setTransform(1, 0, 0, 1, 0, 0); // restore default transform
+
+    };
+
+    var canvas_original;
+   /* var w;
+    var h;
+    var cw;  // half canvas width and height
+    var ch;*/
+    var crop_area_original;
 
 
     this.openRotate = function(e) {
@@ -357,67 +502,31 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var parent_container = ImageAdjustment.getImageParent();
         var id = ImageAdjustment.getImageId();
 
+        $rootScope.SliderDTO = {
+            value: 0,
+            min: -45,
+            max: 45,
+            step: .01
+        };
 
-        var myElement = '<div class="md_slider hide" id="slider"><md-slider-container><md-slider min="{{SliderDTO.min}}" max="{{SliderDTO.max}}" ng-model="SliderDTO.value" aria-label="red" id="" class="md-warn"></md-slider><md-input-container><input type="number" ng-model="SliderDTO.value" aria-label="red" aria-controls="red-slider"></md-input-container></md-slider-container></div>';
+        var model = "SliderDTO.value";
+        var min = "{{SliderDTO.min}}";
+        var max = "{{SliderDTO.max}}";
+        var step = "{{SliderDTO.step}}";
+        var change = "sliderRotateChange()";
 
-       // var s = $(myElement).insertAfter('.' + parent_container + ' #cropper_' + id);
-
-        //s.addClass('active');
-       //s.removeClass('hide');
+        var myElement = '<div class="md_slider hide" id="slider"><md-slider-container><md-slider ng-change="' + change + '" step= "' + step + '" min="' + min + '" max="' + max + '" ng-model="' + model + '" aria-label="red" id="" class="md-warn"></md-slider><md-input-container><input type="number" ng-model="SliderDTO.value" aria-label="red" aria-controls="red-slider"></md-input-container></md-slider-container></div>';
         addMSlider(myElement, parent_container, id);
 
-        /*
-        var slider_i = $('.md_slider');
-        //slider_i = $('.md_slider.active #steve');
-        slider_i.attr('min', '{{SliderDTO.min}}');
-        slider_i.attr('max', '{{SliderDTO.max}}');
-        slider_i.attr('ng-model', '{{SliderDTO.value}}');
-
-
-
-        var myElement = $compile(slider)($rootScope);
-
-        $mdCompiler.compile({
-            contentElement: myElement
-        }).then(function(compileData) {
-            compileData.element // Content Element (same as above)
-            compileData.link // This does nothing when using a contentElement.
-        });
-    */
-        //$scope.SliderDTO = 
-        //if ($('.' + parent_container + ' #cropper_' + id + ' .image_adjust_div').length <= 0) {
-        
-        /*
-        if ($('.slider.active').length <= 0) {
-            console.log('ADD SLIDER');
-            console.log($('.md_slider'));
-        var slider = $('.md_slider').insertAfter('.' + parent_container + ' #cropper_' + id);
-        slider.addClass('active');
-        slider.removeClass('hide');
-    }
-    */
-        
-
-        /*
-        $rootScope.myValue = 35;
-        var slider = '<div class="md_slider hide" id="slider"><md-slider-container><md-slider min="{{SliderDTO.min}}" max="{{SliderDTO.max}}" ng-model="SliderDTO.value" aria-label="red" id="" class="md-warn"></md-slider><md-input-container><input type="number" ng-model="SliderDTO.value" aria-label="red" aria-controls="red-slider"></md-input-container></md-slider-container></div>';
-        slider1 = $(slider).insertAfter('.' + parent_container + ' #cropper_' + id);
-        slider1.addClass('active');
-        slider1.removeClass('hide');
-        addMSlider(slider1);
-        */
-        
-
-
-        /*
-        min="{{SliderDTO.min}}" max="{{SliderDTO.max}}" ng-model="SliderDTO.value"
-        */
-    //}
-
-        //addMSlider(slider);
-        //$compile(slider)($scope);
-
-
+        var canvas = $('.crop_bg')[0];
+        var canvas_2 = $('#crop_src')[0];
+        canvas_original = ImageAdjustment.cloneCanvas(canvas);
+        crop_area_original = ImageAdjustment.cloneCanvas(canvas_2);
+console.log(crop_area_original);
+   /*      w = canvas_original.width;
+    h = canvas_original.height;
+    cw = w / 2;  // half canvas width and height
+    ch = h / 2;*/
     };
 
     this.openCrop = function(e, id) {

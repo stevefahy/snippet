@@ -11,6 +11,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     makeCrop = ImageEdit.makeCrop;
     openRotate = ImageEdit.openRotate;
 
+    $scope.sliderRotateChange = ImageEdit.sliderRotateChange;
+
     $scope.getFocus = Format.getFocus;
     $scope.getBlur = Format.getBlur;
     $scope.contentChanged = Format.contentChanged;
@@ -186,40 +188,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     });
 
-    $scope.SliderDTO = {
-        name: 'rotate',
-        id: 'steve',
-        value: 0,
-        min: -45,
-        max: 45
-    };
-
     addMSlider = function($el, parent_container, id) {
-        console.log($el);
-        //$compile($el)($scope);
-        //   var $el = $('<rzslider rz-slider-model="adjust.sharpen" rz-slider-options="adjust.options"></rzslider>').appendTo('#adjust_' + data.id + ' .image_adjust_sharpen');
-        //$compile($el)($scope);
-
-        //angular.element(document.body).append($compile($el)($scope));
-
-        //var s = angular.element($('.' + parent_container + ' #cropper_' + id)).append($compile($el)($scope));
         var t = $compile($el)($scope);
         var s = $(t).insertAfter('.' + parent_container + ' #cropper_' + id);
-//$compile(s)($scope);
-        $('.md_slider').addClass('active');
-        $('.md_slider').removeClass('hide');
-
-/*
-        var myElement = $compile($el)($scope);
-
-        $mdCompiler.compile({
-            contentElement: myElement
-        }).then(function(compileData) {
-            //compileData.element // Content Element (same as above)
-            //compileData.link // This does nothing when using a contentElement.
-        });
-        */
-
+        s.addClass('active');
+        s.removeClass('hide');
     };
 
     $scope.$on('rzSliderRender', function(event, data) {
