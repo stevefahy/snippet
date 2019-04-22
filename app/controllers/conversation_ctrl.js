@@ -818,7 +818,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 //console.log('on start ' + $scope.adjust.sharpen);
             },
             onChange: function(id) {
-                //console.log('on change ' + $scope.adjust.sharpen);
+                console.log('on change ' + $scope.adjust.sharpen);
             },
             onEnd: function(id) {
                 //console.log('on end ' + $scope.adjust.sharpen);

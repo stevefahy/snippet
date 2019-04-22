@@ -1,5 +1,5 @@
 var cardApp = angular.module("cardApp", ['ngSanitize', 'ngRoute', 'angularMoment', 'ngAnimate', 'ngImgCrop', 'ngCookies', 'angular-jwt', 'rzModule', 'ngMaterial', 'ngMessages']);
-//var cardApp = angular.module("cardApp", ['ngSanitize', 'ngRoute', 'angularMoment', 'ngAnimate', 'ngImgCrop', 'ngCookies', 'angular-jwt', 'rzModule']);
+
 //
 // ROUTES
 //
@@ -121,10 +121,4 @@ cardApp.run(function($window, $rootScope) {
             $rootScope.online = true;
         });
     }, false);
-});
-
-
-cardApp.config(function($mdAriaProvider) {
-   // Globally disables all ARIA warnings.
-   $mdAriaProvider.disableWarnings();
 });
