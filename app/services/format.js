@@ -1114,6 +1114,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     this.restoreSelection = function(containerEl) {
         savedSel = savedSelection;
+        console.log(containerEl);
+        console.log(savedSel);
         if (window.getSelection && document.createRange) {
             var charIndex = 0,
                 range = document.createRange();
