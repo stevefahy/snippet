@@ -7,9 +7,11 @@
         <div class="create_b">
             <i class="material-icons mi-photo_camera mi-photo_camera_unfocused  transition_2" ng-class="{ 'mi-photo_camera_focused': focused}" ng-mouseover="checkFocus()" ng-click="media()">&#xE412;</i>
         </div>
+        <!--
         <div class="create_c create_c_no_input transition" ng-class="{ 'create_c_input': input}">
             <i class="material-icons  mi_send_no_input" ng-class="{ 'mi_send_input': input}" id="" ng-click="createCard(card_create._id, card_create)">&#xE163;</i>
         </div>
+    -->
         <input id="upload-input" type="file" name="uploads[]" multiple="multiple">
         <button ng-attr-id="{{ 'upload-triggerce' + card_create._id }}" class="btn btn-sm upload-btn upload-trigger" type="button" ng-click="uploadFile(card_create._id, card_create, currentUser)">Upload File</button>
     </div>
