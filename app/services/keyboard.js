@@ -30,8 +30,7 @@ cardApp.service('Keyboard', ['Format', '$rootScope', function(Format, $rootScope
         portrait_height = initial_width;
     }
 
-    this.resizeListener = function(event) {
-         event.preventDefault();
+    this.resizeListener = function() {
         keyboard_listen = true;
         is_landscape = (screen.height < screen.width);
         if (is_landscape) {
@@ -51,7 +50,6 @@ cardApp.service('Keyboard', ['Format', '$rootScope', function(Format, $rootScope
     };
 
     hideFooter = function() {
-        console.log('hf');
         var focused = document.activeElement;
         if (focused.id != 'cecard_create') {
             $('.create_container').hide();
@@ -68,7 +66,6 @@ cardApp.service('Keyboard', ['Format', '$rootScope', function(Format, $rootScope
     };
 
     showFooter = function() {
-        console.log('sf');
         $rootScope.$apply(function() {
             $rootScope.hide_footer = false;
         });

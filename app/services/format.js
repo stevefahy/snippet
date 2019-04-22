@@ -418,7 +418,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         if (ua.indexOf('AndroidApp') >= 0) {
             if (document.activeElement.id != 'cecard_create' && id != undefined && id != 'card_create') {
                 // save the card first (Android bug)
-                //self.saveCard(id, card, currentUser);
+                self.saveCard(id, card, currentUser);
             }
             Android.choosePhoto();
         } else {
@@ -1114,8 +1114,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     this.restoreSelection = function(containerEl) {
         savedSel = savedSelection;
-        console.log(containerEl);
-        console.log(savedSel);
         if (window.getSelection && document.createRange) {
             var charIndex = 0,
                 range = document.createRange();
@@ -1162,7 +1160,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.keyListen = function(elem) {
-        console.log('kl');
         var getKeyCode = function() {
             var editableEl = document.getElementById(elem);
             // lowercase
@@ -1260,18 +1257,15 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     function stopEditing(elem) {
-        console.log('se');
         // Move focus to the hidden input field so that editing is stopped.
         // The hidden input is fixed to the bottom offscreen so that scrolling does not occur on mobile
         $('#hidden_input').focus();
     }
 
     this.checkCursor = function($event, elem) {
-        console.log(elem);
         // Store current caret pos
         $timeout(function() {
             savedSelection = self.saveSelection(document.getElementById(elem));
-        console.log(savedSelection );
         });
     };
 
