@@ -36,7 +36,7 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
             $scope.focused = true;
             console.log('foc');
             if (!$scope.$$phase) {
-                $scope.$apply();
+                //$scope.$apply();
             }
         });
         $('#cecard_create').on('blur', function() {

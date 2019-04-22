@@ -170,7 +170,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     });
 
     $scope.$on('window_resize', function() {
-        setUpScrollBar();
+        //setUpScrollBar();
     });
 
     $scope.$on('ngRepeatFinishedTemp', function(ngRepeatFinishedEvent) {
@@ -382,6 +382,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     setUpScrollBar = function() {
+        console.log('susb');
         if (mobile) {
             $('.progress-container').css('top', $('.content_cnv').offset().top);
             $('.progress-container').css('height', $('.content_cnv').height());

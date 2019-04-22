@@ -47,7 +47,7 @@ cardApp.service('Keyboard', ['Format', '$rootScope', function(Format, $rootScope
                 showFooter();
             }
         }
-        //$rootScope.$broadcast('window_resize');
+        $rootScope.$broadcast('window_resize');
     };
 
     hideFooter = function() {
