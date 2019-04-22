@@ -30,7 +30,8 @@ cardApp.service('Keyboard', ['Format', '$rootScope', function(Format, $rootScope
         portrait_height = initial_width;
     }
 
-    this.resizeListener = function() {
+    this.resizeListener = function(event) {
+         event.preventDefault();
         keyboard_listen = true;
         is_landscape = (screen.height < screen.width);
         if (is_landscape) {
