@@ -1265,9 +1265,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     }
 
     this.checkCursor = function($event, elem) {
+        console.log(elem);
         // Store current caret pos
         $timeout(function() {
             savedSelection = self.saveSelection(document.getElementById(elem));
+        console.log(savedSelection );
         });
     };
 

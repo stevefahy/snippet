@@ -97,7 +97,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var currentScroll;
     var maxScroll;
     var ch;
-    var mobile = false;
+    var mobile = true;
     var time_1;
     var time_2;
 
