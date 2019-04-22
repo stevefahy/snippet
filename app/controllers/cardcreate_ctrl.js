@@ -1,6 +1,6 @@
 cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$timeout', 'Cards', 'replaceTags', 'Format', 'FormatHTML', 'Edit', 'Conversations', 'socket', 'Users', 'Database', 'principal', 'UserData', 'Keyboard', function($scope, $rootScope, $location, $http, $window, $timeout, Cards, replaceTags, Format, FormatHTML, Edit, Conversations, socket, Users, Database, principal, UserData, Keyboard) {
 
-    //Keyboard.keyBoardListenStart();
+    Keyboard.keyBoardListenStop();
 
     var ua = navigator.userAgent;
 
@@ -41,7 +41,7 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
         });
         $('#cecard_create').on('blur', function() {
             console.log('unfoc');
-            $scope.focused = false;
+            //$scope.focused = false;
         });
     });
 
