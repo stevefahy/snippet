@@ -1,4 +1,6 @@
-cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$timeout', 'Cards', 'replaceTags', 'Format', 'FormatHTML', 'Edit', 'Conversations', 'socket', 'Users', 'Database', 'principal', 'UserData', function($scope, $rootScope, $location, $http, $window, $timeout, Cards, replaceTags, Format, FormatHTML, Edit, Conversations, socket, Users, Database, principal, UserData) {
+cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$timeout', 'Cards', 'replaceTags', 'Format', 'FormatHTML', 'Edit', 'Conversations', 'socket', 'Users', 'Database', 'principal', 'UserData', 'Keyboard', function($scope, $rootScope, $location, $http, $window, $timeout, Cards, replaceTags, Format, FormatHTML, Edit, Conversations, socket, Users, Database, principal, UserData, Keyboard) {
+
+    Keyboard.keyBoardListenStart();
 
     var ua = navigator.userAgent;
 
@@ -32,21 +34,25 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
         // listen for focus
         $('#cecard_create').on('focus', function() {
             $scope.focused = true;
+            console.log('foc');
             if (!$scope.$$phase) {
                 $scope.$apply();
             }
         });
         $('#cecard_create').on('blur', function() {
+            console.log('unfoc');
             $scope.focused = false;
         });
     });
 
     $(document).on('input keyup', '#cecard_create', function() {
+        console.log('ku');
         checkInput('#cecard_create');
     });
 
     // Refocus to the input area if the placeholder is focused.
     $(document).on('click', '#placeholderDiv', function() {
+        console.log('foc1');
         $('#cecard_create').focus();
     });
 
@@ -78,6 +84,7 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
 
     // Check that the cecard_create was the last focused element
     $scope.checkFocus = function() {
+        console.log('cf');
         if ($scope.focused) {
             isFocused = true;
         } else {
@@ -100,6 +107,7 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
     };
 
     checkInput = function(elem) {
+        console.log('ci');
         var trim = $.trim($(elem).text());
         // check for whitespace at first position and remove
         if (trim.length == 1 && trim.charCodeAt(0) == '8203') {
@@ -107,9 +115,11 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
         }
         // If there has been text or an image inputed then hide the placeholder text.
         if ($(elem).text().length > 0 || $(elem).html().indexOf('<img') >= 0) {
+            console.log('hide');
             $('#placeholderDiv').hide();
             $scope.input = true;
         } else {
+            console.log('show');
             $('#placeholderDiv').show();
             $scope.input = false;
         }

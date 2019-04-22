@@ -1160,6 +1160,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.keyListen = function(elem) {
+        console.log('kl');
         var getKeyCode = function() {
             var editableEl = document.getElementById(elem);
             // lowercase
@@ -1257,6 +1258,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     function stopEditing(elem) {
+        console.log('se');
         // Move focus to the hidden input field so that editing is stopped.
         // The hidden input is fixed to the bottom offscreen so that scrolling does not occur on mobile
         $('#hidden_input').focus();
