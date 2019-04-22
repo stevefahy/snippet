@@ -50,6 +50,7 @@ cardApp.service('Keyboard', ['Format', '$rootScope', function(Format, $rootScope
     };
 
     hideFooter = function() {
+        console.log('hf');
         var focused = document.activeElement;
         if (focused.id != 'cecard_create') {
             $('.create_container').hide();
@@ -66,6 +67,7 @@ cardApp.service('Keyboard', ['Format', '$rootScope', function(Format, $rootScope
     };
 
     showFooter = function() {
+        console.log('sf');
         $rootScope.$apply(function() {
             $rootScope.hide_footer = false;
         });

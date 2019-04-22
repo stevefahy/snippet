@@ -122,3 +122,9 @@ cardApp.run(function($window, $rootScope) {
         });
     }, false);
 });
+
+
+cardApp.config(function($mdAriaProvider) {
+   // Globally disables all ARIA warnings.
+   $mdAriaProvider.disableWarnings();
+});
