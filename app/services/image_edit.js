@@ -3,7 +3,7 @@
 //
 
 //cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', 'General', 'UserData', 'principal', 'ImageAdjustment', 'Drag', 'Resize', 'Keyboard', 'Scroll', '$compile', '$mdCompiler', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML, General, UserData, principal, ImageAdjustment, Drag, Resize, Keyboard, Scroll, $compile, $mdCompiler) {
-    cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', 'General', 'UserData', 'principal', 'ImageAdjustment', 'Drag', 'Resize', 'Keyboard', 'Scroll', '$compile', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML, General, UserData, principal, ImageAdjustment, Drag, Resize, Keyboard, Scroll, $compile) {
+cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', 'General', 'UserData', 'principal', 'ImageAdjustment', 'Drag', 'Resize', 'Keyboard', 'Scroll', '$compile', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML, General, UserData, principal, ImageAdjustment, Drag, Resize, Keyboard, Scroll, $compile) {
 
     var ua = navigator.userAgent;
     var self = this;
@@ -350,74 +350,74 @@
         });
     };
 
-/*
-    function rotate(angle, canvas_original) {
-        var scale = 4;
-        var y_scale = 0
-        var x_scale = 0;
-        var canvas = $('.crop_bg')[0];
-        var context = canvas.getContext('2d');
-        context.webkitImageSmoothingEnabled = false;
-        context.mozImageSmoothingEnabled = false;
-        context.imageSmoothingEnabled = false;
+    /*
+        function rotate(angle, canvas_original) {
+            var scale = 4;
+            var y_scale = 0
+            var x_scale = 0;
+            var canvas = $('.crop_bg')[0];
+            var context = canvas.getContext('2d');
+            context.webkitImageSmoothingEnabled = false;
+            context.mozImageSmoothingEnabled = false;
+            context.imageSmoothingEnabled = false;
 
-        canvasWidth = canvas.width;
-        canvasHeight = canvas.height;
-        // Clear the canvas
-        context.clearRect(0, 0, canvasWidth, canvasHeight);
+            canvasWidth = canvas.width;
+            canvasHeight = canvas.height;
+            // Clear the canvas
+            context.clearRect(0, 0, canvasWidth, canvasHeight);
 
-        context.save();
+            context.save();
 
-        // Move registration point to the center of the canvas
-        context.translate(canvasWidth / 2, canvasWidth / 2);
-        // Rotate 1 degree
-        context.rotate(angle * Math.PI / 180);
-        // Move registration point back to the top left corner of canvas
-        context.translate(-canvasWidth / 2, -canvasWidth / 2);
+            // Move registration point to the center of the canvas
+            context.translate(canvasWidth / 2, canvasWidth / 2);
+            // Rotate 1 degree
+            context.rotate(angle * Math.PI / 180);
+            // Move registration point back to the top left corner of canvas
+            context.translate(-canvasWidth / 2, -canvasWidth / 2);
 
-        context.drawImage(canvas_original, (angle*x_scale), (angle*y_scale), canvas_original.width +  (angle*scale), canvas_original.height  +  (angle*scale));
+            context.drawImage(canvas_original, (angle*x_scale), (angle*y_scale), canvas_original.width +  (angle*scale), canvas_original.height  +  (angle*scale));
 
-        context.restore();
+            context.restore();
 
 
-    }
-*/
+        }
+    */
 
-    function drawBestFit(ctx, angle, image){
+    function drawBestFit(ctx, angle, image) {
 
-               var  w = image.width;
-     var h = image.height;
-    var cw = w / 2;  // half canvas width and height
-    var ch = h / 2;
+        var w = image.width;
+        var h = image.height;
+        var cw = w / 2; // half canvas width and height
+        var ch = h / 2;
 
-        var iw = image.width / 2;  // half image width and height
+        var iw = image.width / 2; // half image width and height
         var ih = image.height / 2;
         // get the length C-B
-        var dist = Math.sqrt(Math.pow(cw,2) + Math.pow(ch,2));
+        var dist = Math.sqrt(Math.pow(cw, 2) + Math.pow(ch, 2));
         // get the angle A
-        var diagAngle = Math.asin(ch/dist);
+        var diagAngle = Math.asin(ch / dist);
 
         // Do the symmetry on the angle
-        a1 = ((angle % (Math.PI *2))+ Math.PI*4) % (Math.PI * 2);
-        if(a1 > Math.PI){
+        a1 = ((angle % (Math.PI * 2)) + Math.PI * 4) % (Math.PI * 2);
+        if (a1 > Math.PI) {
             a1 -= Math.PI;
         }
-        if(a1 > Math.PI/2 && a1 <= Math.PI){
-            a1 = (Math.PI/2) - (a1-(Math.PI/2));
+        if (a1 > Math.PI / 2 && a1 <= Math.PI) {
+            a1 = (Math.PI / 2) - (a1 - (Math.PI / 2));
         }
         // get angles A1, A2
-        var ang1 = Math.PI/2 - diagAngle - Math.abs(a1);
+        var ang1 = Math.PI / 2 - diagAngle - Math.abs(a1);
         var ang2 = Math.abs(diagAngle - Math.abs(a1));
         // get lenghts C-E and C-F
         var dist1 = Math.cos(ang1) * dist;
         var dist2 = Math.cos(ang2) * dist;
         // get the max scale
-        var scale = Math.max(dist2/(iw),dist1/(ih));
+        var scale = Math.max(dist2 / (iw), dist1 / (ih));
         // create the transform
         var dx = Math.cos(angle) * scale;
-        var dy = Math.sin(angle) * scale; 
+        var dy = Math.sin(angle) * scale;
         ctx.setTransform(dx, dy, -dy, dx, cw, ch);
-        ctx.drawImage(image, -iw, - ih);
+        ctx.drawImage(image, -iw, -ih);
 
 
         // draw outline of image half size
@@ -439,22 +439,22 @@
 
     }
 
-/*
-function drawToFitRotated(ctx, angle, image){
-    angle = angle /100;
-    var dist = Math.sqrt(Math.pow(ctx.canvas.width /2, 1.9 ) + Math.pow(ctx.canvas.height / 2, 1.9));
-    var imgDist = Math.min(image.width, image.height) / 2;
-    var minScale = dist / imgDist;
-    var dx = Math.cos(angle) * minScale;
-    var dy = Math.sin(angle) * minScale; 
-    ctx.setTransform(dx, dy, -dy, dx, ctx.canvas.width / 2, ctx.canvas.height / 2);
-    ctx.drawImage(image, -image.width / 2, - image.height / 2);
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-}
-*/
+    /*
+    function drawToFitRotated(ctx, angle, image){
+        angle = angle /100;
+        var dist = Math.sqrt(Math.pow(ctx.canvas.width /2, 1.9 ) + Math.pow(ctx.canvas.height / 2, 1.9));
+        var imgDist = Math.min(image.width, image.height) / 2;
+        var minScale = dist / imgDist;
+        var dx = Math.cos(angle) * minScale;
+        var dy = Math.sin(angle) * minScale; 
+        ctx.setTransform(dx, dy, -dy, dx, ctx.canvas.width / 2, ctx.canvas.height / 2);
+        ctx.drawImage(image, -image.width / 2, - image.height / 2);
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+    }
+    */
 
     this.sliderRotateChange = function() {
-        console.log('src: ' + $rootScope.SliderDTO.value);
+        console.log('src: ' + $rootScope.sliderRotate.rotate);
         var canvas = $('.crop_bg')[0];
         var ctx = canvas.getContext('2d');
 
@@ -464,13 +464,13 @@ function drawToFitRotated(ctx, angle, image){
 
         //var img = ImageAdjustment.cloneCanvas(canvas);
         //var img = ImageAdjustment.cloneCanvas(canvas);
-       //rotate($rootScope.SliderDTO.value, canvas_original);
+        //rotate($rootScope.SliderDTO.value, canvas_original);
 
- 
-       
-       drawBestFit(ctx, $rootScope.SliderDTO.value/100, canvas_original);
-       drawBestFit(ctx2, $rootScope.SliderDTO.value/100, crop_area_original);
-//drawToFitRotated(ctx, $rootScope.SliderDTO.value, canvas_original);
+
+
+        drawBestFit(ctx, $rootScope.sliderRotate.rotate / 100, canvas_original);
+        drawBestFit(ctx2, $rootScope.sliderRotate.rotate / 100, crop_area_original);
+        //drawToFitRotated(ctx, $rootScope.SliderDTO.value, canvas_original);
         /*
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.save();
@@ -490,10 +490,10 @@ function drawToFitRotated(ctx, angle, image){
     };
 
     var canvas_original;
-   /* var w;
-    var h;
-    var cw;  // half canvas width and height
-    var ch;*/
+    /* var w;
+     var h;
+     var cw;  // half canvas width and height
+     var ch;*/
     var crop_area_original;
 
 
@@ -510,24 +510,49 @@ function drawToFitRotated(ctx, angle, image){
             step: .01
         };
 
-        var model = "SliderDTO.value";
-        var min = "{{SliderDTO.min}}";
+        $rootScope.sliderRotate = {
+            rotate: 0,
+            options: {
+                floor: -45,
+                ceil: 45,
+                step: 0.1,
+                precision: 1,
+                id: 'slider-idt',
+                onStart: function(sharpen) {
+                    //console.log('on start ' + $scope.adjust.sharpen);
+                },
+                onChange: function(id) {
+                    console.log('on change ' + $rootScope.sliderRotate.rotate);
+                    self.sliderRotateChange();
+                },
+                onEnd: function(id) {
+                    //console.log('on end ' + $scope.adjust.sharpen);
+                    //ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'rotate', this.value);
+                    //ImageAdjustment.setSharpenUpdate(ImageAdjustment.getSource(), ImageAdjustment.getTarget(), ImageAdjustment.getImageAdjustments(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId()));
+                }
+            }
+        };
+
+
+        var model = "SliderDTOD.re";
+        var options = "{{SliderDTO.min}}";
         var max = "{{SliderDTO.max}}";
         var step = "{{SliderDTO.step}}";
         var change = "sliderRotateChange()";
 
-        var myElement = '<div class="md_slider hide" id="slider"><md-slider-container><md-slider ng-change="' + change + '" step= "' + step + '" min="' + min + '" max="' + max + '" ng-model="' + model + '" aria-label="red" id="" class="md-warn"></md-slider><md-input-container><input type="number" ng-model="SliderDTO.value" aria-label="red" aria-controls="red-slider"></md-input-container></md-slider-container></div>';
+        //var myElement = '<div class="md_slider hide" id="slider"><md-slider-container><md-slider ng-change="' + change + '" step= "' + step + '" min="' + min + '" max="' + max + '" ng-model="' + model + '" aria-label="red" id="" class="md-warn"></md-slider><md-input-container><input type="number" ng-model="SliderDTO.value" aria-label="red" aria-controls="red-slider"></md-input-container></md-slider-container></div>';
+        var myElement = '<rzslider rz-slider-model="sliderRotate.rotate" rz-slider-options="sliderRotate.options"></rzslider>';
         addMSlider(myElement, parent_container, id);
 
         var canvas = $('.crop_bg')[0];
         var canvas_2 = $('#crop_src')[0];
         canvas_original = ImageAdjustment.cloneCanvas(canvas);
         crop_area_original = ImageAdjustment.cloneCanvas(canvas_2);
-console.log(crop_area_original);
-   /*      w = canvas_original.width;
-    h = canvas_original.height;
-    cw = w / 2;  // half canvas width and height
-    ch = h / 2;*/
+        console.log(crop_area_original);
+        /*      w = canvas_original.width;
+         h = canvas_original.height;
+         cw = w / 2;  // half canvas width and height
+         ch = h / 2;*/
     };
 
     this.openCrop = function(e, id) {

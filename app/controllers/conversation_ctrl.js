@@ -188,13 +188,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     });
 
-    addMSlider = function($el, parent_container, id) {
-        var t = $compile($el)($scope);
-        var s = $(t).insertAfter('.' + parent_container + ' #cropper_' + id);
-        s.addClass('active');
-        s.removeClass('hide');
-    };
-
     $scope.$on('rzSliderRender', function(event, data) {
         addSlider(data);
     });
@@ -796,6 +789,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             });
     };
 
+    addMSlider = function($el, parent_container, id) {
+        var t = $compile($el)($scope);
+        var s = $(t).insertAfter('.' + parent_container + ' #cropper_' + id);
+        s.addClass('active');
+        s.removeClass('hide');
+
+        //$compile(s)($scope);
+    };
+
     var addSlider = function(data) {
         if (data.last_position != undefined) {
             $scope.adjust.sharpen = data.last_position;
@@ -805,6 +807,30 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var $el = $('<rzslider rz-slider-model="adjust.sharpen" rz-slider-options="adjust.options"></rzslider>').appendTo('#adjust_' + data.id + ' .image_adjust_sharpen');
         $compile($el)($scope);
     };
+
+/*
+    $scope.sliderRotate = {
+        rotate: 0,
+        options: {
+            floor: 0,
+            ceil: 45,
+            step: 0.1,
+            precision: 1,
+            id: 'slider-idt',
+            onStart: function(sharpen) {
+                //console.log('on start ' + $scope.adjust.sharpen);
+            },
+            onChange: function(id) {
+                console.log('on change ' + $scope.sliderRotate.rotate);
+            },
+            onEnd: function(id) {
+                //console.log('on end ' + $scope.adjust.sharpen);
+                ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'rotate', this.value);
+                ImageAdjustment.setSharpenUpdate(ImageAdjustment.getSource(), ImageAdjustment.getTarget(), ImageAdjustment.getImageAdjustments(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId()));
+            }
+        }
+    };
+    */
 
     $scope.adjust = {
         sharpen: 0,

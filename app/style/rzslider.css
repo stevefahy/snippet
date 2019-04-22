@@ -111,6 +111,7 @@
     cursor: pointer;
     background-color: #0db9f0;
     border-radius: 16px;
+    outline: none;
 }
 
 .rzslider .rz-pointer:after {
