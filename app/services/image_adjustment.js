@@ -318,10 +318,92 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             .then(function(result) {
                 return self.sharpen(result, filters.sharpen);
             }).then(function(result) {
+                return self.rotate(result, filters.rotate);
+
+                //rotate = function(source, angle) {
+
+            }).then(function(result) {
                 return self.crop(result, filters.crop);
             }).then(function(result) {
                 deferred.resolve(result);
             });
+        return deferred.promise;
+    };
+
+    // Rotate
+    /*
+    this.rotate = function(source, amount) {
+        var deferred = $q.defer();
+        var new_canvas = document.createElement("canvas");
+        new_canvas.width = source.width;
+        new_canvas.height = source.height;
+        var ctx = new_canvas.getContext('2d');
+        ctx.drawImage(source, 0, 0);
+        if (amount != undefined) {
+
+            ctx.putImageData(res, 0, 0);
+            deferred.resolve(new_canvas);
+        } else {
+            deferred.resolve(new_canvas);
+        }
+        return deferred.promise;
+    };
+    */
+
+
+    this.rotate = function(source, angle) {
+        var deferred = $q.defer();
+
+        
+        var new_canvas = document.createElement("canvas");
+        new_canvas.width = source.width;
+        new_canvas.height = source.height;
+        var ctx = new_canvas.getContext('2d');
+        ctx.drawImage(source, 0, 0);
+        console.log(angle);
+        if (angle != undefined) {
+            angle = angle / 100;
+            var w = source.width;
+            var h = source.height;
+            var cw = w / 2; // half canvas width and height
+            var ch = h / 2;
+
+            var iw = source.width / 2; // half image width and height
+            var ih = source.height / 2;
+            // get the length C-B
+            var dist = Math.sqrt(Math.pow(cw, 2) + Math.pow(ch, 2));
+            // get the angle A
+            var diagAngle = Math.asin(ch / dist);
+
+            // Do the symmetry on the angle
+            a1 = ((angle % (Math.PI * 2)) + Math.PI * 4) % (Math.PI * 2);
+            if (a1 > Math.PI) {
+                a1 -= Math.PI;
+            }
+            if (a1 > Math.PI / 2 && a1 <= Math.PI) {
+                a1 = (Math.PI / 2) - (a1 - (Math.PI / 2));
+            }
+            // get angles A1, A2
+            var ang1 = Math.PI / 2 - diagAngle - Math.abs(a1);
+            var ang2 = Math.abs(diagAngle - Math.abs(a1));
+            // get lenghts C-E and C-F
+            var dist1 = Math.cos(ang1) * dist;
+            var dist2 = Math.cos(ang2) * dist;
+            // get the max scale
+            var scale = Math.max(dist2 / (iw), dist1 / (ih));
+            // create the transform
+            var dx = Math.cos(angle) * scale;
+            var dy = Math.sin(angle) * scale;
+            ctx.setTransform(dx, dy, -dy, dx, cw, ch);
+            ctx.drawImage(source, -iw, -ih);
+            // reset the transform
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+            //ctx.putImageData(res, 0, 0);
+            deferred.resolve(new_canvas);
+        } else {
+            deferred.resolve(new_canvas);
+        }
         return deferred.promise;
     };
 

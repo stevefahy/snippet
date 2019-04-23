@@ -789,7 +789,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             });
     };
 
-    addMSlider = function($el, parent_container, id) {
+    addMSlider = function($el, parent_container, id, data) {
+        if (data.last_position != undefined) {
+            $rootScope.sliderRotate.rotate = data.last_position;
+        } else {
+            $rootScope.sliderRotate.rotate = 0;
+        }
         var t = $compile($el)($scope);
         var s = $(t).insertAfter('.' + parent_container + ' #cropper_' + id);
         s.addClass('active');
@@ -808,29 +813,29 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         $compile($el)($scope);
     };
 
-/*
-    $scope.sliderRotate = {
-        rotate: 0,
-        options: {
-            floor: 0,
-            ceil: 45,
-            step: 0.1,
-            precision: 1,
-            id: 'slider-idt',
-            onStart: function(sharpen) {
-                //console.log('on start ' + $scope.adjust.sharpen);
-            },
-            onChange: function(id) {
-                console.log('on change ' + $scope.sliderRotate.rotate);
-            },
-            onEnd: function(id) {
-                //console.log('on end ' + $scope.adjust.sharpen);
-                ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'rotate', this.value);
-                ImageAdjustment.setSharpenUpdate(ImageAdjustment.getSource(), ImageAdjustment.getTarget(), ImageAdjustment.getImageAdjustments(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId()));
+    /*
+        $scope.sliderRotate = {
+            rotate: 0,
+            options: {
+                floor: 0,
+                ceil: 45,
+                step: 0.1,
+                precision: 1,
+                id: 'slider-idt',
+                onStart: function(sharpen) {
+                    //console.log('on start ' + $scope.adjust.sharpen);
+                },
+                onChange: function(id) {
+                    console.log('on change ' + $scope.sliderRotate.rotate);
+                },
+                onEnd: function(id) {
+                    //console.log('on end ' + $scope.adjust.sharpen);
+                    ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'rotate', this.value);
+                    ImageAdjustment.setSharpenUpdate(ImageAdjustment.getSource(), ImageAdjustment.getTarget(), ImageAdjustment.getImageAdjustments(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId()));
+                }
             }
-        }
-    };
-    */
+        };
+        */
 
     $scope.adjust = {
         sharpen: 0,

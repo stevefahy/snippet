@@ -9,6 +9,33 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     var self = this;
     var mobile = false;
     var temp_save = false;
+    var canvas_original;
+    var crop_area_original;
+
+    $rootScope.sliderRotate = {
+        rotate: 0,
+        options: {
+            floor: -45,
+            ceil: 45,
+            step: 0.1,
+            precision: 1,
+            id: 'slider-idt',
+            onStart: function(sharpen) {
+                //console.log('on start ' + $scope.adjust.sharpen);
+            },
+            onChange: function(id) {
+                console.log('on change ' + $rootScope.sliderRotate.rotate);
+                self.sliderRotateChange($rootScope.sliderRotate.rotate);
+            },
+            onEnd: function(id) {
+                //console.log('on end ' + $rootScope.sliderRotate.rotate);
+                // Do this on accept changes instead.
+
+                ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'rotate', $rootScope.sliderRotate.rotate);
+                //ImageAdjustment.setSharpenUpdate(ImageAdjustment.getSource(), ImageAdjustment.getTarget(), ImageAdjustment.getImageAdjustments(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId()));
+            }
+        }
+    };
 
     if (ua.indexOf('AndroidApp') >= 0) {
         mobile = true;
@@ -234,9 +261,17 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         }
         // Hide the original image.
         adjustSrc(original_image, 'hide');
+
+        // Make rotation
+        //if ($('.rzslider').length > 0) {
+            //ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'rotate', $rootScope.sliderRotate.rotate);
+        //}
+
         ImageAdjustment.crop(source_canvas, crop_data).then(function(canvas) {
             // remove the crop box
             self.removeCrop();
+            // remove the slider
+            self.removeSlider();
             // Animate the cropped image onto screen.
             $(cropper).animate({ height: anim_h }, {
                 duration: 300,
@@ -265,6 +300,12 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         });
     };
 
+    this.removeSlider = function() {
+        if ($('.rzslider').length > 0) {
+            $('.rzslider').remove();
+        }
+    };
+
     this.removeCrop = function() {
         $('.crop_box.active').remove();
         if ($('.temp_canvas_filtered').length > 0) {
@@ -286,15 +327,18 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         setContenteditable(cropper, true);
         var anim_h;
         var image_original = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
+        console.log(image_original);
         if ($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length > 0) {
             $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').removeClass('hide');
             adjustSrc(image_original, 'hide');
             anim_h = $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').height();
         } else {
-            $(image_original).removeClass('.hide');
+            console.log($(image_original));
+            $(image_original).removeClass('hide');
             anim_h = $(image_original).height();
         }
         self.removeCrop();
+        self.removeSlider();
         ImageAdjustment.setImageEditing(false);
         // Animate bck to the existing image (original or adjusted).
         $(cropper).animate({ height: anim_h }, {
@@ -329,7 +373,16 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                     $(img_bg).addClass('crop_bg');
                     $(img).attr('id', 'crop_src');
                 } else {
-                    var img = $(target).appendTo('.' + parent_container + ' #cropper_' + id + ' .crop_area');
+
+                    $('.' + parent_container + ' #image_' + id).addClass('hide');
+                    var new_canvas = ImageAdjustment.cloneCanvas(target);
+                    var img = $(new_canvas).appendTo('.' + parent_container + ' #cropper_' + id + ' .crop_area');
+                    $(img).addClass('temp_canvas_filtered');
+                    var img_bg = $(target).appendTo('.' + parent_container + ' #cropper_' + id);
+                    $(img_bg).addClass('crop_bg');
+
+
+                    //var img = $(target).appendTo('.' + parent_container + ' #cropper_' + id + ' .crop_area');
                     $(img).attr('id', 'crop_src');
                 }
                 $('.' + parent_container + ' #cropper_' + id + ' .crop_adjust').attr('id', 'drag');
@@ -337,6 +390,19 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 var crop_data;
                 if (ia != undefined) {
                     crop_data = ia.crop;
+
+                                        if(ia.rotate != undefined){
+                        $rootScope.sliderRotate.rotate = ia.rotate;
+                        initCropRotate(parent_container, id).then(function(canvas) {
+
+                           // $timeout(function() {
+                            self.sliderRotateChange(ia.rotate);
+                       // },2000);
+
+
+                        });
+                        //self.sliderRotateChange(ia.rotate);
+                    }
                 }
                 var original_image = $('.content_cnv #cropper_' + id + ' #image_' + id)[0];
                 //Make the DIV element draggagle:
@@ -351,40 +417,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
     /*
-        function rotate(angle, canvas_original) {
-            var scale = 4;
-            var y_scale = 0
-            var x_scale = 0;
-            var canvas = $('.crop_bg')[0];
-            var context = canvas.getContext('2d');
-            context.webkitImageSmoothingEnabled = false;
-            context.mozImageSmoothingEnabled = false;
-            context.imageSmoothingEnabled = false;
-
-            canvasWidth = canvas.width;
-            canvasHeight = canvas.height;
-            // Clear the canvas
-            context.clearRect(0, 0, canvasWidth, canvasHeight);
-
-            context.save();
-
-            // Move registration point to the center of the canvas
-            context.translate(canvasWidth / 2, canvasWidth / 2);
-            // Rotate 1 degree
-            context.rotate(angle * Math.PI / 180);
-            // Move registration point back to the top left corner of canvas
-            context.translate(-canvasWidth / 2, -canvasWidth / 2);
-
-            context.drawImage(canvas_original, (angle*x_scale), (angle*y_scale), canvas_original.width +  (angle*scale), canvas_original.height  +  (angle*scale));
-
-            context.restore();
-
-
-        }
-    */
-
     function drawBestFit(ctx, angle, image) {
-
         var w = image.width;
         var h = image.height;
         var cw = w / 2; // half canvas width and height
@@ -418,42 +451,12 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var dy = Math.sin(angle) * scale;
         ctx.setTransform(dx, dy, -dy, dx, cw, ch);
         ctx.drawImage(image, -iw, -ih);
-
-
-        // draw outline of image half size
-        /*
-        ctx.strokeStyle = "red";
-        ctx.lineWidth = 2 * (1/scale);
-        ctx.strokeRect(-iw / 2, -ih / 2, iw, ih);
-        */
-
         // reset the transform
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-
-        // draw outline of canvas half size
-        /*
-        ctx.strokeStyle = "blue";
-        ctx.lineWidth = 2;
-        ctx.strokeRect(cw - cw / 2, ch - ch / 2, cw, ch) ;
-        */
-
-    }
-
-    /*
-    function drawToFitRotated(ctx, angle, image){
-        angle = angle /100;
-        var dist = Math.sqrt(Math.pow(ctx.canvas.width /2, 1.9 ) + Math.pow(ctx.canvas.height / 2, 1.9));
-        var imgDist = Math.min(image.width, image.height) / 2;
-        var minScale = dist / imgDist;
-        var dx = Math.cos(angle) * minScale;
-        var dy = Math.sin(angle) * minScale; 
-        ctx.setTransform(dx, dy, -dy, dx, ctx.canvas.width / 2, ctx.canvas.height / 2);
-        ctx.drawImage(image, -image.width / 2, - image.height / 2);
         ctx.setTransform(1, 0, 0, 1, 0, 0);
     }
     */
 
-    this.sliderRotateChange = function() {
+    this.sliderRotateChange = function(rotate) {
         console.log('src: ' + $rootScope.sliderRotate.rotate);
         var canvas = $('.crop_bg')[0];
         var ctx = canvas.getContext('2d');
@@ -461,78 +464,33 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var canvas2 = $('#crop_src')[0];
         var ctx2 = canvas2.getContext('2d');
 
+        //drawBestFit(ctx, $rootScope.sliderRotate.rotate / 100, canvas_original);
+        //drawBestFit(ctx2, $rootScope.sliderRotate.rotate / 100, crop_area_original);
+        ImageAdjustment.rotate(canvas_original, rotate).then(function(result) {
+            ctx.drawImage(result, 0, 0);
+        });
 
-        //var img = ImageAdjustment.cloneCanvas(canvas);
-        //var img = ImageAdjustment.cloneCanvas(canvas);
-        //rotate($rootScope.SliderDTO.value, canvas_original);
+        ImageAdjustment.rotate(crop_area_original, rotate).then(function(result) {
+            ctx2.drawImage(result, 0, 0);
+        });
 
 
 
-        drawBestFit(ctx, $rootScope.sliderRotate.rotate / 100, canvas_original);
-        drawBestFit(ctx2, $rootScope.sliderRotate.rotate / 100, crop_area_original);
-        //drawToFitRotated(ctx, $rootScope.SliderDTO.value, canvas_original);
-        /*
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.save();
-        ctx.translate(canvas.width / 2, canvas.height / 2);
-        ctx.rotate($rootScope.SliderDTO.value);
-        ctx.drawImage(img, -img.width / 2, -img.height / 2);
-        ctx.restore();
-        */
-
-        //ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        //ctx.setTransform(1, 0, 0, 1, canvas.width / 2, canvas.height / 2); // set position of image center
-        //ctx.rotate($rootScope.SliderDTO.value * Math.PI / 180); // rotate
-        //ctx.drawImage(img, -img.width / 2, -img.height / 2); // draw image offset so its center is at x,y
-        //ctx.setTransform(1, 0, 0, 1, 0, 0); // restore default transform
-
+        //this.applyRotation = function(source, angle) 
     };
-
-    var canvas_original;
-    /* var w;
-     var h;
-     var cw;  // half canvas width and height
-     var ch;*/
-    var crop_area_original;
-
 
     this.openRotate = function(e) {
         e.preventDefault();
         e.stopPropagation();
         var parent_container = ImageAdjustment.getImageParent();
         var id = ImageAdjustment.getImageId();
+        var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
 
-        $rootScope.SliderDTO = {
-            value: 0,
-            min: -45,
-            max: 45,
-            step: .01
-        };
-
-        $rootScope.sliderRotate = {
-            rotate: 0,
-            options: {
-                floor: -45,
-                ceil: 45,
-                step: 0.1,
-                precision: 1,
-                id: 'slider-idt',
-                onStart: function(sharpen) {
-                    //console.log('on start ' + $scope.adjust.sharpen);
-                },
-                onChange: function(id) {
-                    console.log('on change ' + $rootScope.sliderRotate.rotate);
-                    self.sliderRotateChange();
-                },
-                onEnd: function(id) {
-                    //console.log('on end ' + $scope.adjust.sharpen);
-                    //ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'rotate', this.value);
-                    //ImageAdjustment.setSharpenUpdate(ImageAdjustment.getSource(), ImageAdjustment.getTarget(), ImageAdjustment.getImageAdjustments(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId()));
-                }
-            }
-        };
-
+        var data = { 'id': id };
+        // Get the last position of the slider.
+        if (ia != undefined) {
+            data.last_position = ia.rotate;
+        }
 
         var model = "SliderDTOD.re";
         var options = "{{SliderDTO.min}}";
@@ -540,19 +498,52 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var step = "{{SliderDTO.step}}";
         var change = "sliderRotateChange()";
 
-        //var myElement = '<div class="md_slider hide" id="slider"><md-slider-container><md-slider ng-change="' + change + '" step= "' + step + '" min="' + min + '" max="' + max + '" ng-model="' + model + '" aria-label="red" id="" class="md-warn"></md-slider><md-input-container><input type="number" ng-model="SliderDTO.value" aria-label="red" aria-controls="red-slider"></md-input-container></md-slider-container></div>';
         var myElement = '<rzslider rz-slider-model="sliderRotate.rotate" rz-slider-options="sliderRotate.options"></rzslider>';
-        addMSlider(myElement, parent_container, id);
+        addMSlider(myElement, parent_container, id, data);
 
-        var canvas = $('.crop_bg')[0];
-        var canvas_2 = $('#crop_src')[0];
-        canvas_original = ImageAdjustment.cloneCanvas(canvas);
-        crop_area_original = ImageAdjustment.cloneCanvas(canvas_2);
-        console.log(crop_area_original);
-        /*      w = canvas_original.width;
-         h = canvas_original.height;
-         cw = w / 2;  // half canvas width and height
-         ch = h / 2;*/
+        /*
+        var canvas_orig = $('.crop_bg')[0];
+        var canvas_crop = $('#crop_src')[0];
+        canvas_original = ImageAdjustment.cloneCanvas(canvas_orig);
+        crop_area_original = ImageAdjustment.cloneCanvas(canvas_crop);
+        */
+        initCropRotate(parent_container, id);
+    };
+
+    initCropRotate = function(parent_container, id){
+        var deferred = $q.defer();
+        /*       
+        var canvas_orig = $('.crop_bg')[0];
+        var canvas_crop = $('#crop_src')[0];
+        */
+        var canvas_orig = $('.' + parent_container + ' #image_' + id)[0];
+        var canvas_crop = $('.' + parent_container + ' #image_' + id)[0];
+
+        canvas_original = ImageAdjustment.cloneCanvas(canvas_orig);
+        crop_area_original = ImageAdjustment.cloneCanvas(canvas_crop);
+
+        deferred.resolve();
+        return deferred.promise;
+    };
+
+    initCropRotateOrig = function(parent_container, id){
+        var deferred = $q.defer();
+        console.log('initCropRotateOrig');
+        var image = $('.' + parent_container + ' #image_' + id)[0];
+        $(image).removeClass('hide');
+        console.log(image);
+        var canvas_orig = $('.crop_bg')[0];
+        var ctx1 = canvas_orig.getContext('2d');
+        ctx1.drawImage(image, 0, 0);
+        var canvas_crop = $('#crop_src')[0];
+        var ctx2 = canvas_orig.getContext('2d');
+        ctx2.drawImage(image, 0, 0);
+        canvas_original = ImageAdjustment.cloneCanvas(image);
+//$('.' + parent_container + ' #image_' + id)[0].append(canvas_original);
+//$(canvas_original).prependTo('.' + parent_container + ' #cropper_' + id);
+        crop_area_original = ImageAdjustment.cloneCanvas(image);
+        deferred.resolve();
+        return deferred.promise;
     };
 
     this.openCrop = function(e, id) {
@@ -575,6 +566,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         if (ia != undefined) {
             // Dont crop the image.
             ia.crop = undefined;
+            // Dont rotate the image
+            ia.rotate = undefined;
             var prom = ImageAdjustment.applyFilters(source, ia).then(function(result) {
                 target.width = result.width;
                 target.height = result.height;
