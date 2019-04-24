@@ -12,8 +12,86 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     var canvas_original;
     var crop_area_original;
 
+    $rootScope.slider_settings = {
+        sharpen: {
+            amount: 0,
+            reset: 0,
+            options: {
+                floor: 0,
+                ceil: 20,
+                step: 0.1,
+                precision: 1,
+                id: 'slider-id',
+                onStart: function(sharpen) {
+                    //console.log('on start ' + $scope.adjust.sharpen);
+                },
+                onChange: function(id) {
+                    console.log('on change ' + $rootScope.slider_settings.sharpen.amount);
+                },
+                onEnd: function(id) {
+                    console.log('on end ' + $rootScope.slider_settings.sharpen.amount);
+                    ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'sharpen', $rootScope.slider_settings.sharpen.amount);
+                    ImageAdjustment.setSharpenUpdate(ImageAdjustment.getSource(), ImageAdjustment.getTarget(), ImageAdjustment.getImageAdjustments(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId()));
+                }
+            }
+        },
+
+        rotate: {
+            amount: 0,
+            reset: 0,
+            options: {
+                floor: -45,
+                ceil: 45,
+                step: 0.1,
+                precision: 1,
+                id: 'slider-idt',
+                onStart: function(sharpen) {
+                    //console.log('on start ' + $scope.adjust.sharpen);
+                },
+                onChange: function(id) {
+                    console.log('on change ' + $rootScope.slider_settings.rotate.amount);
+                    self.sliderRotateChange($rootScope.slider_settings.rotate.amount);
+                },
+                onEnd: function(id) {
+                    //console.log('on end ' + $rootScope.sliderRotate.rotate);
+                    // Do this on accept changes instead.
+
+                    //ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'rotate', $rootScope.sliderRotate.rotate);
+                    //ImageAdjustment.setSharpenUpdate(ImageAdjustment.getSource(), ImageAdjustment.getTarget(), ImageAdjustment.getImageAdjustments(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId()));
+                }
+            }
+        }
+
+    };
+
+    /*
+    $rootScope.adjust = {
+        sharpen: 0,
+        reset: 0,
+        options: {
+            floor: 0,
+            ceil: 20,
+            step: 0.1,
+            precision: 1,
+            id: 'slider-id',
+            onStart: function(sharpen) {
+                //console.log('on start ' + $scope.adjust.sharpen);
+            },
+            onChange: function(id) {
+                console.log('on change ' + $rootScope.adjust.sharpen);
+            },
+            onEnd: function(id) {
+                console.log('on end ' + $rootScope.adjust.sharpen);
+                ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'sharpen', $rootScope.adjust.sharpen);
+                ImageAdjustment.setSharpenUpdate(ImageAdjustment.getSource(), ImageAdjustment.getTarget(), ImageAdjustment.getImageAdjustments(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId()));
+            }
+        }
+    };
+    */
+/*
     $rootScope.sliderRotate = {
         rotate: 0,
+        reset: 0,
         options: {
             floor: -45,
             ceil: 45,
@@ -31,11 +109,12 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 //console.log('on end ' + $rootScope.sliderRotate.rotate);
                 // Do this on accept changes instead.
 
-                ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'rotate', $rootScope.sliderRotate.rotate);
+                //ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'rotate', $rootScope.sliderRotate.rotate);
                 //ImageAdjustment.setSharpenUpdate(ImageAdjustment.getSource(), ImageAdjustment.getTarget(), ImageAdjustment.getImageAdjustments(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId()));
             }
         }
     };
+    */
 
     if (ua.indexOf('AndroidApp') >= 0) {
         mobile = true;
@@ -285,6 +364,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                             $(":animated").promise().done(function() {
                                 // animation finished
                                 ImageAdjustment.setImageAdjustment('content_cnv', id, 'crop', crop_data);
+
+                                ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'rotate', $rootScope.slider_settings.rotate.amount);
                                 ImageAdjustment.setImageAdjusted(true);
                                 // Unset the height of the cropper.
                                 $('.content_cnv #cropper_' + id).css('height', '');
@@ -395,12 +476,13 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                     crop_data = ia.crop;
 
                     if (ia.rotate != undefined) {
-                        $rootScope.sliderRotate.rotate = ia.rotate;
+                        $rootScope.slider_settings.rotate.amount  = ia.rotate;
+                        //$rootScope.sliderRotate.rotate = ia.rotate;
                         //initCropRotate(parent_container, id).then(function(canvas) {
 
-                            // $timeout(function() {
-                            self.sliderRotateChange(ia.rotate);
-                            // },2000);
+                        // $timeout(function() {
+                        self.sliderRotateChange(ia.rotate);
+                        // },2000);
 
 
                         //});
@@ -460,7 +542,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     */
 
     this.sliderRotateChange = function(rotate) {
-        console.log('src: ' + $rootScope.sliderRotate.rotate);
+        console.log('src: ' + $rootScope.slider_settings.rotate.amount);
         var canvas = $('.crop_bg')[0];
         var ctx = canvas.getContext('2d');
 
@@ -489,10 +571,13 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var id = ImageAdjustment.getImageId();
         var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
 
-        var data = { 'id': id };
+        var data = { 'id': id, 'type': 'rotate' };
+        data.last_position = $rootScope.slider_settings.rotate.reset;
         // Get the last position of the slider.
         if (ia != undefined) {
-            data.last_position = ia.rotate;
+            if (ia.rotate != undefined) {
+                data.last_position = ia.rotate;
+            }
         }
 
         var model = "SliderDTOD.re";
@@ -501,7 +586,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var step = "{{SliderDTO.step}}";
         var change = "sliderRotateChange()";
 
-        var myElement = '<rzslider rz-slider-model="sliderRotate.rotate" rz-slider-options="sliderRotate.options"></rzslider>';
+        var myElement = '<rzslider rz-slider-model="slider_settings.rotate.amount" rz-slider-options="slider_settings.rotate.options"></rzslider>';
         addMSlider(myElement, parent_container, id, data);
 
         /*
@@ -515,21 +600,21 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
     initCropRotate = function(parent_container, id) {
         var deferred = $q.defer();
-              
+
         var canvas_orig = $('.crop_bg')[0];
         var canvas_crop = $('#crop_src')[0];
 
         console.log(canvas_orig);
-        
-/*
-        var canvas_orig = $('.' + parent_container + ' #image_' + id)[0];
-        var canvas_crop = $('.' + parent_container + ' #image_' + id)[0];
-*/
+
+        /*
+                var canvas_orig = $('.' + parent_container + ' #image_' + id)[0];
+                var canvas_crop = $('.' + parent_container + ' #image_' + id)[0];
+        */
 
         canvas_original = ImageAdjustment.cloneCanvas(canvas_orig);
         crop_area_original = ImageAdjustment.cloneCanvas(canvas_crop);
         console.log('set origs');
-    
+
 
         deferred.resolve();
         return deferred.promise;
@@ -628,12 +713,23 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             var filt = $('.image_adjust_div').clone().insertAfter('.' + parent_container + ' #cropper_' + id);
             filt.attr('id', 'adjust_' + id);
             filt.addClass('filters_active');
-            var data = { 'id': id };
+            var data = { 'id': id, 'type': 'sharpen' };
+            data.last_position = $rootScope.slider_settings.sharpen.reset;
             // Get the last position of the slider.
             if (ia != undefined) {
-                data.last_position = ia.sharpen;
+                if (ia.sharpen != undefined) {
+                    data.last_position = ia.sharpen;
+                }
+
             }
-            $rootScope.$broadcast('rzSliderRender', data);
+            //$rootScope.$broadcast('rzSliderRender', data);
+            //var $el = $('<rzslider rz-slider-model="adjust.sharpen" rz-slider-options="adjust.options"></rzslider>').appendTo('#adjust_' + data.id + ' .image_adjust_sharpen');
+
+            var myElement = '<rzslider rz-slider-model="slider_settings.sharpen.amount" rz-slider-options="slider_settings.sharpen.options"></rzslider>';
+            // var myElement = '<rzslider rz-slider-model="sliderRotate.rotate" rz-slider-options="sliderRotate.options"></rzslider>';
+            addMSlider(myElement, parent_container, id, data);
+
+
         }
         var target = self.imageToCanvas(image);
         var source = self.imageToCanvas(image);
@@ -736,6 +832,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var cropper = $('.' + parent_container + ' #cropper_' + id);
         setContenteditable(cropper, true);
         $('.filters_active').remove();
+        // 
+        self.removeSlider();
         var prev_adjusted = $('.adjusted.hide')[0];
         var current_adjusted = $('.target_canvas.adjusted')[0];
         var current_canvas = $('.target_canvas')[0];

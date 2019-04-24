@@ -790,11 +790,16 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     addMSlider = function($el, parent_container, id, data) {
+        console.log(data.last_position);
+        $rootScope.slider_settings[data.type].amount = data.last_position;
+        /*
         if (data.last_position != undefined) {
             $rootScope.sliderRotate.rotate = data.last_position;
         } else {
             $rootScope.sliderRotate.rotate = 0;
         }
+        */
+        //$rootScope.slider_settings.sharpen.amount
         var t = $compile($el)($scope);
         var s = $(t).insertAfter('.' + parent_container + ' #cropper_' + id);
         s.addClass('active');
@@ -803,6 +808,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         //$compile(s)($scope);
     };
 
+/*
     var addSlider = function(data) {
         if (data.last_position != undefined) {
             $scope.adjust.sharpen = data.last_position;
@@ -812,6 +818,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var $el = $('<rzslider rz-slider-model="adjust.sharpen" rz-slider-options="adjust.options"></rzslider>').appendTo('#adjust_' + data.id + ' .image_adjust_sharpen');
         $compile($el)($scope);
     };
+    */
 
     /*
         $scope.sliderRotate = {
@@ -837,6 +844,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         };
         */
 
+/*
     $scope.adjust = {
         sharpen: 0,
         options: {
@@ -852,12 +860,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 console.log('on change ' + $scope.adjust.sharpen);
             },
             onEnd: function(id) {
-                //console.log('on end ' + $scope.adjust.sharpen);
+                console.log('on end ' + $scope.adjust.sharpen);
                 ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'sharpen', $scope.adjust.sharpen);
                 ImageAdjustment.setSharpenUpdate(ImageAdjustment.getSource(), ImageAdjustment.getTarget(), ImageAdjustment.getImageAdjustments(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId()));
             }
         }
     };
+    */
 
     addCard = function(card) {
         // Get the user for this card
