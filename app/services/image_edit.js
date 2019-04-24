@@ -388,19 +388,22 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 $('.' + parent_container + ' #cropper_' + id + ' .crop_adjust').attr('id', 'drag');
                 var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
                 var crop_data;
+
+                initCropRotate(parent_container, id);
+
                 if (ia != undefined) {
                     crop_data = ia.crop;
 
                     if (ia.rotate != undefined) {
                         $rootScope.sliderRotate.rotate = ia.rotate;
-                        initCropRotate(parent_container, id).then(function(canvas) {
+                        //initCropRotate(parent_container, id).then(function(canvas) {
 
                             // $timeout(function() {
                             self.sliderRotateChange(ia.rotate);
                             // },2000);
 
 
-                        });
+                        //});
                         //self.sliderRotateChange(ia.rotate);
                     }
                 }
@@ -515,6 +518,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
               
         var canvas_orig = $('.crop_bg')[0];
         var canvas_crop = $('#crop_src')[0];
+
+        console.log(canvas_orig);
         
 /*
         var canvas_orig = $('.' + parent_container + ' #image_' + id)[0];
