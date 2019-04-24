@@ -12,6 +12,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
     var image_adjusted;
     var image_edit_finished = false;
 
+
     this.setImageAdjustment = function(parent_container, id, name, value) {
         var ia = this.getImageAdjustments(parent_container, id);
         if (ia == undefined) {
@@ -311,7 +312,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
     this.applyFilters = function(source, filters) {
         var deferred = $q.defer();
         if (filters == undefined) {
-            filters = { sharpen: undefined, filter: undefined, rotate: undefined,  crop: undefined };
+            filters = { sharpen: undefined, filter: undefined, rotate: undefined, crop: undefined };
         }
         // Sharpen from source first, Crop last. Pass each adjustment to the next filter.
         self.filter(source, filters.filter)
@@ -328,7 +329,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
     };
 
     // Rotate
-    
+
     // Return the rotated canvas.
     this.rotate = function(source, angle) {
         var deferred = $q.defer();

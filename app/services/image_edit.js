@@ -2,8 +2,7 @@
 // ImageEdit Service
 //
 
-//cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', 'General', 'UserData', 'principal', 'ImageAdjustment', 'Drag', 'Resize', 'Keyboard', 'Scroll', '$compile', '$mdCompiler', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML, General, UserData, principal, ImageAdjustment, Drag, Resize, Keyboard, Scroll, $compile, $mdCompiler) {
-cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', 'General', 'UserData', 'principal', 'ImageAdjustment', 'Drag', 'Resize', 'Keyboard', 'Scroll', '$compile', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML, General, UserData, principal, ImageAdjustment, Drag, Resize, Keyboard, Scroll, $compile) {
+cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', 'General', 'UserData', 'principal', 'ImageAdjustment', 'Drag', 'Resize', 'Keyboard', 'Scroll', 'Slider', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML, General, UserData, principal, ImageAdjustment, Drag, Resize, Keyboard, Scroll, Slider) {
 
     var ua = navigator.userAgent;
     var self = this;
@@ -13,58 +12,20 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     var canvas_original;
     var crop_area_original;
 
-    $rootScope.slider_settings = {
-
-        sharpen: {
-            amount: 0,
-            reset: 0,
-            options: {
-                floor: 0,
-                ceil: 20,
-                step: 0.1,
-                precision: 1,
-                id: 'slider-id',
-                onStart: function(sharpen) {
-                    //console.log('on start ' + $rootScope.slider_settings.sharpen.amount);
-                },
-                onChange: function(id) {
-                    console.log('on change ' + $rootScope.slider_settings.sharpen.amount);
-                },
-                onEnd: function(id) {
-                    console.log('on end ' + $rootScope.slider_settings.sharpen.amount);
-                    ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'sharpen', $rootScope.slider_settings.sharpen.amount);
-                    ImageAdjustment.setSharpenUpdate(ImageAdjustment.getSource(), ImageAdjustment.getTarget(), ImageAdjustment.getImageAdjustments(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId()));
-                }
-            }
-        },
-
-        rotate: {
-            amount: 0,
-            reset: 0,
-            options: {
-                floor: -45,
-                ceil: 45,
-                step: 0.1,
-                precision: 1,
-                id: 'slider-idt',
-                onStart: function(sharpen) {
-                    //console.log('on start ' + $rootScope.slider_settings.rotate.amount);
-                },
-                onChange: function(id) {
-                    console.log('on change ' + $rootScope.slider_settings.rotate.amount);
-                    self.sliderRotateChange($rootScope.slider_settings.rotate.amount);
-                },
-                onEnd: function(id) {
-                    //console.log('on end ' + $rootScope.slider_settings.rotate.amount);
-                }
-            }
-        }
-
-    };
-
     if (ua.indexOf('AndroidApp') >= 0) {
         mobile = true;
     }
+
+    $rootScope.sliderRotateChange =function(amount){
+         self.sliderRotateChange(amount);
+    };
+
+
+    $rootScope.sliderSkewHChange =function(amount){
+         //self.sliderRotateChange(amount);
+         console.log(amount);
+    };
+    
 
     // Helper functions
 
@@ -443,8 +404,10 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 data.last_position = ia.rotate;
             }
         }
-        var slider_rotate = '<rzslider rz-slider-model="slider_settings.rotate.amount" rz-slider-options="slider_settings.rotate.options"></rzslider>';
-        addSlider(slider_rotate, parent_container, id, data);
+        addSlider(Slider.slider_rotate, parent_container, id, data);
+
+
+        //addSlider(Slider.slider_skew_h, parent_container, id, data);
     };
 
     initCropRotate = function(parent_container, id) {
@@ -536,8 +499,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                     data.last_position = ia.sharpen;
                 }
             }
-            var slider_sharpen = '<rzslider rz-slider-model="slider_settings.sharpen.amount" rz-slider-options="slider_settings.sharpen.options"></rzslider>';
-            addSlider(slider_sharpen, parent_container, id, data);
+            addSlider(Slider.slider_sharpen, parent_container, id, data);
         }
         var target = self.imageToCanvas(image);
         var source = self.imageToCanvas(image);
