@@ -264,7 +264,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
         // Make rotation
         //if ($('.rzslider').length > 0) {
-            //ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'rotate', $rootScope.sliderRotate.rotate);
+        //ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'rotate', $rootScope.sliderRotate.rotate);
         //}
 
         ImageAdjustment.crop(source_canvas, crop_data).then(function(canvas) {
@@ -391,13 +391,13 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 if (ia != undefined) {
                     crop_data = ia.crop;
 
-                                        if(ia.rotate != undefined){
+                    if (ia.rotate != undefined) {
                         $rootScope.sliderRotate.rotate = ia.rotate;
                         initCropRotate(parent_container, id).then(function(canvas) {
 
-                           // $timeout(function() {
+                            // $timeout(function() {
                             self.sliderRotateChange(ia.rotate);
-                       // },2000);
+                            // },2000);
 
 
                         });
@@ -507,25 +507,30 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         canvas_original = ImageAdjustment.cloneCanvas(canvas_orig);
         crop_area_original = ImageAdjustment.cloneCanvas(canvas_crop);
         */
-        initCropRotate(parent_container, id);
+        //initCropRotate(parent_container, id);
     };
 
-    initCropRotate = function(parent_container, id){
+    initCropRotate = function(parent_container, id) {
         var deferred = $q.defer();
-        /*       
+              
         var canvas_orig = $('.crop_bg')[0];
         var canvas_crop = $('#crop_src')[0];
-        */
+        
+/*
         var canvas_orig = $('.' + parent_container + ' #image_' + id)[0];
         var canvas_crop = $('.' + parent_container + ' #image_' + id)[0];
+*/
 
         canvas_original = ImageAdjustment.cloneCanvas(canvas_orig);
         crop_area_original = ImageAdjustment.cloneCanvas(canvas_crop);
+        console.log('set origs');
+    
 
         deferred.resolve();
         return deferred.promise;
     };
 
+    /*
     initCropRotateOrig = function(parent_container, id){
         var deferred = $q.defer();
         console.log('initCropRotateOrig');
@@ -545,6 +550,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         deferred.resolve();
         return deferred.promise;
     };
+    */
 
     this.openCrop = function(e, id) {
         var deferred = $q.defer();

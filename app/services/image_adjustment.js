@@ -362,6 +362,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         ctx.drawImage(source, 0, 0);
         console.log(angle);
         if (angle != undefined) {
+            console.log('rotated: ' + angle);
             angle = angle / 100;
             var w = source.width;
             var h = source.height;
@@ -402,6 +403,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             //ctx.putImageData(res, 0, 0);
             deferred.resolve(new_canvas);
         } else {
+            console.log('unrotated');
             deferred.resolve(new_canvas);
         }
         return deferred.promise;
