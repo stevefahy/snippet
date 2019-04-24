@@ -311,7 +311,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
     this.applyFilters = function(source, filters) {
         var deferred = $q.defer();
         if (filters == undefined) {
-            filters = { sharpen: undefined, filter: undefined, crop: undefined };
+            filters = { sharpen: undefined, filter: undefined, rotate: undefined,  crop: undefined };
         }
         // Sharpen from source first, Crop last. Pass each adjustment to the next filter.
         self.filter(source, filters.filter)
@@ -319,9 +319,6 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
                 return self.sharpen(result, filters.sharpen);
             }).then(function(result) {
                 return self.rotate(result, filters.rotate);
-
-                //rotate = function(source, angle) {
-
             }).then(function(result) {
                 return self.crop(result, filters.crop);
             }).then(function(result) {
@@ -331,51 +328,27 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
     };
 
     // Rotate
-    /*
-    this.rotate = function(source, amount) {
-        var deferred = $q.defer();
-        var new_canvas = document.createElement("canvas");
-        new_canvas.width = source.width;
-        new_canvas.height = source.height;
-        var ctx = new_canvas.getContext('2d');
-        ctx.drawImage(source, 0, 0);
-        if (amount != undefined) {
-
-            ctx.putImageData(res, 0, 0);
-            deferred.resolve(new_canvas);
-        } else {
-            deferred.resolve(new_canvas);
-        }
-        return deferred.promise;
-    };
-    */
-
-
+    
+    // Return the rotated canvas.
     this.rotate = function(source, angle) {
         var deferred = $q.defer();
-
-        
         var new_canvas = document.createElement("canvas");
         new_canvas.width = source.width;
         new_canvas.height = source.height;
         var ctx = new_canvas.getContext('2d');
         ctx.drawImage(source, 0, 0);
-        console.log(angle);
         if (angle != undefined) {
-            console.log('rotated: ' + angle);
             angle = angle / 100;
             var w = source.width;
             var h = source.height;
             var cw = w / 2; // half canvas width and height
             var ch = h / 2;
-
             var iw = source.width / 2; // half image width and height
             var ih = source.height / 2;
             // get the length C-B
             var dist = Math.sqrt(Math.pow(cw, 2) + Math.pow(ch, 2));
             // get the angle A
             var diagAngle = Math.asin(ch / dist);
-
             // Do the symmetry on the angle
             a1 = ((angle % (Math.PI * 2)) + Math.PI * 4) % (Math.PI * 2);
             if (a1 > Math.PI) {
@@ -399,11 +372,8 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             ctx.drawImage(source, -iw, -ih);
             // reset the transform
             ctx.setTransform(1, 0, 0, 1, 0, 0);
-
-            //ctx.putImageData(res, 0, 0);
             deferred.resolve(new_canvas);
         } else {
-            console.log('unrotated');
             deferred.resolve(new_canvas);
         }
         return deferred.promise;
@@ -449,6 +419,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
 
     // Filter
 
+    // Return the filtered canvas.
     this.filter = function(source, filter) {
         var deferred = $q.defer();
         var promises = [];
@@ -551,6 +522,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
 
     // Crop
 
+    // Return the cropped canvas.
     this.crop = function(source, crop) {
         var deferred = $q.defer();
         var new_canvas = document.createElement("canvas");

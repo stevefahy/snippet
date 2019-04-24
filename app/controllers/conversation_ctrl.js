@@ -188,10 +188,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     });
 
-    $scope.$on('rzSliderRender', function(event, data) {
-        addSlider(data);
-    });
-
     // SCROLLING
 
     upDateObservers = function() {
@@ -789,84 +785,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             });
     };
 
-    addMSlider = function($el, parent_container, id, data) {
-        console.log(data.last_position);
+    addSlider = function($el, parent_container, id, data) {
         $rootScope.slider_settings[data.type].amount = data.last_position;
-        /*
-        if (data.last_position != undefined) {
-            $rootScope.sliderRotate.rotate = data.last_position;
-        } else {
-            $rootScope.sliderRotate.rotate = 0;
-        }
-        */
-        //$rootScope.slider_settings.sharpen.amount
         var t = $compile($el)($scope);
         var s = $(t).insertAfter('.' + parent_container + ' #cropper_' + id);
         s.addClass('active');
         s.removeClass('hide');
-
-        //$compile(s)($scope);
     };
-
-/*
-    var addSlider = function(data) {
-        if (data.last_position != undefined) {
-            $scope.adjust.sharpen = data.last_position;
-        } else {
-            $scope.adjust.sharpen = 0;
-        }
-        var $el = $('<rzslider rz-slider-model="adjust.sharpen" rz-slider-options="adjust.options"></rzslider>').appendTo('#adjust_' + data.id + ' .image_adjust_sharpen');
-        $compile($el)($scope);
-    };
-    */
-
-    /*
-        $scope.sliderRotate = {
-            rotate: 0,
-            options: {
-                floor: 0,
-                ceil: 45,
-                step: 0.1,
-                precision: 1,
-                id: 'slider-idt',
-                onStart: function(sharpen) {
-                    //console.log('on start ' + $scope.adjust.sharpen);
-                },
-                onChange: function(id) {
-                    console.log('on change ' + $scope.sliderRotate.rotate);
-                },
-                onEnd: function(id) {
-                    //console.log('on end ' + $scope.adjust.sharpen);
-                    ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'rotate', this.value);
-                    ImageAdjustment.setSharpenUpdate(ImageAdjustment.getSource(), ImageAdjustment.getTarget(), ImageAdjustment.getImageAdjustments(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId()));
-                }
-            }
-        };
-        */
-
-/*
-    $scope.adjust = {
-        sharpen: 0,
-        options: {
-            floor: 0,
-            ceil: 20,
-            step: 0.1,
-            precision: 1,
-            id: 'slider-id',
-            onStart: function(sharpen) {
-                //console.log('on start ' + $scope.adjust.sharpen);
-            },
-            onChange: function(id) {
-                console.log('on change ' + $scope.adjust.sharpen);
-            },
-            onEnd: function(id) {
-                console.log('on end ' + $scope.adjust.sharpen);
-                ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'sharpen', $scope.adjust.sharpen);
-                ImageAdjustment.setSharpenUpdate(ImageAdjustment.getSource(), ImageAdjustment.getTarget(), ImageAdjustment.getImageAdjustments(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId()));
-            }
-        }
-    };
-    */
 
     addCard = function(card) {
         // Get the user for this card
