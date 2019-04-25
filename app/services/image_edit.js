@@ -87,17 +87,6 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
     };
 
-    $rootScope.sliderRotateChange = function(amount) {
-        self.sliderRotateChange(amount);
-    };
-
-
-    $rootScope.sliderSkewHChange = function(amount) {
-        //self.sliderRotateChange(amount);
-        console.log(amount);
-    };
-
-
     // Helper functions
 
     var showImage = function(image) {
@@ -449,15 +438,17 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
     this.sliderRotateChange = function(rotate) {
-        var canvas = $('.crop_bg')[0];
+        /*var canvas = $('.crop_bg')[0];
         var ctx = canvas.getContext('2d');
         var canvas2 = $('#crop_src')[0];
-        var ctx2 = canvas2.getContext('2d');
+        var ctx2 = canvas2.getContext('2d');*/
         ImageAdjustment.rotate(canvas_original, rotate).then(function(result) {
-            ctx.drawImage(result, 0, 0);
+            //ctx.drawImage(result, 0, 0);
+            ctx_crop_bg.drawImage(result, 0, 0);
         });
         ImageAdjustment.rotate(crop_area_original, rotate).then(function(result) {
-            ctx2.drawImage(result, 0, 0);
+            //ctx2.drawImage(result, 0, 0);
+            ctx_crop_src.drawImage(result, 0, 0);
         });
     };
 
@@ -481,12 +472,20 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         //addSlider(Slider.slider_skew_h, parent_container, id, data);
     };
 
+    var ctx_crop_bg;
+    var ctx_crop_src;
     initCropRotate = function(parent_container, id) {
         var deferred = $q.defer();
         var canvas_orig = $('.crop_bg')[0];
         var canvas_crop = $('#crop_src')[0];
         canvas_original = ImageAdjustment.cloneCanvas(canvas_orig);
         crop_area_original = ImageAdjustment.cloneCanvas(canvas_crop);
+
+        var canvas = $('.crop_bg')[0];
+        ctx_crop_bg = canvas.getContext('2d');
+        var canvas2 = $('#crop_src')[0];
+        ctx_crop_src = canvas2.getContext('2d');
+
         deferred.resolve();
         return deferred.promise;
     };
