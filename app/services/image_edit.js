@@ -389,7 +389,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         }
         addSlider(Slider.slider_rotate, parent_container, id, data);
 
-        //addSlider(Slider.slider_skew_h, parent_container, id, data);
+        // addSlider(Slider.slider_skew_h, parent_container, id, data);
     };
 
     initCropRotate = function(parent_container, id) {
