@@ -328,7 +328,9 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         return deferred.promise;
     };
 
+    // Rotate
 
+    // Make the rotation directly to the canvas for performance reasons.
     this.quickRotate = function(ctx, angle, image) {
         var adjusted_angle = angle / 100;
         var w = image.width;
@@ -365,8 +367,6 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         // reset the transform
         ctx.setTransform(1, 0, 0, 1, 0, 0);
     };
-
-    // Rotate
 
     // Return the rotated canvas.
     this.rotate = function(source, angle) {
