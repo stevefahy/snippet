@@ -10,7 +10,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     makeCrop = ImageEdit.makeCrop;
     openRotate = ImageEdit.openRotate;
 
-    $scope.sliderRotateChange = ImageEdit.sliderRotateChange;
+    $rootScope.sliderRotateChange = ImageEdit.sliderRotateChange;
 
     $scope.getFocus = Format.getFocus;
     $scope.getBlur = Format.getBlur;

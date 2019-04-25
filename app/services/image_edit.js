@@ -11,14 +11,18 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     // Used for rotating a cropping image(s).
     var canvas_original;
     var crop_area_original;
+    var ctx_crop_bg;
+    var ctx_crop_src;
 
     if (ua.indexOf('AndroidApp') >= 0) {
         mobile = true;
     }
 
-    $rootScope.sliderRotateChange = function(){
+    /*
+    $rootScope.sliderRotateChange = function() {
         self.sliderRotateChange();
     };
+    */
 
     // Helper functions
 
@@ -370,67 +374,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         });
     };
 
-
-/*
-    function drawBestFit(ctx, angle, image) {
-        var w = image.width;
-        var h = image.height;
-        var cw = w / 2; // half canvas width and height
-        var ch = h / 2;
-        var iw = image.width / 2; // half image width and height
-        var ih = image.height / 2;
-        // get the length C-B
-        var dist = Math.sqrt(Math.pow(cw, 2) + Math.pow(ch, 2));
-        // get the angle A
-        var diagAngle = Math.asin(ch / dist);
-        // Do the symmetry on the angle
-        a1 = ((angle % (Math.PI * 2)) + Math.PI * 4) % (Math.PI * 2);
-        if (a1 > Math.PI) {
-            a1 -= Math.PI;
-        }
-        if (a1 > Math.PI / 2 && a1 <= Math.PI) {
-            a1 = (Math.PI / 2) - (a1 - (Math.PI / 2));
-        }
-        // get angles A1, A2
-        var ang1 = Math.PI / 2 - diagAngle - Math.abs(a1);
-        var ang2 = Math.abs(diagAngle - Math.abs(a1));
-        // get lenghts C-E and C-F
-        var dist1 = Math.cos(ang1) * dist;
-        var dist2 = Math.cos(ang2) * dist;
-        // get the max scale
-        var scale = Math.max(dist2 / (iw), dist1 / (ih));
-        // create the transform
-        var dx = Math.cos(angle) * scale;
-        var dy = Math.sin(angle) * scale;
-        ctx.setTransform(dx, dy, -dy, dx, cw, ch);
-        ctx.drawImage(image, -iw, -ih);
-        // reset the transform
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-    }
-    */
-
-    /*
-    this.sliderRotateChange = function(rotate) {
-        //var canvas = $('.crop_bg')[0];
-        //var ctx = canvas.getContext('2d');
-        //var canvas2 = $('#crop_src')[0];
-        //var ctx2 = canvas2.getContext('2d');
-        ImageAdjustment.rotate(canvas_original, rotate).then(function(result) {
-            //ctx.drawImage(result, 0, 0);
-            ctx_crop_bg.drawImage(result, 0, 0);
-        });
-        ImageAdjustment.rotate(crop_area_original, rotate).then(function(result) {
-            //ctx2.drawImage(result, 0, 0);
-            ctx_crop_src.drawImage(result, 0, 0);
-        });
-    };
-    */
-
     this.sliderRotateChange = function() {
-        //var canvas = $('.crop_bg')[0];
-        //var ctx = canvas.getContext('2d');
-        //var canvas2 = $('#crop_src')[0];
-        //var ctx2 = canvas2.getContext('2d');
         ImageAdjustment.quickRotate(ctx_crop_bg, $rootScope.slider_settings.rotate.amount, canvas_original);
         ImageAdjustment.quickRotate(ctx_crop_src, $rootScope.slider_settings.rotate.amount, crop_area_original);
     };
@@ -451,24 +395,19 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         }
         addSlider(Slider.slider_rotate, parent_container, id, data);
 
-
         //addSlider(Slider.slider_skew_h, parent_container, id, data);
     };
 
-    var ctx_crop_bg;
-    var ctx_crop_src;
     initCropRotate = function(parent_container, id) {
         var deferred = $q.defer();
         var canvas_orig = $('.crop_bg')[0];
         var canvas_crop = $('#crop_src')[0];
         canvas_original = ImageAdjustment.cloneCanvas(canvas_orig);
         crop_area_original = ImageAdjustment.cloneCanvas(canvas_crop);
-
         var canvas = $('.crop_bg')[0];
         ctx_crop_bg = canvas.getContext('2d');
         var canvas2 = $('#crop_src')[0];
         ctx_crop_src = canvas2.getContext('2d');
-
         deferred.resolve();
         return deferred.promise;
     };
