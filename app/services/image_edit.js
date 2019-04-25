@@ -371,7 +371,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
 
-
+/*
     function drawBestFit(ctx, angle, image) {
         var w = image.width;
         var h = image.height;
@@ -407,6 +407,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         // reset the transform
         ctx.setTransform(1, 0, 0, 1, 0, 0);
     }
+    */
 
     /*
     this.sliderRotateChange = function(rotate) {
@@ -430,8 +431,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         //var ctx = canvas.getContext('2d');
         //var canvas2 = $('#crop_src')[0];
         //var ctx2 = canvas2.getContext('2d');
-        drawBestFit(ctx_crop_bg, $rootScope.slider_settings.rotate.amount / 100, canvas_original);
-        drawBestFit(ctx_crop_src, $rootScope.slider_settings.rotate.amount / 100, crop_area_original);
+        ImageAdjustment.drawBestFit(ctx_crop_bg, $rootScope.slider_settings.rotate.amount / 100, canvas_original);
+        ImageAdjustment.drawBestFit(ctx_crop_src, $rootScope.slider_settings.rotate.amount / 100, crop_area_original);
     };
 
     this.openRotate = function(e) {

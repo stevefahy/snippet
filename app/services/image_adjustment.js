@@ -328,6 +328,43 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         return deferred.promise;
     };
 
+
+    this.drawBestFit = function(ctx, angle, image) {
+        var w = image.width;
+        var h = image.height;
+        var cw = w / 2; // half canvas width and height
+        var ch = h / 2;
+        var iw = image.width / 2; // half image width and height
+        var ih = image.height / 2;
+        // get the length C-B
+        var dist = Math.sqrt(Math.pow(cw, 2) + Math.pow(ch, 2));
+        // get the angle A
+        var diagAngle = Math.asin(ch / dist);
+        // Do the symmetry on the angle
+        a1 = ((angle % (Math.PI * 2)) + Math.PI * 4) % (Math.PI * 2);
+        if (a1 > Math.PI) {
+            a1 -= Math.PI;
+        }
+        if (a1 > Math.PI / 2 && a1 <= Math.PI) {
+            a1 = (Math.PI / 2) - (a1 - (Math.PI / 2));
+        }
+        // get angles A1, A2
+        var ang1 = Math.PI / 2 - diagAngle - Math.abs(a1);
+        var ang2 = Math.abs(diagAngle - Math.abs(a1));
+        // get lenghts C-E and C-F
+        var dist1 = Math.cos(ang1) * dist;
+        var dist2 = Math.cos(ang2) * dist;
+        // get the max scale
+        var scale = Math.max(dist2 / (iw), dist1 / (ih));
+        // create the transform
+        var dx = Math.cos(angle) * scale;
+        var dy = Math.sin(angle) * scale;
+        ctx.setTransform(dx, dy, -dy, dx, cw, ch);
+        ctx.drawImage(image, -iw, -ih);
+        // reset the transform
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+    };
+
     // Rotate
 
     // Return the rotated canvas.
