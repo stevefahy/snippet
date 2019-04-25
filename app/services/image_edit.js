@@ -437,11 +437,70 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         });
     };
 
+
+
+   function drawBestFit(ctx, angle, image) {
+
+        var w = image.width;
+        var h = image.height;
+        var cw = w / 2; // half canvas width and height
+        var ch = h / 2;
+
+        var iw = image.width / 2; // half image width and height
+        var ih = image.height / 2;
+        // get the length C-B
+        var dist = Math.sqrt(Math.pow(cw, 2) + Math.pow(ch, 2));
+        // get the angle A
+        var diagAngle = Math.asin(ch / dist);
+
+        // Do the symmetry on the angle
+        a1 = ((angle % (Math.PI * 2)) + Math.PI * 4) % (Math.PI * 2);
+        if (a1 > Math.PI) {
+            a1 -= Math.PI;
+        }
+        if (a1 > Math.PI / 2 && a1 <= Math.PI) {
+            a1 = (Math.PI / 2) - (a1 - (Math.PI / 2));
+        }
+        // get angles A1, A2
+        var ang1 = Math.PI / 2 - diagAngle - Math.abs(a1);
+        var ang2 = Math.abs(diagAngle - Math.abs(a1));
+        // get lenghts C-E and C-F
+        var dist1 = Math.cos(ang1) * dist;
+        var dist2 = Math.cos(ang2) * dist;
+        // get the max scale
+        var scale = Math.max(dist2 / (iw), dist1 / (ih));
+        // create the transform
+        var dx = Math.cos(angle) * scale;
+        var dy = Math.sin(angle) * scale;
+        ctx.setTransform(dx, dy, -dy, dx, cw, ch);
+        ctx.drawImage(image, -iw, -ih);
+
+
+        // draw outline of image half size
+        /*
+        ctx.strokeStyle = "red";
+        ctx.lineWidth = 2 * (1/scale);
+        ctx.strokeRect(-iw / 2, -ih / 2, iw, ih);
+        */
+
+        // reset the transform
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+        // draw outline of canvas half size
+        /*
+        ctx.strokeStyle = "blue";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(cw - cw / 2, ch - ch / 2, cw, ch) ;
+        */
+
+    }
+
+    /*
     this.sliderRotateChange = function(rotate) {
-        /*var canvas = $('.crop_bg')[0];
-        var ctx = canvas.getContext('2d');
-        var canvas2 = $('#crop_src')[0];
-        var ctx2 = canvas2.getContext('2d');*/
+        //var canvas = $('.crop_bg')[0];
+        //var ctx = canvas.getContext('2d');
+        //var canvas2 = $('#crop_src')[0];
+        //var ctx2 = canvas2.getContext('2d');
         ImageAdjustment.rotate(canvas_original, rotate).then(function(result) {
             //ctx.drawImage(result, 0, 0);
             ctx_crop_bg.drawImage(result, 0, 0);
@@ -450,6 +509,43 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             //ctx2.drawImage(result, 0, 0);
             ctx_crop_src.drawImage(result, 0, 0);
         });
+    };
+    */
+
+this.sliderRotateChange = function() {
+        console.log('src: ' + $rootScope.slider_settings.rotate.amount);
+        var canvas = $('.crop_bg')[0];
+        var ctx = canvas.getContext('2d');
+
+        var canvas2 = $('#crop_src')[0];
+        var ctx2 = canvas2.getContext('2d');
+
+
+        //var img = ImageAdjustment.cloneCanvas(canvas);
+        //var img = ImageAdjustment.cloneCanvas(canvas);
+        //rotate($rootScope.SliderDTO.value, canvas_original);
+
+
+
+        drawBestFit(ctx, $rootScope.slider_settings.rotate.amount / 100, canvas_original);
+        drawBestFit(ctx2, $rootScope.slider_settings.rotate.amount / 100, crop_area_original);
+        //drawToFitRotated(ctx, $rootScope.SliderDTO.value, canvas_original);
+        /*
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.save();
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+        ctx.rotate($rootScope.SliderDTO.value);
+        ctx.drawImage(img, -img.width / 2, -img.height / 2);
+        ctx.restore();
+        */
+
+        //ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        //ctx.setTransform(1, 0, 0, 1, canvas.width / 2, canvas.height / 2); // set position of image center
+        //ctx.rotate($rootScope.SliderDTO.value * Math.PI / 180); // rotate
+        //ctx.drawImage(img, -img.width / 2, -img.height / 2); // draw image offset so its center is at x,y
+        //ctx.setTransform(1, 0, 0, 1, 0, 0); // restore default transform
+
     };
 
     this.openRotate = function(e) {
