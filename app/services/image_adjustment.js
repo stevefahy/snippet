@@ -329,7 +329,8 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
     };
 
 
-    this.drawBestFit = function(ctx, angle, image) {
+    this.quickRotate = function(ctx, angle, image) {
+        var adjusted_angle = angle / 100;
         var w = image.width;
         var h = image.height;
         var cw = w / 2; // half canvas width and height
@@ -341,7 +342,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         // get the angle A
         var diagAngle = Math.asin(ch / dist);
         // Do the symmetry on the angle
-        a1 = ((angle % (Math.PI * 2)) + Math.PI * 4) % (Math.PI * 2);
+        a1 = ((adjusted_angle % (Math.PI * 2)) + Math.PI * 4) % (Math.PI * 2);
         if (a1 > Math.PI) {
             a1 -= Math.PI;
         }
@@ -357,8 +358,8 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         // get the max scale
         var scale = Math.max(dist2 / (iw), dist1 / (ih));
         // create the transform
-        var dx = Math.cos(angle) * scale;
-        var dy = Math.sin(angle) * scale;
+        var dx = Math.cos(adjusted_angle) * scale;
+        var dy = Math.sin(adjusted_angle) * scale;
         ctx.setTransform(dx, dy, -dy, dx, cw, ch);
         ctx.drawImage(image, -iw, -ih);
         // reset the transform

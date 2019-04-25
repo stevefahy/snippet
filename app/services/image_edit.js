@@ -431,8 +431,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         //var ctx = canvas.getContext('2d');
         //var canvas2 = $('#crop_src')[0];
         //var ctx2 = canvas2.getContext('2d');
-        ImageAdjustment.drawBestFit(ctx_crop_bg, $rootScope.slider_settings.rotate.amount / 100, canvas_original);
-        ImageAdjustment.drawBestFit(ctx_crop_src, $rootScope.slider_settings.rotate.amount / 100, crop_area_original);
+        ImageAdjustment.quickRotate(ctx_crop_bg, $rootScope.slider_settings.rotate.amount, canvas_original);
+        ImageAdjustment.quickRotate(ctx_crop_src, $rootScope.slider_settings.rotate.amount, crop_area_original);
     };
 
     this.openRotate = function(e) {
