@@ -10,7 +10,7 @@ cardApp.service('Slider', ['$window', '$rootScope', 'ImageAdjustment', function(
 
     this.slider_skew_h = '<rzslider rz-slider-model="slider_settings.skew_h.amount" rz-slider-options="slider_settings.skew_h.options"></rzslider>';
 
-$rootScope.slider_settings = {
+    $rootScope.slider_settings = {
 
         sharpen: {
             amount: 0,
@@ -21,15 +21,15 @@ $rootScope.slider_settings = {
                 step: 0.1,
                 precision: 1,
                 id: 'slider-id',
-                onStart: function(sharpen) {
-                    //console.log('on start ' + $rootScope.slider_settings.sharpen.amount);
+                onStart: function() {
+                    //console.log('on start ' + amount);
                 },
-                onChange: function(id) {
-                    //console.log('on change ' + $rootScope.slider_settings.sharpen.amount);
+                onChange: function() {
+                    //console.log('on change ' + amount);
                 },
-                onEnd: function(id) {
+                onEnd: function(id, amount) {
                     //console.log('on end ' + $rootScope.slider_settings.sharpen.amount);
-                    ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'sharpen', $rootScope.slider_settings.sharpen.amount);
+                    ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'sharpen', amount);
                     ImageAdjustment.setSharpenUpdate(ImageAdjustment.getSource(), ImageAdjustment.getTarget(), ImageAdjustment.getImageAdjustments(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId()));
                 }
             }
@@ -44,15 +44,15 @@ $rootScope.slider_settings = {
                 step: 0.1,
                 precision: 1,
                 id: 'slider-idt',
-                onStart: function(sharpen) {
-                    //console.log('on start ' + $rootScope.slider_settings.rotate.amount);
+                onStart: function() {
+                    //console.log('on start ' + amount);
                 },
-                onChange: function(id) {
-                    //console.log('on change ' + $rootScope.slider_settings.rotate.amount);
-                    $rootScope.sliderRotateChange($rootScope.slider_settings.rotate.amount);
+                onChange: function(id, amount) {
+                    //console.log('on change ' + amount);
+                    sliderRotateChange(amount);
                 },
-                onEnd: function(id) {
-                    //console.log('on end ' + $rootScope.slider_settings.rotate.amount);
+                onEnd: function() {
+                    //console.log('on end ' + amount);
                 }
             }
         },
@@ -66,15 +66,15 @@ $rootScope.slider_settings = {
                 step: 0.1,
                 precision: 1,
                 id: 'slider-idt',
-                onStart: function(sharpen) {
-                    //console.log('on start ' + $rootScope.slider_settings.rotate.amount);
+                onStart: function() {
+                    //console.log('on start ' + amount);
                 },
-                onChange: function(id) {
-                    //console.log('on change ' + $rootScope.slider_settings.rotate.amount);
-                    $rootScope.sliderSkewHChange($rootScope.slider_settings.skew_h.amount);
+                onChange: function(id, amount) {
+                    //console.log('on change ' + amount);
+                    sliderSkewHChange(amount);
                 },
-                onEnd: function(id) {
-                    //console.log('on end ' + $rootScope.slider_settings.rotate.amount);
+                onEnd: function() {
+                    //console.log('on end ' + amount);
                 }
             }
         }

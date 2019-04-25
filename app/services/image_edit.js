@@ -18,12 +18,6 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         mobile = true;
     }
 
-    /*
-    $rootScope.sliderRotateChange = function() {
-        self.sliderRotateChange();
-    };
-    */
-
     // Helper functions
 
     var showImage = function(image) {
@@ -374,9 +368,9 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         });
     };
 
-    this.sliderRotateChange = function() {
-        ImageAdjustment.quickRotate(ctx_crop_bg, $rootScope.slider_settings.rotate.amount, canvas_original);
-        ImageAdjustment.quickRotate(ctx_crop_src, $rootScope.slider_settings.rotate.amount, crop_area_original);
+    this.sliderRotateChange = function(value) {
+        ImageAdjustment.quickRotate(ctx_crop_bg, canvas_original, value);
+        ImageAdjustment.quickRotate(ctx_crop_src, crop_area_original, value);
     };
 
     this.openRotate = function(e) {

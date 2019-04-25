@@ -12,7 +12,6 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
     var image_adjusted;
     var image_edit_finished = false;
 
-
     this.setImageAdjustment = function(parent_container, id, name, value) {
         var ia = this.getImageAdjustments(parent_container, id);
         if (ia == undefined) {
@@ -331,7 +330,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
     // Rotate
 
     // Make the rotation directly to the canvas for performance reasons.
-    this.quickRotate = function(ctx, angle, image) {
+    this.quickRotate = function(ctx, image, angle) {
         var adjusted_angle = angle / 100;
         var w = image.width;
         var h = image.height;
