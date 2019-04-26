@@ -10,6 +10,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     makeCrop = ImageEdit.makeCrop;
     openRotate = ImageEdit.openRotate;
     sliderRotateChange = ImageEdit.sliderRotateChange;
+    sliderSkewHChange = ImageEdit.sliderSkewHChange;
+    sliderSkewVChange = ImageEdit.sliderSkewVChange;
 
     $scope.getFocus = Format.getFocus;
     $scope.getBlur = Format.getBlur;
@@ -784,6 +786,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     addSlider = function($el, parent_container, id, data) {
+        console.log($el);
         $rootScope.slider_settings[data.type].amount = data.last_position;
         var t = $compile($el)($scope);
         var s = $(t).insertAfter('.' + parent_container + ' #cropper_' + id);
