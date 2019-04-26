@@ -400,21 +400,6 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             }
         }
         addSlider(Slider.slider_rotate, parent_container, id, data);
-
-        addSlider(Slider.slider_skew_h, parent_container, id, data);
-
-        addSlider(Slider.slider_skew_v, parent_container, id, data);
-    };
-
-    initSkew = function() {
-        var canvas_orig = $('.crop_bg')[0];
-        var canvas_crop = $('#crop_src')[0];
-        canvas_original = ImageAdjustment.cloneCanvas(canvas_orig);
-        crop_area_original = ImageAdjustment.cloneCanvas(canvas_crop);
-        var canvas = $('.crop_bg')[0];
-        ctx_crop_bg = canvas.getContext('2d');
-        var canvas2 = $('#crop_src')[0];
-        ctx_crop_src = canvas2.getContext('2d');
     };
 
     initCropRotate = function(parent_container, id) {

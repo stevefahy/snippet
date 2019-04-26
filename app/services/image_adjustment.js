@@ -327,159 +327,6 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         return deferred.promise;
     };
 
-    this.quickSkewHChange = function(ctx, image, amount) {
-        console.log('skew: ' + amount);
-        var skew_h = amount;
-
-        var w = image.width;
-        var h = image.height;
-        var cw = w / 2; // half canvas width and height
-        var ch = h / 2;
-        var iw = image.width / 2; // half image width and height
-        var ih = image.height / 2;
-        console.log(iw + ' : ' + ih);
-        /*
-        // image diagonal length
-        var skew_radians = Math.atan(skew_h);
-        console.log(skew_radians);
-        var old_diagonal = Math.tan(1)*ih;
-        var new_diagonal = Math.tan(skew_radians)*ih;
-        console.log(new_diagonal + ' : ' + old_diagonal);
-        */
-
-var skew_radians = Math.atan(skew_h);
-           // get the length C-B
-        var dist = Math.sqrt(Math.pow(cw, 2) + Math.pow(ch, 2));
-        // get the angle A
-        var diagAngle = Math.asin(ch / dist);
-        // Do the symmetry on the angle
-        a1 = ((skew_radians % (Math.PI * 2)) + Math.PI * 4) % (Math.PI * 2);
-        if (a1 > Math.PI) {
-            a1 -= Math.PI;
-        }
-        if (a1 > Math.PI / 2 && a1 <= Math.PI) {
-            a1 = (Math.PI / 2) - (a1 - (Math.PI / 2));
-        }
-        // get angles A1, A2
-        var ang1 = Math.PI / 2 - diagAngle - Math.abs(a1);
-        var ang2 = Math.abs(diagAngle - Math.abs(a1));
-        // get lenghts C-E and C-F
-        var dist1 = Math.cos(ang1) * dist;
-        var dist2 = Math.cos(ang2) * dist;
-        // get the max scale
-        var scale = Math.max(dist2 / (iw), dist1 / (ih));
-        console.log(scale);
-
-        var scale = skew_h;
-        //var scale = 1+skew_radians;
-        ctx.setTransform(1+skew_h, 0, skew_h, 1+skew_h, 0, 0);
-
-        //ctx.setTransform(1+skew_h, -skew_h, 0, 1+skew_h, 0, 0);
-
-        //ctx.rotate(skew_h*30 * Math.PI / 180);
-
-
-
-        //ctx.restore();
-        
-        //ctx.setTransform(1, amount, 0, 1, iw, ih);
-        ctx.drawImage(image, 0, 0);
-
-
-
-        // draw outline of image half size
-        ctx.strokeStyle = "red";
-        ctx.lineWidth = 2 * (1 );
-        ctx.strokeRect(iw / 2, ih / 2, iw, ih);
-
-        // reset the transform
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-
-        // draw outline of canvas half size
-        ctx.strokeStyle = "blue";
-        ctx.lineWidth = 2;
-        ctx.strokeRect(cw - cw / 2, ch - ch / 2, cw, ch);
-
-
-
-    };
-
-    this.quickSkewVChange = function(ctx, image, amount) {
-        console.log('skew: ' + amount);
-        var skew_v = amount;
-
-        var w = image.width;
-        var h = image.height;
-        var cw = w / 2; // half canvas width and height
-        var ch = h / 2;
-        var iw = image.width / 2; // half image width and height
-        var ih = image.height / 2;
-        console.log(iw + ' : ' + ih);
-
-var skew_radians = Math.atan(skew_v);
-           // get the length C-B
-        var dist = Math.sqrt(Math.pow(cw, 2) + Math.pow(ch, 2));
-        // get the angle A
-        var diagAngle = Math.asin(ch / dist);
-        // Do the symmetry on the angle
-        a1 = ((skew_radians % (Math.PI * 2)) + Math.PI * 4) % (Math.PI * 2);
-        if (a1 > Math.PI) {
-            a1 -= Math.PI;
-        }
-        if (a1 > Math.PI / 2 && a1 <= Math.PI) {
-            a1 = (Math.PI / 2) - (a1 - (Math.PI / 2));
-        }
-        // get angles A1, A2
-        var ang1 = Math.PI / 2 - diagAngle - Math.abs(a1);
-        var ang2 = Math.abs(diagAngle - Math.abs(a1));
-        // get lenghts C-E and C-F
-        var dist1 = Math.cos(ang1) * dist;
-        var dist2 = Math.cos(ang2) * dist;
-        // get the max scale
-        var scale = Math.max(dist2 / (iw), dist1 / (ih));
-        console.log(scale);
-
-        var scale = skew_v;
-        //var scale = 1+skew_radians;
-        //ctx.setTransform(1+skew_h, 0, skew_h, 1+skew_h, 0, 0);
-        if(skew_v > 0){
-            h_scale = 1  - skew_v;
-            v_skew = skew_v;
-            h_skew = 0;
-            v_scale = 1;
-        } else {
-            h_scale = 1-(skew_v*-1);
-            v_skew=skew_v;
-            h_skew = 0;
-            v_scale = 1;
-        }
-        ctx.setTransform(h_scale, h_skew, v_skew, v_scale, 0, 0);
-
-        //ctx.setTransform(1+skew_v, -skew_v, 0, 1+skew_v, 0, 0);
-        
-        //ctx.setTransform(1, amount, 0, 1, iw, ih);
-        ctx.drawImage(image, 0, 0);
-
-
-
-        // draw outline of image half size
-        ctx.strokeStyle = "red";
-        ctx.lineWidth = 2 * (1 );
-        ctx.strokeRect(iw / 2, ih / 2, iw, ih);
-
-        // reset the transform
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-
-        // draw outline of canvas half size
-        ctx.strokeStyle = "blue";
-        ctx.lineWidth = 2;
-        ctx.strokeRect(cw - cw / 2, ch - ch / 2, cw, ch);
-
-    };
-
-    var transform_object = { a: undefined, b: undefined, c: undefined, d: undefined, e: undefined, f: undefined };
-    var stored_transform = { angle: 0, skew_h: 0 };
-
     // Rotate
 
     // Make the rotation directly to the canvas for performance reasons.
@@ -519,6 +366,7 @@ var skew_radians = Math.atan(skew_v);
         ctx.setTransform(dx, dy, -dy, dx, cw, ch);
         ctx.drawImage(image, -iw, -ih);
 
+        /*
         // draw outline of image half size
         ctx.strokeStyle = "red";
         ctx.lineWidth = 2 * (1 / scale);
@@ -531,6 +379,7 @@ var skew_radians = Math.atan(skew_v);
         ctx.strokeStyle = "blue";
         ctx.lineWidth = 2;
         ctx.strokeRect(cw - cw / 2, ch - ch / 2, cw, ch);
+        */
     };
 
     // Return the rotated canvas.
