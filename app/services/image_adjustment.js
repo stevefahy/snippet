@@ -327,6 +327,36 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         return deferred.promise;
     };
 
+    //perspectiveVChange(ctx_crop_bg, canvas_original, value)
+    this.perspectiveVChange = function(p, ctx, image, amount) {
+        console.log(amount);
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        //var ctx = canvas.getContext("2d");
+        //var p = new Perspective(ctx, image);
+        console.log(image.width);
+        // TL x, TL y
+        // TR x, TR y
+        // BR x, BR y
+        // BL x, BL y
+        if (amount >= 0) {
+            p.draw([
+                [0, 0],
+                [image.width, amount * -1],
+                [image.width, image.height + amount],
+                [0, image.height]
+            ]);
+        } else {
+            //amount = amount*-1;
+            p.draw([
+                [0, amount],
+                [image.width, 0],
+                [image.width, image.height],
+                [0, image.height+ amount*-1]
+            ]);
+        }
+
+    };
+
     // Rotate
 
     // Make the rotation directly to the canvas for performance reasons.
