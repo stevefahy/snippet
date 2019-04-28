@@ -329,11 +329,11 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
 
     //perspectiveVChange(ctx_crop_bg, canvas_original, value)
     this.perspectiveVChange = function(p, ctx, image, amount) {
-        console.log(amount);
+        //console.log(amount);
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         //var ctx = canvas.getContext("2d");
         //var p = new Perspective(ctx, image);
-        console.log(image.width);
+        //console.log(image.width);
         // TL x, TL y
         // TR x, TR y
         // BR x, BR y
@@ -344,7 +344,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
                 [image.width, amount * -1],
                 [image.width, image.height + amount],
                 [0, image.height]
-            ]);
+            ],amount);
         } else {
             //amount = amount*-1;
             p.draw([
@@ -352,7 +352,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
                 [image.width, 0],
                 [image.width, image.height],
                 [0, image.height+ amount*-1]
-            ]);
+            ],amount);
         }
 
     };

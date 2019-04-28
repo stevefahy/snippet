@@ -31,33 +31,46 @@ var html5jp = window.html5jp || {};
      * constructor
      * ----------------------------------------------------------------- */
     html5jp.perspective = function(ctxd, image) {
-        console.log(image);
         // check the arguments
         if( ! ctxd || ! ctxd.strokeStyle ) { return; }
         if( ! image || ! image.width || ! image.height ) { return; }
         // prepare a <canvas> for the image
         var cvso = document.createElement('canvas');
+        cvso.imageSmoothingQuality = "low";
         cvso.width = parseInt(image.width);
         cvso.height = parseInt(image.height);
-        var ctxo = cvso.getContext('2d');
+        var ctxo = cvso.getContext('2d', { alpha: false });
+        ctxo.imageSmoothingQuality = "low";
         ctxo.drawImage(image, 0, 0, cvso.width, cvso.height);
         // prepare a <canvas> for the transformed image
-        var cvst = document.createElement('canvas');
 
+        //var cvst = document.createElement('canvas');
         //cvst.imageSmoothingQuality = "low";
-
+        /*
         cvst.width = ctxd.canvas.width;
         cvst.height = ctxd.canvas.height;
         var ctxt = cvst.getContext('2d');
+        */
+        var ctxt = ctxd;
 
          //ctxt.imageSmoothingQuality = "low";
         // parameters
+        /*
         this.p = {
             ctxd: ctxd,
             cvso: cvso,
             ctxo: ctxo,
             ctxt: ctxt
         };
+        */
+        this.p = {
+            ctxd: ctxd,
+            cvso: cvso,
+            ctxo: ctxo,
+            ctxt: ctxt
+        };
+
+        this.cache = {};
     };
 
     /* -------------------------------------------------------------------
@@ -70,7 +83,11 @@ var html5jp = window.html5jp || {};
      * public methods
      * ----------------------------------------------------------------- */
 
-    proto.draw = function(points) {
+    proto.draw = function(points,amount) {
+
+        if(this.cache[amount] == undefined){
+
+        //console.log(amount);
         var d0x = points[0][0];
         var d0y = points[0][1];
         var d1x = points[1][0];
@@ -115,6 +132,9 @@ var html5jp = window.html5jp || {};
         //
         var ctxo = this.p.ctxo;
         var ctxt = this.p.ctxt;
+
+        var ctxd = this.p.ctxd;
+
         ctxt.clearRect(0, 0, ctxt.canvas.width, ctxt.canvas.height);
         if(base_index % 2 == 0) { // top or bottom side
             var ctxl = this.create_canvas_context(ow, cover_step);
@@ -162,10 +182,28 @@ var html5jp = window.html5jp || {};
             }
         }
         // set a clipping path and draw the transformed image on the destination canvas.
-        this.p.ctxd.save();
+        //this.p.ctxd.save();
+        //console.log(this.cache[amount]);
+        if(this.cache[amount] == undefined){
+            //console.log('CACHE: ' + amount);
+            var canvas_cache = 'cached_' + amount;
+            canvas_cache = document.createElement('canvas');
+            canvas_cache.width = ctxt.canvas.width;
+            canvas_cache.height = ctxt.canvas.height;
+            var ctx = canvas_cache.getContext('2d', { alpha: false });
+            ctx.drawImage(ctxt.canvas, 0, 0);
+
+            this.cache[amount] = canvas_cache;
+
+
+        }
         this.p.ctxd.drawImage(ctxt.canvas, 0, 0);
-        this._applyMask(this.p.ctxd, [[d0x, d0y], [d1x, d1y], [d2x, d2y], [d3x, d3y]]);
-        this.p.ctxd.restore();
+        //this._applyMask(this.p.ctxd, [[d0x, d0y], [d1x, d1y], [d2x, d2y], [d3x, d3y]]);
+        //this.p.ctxd.restore();
+
+    } else {
+        this.p.ctxd.drawImage(this.cache[amount], 0, 0);
+    }
     };
 
     /* -------------------------------------------------------------------
@@ -176,7 +214,8 @@ var html5jp = window.html5jp || {};
         var canvas = document.createElement('canvas');
         canvas.width = w;
         canvas.height = h;
-        var ctx = canvas.getContext('2d');
+        var ctx = canvas.getContext('2d', { alpha: false });
+        ctx.imageSmoothingQuality = "low";
         return ctx;
     };
 

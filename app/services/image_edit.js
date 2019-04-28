@@ -406,9 +406,11 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         canvas_original = ImageAdjustment.cloneCanvas(canvas_orig);
         crop_area_original = ImageAdjustment.cloneCanvas(canvas_crop);
         var canvas = $('.crop_bg')[0];
-        ctx_crop_bg = canvas.getContext('2d');
+        ctx_crop_bg = canvas.getContext('2d', { alpha: false });
+        ctx_crop_bg.imageSmoothingQuality = "low";
         var canvas2 = $('#crop_src')[0];
-        ctx_crop_src = canvas2.getContext('2d');
+        ctx_crop_src = canvas2.getContext('2d', { alpha: false });
+        ctx_crop_src.imageSmoothingQuality = "low";
 
 
         p1 = new Perspective(ctx_crop_bg, canvas_orig);
