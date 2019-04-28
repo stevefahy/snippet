@@ -375,7 +375,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
     this.sliderperspectiveVChange = function(value){
         ImageAdjustment.perspectiveVChange(p1, ctx_crop_bg, canvas_original, value);
-        //ImageAdjustment.perspectiveVChange(p2, ctx_crop_src, crop_area_original, value);
+        ImageAdjustment.perspectiveVChange(p2, ctx_crop_src, crop_area_original, value);
     };
 
     this.openRotate = function(e) {

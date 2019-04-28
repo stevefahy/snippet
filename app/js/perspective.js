@@ -44,13 +44,13 @@ var html5jp = window.html5jp || {};
         // prepare a <canvas> for the transformed image
         var cvst = document.createElement('canvas');
 
-        cvst.imageSmoothingQuality = "low";
+        //cvst.imageSmoothingQuality = "low";
 
         cvst.width = ctxd.canvas.width;
         cvst.height = ctxd.canvas.height;
         var ctxt = cvst.getContext('2d');
 
-         ctxt.imageSmoothingQuality = "low";
+         //ctxt.imageSmoothingQuality = "low";
         // parameters
         this.p = {
             ctxd: ctxd,
@@ -162,9 +162,9 @@ var html5jp = window.html5jp || {};
             }
         }
         // set a clipping path and draw the transformed image on the destination canvas.
-        //this.p.ctxd.save();
+        this.p.ctxd.save();
         this.p.ctxd.drawImage(ctxt.canvas, 0, 0);
-        //this._applyMask(this.p.ctxd, [[d0x, d0y], [d1x, d1y], [d2x, d2y], [d3x, d3y]]);
+        this._applyMask(this.p.ctxd, [[d0x, d0y], [d1x, d1y], [d2x, d2y], [d3x, d3y]]);
         this.p.ctxd.restore();
     };
 
