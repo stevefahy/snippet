@@ -44,17 +44,25 @@ var html5jp = window.html5jp || {};
         ctxo.drawImage(image, 0, 0, cvso.width, cvso.height);
         // prepare a <canvas> for the transformed image
 
-        //var cvst = document.createElement('canvas');
+        var cvst = document.createElement('canvas');
         //cvst.imageSmoothingQuality = "low";
-        /*
+        
         cvst.width = ctxd.canvas.width;
         cvst.height = ctxd.canvas.height;
         var ctxt = cvst.getContext('2d');
-        */
-        var ctxt = ctxd;
+        
+        //var ctxt = ctxd;
 
          //ctxt.imageSmoothingQuality = "low";
         // parameters
+        
+        this.p = {
+            ctxd: ctxd,
+            cvso: cvso,
+            ctxo: ctxo,
+            ctxt: ctxt
+        };
+        
         /*
         this.p = {
             ctxd: ctxd,
@@ -63,12 +71,6 @@ var html5jp = window.html5jp || {};
             ctxt: ctxt
         };
         */
-        this.p = {
-            ctxd: ctxd,
-            cvso: cvso,
-            ctxo: ctxo,
-            ctxt: ctxt
-        };
 
         this.cache = {};
     };
@@ -85,7 +87,7 @@ var html5jp = window.html5jp || {};
 
     proto.draw = function(points,amount) {
 
-        if(this.cache[amount] == undefined){
+        if(this.cache[points] == undefined){
 
         //console.log(amount);
         var d0x = points[0][0];
@@ -182,9 +184,10 @@ var html5jp = window.html5jp || {};
             }
         }
         // set a clipping path and draw the transformed image on the destination canvas.
-        //this.p.ctxd.save();
+        this.p.ctxd.save();
         //console.log(this.cache[amount]);
-        if(this.cache[amount] == undefined){
+        
+        if(this.cache[points] == undefined){
             //console.log('CACHE: ' + amount);
             var canvas_cache = 'cached_' + amount;
             canvas_cache = document.createElement('canvas');
@@ -193,17 +196,24 @@ var html5jp = window.html5jp || {};
             var ctx = canvas_cache.getContext('2d', { alpha: false });
             ctx.drawImage(ctxt.canvas, 0, 0);
 
-            this.cache[amount] = canvas_cache;
+            this.cache[points] = canvas_cache;
 
 
         }
+        
         this.p.ctxd.drawImage(ctxt.canvas, 0, 0);
-        //this._applyMask(this.p.ctxd, [[d0x, d0y], [d1x, d1y], [d2x, d2y], [d3x, d3y]]);
-        //this.p.ctxd.restore();
+        this._applyMask(this.p.ctxd, [[d0x, d0y], [d1x, d1y], [d2x, d2y], [d3x, d3y]]);
+        this.p.ctxd.restore();
+
+        return;
 
     } else {
-        this.p.ctxd.drawImage(this.cache[amount], 0, 0);
+        console.log('cached');
+        this.p.ctxd.drawImage(this.cache[points], 0, 0);
     }
+
+ 
+
     };
 
     /* -------------------------------------------------------------------

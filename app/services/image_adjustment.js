@@ -327,32 +327,83 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         return deferred.promise;
     };
 
-    //perspectiveVChange(ctx_crop_bg, canvas_original, value)
+    var p_s;
+    var p_x;
+
+
+    this.perspective_setup = function(image_w, image_h) {
+        p_s = [
+            [0, 0],
+            [Number(image_w), 0],
+            [Number(image_w), Number(image_h)],
+            [0, Number(image_h)]
+        ];
+        p_x = [
+            [0, 0],
+            [Number(image_w), 0],
+            [Number(image_w), Number(image_h)],
+            [0, Number(image_h)]
+        ];
+    };
+
     this.perspectiveVChange = function(p, ctx, image, amount) {
-        //console.log(amount);
         ctx.setTransform(1, 0, 0, 1, 0, 0);
-        //var ctx = canvas.getContext("2d");
-        //var p = new Perspective(ctx, image);
-        //console.log(image.width);
         // TL x, TL y
         // TR x, TR y
         // BR x, BR y
         // BL x, BL y
         if (amount >= 0) {
-            p.draw([
-                [0, 0],
-                [image.width, amount * -1],
-                [image.width, image.height + amount],
-                [0, image.height]
-            ],amount);
+
+            p_x = [
+                [p_x[0][0], p_x[0][1]],
+                [p_x[1][0], p_s[1][1] + amount * -1],
+                [p_x[2][0], p_s[2][1] + amount],
+                [p_x[3][0], p_x[3][1]]
+            ];
+
+            p.draw(p_x, amount);
+
         } else {
-            //amount = amount*-1;
-            p.draw([
-                [0, amount],
-                [image.width, 0],
-                [image.width, image.height],
-                [0, image.height+ amount*-1]
-            ],amount);
+
+            p_x = [
+                [p_x[0][0], p_s[0][1] + amount],
+                [p_x[1][0], p_x[1][1]],
+                [p_x[2][0], p_x[2][1]],
+                [p_x[3][0], p_s[3][1] + amount * -1]
+            ];
+
+            p.draw(p_x, amount);
+
+        }
+    };
+
+    this.perspectiveHChange = function(p, ctx, image, amount) {
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        // TL x, TL y
+        // TR x, TR y
+        // BR x, BR y
+        // BL x, BL y
+        if (amount >= 0) {
+
+            p_x = [
+                [p_s[0][0] + amount * -1, p_x[0][1]],
+                [p_s[1][0] + amount, p_x[1][1]],
+                [p_x[2][0], p_x[2][1]],
+                [p_x[3][0], p_x[3][1]]
+            ];
+
+            p.draw(p_x, amount);
+
+        } else {
+
+            p_x = [
+                [p_x[0][0], p_x[0][1]],
+                [p_x[1][0], p_x[1][1]],
+                [p_s[2][0] + amount * -1, p_x[2][1]],
+                [p_s[3][0] + amount, p_x[3][1]]
+            ];
+
+            p.draw(p_x, amount);
         }
 
     };

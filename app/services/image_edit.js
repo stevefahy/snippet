@@ -378,6 +378,10 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         ImageAdjustment.perspectiveVChange(p2, ctx_crop_src, crop_area_original, value);
     };
 
+    this.sliderperspectiveHChange = function(value){
+        ImageAdjustment.perspectiveHChange(p1, ctx_crop_bg, canvas_original, value);
+        ImageAdjustment.perspectiveHChange(p2, ctx_crop_src, crop_area_original, value);
+    };
     this.openRotate = function(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -394,15 +398,21 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         }
         addSlider(Slider.slider_rotate, parent_container, id, data);
         addSlider(Slider.slider_perspective_v, parent_container, id, data);
+        addSlider(Slider.slider_perspective_h, parent_container, id, data);
     };
 
     var p1;
     var p2;
+    var image_h;
+    var image_w;
 
     initCropRotate = function(parent_container, id) {
         var deferred = $q.defer();
         var canvas_orig = $('.crop_bg')[0];
         var canvas_crop = $('#crop_src')[0];
+
+        
+
         canvas_original = ImageAdjustment.cloneCanvas(canvas_orig);
         crop_area_original = ImageAdjustment.cloneCanvas(canvas_crop);
         var canvas = $('.crop_bg')[0];
@@ -415,6 +425,15 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
         p1 = new Perspective(ctx_crop_bg, canvas_orig);
         p2 = new Perspective(ctx_crop_src, canvas_crop);
+
+        image_h = canvas_crop.height;
+        image_w = canvas_crop.width;
+        ImageAdjustment.perspective_setup(image_w, image_h);
+
+        for (var i = $rootScope.slider_settings.perspective_v.options.floor, len = $rootScope.slider_settings.perspective_v.options.ceil; i <= len; i++) {
+            console.log(i);
+            self.sliderperspectiveVChange(i);
+        }
 
         deferred.resolve();
 
