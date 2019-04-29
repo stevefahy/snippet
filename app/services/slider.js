@@ -70,10 +70,11 @@ cardApp.service('Slider', ['$window', '$rootScope', 'ImageAdjustment', function(
                 },
                 onChange: function(id, amount) {
                     //console.log('on change ' + amount);
-                    sliderperspectiveVChange(amount);
+                    //sliderperspectiveVChange(amount);
                 },
-                onEnd: function() {
+                onEnd: function(id, amount) {
                     //console.log('on end ' + amount);
+                     sliderperspectiveVChange(amount);
                 }
             }
         },
@@ -92,10 +93,11 @@ cardApp.service('Slider', ['$window', '$rootScope', 'ImageAdjustment', function(
                 },
                 onChange: function(id, amount) {
                     //console.log('on change ' + amount);
-                    sliderperspectiveHChange(amount);
+                    //sliderperspectiveHChange(amount);
                 },
-                onEnd: function() {
+                onEnd: function(id, amount) {
                     //console.log('on end ' + amount);
+                    sliderperspectiveHChange(amount);
                 }
             }
         }

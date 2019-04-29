@@ -430,10 +430,12 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         image_w = canvas_crop.width;
         ImageAdjustment.perspective_setup(image_w, image_h);
 
+        /*
         for (var i = $rootScope.slider_settings.perspective_v.options.floor, len = $rootScope.slider_settings.perspective_v.options.ceil; i <= len; i++) {
             console.log(i);
             self.sliderperspectiveVChange(i);
         }
+        */
 
         deferred.resolve();
 
