@@ -70,11 +70,11 @@ cardApp.service('Slider', ['$window', '$rootScope', 'ImageAdjustment', function(
                 },
                 onChange: function(id, amount) {
                     //console.log('on change ' + amount);
-                    sliderperspectiveVChange(amount);
+                    sliderperspectiveVChange(amount, 'low');
                 },
                 onEnd: function(id, amount) {
                     //console.log('on end ' + amount);
-                     //sliderperspectiveVChange(amount);
+                     sliderperspectiveVChange(amount, 'high');
                 }
             }
         },
@@ -93,11 +93,11 @@ cardApp.service('Slider', ['$window', '$rootScope', 'ImageAdjustment', function(
                 },
                 onChange: function(id, amount) {
                     //console.log('on change ' + amount);
-                    sliderperspectiveHChange(amount);
+                    sliderperspectiveHChange(amount, 'low');
                 },
                 onEnd: function(id, amount) {
                     //console.log('on end ' + amount);
-                    //sliderperspectiveHChange(amount);
+                    sliderperspectiveHChange(amount, 'high');
                 }
             }
         }

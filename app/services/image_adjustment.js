@@ -329,9 +329,12 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
 
     var p_s;
     var p_x;
+    var p_s_hi;
+    var p_x_hi;
 
 
-    this.perspective_setup = function(image_w, image_h) {
+    this.perspective_setup = function(image_w, image_h, image_hi_w, image_hi_h) {
+        console.log(image_w + ' : ' + image_h + ' : ' + image_hi_w + ' : ' + image_hi_h);
         p_s = [
             [0, 0],
             [Number(image_w), 0],
@@ -344,40 +347,117 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             [Number(image_w), Number(image_h)],
             [0, Number(image_h)]
         ];
+
+
+        p_s_hi = [
+            [0, 0],
+            [Number(image_hi_w), 0],
+            [Number(image_hi_w), Number(image_hi_h)],
+            [0, Number(image_hi_h)]
+        ];
+        p_x_hi = [
+            [0, 0],
+            [Number(image_hi_w), 0],
+            [Number(image_hi_w), Number(image_hi_h)],
+            [0, Number(image_hi_h)]
+        ];
     };
 
-    this.perspectiveVChange = function(p, ctx, image, amount) {
+    this.perspectiveVChange = function(p, ctx, image, a, quality, wl, hl, wh, hh) {
+        //console.log();
+        //if(quality == 'high'){
+            amount_h = Math.round(((wh * 100) / 100) / 1000 * a);
+        //} else {
+            amount_l = Math.round(((wl * 100) / 100) / 1000 * a);
+        //}
+        
+        console.log(wl + ' : ' + wh + ' : ' + amount_h + ' : ' + amount_l);
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         // TL x, TL y
         // TR x, TR y
         // BR x, BR y
         // BL x, BL y
-        if (amount >= 0) {
+        if (quality == 'high') {
+            if (amount_h > 0) {
 
-            p_x = [
-                [p_x[0][0], p_x[0][1]],
-                [p_x[1][0], p_s[1][1] + amount * -1],
-                [p_x[2][0], p_s[2][1] + amount],
-                [p_x[3][0], p_x[3][1]]
-            ];
+                p_x_hi = [
+                    [p_x_hi[0][0], p_x_hi[0][1]],
+                    [p_x_hi[1][0], p_s_hi[1][1] + amount_h * -1],
+                    [p_x_hi[2][0], p_s_hi[2][1] + amount_h],
+                    [p_x_hi[3][0], p_x_hi[3][1]]
+                ];
 
-            p.draw(p_x, amount);
+               p_x = [
+                    [p_x[0][0], p_x[0][1]],
+                    [p_x[1][0], p_s[1][1] + amount_l * -1],
+                    [p_x[2][0], p_s[2][1] + amount_l],
+                    [p_x[3][0], p_x[3][1]]
+                ];
 
+                p.draw(p_x_hi, amount_h, quality, wh, hh);
+
+            } else {
+
+                p_x_hi = [
+                    [p_x_hi[0][0], p_s_hi[0][1] + amount_h],
+                    [p_x_hi[1][0], p_x_hi[1][1]],
+                    [p_x_hi[2][0], p_x_hi[2][1]],
+                    [p_x_hi[3][0], p_s_hi[3][1] + amount_h * -1]
+                ];
+
+                   p_x = [
+                    [p_x[0][0], p_s[0][1] + amount_l],
+                    [p_x[1][0], p_x[1][1]],
+                    [p_x[2][0], p_x[2][1]],
+                    [p_x[3][0], p_s[3][1] + amount_l * -1]
+                ];
+
+                p.draw(p_x_hi, amount_h, quality, wh, hh);
+
+            }
         } else {
+            if (amount_l > 0) {
 
-            p_x = [
-                [p_x[0][0], p_s[0][1] + amount],
-                [p_x[1][0], p_x[1][1]],
-                [p_x[2][0], p_x[2][1]],
-                [p_x[3][0], p_s[3][1] + amount * -1]
-            ];
+                p_x = [
+                    [p_x[0][0], p_x[0][1]],
+                    [p_x[1][0], p_s[1][1] + amount_l * -1],
+                    [p_x[2][0], p_s[2][1] + amount_l],
+                    [p_x[3][0], p_x[3][1]]
+                ];
 
-            p.draw(p_x, amount);
+                  p_x_hi = [
+                    [p_x_hi[0][0], p_x_hi[0][1]],
+                    [p_x_hi[1][0], p_s_hi[1][1] + amount_h * -1],
+                    [p_x_hi[2][0], p_s_hi[2][1] + amount_h],
+                    [p_x_hi[3][0], p_x_hi[3][1]]
+                ];
 
+                p.draw(p_x, amount_l, quality, wl, hl);
+
+            } else {
+
+                p_x = [
+                    [p_x[0][0], p_s[0][1] + amount_l],
+                    [p_x[1][0], p_x[1][1]],
+                    [p_x[2][0], p_x[2][1]],
+                    [p_x[3][0], p_s[3][1] + amount_l * -1]
+                ];
+
+                   p_x_hi = [
+                    [p_x_hi[0][0], p_s_hi[0][1] + amount_h],
+                    [p_x_hi[1][0], p_x_hi[1][1]],
+                    [p_x_hi[2][0], p_x_hi[2][1]],
+                    [p_x_hi[3][0], p_s_hi[3][1] + amount_h * -1]
+                ];
+
+                p.draw(p_x, amount_l, quality, wl, hl);
+
+            }
         }
+
     };
 
-    this.perspectiveHChange = function(p, ctx, image, amount) {
+    this.perspectiveHChange = function(p, ctx, image, amount, quality) {
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         // TL x, TL y
         // TR x, TR y
@@ -392,7 +472,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
                 [p_x[3][0], p_x[3][1]]
             ];
 
-            p.draw(p_x, amount);
+            p.draw(p_x, amount, quality);
 
         } else {
 
@@ -403,7 +483,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
                 [p_s[3][0] + amount, p_x[3][1]]
             ];
 
-            p.draw(p_x, amount);
+            p.draw(p_x, amount, quality);
         }
 
     };

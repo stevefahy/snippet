@@ -31,6 +31,8 @@ var html5jp = window.html5jp || {};
      * constructor
      * ----------------------------------------------------------------- */
     html5jp.perspective = function(ctxd, image, dest_canvas, dest_w, dest_h) {
+        console.log(dest_w + ' : ' + dest_h);
+        console.log(image.width + ' : ' + image.height);
         // check the arguments
         if( ! ctxd || ! ctxd.strokeStyle ) { return; }
         if( ! image || ! image.width || ! image.height ) { return; }
@@ -88,9 +90,12 @@ var html5jp = window.html5jp || {};
      * public methods
      * ----------------------------------------------------------------- */
 
-    proto.draw = function(points,amount) {
+    proto.draw = function(points, amount, quality, w, h) {
+        console.log(this.p);
+console.log(points + ' : ' + amount + ' : ' + quality + ' : ' + w + ' :' + h);
+        //if(this.cache[points] == undefined){
 
-        if(this.cache[points] == undefined){
+
 
         //console.log(amount);
         var d0x = points[0][0];
@@ -110,6 +115,7 @@ var html5jp = window.html5jp || {};
                 ];
         //
         var ow = this.p.cvso.width;
+        //console.log(ow);
         var oh = this.p.cvso.height;
         // specify the index of which dimension is longest
         var base_index = 0;
@@ -139,7 +145,7 @@ var html5jp = window.html5jp || {};
         var ctxt = this.p.ctxt;
 
         var ctxd = this.p.ctxd;
-
+console.log(ctxd);
         ctxt.clearRect(0, 0, ctxt.canvas.width, ctxt.canvas.height);
         if(base_index % 2 == 0) { // top or bottom side
             var ctxl = this.create_canvas_context(ow, cover_step);
@@ -189,7 +195,7 @@ var html5jp = window.html5jp || {};
         // set a clipping path and draw the transformed image on the destination canvas.
         this.p.ctxd.save();
         //console.log(this.cache[amount]);
-        
+        /*
         if(this.cache[points] == undefined){
             //console.log('CACHE: ' + amount);
             var canvas_cache = 'cached_' + amount;
@@ -203,20 +209,24 @@ var html5jp = window.html5jp || {};
 
 
         }
+        */
+        //if(quality == 'high'){
+    // this.p.ctxd.drawImage(ctxt.canvas, 0, 0, this.dest_w, this.dest_h);
+       //} else {
+           this.dest_canvas.drawImage(ctxt.canvas, 0, 0, this.dest_w, this.dest_h);
+        //}
         
-        //this.p.ctxd.drawImage(ctxt.canvas, 0, 0);
-        console.log(this.dest_w);
-        this.dest_canvas.drawImage(ctxt.canvas, 0, 0, this.dest_w, this.dest_h);
+        //
         this._applyMask(this.p.ctxd, [[d0x, d0y], [d1x, d1y], [d2x, d2y], [d3x, d3y]]);
         this.p.ctxd.restore();
 
         return;
 
-    } else {
-        console.log('cached');
-         this.dest_canvas.drawImage(this.cache[points], 0, 0, this.dest_w, this.dest_h);
+    //} else {
+     //   console.log('cached');
+     //    this.dest_canvas.drawImage(this.cache[points], 0, 0, this.dest_w, this.dest_h);
         //this.p.ctxd.drawImage(this.cache[points], 0, 0);
-    }
+    //}
 
  
 
