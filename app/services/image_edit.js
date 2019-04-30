@@ -373,12 +373,12 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         ImageAdjustment.quickRotate(ctx_crop_src, crop_area_original, value);
     };
 
-    this.sliderperspectiveVChange = function(value){
+    this.sliderperspectiveVChange = function(value) {
         ImageAdjustment.perspectiveVChange(p1, ctx_crop_bg, canvas_original, value);
         ImageAdjustment.perspectiveVChange(p2, ctx_crop_src, crop_area_original, value);
     };
 
-    this.sliderperspectiveHChange = function(value){
+    this.sliderperspectiveHChange = function(value) {
         ImageAdjustment.perspectiveHChange(p1, ctx_crop_bg, canvas_original, value);
         ImageAdjustment.perspectiveHChange(p2, ctx_crop_src, crop_area_original, value);
     };
@@ -406,7 +406,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     var image_h;
     var image_w;
 
-    resizeImage = function(image, w, h){
+    resizeImage = function(image, w, h) {
         var canvas = document.createElement('canvas');
         canvas.width = w;
         canvas.height = h;
@@ -420,19 +420,25 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var canvas_orig = $('.crop_bg')[0];
         var canvas_crop = $('#crop_src')[0];
 
-  
+
         var ww = Math.round(window.innerWidth / 2);
         var iw = canvas_orig.width;
         var ih = canvas_orig.height;
         var scale = ww / iw;
         var scaled_height = Math.round(ih * scale);
-        console.log(ww + ' : '  + iw + ' : '   + ih + ' : ' + scaled_height);
+        console.log(ww + ' : ' + iw + ' : ' + ih + ' : ' + scaled_height);
         var ri = resizeImage(canvas_orig, ww, scaled_height);
         console.log(ri);
 
-
+        //var img = $(ri).insertAfter('.' + parent_container + ' #cropper_' + id);        
+        //$(img).attr('id','steve');
         ctx_crop_bg_p = ri.getContext('2d', { alpha: false });
         ctx_crop_src_p = ri.getContext('2d', { alpha: false });
+
+
+
+
+
 
         canvas_original = ImageAdjustment.cloneCanvas(canvas_orig);
         crop_area_original = ImageAdjustment.cloneCanvas(canvas_crop);
@@ -444,8 +450,10 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         //ctx_crop_src.imageSmoothingQuality = "low";
 
 
-        p1 = new Perspective(ctx_crop_bg, canvas_orig);
-        p2 = new Perspective(ctx_crop_src, canvas_crop);
+        self.canvasToImage(ri, 'perspective_temp').then(function(image) {
+            p1 = new Perspective(ctx_crop_bg_p, image, ctx_crop_bg, iw, ih);
+            p2 = new Perspective(ctx_crop_src_p, image, ctx_crop_src, iw, ih);
+        });
 
         image_h = canvas_crop.height;
         image_w = canvas_crop.width;

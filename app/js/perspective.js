@@ -30,7 +30,7 @@ var html5jp = window.html5jp || {};
     /* -------------------------------------------------------------------
      * constructor
      * ----------------------------------------------------------------- */
-    html5jp.perspective = function(ctxd, image) {
+    html5jp.perspective = function(ctxd, image, dest_canvas, dest_w, dest_h) {
         // check the arguments
         if( ! ctxd || ! ctxd.strokeStyle ) { return; }
         if( ! image || ! image.width || ! image.height ) { return; }
@@ -73,6 +73,9 @@ var html5jp = window.html5jp || {};
         */
 
         this.cache = {};
+        this.dest_canvas = dest_canvas;
+        this.dest_w = dest_w;
+        this.dest_h = dest_h;
     };
 
     /* -------------------------------------------------------------------
@@ -201,7 +204,9 @@ var html5jp = window.html5jp || {};
 
         }
         
-        this.p.ctxd.drawImage(ctxt.canvas, 0, 0);
+        //this.p.ctxd.drawImage(ctxt.canvas, 0, 0);
+        console.log(this.dest_w);
+        this.dest_canvas.drawImage(ctxt.canvas, 0, 0, this.dest_w, this.dest_h);
         this._applyMask(this.p.ctxd, [[d0x, d0y], [d1x, d1y], [d2x, d2y], [d3x, d3y]]);
         this.p.ctxd.restore();
 
@@ -209,7 +214,8 @@ var html5jp = window.html5jp || {};
 
     } else {
         console.log('cached');
-        this.p.ctxd.drawImage(this.cache[points], 0, 0);
+         this.dest_canvas.drawImage(this.cache[points], 0, 0, this.dest_w, this.dest_h);
+        //this.p.ctxd.drawImage(this.cache[points], 0, 0);
     }
 
  
