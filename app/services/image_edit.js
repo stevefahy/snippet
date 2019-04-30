@@ -406,21 +406,42 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     var image_h;
     var image_w;
 
+    resizeImage = function(image, w, h){
+        var canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(image, 0, 0, w, h);
+        return canvas;
+    };
+
     initCropRotate = function(parent_container, id) {
         var deferred = $q.defer();
         var canvas_orig = $('.crop_bg')[0];
         var canvas_crop = $('#crop_src')[0];
 
-        
+  
+        var ww = Math.round(window.innerWidth / 2);
+        var iw = canvas_orig.width;
+        var ih = canvas_orig.height;
+        var scale = ww / iw;
+        var scaled_height = Math.round(ih * scale);
+        console.log(ww + ' : '  + iw + ' : '   + ih + ' : ' + scaled_height);
+        var ri = resizeImage(canvas_orig, ww, scaled_height);
+        console.log(ri);
+
+
+        ctx_crop_bg_p = ri.getContext('2d', { alpha: false });
+        ctx_crop_src_p = ri.getContext('2d', { alpha: false });
 
         canvas_original = ImageAdjustment.cloneCanvas(canvas_orig);
         crop_area_original = ImageAdjustment.cloneCanvas(canvas_crop);
         var canvas = $('.crop_bg')[0];
         ctx_crop_bg = canvas.getContext('2d', { alpha: false });
-        ctx_crop_bg.imageSmoothingQuality = "low";
+        //ctx_crop_bg.imageSmoothingQuality = "low";
         var canvas2 = $('#crop_src')[0];
         ctx_crop_src = canvas2.getContext('2d', { alpha: false });
-        ctx_crop_src.imageSmoothingQuality = "low";
+        //ctx_crop_src.imageSmoothingQuality = "low";
 
 
         p1 = new Perspective(ctx_crop_bg, canvas_orig);
@@ -428,7 +449,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
         image_h = canvas_crop.height;
         image_w = canvas_crop.width;
-        ImageAdjustment.perspective_setup(image_w, image_h);
+        ImageAdjustment.perspective_setup(ww, scaled_height);
 
         /*
         for (var i = $rootScope.slider_settings.perspective_v.options.floor, len = $rootScope.slider_settings.perspective_v.options.ceil; i <= len; i++) {
