@@ -471,10 +471,12 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var canvas_crop = $('#crop_src')[0];
 
 
-        var ww = Math.round(window.innerWidth);
+        //var ww = Math.round(window.innerWidth /2 );
+        var ww = Math.round(canvas_orig.width/3 );
         var iw = canvas_orig.width;
         var ih = canvas_orig.height;
         var scale = ww / iw;
+        //var scale =  iw / ww;
         var scaled_height = Math.round(ih * scale);
         console.log(ww + ' : ' + iw + ' : ' + ih + ' : ' + scaled_height);
         var ri = resizeImage(canvas_orig, ww, scaled_height);

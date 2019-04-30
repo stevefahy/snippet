@@ -368,7 +368,8 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         //if(quality == 'high'){
             amount_h = Math.round(((wh * 100) / 100) / 1000 * a);
         //} else {
-            amount_l = Math.round(((wl * 100) / 100) / 1000 * a);
+            //amount_l = Math.round(((wl * 100) / 100) / 1000 * a);
+            amount_l = amount_h/3;
         //}
         
         console.log(wl + ' : ' + wh + ' : ' + amount_h + ' : ' + amount_l);
