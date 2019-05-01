@@ -471,14 +471,14 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var canvas_crop = $('#crop_src')[0];
 
 
-        //var ww = Math.round(window.innerWidth /2 );
-        var ww = Math.round(canvas_orig.width/3 );
+        var ww = Math.round(window.innerWidth / 1.7 );
+        //var ww = Math.round(canvas_orig.width / 2 );
         var iw = canvas_orig.width;
         var ih = canvas_orig.height;
         var scale = ww / iw;
         //var scale =  iw / ww;
         var scaled_height = Math.round(ih * scale);
-        console.log(ww + ' : ' + iw + ' : ' + ih + ' : ' + scaled_height);
+        console.log(ww + ' : ' + iw + ' : ' + ih + ' : ' + scaled_height + ' : ' + scale);
         var ri = resizeImage(canvas_orig, ww, scaled_height);
         console.log(ri);
 
@@ -486,11 +486,6 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         //$(img).attr('id','steve');
         ctx_crop_bg_p = ri.getContext('2d', { alpha: false });
         ctx_crop_src_p = ri.getContext('2d', { alpha: false });
-
-
-
-
-
 
         canvas_original = ImageAdjustment.cloneCanvas(canvas_orig);
         crop_area_original = ImageAdjustment.cloneCanvas(canvas_crop);

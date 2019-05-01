@@ -332,47 +332,59 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
     var p_s_hi;
     var p_x_hi;
 
+    var image_lo_w;
+    var image_lo_h;
+    var image_hi_w;
+    var image_hi_h;
 
-    this.perspective_setup = function(image_w, image_h, image_hi_w, image_hi_h) {
-        console.log(image_w + ' : ' + image_h + ' : ' + image_hi_w + ' : ' + image_hi_h);
+
+    this.perspective_setup = function(w, h, hi_w, hi_h) {
+        console.log(w + ' : ' + h + ' : ' + hi_w + ' : ' + hi_h);
+        image_lo_w = w;
+        image_lo_h = h;
+        image_hi_w = hi_w;
+        image_hi_h = hi_h;
+
         p_s = [
             [0, 0],
-            [Number(image_w), 0],
-            [Number(image_w), Number(image_h)],
-            [0, Number(image_h)]
+            [Number(w), 0],
+            [Number(w), Number(h)],
+            [0, Number(h)]
         ];
         p_x = [
             [0, 0],
-            [Number(image_w), 0],
-            [Number(image_w), Number(image_h)],
-            [0, Number(image_h)]
+            [Number(w), 0],
+            [Number(w), Number(h)],
+            [0, Number(h)]
         ];
 
 
         p_s_hi = [
             [0, 0],
-            [Number(image_hi_w), 0],
-            [Number(image_hi_w), Number(image_hi_h)],
-            [0, Number(image_hi_h)]
+            [Number(hi_w), 0],
+            [Number(hi_w), Number(hi_h)],
+            [0, Number(hi_h)]
         ];
         p_x_hi = [
             [0, 0],
-            [Number(image_hi_w), 0],
-            [Number(image_hi_w), Number(image_hi_h)],
-            [0, Number(image_hi_h)]
+            [Number(hi_w), 0],
+            [Number(hi_w), Number(hi_h)],
+            [0, Number(hi_h)]
         ];
     };
 
     this.perspectiveVChange = function(p, ctx, image, a, quality, wl, hl, wh, hh) {
         //console.log();
         //if(quality == 'high'){
+            var scale = image_lo_w / image_hi_w;
+            console.log(scale);
             amount_h = Math.round(((wh * 100) / 100) / 1000 * a);
         //} else {
             //amount_l = Math.round(((wl * 100) / 100) / 1000 * a);
-            amount_l = amount_h/3;
+            amount_l = amount_h * scale;
         //}
         
-        console.log(wl + ' : ' + wh + ' : ' + amount_h + ' : ' + amount_l);
+        console.log(image_hi_w + ' : ' + image_lo_w + ' : ' + amount_h + ' : ' + amount_l);
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         // TL x, TL y
         // TR x, TR y
