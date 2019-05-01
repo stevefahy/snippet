@@ -471,7 +471,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var canvas_crop = $('#crop_src')[0];
 
 
-        var ww = Math.round(window.innerWidth / 1.3 );
+        var ww = Math.round(window.innerWidth / 1.7 );
         //var ww = Math.round(canvas_orig.width / 2 );
         var iw = canvas_orig.width;
         var ih = canvas_orig.height;
