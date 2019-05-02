@@ -78,7 +78,7 @@ var html5jp = window.html5jp || {};
             ctxo_hi: ctxo_hi,
             ctxo_lo: ctxo_lo,
             ctxt_hi: ctxt_hi,
-            ctxt_lo: ctxt_lo,
+            ctxt_lo: ctxt_lo
         };
         
         //var ctxt = ctxd;
@@ -161,7 +161,7 @@ var html5jp = window.html5jp || {};
      * public methods
      * ----------------------------------------------------------------- */
 
-   proto.draw = function(points, amount, quality, w, h) {
+   proto.draw = function(points, amount, quality) {
         // ctxd - p destination canvas 
         // image - source image
         // cvso - p canvas for the image
@@ -179,7 +179,7 @@ var html5jp = window.html5jp || {};
         };
         */
         console.log(this.p.ctxd);
-        console.log(points + ' : ' + amount + ' : ' + quality + ' : ' + w + ' :' + h);
+        console.log(points + ' : ' + amount + ' : ' + quality);
  
         // clear the destination canvas
         this.p.ctxd.setTransform(1, 0, 0, 1, 0, 0);

@@ -374,12 +374,24 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
     };
 
     // Perspective object, destination canvas
-    this.perspectiveVChange = function(p, ctx, image, a, quality, wl, hl, wh, hh) {
+    //p1, ctx_crop_bg, canvas_original, value, quality, w_low, h_low, w_hi, h_hi
+    // p, quality
+
+    // p -  // dest_canvas_hi, source_image_hi, source_image_low 
+    //this.perspectiveVChange = function(p, ctx, image, a, quality, wl, hl, wh, hh) {
+    this.perspectiveVChange = function(p, a, quality) {
         //console.log();
         //if(quality == 'high'){
-            var scale = image_lo_w / image_hi_w;
+            //var scale = image_lo_w / image_hi_w;
+
+              /*    cvso_hi.width = parseInt(source_image_hi.width);
+        cvso_hi.height = parseInt(source_image_hi.height);
+        cvso_lo.width = parseInt(source_image_lo.width);
+        cvso_lo.height = parseInt(source_image_lo.height);*/
+        //console.log(p);
+        var scale = p.p.cvso_lo.width / p.p.cvso_hi.width;
             console.log(scale);
-            amount_h = Math.round(((wh * 100) / 100) / 1000 * a);
+            amount_h = Math.round((( p.p.cvso_hi.height * 100) / 100) / 1000 * a);
         //} else {
             //amount_l = Math.round(((wl * 100) / 100) / 1000 * a);
             amount_l = amount_h * scale;
@@ -409,7 +421,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
                     [p_x[3][0], p_x[3][1]]
                 ];
 
-                p.draw(p_x_hi, amount_h, quality, image_lo_w, image_lo_h);
+                p.draw(p_x_hi, amount_h, quality);
 
             } else {
 
@@ -427,7 +439,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
                     [p_x[3][0], p_s[3][1] + amount_l * -1]
                 ];
 
-                p.draw(p_x_hi, amount_h, quality, image_hi_w, image_hi_h);
+                p.draw(p_x_hi, amount_h, quality);
 
             }
         } else {
@@ -447,7 +459,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
                     [p_x_hi[3][0], p_x_hi[3][1]]
                 ];
 
-                p.draw(p_x, amount_l, quality, image_lo_w, image_lo_h);
+                p.draw(p_x, amount_l, quality);
 
             } else {
 
@@ -465,7 +477,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
                     [p_x_hi[3][0], p_s_hi[3][1] + amount_h * -1]
                 ];
 
-                p.draw(p_x, amount_l, quality, image_lo_w, image_lo_h);
+                p.draw(p_x, amount_l, quality);
 
             }
         }
