@@ -373,59 +373,15 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         ImageAdjustment.quickRotate(ctx_crop_src, crop_area_original, value);
     };
 
-    this.sliderperspectiveVChange = function(value,quality) {
-        var w;
-        var h;
-        //if(quality == 'low'){
-           // console.log('V change low p1');
-           //w = w_low;
-           //h = h_low;
-           //p, a, quality
-            ImageAdjustment.perspectiveVChange(p1, value, quality);
-            ImageAdjustment.perspectiveVChange(p2, value, quality);
-        //} else {
-            //w = w_hi;
-            //h = h_hi;
-         //   console.log('V change high p1end');
-           // ImageAdjustment.perspectiveVChange(p1end, ctx_crop_bg, canvas_original, value, quality, w_low, h_low, w_hi, h_hi);
-          //ImageAdjustment.perspectiveVChange(p2end, ctx_crop_src, crop_area_original, value, quality, w_low, h_low, w_hi, h_hi);
- //ImageAdjustment.perspectiveVChange(p1, value, quality);
-//ImageAdjustment.perspectiveVChange(p2, value, quality);
-        //}
-            //ImageAdjustment.perspectiveVChange(p1, ctx_crop_bg, canvas_original, value, quality, w, h);
-           //ImageAdjustment.perspectiveVChange(p2, ctx_crop_src, crop_area_original, value, quality, w, h);
-    
-  
+    this.sliderperspectiveVChange = function(value, quality) {
+        ImageAdjustment.perspectiveVChange(p1, value, quality);
+        ImageAdjustment.perspectiveVChange(p2, value, quality);
     };
 
     this.sliderperspectiveHChange = function(value, quality) {
-        if(quality == 'low'){
-           ImageAdjustment.perspectiveHChange(p1, ctx_crop_bg, canvas_original, value, quality);
-        ImageAdjustment.perspectiveHChange(p2, ctx_crop_src, crop_area_original, value, quality); 
-    } else {
-        ImageAdjustment.perspectiveHChange(p1end, ctx_crop_bg, canvas_original, value, quality);
-        ImageAdjustment.perspectiveHChange(p2end, ctx_crop_src, crop_area_original, value, quality);
-        
-    }
+        ImageAdjustment.perspectiveHChange(p1, value, quality);
+        ImageAdjustment.perspectiveHChange(p2, value, quality);
     };
-
-/*
-    this.sliderperspectiveVChangeEnd = function(value) {
-        ImageAdjustment.perspective_setup(canvas_original.width, canvas_original.height);
-        $timeout(function() {
-        ImageAdjustment.perspectiveVChange(p1end, ctx_crop_bg, canvas_original, value);
-        ImageAdjustment.perspectiveVChange(p2end, ctx_crop_src, crop_area_original, value);
-        },1000);
-    };
-
-    this.sliderperspectiveHChangeEnd = function(value) {
-        ImageAdjustment.perspective_setup(canvas_original.width, canvas_original.height);
-        $timeout(function() {
-        ImageAdjustment.perspectiveHChange(p1end, ctx_crop_bg, canvas_original, value);
-        ImageAdjustment.perspectiveHChange(p2end, ctx_crop_src, crop_area_original, value);
-        },1000);
-    };
-    */
 
     this.openRotate = function(e) {
         e.preventDefault();
@@ -474,7 +430,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var canvas_crop = $('#crop_src')[0];
 
 
-        var ww = Math.round(window.innerWidth / 1.7 );
+        var ww = Math.round(window.innerWidth / 1.7);
         //var ww = Math.round(canvas_orig.width / 2 );
         var iw = canvas_orig.width;
         var ih = canvas_orig.height;
@@ -499,7 +455,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         ctx_crop_src = canvas2.getContext('2d', { alpha: false });
         //ctx_crop_src.imageSmoothingQuality = "low";
 
-//ctxd, image, dest_canvas, dest_w, dest_h
+        //ctxd, image, dest_canvas, dest_w, dest_h
         self.canvasToImage(ri, 'perspective_temp').then(function(image) {
             console.log(ctx_crop_bg_p);
             // dest canvas hi, source image hi, source image low 
@@ -509,11 +465,11 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             //p2 = new Perspective(ctx_crop_src_p, image, ctx_crop_src, iw, ih);
             p1 = new Perspective(ctx_crop_bg, canvas_original, image);
             p2 = new Perspective(ctx_crop_src, canvas_original, image);
-         
+
         });
 
-       //p1end = new Perspective(ctx_crop_bg, canvas_original, ctx_crop_bg, iw, ih);
-       //p2end = new Perspective(ctx_crop_src, crop_area_original, ctx_crop_src, iw, ih);
+        //p1end = new Perspective(ctx_crop_bg, canvas_original, ctx_crop_bg, iw, ih);
+        //p2end = new Perspective(ctx_crop_src, crop_area_original, ctx_crop_src, iw, ih);
 
         image_h = canvas_crop.height;
         image_w = canvas_crop.width;

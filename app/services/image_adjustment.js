@@ -339,12 +339,12 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
 
 
     this.perspective_setup = function(lo_w, lo_h, hi_w, hi_h) {
-
-        image_lo_w = lo_w;
-        image_lo_h = lo_h;
-        image_hi_w = hi_w;
-        image_hi_h = hi_h;
-
+        /*
+                image_lo_w = lo_w;
+                image_lo_h = lo_h;
+                image_hi_w = hi_w;
+                image_hi_h = hi_h;
+        */
         p_s = [
             [0, 0],
             [Number(lo_w), 0],
@@ -373,37 +373,11 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         ];
     };
 
-    // Perspective object, destination canvas
-    //p1, ctx_crop_bg, canvas_original, value, quality, w_low, h_low, w_hi, h_hi
-    // p, quality
-
-    // p -  // dest_canvas_hi, source_image_hi, source_image_low 
-    //this.perspectiveVChange = function(p, ctx, image, a, quality, wl, hl, wh, hh) {
     this.perspectiveVChange = function(p, a, quality) {
-        //console.log();
-        //if(quality == 'high'){
-            //var scale = image_lo_w / image_hi_w;
+        var scale = p.p.hi_lo_v_scale;
+        var amount_h = Math.round(p.p.hi_v_change * a);
+        var amount_l = amount_h * scale;
 
-              /*    cvso_hi.width = parseInt(source_image_hi.width);
-        cvso_hi.height = parseInt(source_image_hi.height);
-        cvso_lo.width = parseInt(source_image_lo.width);
-        cvso_lo.height = parseInt(source_image_lo.height);*/
-        //console.log(p);
-        var scale = p.p.cvso_lo.width / p.p.cvso_hi.width;
-            console.log(scale);
-            amount_h = Math.round((( p.p.cvso_hi.height * 100) / 100) / 1000 * a);
-        //} else {
-            //amount_l = Math.round(((wl * 100) / 100) / 1000 * a);
-            amount_l = amount_h * scale;
-        //}
-        
-        console.log(image_hi_w + ' : ' + image_lo_w + ' : ' + amount_h + ' : ' + amount_l);
-        //ctx.setTransform(1, 0, 0, 1, 0, 0);
-        //this.p.setTransform(1, 0, 0, 1, 0, 0);
-        // TL x, TL y
-        // TR x, TR y
-        // BR x, BR y
-        // BL x, BL y
         if (quality == 'high') {
             if (amount_h > 0) {
 
@@ -414,7 +388,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
                     [p_x_hi[3][0], p_x_hi[3][1]]
                 ];
 
-               p_x = [
+                p_x = [
                     [p_x[0][0], p_x[0][1]],
                     [p_x[1][0], p_s[1][1] + amount_l * -1],
                     [p_x[2][0], p_s[2][1] + amount_l],
@@ -432,7 +406,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
                     [p_x_hi[3][0], p_s_hi[3][1] + amount_h * -1]
                 ];
 
-                   p_x = [
+                p_x = [
                     [p_x[0][0], p_s[0][1] + amount_l],
                     [p_x[1][0], p_x[1][1]],
                     [p_x[2][0], p_x[2][1]],
@@ -452,7 +426,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
                     [p_x[3][0], p_x[3][1]]
                 ];
 
-                  p_x_hi = [
+                p_x_hi = [
                     [p_x_hi[0][0], p_x_hi[0][1]],
                     [p_x_hi[1][0], p_s_hi[1][1] + amount_h * -1],
                     [p_x_hi[2][0], p_s_hi[2][1] + amount_h],
@@ -470,7 +444,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
                     [p_x[3][0], p_s[3][1] + amount_l * -1]
                 ];
 
-                   p_x_hi = [
+                p_x_hi = [
                     [p_x_hi[0][0], p_s_hi[0][1] + amount_h],
                     [p_x_hi[1][0], p_x_hi[1][1]],
                     [p_x_hi[2][0], p_x_hi[2][1]],
@@ -484,36 +458,119 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
 
     };
 
-    this.perspectiveHChange = function(p, ctx, image, amount, quality) {
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-        // TL x, TL y
-        // TR x, TR y
-        // BR x, BR y
-        // BL x, BL y
-        if (amount >= 0) {
 
-            p_x = [
-                [p_s[0][0] + amount * -1, p_x[0][1]],
-                [p_s[1][0] + amount, p_x[1][1]],
-                [p_x[2][0], p_x[2][1]],
-                [p_x[3][0], p_x[3][1]]
-            ];
+    this.perspectiveHChange = function(p, a, quality) {
+        var scale = p.p.hi_lo_h_scale;
+        var amount_h = Math.round(p.p.hi_h_change * a);
+        var amount_l = amount_h * scale;
 
-            p.draw(p_x, amount, quality);
+        if (quality == 'high') {
+            if (amount_h > 0) {
 
+                p_x_hi = [
+                    [p_s_hi[0][0] + amount_h * -1, p_x_hi[0][1]],
+                    [p_s_hi[1][0] + amount_h, p_x_hi[1][1]],
+                    [p_x_hi[2][0], p_x_hi[2][1]],
+                    [p_x_hi[3][0], p_x_hi[3][1]]
+                ];
+
+                p_x = [
+                    [p_s[0][0] + amount_l * -1, p_x[0][1]],
+                    [p_s[1][0] + amount_l, p_x[1][1]],
+                    [p_x[2][0], p_x[2][1]],
+                    [p_x[3][0], p_x[3][1]]
+                ];
+
+                p.draw(p_x_hi, amount_h, quality);
+
+            } else {
+
+                p_x_hi = [
+                    [p_x_hi[0][0], p_x_hi[0][1]],
+                    [p_x_hi[1][0], p_x_hi[1][1]],
+                    [p_s_hi[2][0] + amount_h * -1, p_x_hi[2][1]],
+                    [p_s_hi[3][0] + amount_h, p_x_hi[3][1]]
+                ];
+
+                p_x = [
+                    [p_x[0][0], p_x[0][1]],
+                    [p_x[1][0], p_x[1][1]],
+                    [p_s[2][0] + amount_l * -1, p_x[2][1]],
+                    [p_s[3][0] + amount_l, p_x[3][1]]
+                ];
+
+                p.draw(p_x_hi, amount_h, quality);
+
+            }
         } else {
+            if (amount_l > 0) {
 
-            p_x = [
-                [p_x[0][0], p_x[0][1]],
-                [p_x[1][0], p_x[1][1]],
-                [p_s[2][0] + amount * -1, p_x[2][1]],
-                [p_s[3][0] + amount, p_x[3][1]]
-            ];
+                p_x = [
+                    [p_s[0][0] + amount_l * -1, p_x[0][1]],
+                    [p_s[1][0] + amount_l, p_x[1][1]],
+                    [p_x[2][0], p_x[2][1]],
+                    [p_x[3][0], p_x[3][1]]
+                ];
 
-            p.draw(p_x, amount, quality);
+                p_x_hi = [
+                    [p_s_hi[0][0] + amount_h * -1, p_x_hi[0][1]],
+                    [p_s_hi[1][0] + amount_h, p_x_hi[1][1]],
+                    [p_x_hi[2][0], p_x_hi[2][1]],
+                    [p_x_hi[3][0], p_x_hi[3][1]]
+                ];
+
+                p.draw(p_x, amount_l, quality);
+
+            } else {
+
+                p_x = [
+                    [p_x[0][0], p_x[0][1]],
+                    [p_x[1][0], p_x[1][1]],
+                    [p_s[2][0] + amount_l * -1, p_x[2][1]],
+                    [p_s[3][0] + amount_l, p_x[3][1]]
+                ];
+
+                p_x_hi = [
+                    [p_x_hi[0][0], p_x_hi[0][1]],
+                    [p_x_hi[1][0], p_x_hi[1][1]],
+                    [p_s_hi[2][0] + amount_h * -1, p_x_hi[2][1]],
+                    [p_s_hi[3][0] + amount_h, p_x_hi[3][1]]
+                ];
+
+                p.draw(p_x, amount_l, quality);
+
+            }
         }
 
     };
+
+
+    /*
+        this.perspectiveHChange = function(p, ctx, image, amount, quality) {
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            // TL x, TL y
+            // TR x, TR y
+            // BR x, BR y
+            // BL x, BL y
+            if (amount >= 0) {
+                p_x = [
+                    [p_s[0][0] + amount * -1, p_x[0][1]],
+                    [p_s[1][0] + amount, p_x[1][1]],
+                    [p_x[2][0], p_x[2][1]],
+                    [p_x[3][0], p_x[3][1]]
+                ];
+                p.draw(p_x, amount, quality);
+            } else {
+                p_x = [
+                    [p_x[0][0], p_x[0][1]],
+                    [p_x[1][0], p_x[1][1]],
+                    [p_s[2][0] + amount * -1, p_x[2][1]],
+                    [p_s[3][0] + amount, p_x[3][1]]
+                ];
+                p.draw(p_x, amount, quality);
+            }
+        };
+        */
 
     // Rotate
 

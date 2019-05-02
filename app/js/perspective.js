@@ -71,6 +71,11 @@ var html5jp = window.html5jp || {};
         var ctxt_hi = cvst_hi.getContext('2d');
         var ctxt_lo = cvst_lo.getContext('2d');
 
+        var hi_lo_v_scale = cvso_lo.width / cvso_hi.width;
+        var hi_lo_h_scale = cvso_lo.height / cvso_hi.height;
+        var hi_v_change = ((( cvso_hi.height * 100) / 100) / 1000).toFixed(2);
+        var hi_h_change = ((( cvso_hi.width * 100) / 100) / 1000).toFixed(2);
+
         this.p = {
             ctxd: ctxd,
             cvso_hi: cvso_hi,
@@ -78,7 +83,11 @@ var html5jp = window.html5jp || {};
             ctxo_hi: ctxo_hi,
             ctxo_lo: ctxo_lo,
             ctxt_hi: ctxt_hi,
-            ctxt_lo: ctxt_lo
+            ctxt_lo: ctxt_lo,
+            hi_lo_h_scale: hi_lo_h_scale,
+            hi_lo_v_scale: hi_lo_v_scale,
+            hi_h_change: hi_h_change,
+            hi_v_change: hi_v_change,
         };
         
         //var ctxt = ctxd;
