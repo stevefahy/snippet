@@ -332,10 +332,12 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
     var p_s_hi;
     var p_x_hi;
 
+/*
     var image_lo_w;
     var image_lo_h;
     var image_hi_w;
     var image_hi_h;
+    */
 
 
     this.perspective_setup = function(lo_w, lo_h, hi_w, hi_h) {
@@ -396,6 +398,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
                 ];
 
                 p.draw(p_x_hi, amount_h, quality);
+
 
             } else {
 
@@ -571,6 +574,13 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             }
         };
         */
+    this.setRotateTransform = function(t){
+        this.rotateTransform = t;
+    };
+
+    this.getRotateTransform = function(){
+        return this.t;
+    };
 
     // Rotate
 
@@ -608,6 +618,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         var dx = Math.cos(adjusted_angle) * scale;
         var dy = Math.sin(adjusted_angle) * scale;
 
+        self.setRotateTransform([dx, dy, -dy, dx, cw, ch]);
         ctx.setTransform(dx, dy, -dy, dx, cw, ch);
         ctx.drawImage(image, -iw, -ih);
 

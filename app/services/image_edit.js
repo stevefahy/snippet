@@ -354,6 +354,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                         $rootScope.slider_settings.rotate.amount = ia.rotate;
                         // rotate the image(s).
                         self.sliderRotateChange(ia.rotate);
+                         initCropPerspective(parent_container, id);
                     }
                 }
                 var original_image = $('.content_cnv #cropper_' + id + ' #image_' + id)[0];
@@ -424,11 +425,33 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         return canvas;
     };
 
-    initCropRotate = function(parent_container, id) {
+    initCropPerspective= function(parent_container, id) {
         var deferred = $q.defer();
-        var canvas_orig = $('.crop_bg')[0];
+
+           var canvas_orig = $('.crop_bg')[0];
         var canvas_crop = $('#crop_src')[0];
 
+
+
+        var ww = Math.round(window.innerWidth / 1.7);
+        var iw = canvas_orig.width;
+        var ih = canvas_orig.height;
+        var scale = ww / iw;
+        var scaled_height = Math.round(ih * scale);
+        var ri = resizeImage(canvas_orig, ww, scaled_height);
+        // ctx_crop_bg_p = ri.getContext('2d', { alpha: false });
+        //ctx_crop_src_p = ri.getContext('2d', { alpha: false });
+        self.canvasToImage(ri, 'perspective_temp').then(function(image) {
+            //dest_canvas_hi, source_image_hi, source_image_lo
+            //p1 = new Perspective(ctx_crop_bg, canvas_orig, image);
+            //p2 = new Perspective(ctx_crop_src, canvas_orig, image);
+            p1 = new Perspective(canvas_orig, canvas_orig, image);
+            p2 = new Perspective(canvas_crop, canvas_orig, image);
+        });
+        ImageAdjustment.perspective_setup(ww, scaled_height, canvas_original.width, canvas_original.height);
+        /*
+        var canvas_orig = $('.crop_bg')[0];
+        var canvas_crop = $('#crop_src')[0];
 
         var ww = Math.round(window.innerWidth / 1.7);
         //var ww = Math.round(canvas_orig.width / 2 );
@@ -478,17 +501,25 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         h_hi = canvas_original.width;
         w_hi = canvas_original.height;
         ImageAdjustment.perspective_setup(ww, scaled_height, canvas_original.width, canvas_original.height);
-
-        /*
-        for (var i = $rootScope.slider_settings.perspective_v.options.floor, len = $rootScope.slider_settings.perspective_v.options.ceil; i <= len; i++) {
-            console.log(i);
-            self.sliderperspectiveVChange(i);
-        }
-        */
+*/
 
         deferred.resolve();
 
 
+        return deferred.promise;
+    };
+
+    initCropRotate = function(parent_container, id) {
+        var deferred = $q.defer();
+        var canvas_orig = $('.crop_bg')[0];
+        var canvas_crop = $('#crop_src')[0];
+        canvas_original = ImageAdjustment.cloneCanvas(canvas_orig);
+        crop_area_original = ImageAdjustment.cloneCanvas(canvas_crop);
+        var canvas = $('.crop_bg')[0];
+        ctx_crop_bg = canvas.getContext('2d', { alpha: false });
+        var canvas2 = $('#crop_src')[0];
+        ctx_crop_src = canvas2.getContext('2d', { alpha: false });
+        deferred.resolve();
         return deferred.promise;
     };
 
