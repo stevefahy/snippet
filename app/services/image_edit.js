@@ -386,8 +386,10 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             //w = w_hi;
             //h = h_hi;
          //   console.log('V change high p1end');
-            ImageAdjustment.perspectiveVChange(p1end, ctx_crop_bg, canvas_original, value, quality, w_low, h_low, w_hi, h_hi);
-          ImageAdjustment.perspectiveVChange(p2end, ctx_crop_src, crop_area_original, value, quality, w_low, h_low, w_hi, h_hi);
+           // ImageAdjustment.perspectiveVChange(p1end, ctx_crop_bg, canvas_original, value, quality, w_low, h_low, w_hi, h_hi);
+          //ImageAdjustment.perspectiveVChange(p2end, ctx_crop_src, crop_area_original, value, quality, w_low, h_low, w_hi, h_hi);
+                    ImageAdjustment.perspectiveVChange(p1, ctx_crop_bg, canvas_original, value, quality, w_low, h_low, w_hi, h_hi);
+            ImageAdjustment.perspectiveVChange(p2, ctx_crop_src, crop_area_original, value, quality, w_low, h_low, w_hi, h_hi);
         }
             //ImageAdjustment.perspectiveVChange(p1, ctx_crop_bg, canvas_original, value, quality, w, h);
            //ImageAdjustment.perspectiveVChange(p2, ctx_crop_src, crop_area_original, value, quality, w, h);
@@ -499,14 +501,18 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 //ctxd, image, dest_canvas, dest_w, dest_h
         self.canvasToImage(ri, 'perspective_temp').then(function(image) {
             console.log(ctx_crop_bg_p);
-            p1 = new Perspective(ctx_crop_bg_p, image, ctx_crop_bg, iw, ih);
-            p2 = new Perspective(ctx_crop_src_p, image, ctx_crop_src, iw, ih);
+            // dest canvas hi, source image hi, source image low 
 
+
+            //p1 = new Perspective(ctx_crop_bg_p, image, ctx_crop_bg, iw, ih);
+            //p2 = new Perspective(ctx_crop_src_p, image, ctx_crop_src, iw, ih);
+            p1 = new Perspective(ctx_crop_bg, canvas_original, image);
+            p2 = new Perspective(ctx_crop_src, canvas_original, image);
          
         });
 
-       p1end = new Perspective(ctx_crop_bg, canvas_original, ctx_crop_bg, iw, ih);
-       p2end = new Perspective(ctx_crop_src, crop_area_original, ctx_crop_src, iw, ih);
+       //p1end = new Perspective(ctx_crop_bg, canvas_original, ctx_crop_bg, iw, ih);
+       //p2end = new Perspective(ctx_crop_src, crop_area_original, ctx_crop_src, iw, ih);
 
         image_h = canvas_crop.height;
         image_w = canvas_crop.width;

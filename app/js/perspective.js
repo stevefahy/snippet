@@ -30,7 +30,86 @@ var html5jp = window.html5jp || {};
     /* -------------------------------------------------------------------
      * constructor
      * ----------------------------------------------------------------- */
+    //ctx_crop_bg_p, image, ctx_crop_bg, iw, ih
+    
+    // dest_canvas_hi, source_image_hi, source_image_low 
+    html5jp.perspective = function(dest_canvas_hi, source_image_hi, source_image_lo) {
+        // ctxd - p source canvas 
+        // image - source image
+
+        // cvso - p canvas for the image
+        // ctxo - p ctx of cvso
+        // cvst - canvas for the transformed image
+        // ctxt - p ctx of cvst
+
+        // check the arguments
+        //if( ! ctxd || ! ctxd.strokeStyle ) { return; }
+        //if( ! image || ! image.width || ! image.height ) { return; }
+
+        var ctxd = dest_canvas_hi;
+
+        // prepare a <canvas> for the image
+        var cvso_hi = document.createElement('canvas');
+        var cvso_lo = document.createElement('canvas');
+        cvso_hi.width = parseInt(source_image_hi.width);
+        cvso_hi.height = parseInt(source_image_hi.height);
+        cvso_lo.width = parseInt(source_image_lo.width);
+        cvso_lo.height = parseInt(source_image_lo.height);
+
+        var ctxo_hi = cvso_hi.getContext('2d', { alpha: false });
+        ctxo_hi.drawImage(source_image_hi, 0, 0, cvso_hi.width, cvso_hi.height);
+        var ctxo_lo = cvso_lo.getContext('2d', { alpha: false });
+        ctxo_lo.drawImage(source_image_lo, 0, 0, cvso_lo.width, cvso_lo.height);
+        
+        // prepare a <canvas> for the transformed image
+        var cvst_hi = document.createElement('canvas');
+        cvst_hi.width = cvso_hi.width;
+        cvst_hi.height = cvso_hi.height;
+        var cvst_lo = document.createElement('canvas');
+        cvst_lo.width = cvso_lo.width;
+        cvst_lo.height = cvso_lo.height;
+        var ctxt_hi = cvst_hi.getContext('2d');
+        var ctxt_lo = cvst_lo.getContext('2d');
+
+        this.p = {
+            ctxd: ctxd,
+            cvso_hi: cvso_hi,
+            cvso_lo: cvso_lo,
+            ctxo_hi: ctxo_hi,
+            ctxo_lo: ctxo_lo,
+            ctxt_hi: ctxt_hi,
+            ctxt_lo: ctxt_lo,
+        };
+        
+        //var ctxt = ctxd;
+
+         //ctxt.imageSmoothingQuality = "low";
+        // parameters
+        /*
+        this.p = {
+            ctxd: ctxd,
+            cvso: cvso,
+            ctxo: ctxo,
+            ctxt: ctxt
+        };
+        */
+        
+        this.cache = {};
+        //this.dest_canvas = dest_canvas;
+        //this.dest_w = dest_w;
+        //this.dest_h = dest_h;
+    };
+
+    /*
     html5jp.perspective = function(ctxd, image, dest_canvas, dest_w, dest_h) {
+        // ctxd - p source canvas 
+        // image - source image
+
+        // cvso - p canvas for the image
+        // ctxo - p ctx of cvso
+        // cvst - canvas for the transformed image
+        // ctxt - p ctx of cvst
+
         console.log(dest_w + ' : ' + dest_h);
         console.log(image.width + ' : ' + image.height);
         // check the arguments
@@ -38,11 +117,11 @@ var html5jp = window.html5jp || {};
         if( ! image || ! image.width || ! image.height ) { return; }
         // prepare a <canvas> for the image
         var cvso = document.createElement('canvas');
-        cvso.imageSmoothingQuality = "low";
+        //cvso.imageSmoothingQuality = "low";
         cvso.width = parseInt(image.width);
         cvso.height = parseInt(image.height);
         var ctxo = cvso.getContext('2d', { alpha: false });
-        ctxo.imageSmoothingQuality = "low";
+        //ctxo.imageSmoothingQuality = "low";
         ctxo.drawImage(image, 0, 0, cvso.width, cvso.height);
         // prepare a <canvas> for the transformed image
 
@@ -65,20 +144,12 @@ var html5jp = window.html5jp || {};
             ctxt: ctxt
         };
         
-        /*
-        this.p = {
-            ctxd: ctxd,
-            cvso: cvso,
-            ctxo: ctxo,
-            ctxt: ctxt
-        };
-        */
-
         this.cache = {};
         this.dest_canvas = dest_canvas;
         this.dest_w = dest_w;
         this.dest_h = dest_h;
     };
+    */
 
     /* -------------------------------------------------------------------
      * prototypes
@@ -90,12 +161,177 @@ var html5jp = window.html5jp || {};
      * public methods
      * ----------------------------------------------------------------- */
 
+   proto.draw = function(points, amount, quality, w, h) {
+        // ctxd - p destination canvas 
+        // image - source image
+        // cvso - p canvas for the image
+        // ctxo - p ctx of cvso
+        // cvst - canvas for the transformed image
+        // ctxt - p ctx of cvst
+        /*
+        this.p = {
+            ctxd: ctxd,
+            cvso_hi: cvso_hi,
+            cvso_lo: cvso_lo,
+            ctxo_hi: ctxo_hi,
+            ctxo_lo: ctxo_lo,
+            ctxt: ctxt
+        };
+        */
+        console.log(this.p.ctxd);
+        console.log(points + ' : ' + amount + ' : ' + quality + ' : ' + w + ' :' + h);
+ 
+        // clear the destination canvas
+        this.p.ctxd.setTransform(1, 0, 0, 1, 0, 0);
+
+        //console.log(amount);
+        var d0x = points[0][0];
+        var d0y = points[0][1];
+        var d1x = points[1][0];
+        var d1y = points[1][1];
+        var d2x = points[2][0];
+        var d2y = points[2][1];
+        var d3x = points[3][0];
+        var d3y = points[3][1];
+        // compute the dimension of each side
+        var dims = [
+            Math.sqrt( Math.pow(d0x-d1x, 2) + Math.pow(d0y-d1y, 2) ), // top side
+            Math.sqrt( Math.pow(d1x-d2x, 2) + Math.pow(d1y-d2y, 2) ), // right side
+            Math.sqrt( Math.pow(d2x-d3x, 2) + Math.pow(d2y-d3y, 2) ), // bottom side
+            Math.sqrt( Math.pow(d3x-d0x, 2) + Math.pow(d3y-d0y, 2) )  // left side
+                ];
+        //
+        if(quality == 'high'){
+            var ow = this.p.cvso_hi.width;
+            var oh = this.p.cvso_hi.height;
+        } else {
+            var ow = this.p.cvso_lo.width;
+            var oh = this.p.cvso_lo.height;
+        }
+        
+        // specify the index of which dimension is longest
+        var base_index = 0;
+        var max_scale_rate = 0;
+        var zero_num = 0;
+        for( var i=0; i<4; i++ ) {
+            var rate = 0;
+            if( i % 2 ) {
+                rate = dims[i] / ow;
+            } else {
+                rate = dims[i] / oh;
+            }
+            if( rate > max_scale_rate ) {
+                base_index = i;
+                max_scale_rate = rate;
+            }
+            if( dims[i] == 0 ) {
+                zero_num ++;
+            }
+        }
+        if(zero_num > 1) { return; }
+        //
+        var step = 2;
+        var cover_step = step * 5;
+        //
+
+             /*
+        this.p = {
+            ctxd: ctxd,
+            cvso_hi: cvso_hi,
+            cvso_lo: cvso_lo,
+            ctxo_hi: ctxo_hi,
+            ctxo_lo: ctxo_lo,
+            ctxt: ctxt
+        };
+        */
+        var cvso_hi = this.p.cvso_hi;
+        var cvso_lo = this.p.cvso_lo;
+        if(quality == 'high'){
+        var ctxo = this.p.ctxo_hi;
+         var ctxt = this.p.ctxt_hi;
+    } else {
+        console.log('lo');
+        var ctxo = this.p.ctxo_lo;
+        var ctxt = this.p.ctxt_lo;
+    }
+        var ctxd = this.p.ctxd;
+       
+
+
+        //ctxt.clearRect(0, 0, ctxt.canvas.width, ctxt.canvas.height);
+        if(base_index % 2 == 0) { // top or bottom side
+            var ctxl = this.create_canvas_context(ow, cover_step);
+             //var ctxl = this.create_canvas_context(cvso_hi.width, cvso_hi.height);
+            ctxl.globalCompositeOperation = "copy";
+            var cvsl = ctxl.canvas;
+            for( var y=0; y<oh; y+=step ) {
+                var r = y / oh;
+                var sx = d0x + (d3x-d0x) * r;
+                var sy = d0y + (d3y-d0y) * r;
+                var ex = d1x + (d2x-d1x) * r;
+                var ey = d1y + (d2y-d1y) * r;
+                var ag = Math.atan( (ey-sy) / (ex-sx) );
+                var sc = Math.sqrt( Math.pow(ex-sx, 2) + Math.pow(ey-sy, 2) ) / ow;
+                ctxl.setTransform(1, 0, 0, 1, 0, -y);
+                ctxl.drawImage(ctxo.canvas, 0, 0);
+                //
+                ctxt.translate(sx, sy);
+                ctxt.rotate(ag);
+                ctxt.scale(sc, sc);
+                ctxt.drawImage(cvsl, 0, 0);
+                //
+                ctxt.setTransform(1, 0, 0, 1, 0, 0);
+            }
+        } else if(base_index % 2 == 1) { // right or left side
+            var ctxl = this.create_canvas_context(cover_step, oh);
+            //var ctxl = this.create_canvas_context(cvso_hi.height, cvso_hi.width);
+            ctxl.globalCompositeOperation = "copy";
+            var cvsl = ctxl.canvas;
+            for( var x=0; x<ow; x+=step ) {
+                var r =  x / ow;
+                var sx = d0x + (d1x-d0x) * r;
+                var sy = d0y + (d1y-d0y) * r;
+                var ex = d3x + (d2x-d3x) * r;
+                var ey = d3y + (d2y-d3y) * r;
+                var ag = Math.atan( (sx-ex) / (ey-sy) );
+                var sc = Math.sqrt( Math.pow(ex-sx, 2) + Math.pow(ey-sy, 2) ) / oh;
+                ctxl.setTransform(1, 0, 0, 1, -x, 0);
+                ctxl.drawImage(ctxo.canvas, 0, 0);
+                //
+                ctxt.translate(sx, sy);
+                ctxt.rotate(ag);
+                ctxt.scale(sc, sc);
+                ctxt.drawImage(cvsl, 0, 0);
+                //
+                ctxt.setTransform(1, 0, 0, 1, 0, 0);
+            }
+        }
+        // set a clipping path and draw the transformed image on the destination canvas.
+        //this.p.ctxd.save();
+
+console.log(cvso_hi.width + ' : ' + cvso_hi.height);
+           //this.dest_canvas.drawImage(ctxt.canvas, 0, 0, this.dest_w, this.dest_h);
+         this.p.ctxd.drawImage(ctxt.canvas, 0, 0, cvso_hi.width, cvso_hi.height);
+
+        //this._applyMask(this.p.ctxd, [[d0x, d0y], [d1x, d1y], [d2x, d2y], [d3x, d3y]]);
+        //this.p.ctxd.restore();
+
+        return;
+    };
+/*
     proto.draw = function(points, amount, quality, w, h) {
-        console.log(this.p);
+        // ctxd - p destination canvas 
+        // image - source image
+        // cvso - p canvas for the image
+        // ctxo - p ctx of cvso
+        // cvst - canvas for the transformed image
+        // ctxt - p ctx of cvst
+        console.log(this.p.ctxd);
 console.log(points + ' : ' + amount + ' : ' + quality + ' : ' + w + ' :' + h);
         //if(this.cache[points] == undefined){
 
-
+            // clear the destination canvas
+            this.dest_canvas.setTransform(1, 0, 0, 1, 0, 0);
 
         //console.log(amount);
         var d0x = points[0][0];
@@ -195,21 +431,7 @@ console.log(ctxd);
         // set a clipping path and draw the transformed image on the destination canvas.
         this.p.ctxd.save();
         //console.log(this.cache[amount]);
-        /*
-        if(this.cache[points] == undefined){
-            //console.log('CACHE: ' + amount);
-            var canvas_cache = 'cached_' + amount;
-            canvas_cache = document.createElement('canvas');
-            canvas_cache.width = ctxt.canvas.width;
-            canvas_cache.height = ctxt.canvas.height;
-            var ctx = canvas_cache.getContext('2d', { alpha: false });
-            ctx.drawImage(ctxt.canvas, 0, 0);
-
-            this.cache[points] = canvas_cache;
-
-
-        }
-        */
+        
         //if(quality == 'high'){
     // this.p.ctxd.drawImage(ctxt.canvas, 0, 0, this.dest_w, this.dest_h);
        //} else {
@@ -227,10 +449,8 @@ console.log(ctxd);
      //    this.dest_canvas.drawImage(this.cache[points], 0, 0, this.dest_w, this.dest_h);
         //this.p.ctxd.drawImage(this.cache[points], 0, 0);
     //}
-
- 
-
     };
+    */
 
     /* -------------------------------------------------------------------
      * private methods
@@ -241,7 +461,7 @@ console.log(ctxd);
         canvas.width = w;
         canvas.height = h;
         var ctx = canvas.getContext('2d', { alpha: false });
-        ctx.imageSmoothingQuality = "low";
+        //ctx.imageSmoothingQuality = "low";
         return ctx;
     };
 
