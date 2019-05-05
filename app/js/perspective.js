@@ -318,9 +318,8 @@ var html5jp = window.html5jp || {};
         // set a clipping path and draw the transformed image on the destination canvas.
         //this.p.ctxd.save();
 
-console.log(cvso_hi.width + ' : ' + cvso_hi.height);
-var update = this.p.ctxd.getContext('2d', { alpha: false });
-           //this.dest_canvas.drawImage(ctxt.canvas, 0, 0, this.dest_w, this.dest_h);
+        var update = this.p.ctxd.getContext('2d', { alpha: false });
+        //this.p.ctxd.drawImage(ctxt.canvas, 0, 0, this.dest_w, this.dest_h);
          update.drawImage(ctxt.canvas, -cvso_hi.width/2, -cvso_hi.height/2, cvso_hi.width, cvso_hi.height);
 
         //this._applyMask(this.p.ctxd, [[d0x, d0y], [d1x, d1y], [d2x, d2y], [d3x, d3y]]);
