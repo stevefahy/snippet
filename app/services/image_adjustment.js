@@ -37,9 +37,12 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         console.log(parent_container + ' : ' + id);
         // Custom attribute for storing image adjustments.
         var ia = $('.' + parent_container + ' #image_' + id).attr('adjustment-data');
+        var adjustment_value;
         if (ia != undefined) {
             adjustment_data = JSON.parse(ia);
-            adjustment_value = adjustment_data[adjustment];
+            if(adjustment_data[adjustment]){
+                adjustment_value = adjustment_data[adjustment];
+            }
         }
         return adjustment_value;
     };
@@ -400,7 +403,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
                         self.perspectiveHChangeF(p, amount.horizontal, 'high').then(function() {
                             ctx.drawImage(p.ctxd, 0, 0);
                             console.log('perspective applied');
-                            self.sliderPerspectiveUpdate();
+                            //self.sliderPerspectiveUpdate();
                             deferred.resolve(new_canvas);
                         });
                     });
@@ -1473,6 +1476,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         self.setRotateTransform([dx, dy, -dy, dx, cw, ch]);
         ctx.setTransform(dx, dy, -dy, dx, cw, ch);
         ctx.drawImage(image, -iw, -ih);
+        //ctx.drawImage(image, -iw/2, -ih/2);
 
         //self.setRotatedImage(ctx);
         //ctx.save();

@@ -371,7 +371,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                     }
                 });
                 */
-                
+
                 var new_canvas2 = ImageAdjustment.cloneCanvas(target);
 
                 ImageAdjustment.perspectiveInit(new_canvas2).then(function(p) {
@@ -381,38 +381,44 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                         console.log(p);
 
                         var ctx1 = $('.crop_bg')[0].getContext('2d');
-                                    console.log(ctx1);
-                                    var ctx2 = $('#crop_src')[0].getContext('2d');
+                        console.log(ctx1);
+                        var ctx2 = $('#crop_src')[0].getContext('2d');
                         p.ctxd1 = ctx1;
                         p.ctxd2 = ctx2;
                         ImageAdjustment.setPerspective(p);
+                        if (ia != undefined) {
                         if (ia.perspective != undefined) {
                             $rootScope.slider_settings.perspective_v.amount = ia.perspective.vertical;
                             $rootScope.slider_settings.perspective_h.amount = ia.perspective.horizontal;
                             ImageAdjustment.perspectiveVChange(p, ia.perspective.vertical, 'high');
                             ImageAdjustment.perspectiveHChange(p, ia.perspective.horizontal, 'high');
-                                    //$(img_bg).addClass('crop_bg');
-                                    //$(img).attr('id', 'crop_src');
-                                    //var ctx1 = $('.crop_bg')[0].getContext('2d');
-                                    //console.log(ctx1);
-                                    //var ctx2 = $('#crop_src')[0].getContext('2d');
-                                    //console.log(ctx1);
-                                    //console.log(ctx2);
-                                    //console.log(result);
-                                    //var update = p.ctxd.getContext('2d');
-                                    //update.setTransform(1, 0, 0, 1, 0, 0);
-                                    //ctx.drawImage(p.ctxd, 0, 0);
-                                    //ctx1.drawImage(result.ctxd,  -p.cvso_hi.width ,  -p.cvso_hi.height ,p.cvso_hi.width, p.cvso_hi.height);
-                                    //ctx2.drawImage(result.ctxd,  -p.cvso_hi.width, -p.cvso_hi.height,p.cvso_hi.width, p.cvso_hi.height);
-                                    //ctx2.drawImage(p.ctxd, 0, 0);
-                                    console.log('perspective applied');
-                                    //deferred.resolve(new_canvas);
-                                //});
+                            
+                            sliderRotateUpdate();                            
+
+
+                            //$(img_bg).addClass('crop_bg');
+                            //$(img).attr('id', 'crop_src');
+                            //var ctx1 = $('.crop_bg')[0].getContext('2d');
+                            //console.log(ctx1);
+                            //var ctx2 = $('#crop_src')[0].getContext('2d');
+                            //console.log(ctx1);
+                            //console.log(ctx2);
+                            //console.log(result);
+                            //var update = p.ctxd.getContext('2d');
+                            //update.setTransform(1, 0, 0, 1, 0, 0);
+                            //ctx.drawImage(p.ctxd, 0, 0);
+                            //ctx1.drawImage(result.ctxd,  -p.cvso_hi.width ,  -p.cvso_hi.height ,p.cvso_hi.width, p.cvso_hi.height);
+                            //ctx2.drawImage(result.ctxd,  -p.cvso_hi.width, -p.cvso_hi.height,p.cvso_hi.width, p.cvso_hi.height);
+                            //ctx2.drawImage(p.ctxd, 0, 0);
+                            console.log('perspective applied');
+                            //deferred.resolve(new_canvas);
+                            //});
                             //});
                         }
+                    }
                     });
                 });
-                
+
 
 
 
@@ -428,8 +434,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         });
     };
 
-    this.sliderRotateUpdate = function(){
-        console.log(sliderRotateUpdate);
+    this.sliderRotateUpdate = function() {
+        console.log('sliderRotateUpdate');
         //ImageAdjustment.sliderRotateUpdate();
         /*
                                var canvas_orig = $('.crop_bg')[0];
@@ -443,26 +449,27 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         //ctx_crop_src = canvas2.getContext('2d', { alpha: false });
         //var ctx = ctx_crop_bg;
 
-        
+
 
         var parent_container = ImageAdjustment.getImageParent();
         var id = ImageAdjustment.getImageId();
         var image = $('.' + parent_container + ' #image_' + id)[0];
-         var canvas = document.createElement('canvas');
+        var canvas = document.createElement('canvas');
         canvas.width = image.width;
         canvas.height = image.height;
         var ctx = canvas.getContext('2d');
         ctx.drawImage(image, 0, 0);
-        var ctx = canvas.getContext('2d', { alpha: false });
+        //var ctx = canvas.getContext('2d', { alpha: false });
         var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
         //ImageAdjustment.perspective(ctx.canvas, ia.perspective).then(function(image2) {
+        ia.crop = undefined;
         ImageAdjustment.applyFilters(ctx.canvas, ia).then(function(image2) {
-        
 
 
-            console.log(image2);
-             var img = $(image2).appendTo('.' + parent_container + ' #cropper_' + id + ' .crop_area');
-            $(img).attr('id','steve');
+
+           //console.log(image2);
+            //var img = $(image2).appendTo('.' + parent_container + ' #cropper_' + id + ' .crop_area');
+            //$(img).attr('id', 'steve');
 
             canvas_original = ImageAdjustment.cloneCanvas(image2);
             crop_area_original = ImageAdjustment.cloneCanvas(image2);
@@ -472,10 +479,10 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
     this.sliderRotateChange = function(value) {
-    //    ctx_crop_bg = ctx_crop_bg.canvas.getContext('2d', { alpha: false });
-//ctx_crop_src = ctx_crop_src.canvas.getContext('2d', { alpha: false });
-   
-       ImageAdjustment.quickRotate(ctx_crop_bg, canvas_original, value);
+        //    ctx_crop_bg = ctx_crop_bg.canvas.getContext('2d', { alpha: false });
+        //ctx_crop_src = ctx_crop_src.canvas.getContext('2d', { alpha: false });
+
+        ImageAdjustment.quickRotate(ctx_crop_bg, canvas_original, value);
         ImageAdjustment.quickRotate(ctx_crop_src, crop_area_original, value);
     };
 
@@ -500,10 +507,10 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             };
         }
         ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'perspective', persp_object);
-    sliderRotateUpdate();
+        sliderRotateUpdate();
     };
 
-    this.sliderPerspectiveUpdate = function(){
+    this.sliderPerspectiveUpdate = function() {
         ImageAdjustment.sliderPerspectiveUpdate();
     };
 
