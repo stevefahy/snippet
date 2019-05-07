@@ -3152,7 +3152,7 @@ span.after_image {
 }
 
 #crop_src {
-    display: unset !important;
+    /*display: unset !important;*/
     max-width: 100%;
 }
 

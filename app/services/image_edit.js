@@ -356,6 +356,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                         self.sliderRotateChange(ia.rotate);
                     }
                 }
+                /*
                 initCropPerspective(parent_container, id).then(function(result) {
                     if (ia != undefined) {
                         perspective_data = ia.perspective;
@@ -369,6 +370,52 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                         }
                     }
                 });
+                */
+                
+                var new_canvas2 = ImageAdjustment.cloneCanvas(target);
+
+                ImageAdjustment.perspectiveInit(new_canvas2).then(function(p) {
+                    console.log(p);
+                    //cp = p;
+                    ImageAdjustment.perspective_setup(p.cvso_lo.width, p.cvso_lo.height, p.cvso_hi.width, p.cvso_hi.height).then(function() {
+                        console.log(p);
+
+                        var ctx1 = $('.crop_bg')[0].getContext('2d');
+                                    console.log(ctx1);
+                                    var ctx2 = $('#crop_src')[0].getContext('2d');
+                        p.ctxd1 = ctx1;
+                        p.ctxd2 = ctx2;
+                        ImageAdjustment.setPerspective(p);
+                        if (ia.perspective != undefined) {
+                            $rootScope.slider_settings.perspective_v.amount = ia.perspective.vertical;
+                            $rootScope.slider_settings.perspective_h.amount = ia.perspective.horizontal;
+                            ImageAdjustment.perspectiveVChange(p, ia.perspective.vertical, 'high');
+                            ImageAdjustment.perspectiveHChange(p, ia.perspective.horizontal, 'high');
+                                    //$(img_bg).addClass('crop_bg');
+                                    //$(img).attr('id', 'crop_src');
+                                    //var ctx1 = $('.crop_bg')[0].getContext('2d');
+                                    //console.log(ctx1);
+                                    //var ctx2 = $('#crop_src')[0].getContext('2d');
+                                    //console.log(ctx1);
+                                    //console.log(ctx2);
+                                    //console.log(result);
+                                    //var update = p.ctxd.getContext('2d');
+                                    //update.setTransform(1, 0, 0, 1, 0, 0);
+                                    //ctx.drawImage(p.ctxd, 0, 0);
+                                    //ctx1.drawImage(result.ctxd,  -p.cvso_hi.width ,  -p.cvso_hi.height ,p.cvso_hi.width, p.cvso_hi.height);
+                                    //ctx2.drawImage(result.ctxd,  -p.cvso_hi.width, -p.cvso_hi.height,p.cvso_hi.width, p.cvso_hi.height);
+                                    //ctx2.drawImage(p.ctxd, 0, 0);
+                                    console.log('perspective applied');
+                                    //deferred.resolve(new_canvas);
+                                //});
+                            //});
+                        }
+                    });
+                });
+                
+
+
+
                 var original_image = $('.content_cnv #cropper_' + id + ' #image_' + id)[0];
                 //Make the DIV element draggagle:
                 Drag.setUp(document.getElementById("drag"), document.getElementById("crop_src"), document.querySelector('.crop_area'));
@@ -381,8 +428,54 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         });
     };
 
+    this.sliderRotateUpdate = function(){
+        
+        //ImageAdjustment.sliderRotateUpdate();
+        /*
+                               var canvas_orig = $('.crop_bg')[0];
+        var canvas_crop = $('#crop_src')[0];
+        canvas_original = ImageAdjustment.cloneCanvas(canvas_orig);
+        crop_area_original = ImageAdjustment.cloneCanvas(canvas_crop);
+        var canvas = $('.crop_bg')[0];
+        var ctx_crop_bg = canvas.getContext('2d', { alpha: false });
+        var canvas2 = $('#crop_src')[0];
+        */
+        //ctx_crop_src = canvas2.getContext('2d', { alpha: false });
+        //var ctx = ctx_crop_bg;
+
+        
+
+        var parent_container = ImageAdjustment.getImageParent();
+        var id = ImageAdjustment.getImageId();
+        var image = $('.' + parent_container + ' #image_' + id)[0];
+         var canvas = document.createElement('canvas');
+        canvas.width = image.width;
+        canvas.height = image.height;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(image, 0, 0);
+        var ctx = canvas.getContext('2d', { alpha: false });
+        var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
+        //ImageAdjustment.perspective(ctx.canvas, ia.perspective).then(function(image2) {
+        ImageAdjustment.applyFilters(ctx.canvas, ia).then(function(image2) {
+        
+
+
+            console.log(image2);
+             var img = $(image2).appendTo('.' + parent_container + ' #cropper_' + id + ' .crop_area');
+            $(img).attr('id','steve');
+
+            canvas_original = ImageAdjustment.cloneCanvas(image2);
+            crop_area_original = ImageAdjustment.cloneCanvas(image2);
+            ctx_crop_bg.drawImage(image2,0,0);
+        });
+
+    };
+
     this.sliderRotateChange = function(value) {
-        ImageAdjustment.quickRotate(ctx_crop_bg, canvas_original, value);
+    //    ctx_crop_bg = ctx_crop_bg.canvas.getContext('2d', { alpha: false });
+//ctx_crop_src = ctx_crop_src.canvas.getContext('2d', { alpha: false });
+   
+       ImageAdjustment.quickRotate(ctx_crop_bg, canvas_original, value);
         ImageAdjustment.quickRotate(ctx_crop_src, crop_area_original, value);
     };
 
@@ -408,6 +501,12 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         }
         ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'perspective', persp_object);
     };
+
+    this.sliderPerspectiveUpdate = function(){
+        ImageAdjustment.sliderPerspectiveUpdate();
+    };
+
+
 
     this.sliderperspectiveVChange = function(value, quality) {
         ImageAdjustment.perspectiveVChange(p1, value, quality);
@@ -677,20 +776,26 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             if (ia != undefined) {
                 // Target canvas
                 ImageAdjustment.applyFilters(source, ia).then(function(result) {
+                    console.log('Filters applied target');
                     target.width = result.width;
                     target.height = result.height;
                     var ctx = target.getContext('2d');
                     ctx.drawImage(result, 0, 0);
-                });
-                // Source canvas (all adjustments less filter)
-                ia.filter = undefined;
-                ImageAdjustment.applyFilters(source, ia).then(function(result) {
-                    self.canvasToTempImage(result, id).then(function(image) {
-                        self.buildFilters(parent_container, id, image);
-                        $(target).removeClass('hide');
-                        hideAdjusted(parent_container, id);
+
+
+                    // Source canvas (all adjustments less filter)
+                    ia.filter = undefined;
+                    ImageAdjustment.applyFilters(source, ia).then(function(result) {
+                        console.log('Filters applied source');
+                        self.canvasToTempImage(result, id).then(function(image) {
+                            self.buildFilters(parent_container, id, image);
+                            $(target).removeClass('hide');
+                            hideAdjusted(parent_container, id);
+                        });
                     });
+
                 });
+
             } else {
                 // Source canvas - no adjustments
                 self.canvasToTempImage(source, id).then(function(image) {

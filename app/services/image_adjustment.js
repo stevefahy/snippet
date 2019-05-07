@@ -2,7 +2,7 @@
 // ImageAdjustment Service
 //
 
-cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'General', 'UserData', 'principal', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, General, UserData, principal) {
+cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'General', 'UserData', 'principal', '$injector', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, General, UserData, principal, $injector) {
 
     var self = this;
     var image_id;
@@ -321,6 +321,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
     // Apply all image adjustments passed in the filters object.
 
     this.applyFilters = function(source, filters) {
+        console.log('applyFilters');
         var deferred = $q.defer();
         if (filters == undefined) {
             filters = { sharpen: undefined, filter: undefined, rotate: undefined, crop: undefined, perspective: undefined };
@@ -330,11 +331,12 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             .then(function(result) {
                 return self.sharpen(result, filters.sharpen);
             }).then(function(result) {
-                console.log(filters.perspective);
-                return self.perspectiveDraw(result, filters.perspective);
-            }).then(function(result) {
                 console.log(filters.rotate);
                 return self.rotate(result, filters.rotate);
+            }).then(function(result) {
+                console.log(filters.perspective);
+                return self.perspective(result, filters.perspective);
+
             }).then(function(result) {
                 return self.crop(result, filters.crop);
             }).then(function(result) {
@@ -376,7 +378,13 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         return ctx;
     };
 
-    this.perspectiveAdjust = function(source, amount) {
+
+
+    //this.perspectiveDraw = function(p, points, amount, quality, source) {
+
+    // self.perspectiveDraw(result, filters.perspective);
+    this.perspective = function(source, amount) {
+        console.log('perspective');
         var deferred = $q.defer();
         var new_canvas = document.createElement("canvas");
         new_canvas.width = source.width;
@@ -384,14 +392,42 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         var ctx = new_canvas.getContext('2d');
         ctx.drawImage(source, 0, 0);
         if (amount != undefined) {
+            self.perspectiveInit(source).then(function(p) {
+                console.log(p);
+                self.perspective_setup(p.cvso_lo.width, p.cvso_lo.height, p.cvso_hi.width, p.cvso_hi.height).then(function() {
+                    console.log(p);
+                    self.perspectiveVChangeF(p, amount.vertical, 'high').then(function() {
+                        self.perspectiveHChangeF(p, amount.horizontal, 'high').then(function() {
+                            ctx.drawImage(p.ctxd, 0, 0);
+                            console.log('perspective applied');
+                            deferred.resolve(new_canvas);
+                        });
+                    });
 
+                });
+
+                //self.doDraw()
+
+                // work out the points values and return them
+                //this.perspectiveVChange = function(p, a, quality) {
+
+                //deferred.resolve(new_canvas);
+
+            });
+        } else {
+            deferred.resolve(new_canvas);
         }
-
+        return deferred.promise;
     };
 
-    this.doDraw = function(p, points) {
+    this.perspectiveDraw = function(p, points, quality) {
         var deferred = $q.defer();
-        var quality = 'high';
+        console.log(p);
+        var ctxd = p.ctxd;
+        var update = ctxd.getContext('2d', { alpha: false });
+        // clear the destination canvas
+        //update.setTransform(1, 0, 0, 1, 0, 0);
+
         var d0x = points[0][0];
         var d0y = points[0][1];
         var d1x = points[1][0];
@@ -407,6 +443,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             Math.sqrt(Math.pow(d2x - d3x, 2) + Math.pow(d2y - d3y, 2)), // bottom side
             Math.sqrt(Math.pow(d3x - d0x, 2) + Math.pow(d3y - d0y, 2)) // left side
         ];
+        //
         if (quality == 'high') {
             var ow = p.cvso_hi.width;
             var oh = p.cvso_hi.height;
@@ -414,6 +451,8 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             var ow = p.cvso_lo.width;
             var oh = p.cvso_lo.height;
         }
+        console.log(ow + ' : ' + oh);
+
         // specify the index of which dimension is longest
         var base_index = 0;
         var max_scale_rate = 0;
@@ -434,20 +473,39 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             }
         }
         if (zero_num > 1) { return; }
+        //
         var step = 2;
         var cover_step = step * 5;
+        //
+
+        /*
+        this.p = {
+            ctxd: ctxd,
+            cvso_hi: cvso_hi,
+            cvso_lo: cvso_lo,
+            ctxo_hi: ctxo_hi,
+            ctxo_lo: ctxo_lo,
+            ctxt: ctxt
+        };
+        */
         var cvso_hi = p.cvso_hi;
         var cvso_lo = p.cvso_lo;
         if (quality == 'high') {
             var ctxo = p.ctxo_hi;
             var ctxt = p.ctxt_hi;
         } else {
+            console.log('lo');
             var ctxo = p.ctxo_lo;
             var ctxt = p.ctxt_lo;
         }
-        var ctxd = p.ctxd;
+
+
+
+
+        //ctxt.clearRect(0, 0, ctxt.canvas.width, ctxt.canvas.height);
         if (base_index % 2 == 0) { // top or bottom side
             var ctxl = create_canvas_context(ow, cover_step);
+            //var ctxl = this.create_canvas_context(cvso_hi.width, cvso_hi.height);
             ctxl.globalCompositeOperation = "copy";
             var cvsl = ctxl.canvas;
             for (var y = 0; y < oh; y += step) {
@@ -460,14 +518,17 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
                 var sc = Math.sqrt(Math.pow(ex - sx, 2) + Math.pow(ey - sy, 2)) / ow;
                 ctxl.setTransform(1, 0, 0, 1, 0, -y);
                 ctxl.drawImage(ctxo.canvas, 0, 0);
+                //
                 ctxt.translate(sx, sy);
                 ctxt.rotate(ag);
                 ctxt.scale(sc, sc);
                 ctxt.drawImage(cvsl, 0, 0);
+                //
                 ctxt.setTransform(1, 0, 0, 1, 0, 0);
             }
         } else if (base_index % 2 == 1) { // right or left side
             var ctxl = create_canvas_context(cover_step, oh);
+            //var ctxl = this.create_canvas_context(cvso_hi.height, cvso_hi.width);
             ctxl.globalCompositeOperation = "copy";
             var cvsl = ctxl.canvas;
             for (var x = 0; x < ow; x += step) {
@@ -480,55 +541,41 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
                 var sc = Math.sqrt(Math.pow(ex - sx, 2) + Math.pow(ey - sy, 2)) / oh;
                 ctxl.setTransform(1, 0, 0, 1, -x, 0);
                 ctxl.drawImage(ctxo.canvas, 0, 0);
+                //
                 ctxt.translate(sx, sy);
                 ctxt.rotate(ag);
                 ctxt.scale(sc, sc);
                 ctxt.drawImage(cvsl, 0, 0);
+                //
                 ctxt.setTransform(1, 0, 0, 1, 0, 0);
             }
         }
-        deferred.resolve(ctxt.canvas);
+        // set a clipping path and draw the transformed image on the destination canvas.
+        //this.p.ctxd.save();
 
-return deferred.promise;
+        //var update = p.ctxd.getContext('2d', { alpha: false });
+        //this.p.ctxd.drawImage(ctxt.canvas, 0, 0, this.dest_w, this.dest_h);
+        // if(cvso_hi.width < cvso_hi.height){
+        //update.drawImage(ctxt.canvas, -cvso_hi.width / 2, -cvso_hi.height / 2, cvso_hi.width, cvso_hi.height);
+        update.drawImage(ctxt.canvas, 0, 0, cvso_hi.width, cvso_hi.height);
 
+        //p.ctxt = ctxt.canvas;
+        //} else {
+        //    update.drawImage(ctxt.canvas, 0, 0, cvso_hi.width, cvso_hi.height);
+        //}
 
-    };
+        // update.drawImage(ctxt.canvas, 0, 0, cvso_hi.width, cvso_hi.height);
 
-    //this.perspectiveDraw = function(p, points, amount, quality, source) {
+        //_applyMask(this.p.ctxd, [[d0x, d0y], [d1x, d1y], [d2x, d2y], [d3x, d3y]]);
+        //_applyMask(update, [[d0x, d0y], [d1x, d1y], [d2x, d2y], [d3x, d3y]]);
+        //this.p.ctxd.restore();
 
-        // self.perspectiveDraw(result, filters.perspective);
-    this.perspectiveDraw = function(source, amount) {
-        var deferred = $q.defer();
-        var new_canvas = document.createElement("canvas");
-        new_canvas.width = source.width;
-        new_canvas.height = source.height;
-        var ctx = new_canvas.getContext('2d');
-        /*
-         cvso_hi.width = parseInt(source_image_hi.width);
-        cvso_hi.height = parseInt(source_image_hi.height);
-        */
-        ctx.drawImage(source, 0, 0);
-
-        if (amount != undefined) {
-            self.perspectiveInit(source).then(function(p) {
-
-                self.perspective_setup(p.cvso_lo.width, p.cvso_lo.height, p.cvso_hi.width, p.cvso_hi.height);
-                
-                //self.doDraw()
-
-                // work out the points values and return them
-                //this.perspectiveVChange = function(p, a, quality) {
-
-                deferred.resolve(new_canvas);
-
-            });
-        } else {
-            deferred.resolve(new_canvas);
-        }
+        deferred.resolve(update);
         return deferred.promise;
     };
 
     this.qperspectiveDraw = function(p, points, quality) {
+       var p = self.getPerspective();
         // ctxd - p destination canvas 
         // image - source image
         // cvso - p canvas for the image
@@ -549,7 +596,7 @@ return deferred.promise;
         console.log(points + ' : ' + quality);
 
         // clear the destination canvas
-        //this.p.ctxd.setTransform(1, 0, 0, 1, 0, 0);
+        //p.ctxd.setTransform(1, 0, 0, 1, 0, 0);
 
         //console.log(amount);
         var d0x = points[0][0];
@@ -677,10 +724,15 @@ return deferred.promise;
         // set a clipping path and draw the transformed image on the destination canvas.
         //this.p.ctxd.save();
 
-        var update = p.ctxd.getContext('2d', { alpha: false });
+        //var update = p.ctxd.getContext('2d', { alpha: false });
         //this.p.ctxd.drawImage(ctxt.canvas, 0, 0, this.dest_w, this.dest_h);
         // if(cvso_hi.width < cvso_hi.height){
-        update.drawImage(ctxt.canvas, -cvso_hi.width / 2, -cvso_hi.height / 2, cvso_hi.width, cvso_hi.height);
+        //update.drawImage(ctxt.canvas, -cvso_hi.width / 2, -cvso_hi.height / 2, cvso_hi.width, cvso_hi.height);
+        //update.drawImage(ctxt.canvas, 0, 0, cvso_hi.width, cvso_hi.height);
+        //p.ctxd1.setTransform(1, 0, 0, 1, 0, 0);
+        //p.ctxd2.setTransform(1, 0, 0, 1, 0, 0);
+        p.ctxd1.drawImage(ctxt.canvas, -cvso_hi.width / 2, -cvso_hi.height / 2, cvso_hi.width, cvso_hi.height);
+        p.ctxd2.drawImage(ctxt.canvas, -cvso_hi.width / 2, -cvso_hi.height / 2, cvso_hi.width, cvso_hi.height);
         //} else {
         //    update.drawImage(ctxt.canvas, 0, 0, cvso_hi.width, cvso_hi.height);
         //}
@@ -697,6 +749,9 @@ return deferred.promise;
     this.canvasToImage = function(canvas, id) {
         var deferred = $q.defer();
         var dataUrl = canvas.toDataURL('image/jpeg', JPEG_COMPRESSION);
+
+        var Format = $injector.get('Format');
+
         Format.dataURItoBlob(dataUrl).then(function(blob) {
             blob.name = 'image_filtered_' + id + '.jpg';
             blob.renamed = true;
@@ -726,6 +781,7 @@ return deferred.promise;
     this.perspectiveInit = function(source_image_hi) {
         console.log('perspectiveInit');
         var deferred = $q.defer();
+        var promises = [];
         var ww = Math.round(window.innerWidth / 1.7);
         var iw = source_image_hi.width;
         var ih = source_image_hi.height;
@@ -733,11 +789,7 @@ return deferred.promise;
         var scaled_height = Math.round(ih * scale);
         var ri = resizeImage(source_image_hi, ww, scaled_height);
         var prom = self.canvasToImage(ri, 'perspective_temp').then(function(source_image_lo) {
-            //p1 = ImageAdjustment.perspectiveInit(source_image_hi, source_image_hi, canvas_orig, image);
-
-            //promises.push(prom);
-
-            //var ctxd = dest_canvas_hi;
+            var ctxd = source_image_hi;
             // prepare a <canvas> for the image
             var cvso_hi = document.createElement('canvas');
             var cvso_lo = document.createElement('canvas');
@@ -745,12 +797,10 @@ return deferred.promise;
             cvso_hi.height = parseInt(source_image_hi.height);
             cvso_lo.width = parseInt(source_image_lo.width);
             cvso_lo.height = parseInt(source_image_lo.height);
-
             var ctxo_hi = cvso_hi.getContext('2d', { alpha: false });
             ctxo_hi.drawImage(source_image_hi, 0, 0, cvso_hi.width, cvso_hi.height);
             var ctxo_lo = cvso_lo.getContext('2d', { alpha: false });
             ctxo_lo.drawImage(source_image_lo, 0, 0, cvso_lo.width, cvso_lo.height);
-
             // prepare a <canvas> for the transformed image
             var cvst_hi = document.createElement('canvas');
             cvst_hi.width = cvso_hi.width;
@@ -760,15 +810,12 @@ return deferred.promise;
             cvst_lo.height = cvso_lo.height;
             var ctxt_hi = cvst_hi.getContext('2d');
             var ctxt_lo = cvst_lo.getContext('2d');
-
             var hi_lo_v_scale = cvso_lo.width / cvso_hi.width;
-            console.log(hi_lo_v_scale);
             var hi_lo_h_scale = cvso_lo.height / cvso_hi.height;
             var hi_v_change = (((cvso_hi.height * 100) / 100) / 1000).toFixed(2);
             var hi_h_change = (((cvso_hi.width * 100) / 100) / 1000).toFixed(2);
-            console.log(hi_v_change);
             this.p = {
-                //ctxd: ctxd,
+                ctxd: ctxd,
                 cvso_hi: cvso_hi,
                 cvso_lo: cvso_lo,
                 ctxo_hi: ctxo_hi,
@@ -781,17 +828,14 @@ return deferred.promise;
                 hi_v_change: hi_v_change,
             };
             this.cache = {};
-            //return this.p;
-            //deferred.resolve();
+            console.log('p set');
         });
         promises.push(prom);
-
         $q.all(promises).then(function() {
-
+            console.log('perspectiveInit Fin');
             deferred.resolve(this.p);
         });
         return deferred.promise;
-
     };
 
     this.cropPerspectiveInit = function(dest_canvas_hi, source_image_hi, source_image_lo) {
@@ -856,12 +900,15 @@ return deferred.promise;
 
 
     this.perspective_setup = function(lo_w, lo_h, hi_w, hi_h) {
+        console.log('perspective_setup');
         /*
                 image_lo_w = lo_w;
                 image_lo_h = lo_h;
                 image_hi_w = hi_w;
                 image_hi_h = hi_h;
         */
+        var deferred = $q.defer();
+
         p_s = [
             [0, 0],
             [Number(lo_w), 0],
@@ -887,9 +934,12 @@ return deferred.promise;
             [Number(hi_w), Number(hi_h)],
             [0, Number(hi_h)]
         ];
+
+        deferred.resolve();
+        return deferred.promise;
     };
 
-     this.perspectiveVPoints = function(p, a, quality) {
+    this.perspectiveVPoints = function(p, a, quality) {
         // return perspective, points, quality so that draw can be appied
         var deferred = $q.defer();
 
@@ -916,7 +966,7 @@ return deferred.promise;
 
                 //self.qperspectiveDraw(p, p_x_hi, quality);
 
-                 deferred.resolve(p_x_hi);
+                deferred.resolve(p_x_hi);
 
 
             } else {
@@ -980,14 +1030,67 @@ return deferred.promise;
 
         return deferred.promise;
 
-     };
+    };
+
+    this.setRotatedImage = function(image){
+        this.rotated_image = image;
+    };
+
+    this.getRotatedImage = function(image){
+        return this.rotated_image;
+    };
+
+
+
+    this.sliderPerspectiveUpdate = function() {
+        console.log('UPDATE HERE');
+        var p = self.getPerspective();
+//getImageData(10, 10, 50, 50);
+//.getContext('2d');
+        var ctx1 = $('.crop_bg')[0];
+        //ctx1.setTransform(1,.5, .5, 1, 0, 0);
+        //console.log(ctx1);
+        var ctx2 = $('#crop_src')[0].getContext('2d');
+        console.log(p.ctxd1);
+
+        var im = self.getRotatedImage();
+
+        var new_canvas = document.createElement("canvas");
+        new_canvas.width = p.ctxd1.canvas.width;
+        new_canvas.height = p.ctxd1.canvas.height;
+        //var ctx = new_canvas.getContext('2d');
+        //ctx.setTransform(1, 0, 0, 1, 0, 0);
+        //ctx.drawImage(p.ctxd1.canvas,0,0);
+        //var data = ctx1.getImageData(0, 0, p.ctxd1.canvas.width, p.ctxd1.canvas.height);
+        // ctx.putImageData(data, 0, 0);
+        // ctx.setTransform(1, 0, 0, 1, 0, 0);
+        var ctx = new_canvas.getContext('2d').drawImage(ctx1, 0, 0);
+        //p.ctxd1 = ctx1.getImageData(0,0,p.ctxd1.canvas.width, p.ctxd1.canvas.height);
+        //p.ctxd2 = ctx2.getImageData(0,0,p.ctxd2.canvas.width, p.ctxd2.canvas.height);
+        p.ctxd1.canvas = im;
+        p.ctxd2.canvas = im;
+        self.setPerspective(p);
+
+    }
+
+    this.perspectiveVChangeF = function(p, a, quality) {
+        var deferred = $q.defer();
+        self.perspectiveVPoints(p, a, quality).then(function(result) {
+            console.log(p);
+            self.perspectiveDraw(p, result, quality);
+            deferred.resolve(p);
+        });
+        return deferred.promise;
+    };
+
+
+
 
     this.perspectiveVChange = function(p, a, quality) {
         console.log(p);
-
-        self.perspectiveVPoints(p,a,quality).then(function(result) {
+        var p = self.getPerspective();
+        self.perspectiveVPoints(p, a, quality).then(function(result) {
             self.qperspectiveDraw(p, result, quality);
-
         });
         /*
         var scale = p.hi_lo_v_scale;
@@ -1076,9 +1179,124 @@ return deferred.promise;
 
     };
 
+    this.setPerspective = function(p) {
+        this.p = p;
+    }
+
+    this.getPerspective = function() {
+        return this.p;
+    }
+
+    this.perspectiveHPoints = function(p, a, quality) {
+        var deferred = $q.defer();
+        var scale = p.hi_lo_h_scale;
+        var amount_h = Math.round(p.hi_h_change * a);
+        var amount_l = amount_h * scale;
+
+        if (quality == 'high') {
+            if (amount_h > 0) {
+
+                p_x_hi = [
+                    [p_s_hi[0][0] + amount_h * -1, p_x_hi[0][1]],
+                    [p_s_hi[1][0] + amount_h, p_x_hi[1][1]],
+                    [p_x_hi[2][0], p_x_hi[2][1]],
+                    [p_x_hi[3][0], p_x_hi[3][1]]
+                ];
+
+                p_x = [
+                    [p_s[0][0] + amount_l * -1, p_x[0][1]],
+                    [p_s[1][0] + amount_l, p_x[1][1]],
+                    [p_x[2][0], p_x[2][1]],
+                    [p_x[3][0], p_x[3][1]]
+                ];
+
+                // self.qperspectiveDraw(p, p_x_hi, quality);
+                deferred.resolve(p_x_hi);
+
+            } else {
+
+                p_x_hi = [
+                    [p_x_hi[0][0], p_x_hi[0][1]],
+                    [p_x_hi[1][0], p_x_hi[1][1]],
+                    [p_s_hi[2][0] + amount_h * -1, p_x_hi[2][1]],
+                    [p_s_hi[3][0] + amount_h, p_x_hi[3][1]]
+                ];
+
+                p_x = [
+                    [p_x[0][0], p_x[0][1]],
+                    [p_x[1][0], p_x[1][1]],
+                    [p_s[2][0] + amount_l * -1, p_x[2][1]],
+                    [p_s[3][0] + amount_l, p_x[3][1]]
+                ];
+
+                //self.qperspectiveDraw(p, p_x_hi, quality);
+                deferred.resolve(p_x_hi);
+
+            }
+        } else {
+            if (amount_l > 0) {
+
+                p_x = [
+                    [p_s[0][0] + amount_l * -1, p_x[0][1]],
+                    [p_s[1][0] + amount_l, p_x[1][1]],
+                    [p_x[2][0], p_x[2][1]],
+                    [p_x[3][0], p_x[3][1]]
+                ];
+
+                p_x_hi = [
+                    [p_s_hi[0][0] + amount_h * -1, p_x_hi[0][1]],
+                    [p_s_hi[1][0] + amount_h, p_x_hi[1][1]],
+                    [p_x_hi[2][0], p_x_hi[2][1]],
+                    [p_x_hi[3][0], p_x_hi[3][1]]
+                ];
+
+                //self.qperspectiveDraw(p, p_x, quality);
+                deferred.resolve(p_x);
+
+            } else {
+
+                p_x = [
+                    [p_x[0][0], p_x[0][1]],
+                    [p_x[1][0], p_x[1][1]],
+                    [p_s[2][0] + amount_l * -1, p_x[2][1]],
+                    [p_s[3][0] + amount_l, p_x[3][1]]
+                ];
+
+                p_x_hi = [
+                    [p_x_hi[0][0], p_x_hi[0][1]],
+                    [p_x_hi[1][0], p_x_hi[1][1]],
+                    [p_s_hi[2][0] + amount_h * -1, p_x_hi[2][1]],
+                    [p_s_hi[3][0] + amount_h, p_x_hi[3][1]]
+                ];
+
+                //self.qperspectiveDraw(p, p_x, quality);
+                deferred.resolve(p_x);
+
+            }
+        }
+        return deferred.promise;
+    };
+
+    this.perspectiveHChangeF = function(p, a, quality) {
+        var deferred = $q.defer();
+        console.log(p);
+        self.perspectiveHPoints(p, a, quality).then(function(result) {
+            console.log(p);
+            self.perspectiveDraw(p, result, quality).then(function(result) {
+
+            });
+            deferred.resolve(p);
+        });
+        return deferred.promise;
+    };
 
     this.perspectiveHChange = function(p, a, quality) {
         console.log(p);
+        var p = self.getPerspective();
+        self.perspectiveHPoints(p, a, quality).then(function(result) {
+            self.qperspectiveDraw(p, result, quality);
+        });
+        /*
         var scale = p.hi_lo_h_scale;
         var amount_h = Math.round(p.hi_h_change * a);
         var amount_l = amount_h * scale;
@@ -1160,6 +1378,7 @@ return deferred.promise;
 
             }
         }
+        */
 
     };
 
@@ -1198,10 +1417,26 @@ return deferred.promise;
         return this.t;
     };
 
+    this.sliderRotateUpdate = function(){
+        console.log('ROTATE UPDATE');
+          var canvas_orig = $('.crop_bg')[0];
+        var canvas_crop = $('#crop_src')[0];
+        canvas_original = self.cloneCanvas(canvas_orig);
+        crop_area_original = self.cloneCanvas(canvas_crop);
+        var canvas = $('.crop_bg')[0];
+        ctx_crop_bg = canvas.getContext('2d', { alpha: false });
+        var canvas2 = $('#crop_src')[0];
+        ctx_crop_src = canvas2.getContext('2d', { alpha: false });
+    };
+
     // Rotate
 
     // Make the rotation directly to the canvas for performance reasons.
     this.quickRotate = function(ctx, image, angle) {
+
+// reset the transform
+        //ctx.setTransform(1, 0, 0, 1, 0, 0);
+
         var adjusted_angle = angle / 100;
 
         var w = image.width;
@@ -1237,6 +1472,10 @@ return deferred.promise;
         self.setRotateTransform([dx, dy, -dy, dx, cw, ch]);
         ctx.setTransform(dx, dy, -dy, dx, cw, ch);
         ctx.drawImage(image, -iw, -ih);
+
+        //self.setRotatedImage(ctx);
+        //ctx.save();
+
 
         /*
         // draw outline of image half size
