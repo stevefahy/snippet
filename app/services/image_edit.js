@@ -429,7 +429,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
     this.sliderRotateUpdate = function(){
-        
+        console.log(sliderRotateUpdate);
         //ImageAdjustment.sliderRotateUpdate();
         /*
                                var canvas_orig = $('.crop_bg')[0];
@@ -466,7 +466,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
             canvas_original = ImageAdjustment.cloneCanvas(image2);
             crop_area_original = ImageAdjustment.cloneCanvas(image2);
-            ctx_crop_bg.drawImage(image2,0,0);
+            //ctx_crop_bg.drawImage(image2,0,0);
         });
 
     };
@@ -500,6 +500,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             };
         }
         ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'perspective', persp_object);
+    sliderRotateUpdate();
     };
 
     this.sliderPerspectiveUpdate = function(){

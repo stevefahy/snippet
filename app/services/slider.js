@@ -45,7 +45,7 @@ cardApp.service('Slider', ['$window', '$rootScope', 'ImageAdjustment', function(
                 id: 'slider-idt',
                 onStart: function() {
                     //console.log('on start ' + amount);
-                    sliderRotateUpdate();
+                    //sliderRotateUpdate();
                 },
                 onChange: function(id, amount) {
                     //console.log('on change ' + amount);

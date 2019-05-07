@@ -400,6 +400,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
                         self.perspectiveHChangeF(p, amount.horizontal, 'high').then(function() {
                             ctx.drawImage(p.ctxd, 0, 0);
                             console.log('perspective applied');
+                            self.sliderPerspectiveUpdate();
                             deferred.resolve(new_canvas);
                         });
                     });
