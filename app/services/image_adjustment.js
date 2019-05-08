@@ -1430,6 +1430,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         return this.t;
     };
 
+    /*
     this.sliderRotateUpdate = function(){
         console.log('ROTATE UPDATE');
           var canvas_orig = $('.crop_bg')[0];
@@ -1441,6 +1442,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         var canvas2 = $('#crop_src')[0];
         ctx_crop_src = canvas2.getContext('2d', { alpha: false });
     };
+    */
 
     // Rotate
 

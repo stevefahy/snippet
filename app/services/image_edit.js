@@ -101,11 +101,29 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     // Methods
 
     this.canvasToTempImage = function(canvas, id) {
+        /*
         var deferred = $q.defer();
         var dataUrl = canvas.toDataURL('image/jpeg', JPEG_COMPRESSION);
         var image = document.createElement('img');
         image.src = dataUrl;
         deferred.resolve(image);
+        return deferred.promise;
+        */
+        var deferred = $q.defer();
+        var dataUrl = canvas.toDataURL('image/jpeg', JPEG_COMPRESSION);
+        Format.dataURItoBlob(dataUrl).then(function(blob) {
+            blob.name = 'image_temp_filtered_' + id + '.jpg';
+            blob.renamed = true;
+            Format.prepImage([blob], function(result) {
+                var img_new = new Image();
+                img_new.src = IMAGES_URL + result.file + '?' + new Date();
+                img_new.className = 'adjusted';
+                img_new.id = 'image_filtered_' + id;
+                img_new.onload = function() {
+                    deferred.resolve(this);
+                };
+            });
+        });
         return deferred.promise;
     };
 
@@ -375,21 +393,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
                 var crop_data;
 
-                /*
-                initCropPerspective(parent_container, id).then(function(result) {
-                    if (ia != undefined) {
-                        perspective_data = ia.perspective;
-                        if (ia.perspective != undefined) {
-                            $rootScope.slider_settings.perspective_v.amount = ia.perspective.vertical;
-                            $rootScope.slider_settings.perspective_h.amount = ia.perspective.horizontal;
-                            // rotate the image(s).
-                            //self.sliderRotateChange(ia.rotate);
-                            self.sliderperspectiveVChange(ia.perspective.vertical, 'high');
-                            self.sliderperspectiveHChange(ia.perspective.horizontal, 'high');
-                        }
-                    }
-                });
-                */
+
 
                 var new_canvas2 = ImageAdjustment.cloneCanvas(target);
 
@@ -588,7 +592,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             };
         }
         ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'perspective', persp_object);
-        sliderRotateUpdate();
+        self.sliderRotateUpdate();
     };
 
     this.sliderPerspectiveUpdate = function() {
