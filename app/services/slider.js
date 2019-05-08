@@ -40,7 +40,7 @@ cardApp.service('Slider', ['$window', '$rootScope', 'ImageAdjustment', function(
             options: {
                 floor: -45,
                 ceil: 45,
-                step: 0.1,
+                step: 0.001,
                 precision: 1,
                 id: 'slider-idt',
                 onStart: function() {
