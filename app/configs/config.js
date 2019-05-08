@@ -2,6 +2,8 @@
 
 // IMAGE
 var JPEG_COMPRESSION = 0.7;
+// Perspective adjustment (Percent of width or height per unit of change - 100% / PERSPECTIVE_RATIO)
+var PERSPECTIVE_RATIO = 300;
 // Image resize max width or height
 var MAX_WIDTH = 640;
 var MAX_HEIGHT = 640;

@@ -429,6 +429,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         console.log(p);
         var ctxd = p.ctxd;
         var update = ctxd.getContext('2d', { alpha: false });
+        update.imageSmoothingQuality = "high";
         // clear the destination canvas
         //update.setTransform(1, 0, 0, 1, 0, 0);
 
@@ -561,6 +562,10 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         //this.p.ctxd.drawImage(ctxt.canvas, 0, 0, this.dest_w, this.dest_h);
         // if(cvso_hi.width < cvso_hi.height){
         //update.drawImage(ctxt.canvas, -cvso_hi.width / 2, -cvso_hi.height / 2, cvso_hi.width, cvso_hi.height);
+        
+        console.log(ctxt);
+        console.log(update);
+
         update.drawImage(ctxt.canvas, 0, 0, cvso_hi.width, cvso_hi.height);
 
         //p.ctxt = ctxt.canvas;
@@ -735,6 +740,8 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         //update.drawImage(ctxt.canvas, 0, 0, cvso_hi.width, cvso_hi.height);
         //p.ctxd1.setTransform(1, 0, 0, 1, 0, 0);
         //p.ctxd2.setTransform(1, 0, 0, 1, 0, 0);
+        console.log(p.ctxd1);
+        console.log(ctxt);
         p.ctxd1.drawImage(ctxt.canvas, -cvso_hi.width / 2, -cvso_hi.height / 2, cvso_hi.width, cvso_hi.height);
         p.ctxd2.drawImage(ctxt.canvas, -cvso_hi.width / 2, -cvso_hi.height / 2, cvso_hi.width, cvso_hi.height);
         //} else {
@@ -802,6 +809,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             cvso_lo.width = parseInt(source_image_lo.width);
             cvso_lo.height = parseInt(source_image_lo.height);
             var ctxo_hi = cvso_hi.getContext('2d', { alpha: false });
+            ctxo_hi.imageSmoothingQuality = "high";
             ctxo_hi.drawImage(source_image_hi, 0, 0, cvso_hi.width, cvso_hi.height);
             var ctxo_lo = cvso_lo.getContext('2d', { alpha: false });
             ctxo_lo.drawImage(source_image_lo, 0, 0, cvso_lo.width, cvso_lo.height);
@@ -813,11 +821,12 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             cvst_lo.width = cvso_lo.width;
             cvst_lo.height = cvso_lo.height;
             var ctxt_hi = cvst_hi.getContext('2d');
+            ctxt_hi.imageSmoothingQuality = "high";
             var ctxt_lo = cvst_lo.getContext('2d');
             var hi_lo_v_scale = cvso_lo.width / cvso_hi.width;
             var hi_lo_h_scale = cvso_lo.height / cvso_hi.height;
-            var hi_v_change = (((cvso_hi.height * 100) / 100) / 1000).toFixed(2);
-            var hi_h_change = (((cvso_hi.width * 100) / 100) / 1000).toFixed(2);
+            var hi_v_change = (((cvso_hi.height * 100) / 100) / PERSPECTIVE_RATIO).toFixed(2);
+            var hi_h_change = (((cvso_hi.width * 100) / 100) / PERSPECTIVE_RATIO).toFixed(2);
             this.p = {
                 ctxd: ctxd,
                 cvso_hi: cvso_hi,
@@ -1476,6 +1485,8 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         self.setRotateTransform([dx, dy, -dy, dx, cw, ch]);
         ctx.setTransform(dx, dy, -dy, dx, cw, ch);
         ctx.drawImage(image, -iw, -ih);
+        ctx.imageSmoothingQuality = 'high';
+        console.log(ctx);
         //ctx.drawImage(image, -iw/2, -ih/2);
 
         //self.setRotatedImage(ctx);
@@ -1505,6 +1516,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         new_canvas.width = source.width;
         new_canvas.height = source.height;
         var ctx = new_canvas.getContext('2d');
+        ctx.imageSmoothingQuality = 'high';
         ctx.drawImage(source, 0, 0);
         if (angle != undefined) {
             angle = angle / 100;
@@ -1557,6 +1569,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         new_canvas.width = source.width;
         new_canvas.height = source.height;
         var ctx = new_canvas.getContext('2d');
+        ctx.imageSmoothingQuality = 'high';
         ctx.drawImage(source, 0, 0);
         if (amount != undefined) {
             var sharpen = amount;
@@ -1578,6 +1591,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             target.width = result.width;
             target.height = result.height;
             var ctx = target.getContext('2d');
+            ctx.imageSmoothingQuality = 'high';
             ctx.drawImage(result, 0, 0);
             $(target).addClass('adjusted');
             deferred.resolve(result);
@@ -1596,6 +1610,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         new_canvas.width = source.width;
         new_canvas.height = source.height;
         var ctx = new_canvas.getContext('2d');
+        ctx.imageSmoothingQuality = 'high';
         // reset filter
         ctx.filter = "none";
         ctx.drawImage(source, 0, 0);
@@ -1623,6 +1638,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         var w = canvas.width;
         var h = canvas.height;
         var targetCtx = canvas.getContext('2d');
+        targetCtx.imageSmoothingQuality = 'high';
         var filter_data = getFilter(filter);
         // Convert image to canvas
         var topImage = canvas;
@@ -1630,6 +1646,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         topCanvas.width = w;
         topCanvas.height = h;
         var topCtx = topCanvas.getContext('2d');
+        topCtx.imageSmoothingQuality = 'high';
         topCtx.drawImage(topImage, 0, 0);
         // If there is a blend to be applied.
         if (filter_data.blend != 'none') {
@@ -1638,6 +1655,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             canvas_gradient.width = w;
             canvas_gradient.height = h;
             var ctx_gradient = canvas_gradient.getContext('2d');
+            ctx_gradient.imageSmoothingQuality = 'high';
             // Gradients
             if (filter_data.gradient == 'radial') {
                 // radial gradient, gradient_percent
@@ -1676,6 +1694,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             bottomCanvas.height = h;
             // get the 2d context to draw
             var bottomCtx = bottomCanvas.getContext('2d');
+            bottomCtx.imageSmoothingQuality = 'high';
             bottomCtx.drawImage(bottomImage, 0, 0, w, h);
             var id = 'steve';
             applyBlending(bottomImage, topImage, id, filter_data.blend, w, h).then(function(result) {
@@ -1698,6 +1717,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         new_canvas.width = source.width;
         new_canvas.height = source.height;
         var ctx = new_canvas.getContext('2d');
+        ctx.imageSmoothingQuality = 'high';
         ctx.drawImage(source, 0, 0);
         if (crop != undefined) {
             var sx = crop.x;

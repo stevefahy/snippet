@@ -319,6 +319,23 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         });
     };
 
+    var hideImages = function(parent_container, id){
+// If filtered image exists
+                                if ($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length > 0) {
+                                    $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').addClass('hide');
+                                    $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').addClass('temp_crop_hide');
+                                }
+
+                                //$(img).addClass('temp_canvas_filtered');
+                                $('#crop_src').removeClass('hide');
+                                $('.crop_bg').removeClass('hide');
+
+
+                                // var crop = $('.crop_box').clone().prependTo('.' + parent_container + ' #cropper_' + id);
+                                $('.pending').addClass('active');
+                                $('.pending').removeClass('pending');
+    };
+
     this.buildCrop = function(parent_container, id, target) {
         var cropper = $('.' + parent_container + ' #cropper_' + id);
         var original_image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
@@ -343,7 +360,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 $(img).addClass('temp_canvas_filtered');
                 //var img_bg = $(target).appendTo('.' + parent_container + ' #cropper_' + id);
                 var img_bg = $(new_canvas2).appendTo('.' + parent_container + ' #cropper_' + id);
-                
+
                 $(img_bg).addClass('crop_bg');
                 $(img).attr('id', 'crop_src');
                 /*
@@ -354,7 +371,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 }
                 */
                 $('.' + parent_container + ' #cropper_' + id + ' .crop_adjust').attr('id', 'drag');
-                
+
                 var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
                 var crop_data;
 
@@ -389,51 +406,42 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                         p.ctxd2 = ctx2;
                         ImageAdjustment.setPerspective(p);
                         if (ia != undefined) {
-                        if (ia.perspective != undefined) {
-                            $rootScope.slider_settings.perspective_v.amount = ia.perspective.vertical;
-                            $rootScope.slider_settings.perspective_h.amount = ia.perspective.horizontal;
-                            ImageAdjustment.perspectiveVChange(p, ia.perspective.vertical, 'high');
-                            ImageAdjustment.perspectiveHChange(p, ia.perspective.horizontal, 'high');
-                            
-                            //self.sliderRotateInit(); 
-                            self.sliderRotateUpdate();  
+                            if (ia.perspective != undefined) {
+                                $rootScope.slider_settings.perspective_v.amount = ia.perspective.vertical;
+                                $rootScope.slider_settings.perspective_h.amount = ia.perspective.horizontal;
+                                ImageAdjustment.perspectiveVChange(p, ia.perspective.vertical, 'high');
+                                ImageAdjustment.perspectiveHChange(p, ia.perspective.horizontal, 'high');
 
+                                //self.sliderRotateInit(); 
+                                self.sliderRotateUpdate();
 
-                                            // If filtered image exists
-                if ($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length > 0) {
-                    $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').addClass('hide');
-                    $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').addClass('temp_crop_hide');
-                }                         
+                                hideImages(parent_container, id);
+                                
 
-//$(img).addClass('temp_canvas_filtered');
- $('#crop_src').removeClass('hide');
-                $('.crop_bg').removeClass('hide');
-
-
-               // var crop = $('.crop_box').clone().prependTo('.' + parent_container + ' #cropper_' + id);
-        $('.pending').addClass('active');
-        $('.pending').removeClass('pending');
-
-                            //$(img_bg).addClass('crop_bg');
-                            //$(img).attr('id', 'crop_src');
-                            //var ctx1 = $('.crop_bg')[0].getContext('2d');
-                            //console.log(ctx1);
-                            //var ctx2 = $('#crop_src')[0].getContext('2d');
-                            //console.log(ctx1);
-                            //console.log(ctx2);
-                            //console.log(result);
-                            //var update = p.ctxd.getContext('2d');
-                            //update.setTransform(1, 0, 0, 1, 0, 0);
-                            //ctx.drawImage(p.ctxd, 0, 0);
-                            //ctx1.drawImage(result.ctxd,  -p.cvso_hi.width ,  -p.cvso_hi.height ,p.cvso_hi.width, p.cvso_hi.height);
-                            //ctx2.drawImage(result.ctxd,  -p.cvso_hi.width, -p.cvso_hi.height,p.cvso_hi.width, p.cvso_hi.height);
-                            //ctx2.drawImage(p.ctxd, 0, 0);
-                            console.log('perspective applied');
-                            //deferred.resolve(new_canvas);
-                            //});
-                            //});
+                                //$(img_bg).addClass('crop_bg');
+                                //$(img).attr('id', 'crop_src');
+                                //var ctx1 = $('.crop_bg')[0].getContext('2d');
+                                //console.log(ctx1);
+                                //var ctx2 = $('#crop_src')[0].getContext('2d');
+                                //console.log(ctx1);
+                                //console.log(ctx2);
+                                //console.log(result);
+                                //var update = p.ctxd.getContext('2d');
+                                //update.setTransform(1, 0, 0, 1, 0, 0);
+                                //ctx.drawImage(p.ctxd, 0, 0);
+                                //ctx1.drawImage(result.ctxd,  -p.cvso_hi.width ,  -p.cvso_hi.height ,p.cvso_hi.width, p.cvso_hi.height);
+                                //ctx2.drawImage(result.ctxd,  -p.cvso_hi.width, -p.cvso_hi.height,p.cvso_hi.width, p.cvso_hi.height);
+                                //ctx2.drawImage(p.ctxd, 0, 0);
+                                console.log('perspective applied');
+                                //deferred.resolve(new_canvas);
+                                //});
+                                //});
+                            } else {
+                                 hideImages(parent_container, id);
+                            }
+                        } else {
+                             hideImages(parent_container, id);
                         }
-                    }
                     });
                 });
 
@@ -460,7 +468,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         });
     };
 
-this.sliderRotateInit = function() {
+    this.sliderRotateInit = function() {
         console.log('sliderRotateInit');
         //ImageAdjustment.sliderRotateUpdate();
         /*
@@ -495,7 +503,7 @@ this.sliderRotateInit = function() {
 
 
 
-           //console.log(image2);
+            //console.log(image2);
             //var img = $(image2).appendTo('.' + parent_container + ' #cropper_' + id + ' .crop_area');
             //$(img).attr('id', 'steve');
 
@@ -540,7 +548,7 @@ this.sliderRotateInit = function() {
 
 
 
-           //console.log(image2);
+            //console.log(image2);
             //var img = $(image2).appendTo('.' + parent_container + ' #cropper_' + id + ' .crop_area');
             //$(img).attr('id', 'steve');
 
