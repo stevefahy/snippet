@@ -334,17 +334,27 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             start: function() {
                 $('.' + parent_container + ' #image_' + id).addClass('hide');
                 var new_canvas = ImageAdjustment.cloneCanvas(target);
+
+                var new_canvas2 = ImageAdjustment.cloneCanvas(target);
+                $(new_canvas).addClass('hide');
+                $(new_canvas2).addClass('hide');
+
                 var img = $(new_canvas).appendTo('.' + parent_container + ' #cropper_' + id + ' .crop_area');
                 $(img).addClass('temp_canvas_filtered');
-                var img_bg = $(target).appendTo('.' + parent_container + ' #cropper_' + id);
+                //var img_bg = $(target).appendTo('.' + parent_container + ' #cropper_' + id);
+                var img_bg = $(new_canvas2).appendTo('.' + parent_container + ' #cropper_' + id);
+                
                 $(img_bg).addClass('crop_bg');
                 $(img).attr('id', 'crop_src');
+                /*
                 // If filtered image exists
                 if ($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length > 0) {
                     $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').addClass('hide');
                     $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').addClass('temp_crop_hide');
                 }
+                */
                 $('.' + parent_container + ' #cropper_' + id + ' .crop_adjust').attr('id', 'drag');
+                
                 var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
                 var crop_data;
 
@@ -386,8 +396,23 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                             ImageAdjustment.perspectiveHChange(p, ia.perspective.horizontal, 'high');
                             
                             //self.sliderRotateInit(); 
-                            self.sliderRotateUpdate();                           
+                            self.sliderRotateUpdate();  
 
+
+                                            // If filtered image exists
+                if ($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length > 0) {
+                    $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').addClass('hide');
+                    $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').addClass('temp_crop_hide');
+                }                         
+
+//$(img).addClass('temp_canvas_filtered');
+ $('#crop_src').removeClass('hide');
+                $('.crop_bg').removeClass('hide');
+
+
+               // var crop = $('.crop_box').clone().prependTo('.' + parent_container + ' #cropper_' + id);
+        $('.pending').addClass('active');
+        $('.pending').removeClass('pending');
 
                             //$(img_bg).addClass('crop_bg');
                             //$(img).attr('id', 'crop_src');
@@ -690,7 +715,7 @@ this.sliderRotateInit = function() {
         ImageAdjustment.setImageId(id);
         ImageAdjustment.setImageEditing(true);
         var crop = $('.crop_box').clone().prependTo('.' + parent_container + ' #cropper_' + id);
-        crop.addClass('active');
+        crop.addClass('pending');
         $('.' + parent_container + ' #cropper_' + id + ' #make_crop').attr("onclick", 'makeCrop(event, \'' + id + '\')');
         $('.image_adjust_on').remove();
         // Create canvas with all current adjustments (uncropped).
