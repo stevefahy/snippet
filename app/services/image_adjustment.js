@@ -1612,7 +1612,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         new_canvas.width = source.width;
         new_canvas.height = source.height;
         var ctx = new_canvas.getContext('2d');
-        ctx.imageSmoothingQuality = 'high';
+        //ctx.imageSmoothingQuality = 'high';
         // reset filter
         ctx.filter = "none";
         ctx.drawImage(source, 0, 0);

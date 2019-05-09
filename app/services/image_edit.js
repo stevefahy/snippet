@@ -101,29 +101,11 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     // Methods
 
     this.canvasToTempImage = function(canvas, id) {
-        /*
         var deferred = $q.defer();
         var dataUrl = canvas.toDataURL('image/jpeg', JPEG_COMPRESSION);
         var image = document.createElement('img');
         image.src = dataUrl;
         deferred.resolve(image);
-        return deferred.promise;
-        */
-        var deferred = $q.defer();
-        var dataUrl = canvas.toDataURL('image/jpeg', JPEG_COMPRESSION);
-        Format.dataURItoBlob(dataUrl).then(function(blob) {
-            blob.name = 'image_temp_filtered_' + id + '.jpg';
-            blob.renamed = true;
-            Format.prepImage([blob], function(result) {
-                var img_new = new Image();
-                img_new.src = IMAGES_URL + result.file + '?' + new Date();
-                img_new.className = 'adjusted';
-                img_new.id = 'image_filtered_' + id;
-                img_new.onload = function() {
-                    deferred.resolve(this);
-                };
-            });
-        });
         return deferred.promise;
     };
 
