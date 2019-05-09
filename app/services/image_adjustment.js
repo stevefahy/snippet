@@ -11,6 +11,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
     var image_parent;
     var image_adjusted;
     var image_edit_finished = false;
+    var canvas_rotated = false;
 
     this.setImageAdjustment = function(parent_container, id, name, value) {
         var ia = this.getImageAdjustments(parent_container, id);
@@ -742,8 +743,15 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         //p.ctxd2.setTransform(1, 0, 0, 1, 0, 0);
         console.log(p.ctxd1);
         console.log(ctxt);
-        p.ctxd1.drawImage(ctxt.canvas, -cvso_hi.width / 2, -cvso_hi.height / 2, cvso_hi.width, cvso_hi.height);
+        console.log(cvso_hi);
+        if(canvas_rotated){
+                    p.ctxd1.drawImage(ctxt.canvas, -cvso_hi.width / 2, -cvso_hi.height / 2, cvso_hi.width, cvso_hi.height);
         p.ctxd2.drawImage(ctxt.canvas, -cvso_hi.width / 2, -cvso_hi.height / 2, cvso_hi.width, cvso_hi.height);
+    } else {
+                          p.ctxd1.drawImage(ctxt.canvas, 0, 0, cvso_hi.width, cvso_hi.height);
+        p.ctxd2.drawImage(ctxt.canvas, 0, 0, cvso_hi.width, cvso_hi.height);  
+    }
+
         //} else {
         //    update.drawImage(ctxt.canvas, 0, 0, cvso_hi.width, cvso_hi.height);
         //}
@@ -1448,7 +1456,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
 
     // Make the rotation directly to the canvas for performance reasons.
     this.quickRotate = function(ctx, image, angle) {
-
+        canvas_rotated = true;
 // reset the transform
         //ctx.setTransform(1, 0, 0, 1, 0, 0);
 
@@ -1521,6 +1529,8 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         ctx.imageSmoothingQuality = 'high';
         ctx.drawImage(source, 0, 0);
         if (angle != undefined) {
+            console.log('WHOA');
+            canvas_rotated = true;
             angle = angle / 100;
             var w = source.width;
             var h = source.height;
@@ -1612,7 +1622,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         new_canvas.width = source.width;
         new_canvas.height = source.height;
         var ctx = new_canvas.getContext('2d');
-        ctx.imageSmoothingQuality = 'high';
+        //ctx.imageSmoothingQuality = 'high';
         // reset filter
         ctx.filter = "none";
         ctx.drawImage(source, 0, 0);
