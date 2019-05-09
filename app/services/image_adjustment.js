@@ -1650,7 +1650,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         var w = canvas.width;
         var h = canvas.height;
         var targetCtx = canvas.getContext('2d');
-        targetCtx.imageSmoothingQuality = 'high';
+        //targetCtx.imageSmoothingQuality = 'high';
         var filter_data = getFilter(filter);
         // Convert image to canvas
         var topImage = canvas;
