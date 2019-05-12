@@ -12,8 +12,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     sliderRotateChange = ImageEdit.sliderRotateChange;
     sliderperspectiveVChange = ImageEdit.sliderperspectiveVChange;
     sliderperspectiveHChange = ImageEdit.sliderperspectiveHChange;
-    sliderPerspectiveUpdate = ImageEdit.sliderPerspectiveUpdate;
-    sliderRotateUpdate = ImageEdit.sliderRotateUpdate;
 
     $scope.getFocus = Format.getFocus;
     $scope.getBlur = Format.getBlur;

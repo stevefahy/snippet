@@ -356,13 +356,14 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 $(img).attr('id', 'crop_src');
                 $('.' + parent_container + ' #cropper_' + id + ' .crop_adjust').attr('id', 'drag');
                 var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
+                // Set up Perspective
                 ImageAdjustment.perspectiveInit(new_canvas_perspective).then(function(p) {
                     ImageAdjustment.perspective_setup(p.cvso_lo.width, p.cvso_lo.height, p.cvso_hi.width, p.cvso_hi.height).then(function() {
                         var ctx1 = $('.crop_bg')[0].getContext('2d');
                         var ctx2 = $('#crop_src')[0].getContext('2d');
-
-                       
-
+                        // Transform the context so that the image is centred like it is for the rotate function.
+                        ctx1.setTransform(1, 0, 0, 1, p.cvso_hi.width / 2, p.cvso_hi.height / 2);
+                        ctx2.setTransform(1, 0, 0, 1, p.cvso_hi.width / 2, p.cvso_hi.height / 2);
                         p.ctxd1 = ctx1;
                         p.ctxd2 = ctx2;
                         ImageAdjustment.setPerspective(p);
@@ -370,29 +371,29 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                             if (ia.perspective != undefined) {
                                 $rootScope.slider_settings.perspective_v.amount = ia.perspective.vertical;
                                 $rootScope.slider_settings.perspective_h.amount = ia.perspective.horizontal;
-                                ImageAdjustment.perspectiveVChange(p, ia.perspective.vertical, 'high');
-                                ImageAdjustment.perspectiveHChange(p, ia.perspective.horizontal, 'high');
+                                ImageAdjustment.perspectiveVChange(ia.perspective.vertical, 'high');
+                                ImageAdjustment.perspectiveHChange(ia.perspective.horizontal, 'high');
                                 self.sliderRotateUpdate();
-                            } 
-                        } 
+                            }
+                        }
+                        initCropRotate(parent_container, id);
+                        var crop_data;
+                        if (ia != undefined) {
+                            crop_data = ia.crop;
+                            if (ia.rotate != undefined) {
+                                $rootScope.slider_settings.rotate.amount = ia.rotate;
+                                // rotate the image(s).
+                                self.sliderRotateChange(ia.rotate);
+                            }
+                        }
+                        var original_image = $('.content_cnv #cropper_' + id + ' #image_' + id)[0];
+                        //Make the DIV element draggagle:
+                        Drag.setUp(document.getElementById("drag"), document.getElementById("crop_src"), document.querySelector('.crop_area'));
+                        // Make resizable.
+                        Resize.makeResizableDiv('.resizers', '.crop_area', '#crop_src', original_image, crop_data, id);
                         hideImages(parent_container, id);
                     });
                 });
-                initCropRotate(parent_container, id);
-                var crop_data;
-                if (ia != undefined) {
-                    crop_data = ia.crop;
-                    if (ia.rotate != undefined) {
-                        $rootScope.slider_settings.rotate.amount = ia.rotate;
-                        // rotate the image(s).
-                        self.sliderRotateChange(ia.rotate);
-                    }
-                }
-                var original_image = $('.content_cnv #cropper_' + id + ' #image_' + id)[0];
-                //Make the DIV element draggagle:
-                Drag.setUp(document.getElementById("drag"), document.getElementById("crop_src"), document.querySelector('.crop_area'));
-                // Make resizable.
-                Resize.makeResizableDiv('.resizers', '.crop_area', '#crop_src', original_image, crop_data, id);
             },
             complete: function() {
                 //
@@ -400,8 +401,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         });
     };
 
-    // CLEAN
-
+    // Update the canvas contexts for rotation after perspective has changed.
     this.sliderRotateUpdate = function() {
         var parent_container = ImageAdjustment.getImageParent();
         var id = ImageAdjustment.getImageId();
@@ -414,11 +414,10 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
         ia.crop = undefined;
         ia.rotate = undefined;
-        ImageAdjustment.applyFilters(ctx.canvas, ia).then(function(image2) {
-            canvas_original = ImageAdjustment.cloneCanvas(image2);
-            crop_area_original = ImageAdjustment.cloneCanvas(image2);
+        ImageAdjustment.applyFilters(ctx.canvas, ia).then(function(new_image) {
+            canvas_original = ImageAdjustment.cloneCanvas(new_image);
+            crop_area_original = ImageAdjustment.cloneCanvas(new_image);
         });
-
     };
 
     this.sliderRotateChange = function(value) {
@@ -450,21 +449,17 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         self.sliderRotateUpdate();
     };
 
-    this.sliderPerspectiveUpdate = function() {
-        ImageAdjustment.sliderPerspectiveUpdate();
-    };
-
     this.sliderperspectiveVChange = function(value, quality) {
-        ImageAdjustment.perspectiveVChange(p1, value, quality);
-        ImageAdjustment.perspectiveVChange(p2, value, quality);
+        ImageAdjustment.perspectiveVChange(value, quality);
+        ImageAdjustment.perspectiveVChange(value, quality);
         if (quality == 'high') {
             storePerspectiveValue('vertical', value);
         }
     };
 
     this.sliderperspectiveHChange = function(value, quality) {
-        ImageAdjustment.perspectiveHChange(p1, value, quality);
-        ImageAdjustment.perspectiveHChange(p2, value, quality);
+        ImageAdjustment.perspectiveHChange(value, quality);
+        ImageAdjustment.perspectiveHChange(value, quality);
         if (quality == 'high') {
             storePerspectiveValue('horizontal', value);
         }
@@ -497,52 +492,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         addSlider(Slider.slider_perspective_h, parent_container, id, data_p_h);
     };
 
-    var p1;
-    var p2;
-    var p1end;
-    var p2end;
-    var image_h;
-    var image_w;
-
-    var w_low;
-    var w_hi;
-    var h_low;
-    var h_hi;
-
-    resizeImage = function(image, w, h) {
-        var canvas = document.createElement('canvas');
-        canvas.width = w;
-        canvas.height = h;
-        var ctx = canvas.getContext('2d');
-        ctx.drawImage(image, 0, 0, w, h);
-        return canvas;
-    };
-
-    initCropPerspective = function(parent_container, id) {
-        console.log('initCropPerspective');
-        var deferred = $q.defer();
-        var promises = [];
-        var canvas_orig = $('.crop_bg')[0];
-        var canvas_crop = $('#crop_src')[0];
-        var ww = Math.round(window.innerWidth / 1.7);
-        var iw = canvas_orig.width;
-        var ih = canvas_orig.height;
-        var scale = ww / iw;
-        var scaled_height = Math.round(ih * scale);
-        var ri = resizeImage(canvas_orig, ww, scaled_height);
-        var prom = self.canvasToImage(ri, 'perspective_temp').then(function(image) {
-            p1 = ImageAdjustment.cropPerspectiveInit(canvas_orig, canvas_orig, image);
-            p2 = ImageAdjustment.cropPerspectiveInit(canvas_crop, canvas_orig, image);
-        });
-        promises.push(prom);
-        ImageAdjustment.perspective_setup(ww, scaled_height, canvas_original.width, canvas_original.height);
-        $q.all(promises).then(function() {
-            deferred.resolve();
-        });
-        return deferred.promise;
-    };
-
-    initCropRotate = function(parent_container, id) {
+    var initCropRotate = function(parent_container, id) {
         var deferred = $q.defer();
         var canvas_orig = $('.crop_bg')[0];
         var canvas_crop = $('#crop_src')[0];
