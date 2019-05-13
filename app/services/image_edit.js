@@ -371,8 +371,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                             if (ia.perspective != undefined) {
                                 $rootScope.slider_settings.perspective_v.amount = ia.perspective.vertical;
                                 $rootScope.slider_settings.perspective_h.amount = ia.perspective.horizontal;
-                                ImageAdjustment.perspectiveVChange(ia.perspective.vertical, 'high');
-                                ImageAdjustment.perspectiveHChange(ia.perspective.horizontal, 'high');
+                                ImageAdjustment.quickPerspectiveVChange(ia.perspective.vertical, 'high');
+                                ImageAdjustment.quickPerspectiveHChange(ia.perspective.horizontal, 'high');
                                 self.sliderRotateUpdate();
                             }
                         }
@@ -450,16 +450,16 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
     this.sliderperspectiveVChange = function(value, quality) {
-        ImageAdjustment.perspectiveVChange(value, quality);
-        ImageAdjustment.perspectiveVChange(value, quality);
+        ImageAdjustment.quickPerspectiveVChange(value, quality);
+        ImageAdjustment.quickPerspectiveVChange(value, quality);
         if (quality == 'high') {
             storePerspectiveValue('vertical', value);
         }
     };
 
     this.sliderperspectiveHChange = function(value, quality) {
-        ImageAdjustment.perspectiveHChange(value, quality);
-        ImageAdjustment.perspectiveHChange(value, quality);
+        ImageAdjustment.quickPerspectiveHChange(value, quality);
+        ImageAdjustment.quickPerspectiveHChange(value, quality);
         if (quality == 'high') {
             storePerspectiveValue('horizontal', value);
         }
