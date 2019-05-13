@@ -362,9 +362,9 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             .then(function(result) {
                 return self.sharpen(result, filters.sharpen);
             }).then(function(result) {
-                return self.rotate(result, filters.rotate);
-            }).then(function(result) {
                 return self.perspective(result, filters.perspective);
+            }).then(function(result) {
+                return self.rotate(result, filters.rotate);
             }).then(function(result) {
                 return self.crop(result, filters.crop);
             }).then(function(result) {
