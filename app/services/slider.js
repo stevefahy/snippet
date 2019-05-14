@@ -69,7 +69,7 @@ cardApp.service('Slider', ['$window', '$rootScope', 'ImageAdjustment', function(
                     //console.log('on start ' + amount);
                 },
                 onChange: function(id, amount) {
-                    //console.log('on change ' + amount);
+                    console.log('on change ' + amount);
                     sliderperspectiveVChange(amount, 'low');
                 },
                 onEnd: function(id, amount) {
