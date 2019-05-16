@@ -108,7 +108,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         return result;
     };
 
-    var applyBlending = function(bottomImage, topImage, id, type, w, h) {
+    var applyBlending = function(bottomImage, topImage, type, w, h) {
         var deferred = $q.defer();
         // create the canvas
         var canvas = document.createElement('canvas');
@@ -173,7 +173,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
 
     this.filterImage = function(filter, image, var_args) {
         var args = [this.getPixels(image)];
-        for (var i = 2; i < arguments.length; i++) {
+        for (var i = 2, len = arguments.length; i < len; i++) {
             args.push(arguments[i]);
         }
         return filter.apply(null, args);
@@ -201,20 +201,24 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
     };
 
     this.convolute = function(pixels, weights, opaque) {
-        var side = Math.round(Math.sqrt(weights.length));
-        var halfSide = Math.floor(side / 2);
+        var side_constant = Math.round(Math.sqrt(weights.length));
+        var halfSide = Math.floor(side_constant / 2);
         var src = pixels.data;
-        var sw = pixels.width;
-        var sh = pixels.height;
+        var w = pixels.width;
+        var h = pixels.height;
         // pad output by the convolution matrix
-        var w = sw;
-        var h = sh;
+        var sw = w;
+        var sh = h;
         var output = self.createImageData(w, h);
         var dst = output.data;
         // go through the destination image pixels
         var alphaFac = opaque ? 1 : 0;
-        for (var y = 0; y < h; y++) {
-            for (var x = 0; x < w; x++) {
+        var height_amount = h;
+        var y = 0;
+        while (height_amount--) {
+            var width_amount = w;
+            var x = 0;
+            while (width_amount--) {
                 var sy = y;
                 var sx = x;
                 var dstOff = (y * w + x) * 4;
@@ -224,13 +228,13 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
                     g = 0,
                     b = 0,
                     a = 0;
-                for (var cy = 0; cy < side; cy++) {
-                    for (var cx = 0; cx < side; cx++) {
+                for (var cy = 0, side = side_constant; cy < side; cy++) {
+                    for (var cx = 0, side = side_constant; cx < side; cx++) {
                         var scy = sy + cy - halfSide;
                         var scx = sx + cx - halfSide;
                         if (scy >= 0 && scy < sh && scx >= 0 && scx < sw) {
                             var srcOff = (scy * sw + scx) * 4;
-                            var wt = weights[cy * side + cx];
+                            var wt = weights[cy * side_constant + cx];
                             r += src[srcOff] * wt;
                             g += src[srcOff + 1] * wt;
                             b += src[srcOff + 2] * wt;
@@ -242,7 +246,9 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
                 dst[dstOff + 1] = g;
                 dst[dstOff + 2] = b;
                 dst[dstOff + 3] = a + alphaFac * (255 - a);
+                x++;
             }
+            y++;
         }
         return output;
     };
@@ -253,11 +259,9 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
     this.convoluteFloat32 = function(pixels, weights, opaque) {
         var side = Math.round(Math.sqrt(weights.length));
         var halfSide = Math.floor(side / 2);
-
         var src = pixels.data;
         var sw = pixels.width;
         var sh = pixels.height;
-
         var w = sw;
         var h = sh;
         var output = {
@@ -266,9 +270,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             data: new Float32Array(w * h * 4)
         };
         var dst = output.data;
-
         var alphaFac = opaque ? 1 : 0;
-
         for (var y = 0; y < h; y++) {
             for (var x = 0; x < w; x++) {
                 var sy = y;
@@ -302,15 +304,12 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
     // General
 
     this.cloneCanvas = function(oldCanvas) {
-        //create a new canvas
         var newCanvas = document.createElement('canvas');
         var context = newCanvas.getContext('2d');
-        //set dimensions
         newCanvas.width = oldCanvas.width;
         newCanvas.height = oldCanvas.height;
         //apply the old canvas to the new one
         context.drawImage(oldCanvas, 0, 0);
-        //return the new canvas
         return newCanvas;
     };
 
@@ -343,7 +342,6 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
 
     this.resizeImage = function(image, w, h) {
         var deferred = $q.defer();
-
         var canvas = document.createElement('canvas');
         canvas.width = w;
         canvas.height = h;
@@ -355,49 +353,22 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
     };
 
     // Apply all image adjustments passed in the filters object.
-    var t0;
-    var t20;
     this.applyFilters = function(source, filters) {
-        console.log('applyFilters');
         var deferred = $q.defer();
         if (filters == undefined) {
             filters = { sharpen: undefined, filter: undefined, rotate: undefined, crop: undefined, perspective: undefined };
         }
         // Sharpen from source first, Crop last. Pass each adjustment to the next filter.
-        t0 = performance.now();
-        t20 = performance.now();
-        console.log('applyFilters start');
-        console.log('filter start');
         self.filter(source, filters.filter)
             .then(function(result) {
-                var t1 = performance.now();
-                console.log('filter end: ' + (t1 - t0) + " milliseconds.");
-                t0 = performance.now();
-                console.log('sharpen start');
                 return self.sharpen(result, filters.sharpen);
             }).then(function(result) {
-                var t1 = performance.now();
-                console.log('sharpen end: ' + (t1 - t0) + " milliseconds.");
-                t0 = performance.now();
-                console.log('perspective start');
                 return self.perspective(result, filters.perspective);
             }).then(function(result) {
-                var t1 = performance.now();
-                console.log('perspective end: ' + (t1 - t0) + " milliseconds.");
-                t0 = performance.now();
-                console.log('rotate start');
                 return self.rotate(result, filters.rotate);
             }).then(function(result) {
-                var t1 = performance.now();
-                console.log('rotate end: ' + (t1 - t0) + " milliseconds.");
-                t0 = performance.now();
-                console.log('crop start');
                 return self.crop(result, filters.crop);
             }).then(function(result) {
-                var t1 = performance.now();
-                console.log('crop end: ' + (t1 - t0) + " milliseconds.");
-                t30 = performance.now();
-                console.log('applyFilters end: ' + (t30 - t20) + " milliseconds.");
                 deferred.resolve(result);
             });
         return deferred.promise;
@@ -422,8 +393,6 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
     };
 
     this.perspective = function(source, amount) {
-        console.log('perspective');
-        var t0 = performance.now();
         var deferred = $q.defer();
         var new_canvas = document.createElement("canvas");
         new_canvas.width = source.width;
@@ -431,40 +400,12 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         var ctx = new_canvas.getContext('2d');
         ctx.drawImage(source, 0, 0);
         if (amount != undefined) {
-            console.log('perspective not undefined');
             self.perspectiveInit(source).then(function(p) {
                 self.perspective_setup(p.cvso_lo.width, p.cvso_lo.height, p.cvso_hi.width, p.cvso_hi.height).then(function(result) {
-
-                    /*
-                    var t100 = performance.now();
-                    self.perspectiveVChangeF(p, amount.vertical, 'high').then(function() {
-                        self.perspectiveHChangeF(p, amount.horizontal, 'high').then(function() {
-                            ctx.drawImage(p.ctxd, 0, 0);
-                            var t200 = performance.now();
-                            console.log("perspectiveChangeF both took " + (t200 - t100) + " milliseconds.");
-                            var t1 = performance.now();
-                            console.log("perspective took " + (t1 - t0) + " milliseconds.");
-                            deferred.resolve(new_canvas);
-                        });
-                    });
-                    
-*/
-
-
-
-                    // p.start_values = result;
-                    var t100 = performance.now();
-                    self.perspectiveChangeF(p, amount.vertical, amount.horizontal, 'high').then(function() {
+                    self.perspectiveChange(p, amount.vertical, amount.horizontal, 'high').then(function() {
                         ctx.drawImage(p.ctxd, 0, 0);
-                        var t200 = performance.now();
-                        console.log("perspectiveChangeF took " + (t200 - t100) + " milliseconds.");
-                        var t1 = performance.now();
-                        console.log("perspective took " + (t1 - t0) + " milliseconds.");
                         deferred.resolve(new_canvas);
                     });
-
-
-
                 });
             });
         } else {
@@ -478,8 +419,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         var ow;
         var oh;
         var ctxd = p.ctxd;
-        var update = ctxd.getContext('2d', { alpha: false });
-        //update.imageSmoothingQuality = "high";
+        var update = ctxd.getContext('2d');
         var d0x = points[0][0];
         var d0y = points[0][1];
         var d1x = points[1][0];
@@ -537,19 +477,25 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         }
         var ctxl;
         var cvsl;
+        var r;
+        var sx;
+        var sy;
+        var ex;
+        var ey;
+        var ag;
+        var sc;
         if (base_index % 2 == 0) { // top or bottom side
             ctxl = create_canvas_context(ow, cover_step);
-            //var ctxl = this.create_canvas_context(cvso_hi.width, cvso_hi.height);
             ctxl.globalCompositeOperation = "copy";
             cvsl = ctxl.canvas;
             for (var y = 0; y < oh; y += step) {
-                var r = y / oh;
-                var sx = d0x + (d3x - d0x) * r;
-                var sy = d0y + (d3y - d0y) * r;
-                var ex = d1x + (d2x - d1x) * r;
-                var ey = d1y + (d2y - d1y) * r;
-                var ag = Math.atan((ey - sy) / (ex - sx));
-                var sc = Math.sqrt(Math.pow(ex - sx, 2) + Math.pow(ey - sy, 2)) / ow;
+                r = y / oh;
+                sx = d0x + (d3x - d0x) * r;
+                sy = d0y + (d3y - d0y) * r;
+                ex = d1x + (d2x - d1x) * r;
+                ey = d1y + (d2y - d1y) * r;
+                ag = Math.atan((ey - sy) / (ex - sx));
+                sc = Math.sqrt(Math.pow(ex - sx, 2) + Math.pow(ey - sy, 2)) / ow;
                 ctxl.setTransform(1, 0, 0, 1, 0, -y);
                 ctxl.drawImage(ctxo.canvas, 0, 0);
                 ctxt.translate(sx, sy);
@@ -560,17 +506,16 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             }
         } else if (base_index % 2 == 1) { // right or left side
             ctxl = create_canvas_context(cover_step, oh);
-            //var ctxl = this.create_canvas_context(cvso_hi.height, cvso_hi.width);
             ctxl.globalCompositeOperation = "copy";
             cvsl = ctxl.canvas;
             for (var x = 0; x < ow; x += step) {
-                var r = x / ow;
-                var sx = d0x + (d1x - d0x) * r;
-                var sy = d0y + (d1y - d0y) * r;
-                var ex = d3x + (d2x - d3x) * r;
-                var ey = d3y + (d2y - d3y) * r;
-                var ag = Math.atan((sx - ex) / (ey - sy));
-                var sc = Math.sqrt(Math.pow(ex - sx, 2) + Math.pow(ey - sy, 2)) / oh;
+                r = x / ow;
+                sx = d0x + (d1x - d0x) * r;
+                sy = d0y + (d1y - d0y) * r;
+                ex = d3x + (d2x - d3x) * r;
+                ey = d3y + (d2y - d3y) * r;
+                ag = Math.atan((sx - ex) / (ey - sy));
+                sc = Math.sqrt(Math.pow(ex - sx, 2) + Math.pow(ey - sy, 2)) / oh;
                 ctxl.setTransform(1, 0, 0, 1, -x, 0);
                 ctxl.drawImage(ctxo.canvas, 0, 0);
                 ctxt.translate(sx, sy);
@@ -707,9 +652,6 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
     };
 
     this.perspectiveInit = function(source_image_hi) {
-        console.log('init start');
-        var t0 = performance.now();
-
         var deferred = $q.defer();
         var promises = [];
         var window_w = Math.round(window.innerWidth / WINDOW_SCALE);
@@ -717,11 +659,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         var image_h = source_image_hi.height;
         var scale = window_w / image_w;
         var scaled_height = Math.round(image_h * scale);
-        //var reduced_image = self.resizeImage(source_image_hi, window_w, scaled_height);
-        //var prom = self.canvasToImage(reduced_image, 'perspective_temp').then(function(source_image_lo) {
-
         var prom = self.resizeImage(source_image_hi, window_w, scaled_height).then(function(source_image_lo) {
-
             var ctxd = source_image_hi;
             // prepare a <canvas> for the image
             var cvso_hi = document.createElement('canvas');
@@ -730,8 +668,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             cvso_hi.height = parseInt(source_image_hi.height);
             cvso_lo.width = parseInt(source_image_lo.width);
             cvso_lo.height = parseInt(source_image_lo.height);
-            var ctxo_hi = cvso_hi.getContext('2d', { alpha: false });
-            //ctxo_hi.imageSmoothingQuality = "high";
+            var ctxo_hi = cvso_hi.getContext('2d');
             ctxo_hi.drawImage(source_image_hi, 0, 0, cvso_hi.width, cvso_hi.height);
             var ctxo_lo = cvso_lo.getContext('2d', { alpha: false });
             ctxo_lo.drawImage(source_image_lo, 0, 0, cvso_lo.width, cvso_lo.height);
@@ -739,12 +676,11 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             var cvst_hi = document.createElement('canvas');
             cvst_hi.width = cvso_hi.width;
             cvst_hi.height = cvso_hi.height;
+            var ctxt_hi = cvst_hi.getContext('2d');
             var cvst_lo = document.createElement('canvas');
             cvst_lo.width = cvso_lo.width;
             cvst_lo.height = cvso_lo.height;
-            var ctxt_hi = cvst_hi.getContext('2d');
-            //ctxt_hi.imageSmoothingQuality = "high";
-            var ctxt_lo = cvst_lo.getContext('2d');
+            var ctxt_lo = cvst_lo.getContext('2d', { alpha: false });
             var hi_lo_v_scale = cvso_lo.width / cvso_hi.width;
             var hi_lo_h_scale = cvso_lo.height / cvso_hi.height;
             var hi_v_change = (((cvso_hi.height * 100) / 100) / PERSPECTIVE_RATIO).toFixed(2);
@@ -763,22 +699,15 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
                 hi_v_change: hi_v_change,
             };
             this.cache = {};
-            console.log('init end');
-            //deferred.resolve(this.p);
         });
         promises.push(prom);
         $q.all(promises).then(function() {
-
-            var t1 = performance.now();
-            console.log("perspectiveInit took " + (t1 - t0) + " milliseconds.");
-
             deferred.resolve(this.p);
         });
         return deferred.promise;
     };
 
     this.perspective_setup = function(lo_w, lo_h, hi_w, hi_h) {
-        var t0 = performance.now();
         var deferred = $q.defer();
         p_s = [
             [0, 0],
@@ -792,7 +721,6 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             [Number(lo_w), Number(lo_h)],
             [0, Number(lo_h)]
         ];
-
         p_s_hi = [
             [0, 0],
             [Number(hi_w), 0],
@@ -805,96 +733,13 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             [Number(hi_w), Number(hi_h)],
             [0, Number(hi_h)]
         ];
-
-        var t1 = performance.now();
-        console.log("perspective_setup took " + (t1 - t0) + " milliseconds.");
         var p_start = { p_s: p_s, p_x: p_x, p_s_hi: p_s_hi, p_x_hi: p_x_hi };
         deferred.resolve(p_start);
         return deferred.promise;
     };
 
-    /*
-    this.perspectivePoints  = function(p, v, h, quality) {
-        // return perspective, points, quality so that draw can be applied
-        //console.log(p);
-        var deferred = $q.defer();
-        var scale_v = p.hi_lo_v_scale;
-        var scale_h = p.hi_lo_h_scale;
-        var amount_v_h = Math.round(p.hi_v_change * v);
-        var amount_h_h = Math.round(p.hi_h_change * h);
-        var amount_v_l = amount_v_h * scale_v;
-        var amount_h_l = amount_h_h * scale_h;
-
-        if (quality == 'high') {
-            if (amount_v_h > 0 || amount_h_h > 0) {
-                p_x_hi = [
-                    [p_s_hi[0][0] + amount_h_h * -1, p_x_hi[0][1]],
-                    [p_s_hi[1][0] + amount_h_h, p_s_hi[1][1] + amount_v_h * -1],
-                    [p_x_hi[2][0], p_s_hi[2][1] + amount_v_h],
-                    [p_x_hi[3][0], p_x_hi[3][1]]
-                ];
-                p_x = [
-                    [p_s[0][0] + amount_h_l * -1, p_x[0][1]],
-                    [p_s[1][0] + amount_h_l, p_s[1][1] + amount_v_l * -1],
-                    [p_x[2][0], p_s[2][1] + amount_v_l],
-                    [p_x[3][0], p_x[3][1]]
-                ];
-                //deferred.resolve(p_x_hi);
-            } else {
-                p_x_hi = [
-                    [p_x_hi[0][0], p_s_hi[0][1] + amount_v_h],
-                    [p_x_hi[1][0], p_x_hi[1][1]],
-                    [p_s_hi[2][0] + amount_h_h * -1, p_x_hi[2][1]],
-                    [p_s_hi[3][0] + amount_h_h, p_s_hi[3][1] + amount_v_h * -1]
-                ];
-                p_x = [
-                    [p_x[0][0], p_s[0][1] + amount_v_l],
-                    [p_x[1][0], p_x[1][1]],
-                    [p_s[2][0] + amount_h_l * -1, p_x[2][1]],
-                    [p_s[3][0] + amount_h_l, p_s[3][1] + amount_v_l * -1]
-                ];
-                //deferred.resolve(p_x_hi);
-            }
-            deferred.resolve(p_x_hi);
-        } else {
-            if (amount_v_l > 0 || amount_h_l > 0) {
-                p_x = [
-                    [p_s[0][0] + amount_h_l * -1, p_x[0][1]],
-                    [p_s[1][0] + amount_h_l, p_s[1][1] + amount_v_l * -1],
-                    [p_x[2][0], p_s[2][1] + amount_v_l],
-                    [p_x[3][0], p_x[3][1]]
-                ];
-                p_x_hi = [
-                    [p_s_hi[0][0] + amount_h_h * -1, p_x_hi[0][1]],
-                    [p_s_hi[1][0] + amount_h_h, p_s_hi[1][1] + amount_v_h * -1],
-                    [p_x_hi[2][0], p_s_hi[2][1] + amount_v_h],
-                    [p_x_hi[3][0], p_x_hi[3][1]]
-                ];
-                //deferred.resolve(p_x);
-            } else {
-                p_x = [
-                    [p_x[0][0], p_s[0][1] + amount_v_l],
-                    [p_x[1][0], p_x[1][1]],
-                    [p_s[2][0] + amount_h_l * -1, p_x[2][1]],
-                    [p_s[3][0] + amount_h_l, p_s[3][1] + amount_v_l * -1]
-                ];
-                p_x_hi = [
-                    [p_x_hi[0][0], p_s_hi[0][1] + amount_v_h],
-                    [p_x_hi[1][0], p_x_hi[1][1]],
-                    [p_s_hi[2][0] + amount_h_h * -1, p_x_hi[2][1]],
-                    [p_s_hi[3][0] + amount_h_h, p_s_hi[3][1] + amount_v_h * -1]
-                ];
-                //deferred.resolve(p_x);
-            }
-            deferred.resolve(p_x);
-        }
-        return deferred.promise;
-    };
-    */
-
     this.perspectivePoints = function(p, v, h, quality) {
         // return perspective, points, quality so that draw can be applied
-        //console.log(p);
         var deferred = $q.defer();
         var scale_v = p.hi_lo_v_scale;
         var scale_h = p.hi_lo_h_scale;
@@ -902,7 +747,6 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         var amount_h_h = Math.round(p.hi_h_change * h);
         var amount_v_l = amount_v_h * scale_v;
         var amount_h_l = amount_h_h * scale_h;
-
         if (quality == 'high') {
             if (amount_v_h > 0) {
                 p_x_hi = [
@@ -917,7 +761,6 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
                     [p_x[2][0], p_s[2][1] + amount_v_l],
                     [p_x[3][0], p_x[3][1]]
                 ];
-                //deferred.resolve(p_x_hi);
             } else {
                 p_x_hi = [
                     [p_x_hi[0][0], p_s_hi[0][1] + amount_v_h],
@@ -931,9 +774,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
                     [p_x[2][0], p_x[2][1]],
                     [p_x[3][0], p_s[3][1] + amount_v_l * -1]
                 ];
-                //deferred.resolve(p_x_hi);
             }
-
             if (amount_h_h > 0) {
                 p_x_hi = [
                     [p_s_hi[0][0] + amount_h_h * -1, p_x_hi[0][1]],
@@ -947,7 +788,6 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
                     [p_x[2][0], p_x[2][1]],
                     [p_x[3][0], p_x[3][1]]
                 ];
-                //deferred.resolve(p_x_hi);
             } else {
                 p_x_hi = [
                     [p_x_hi[0][0], p_x_hi[0][1]],
@@ -961,7 +801,6 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
                     [p_s[2][0] + amount_h_l * -1, p_x[2][1]],
                     [p_s[3][0] + amount_h_l, p_x[3][1]]
                 ];
-                //deferred.resolve(p_x_hi);
             }
             deferred.resolve(p_x_hi);
         } else {
@@ -978,7 +817,6 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
                     [p_x_hi[2][0], p_s_hi[2][1] + amount_v_h],
                     [p_x_hi[3][0], p_x_hi[3][1]]
                 ];
-                //deferred.resolve(p_x);
             } else {
                 p_x = [
                     [p_x[0][0], p_s[0][1] + amount_v_l],
@@ -992,9 +830,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
                     [p_x_hi[2][0], p_x_hi[2][1]],
                     [p_x_hi[3][0], p_s_hi[3][1] + amount_v_h * -1]
                 ];
-                //deferred.resolve(p_x);
             }
-
             if (amount_h_l > 0) {
                 p_x = [
                     [p_s[0][0] + amount_h_l * -1, p_x[0][1]],
@@ -1008,7 +844,6 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
                     [p_x_hi[2][0], p_x_hi[2][1]],
                     [p_x_hi[3][0], p_x_hi[3][1]]
                 ];
-                //deferred.resolve(p_x);
             } else {
                 p_x = [
                     [p_x[0][0], p_x[0][1]],
@@ -1022,192 +857,15 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
                     [p_s_hi[2][0] + amount_h_h * -1, p_x_hi[2][1]],
                     [p_s_hi[3][0] + amount_h_h, p_x_hi[3][1]]
                 ];
-                //deferred.resolve(p_x);
             }
             deferred.resolve(p_x);
         }
         return deferred.promise;
     };
 
-/*
-    this.perspectiveVPoints = function(p, a, quality) {
-        // return perspective, points, quality so that draw can be applied
-        var deferred = $q.defer();
-        var scale = p.hi_lo_v_scale;
-        var amount_h = Math.round(p.hi_v_change * a);
-        var amount_l = amount_h * scale;
-
-        if (quality == 'high') {
-            if (amount_h > 0) {
-                p_x_hi = [
-                    [p_x_hi[0][0], p_x_hi[0][1]],
-                    [p_x_hi[1][0], p_s_hi[1][1] + amount_h * -1],
-                    [p_x_hi[2][0], p_s_hi[2][1] + amount_h],
-                    [p_x_hi[3][0], p_x_hi[3][1]]
-                ];
-                p_x = [
-                    [p_x[0][0], p_x[0][1]],
-                    [p_x[1][0], p_s[1][1] + amount_l * -1],
-                    [p_x[2][0], p_s[2][1] + amount_l],
-                    [p_x[3][0], p_x[3][1]]
-                ];
-                var p_start = { p_s: p_s, p_x: p_x, p_s_hi: p_s_hi, p_x_hi: p_x_hi };
-                p.start_values = p_start;
-                deferred.resolve(p_x_hi);
-            } else {
-                p_x_hi = [
-                    [p_x_hi[0][0], p_s_hi[0][1] + amount_h],
-                    [p_x_hi[1][0], p_x_hi[1][1]],
-                    [p_x_hi[2][0], p_x_hi[2][1]],
-                    [p_x_hi[3][0], p_s_hi[3][1] + amount_h * -1]
-                ];
-                p_x = [
-                    [p_x[0][0], p_s[0][1] + amount_l],
-                    [p_x[1][0], p_x[1][1]],
-                    [p_x[2][0], p_x[2][1]],
-                    [p_x[3][0], p_s[3][1] + amount_l * -1]
-                ];
-                var p_start = { p_s: p_s, p_x: p_x, p_s_hi: p_s_hi, p_x_hi: p_x_hi };
-                p.start_values = p_start;
-                deferred.resolve(p_x_hi);
-            }
-        } else {
-            if (amount_l > 0) {
-                p_x = [
-                    [p_x[0][0], p_x[0][1]],
-                    [p_x[1][0], p_s[1][1] + amount_l * -1],
-                    [p_x[2][0], p_s[2][1] + amount_l],
-                    [p_x[3][0], p_x[3][1]]
-                ];
-                p_x_hi = [
-                    [p_x_hi[0][0], p_x_hi[0][1]],
-                    [p_x_hi[1][0], p_s_hi[1][1] + amount_h * -1],
-                    [p_x_hi[2][0], p_s_hi[2][1] + amount_h],
-                    [p_x_hi[3][0], p_x_hi[3][1]]
-                ];
-                var p_start = { p_s: p_s, p_x: p_x, p_s_hi: p_s_hi, p_x_hi: p_x_hi };
-                p.start_values = p_start;
-                deferred.resolve(p_x);
-            } else {
-                p_x = [
-                    [p_x[0][0], p_s[0][1] + amount_l],
-                    [p_x[1][0], p_x[1][1]],
-                    [p_x[2][0], p_x[2][1]],
-                    [p_x[3][0], p_s[3][1] + amount_l * -1]
-                ];
-                p_x_hi = [
-                    [p_x_hi[0][0], p_s_hi[0][1] + amount_h],
-                    [p_x_hi[1][0], p_x_hi[1][1]],
-                    [p_x_hi[2][0], p_x_hi[2][1]],
-                    [p_x_hi[3][0], p_s_hi[3][1] + amount_h * -1]
-                ];
-                var p_start = { p_s: p_s, p_x: p_x, p_s_hi: p_s_hi, p_x_hi: p_x_hi };
-                p.start_values = p_start;
-                deferred.resolve(p_x);
-            }
-        }
-        return deferred.promise;
-    };
-
-    this.perspectiveHPoints = function(p, a, quality) {
-        var deferred = $q.defer();
-        var scale = p.hi_lo_h_scale;
-        var amount_h = Math.round(p.hi_h_change * a);
-        var amount_l = amount_h * scale;
-
-        if (quality == 'high') {
-            if (amount_h > 0) {
-
-                p_x_hi = [
-                    [p_s_hi[0][0] + amount_h * -1, p_x_hi[0][1]],
-                    [p_s_hi[1][0] + amount_h, p_x_hi[1][1]],
-                    [p_x_hi[2][0], p_x_hi[2][1]],
-                    [p_x_hi[3][0], p_x_hi[3][1]]
-                ];
-
-                p_x = [
-                    [p_s[0][0] + amount_l * -1, p_x[0][1]],
-                    [p_s[1][0] + amount_l, p_x[1][1]],
-                    [p_x[2][0], p_x[2][1]],
-                    [p_x[3][0], p_x[3][1]]
-                ];
-
-                var p_start = { p_s: p_s, p_x: p_x, p_s_hi: p_s_hi, p_x_hi: p_x_hi };
-                p.start_values = p_start;
-                deferred.resolve(p_x_hi);
-
-            } else {
-
-                p_x_hi = [
-                    [p_x_hi[0][0], p_x_hi[0][1]],
-                    [p_x_hi[1][0], p_x_hi[1][1]],
-                    [p_s_hi[2][0] + amount_h * -1, p_x_hi[2][1]],
-                    [p_s_hi[3][0] + amount_h, p_x_hi[3][1]]
-                ];
-
-                p_x = [
-                    [p_x[0][0], p_x[0][1]],
-                    [p_x[1][0], p_x[1][1]],
-                    [p_s[2][0] + amount_l * -1, p_x[2][1]],
-                    [p_s[3][0] + amount_l, p_x[3][1]]
-                ];
-
-                var p_start = { p_s: p_s, p_x: p_x, p_s_hi: p_s_hi, p_x_hi: p_x_hi };
-                p.start_values = p_start;
-                deferred.resolve(p_x_hi);
-
-            }
-        } else {
-            if (amount_l > 0) {
-
-                p_x = [
-                    [p_s[0][0] + amount_l * -1, p_x[0][1]],
-                    [p_s[1][0] + amount_l, p_x[1][1]],
-                    [p_x[2][0], p_x[2][1]],
-                    [p_x[3][0], p_x[3][1]]
-                ];
-
-                p_x_hi = [
-                    [p_s_hi[0][0] + amount_h * -1, p_x_hi[0][1]],
-                    [p_s_hi[1][0] + amount_h, p_x_hi[1][1]],
-                    [p_x_hi[2][0], p_x_hi[2][1]],
-                    [p_x_hi[3][0], p_x_hi[3][1]]
-                ];
-
-                var p_start = { p_s: p_s, p_x: p_x, p_s_hi: p_s_hi, p_x_hi: p_x_hi };
-                p.start_values = p_start;
-                deferred.resolve(p_x);
-
-            } else {
-
-                p_x = [
-                    [p_x[0][0], p_x[0][1]],
-                    [p_x[1][0], p_x[1][1]],
-                    [p_s[2][0] + amount_l * -1, p_x[2][1]],
-                    [p_s[3][0] + amount_l, p_x[3][1]]
-                ];
-
-                p_x_hi = [
-                    [p_x_hi[0][0], p_x_hi[0][1]],
-                    [p_x_hi[1][0], p_x_hi[1][1]],
-                    [p_s_hi[2][0] + amount_h * -1, p_x_hi[2][1]],
-                    [p_s_hi[3][0] + amount_h, p_x_hi[3][1]]
-                ];
-
-                var p_start = { p_s: p_s, p_x: p_x, p_s_hi: p_s_hi, p_x_hi: p_x_hi };
-                p.start_values = p_start;
-                deferred.resolve(p_x);
-
-            }
-        }
-        return deferred.promise;
-    };
-*/
-
-    this.perspectiveChangeF = function(p, v, h, quality) {
+    this.perspectiveChange = function(p, v, h, quality) {
         var deferred = $q.defer();
         self.perspectivePoints(p, v, h, quality).then(function(result) {
-            console.log(result);
             self.perspectiveDraw(p, result, quality);
             deferred.resolve(p);
         });
@@ -1220,53 +878,6 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             self.quickPerspectiveDraw(p, result, quality);
         });
     };
-
-    /*
-        this.perspectiveVChangeF = function(p, v, quality) {
-            var deferred = $q.defer();
-            self.perspectiveVPoints(p, v, quality).then(function(result) {
-                self.perspectiveDraw(p, result, quality);
-                deferred.resolve(p);
-            });
-            return deferred.promise;
-        };
-
-        this.perspectiveHChangeF = function(p, a, quality) {
-            var deferred = $q.defer();
-            self.perspectiveHPoints(p, a, quality).then(function(result) {
-                self.perspectiveDraw(p, result, quality).then(function(result) {
-                    deferred.resolve(p);
-                });
-            });
-            return deferred.promise;
-        };
-        */
-    /*
-        this.quickPerspectiveVChange = function(v, h, quality) {
-            var p = self.getPerspective();
-            self.perspectivePoints(p, v, h, quality).then(function(result) {
-                self.quickPerspectiveDraw(p, result, quality);
-            });
-        };
-        */
-
-
-    /*
-            this.quickPerspectiveVChange = function(v, quality) {
-                var p = self.getPerspective();
-                self.perspectiveVPoints(p, v, quality).then(function(result) {
-                    self.quickPerspectiveDraw(p, result, quality);
-                });
-            };
-            
-
-        this.quickPerspectiveHChange = function(h, quality) {
-            var p = self.getPerspective();
-            self.perspectiveHPoints(p, h, quality).then(function(result) {
-                self.quickPerspectiveDraw(p, result, quality);
-            });
-        };
-        */
 
     // Rotate
 
@@ -1302,11 +913,8 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         // create the transform
         var dx = Math.cos(adjusted_angle) * scale;
         var dy = Math.sin(adjusted_angle) * scale;
-
         ctx.setTransform(dx, dy, -dy, dx, cw, ch);
         ctx.drawImage(image, -iw, -ih);
-        //ctx.imageSmoothingQuality = 'high';
-
         /*
         // visual testing
         // draw outline of image half size
@@ -1322,7 +930,6 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         ctx.strokeRect(cw - cw / 2, ch - ch / 2, cw, ch);
         ctx.restore();
         */
-
     };
 
     // Return the rotated canvas.
@@ -1332,7 +939,6 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         new_canvas.width = source.width;
         new_canvas.height = source.height;
         var ctx = new_canvas.getContext('2d');
-        //ctx.imageSmoothingQuality = 'high';
         ctx.drawImage(source, 0, 0);
         if (angle != undefined) {
             angle = angle / 100;
@@ -1385,7 +991,6 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         new_canvas.width = source.width;
         new_canvas.height = source.height;
         var ctx = new_canvas.getContext('2d');
-        //ctx.imageSmoothingQuality = 'high';
         ctx.drawImage(source, 0, 0);
         if (amount != undefined) {
             var sharpen = amount;
@@ -1401,13 +1006,12 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
     };
 
     // Apply directly to the target canvas. Changed sharpen amount.
-    this.setSharpenUpdate = function(source, target, filters) {
+    this.quickSharpen = function(source, target, filters) {
         var deferred = $q.defer();
         this.applyFilters(source, filters).then(function(result) {
             target.width = result.width;
             target.height = result.height;
             var ctx = target.getContext('2d');
-            //ctx.imageSmoothingQuality = 'high';
             ctx.drawImage(result, 0, 0);
             $(target).addClass('adjusted');
             deferred.resolve(result);
@@ -1418,40 +1022,6 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
 
     // Filter
 
-    // Make the filter directly to the canvas for performance reasons.
-    this.quickFilter = function(target, filter) {
-
-        var deferred = $q.defer();
-        console.log(filter);
-        //var ctx = new_canvas.getContext('2d');
-        //ctx.imageSmoothingQuality = 'high';
-        
-        //ctx.drawImage(source, 0, 0);
-        if (filter != undefined) {
-            var ctx = target.getContext('2d');
-            // reset filter
-        ctx.filter = "none";
-            prom1 = self.filterLayers(target, filter).then(function(canvas) {
-                var filter_data = getFilter(filter);
-                console.log(filter_data);
-                if (filter_data.filter != undefined) {
-                    console.log(filter_data.filter);
-                    ctx.filter = filter_data.filter;
-                }
-                console.log('quickFilter: ' + filter);
-                ctx.drawImage(canvas, 0, 0);
-                deferred.resolve();
-            });
-            //promises.push(prom1);
-        } else {
-            //deferred.resolve(new_canvas);
-        }
-        //$q.all(promises).then(function() {
-            //deferred.resolve(new_canvas);
-        //});
-        return deferred.promise;
-    };
-
     // Return the filtered canvas.
     this.filter = function(source, filter) {
         var deferred = $q.defer();
@@ -1460,7 +1030,6 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         new_canvas.width = source.width;
         new_canvas.height = source.height;
         var ctx = new_canvas.getContext('2d');
-        //ctx.imageSmoothingQuality = 'high';
         // reset filter
         ctx.filter = "none";
         ctx.drawImage(source, 0, 0);
@@ -1471,7 +1040,6 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
                     ctx.filter = filter_data.filter;
                 }
                 ctx.drawImage(canvas, 0, 0);
-                console.log('filter: ' + filter);
             });
             promises.push(prom1);
         } else {
@@ -1489,7 +1057,6 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         var w = canvas.width;
         var h = canvas.height;
         var targetCtx = canvas.getContext('2d');
-        //targetCtx.imageSmoothingQuality = 'high';
         var filter_data = getFilter(filter);
         // Convert image to canvas
         var topImage = canvas;
@@ -1497,7 +1064,6 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         topCanvas.width = w;
         topCanvas.height = h;
         var topCtx = topCanvas.getContext('2d');
-        //topCtx.imageSmoothingQuality = 'high';
         topCtx.drawImage(topImage, 0, 0);
         // If there is a blend to be applied.
         if (filter_data.blend != 'none') {
@@ -1506,7 +1072,6 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             canvas_gradient.width = w;
             canvas_gradient.height = h;
             var ctx_gradient = canvas_gradient.getContext('2d');
-            //ctx_gradient.imageSmoothingQuality = 'high';
             // Gradients
             if (filter_data.gradient == 'radial') {
                 // radial gradient, gradient_percent
@@ -1545,10 +1110,8 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             bottomCanvas.height = h;
             // get the 2d context to draw
             var bottomCtx = bottomCanvas.getContext('2d');
-            //bottomCtx.imageSmoothingQuality = 'high';
             bottomCtx.drawImage(bottomImage, 0, 0, w, h);
-            var id = 'steve';
-            applyBlending(bottomImage, topImage, id, filter_data.blend, w, h).then(function(result) {
+            applyBlending(bottomImage, topImage, filter_data.blend, w, h).then(function(result) {
                 targetCtx.drawImage(result, 0, 0, w, h);
                 deferred.resolve(result);
             });
@@ -1568,7 +1131,6 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         new_canvas.width = source.width;
         new_canvas.height = source.height;
         var ctx = new_canvas.getContext('2d');
-        //ctx.imageSmoothingQuality = 'high';
         ctx.drawImage(source, 0, 0);
         if (crop != undefined) {
             var sx = crop.x;

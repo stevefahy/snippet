@@ -331,8 +331,6 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
     this.buildCrop = function(parent_container, id, target) {
-        var t0 = performance.now();
-        console.log('buildCrop Start');
         var cropper = $('.' + parent_container + ' #cropper_' + id);
         var original_image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
         var scale = ImageAdjustment.getScale(original_image, cropper);
@@ -374,9 +372,6 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                             if (ia.perspective != undefined) {
                                 $rootScope.slider_settings.perspective_v.amount = ia.perspective.vertical;
                                 $rootScope.slider_settings.perspective_h.amount = ia.perspective.horizontal;
-                                //ImageAdjustment.quickPerspectiveVChange(ia.perspective.vertical, 'high');
-                                //ImageAdjustment.quickPerspectiveHChange(ia.perspective.horizontal, 'high');
-                                //self.sliderRotateUpdate();
                                 ImageAdjustment.quickPerspectiveChange(ia.perspective.vertical, ia.perspective.horizontal, 'high');
                             }
                         }
@@ -396,9 +391,6 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                         // Make resizable.
                         Resize.makeResizableDiv('.resizers', '.crop_area', '#crop_src', original_image, crop_data, id);
                         hideImages(parent_container, id);
-                        console.log('buildCrop End');
-                        var t1 = performance.now();
-                        console.log("buildCrop took " + (t1 - t0) + " milliseconds.");
                     });
                 });
             },
@@ -434,7 +426,6 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
     var storePerspectiveValue = function(direction, value) {
         var opposite_dir;
-        //this.direction = direction;
         if (direction == 'horizontal') {
             opposite_dir = 'vertical';
         } else {
@@ -458,9 +449,6 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
     this.sliderperspectiveVChange = function(value, quality) {
         var h = $rootScope.slider_settings.perspective_h.amount;
-        console.log(h);
-        //ImageAdjustment.quickPerspectiveVChange(value, quality);
-        //ImageAdjustment.quickPerspectiveVChange(value, quality);
         ImageAdjustment.quickPerspectiveChange(value, h, quality);
         if (quality == 'high') {
             storePerspectiveValue('vertical', value);
@@ -468,8 +456,6 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
     this.sliderperspectiveHChange = function(value, quality) {
-        //ImageAdjustment.quickPerspectiveHChange(value, quality);
-        //ImageAdjustment.quickPerspectiveHChange(value, quality);
         var v = $rootScope.slider_settings.perspective_v.amount;
         ImageAdjustment.quickPerspectiveChange(v, value, quality);
         if (quality == 'high') {
@@ -519,8 +505,6 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
     this.openCrop = function(e, id) {
-        var t0 = performance.now();
-        console.log('openCrop start');
         var deferred = $q.defer();
         var promises = [];
         var parent_container = getParentContainer(e.target);
@@ -549,15 +533,11 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 target.height = result.height;
                 var ctx = target.getContext('2d');
                 ctx.drawImage(result, 0, 0);
-                console.log('openCrop end 1');
                 deferred.resolve();
             });
             promises.push(prom);
         }
         $q.all(promises).then(function() {
-            console.log('openCrop end 2');
-            var t1 = performance.now();
-            console.log("openCrop took " + (t1 - t0) + " milliseconds.");
             self.buildCrop(parent_container, id, target);
             deferred.resolve();
         });
@@ -565,7 +545,6 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
     this.filterClick = function(e, button, id, filter) {
-        console.log(filter);
         var parent_container = getParentContainer(e.target);
         ImageAdjustment.setImageParent(parent_container);
         // Store the selected filter in a custom attribute.
@@ -581,10 +560,6 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             var ctx = target.getContext('2d');
             ctx.drawImage(result, 0, 0);
         });
-        
-
-        //ImageAdjustment.quickFilter(target, filter);
-
         ImageAdjustment.setImageAdjusted(true);
         if (button != 'button') {
             e.stopPropagation();
@@ -677,40 +652,21 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             var source2 = $(source).prependTo('.content_cnv #cropper_' + id)[0];
             var target2 = $(target).prependTo('.content_cnv #cropper_' + id)[0];
             if (ia != undefined) {
-                var t0 = performance.now();
-                // Target canvas
-                //var stored_filter = ia.filter;
-                //ia.filter = undefined;
-                //(all adjustments less filter)
+                // Target canvas - All adjustments
                 ImageAdjustment.applyFilters(source, ia).then(function(result) {
-                    console.log('Filters applied target');
                     target.width = result.width;
                     target.height = result.height;
-
                     var ctx = target.getContext('2d');
                     ctx.drawImage(result, 0, 0);
-                    
-                    //ImageAdjustment.quickFilter(target, stored_filter);//.then(function(result2) {
-
-                    
-
-                    //var new_canvas = ImageAdjustment.cloneCanvas(result);
-                    
                     // Source canvas (all adjustments less filter)
-                    
                     ia.filter = undefined;
                     ImageAdjustment.applyFilters(source, ia).then(function(result) {
-                        console.log('Filters applied source');
                         self.canvasToTempImage(result, id).then(function(image) {
                             self.buildFilters(parent_container, id, image);
                             $(target).removeClass('hide');
                             hideAdjusted(parent_container, id);
-                            var t1 = performance.now();
-console.log("Filter took " + (t1 - t0) + " milliseconds.");
                         });
                     });
-                    
-
                 });
             } else {
                 // Source canvas - no adjustments

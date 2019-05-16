@@ -29,7 +29,7 @@ cardApp.service('Slider', ['$window', '$rootScope', 'ImageAdjustment', function(
                 onEnd: function(id, amount) {
                     //console.log('on end ' + $rootScope.slider_settings.sharpen.amount);
                     ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'sharpen', amount);
-                    ImageAdjustment.setSharpenUpdate(ImageAdjustment.getSource(), ImageAdjustment.getTarget(), ImageAdjustment.getImageAdjustments(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId()));
+                    ImageAdjustment.quickSharpen(ImageAdjustment.getSource(), ImageAdjustment.getTarget(), ImageAdjustment.getImageAdjustments(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId()));
                 }
             }
         },
@@ -69,7 +69,7 @@ cardApp.service('Slider', ['$window', '$rootScope', 'ImageAdjustment', function(
                     //console.log('on start ' + amount);
                 },
                 onChange: function(id, amount) {
-                    console.log('on change ' + amount);
+                    //console.log('on change ' + amount);
                     sliderperspectiveVChange(amount, 'low');
                 },
                 onEnd: function(id, amount) {
