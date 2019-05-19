@@ -107,8 +107,8 @@ cardApp.service('Slider', ['$window', '$rootScope', 'ImageAdjustment', function(
             amount: 0,
             reset: 0,
             options: {
-                floor:-5,
-                ceil: 5,
+                floor:-2,
+                ceil: 2,
                 step: 0.00001,
                 precision: 5,
                 id: 'slider-idt',

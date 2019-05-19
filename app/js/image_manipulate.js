@@ -863,7 +863,7 @@ function Exposure2Filter(){
 		amount : 0.0
 	};
 	this.valueRanges = {
-		amount : {min:-5, max:5}
+		amount : {min:-2, max:2}
 	};
 	this.filter = function(input,values){
 		var width = input.width, height = input.height;
