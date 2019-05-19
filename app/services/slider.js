@@ -8,6 +8,7 @@ cardApp.service('Slider', ['$window', '$rootScope', 'ImageAdjustment', function(
     this.slider_rotate = '<rzslider rz-slider-model="slider_settings.rotate.amount" rz-slider-options="slider_settings.rotate.options"></rzslider>';
     this.slider_perspective_v = '<rzslider rz-slider-model="slider_settings.perspective_v.amount" rz-slider-options="slider_settings.perspective_v.options"></rzslider>';
     this.slider_perspective_h = '<rzslider rz-slider-model="slider_settings.perspective_h.amount" rz-slider-options="slider_settings.perspective_h.options"></rzslider>';
+    this.slider_test = '<rzslider rz-slider-model="slider_settings.test.amount" rz-slider-options="slider_settings.test.options"></rzslider>';
 
     $rootScope.slider_settings = {
 
@@ -98,6 +99,29 @@ cardApp.service('Slider', ['$window', '$rootScope', 'ImageAdjustment', function(
                 onEnd: function(id, amount) {
                     //console.log('on end ' + amount);
                     sliderperspectiveHChange(amount, 'high');
+                }
+            }
+        },
+
+        test: {
+            amount: 0,
+            reset: 0,
+            options: {
+                floor:-5,
+                ceil: 5,
+                step: 0.00001,
+                precision: 5,
+                id: 'slider-idt',
+                onStart: function() {
+                    //console.log('on start ' + amount);
+                },
+                onChange: function(id, amount) {
+                    //console.log('on change ' + amount);
+                    sliderTestChange(amount);
+                },
+                onEnd: function(id, amount) {
+                    //console.log('on end ' + amount);
+                    sliderTestChange(amount);
                 }
             }
         }

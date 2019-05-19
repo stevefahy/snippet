@@ -194,7 +194,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                                 var ia = $('.image_adjust').clone();
                                 $(ia).attr('id', 'image_adjust_' + id);
                                 ia.insertBefore('.' + parent_container + ' #cropper_' + id);
-                                var edit_btns = "<div class='image_editor'><div class='image_edit_btns'><div class='' onclick='adjustImage(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_tune'>tune</i></div><div class='' onclick='filterImage(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_filter'>filter</i></div><div class='' onclick='openCrop(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_crop' >crop</i></div><div class='close_image_edit' onclick='closeEdit(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_close'>&#xE14C;</i></div></div></div>";
+                                var edit_btns = "<div class='image_editor'><div class='image_edit_btns'><div class='' onclick='testImage(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_tune'>adjust</i></div>  <div class='' onclick='adjustImage(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_tune'>tune</i></div><div class='' onclick='filterImage(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_filter'>filter</i></div><div class='' onclick='openCrop(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_crop' >crop</i></div><div class='close_image_edit' onclick='closeEdit(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_close'>&#xE14C;</i></div></div></div>";
                                 $('#image_adjust_' + id).append(edit_btns);
                                 // Adjust marging top if this is the topmost image.
                                 if ($('.' + parent_container + ' #cropper_' + id).attr('class').indexOf('no_image_space') >= 0) {
@@ -564,6 +564,78 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         if (button != 'button') {
             e.stopPropagation();
         }
+    };
+
+    this.sliderTestChange = function(value) {
+        console.log(value);
+        //ImageAdjustment.quickPerspectiveChange(v, value, quality);
+        var ctx_source = $('.source_canvas')[0].getContext('2d');
+        var ctx_target = $('.target_canvas')[0].getContext('2d');
+        //Get data for the entire image
+        var data = ctx_source.getImageData(0, 0, ctx_source.canvas.width, ctx_source.canvas.height);
+        //JSManipulate.lensdistortion.filter(data, { refraction: 3.0, radius: 75 });
+        JSManipulate.exposure2.filter(data, { amount: value });
+        //JSManipulate.brightness.filter(data, { amount: value });
+        //JSManipulate.gamma.filter(data, { amount: value });
+        //JSManipulate.exposure2.filter(data, { amount: value });
+        //Now finally put the data back into the context, which will render
+        //the manipulated image on the page.
+        ctx_target.putImageData(data, 0, 0);
+
+    };
+
+    this.testImage = function(e, id) {
+        var parent_container = getParentContainer(e.target);
+        ImageAdjustment.setImageId(id);
+        ImageAdjustment.setImageParent(parent_container);
+        var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
+        var image = $('.' + parent_container + ' #image_' + id)[0];
+        $('.image_adjust_on').remove();
+        if ($('.' + parent_container + ' #cropper_' + id + ' .image_adjust_div').length <= 0) {
+            var filt = $('.image_adjust_div').clone().insertAfter('.' + parent_container + ' #cropper_' + id);
+            filt.attr('id', 'adjust_' + id);
+            filt.addClass('filters_active');
+            var data = { 'id': id, 'type': 'test' };
+            data.last_position = $rootScope.slider_settings.test.reset;
+            // Get the last position of the slider.
+            if (ia != undefined) {
+                if (ia.test != undefined) {
+                    data.last_position = ia.test;
+                }
+            }
+            addSlider(Slider.slider_test, parent_container, id, data);
+        }
+        var target = self.imageToCanvas(image);
+        var source = self.imageToCanvas(image);
+        target.setAttribute('id', 'temp_canvas_filtered_' + id);
+        $(target).addClass('target_canvas');
+        $(source).addClass('source_canvas');
+        $(target).addClass('hide');
+        $(source).addClass('hide');
+        $(target).insertBefore('.' + parent_container + ' #image_' + id);
+        $(source).insertBefore('.' + parent_container + ' #image_' + id);
+        ImageAdjustment.setSource(source);
+        ImageAdjustment.setTarget(target);
+        // Apply all adjustments.
+        ImageAdjustment.applyFilters(source, ia).then(function(result) {
+            target.width = result.width;
+            target.height = result.height;
+            var ctx = target.getContext('2d');
+            ctx.drawImage(result, 0, 0);
+
+
+              source.width = result.width;
+            source.height = result.height;
+            var ctx_source = source.getContext('2d');
+            ctx_source.drawImage(result, 0, 0);
+
+
+
+            hideOriginal(parent_container, id);
+            hideAdjusted(parent_container, id);
+            $(target).removeClass('hide');
+        });
+        e.stopPropagation();
     };
 
     this.adjustImage = function(e, id) {

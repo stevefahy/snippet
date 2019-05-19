@@ -6,12 +6,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     closeFilters = ImageEdit.closeFilters;
     filterClick = ImageEdit.filterClick;
     adjustImage = ImageEdit.adjustImage;
+    testImage = ImageEdit.testImage;
     cancelCrop = ImageEdit.cancelCrop;
     makeCrop = ImageEdit.makeCrop;
     openRotate = ImageEdit.openRotate;
     sliderRotateChange = ImageEdit.sliderRotateChange;
     sliderperspectiveVChange = ImageEdit.sliderperspectiveVChange;
     sliderperspectiveHChange = ImageEdit.sliderperspectiveHChange;
+    sliderTestChange = ImageEdit.sliderTestChange;
 
     $scope.getFocus = Format.getFocus;
     $scope.getBlur = Format.getBlur;

@@ -1,7 +1,7 @@
 // CONFIGS
 
 // IMAGE
-var JPEG_COMPRESSION = 0.7;
+var JPEG_COMPRESSION = 1;
 // Perspective adjustment (Percent of width or height per unit of change - 100% / PERSPECTIVE_RATIO)
 var PERSPECTIVE_RATIO = 300;
 // Image resize max width or height
