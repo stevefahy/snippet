@@ -233,8 +233,6 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var swidth = Math.round($(crop_area).outerWidth() * scale);
         var sheight = Math.round($(crop_area).outerHeight() * scale);
         
-
-
         var x = 0;
         var y = 0;
         var crop_data = { 'x': sx, 'y': sy, 'width': swidth, 'height': sheight };
@@ -280,7 +278,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                                 ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'rotate', $rootScope.slider_settings.rotate.amount);
                                 ImageAdjustment.setImageAdjusted(true);
                                 // Unset the height of the cropper.
-                                $('.content_cnv #cropper_' + id).css('height', '');
+                                //$('.content_cnv #cropper_' + id).css('height', '');
                                 // Save
                                 ImageAdjustment.setImageEditing(false);
                                 saveCropper(cropper);
@@ -289,7 +287,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                     });
                 },
                 complete: function() {
-                    $(cropper).css('height', 'unset');
+                   // $(cropper).css('height', 'unset');
                 }
             });
         });
