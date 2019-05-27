@@ -3465,9 +3465,3 @@ span.after_image {
     text-align: right;
     margin-right: 15px;
 }
-
-.crop_rotate {
-    z-index: 1001;
-    text-align: right;
-    margin-right: 15px;
-}

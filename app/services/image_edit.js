@@ -2,7 +2,7 @@
 // ImageEdit Service
 //
 
-cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', 'General', 'UserData', 'principal', 'ImageAdjustment', 'Drag', 'Resize', 'Keyboard', 'Scroll', 'Slider', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML, General, UserData, principal, ImageAdjustment, Drag, Resize, Keyboard, Scroll, Slider) {
+cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', 'General', 'UserData', 'principal', 'ImageAdjustment', 'Drag', 'Resize', 'Keyboard', 'Scroll', 'Slider', 'ImageManipulate', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML, General, UserData, principal, ImageAdjustment, Drag, Resize, Keyboard, Scroll, Slider, ImageManipulate) {
 
     var ua = navigator.userAgent;
     var self = this;
@@ -1061,12 +1061,16 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         //Get data for the entire image
         var data = ctx_source.getImageData(0, 0, ctx_source.canvas.width, ctx_source.canvas.height);
         //JSManipulate.lensdistortion.filter(data, { refraction: 3.0, radius: 75 });
-        JSManipulate.exposure2.filter(data, { amount: value });
+        //JSManipulate.exposure2.filter(data, { amount: value });
         //JSManipulate.brightness.filter(data, { amount: value });
         //JSManipulate.gamma.filter(data, { amount: value });
         //JSManipulate.exposure2.filter(data, { amount: value });
         //Now finally put the data back into the context, which will render
         //the manipulated image on the page.
+
+        //JSManipulate.exposure2.filter(data, { amount: value });
+        ImageManipulate.exposure2.filter(data, { amount: value });
+
         ctx_target.putImageData(data, 0, 0);
 
     };
