@@ -347,7 +347,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         // check whether rotated
         var rotated = self.getImageAdjustment(self.getImageParent(), self.getImageId(), 'rotated');
         console.log(rotated);
-        if (rotated == 90) {
+        if (rotated == 90 || rotated == 270) {
             nat_w = original_image.naturalHeight;
         }
 
