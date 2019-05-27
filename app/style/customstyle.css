@@ -375,6 +375,28 @@ hr {
     cursor: pointer;
 }
 
+#mi-crop_rotate {
+    color: green;
+    font-size: 30px !important;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+#mi-crop_flip_v {
+    color: green;
+    font-size: 30px !important;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+#mi-crop_flip_h {
+    color: green;
+    font-size: 30px !important;
+    font-weight: 900;
+    cursor: pointer;
+    transform: rotate(-90deg);
+}
+
 #mi-account_circle {
     line-height: 50px;
     font-size: 50px;
@@ -3424,6 +3446,24 @@ span.after_image {
 
 .will_transform {
     will-change: margin-top;
+}
+
+.crop_rotate {
+    z-index: 1001;
+    text-align: right;
+    margin-right: 15px;
+}
+
+.crop_flip_h {
+    z-index: 1001;
+    text-align: right;
+    margin-right: 15px;
+}
+
+.crop_flip_v {
+    z-index: 1001;
+    text-align: right;
+    margin-right: 15px;
 }
 
 .crop_rotate {

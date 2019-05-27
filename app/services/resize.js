@@ -33,6 +33,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', 'Scroll', function(Drag, I
     };
 
     this.makeResizableDiv = function(cropping_box, cropping_area, cropping_source, cropping_original_image, crop_data, id) {
+        console.log(crop_data);
         var crop_box = document.querySelector(cropping_box);
         var resizers = document.querySelectorAll(cropping_box + ' .resizer');
         var crop_area = document.querySelector(cropping_area);
@@ -79,10 +80,11 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', 'Scroll', function(Drag, I
             per_right = Math.round($(crop_source).outerWidth() - (per_left + $(crop_box).outerWidth()));
 
         } else {
+            console.log('DEFAULT CROP');
             // Not previously cropped. Set crop box to a default size.
             var init_width = $(crop_source).width();
             var init_height = $(crop_source).height();
-
+console.log(init_width  + ' : ' + init_height);
             crop_box.style.width = (init_width / 2) + 'px';
             crop_box.style.height = (init_height / 2) + 'px';
             crop_box.style.top = (init_height / 4) + 'px';

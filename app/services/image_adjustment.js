@@ -13,6 +13,18 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
     var image_edit_finished = false;
     var WINDOW_SCALE = 1.7;
 
+    //$('#cropper_' + unique_id).attr('image-original', JSON.stringify(original_image_data));
+
+    this.getImageOriginal = function(parent_container, id) {
+        var original_data;
+        // Custom attribute for storing image adjustments.
+        var io = $('.' + parent_container + ' #cropper_' + id).attr('image-original');
+        if (io != undefined) {
+            original_data = JSON.parse(io);
+        }
+        return original_data;
+    };
+
     this.setImageAdjustment = function(parent_container, id, name, value) {
         var ia = this.getImageAdjustments(parent_container, id);
         if (ia == undefined) {
@@ -40,11 +52,28 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         var adjustment_value;
         if (ia != undefined) {
             adjustment_data = JSON.parse(ia);
+            console.log(adjustment_data);
+            console.log(adjustment_data[adjustment]);
             if (adjustment_data[adjustment]) {
                 adjustment_value = adjustment_data[adjustment];
             }
         }
         return adjustment_value;
+    };
+
+    this.removeImageAdjustment = function(parent_container, id, adjustment) {
+        var adjustment_data;
+        // Custom attribute for storing image adjustments.
+        var ia = $('.' + parent_container + ' #image_' + id).attr('adjustment-data');
+        var adjustment_value;
+        if (ia != undefined) {
+            adjustment_data = JSON.parse(ia);
+            if (adjustment_data[adjustment]) {
+                delete adjustment_data[adjustment];
+                $('.' + parent_container + ' #image_' + id).attr('adjustment-data', JSON.stringify(adjustment_data));
+            }
+        }
+        return;
     };
 
     this.setImageParent = function(id) {
@@ -315,6 +344,13 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
 
     this.getScale = function(original_image, crop_image) {
         var nat_w = original_image.naturalWidth;
+        // check whether rotated
+        var rotated = self.getImageAdjustment(self.getImageParent(), self.getImageId(), 'rotated');
+        console.log(rotated);
+        if (rotated == 90) {
+            nat_w = original_image.naturalHeight;
+        }
+
         var cur_w = $(crop_image).outerWidth();
         var scale = nat_w / cur_w;
         return scale;
@@ -356,19 +392,28 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
     this.applyFilters = function(source, filters) {
         var deferred = $q.defer();
         if (filters == undefined) {
-            filters = { sharpen: undefined, filter: undefined, rotate: undefined, crop: undefined, perspective: undefined };
+            filters = { sharpen: undefined, filter: undefined, rotate: undefined, crop: undefined, perspective: undefined, flip_v: undefined, flip_h: undefined };
         }
         // Sharpen from source first, Crop last. Pass each adjustment to the next filter.
         self.filter(source, filters.filter)
             .then(function(result) {
+                console.log(result);
+                return self.rotated(result, filters.rotated);
+            }).then(function(result) {
+                console.log(result);
+                return self.flipV(result, filters.flip_v);
+            }).then(function(result) {
+                return self.flipH(result, filters.flip_h);
+            }).then(function(result) {
                 return self.sharpen(result, filters.sharpen);
             }).then(function(result) {
                 return self.perspective(result, filters.perspective);
             }).then(function(result) {
-                return self.rotate(result, filters.rotate);
+               return self.rotate(result, filters.rotate);
             }).then(function(result) {
                 return self.crop(result, filters.crop);
             }).then(function(result) {
+                console.log(result);
                 deferred.resolve(result);
             });
         return deferred.promise;
@@ -401,9 +446,11 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         ctx.drawImage(source, 0, 0);
         if (amount != undefined) {
             self.perspectiveInit(source).then(function(p) {
+                //p.rotated = rotated;
                 self.perspective_setup(p.cvso_lo.width, p.cvso_lo.height, p.cvso_hi.width, p.cvso_hi.height).then(function(result) {
                     self.perspectiveChange(p, amount.vertical, amount.horizontal, 'high').then(function() {
                         ctx.drawImage(p.ctxd, 0, 0);
+                        console.log('PERSPECTIVE');
                         deferred.resolve(new_canvas);
                     });
                 });
@@ -657,6 +704,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         var window_w = Math.round(window.innerWidth / WINDOW_SCALE);
         var image_w = source_image_hi.width;
         var image_h = source_image_hi.height;
+        console.log(image_w + ' : ' + image_h);
         var scale = window_w / image_w;
         var scaled_height = Math.round(image_h * scale);
         var prom = self.resizeImage(source_image_hi, window_w, scaled_height).then(function(source_image_lo) {
@@ -865,7 +913,13 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
 
     this.perspectiveChange = function(p, v, h, quality) {
         var deferred = $q.defer();
-        self.perspectivePoints(p, v, h, quality).then(function(result) {
+        var vertical = v;
+        var horizontal = h;
+        //if(p.rotated == 90){
+        //    vertical = h;
+        //    horizontal = v;
+        //}
+        self.perspectivePoints(p, vertical, horizontal, quality).then(function(result) {
             self.perspectiveDraw(p, result, quality);
             deferred.resolve(p);
         });
@@ -978,6 +1032,204 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             deferred.resolve(new_canvas);
         } else {
             deferred.resolve(new_canvas);
+        }
+        return deferred.promise;
+    };
+
+    // Flip V
+
+    this.quickFlipV = function(ctx, x, y) {
+        var imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+        // Traverse every row and flip the pixels
+        var idh = imageData.height;
+        var idw = imageData.width;
+        for (i = 0, h = idh; i < h; i++) {
+            // We only need to do half of every row since we're flipping the halves
+            for (j = 0, w = idw / 2; j < w; j++) {
+                var index = (i * 4) * idw + (j * 4);
+                var mirrorIndex = ((i + 1) * 4) * idw - ((j + 1) * 4);
+                for (var q = 0, amount = 4; q < amount; q++) {
+                    var temp = imageData.data[index + q];
+                    imageData.data[index + q] = imageData.data[mirrorIndex + q];
+                    imageData.data[mirrorIndex + q] = temp;
+                }
+            }
+        }
+        ctx.putImageData(imageData, 0, 0);
+    };
+
+    this.flipV = function(source, bool) {
+        var deferred = $q.defer();
+        //bool=false;
+        if (bool) {
+            console.log('flipping v');
+            var ctx = source.getContext('2d');
+            var imageData = ctx.getImageData(0, 0, source.width, source.height);
+            // Traverse every row and flip the pixels
+            var idw = imageData.width;
+            var idh = imageData.height;
+            for (i = 0, h = idh; i < h; i++) {
+                // We only need to do half of every row since we're flipping the halves
+                for (j = 0, w = idw / 2; j < w; j++) {
+                    var index = (i * 4) * idw + (j * 4);
+                    var mirrorIndex = ((i + 1) * 4) * idw - ((j + 1) * 4);
+                    for (var q = 0; q < 4; q++) {
+                        var temp = imageData.data[index + q];
+                        imageData.data[index + q] = imageData.data[mirrorIndex + q];
+                        imageData.data[mirrorIndex + q] = temp;
+                    }
+                }
+            }
+            ctx.putImageData(imageData, 0, 0);
+            deferred.resolve(source);
+        } else {
+            deferred.resolve(source);
+        }
+        return deferred.promise;
+    };
+
+    // Rotated
+
+    this.rotated = function(source, degrees) {
+        console.log(degrees);
+        console.log(source.width + ' : ' + source.height);
+        var deferred = $q.defer();
+        var io = self.getImageOriginal(self.getImageParent(), self.getImageId());
+        var new_canvas = document.createElement("canvas");
+        new_canvas.width = io.nat_width;
+        new_canvas.height = io.nat_height;
+        var ctx2 = new_canvas.getContext('2d');
+        var image = source;
+
+        ctx2.drawImage(source, 0, 0);
+        
+        if (degrees != undefined && degrees != 0) {
+            var ctx = source.getContext('2d');
+            if (degrees == 90) {
+                console.log('90 here');
+                new_canvas.width = io.nat_height;
+                new_canvas.height = io.nat_width;
+                ctx2.translate(new_canvas.width / 2, new_canvas.height / 2);
+                ctx2.rotate(degrees * Math.PI / 180);
+                ctx2.drawImage(ctx.canvas, -new_canvas.height / 2, -new_canvas.width / 2);
+                deferred.resolve(new_canvas);
+            } else if (degrees == 180) {
+                console.log('180 here');
+                new_canvas.width = io.nat_width;
+                new_canvas.height = io.nat_height;
+                ctx2.translate(io.nat_width / 2, io.nat_height / 2);
+                ctx2.rotate(180 * Math.PI / 180);
+                ctx2.drawImage(ctx.canvas, -ctx.canvas.width / 2, -ctx.canvas.height / 2);
+                deferred.resolve(new_canvas);
+            } else if (degrees == 270) {
+                console.log('270 here');
+                new_canvas.width = io.nat_height;
+                new_canvas.height = io.nat_width;
+                ctx2.translate(new_canvas.width / 2, new_canvas.height / 2);
+                ctx2.rotate(270 * Math.PI / 180);
+                ctx2.drawImage(ctx.canvas, -new_canvas.height / 2, -new_canvas.width / 2);
+                deferred.resolve(new_canvas);
+                //} else if(degrees == 360){
+                //  console.log('360 here');
+                //new_canvas.width = io.nat_width;
+                //new_canvas.height = io.nat_height;
+                //ctx2.translate(new_canvas.width / 2, new_canvas.height / 2);
+                //ctx2.rotate(270* Math.PI / 180);
+                //ctx2.drawImage(ctx.canvas, -new_canvas.height / 2, -new_canvas.width / 2);
+            }
+
+
+console.log('WHAT!');
+
+            //deferred.resolve(new_canvas);
+        } else {
+            
+            deferred.resolve(new_canvas);
+        }
+        return deferred.promise;
+    };
+
+    this.quickRotated = function(ctx, degrees) {
+        console.log(degrees);
+        console.log(ctx);
+        var deferred = $q.defer();
+        var new_canvas = document.createElement("canvas");
+        new_canvas.width = ctx.canvas.width;
+        new_canvas.height = ctx.canvas.height;
+        var ctx2 = new_canvas.getContext('2d');
+        var image = ctx.canvas;
+        ctx2.drawImage(image, 0, 0);
+        var io = self.getImageOriginal(self.getImageParent(), self.getImageId());
+        if (degrees != undefined) {
+            if (degrees == 90) {
+                new_canvas.width = io.nat_height;
+                new_canvas.height = io.nat_width;
+                ctx2.translate(new_canvas.width / 2, new_canvas.height / 2);
+                ctx2.rotate(degrees * Math.PI / 180);
+                ctx2.drawImage(ctx.canvas, -new_canvas.height / 2, -new_canvas.width / 2);
+            } else if (degrees == 180) {
+                console.log('quick 180 here');
+                new_canvas.width = io.nat_width;
+                new_canvas.height = io.nat_height;
+                ctx2.translate(new_canvas.width / 2, new_canvas.height / 2);
+                //ctx2.rotate(0 * Math.PI / 180);
+                ctx2.scale(1, -1);
+                ctx2.drawImage(ctx.canvas, -new_canvas.width / 2, -new_canvas.height / 2);
+            }
+
+
+            ctx.drawImage(ctx2.canvas, 0, 0);
+            console.log(ctx);
+        }
+    };
+
+    // Flip H
+
+    this.quickFlipH = function(ctx, x, y) {
+        console.log('quickFlipH');
+        var imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+        var imageData_dest = ctx.createImageData(imageData.width, imageData.height);
+        var idh = imageData.height;
+        var idw = imageData.width;
+        //loop through image data
+        for (row = 0; row < idh; row++) {
+            for (col = 0; col < idw; col++) {
+                //find current pixel
+                index = (col + (row * idw)) * 4;
+                index_dest = (col + ((idh - row) * idw)) * 4;
+                for (var q = 0, amount = 4; q < amount; q++) {
+                    imageData_dest.data[index_dest + q] = imageData.data[index + q];
+                }
+            }
+        }
+        ctx.putImageData(imageData_dest, 0, 0);
+    };
+
+    this.flipH = function(source, bool) {
+        console.log('flipH: ' + bool);
+        var deferred = $q.defer();
+        if (bool) {
+            console.log('flipping h');
+            var ctx = source.getContext('2d');
+            var imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+            var imageData_dest = ctx.createImageData(imageData.width, imageData.height);
+            var idh = imageData.height;
+            var idw = imageData.width;
+            //loop through image data
+            for (row = 0; row < idh; row++) {
+                for (col = 0; col < idw; col++) {
+                    //find current pixel
+                    index = (col + (row * idw)) * 4;
+                    index_dest = (col + ((idh - row) * idw)) * 4;
+                    for (var q = 0, amount = 4; q < amount; q++) {
+                        imageData_dest.data[index_dest + q] = imageData.data[index + q];
+                    }
+                }
+            }
+            ctx.putImageData(imageData_dest, 0, 0);
+            deferred.resolve(source);
+        } else {
+            deferred.resolve(source);
         }
         return deferred.promise;
     };
