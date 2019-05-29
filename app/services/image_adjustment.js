@@ -13,8 +13,6 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
     var image_edit_finished = false;
     var WINDOW_SCALE = 1.7;
 
-    //$('#cropper_' + unique_id).attr('image-original', JSON.stringify(original_image_data));
-
     this.getImageOriginal = function(parent_container, id) {
         var original_data;
         // Custom attribute for storing image adjustments.
@@ -52,8 +50,6 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         var adjustment_value;
         if (ia != undefined) {
             adjustment_data = JSON.parse(ia);
-            console.log(adjustment_data);
-            console.log(adjustment_data[adjustment]);
             if (adjustment_data[adjustment]) {
                 adjustment_value = adjustment_data[adjustment];
             }
@@ -346,11 +342,9 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         var nat_w = original_image.naturalWidth;
         // check whether rotated
         var rotated = self.getImageAdjustment(self.getImageParent(), self.getImageId(), 'rotated');
-        console.log(rotated);
         if (rotated == 90 || rotated == 270) {
             nat_w = original_image.naturalHeight;
         }
-
         var cur_w = $(crop_image).outerWidth();
         var scale = nat_w / cur_w;
         return scale;
@@ -397,10 +391,8 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         // Sharpen from source first, Crop last. Pass each adjustment to the next filter.
         self.filter(source, filters.filter)
             .then(function(result) {
-                console.log(result);
                 return self.rotated(result, filters.rotated);
             }).then(function(result) {
-                console.log(result);
                 return self.flipV(result, filters.flip_v);
             }).then(function(result) {
                 return self.flipH(result, filters.flip_h);
@@ -409,11 +401,10 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             }).then(function(result) {
                 return self.perspective(result, filters.perspective);
             }).then(function(result) {
-               return self.rotate(result, filters.rotate);
+                return self.rotate(result, filters.rotate);
             }).then(function(result) {
                 return self.crop(result, filters.crop);
             }).then(function(result) {
-                console.log(result);
                 deferred.resolve(result);
             });
         return deferred.promise;
@@ -450,7 +441,6 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
                 self.perspective_setup(p.cvso_lo.width, p.cvso_lo.height, p.cvso_hi.width, p.cvso_hi.height).then(function(result) {
                     self.perspectiveChange(p, amount.vertical, amount.horizontal, 'high').then(function() {
                         ctx.drawImage(p.ctxd, 0, 0);
-                        console.log('PERSPECTIVE');
                         deferred.resolve(new_canvas);
                     });
                 });
@@ -704,7 +694,6 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         var window_w = Math.round(window.innerWidth / WINDOW_SCALE);
         var image_w = source_image_hi.width;
         var image_h = source_image_hi.height;
-        console.log(image_w + ' : ' + image_h);
         var scale = window_w / image_w;
         var scaled_height = Math.round(image_h * scale);
         var prom = self.resizeImage(source_image_hi, window_w, scaled_height).then(function(source_image_lo) {
@@ -746,7 +735,6 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
                 hi_h_change: hi_h_change,
                 hi_v_change: hi_v_change,
             };
-            this.cache = {};
         });
         promises.push(prom);
         $q.all(promises).then(function() {
@@ -781,8 +769,8 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             [Number(hi_w), Number(hi_h)],
             [0, Number(hi_h)]
         ];
-        var p_start = { p_s: p_s, p_x: p_x, p_s_hi: p_s_hi, p_x_hi: p_x_hi };
-        deferred.resolve(p_start);
+        //var p_start = { p_s: p_s, p_x: p_x, p_s_hi: p_s_hi, p_x_hi: p_x_hi };
+        deferred.resolve();
         return deferred.promise;
     };
 
@@ -915,10 +903,6 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         var deferred = $q.defer();
         var vertical = v;
         var horizontal = h;
-        //if(p.rotated == 90){
-        //    vertical = h;
-        //    horizontal = v;
-        //}
         self.perspectivePoints(p, vertical, horizontal, quality).then(function(result) {
             self.perspectiveDraw(p, result, quality);
             deferred.resolve(p);
@@ -1038,7 +1022,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
 
     // Flip V
 
-    this.quickFlipV = function(ctx, x, y) {
+    this.quickFlipV = function(ctx) {
         var imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
         // Traverse every row and flip the pixels
         var idh = imageData.height;
@@ -1060,9 +1044,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
 
     this.flipV = function(source, bool) {
         var deferred = $q.defer();
-        //bool=false;
         if (bool) {
-            console.log('flipping v');
             var ctx = source.getContext('2d');
             var imageData = ctx.getImageData(0, 0, source.width, source.height);
             // Traverse every row and flip the pixels
@@ -1088,105 +1070,9 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         return deferred.promise;
     };
 
-    // Rotated
-
-    this.rotated = function(source, degrees) {
-        console.log(degrees);
-        console.log(source.width + ' : ' + source.height);
-        var deferred = $q.defer();
-        var io = self.getImageOriginal(self.getImageParent(), self.getImageId());
-        var new_canvas = document.createElement("canvas");
-        new_canvas.width = io.nat_width;
-        new_canvas.height = io.nat_height;
-        var ctx2 = new_canvas.getContext('2d');
-        var image = source;
-
-        ctx2.drawImage(source, 0, 0);
-        
-        if (degrees != undefined && degrees != 0) {
-            var ctx = source.getContext('2d');
-            if (degrees == 90) {
-                console.log('90 here');
-                new_canvas.width = io.nat_height;
-                new_canvas.height = io.nat_width;
-                ctx2.translate(new_canvas.width / 2, new_canvas.height / 2);
-                ctx2.rotate(degrees * Math.PI / 180);
-                ctx2.drawImage(ctx.canvas, -new_canvas.height / 2, -new_canvas.width / 2);
-                deferred.resolve(new_canvas);
-            } else if (degrees == 180) {
-                console.log('180 here');
-                new_canvas.width = io.nat_width;
-                new_canvas.height = io.nat_height;
-                ctx2.translate(io.nat_width / 2, io.nat_height / 2);
-                ctx2.rotate(180 * Math.PI / 180);
-                ctx2.drawImage(ctx.canvas, -ctx.canvas.width / 2, -ctx.canvas.height / 2);
-                deferred.resolve(new_canvas);
-            } else if (degrees == 270) {
-                console.log('270 here');
-                new_canvas.width = io.nat_height;
-                new_canvas.height = io.nat_width;
-                ctx2.translate(new_canvas.width / 2, new_canvas.height / 2);
-                ctx2.rotate(270 * Math.PI / 180);
-                ctx2.drawImage(ctx.canvas, -new_canvas.height / 2, -new_canvas.width / 2);
-                deferred.resolve(new_canvas);
-                //} else if(degrees == 360){
-                //  console.log('360 here');
-                //new_canvas.width = io.nat_width;
-                //new_canvas.height = io.nat_height;
-                //ctx2.translate(new_canvas.width / 2, new_canvas.height / 2);
-                //ctx2.rotate(270* Math.PI / 180);
-                //ctx2.drawImage(ctx.canvas, -new_canvas.height / 2, -new_canvas.width / 2);
-            }
-
-
-console.log('WHAT!');
-
-            //deferred.resolve(new_canvas);
-        } else {
-            
-            deferred.resolve(new_canvas);
-        }
-        return deferred.promise;
-    };
-
-    this.quickRotated = function(ctx, degrees) {
-        console.log(degrees);
-        console.log(ctx);
-        var deferred = $q.defer();
-        var new_canvas = document.createElement("canvas");
-        new_canvas.width = ctx.canvas.width;
-        new_canvas.height = ctx.canvas.height;
-        var ctx2 = new_canvas.getContext('2d');
-        var image = ctx.canvas;
-        ctx2.drawImage(image, 0, 0);
-        var io = self.getImageOriginal(self.getImageParent(), self.getImageId());
-        if (degrees != undefined) {
-            if (degrees == 90) {
-                new_canvas.width = io.nat_height;
-                new_canvas.height = io.nat_width;
-                ctx2.translate(new_canvas.width / 2, new_canvas.height / 2);
-                ctx2.rotate(degrees * Math.PI / 180);
-                ctx2.drawImage(ctx.canvas, -new_canvas.height / 2, -new_canvas.width / 2);
-            } else if (degrees == 180) {
-                console.log('quick 180 here');
-                new_canvas.width = io.nat_width;
-                new_canvas.height = io.nat_height;
-                ctx2.translate(new_canvas.width / 2, new_canvas.height / 2);
-                //ctx2.rotate(0 * Math.PI / 180);
-                ctx2.scale(1, -1);
-                ctx2.drawImage(ctx.canvas, -new_canvas.width / 2, -new_canvas.height / 2);
-            }
-
-
-            ctx.drawImage(ctx2.canvas, 0, 0);
-            console.log(ctx);
-        }
-    };
-
     // Flip H
 
-    this.quickFlipH = function(ctx, x, y) {
-        console.log('quickFlipH');
+    this.quickFlipH = function(ctx) {
         var imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
         var imageData_dest = ctx.createImageData(imageData.width, imageData.height);
         var idh = imageData.height;
@@ -1206,10 +1092,8 @@ console.log('WHAT!');
     };
 
     this.flipH = function(source, bool) {
-        console.log('flipH: ' + bool);
         var deferred = $q.defer();
         if (bool) {
-            console.log('flipping h');
             var ctx = source.getContext('2d');
             var imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
             var imageData_dest = ctx.createImageData(imageData.width, imageData.height);
@@ -1230,6 +1114,40 @@ console.log('WHAT!');
             deferred.resolve(source);
         } else {
             deferred.resolve(source);
+        }
+        return deferred.promise;
+    };
+
+    // Rotated
+
+    this.rotated = function(source, degrees) {
+        var deferred = $q.defer();
+        var io = self.getImageOriginal(self.getImageParent(), self.getImageId());
+        var new_canvas = document.createElement("canvas");
+        new_canvas.width = io.nat_width;
+        new_canvas.height = io.nat_height;
+        var ctx = new_canvas.getContext('2d');
+        var image = source;
+        ctx.drawImage(source, 0, 0);
+        if (degrees != undefined && degrees != 0) {
+            var ctx_source = source.getContext('2d');
+            if (degrees == 90 || degrees == 270) {
+                new_canvas.width = io.nat_height;
+                new_canvas.height = io.nat_width;
+                ctx.translate(new_canvas.width / 2, new_canvas.height / 2);
+                ctx.rotate(degrees * Math.PI / 180);
+                ctx.drawImage(ctx_source.canvas, -new_canvas.height / 2, -new_canvas.width / 2);
+                deferred.resolve(new_canvas);
+            } else if (degrees == 180) {
+                new_canvas.width = io.nat_width;
+                new_canvas.height = io.nat_height;
+                ctx.translate(io.nat_width / 2, io.nat_height / 2);
+                ctx.rotate(degrees * Math.PI / 180);
+                ctx.drawImage(ctx_source.canvas, -new_canvas.width / 2, -new_canvas.height / 2);
+                deferred.resolve(new_canvas);
+            }
+        } else {
+            deferred.resolve(new_canvas);
         }
         return deferred.promise;
     };
