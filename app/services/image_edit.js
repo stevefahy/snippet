@@ -20,11 +20,37 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
     // Helper functions
 
+    /*
+       $(cropper).animate({ height: anim_h }, {
+                duration: 300,
+                easing: "easeOutExpo",
+                start: function() {
+                    */
+
+    var showImage = function(image) {
+        var deferred = $q.defer();
+        $(image).animate({ opacity: 1 }, {
+            duration: 300,
+           //easing: "easeOutExpo",
+            start: function() {
+                $('.canvas_temp').remove();
+            },
+            complete: function() {
+                // Animation complete.
+                $(this).removeClass('show_image');
+                $(this).css('opacity', '');
+                deferred.resolve();
+            }
+        });
+        return deferred.promise;
+    };
+
+    /*
     var showImage = function(image) {
         var deferred = $q.defer();
         $(image).animate({
             opacity: 1
-        }, 500, function() {
+        }, 300, function() {
             // Animation complete.
             $(this).removeClass('show_image');
             $(this).css('opacity', '');
@@ -32,6 +58,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         });
         return deferred.promise;
     };
+    */
 
     var saveCropper = function(cropper) {
         var deferred = $q.defer();
@@ -245,12 +272,20 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         // Set the cropper height to its current height so that it can be animated.
         $(cropper).css('height', init_h);
         // If Adjusted exists hide original.
-        if ($('.content_cnv #cropper_' + id + ' .adjusted').length > 0) {
-            $('.content_cnv #cropper_' + id + ' .adjusted').remove();
-        }
+        //if ($('.content_cnv #cropper_' + id + ' .adjusted').length > 0) {
+        //    $('.content_cnv #cropper_' + id + ' .adjusted').remove();
+        //}
         // Hide the original image.
         adjustSrc(original_image, 'hide');
         ImageAdjustment.crop(source_canvas, crop_data).then(function(canvas) {
+
+            // If Adjusted exists hide original.
+            if ($('.content_cnv #cropper_' + id + ' .adjusted').length > 0) {
+                $('.content_cnv #cropper_' + id + ' .adjusted').remove();
+            }
+            var canv_temp = $(canvas).prependTo('.content_cnv #cropper_' + id);
+            $(canv_temp).addClass('canvas_temp');
+
             // remove the crop box
             self.removeCrop();
             // remove the slider
