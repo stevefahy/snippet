@@ -31,7 +31,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var deferred = $q.defer();
         $(image).animate({ opacity: 1 }, {
             duration: 300,
-           //easing: "easeOutExpo",
+            //easing: "easeOutExpo",
             start: function() {
                 $('.canvas_temp').remove();
             },
@@ -39,7 +39,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 // Animation complete.
                 $(this).removeClass('show_image');
                 $(this).css('opacity', '');
-                 $('.loading_spinner').remove();
+                $('.loading_spinner').remove();
                 deferred.resolve();
             }
         });
@@ -291,7 +291,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             var canv_temp = $(canvas).prependTo('.content_cnv #cropper_' + id);
             $(canv_temp).addClass('canvas_temp');
 
-            
+
 
 
             // remove the crop box
@@ -299,6 +299,9 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             // remove the slider
             self.removeSlider();
             // Animate the cropped image onto screen.
+            console.log(anim_h);
+            var cropper = $('.' + ImageAdjustment.getImageParent() + ' #cropper_' + ImageAdjustment.getImageId());
+            $(cropper).stop();
             $(cropper).animate({ height: anim_h }, {
                 duration: 300,
                 easing: "easeOutExpo",
@@ -306,29 +309,33 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                     self.canvasToImage(canvas, id).then(function(image) {
                         $('.canvas_temp').remove();
                         var img_new = $(image).prependTo('.content_cnv #cropper_' + id);
-                        
-  $('.loading_spinner').remove();
- 
+
+                        $('.loading_spinner').remove();
+
 
                         //$(img_new).css('opacity', .5);
                         //$(img_new).addClass('show_image');
                         //showImage('.show_image').then(function(canvas) {
-                           // $(":animated").promise().done(function() {
-                                // animation finished
-                                ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'crop', crop_data);
-                                ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'rotate', $rootScope.slider_settings.rotate.amount);
-                                ImageAdjustment.setImageAdjusted(true);
-                                // Unset the height of the cropper.
-                                //$('.content_cnv #cropper_' + id).css('height', '');
-                                // Save
-                                ImageAdjustment.setImageEditing(false);
-                                saveCropper(cropper);
-                           // });
+                        // $(":animated").promise().done(function() {
+                        // animation finished
+                        ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'crop', crop_data);
+                        ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'rotate', $rootScope.slider_settings.rotate.amount);
+                        ImageAdjustment.setImageAdjusted(true);
+                        // Unset the height of the cropper.
+                        //$('.content_cnv #cropper_' + id).css('height', '');
+                        // Save
+                        //ImageAdjustment.setImageEditing(false);
+                        //saveCropper(cropper);
+                        // });
                         //});
                     });
                 },
                 complete: function() {
-                    // $(cropper).css('height', 'unset');
+                   // Unset the height of the cropper.
+                        $('.content_cnv #cropper_' + id).css('height', '');
+                        // Save
+                        ImageAdjustment.setImageEditing(false);
+                        saveCropper(cropper);
                 }
             });
         });
