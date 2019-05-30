@@ -3473,3 +3473,7 @@ span.after_image {
     top: 45%;
     left: 45%;
 }
+
+.canvas_temp {
+    max-width: 100%;
+}

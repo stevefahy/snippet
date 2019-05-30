@@ -304,11 +304,16 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 easing: "easeOutExpo",
                 start: function() {
                     self.canvasToImage(canvas, id).then(function(image) {
+                        $('.canvas_temp').remove();
                         var img_new = $(image).prependTo('.content_cnv #cropper_' + id);
-                        $(img_new).css('opacity', .5);
-                        $(img_new).addClass('show_image');
-                        showImage('.show_image').then(function(canvas) {
-                            $(":animated").promise().done(function() {
+                        
+  $('.loading_spinner').remove();
+ 
+
+                        //$(img_new).css('opacity', .5);
+                        //$(img_new).addClass('show_image');
+                        //showImage('.show_image').then(function(canvas) {
+                           // $(":animated").promise().done(function() {
                                 // animation finished
                                 ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'crop', crop_data);
                                 ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'rotate', $rootScope.slider_settings.rotate.amount);
@@ -318,8 +323,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                                 // Save
                                 ImageAdjustment.setImageEditing(false);
                                 saveCropper(cropper);
-                            });
-                        });
+                           // });
+                        //});
                     });
                 },
                 complete: function() {
