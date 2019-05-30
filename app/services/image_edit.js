@@ -39,6 +39,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 // Animation complete.
                 $(this).removeClass('show_image');
                 $(this).css('opacity', '');
+                 $('.loading_spinner').remove();
                 deferred.resolve();
             }
         });
@@ -279,12 +280,19 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         adjustSrc(original_image, 'hide');
         ImageAdjustment.crop(source_canvas, crop_data).then(function(canvas) {
 
+
+            var spinner = "<div class='loading_spinner'><div class='spinner-border text-muted'></div></div>";
+            $(spinner).prependTo('.content_cnv #cropper_' + id);
+
             // If Adjusted exists hide original.
             if ($('.content_cnv #cropper_' + id + ' .adjusted').length > 0) {
                 $('.content_cnv #cropper_' + id + ' .adjusted').remove();
             }
             var canv_temp = $(canvas).prependTo('.content_cnv #cropper_' + id);
             $(canv_temp).addClass('canvas_temp');
+
+            
+
 
             // remove the crop box
             self.removeCrop();
@@ -297,7 +305,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 start: function() {
                     self.canvasToImage(canvas, id).then(function(image) {
                         var img_new = $(image).prependTo('.content_cnv #cropper_' + id);
-                        $(img_new).css('opacity', 0);
+                        $(img_new).css('opacity', .5);
                         $(img_new).addClass('show_image');
                         showImage('.show_image').then(function(canvas) {
                             $(":animated").promise().done(function() {
