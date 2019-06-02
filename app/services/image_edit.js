@@ -62,13 +62,17 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     */
 
     var saveCropper = function(cropper) {
+        console.log('saveCropper');
         var deferred = $q.defer();
         // Turn on contenteditable for this card before saving
         setContenteditable($(cropper)[0], true);
         // Save if the image has been adjusted. Or if this is a temp save of content before editing image.
+        console.log(ImageAdjustment.getImageAdjusted() + ' : ' + temp_save);
         if (ImageAdjustment.getImageAdjusted() || temp_save) {
+            console.log('do save');
             var id = $(cropper).closest('div.ce').attr('id').substr(2, $(cropper).closest('div.ce').attr('id').length);
             saveCard(id).then(function() {
+                console.log('card saved');
                 temp_save = false;
                 deferred.resolve();
             });
@@ -281,8 +285,13 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         ImageAdjustment.crop(source_canvas, crop_data).then(function(canvas) {
 
 
-            var spinner = "<div class='loading_spinner'><div class='spinner-border text-muted'></div></div>";
+            //var spinner = "<div class='loading_spinner'><div class='loading_spinner_outer'><div class='spinner-border text-muted'></div></div></div>";
+            var spinner = "<div class='loading_spinner'><div class='d-flex justify-content-center'><div class='spinner-border text-muted' role='status'><span class='sr-only'>Loading...</span></div></div></div>";
+
+
             $(spinner).prependTo('.content_cnv #cropper_' + id);
+            $('.loading_spinner').css('width', swidth);
+            $('.loading_spinner').css('height', sheight);
 
             // If Adjusted exists hide original.
             if ($('.content_cnv #cropper_' + id + ' .adjusted').length > 0) {
@@ -306,6 +315,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 duration: 300,
                 easing: "easeOutExpo",
                 start: function() {
+                    console.log('start');
                     self.canvasToImage(canvas, id).then(function(image) {
                         $('.canvas_temp').remove();
                         var img_new = $(image).prependTo('.content_cnv #cropper_' + id);
@@ -322,20 +332,27 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                         ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'rotate', $rootScope.slider_settings.rotate.amount);
                         ImageAdjustment.setImageAdjusted(true);
                         // Unset the height of the cropper.
-                        //$('.content_cnv #cropper_' + id).css('height', '');
+                        $('.content_cnv #cropper_' + id).css('height', '');
                         // Save
-                        //ImageAdjustment.setImageEditing(false);
-                        //saveCropper(cropper);
+                        ImageAdjustment.setImageEditing(false);
+                        saveCropper(cropper);
                         // });
                         //});
                     });
                 },
                 complete: function() {
+                    /*
+                    console.log('complete');
+                                // animation finished
+                        ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'crop', crop_data);
+                        ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'rotate', $rootScope.slider_settings.rotate.amount);
+                    ImageAdjustment.setImageAdjusted(true);
                    // Unset the height of the cropper.
                         $('.content_cnv #cropper_' + id).css('height', '');
                         // Save
                         ImageAdjustment.setImageEditing(false);
                         saveCropper(cropper);
+                        */
                 }
             });
         });
