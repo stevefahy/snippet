@@ -290,26 +290,26 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         adjustSrc(original_image, 'hide');
         ImageAdjustment.crop(source_canvas, crop_data).then(function(canvas) {
 
-
-            
-            //var spinner = "<div class='loading_spinner'><div class='d-flex justify-content-center'><div class='spinner-border text-muted' role='status'><span class='sr-only'>Loading...</span></div></div></div>";
-
-            var spinner = $sce.getTrustedResourceUrl('/views/loading_spinner.html');
-             $templateRequest(spinner).then(function(template) {
-                $(template).prependTo('.content_cnv #cropper_' + id);
-             });
-
-            
-
             spinner_w = canvas.width;
             spinner_h = canvas.height;
             if(canvas.width > cropper_width){
                 spinner_w = canvas.width / scale;
                 spinner_h = canvas.height / scale;
             } 
+            
+            //var spinner = "<div class='loading_spinner'><div class='d-flex justify-content-center'><div class='spinner-border text-muted' role='status'><span class='sr-only'>Loading...</span></div></div></div>";
 
-            $('.loading_spinner').css('width', spinner_w);
+            var spinner = $sce.getTrustedResourceUrl('/views/loading_spinner.html');
+             $templateRequest(spinner).then(function(template) {
+                $(template).prependTo('.content_cnv #cropper_' + id);
+                $('.loading_spinner').css('width', spinner_w);
             $('.loading_spinner').css('height', spinner_h);
+             });
+
+            
+
+
+            
 
             // If Adjusted exists hide original.
             if ($('.content_cnv #cropper_' + id + ' .adjusted').length > 0) {
