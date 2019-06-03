@@ -3468,7 +3468,12 @@ span.after_image {
 
 .loading_spinner {
     position: absolute;
-    top: 40%;
+    top: 0;
+}
+
+.loading_spinner_center {
+    height: 100%;
+    align-items: center;
 }
 
 .canvas_temp {
