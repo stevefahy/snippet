@@ -2,7 +2,7 @@
 // ImageEdit Service
 //
 
-cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', 'General', 'UserData', 'principal', 'ImageAdjustment', 'Drag', 'Resize', 'Keyboard', 'Scroll', 'Slider', 'ImageManipulate', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML, General, UserData, principal, ImageAdjustment, Drag, Resize, Keyboard, Scroll, Slider, ImageManipulate) {
+cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', 'General', 'UserData', 'principal', 'ImageAdjustment', 'Drag', 'Resize', 'Keyboard', 'Scroll', 'Slider', 'ImageManipulate', '$templateRequest', '$sce', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML, General, UserData, principal, ImageAdjustment, Drag, Resize, Keyboard, Scroll, Slider, ImageManipulate, $templateRequest, $sce) {
 
     var ua = navigator.userAgent;
     var self = this;
@@ -260,6 +260,10 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var sy = crop_area.offsetTop * scale;
         var swidth = Math.round($(crop_area).outerWidth() * scale);
         var sheight = Math.round($(crop_area).outerHeight() * scale);
+
+        var spinner_width = Math.round($(crop_area).outerWidth());
+        var spinner_height = Math.round($(crop_area).outerHeight());
+
         var x = 0;
         var y = 0;
         var crop_data = { 'x': sx, 'y': sy, 'width': swidth, 'height': sheight };
@@ -270,6 +274,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         if (swidth > cropper_width) {
             var width_scale = cropper_width / swidth;
             anim_h = ((aheight * width_scale) + pad).toFixed(2);
+            //spinner_w = swidth * scale;
+            //spinner_h = sheight * scale;
         } else {
             anim_h = (aheight + pad).toFixed(2);
         }
@@ -285,13 +291,25 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         ImageAdjustment.crop(source_canvas, crop_data).then(function(canvas) {
 
 
-            //var spinner = "<div class='loading_spinner'><div class='loading_spinner_outer'><div class='spinner-border text-muted'></div></div></div>";
-            var spinner = "<div class='loading_spinner'><div class='d-flex justify-content-center'><div class='spinner-border text-muted' role='status'><span class='sr-only'>Loading...</span></div></div></div>";
+            
+            //var spinner = "<div class='loading_spinner'><div class='d-flex justify-content-center'><div class='spinner-border text-muted' role='status'><span class='sr-only'>Loading...</span></div></div></div>";
 
+            var spinner = $sce.getTrustedResourceUrl('/views/loading_spinner.html');
+             $templateRequest(spinner).then(function(template) {
+                $(template).prependTo('.content_cnv #cropper_' + id);
+             });
 
-            $(spinner).prependTo('.content_cnv #cropper_' + id);
-            $('.loading_spinner').css('width', swidth);
-            $('.loading_spinner').css('height', sheight);
+            
+
+            spinner_w = canvas.width;
+            spinner_h = canvas.height;
+            if(canvas.width > cropper_width){
+                spinner_w = canvas.width / scale;
+                spinner_h = canvas.height / scale;
+            } 
+
+            $('.loading_spinner').css('width', spinner_w);
+            $('.loading_spinner').css('height', spinner_h);
 
             // If Adjusted exists hide original.
             if ($('.content_cnv #cropper_' + id + ' .adjusted').length > 0) {
