@@ -236,8 +236,9 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             spinner_w = canvas.width;
             spinner_h = canvas.height;
             if (canvas.width > cropper_width) {
-                spinner_w = canvas.width / scale;
-                spinner_h = canvas.height / scale;
+                spinner_w = cropper_width;
+                var spinner_scale = canvas.width / cropper_width;
+                spinner_h = canvas.height / spinner_scale;
             }
             // Import the loading spinner html.
             var spinner = $sce.getTrustedResourceUrl('/views/loading_spinner.html');
