@@ -264,17 +264,32 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
            // var cropper = $('.' + parent_container + ' #cropper_' + id);
             console.log(cropper);
 
-       
+       self.canvasToImage(canvas, id).then(function(image) {
+  $('.canvas_temp').remove();
+                        var img_new = $(image).prependTo('.content_cnv #cropper_' + id);
+
+                        $('.loading_spinner').remove();
+
+                                                      // animation finished
+                        ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'crop', crop_data);
+                        ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'rotate', $rootScope.slider_settings.rotate.amount);
+                    ImageAdjustment.setImageAdjusted(true);
+                   // Unset the height of the cropper.
+                        $('.content_cnv #cropper_' + id).css('height', '');
+                        // Save
+                        ImageAdjustment.setImageEditing(false);
+                        saveCropper(cropper);
+       });
 
             $(cropper).animate({ height: anim_h  }, {
                 duration: 300,
                 easing: "easeOutExpo",
                 start: function() {
-                    self.canvasToImage(canvas, id).then(function(image) {
-                        $('.canvas_temp').remove();
-                        var img_new = $(image).prependTo('.content_cnv #cropper_' + id);
+                    //self.canvasToImage(canvas, id).then(function(image) {
+                        //$('.canvas_temp').remove();
+                        //var img_new = $(image).prependTo('.content_cnv #cropper_' + id);
 
-                        $('.loading_spinner').remove();
+                        //$('.loading_spinner').remove();
 
 
                         //$(img_new).css('opacity', .5);
@@ -294,13 +309,13 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                         */
                         // });
                         //});
-                    });
+                   // });
                 },
                 complete: function() {
                     // Unset the height of the cropper.
                         //$('.content_cnv #cropper_' + id).css('height', '');
 
-                    
+                    /*
                     console.log('complete');
                                 // animation finished
                         ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'crop', crop_data);
@@ -311,6 +326,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                         // Save
                         ImageAdjustment.setImageEditing(false);
                         saveCropper(cropper);
+                        */
                         
                 }
             });
