@@ -145,7 +145,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // When cropper image has been changed save the card.
     saveCard = function(id) {
-        console.log('saveCard');
         var deferred = $q.defer();
         // Find the card to be saved by id.
         var pos = General.findWithAttr($scope.cards, '_id', id);
@@ -153,8 +152,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             var card = $scope.cards[pos];
             // Update the card.
             Format.updateCard(id, card, $scope.currentUser).then(function(result) {
-                console.log(result);
-                console.log('updated');
                 Scroll.enable('.content_cnv');
                 ImageAdjustment.setImageAdjusted(false);
                 deferred.resolve();
