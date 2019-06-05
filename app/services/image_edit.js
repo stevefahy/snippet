@@ -349,8 +349,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         $(cropper).stop();
         // Animate the cropper tool onscreen
         $(cropper).animate({ height: anim_h }, {
-            duration: 500,
-            easing: "easeOutExpo",
+            duration: 700,
             start: function() {
                 $('.' + parent_container + ' #image_' + id).addClass('hide');
                 var new_canvas_src = ImageAdjustment.cloneCanvas(target);
