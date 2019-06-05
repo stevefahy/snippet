@@ -350,6 +350,18 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         return scale;
     };
 
+    this.getWindowScale = function(original_image) {
+        var nat_w = original_image.naturalWidth;
+        // check whether rotated
+        var rotated = self.getImageAdjustment(self.getImageParent(), self.getImageId(), 'rotated');
+        if (rotated == 90 || rotated == 270) {
+            nat_w = original_image.naturalHeight;
+        }
+        var window_w = $(window).width();
+        var scale = nat_w / window_w;
+        return scale;
+    };
+
     this.canvasToImage = function(canvas, id) {
         var deferred = $q.defer();
         var dataUrl = canvas.toDataURL('image/jpeg', JPEG_COMPRESSION);

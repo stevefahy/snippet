@@ -152,8 +152,8 @@ input[type="checkbox"] {
 .cropper_cont {
     margin-top: 10px;
     position: relative;
-    /*width: calc(100% + 2.8em);*/
-    width: calc(100vw + 1px);
+    width: calc(100% + 2.8em);
+    /*width: calc(100vw + 1px);*/
     position: relative;
     left: -1.38em;
     overflow: hidden;
@@ -1348,14 +1348,17 @@ li.list-group-item.d-flex.justify-content-between.align-items-center {
     grid-row: 1;
     text-align: left;
     padding-left: 4px;
-    align-self: center;
+    /*align-self: center;*/
+    align-self: flex-end;
+    padding-bottom: 9px;
 }
 
 .create_c {
     grid-column: 3;
     grid-row: 1;
     padding-left: 6px;
-    align-self: center;
+    align-self: flex-end;
+    padding-bottom: 9px;
 }
 
 .create_c_no_input {
@@ -3156,8 +3159,8 @@ span.after_image {
 
 .crop_box.active {
     visibility: visible;
-    width: 100%;
-    height: 100%;
+    /*width: 100%;
+    height: 100%;*/
     background-color: rgba(25, 25, 25, 0.6);
     position: absolute;
     top: 0px;
@@ -3357,12 +3360,28 @@ span.after_image {
 }
 
 .crop_decide {
+    /*
     position: absolute;
     display: flex;
     width: 100%;
     justify-content: flex-end;
     padding-right: 25px;
+    */
+    visibility: hidden;
+    margin-left: -1.25em;
+    position: relative;
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: -34px;
+    top: 34px;
+    padding-left: 15px;
+    padding-right: 15px;
 }
+
+.crop_decide.active {
+    visibility: visible;
+}
+
 
 .crop_accept {
     z-index: 1001;
@@ -3451,20 +3470,26 @@ span.after_image {
 
 .crop_rotate {
     z-index: 1001;
-    text-align: right;
-    margin-right: 15px;
 }
 
 .crop_flip_h {
     z-index: 1001;
-    text-align: right;
-    margin-right: 15px;
 }
 
 .crop_flip_v {
     z-index: 1001;
-    text-align: right;
-    margin-right: 15px;
+}
+
+.crop_decide .crop_accept {
+     z-index: 1001;
+     text-align: unset;
+     margin-right: unset;
+}
+
+.crop_decide .crop_cancel {
+     z-index: 1001;
+     text-align: unset;
+     margin-right: unset;
 }
 
 .loading_spinner {

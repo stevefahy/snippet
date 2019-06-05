@@ -289,6 +289,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
     this.removeCrop = function() {
         $('.crop_box.active').remove();
+        $('.crop_decide.active').remove();
         if ($('.temp_canvas_filtered').length > 0) {
             $('.temp_canvas_filtered').remove();
         }
@@ -337,6 +338,10 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var original_image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
         var scale = ImageAdjustment.getScale(original_image, cropper);
         var anim_h = original_image.naturalHeight / scale;
+
+        var image_h = self.scaleToFit(original_image);
+        console.log(image_h);
+
         var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
         if (ia != undefined) {
             if (ia.rotated == '90' || ia.rotated == '270') {
@@ -348,7 +353,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         $(cropper).css('height', init_h);
         $(cropper).stop();
         // Animate the cropper tool onscreen
-        $(cropper).animate({ height: anim_h }, {
+        //$(cropper).animate({ height: anim_h }, {
+        $(cropper).animate({ height: image_h }, {
             duration: 700,
             start: function() {
                 $('.' + parent_container + ' #image_' + id).addClass('hide');
@@ -357,6 +363,10 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 var new_canvas_perspective = ImageAdjustment.cloneCanvas(target);
                 $(new_canvas_src).addClass('hide');
                 $(new_canvas_bg).addClass('hide');
+
+                $(new_canvas_src).css('height', image_h);
+                $(new_canvas_bg).css('height', image_h);
+
                 var img = $(new_canvas_src).appendTo('.' + parent_container + ' #cropper_' + id + ' .crop_area');
                 $(img).addClass('temp_canvas_filtered');
                 var img_bg = $(new_canvas_bg).appendTo('.' + parent_container + ' #cropper_' + id);
@@ -483,6 +493,13 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             $('.crop_bg')[0].height = canvas_original.height;
             $('#crop_src')[0].width = canvas_original.width;
             $('#crop_src')[0].height = canvas_original.height;
+
+            var image_h = self.scaleToFit(image_original);
+            console.log(image_h);
+            $('.crop_bg').css('height', image_h);
+            $('#crop_src').css('height', image_h);
+
+
             $('.content_cnv #cropper_' + ImageAdjustment.getImageId()).css('maxWidth', canvas_original.width + 'px');
             $('.content_cnv #cropper_' + ImageAdjustment.getImageId()).css('height', '');
             var p = ImageAdjustment.getPerspective();
@@ -625,16 +642,48 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         return deferred.promise;
     };
 
-    this.scaleToFit = function(id){
+    var adjusted_height;
+
+    this.scaleToFit = function(image){
         var parent_container = ImageAdjustment.getImageParent();
-        var original_image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
-        console.log($(original_image).width());
-        console.log($(original_image).height());
-        var win_w = $(window).width();
-        var win_h = $(window).height();
-        console.log(win_w + ' : ' + win_h);
+        var original_image = image;//$('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
+        var nat_h = original_image.naturalHeight;
+        // check whether rotated
+        var rotated = ImageAdjustment.getImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'rotated');
+        if (rotated == 90 || rotated == 270) {
+            nat_h = original_image.naturalWidth;
+        }
         // Get scale ratio of the image (as displayed which may be scaled to fit compared to the original image).
-        //var scale = ImageAdjustment.getScale(original_image, source_canvas);
+        var win_scale = ImageAdjustment.getWindowScale(original_image).toFixed(2);
+        var orig_h = nat_h;
+        if(win_scale > 1){
+            orig_h = (nat_h / win_scale);
+        }
+        console.log(orig_h);
+
+        //console.log($(original_image).width());
+        //console.log($(original_image).height());
+        //var orig_w = $(original_image).width();
+        //var orig_h = $(original_image).height();
+        //var win_w = $(window).width();
+        var win_h = $(window).height();
+        //console.log(win_w + ' : ' + win_h);
+        
+        //console.log(win_scale);
+        console.log($('.header').height() + ' : ' +  $('.create_container').height() + ' : ' +  $('.footer').height());
+        var display_used =  $('.header').height() + $('.create_container').height() + $('.footer').height() + IMAGE_MARGIN;
+        var available_h = win_h - display_used;
+        console.log(available_h);
+        var new_h;
+        if(orig_h > available_h){
+            console.log('scale');
+            new_h = available_h;
+            //var cropper = $('.' + parent_container + ' #cropper_' + id )[0];
+            //$(cropper).css('height', new_h);
+        } else {
+            new_h = orig_h;
+        }
+        return new_h;
     };
 
     this.openCrop = function(e, id) {
@@ -645,8 +694,10 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         ImageAdjustment.setImageId(id);
         ImageAdjustment.setImageEditing(true);
         //
-        self.scaleToFit(id);
+        //self.scaleToFit(id);
         //
+        var crop_decide  = $('.crop_decide').clone().prependTo('.' + parent_container + ' #cropper_' + id);
+        crop_decide.addClass('active');
         var crop = $('.crop_box').clone().prependTo('.' + parent_container + ' #cropper_' + id);
         crop.addClass('pending');
         $('.' + parent_container + ' #cropper_' + id + ' #make_crop').attr("onclick", 'makeCrop(event, \'' + id + '\')');
