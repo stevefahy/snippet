@@ -152,7 +152,8 @@ input[type="checkbox"] {
 .cropper_cont {
     margin-top: 10px;
     position: relative;
-    width: calc(100% + 2.8em);
+    /*width: calc(100% + 2.8em);*/
+    width: calc(100vw);
     position: relative;
     left: -1.38em;
     overflow: hidden;

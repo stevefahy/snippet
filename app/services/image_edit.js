@@ -625,6 +625,18 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         return deferred.promise;
     };
 
+    this.scaleToFit = function(id){
+        var parent_container = ImageAdjustment.getImageParent();
+        var original_image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
+        console.log($(original_image).width());
+        console.log($(original_image).height());
+        var win_w = $(window).width();
+        var win_h = $(window).height();
+        console.log(win_w + ' : ' + win_h);
+        // Get scale ratio of the image (as displayed which may be scaled to fit compared to the original image).
+        //var scale = ImageAdjustment.getScale(original_image, source_canvas);
+    };
+
     this.openCrop = function(e, id) {
         var deferred = $q.defer();
         var promises = [];
@@ -632,6 +644,9 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         ImageAdjustment.setImageParent(parent_container);
         ImageAdjustment.setImageId(id);
         ImageAdjustment.setImageEditing(true);
+        //
+        self.scaleToFit(id);
+        //
         var crop = $('.crop_box').clone().prependTo('.' + parent_container + ' #cropper_' + id);
         crop.addClass('pending');
         $('.' + parent_container + ' #cropper_' + id + ' #make_crop').attr("onclick", 'makeCrop(event, \'' + id + '\')');
