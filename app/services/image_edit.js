@@ -335,6 +335,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
     this.buildCrop = function(parent_container, id, target) {
         var cropper = $('.' + parent_container + ' #cropper_' + id);
+        $(cropper).css('maxWidth', '');
+        //$('.content_cnv #cropper_' + ImageAdjustment.getImageId()).css('maxWidth', new_image.width + 'px');
         var original_image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
         var scale = ImageAdjustment.getScale(original_image, cropper);
         var anim_h = original_image.naturalHeight / scale;
@@ -429,7 +431,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         ImageAdjustment.applyFilters(image, ia).then(function(new_image) {
             canvas_original = ImageAdjustment.cloneCanvas(new_image);
             crop_area_original = ImageAdjustment.cloneCanvas(new_image);
-            $('.content_cnv #cropper_' + ImageAdjustment.getImageId()).css('maxWidth', new_image.width + 'px');
+            //$('.content_cnv #cropper_' + ImageAdjustment.getImageId()).css('maxWidth', new_image.width + 'px');
         });
     };
 
@@ -697,6 +699,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         //self.scaleToFit(id);
         //
         var crop_decide  = $('.crop_decide').clone().prependTo('.' + parent_container + ' #cropper_' + id);
+        //var crop_decide  = $('.crop_decide').clone().insertBefore('.' + parent_container + ' #cropper_' + id);
         crop_decide.addClass('active');
         var crop = $('.crop_box').clone().prependTo('.' + parent_container + ' #cropper_' + id);
         crop.addClass('pending');

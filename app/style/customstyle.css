@@ -377,21 +377,21 @@ hr {
 }
 
 #mi-crop_rotate {
-    color: green;
+    color: #fcfcfc;
     font-size: 30px !important;
     font-weight: 900;
     cursor: pointer;
 }
 
 #mi-crop_flip_v {
-    color: green;
+    color: white;
     font-size: 30px !important;
     font-weight: 900;
     cursor: pointer;
 }
 
 #mi-crop_flip_h {
-    color: green;
+    color: white;
     font-size: 30px !important;
     font-weight: 900;
     cursor: pointer;
@@ -3367,6 +3367,7 @@ span.after_image {
     justify-content: flex-end;
     padding-right: 25px;
     */
+    /*
     visibility: hidden;
     margin-left: -1.25em;
     position: relative;
@@ -3376,7 +3377,18 @@ span.after_image {
     top: 34px;
     padding-left: 15px;
     padding-right: 15px;
+    */
+    z-index: 10001;
+    width: 100vw;
+    visibility: hidden;
+    /* margin-left: -1.25em; */
+    position: absolute;
+    display: flex;
+    justify-content: space-evenly;
+    background-color: #00000096;
 }
+
+.crop_decide.active {}
 
 .crop_decide.active {
     visibility: visible;
@@ -3384,9 +3396,9 @@ span.after_image {
 
 
 .crop_accept {
-    z-index: 1001;
-    text-align: right;
-    margin-right: 15px;
+    /* z-index: 1001; */
+    /* text-align: right; */
+    /* margin-right: 15px; */
 }
 
 .crop_cancel {
@@ -3481,9 +3493,9 @@ span.after_image {
 }
 
 .crop_decide .crop_accept {
-     z-index: 1001;
-     text-align: unset;
-     margin-right: unset;
+     z-index: 10000;
+     /* text-align: unset; */
+     /* margin-right: unset; */
 }
 
 .crop_decide .crop_cancel {

@@ -115,13 +115,16 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', 'Scroll', function(Drag, I
                 var cropper_loc = $(crop_box).closest('.cropper_cont');
                 offset_top = $(cropper_loc).offset().top;
                 offset_left = $(cropper_loc).offset().left;
-
+console.log(offset_left);
+                if(offset_left > 0){
+                   bound_r = crop_source.getBoundingClientRect().right -  offset_left; 
+                }
                 bound_r = crop_source.getBoundingClientRect().right;
                 bound_l = crop_source.getBoundingClientRect().left;
                 bound_b = crop_source.getBoundingClientRect().bottom - offset_top;
                 bound_w = $(crop_source).outerWidth();
                 bound_h = $(crop_source).outerHeight();
-
+console.log(bound_r);
                 original_width = parseFloat(getComputedStyle(crop_box, null).getPropertyValue('width').replace('px', ''));
                 original_height = parseFloat(getComputedStyle(crop_box, null).getPropertyValue('height').replace('px', ''));
                 original_x = crop_box.getBoundingClientRect().left;

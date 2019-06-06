@@ -15,4 +15,4 @@ var INITIAL_KEY_CODE = INITIAL_KEY.toUpperCase().charCodeAt(0);
 var ESCAPE_KEY = '\\';
 
 // Image Adjust
-var IMAGE_MARGIN = 100;
+var IMAGE_MARGIN = 30;
