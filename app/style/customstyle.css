@@ -370,28 +370,28 @@ hr {
 }
 
 #mi-crop_rotate {
-    color: green;
     font-size: 30px !important;
     font-weight: 900;
     cursor: pointer;
 }
 
 #mi-crop_rotate {
-    color: #fcfcfc;
     font-size: 30px !important;
     font-weight: 900;
     cursor: pointer;
 }
 
 #mi-crop_flip_v {
-    color: white;
     font-size: 30px !important;
     font-weight: 900;
     cursor: pointer;
 }
 
+.cd {
+    color: #5e5e5e !important;
+}
+
 #mi-crop_flip_h {
-    color: white;
     font-size: 30px !important;
     font-weight: 900;
     cursor: pointer;
@@ -3089,7 +3089,7 @@ span.after_image {
     position: absolute;
     right: 103px;
     top: 12px;
-    z-index: 10000;
+    z-index: 1;
 }
 
 .debug_icon {
@@ -3381,14 +3381,14 @@ span.after_image {
     align-items: center;
     top: 0px;
     /* top: 0px; */
-    z-index: 10001;
+    z-index: 10000;
     width: 100vw;
     visibility: hidden;
     margin-left: -1.30em;
     position: fixed;
     display: flex;
     justify-content: space-evenly;
-    background-color: #494545;
+    background-color: #FFFFFF;
     height: 55px;
 }
 
