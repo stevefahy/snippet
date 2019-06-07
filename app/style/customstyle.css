@@ -3378,14 +3378,18 @@ span.after_image {
     padding-left: 15px;
     padding-right: 15px;
     */
+    align-items: center;
+    top: 0px;
+    /* top: 0px; */
     z-index: 10001;
     width: 100vw;
     visibility: hidden;
-    /* margin-left: -1.25em; */
-    position: absolute;
+    margin-left: -1.30em;
+    position: fixed;
     display: flex;
     justify-content: space-evenly;
-    background-color: #00000096;
+    background-color: #494545;
+    height: 55px;
 }
 
 .crop_decide.active {}

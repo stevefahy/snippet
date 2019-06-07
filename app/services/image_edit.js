@@ -698,12 +698,14 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         //
         //self.scaleToFit(id);
         //
-        var crop_decide  = $('.crop_decide').clone().prependTo('.' + parent_container + ' #cropper_' + id);
-        //var crop_decide  = $('.crop_decide').clone().insertBefore('.' + parent_container + ' #cropper_' + id);
+        //var crop_decide  = $('.crop_decide').clone().prependTo('.' + parent_container + ' #cropper_' + id);
+        var crop_decide  = $('.crop_decide').clone().insertBefore('.' + parent_container + ' #cropper_' + id);
         crop_decide.addClass('active');
         var crop = $('.crop_box').clone().prependTo('.' + parent_container + ' #cropper_' + id);
         crop.addClass('pending');
-        $('.' + parent_container + ' #cropper_' + id + ' #make_crop').attr("onclick", 'makeCrop(event, \'' + id + '\')');
+        //$('.' + parent_container + ' #cropper_' + id + ' #make_crop').attr("onclick", 'makeCrop(event, \'' + id + '\')');
+        console.log($('.' + parent_container + ' #cropper_' + id).prev('.crop_decide').find('#make_crop'));
+        $('.' + parent_container + ' #cropper_' + id).prev('.crop_decide').find('#make_crop').attr("onclick", 'makeCrop(event, \'' + id + '\')');
         $('.image_adjust_on').remove();
         // Create canvas with all current adjustments (uncropped).
         var image = $('.' + parent_container + ' #image_' + id)[0];
