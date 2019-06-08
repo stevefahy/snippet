@@ -156,9 +156,10 @@ input[type="checkbox"] {
     /*width: calc(100vw + 1px);*/
     position: relative;
     left: -1.38em;
-    overflow: hidden;
+    /* overflow: hidden; */
     margin-bottom: 10px;
     border-bottom: 1px solid #efefef;
+     overflow: visible !important; 
 }
 
 .resize-drag {
@@ -388,7 +389,7 @@ hr {
 }
 
 .cd {
-    color: #5e5e5e !important;
+    color: #ffffff !important;
     font-weight: normal !important;
 }
 
@@ -3380,16 +3381,16 @@ span.after_image {
     padding-right: 15px;
     */
     align-items: center;
-    top: 0px;
+    top: -55px;
     /* top: 0px; */
     z-index: 10000;
     width: 100vw;
     visibility: hidden;
     margin-left: -1.30em;
-    position: fixed;
+    position: absolute;
     display: flex;
     justify-content: space-evenly;
-    background-color: #FFFFFF;
+    background-color: #5e5e5e;
     height: 55px;
 }
 
