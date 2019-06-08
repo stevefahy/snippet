@@ -713,8 +713,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         $('.image_adjust_on').remove();
 
 
-        Android.changeTopBar('#4CAF50');
-        
+        Android.changeTopBar('#5E5E5E');
+
         // Create canvas with all current adjustments (uncropped).
         var image = $('.' + parent_container + ' #image_' + id)[0];
         var target = self.imageToCanvas(image);
