@@ -304,6 +304,9 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         e.preventDefault();
         e.stopPropagation();
         Debug.show();
+
+        Android.changeTopBar('reset');
+
         var parent_container = ImageAdjustment.getImageParent();
         var id = ImageAdjustment.getImageId();
         var cropper = $('.' + parent_container + ' #cropper_' + id);
