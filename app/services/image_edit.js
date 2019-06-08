@@ -359,9 +359,6 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         //$(cropper).animate({ height: anim_h }, {
         $(cropper).animate({ height: image_h }, {
             duration: 700,
-              step: function() {
-       $(cropper).css("overflow","visible");
-     },
             start: function() {
                 $('.' + parent_container + ' #image_' + id).addClass('hide');
                 var new_canvas_src = ImageAdjustment.cloneCanvas(target);
@@ -710,9 +707,9 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         crop_decide.addClass('active');
         var crop = $('.crop_box').clone().prependTo('.' + parent_container + ' #cropper_' + id);
         crop.addClass('pending');
-        $('.' + parent_container + ' #cropper_' + id + ' #make_crop').attr("onclick", 'makeCrop(event, \'' + id + '\')');
+        //$('.' + parent_container + ' #cropper_' + id + ' #make_crop').attr("onclick", 'makeCrop(event, \'' + id + '\')');
         //console.log($('.' + parent_container + ' #cropper_' + id).prev('.crop_decide').find('#make_crop'));
-        //$('.' + parent_container + ' #cropper_' + id).prev('.crop_decide').find('#make_crop').attr("onclick", 'makeCrop(event, \'' + id + '\')');
+        $('.' + parent_container + ' #cropper_' + id).prev('.crop_decide').find('#make_crop').attr("onclick", 'makeCrop(event, \'' + id + '\')');
         $('.image_adjust_on').remove();
         // Create canvas with all current adjustments (uncropped).
         var image = $('.' + parent_container + ' #image_' + id)[0];

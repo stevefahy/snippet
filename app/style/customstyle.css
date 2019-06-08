@@ -3381,13 +3381,13 @@ span.after_image {
     padding-right: 15px;
     */
     align-items: center;
-    top: -55px;
-    /* top: 0px; */
+    /* top: -55px; */
+    top: 0px;
     z-index: 10000;
     width: 100vw;
     visibility: hidden;
-    margin-left: -1.30em;
-    position: absolute;
+    /* margin-left: -1.30em; */
+    position: fixed;
     display: flex;
     justify-content: space-evenly;
     background-color: #5e5e5e;
