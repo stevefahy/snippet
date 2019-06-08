@@ -305,7 +305,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         e.stopPropagation();
         Debug.show();
 
-        Android.changeTopBar('reset');
+        Android.changeTopBar('#F0F0F0');
 
         var parent_container = ImageAdjustment.getImageParent();
         var id = ImageAdjustment.getImageId();
