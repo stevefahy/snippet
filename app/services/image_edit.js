@@ -305,7 +305,9 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         e.stopPropagation();
         Debug.show();
 
-        Android.changeTopBar('#F0F0F0');
+        if (ua.indexOf('AndroidApp') >= 0) {
+            Android.changeTopBar('#F0F0F0');
+        }
 
         var parent_container = ImageAdjustment.getImageParent();
         var id = ImageAdjustment.getImageId();
@@ -650,9 +652,9 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
     var adjusted_height;
 
-    this.scaleToFit = function(image){
+    this.scaleToFit = function(image) {
         var parent_container = ImageAdjustment.getImageParent();
-        var original_image = image;//$('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
+        var original_image = image; //$('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
         var nat_h = original_image.naturalHeight;
         // check whether rotated
         var rotated = ImageAdjustment.getImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'rotated');
@@ -662,7 +664,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         // Get scale ratio of the image (as displayed which may be scaled to fit compared to the original image).
         var win_scale = ImageAdjustment.getWindowScale(original_image).toFixed(2);
         var orig_h = nat_h;
-        if(win_scale > 1){
+        if (win_scale > 1) {
             orig_h = (nat_h / win_scale);
         }
         console.log(orig_h);
@@ -674,14 +676,14 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         //var win_w = $(window).width();
         var win_h = $(window).height();
         //console.log(win_w + ' : ' + win_h);
-        
+
         //console.log(win_scale);
-        console.log($('.header').height() + ' : ' +  $('.create_container').height() + ' : ' +  $('.footer').height());
-        var display_used =  $('.header').height() + $('.create_container').height() + $('.footer').height() + IMAGE_MARGIN;
+        console.log($('.header').height() + ' : ' + $('.create_container').height() + ' : ' + $('.footer').height());
+        var display_used = $('.header').height() + $('.create_container').height() + $('.footer').height() + IMAGE_MARGIN;
         var available_h = win_h - display_used;
         console.log(available_h);
         var new_h;
-        if(orig_h > available_h){
+        if (orig_h > available_h) {
             console.log('scale');
             new_h = available_h;
             //var cropper = $('.' + parent_container + ' #cropper_' + id )[0];
@@ -705,18 +707,22 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         //
         //self.scaleToFit(id);
         //
-        var crop_decide  = $('.crop_decide').clone().prependTo('.' + parent_container + ' #cropper_' + id);
-        //var crop_decide  = $('.crop_decide').clone().insertBefore('.' + parent_container + ' #cropper_' + id);
+        //var crop_decide  = $('.crop_decide').clone().prependTo('.' + parent_container + ' #cropper_' + id);
+        //var crop_decide = $('.crop_decide').clone().insertBefore('.' + parent_container + ' #cropper_' + id);
+        var crop_decide = $('.crop_decide').clone().insertBefore('.' + parent_container);
         crop_decide.addClass('active');
         var crop = $('.crop_box').clone().prependTo('.' + parent_container + ' #cropper_' + id);
         crop.addClass('pending');
         //$('.' + parent_container + ' #cropper_' + id + ' #make_crop').attr("onclick", 'makeCrop(event, \'' + id + '\')');
         //console.log($('.' + parent_container + ' #cropper_' + id).prev('.crop_decide').find('#make_crop'));
-        $('.' + parent_container + ' #cropper_' + id).prev('.crop_decide').find('#make_crop').attr("onclick", 'makeCrop(event, \'' + id + '\')');
+        //$('.' + parent_container + ' #cropper_' + id).prev('.crop_decide').find('#make_crop').attr("onclick", 'makeCrop(event, \'' + id + '\')');
+        $('.' + parent_container).prev('.crop_decide').find('#make_crop').attr("onclick", 'makeCrop(event, \'' + id + '\')');
         $('.image_adjust_on').remove();
 
 
-        Android.changeTopBar('#5E5E5E');
+        if (ua.indexOf('AndroidApp') >= 0) {
+            Android.changeTopBar('#5E5E5E');
+        }
 
         // Create canvas with all current adjustments (uncropped).
         var image = $('.' + parent_container + ' #image_' + id)[0];
