@@ -364,6 +364,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         //$(cropper).animate({ height: anim_h }, {
         $(cropper).animate({ height: image_h }, {
             duration: 700,
+            easing: "easeOutQuad",
             start: function() {
                 $('.' + parent_container + ' #image_' + id).addClass('hide');
                 var new_canvas_src = ImageAdjustment.cloneCanvas(target);
@@ -712,26 +713,26 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var crop_decide = $('.crop_decide').clone().insertBefore('.' + parent_container);
         crop_decide.addClass('active');
 
+        $('.image_adjust_on').remove();
+
+        if (ua.indexOf('AndroidApp') >= 0) {
+            Android.changeTopBar('#5E5E5E');
+        }
+
         $(crop_decide).animate({ right: 0 }, {
             duration: 500,
-            //easing: "easeOutExpo",
-            start: function() {
-
-            }
-        });
-
-        var crop = $('.crop_box').clone().prependTo('.' + parent_container + ' #cropper_' + id);
+            easing: "easeOutQuad",
+            complete: function() {
+var crop = $('.crop_box').clone().prependTo('.' + parent_container + ' #cropper_' + id);
         crop.addClass('pending');
         //$('.' + parent_container + ' #cropper_' + id + ' #make_crop').attr("onclick", 'makeCrop(event, \'' + id + '\')');
         //console.log($('.' + parent_container + ' #cropper_' + id).prev('.crop_decide').find('#make_crop'));
         //$('.' + parent_container + ' #cropper_' + id).prev('.crop_decide').find('#make_crop').attr("onclick", 'makeCrop(event, \'' + id + '\')');
         $('.' + parent_container).prev('.crop_decide').find('#make_crop').attr("onclick", 'makeCrop(event, \'' + id + '\')');
-        $('.image_adjust_on').remove();
+        
 
 
-        if (ua.indexOf('AndroidApp') >= 0) {
-            Android.changeTopBar('#5E5E5E');
-        }
+
 
         // Create canvas with all current adjustments (uncropped).
         var image = $('.' + parent_container + ' #image_' + id)[0];
@@ -759,6 +760,10 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             self.buildCrop(parent_container, id, target);
             deferred.resolve();
         });
+            }
+        });
+
+        
         return deferred.promise;
     };
 
