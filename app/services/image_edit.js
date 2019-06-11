@@ -711,6 +711,15 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         //var crop_decide = $('.crop_decide').clone().insertBefore('.' + parent_container + ' #cropper_' + id);
         var crop_decide = $('.crop_decide').clone().insertBefore('.' + parent_container);
         crop_decide.addClass('active');
+
+        $(crop_decide).animate({ top: 0 }, {
+            duration: 600,
+            //easing: "easeOutExpo",
+            start: function() {
+
+            }
+        });
+
         var crop = $('.crop_box').clone().prependTo('.' + parent_container + ' #cropper_' + id);
         crop.addClass('pending');
         //$('.' + parent_container + ' #cropper_' + id + ' #make_crop').attr("onclick", 'makeCrop(event, \'' + id + '\')');
