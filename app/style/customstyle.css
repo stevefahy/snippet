@@ -3381,10 +3381,10 @@ span.after_image {
     padding-right: 15px;
     */
     /* top: -10px; */
-    /* right: -100vw; */
+    right: -100vw;
     align-items: center;
-    top: -60px;
-    /* top: 0px; */
+    /* top: -60px; */
+    top: 0px;
     z-index: 10000;
     width: 100vw;
     visibility: hidden;

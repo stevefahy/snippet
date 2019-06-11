@@ -712,8 +712,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var crop_decide = $('.crop_decide').clone().insertBefore('.' + parent_container);
         crop_decide.addClass('active');
 
-        $(crop_decide).animate({ top: 0 }, {
-            duration: 600,
+        $(crop_decide).animate({ right: 0 }, {
+            duration: 500,
             //easing: "easeOutExpo",
             start: function() {
 
