@@ -65,6 +65,10 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', 'Scroll', function(Drag, I
             previously_cropped = true;
         }
 
+
+  //$('.' + parent_container + ' #cropper_' + id + ' .resizable').addClass('active');
+        $('.' + ImageAdjustment.getImageParent() + ' #cropper_' + ImageAdjustment.getImageId() + ' .resizable').addClass('active');
+        
         if (previously_cropped) {
             // Get scale ratio of the image (as displayed which may be scaled to fit compared to the original image).
             var scale = ImageAdjustment.getScale(original_image, crop_source);
@@ -95,6 +99,8 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', 'Scroll', function(Drag, I
 
         // Set the clip path for the crop area.
         $(crop_area)[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
+
+      
 
         for (var i = 0, len = resizers.length; i < len; i++) {
             const currentResizer = resizers[i];

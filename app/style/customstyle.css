@@ -3185,8 +3185,13 @@ span.after_image {
 }
 
 .resizable {
-    display: flex;
+    display: none;
+    /*display: flex;*/
     justify-content: center;
+}
+
+.resizable.active {
+    display: flex;
 }
 
 /* Maximum crop extremities */
@@ -3528,4 +3533,8 @@ span.after_image {
 
 .canvas_temp {
     max-width: 100%;
+}
+
+img.graphic-icons {
+    width: 30px;
 }

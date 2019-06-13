@@ -1,5 +1,5 @@
 cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$q', '$filter', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', 'ImageEdit', '$compile', 'ImageAdjustment', 'Keyboard', 'Scroll', '$animate', function($scope, $rootScope, $location, $http, $window, $q, $filter, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, ImageEdit, $compile, ImageAdjustment, Keyboard, Scroll, $animate) {
-    openCrop = ImageEdit.openCrop;
+    openImageSize = ImageEdit.openImageSize;
     editImage = ImageEdit.editImage;
     closeEdit = ImageEdit.closeEdit;
     filterImage = ImageEdit.filterImage;
@@ -9,7 +9,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     testImage = ImageEdit.testImage;
     cancelCrop = ImageEdit.cancelCrop;
     makeCrop = ImageEdit.makeCrop;
-    openRotate = ImageEdit.openRotate;
+    openCropRotate = ImageEdit.openCropRotate;
+    openPerspective = ImageEdit.openPerspective;
+    //openRotate = ImageEdit.openRotate;
     flip = ImageEdit.flip;
     rotateImage = ImageEdit.rotateImage;
     sliderRotateChange = ImageEdit.sliderRotateChange;
@@ -790,6 +792,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     addSlider = function($el, parent_container, id, data) {
+        console.log($el);
         $rootScope.slider_settings[data.type].amount = data.last_position;
         var t = $compile($el)($scope);
         var s = $(t).insertAfter('.' + parent_container + ' #cropper_' + id);

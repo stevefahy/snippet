@@ -350,15 +350,19 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         return scale;
     };
 
-    this.getWindowScale = function(original_image) {
+    this.getImageScale = function(original_image) {
         var nat_w = original_image.naturalWidth;
         // check whether rotated
         var rotated = self.getImageAdjustment(self.getImageParent(), self.getImageId(), 'rotated');
         if (rotated == 90 || rotated == 270) {
             nat_w = original_image.naturalHeight;
         }
-        var window_w = $(window).width();
-        var scale = nat_w / window_w;
+        //var window_w = $(window).width();
+        //var scale = nat_w / window_w;
+        //var current_w = original_image.width;
+        var current_w = $(original_image).width();
+        console.log(current_w);
+        var scale = nat_w / current_w;
         return scale;
     };
 
