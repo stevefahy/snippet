@@ -10,6 +10,31 @@ cardApp.service('Slider', ['$window', '$rootScope', 'ImageAdjustment', function(
     this.slider_perspective_h = '<rzslider rz-slider-model="slider_settings.perspective_h.amount" rz-slider-options="slider_settings.perspective_h.options" id="slider_p_h"></rzslider>';
     this.slider_test = '<rzslider rz-slider-model="slider_settings.test.amount" rz-slider-options="slider_settings.test.options"></rzslider>';
 
+    $rootScope.slider_touch_settings = {
+            perspective_v: {
+            amount: 0,
+            reset: 0,
+            options: {
+                floor: -100,
+                ceil: 100,
+                step: 1,
+                precision: 1,
+                id: 'slider-idt',
+                onStart: function() {
+                    //console.log('on start ' + amount);
+                },
+                onChange: function(id, amount) {
+                    //console.log('on change ' + amount);
+                    sliderperspectiveVChange(amount, 'low');
+                },
+                onEnd: function(id, amount) {
+                    //console.log('on end ' + amount);
+                    sliderperspectiveVChange(amount, 'high');
+                }
+            }
+        }
+    };
+
     $rootScope.slider_settings = {
 
         sharpen: {
@@ -56,6 +81,8 @@ cardApp.service('Slider', ['$window', '$rootScope', 'ImageAdjustment', function(
                 }
             }
         },
+
+
 
         perspective_v: {
             amount: 0,

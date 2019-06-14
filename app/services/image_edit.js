@@ -870,12 +870,15 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             console.log(ev.type + " gesture detected.");
             console.log(ev.distance);
             var amount = Math.round(ev.distance);
-            if (ev.type == 'panright' && $rootScope.slider_settings.perspective_v.amount < $rootScope.slider_settings.perspective_v.options.ceil) {
-                $rootScope.slider_settings.perspective_v.amount+=1;
-                sliderperspectiveVChange($rootScope.slider_settings.perspective_v.amount, 'low');
-            } else if (ev.type == 'panleft' && $rootScope.slider_settings.perspective_v.amount > $rootScope.slider_settings.perspective_v.options.floor) {
-$rootScope.slider_settings.perspective_v.amount-=1;
-                sliderperspectiveVChange($rootScope.slider_settings.perspective_v.amount, 'low');
+            if (ev.type == 'panright' && $rootScope.slider_touch_settings.perspective_v.amount < $rootScope.slider_touch_settings.perspective_v.options.ceil) {
+                $rootScope.slider_touch_settings.perspective_v.amount+=2;
+                sliderperspectiveVChange($rootScope.slider_touch_settings.perspective_v.amount, 'low');
+            } else if (ev.type == 'panleft' && $rootScope.slider_touch_settings.perspective_v.amount > $rootScope.slider_touch_settings.perspective_v.options.floor) {
+                $rootScope.slider_touch_settings.perspective_v.amount-=2;
+                sliderperspectiveVChange($rootScope.slider_touch_settings.perspective_v.amount, 'low');
+            }
+            if (ev.type == 'panend'){
+                sliderperspectiveVChange($rootScope.slider_touch_settings.perspective_v.amount, 'high');
             }
         });
 
