@@ -77,6 +77,9 @@ cardApp.config(function($routeProvider, $locationProvider, $httpProvider) {
 
 });
 
+
+
+
 //
 // CONFIG
 //

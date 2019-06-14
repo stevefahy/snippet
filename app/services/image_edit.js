@@ -847,10 +847,43 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         e.stopPropagation();
         var parent_container = ImageAdjustment.getImageParent();
         var id = ImageAdjustment.getImageId();
+
+        var ia = ImageAdjustment.getImageAdjustments(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId());
+        if (ia != undefined) {
+            if (ia.perspective != undefined) {
+                $rootScope.slider_settings.perspective_v.amount = ia.perspective.vertical;
+                $rootScope.slider_settings.perspective_h.amount = ia.perspective.horizontal;
+            }
+        }
+
+        // Add Gesture detection
+        // create a simple instance
+        // by default, it only adds horizontal recognizers
+        var cropper = $('.' + parent_container + ' #cropper_' + id)[0];
+        var mc = new Hammer(cropper);
+        // let the pan gesture support all directions.
+        // this will block the vertical scrolling on a touch-device while on the element
+        mc.get('pan').set({ direction: Hammer.DIRECTION_ALL, threshold: 10 });
+        // listen to events...
+
+        mc.on("panleft panright panup pandown tap press panstart panend", function(ev) {
+            console.log(ev.type + " gesture detected.");
+            console.log(ev.distance);
+            var amount = Math.round(ev.distance);
+            if (ev.type == 'panright' && $rootScope.slider_settings.perspective_v.amount < $rootScope.slider_settings.perspective_v.options.ceil) {
+                $rootScope.slider_settings.perspective_v.amount+=1;
+                sliderperspectiveVChange($rootScope.slider_settings.perspective_v.amount, 'low');
+            } else if (ev.type == 'panleft' && $rootScope.slider_settings.perspective_v.amount > $rootScope.slider_settings.perspective_v.options.floor) {
+$rootScope.slider_settings.perspective_v.amount-=1;
+                sliderperspectiveVChange($rootScope.slider_settings.perspective_v.amount, 'low');
+            }
+        });
+
+
         // Only open if it has not already been opened.
         if ($('.' + parent_container + ' #slider_p_v').length <= 0) {
             var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
-           //var data_r = { 'id': id, 'type': 'rotate' };
+            //var data_r = { 'id': id, 'type': 'rotate' };
             var data_p_v = { 'id': id, 'type': 'perspective_v' };
             var data_p_h = { 'id': id, 'type': 'perspective_h' };
             //data_r.last_position = $rootScope.slider_settings.rotate.reset;
