@@ -860,21 +860,28 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         // create a simple instance
         // by default, it only adds horizontal recognizers
         var cropper = $('.' + parent_container + ' #cropper_' + id)[0];
+        var cropper_width = $(cropper).width();
+        console.log(cropper_width);
         var mc = new Hammer(cropper);
         // let the pan gesture support all directions.
         // this will block the vertical scrolling on a touch-device while on the element
         mc.get('pan').set({ direction: Hammer.DIRECTION_ALL, threshold: 1 });
         // listen to events...
-
+        var last_distance = 0; 
         mc.on("panleft panright panup pandown tap press panstart panend", function(ev) {
-            console.log(ev.type + " gesture detected.");
-            console.log(ev.distance);
+            //console.log(ev.type + " gesture detected.");
+            //console.log(ev.distance);
+            
+            var distance_change = ev.distance - last_distance;
+            console.log(distance_change);
+            last_distance = ev.distance;
+
             var amount = Math.round(ev.distance);
             if (ev.type == 'panright' && $rootScope.slider_touch_settings.perspective_v.amount < $rootScope.slider_touch_settings.perspective_v.options.ceil) {
-                $rootScope.slider_touch_settings.perspective_v.amount+=2;
+                $rootScope.slider_touch_settings.perspective_v.amount+=distance_change;
                 sliderperspectiveVChange($rootScope.slider_touch_settings.perspective_v.amount, 'low');
             } else if (ev.type == 'panleft' && $rootScope.slider_touch_settings.perspective_v.amount > $rootScope.slider_touch_settings.perspective_v.options.floor) {
-                $rootScope.slider_touch_settings.perspective_v.amount-=2;
+                $rootScope.slider_touch_settings.perspective_v.amount-=distance_change;
                 sliderperspectiveVChange($rootScope.slider_touch_settings.perspective_v.amount, 'low');
             }
             if (ev.type == 'panend'){
