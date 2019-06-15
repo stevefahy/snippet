@@ -867,24 +867,46 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         // this will block the vertical scrolling on a touch-device while on the element
         mc.get('pan').set({ direction: Hammer.DIRECTION_ALL, threshold: 1 });
         // listen to events...
-        var last_distance = 0; 
+
         mc.on("panleft panright panup pandown tap press panstart panend", function(ev) {
             //console.log(ev.type + " gesture detected.");
-            //console.log(ev.distance);
             
-            var distance_change = ev.distance - last_distance;
-            console.log(distance_change);
-            last_distance = ev.distance;
+            var pos = ev.center.x;
+            var num;
+            var percent = Math.round((pos / cropper_width) * 100);
+             console.log(ev.center.x + ' : ' + percent);
+             
+            if (percent < 0) {
+                percent = 0;
+            }
+            if (percent > 100) {
+                percent = 100;
+            }
+            
 
-            var amount = Math.round(ev.distance);
+            var range = Math.abs($rootScope.slider_touch_settings.perspective_v.options.floor - $rootScope.slider_touch_settings.perspective_v.options.ceil);
+            var percent_of_range = range * (percent / 100);
+            var val = percent_of_range + ($rootScope.slider_touch_settings.perspective_v.options.floor);
+
+
+            console.log(val);
+
+
+            /*
             if (ev.type == 'panright' && $rootScope.slider_touch_settings.perspective_v.amount < $rootScope.slider_touch_settings.perspective_v.options.ceil) {
-                $rootScope.slider_touch_settings.perspective_v.amount+=distance_change;
+                $rootScope.slider_touch_settings.perspective_v.amount=val;
                 sliderperspectiveVChange($rootScope.slider_touch_settings.perspective_v.amount, 'low');
             } else if (ev.type == 'panleft' && $rootScope.slider_touch_settings.perspective_v.amount > $rootScope.slider_touch_settings.perspective_v.options.floor) {
                 $rootScope.slider_touch_settings.perspective_v.amount-=distance_change;
                 sliderperspectiveVChange($rootScope.slider_touch_settings.perspective_v.amount, 'low');
             }
-            if (ev.type == 'panend'){
+            */
+            $rootScope.slider_touch_settings.perspective_v.amount=val;
+            if (ev.type == 'panleft' || ev.type == 'panright') {
+
+                sliderperspectiveVChange($rootScope.slider_touch_settings.perspective_v.amount, 'low');
+            }
+            if (ev.type == 'panend') {
                 sliderperspectiveVChange($rootScope.slider_touch_settings.perspective_v.amount, 'high');
             }
         });
