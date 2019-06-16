@@ -119,6 +119,7 @@
   border-style: solid;
   border-width: 1px;
   border-color: #ffffff;
+  outline: none;
 }
 
 /*
@@ -151,12 +152,12 @@
 .rzslider .rz-bubble {
   bottom: 16px;
   padding: 1px 3px;
-  color: #55637d;
+  color: #ffffff;
   cursor: default;
 }
 
 .rzslider .rz-bubble.rz-limit {
-  color: #55637d;
+  color: #ffffff;
 }
 
 .rzslider .rz-ticks {
