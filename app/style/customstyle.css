@@ -3562,7 +3562,7 @@ img.graphic-icons {
     font-weight: normal;
 }
 
-.slider_r {
+.slider_outer {
     display: flex;
     align-items: center;
 }
@@ -3572,3 +3572,20 @@ img.graphic-icons {
     padding-right: 10px;
     padding-left: 10px;
 }
+
+.slider_p_v_icon {
+    padding-top: 15px;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+.slider_p_h_icon {
+    padding-top: 15px;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+.material-icons.rotate {
+    transform: scaleX(-1);
+}
+
