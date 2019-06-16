@@ -282,9 +282,11 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
     this.removeSlider = function() {
-        if ($('.rzslider').length > 0) {
-            $('.rzslider').remove();
-        }
+        //if ($('.rzslider').length > 0) {
+        //    $('.rzslider').remove();
+        //}
+        $('.slider_container').empty();
+        $('.slider_container').removeClass('active');
     };
 
     this.removeCrop = function() {
