@@ -5,7 +5,7 @@
 cardApp.service('Slider', ['$window', '$rootScope', 'ImageAdjustment', function($window, $rootScope, ImageAdjustment) {
 
     this.slider_sharpen = '<rzslider rz-slider-model="slider_settings.sharpen.amount" rz-slider-options="slider_settings.sharpen.options" </rzslider>';
-    this.slider_rotate = '<rzslider rz-slider-model="slider_settings.rotate.amount" rz-slider-options="slider_settings.rotate.options" id="slider_r"></rzslider>';
+    this.slider_rotate = '<div class="slider_r"><div class="slider_r_icon"><i class="material-icons light rotate">autorenew</i></div><rzslider rz-slider-model="slider_settings.rotate.amount" rz-slider-options="slider_settings.rotate.options" id="slider_r"></rzslider></div>';
     this.slider_perspective_v = '<rzslider rz-slider-model="slider_settings.perspective_v.amount" rz-slider-options="slider_settings.perspective_v.options" id="slider_p_v"></rzslider>';
     this.slider_perspective_h = '<rzslider rz-slider-model="slider_settings.perspective_h.amount" rz-slider-options="slider_settings.perspective_h.options" id="slider_p_h"></rzslider>';
     this.slider_test = '<rzslider rz-slider-model="slider_settings.test.amount" rz-slider-options="slider_settings.test.options"></rzslider>';
@@ -69,6 +69,9 @@ cardApp.service('Slider', ['$window', '$rootScope', 'ImageAdjustment', function(
                 step: 0.001,
                 precision: 1,
                 id: 'slider-idt',
+                    translate: function(value) {
+      return value + '&deg;';
+    },
                 onStart: function() {
                     //console.log('on start ' + amount);
                 },
