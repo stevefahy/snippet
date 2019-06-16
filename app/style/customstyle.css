@@ -3538,3 +3538,13 @@ span.after_image {
 img.graphic-icons {
     width: 30px;
 }
+
+.slider_container.active {
+    position: absolute;
+    bottom: 0px;
+    z-index: 10000;
+    width: 100%;
+    background-color: #5e5e5e;
+    padding-bottom: 15px;
+    padding-top: 15px;
+}

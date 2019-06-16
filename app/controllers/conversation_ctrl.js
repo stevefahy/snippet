@@ -795,7 +795,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log($el);
         $rootScope.slider_settings[data.type].amount = data.last_position;
         var t = $compile($el)($scope);
-        var s = $(t).insertAfter('.' + parent_container + ' #cropper_' + id);
+        //var s = $(t).insertAfter('.' + parent_container + ' #cropper_' + id);
+        var s = $('.slider_container').prepend(t);
         s.addClass('active');
         s.removeClass('hide');
     };
