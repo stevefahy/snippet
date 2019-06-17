@@ -2807,6 +2807,10 @@ scrollIndicator directive
     -webkit-animation: fade-out 1s linear forwards;
 }
 
+.fade_out_5 {
+    -webkit-animation: fade-out .5s linear forwards;
+}
+
 @keyframes fade-in {
     0% {
         opacity: 0;
@@ -3576,6 +3580,7 @@ img.graphic-icons {
     height: 0px;
     z-index: 100000;
     width: 100%;
+    background-color: #5e5e5e;
 }
 
 .slider_container.animate {
@@ -3617,3 +3622,16 @@ img.graphic-icons {
     transform: scaleX(-1);
 }
 
+.slider_outer {
+    overflow: hidden;
+    transition: max-height .3s ease-out, opacity ease-out .3s;
+    height: auto;
+    max-height: 100px;
+
+}
+
+.animate_minimize {
+
+    max-height: 0px;
+    opacity: 0;
+}

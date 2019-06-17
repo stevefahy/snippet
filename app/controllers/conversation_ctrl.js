@@ -790,12 +790,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 }
             });
     };
-var total_h = 0;
+    var total_h = 0;
     addSlider = function($el, parent_container, id, data) {
         //console.log($el);
         $rootScope.slider_settings[data.type].amount = data.last_position;
         var t = $compile($el)($scope);
-        
+
         //var s = $(t).insertAfter('.' + parent_container + ' #cropper_' + id);
         var s = $('.slider_container_inner').append(t);
         //var new_h = 54;//$(t).height();
@@ -812,13 +812,13 @@ var total_h = 0;
             }
         );
         */
-$('.slider_container').addClass('animate');
+        $('.slider_container').addClass('animate');
         $timeout(function() {
-        var currentHeight = $('.slider_container_inner').outerHeight();
-        console.log(currentHeight);
-   
-        $('.slider_container').css('height', currentHeight);
- },0);
+            var currentHeight = $('.slider_container_inner').outerHeight();
+            console.log(currentHeight);
+
+            $('.slider_container').css('height', currentHeight);
+        }, 0);
 
         //$('.slider_container').removeClass('animate');
         //$('.slider_container').addClass('animate');

@@ -200,7 +200,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     this.makeCrop = function(e, id) {
         e.preventDefault();
         e.stopPropagation();
-                if (ua.indexOf('AndroidApp') >= 0) {
+        if (ua.indexOf('AndroidApp') >= 0) {
             Android.changeTopBar('#F0F0F0');
         }
         // Disable scrolling until the crop has been saved.
@@ -460,6 +460,12 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         }
     };
 
+    var sliderAnimEnd = function(){
+        console.log('ANIM END');
+        console.log(this);
+        $(this).remove();
+    };
+
     this.openCropRotate = function(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -573,19 +579,25 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             //console.log(slider_h);
             //var cur_h = $('.slider_container').css('height');
             //console.log(cur_h);
-            
+
             //$('.slider_container').css('height',cur_h - slider_h);
-             
 
-                    $timeout(function() {
-            var currentHeight = $('.slider_container_inner').outerHeight();
-            console.log(currentHeight);
 
-            $('.slider_container').css('height', currentHeight - slider_h);
             $timeout(function() {
-            $('.slider_container_inner #s_rotate').remove();
-        }, 1000);
-        }, 0);
+
+                var currentHeight = $('.slider_container_inner').outerHeight();
+                console.log(currentHeight);
+
+                 $(".slider_container_inner #s_rotate").addClass('animate_minimize');
+                $(".animate_minimize").on('webkitTransitionEnd oTransitionEnd transitionend ', sliderAnimEnd);
+                
+                //$('.slider_container_inner #s_rotate').addClass('fade_out_5');
+                $('.slider_container').css('height', currentHeight - slider_h);
+                //$('.slider_container_inner #s_rotate').css('maxHeight','0px');
+                $timeout(function() {
+                   // $('.slider_container_inner #s_rotate').remove();
+                }, 1000);
+            }, 0);
         }
 
     };
