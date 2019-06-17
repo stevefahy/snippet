@@ -200,6 +200,9 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     this.makeCrop = function(e, id) {
         e.preventDefault();
         e.stopPropagation();
+                if (ua.indexOf('AndroidApp') >= 0) {
+            Android.changeTopBar('#F0F0F0');
+        }
         // Disable scrolling until the crop has been saved.
         Scroll.disable('.content_cnv');
         var parent_container = ImageAdjustment.getImageParent();
@@ -285,8 +288,9 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         //if ($('.rzslider').length > 0) {
         //    $('.rzslider').remove();
         //}
-        $('.slider_container').empty();
-        $('.slider_container').removeClass('active');
+        $('.slider_container').css('height', '');
+        $('.slider_container_inner').empty();
+        $('.slider_container_inner').removeClass('active');
     };
 
     this.removeCrop = function() {
@@ -542,7 +546,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         Resize.makeResizableDiv('.resizers', '.crop_area', '#crop_src', original_image, crop_data, id);
 
         // Only open if it has not already been opened.
-        if ($('.' + parent_container + ' #slider_r').length <= 0) {
+
+        if ($('.slider_container_inner #s_rotate').length <= 0) {
             var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
             var data_r = { 'id': id, 'type': 'rotate' };
             //var data_p_v = { 'id': id, 'type': 'perspective_v' };
@@ -563,6 +568,24 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             addSlider(Slider.slider_rotate, parent_container, id, data_r);
             //addSlider(Slider.slider_perspective_v, parent_container, id, data_p_v);
             // addSlider(Slider.slider_perspective_h, parent_container, id, data_p_h);
+        } else {
+            var slider_h = $('.slider_container_inner #s_rotate').outerHeight();
+            //console.log(slider_h);
+            //var cur_h = $('.slider_container').css('height');
+            //console.log(cur_h);
+            
+            //$('.slider_container').css('height',cur_h - slider_h);
+             
+
+                    $timeout(function() {
+            var currentHeight = $('.slider_container_inner').outerHeight();
+            console.log(currentHeight);
+
+            $('.slider_container').css('height', currentHeight - slider_h);
+            $timeout(function() {
+            $('.slider_container_inner #s_rotate').remove();
+        }, 1000);
+        }, 0);
         }
 
     };
