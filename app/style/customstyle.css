@@ -2718,12 +2718,11 @@ span#header b.header_3 {
 
 @keyframes slide-up {
     0% {
-        /*transform: translateY(100%);*/
+        transform: translateY(100%);
     }
 
     100% {
-        /*transform: translateY(0);*/
-        height: 100%;
+        transform: translateY(0);
     }
 }
 
@@ -3580,8 +3579,9 @@ img.graphic-icons {
 }
 
 .slider_container.animate {
-    /*-webkit-animation: slide-up 7s cubic-bezier(0.19, 1, 0.22, 1);*/
+    /*animation: slide-up 7s cubic-bezier(0.19, 1, 0.22, 1);*/
      transition: height .7s cubic-bezier(0.19, 1, 0.22, 1);
+       
 }
 
 .material-icons.light {
