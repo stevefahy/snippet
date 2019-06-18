@@ -529,6 +529,36 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         }, 0);
     };
 
+    var openRotateSlider = function(){
+        var parent_container = ImageAdjustment.getImageParent();
+        var id = ImageAdjustment.getImageId();
+        // Only open if it has not already been opened.
+        if ($('.slider_container_inner #s_rotate').length <= 0) {
+            var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
+            var data_r = { 'id': id, 'type': 'rotate' };
+            //var data_p_v = { 'id': id, 'type': 'perspective_v' };
+            //var data_p_h = { 'id': id, 'type': 'perspective_h' };
+            data_r.last_position = $rootScope.slider_settings.rotate.reset;
+            //data_p_v.last_position = $rootScope.slider_settings.perspective_v.reset;
+            //data_p_h.last_position = $rootScope.slider_settings.perspective_h.reset;
+            // Get the last position of the slider.
+            if (ia != undefined) {
+                if (ia.rotate != undefined) {
+                    data_r.last_position = ia.rotate;
+                }
+                //if (ia.perspective != undefined) {
+                //    data_p_v.last_position = ia.perspective.vertical;
+                //    data_p_h.last_position = ia.perspective.horizontal;
+                //}
+            }
+            addSlider(Slider.slider_rotate, parent_container, id, data_r);
+            //addSlider(Slider.slider_perspective_v, parent_container, id, data_p_v);
+            // addSlider(Slider.slider_perspective_h, parent_container, id, data_p_h);
+        } else {
+            closeSlider('s_rotate');
+        }
+    };
+
     this.openCropRotate = function(e) {
         if(e != undefined){
             e.preventDefault();
@@ -617,8 +647,9 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         //$('.' + parent_container + ' #cropper_' + id + ' .resizable').addClass('active');
         Resize.makeResizableDiv('.resizers', '.crop_area', '#crop_src', original_image, crop_data, id);
 
+        openRotateSlider();
+        /*
         // Only open if it has not already been opened.
-
         if ($('.slider_container_inner #s_rotate').length <= 0) {
             var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
             var data_r = { 'id': id, 'type': 'rotate' };
@@ -643,6 +674,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         } else {
             closeSlider('s_rotate');
         }
+        */
 
     };
 
