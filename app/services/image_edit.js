@@ -86,6 +86,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
     var hideImages = function(parent_container, id) {
+        //var deferred = $q.defer();
         // If filtered image exists
         if ($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length > 0) {
             $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').addClass('hide');
@@ -95,6 +96,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         $('.crop_bg').removeClass('hide');
         //$('.pending').addClass('active');
         //$('.pending').removeClass('pending');
+       // deferred.resolve();
+        //return deferred.promise;
     };
 
     // Methods
@@ -420,7 +423,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
                 hideImages(parent_container, id);
 
-               openCropRotate();
+               //openCropRotate();
             });
         });
 
@@ -462,10 +465,14 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 easing: "easeOutQuad",
                 start: function() {
                     self.createCropperImages(parent_container, id, target, image_h);
+                },
+                complete: function() {
+                    openCropRotate();
                 }
             });
         } else {
             self.createCropperImages(parent_container, id, target, image_h);
+            openCropRotate();
         }
     };
 
