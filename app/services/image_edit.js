@@ -198,6 +198,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
     this.makeCrop = function(e, id) {
+        console.log(id);
         e.preventDefault();
         e.stopPropagation();
         if (ua.indexOf('AndroidApp') >= 0) {
@@ -295,7 +296,13 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
     this.removeCrop = function() {
         $('.crop_box.active').remove();
-        $('.crop_decide.active').remove();
+        //$('.crop_decide.active').remove();
+
+        $timeout(function() {
+            $('.crop_decide.active').removeClass('animate_on');
+
+        }, 0);
+
         if ($('.temp_canvas_filtered').length > 0) {
             $('.temp_canvas_filtered').remove();
         }
@@ -412,6 +419,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 //Resize.makeResizableDiv('.resizers', '.crop_area', '#crop_src', original_image, crop_data, id);
 
                 hideImages(parent_container, id);
+
+               openCropRotate();
             });
         });
 
@@ -471,7 +480,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             //$(".slider_container_inner").removeClass('active');
             // $(".slider_container").css('height', '');
             //  $(".slider_container_inner").removeClass('active');
-             //   $(".slider_container").css('height', '');
+            //   $(".slider_container").css('height', '');
         }
     };
 
@@ -488,8 +497,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         $timeout(function() {
             var currentHeight = $('.slider_container_inner').outerHeight();
             console.log(currentHeight);
-             for (i = 0; i < arguments.length; i++) {
-           // $('.slider_container_inner #' + arguments[i]).addClass('animate_minimize');
+            for (i = 0; i < arguments.length; i++) {
+                // $('.slider_container_inner #' + arguments[i]).addClass('animate_minimize');
             }
             $(".animate_minimize").on('webkitTransitionEnd oTransitionEnd transitionend ', sliderAnimEnd);
             var h = currentHeight - slider_h;
@@ -500,11 +509,11 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             var s = slider.indexOf("s_perspective");
             console.log(s);
             //slider_count--;
-            if(s >= 0){
-               // slider_count--;
-            } 
+            if (s >= 0) {
+                // slider_count--;
+            }
             console.log(slider_count);
-            if (slider_count < 1 ) {
+            if (slider_count < 1) {
                 $(".slider_container_inner").removeClass('active');
                 $(".slider_container").css('height', '');
             } else {
@@ -514,8 +523,11 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
     this.openCropRotate = function(e) {
-        e.preventDefault();
+        if(e != undefined){
+            e.preventDefault();
         e.stopPropagation();
+        }
+        
         var parent_container = ImageAdjustment.getImageParent();
         var id = ImageAdjustment.getImageId();
         //var crop = $('.crop_box').clone().prependTo('.' + parent_container + ' #cropper_' + id);
@@ -956,7 +968,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
         // Only open if it has not already been opened.
         if ($('.slider_container_inner #s_perspective_v').length <= 0) {
-        //if ($('.' + parent_container + ' #slider_p_v').length <= 0) {
+            //if ($('.' + parent_container + ' #slider_p_v').length <= 0) {
             var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
             //var data_r = { 'id': id, 'type': 'rotate' };
             var data_p_v = { 'id': id, 'type': 'perspective_v' };
@@ -1076,59 +1088,119 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         return new_h;
     };
 
+    var cropdecideAnim = function(){
+        console.log('cropdecideAnim');
+        var deferred = $q.defer();
+            var promises = [];
+            var parent_container = ImageAdjustment.getImageParent();
+            var id = ImageAdjustment.getImageId();
+
+            //$('.' + parent_container).prev('.crop_decide').find('#make_crop').attr("onclick", 'makeCrop(event, \'' + id + '\')');
+            $('.crop_decide').find('#make_crop').attr("onclick", 'makeCrop(event, \'' + id + '\')');
+            // Create canvas with all current adjustments (uncropped).
+            var image = $('.' + parent_container + ' #image_' + id)[0];
+            var target = self.imageToCanvas(image);
+            var source = self.imageToCanvas(image);
+            var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
+            // All adjustements less crop - Filter target, Filter source, Sharpen target.
+            if (ia != undefined) {
+                // Dont crop the image.
+                ia.crop = undefined;
+                // Dont rotate the image
+                ia.rotate = undefined;
+                // Dont add perspective to the image
+                ia.perspective = undefined;
+                var prom = ImageAdjustment.applyFilters(source, ia).then(function(result) {
+                    target.width = result.width;
+                    target.height = result.height;
+                    var ctx = target.getContext('2d');
+                    ctx.drawImage(result, 0, 0);
+                    deferred.resolve();
+                });
+                promises.push(prom);
+            }
+            $q.all(promises).then(function() {
+                //self.buildCrop(parent_container, id, target);
+                self.buildImageSize(parent_container, id, target);
+                deferred.resolve();
+            });
+            return deferred.promise;
+        };
+
+    var cropdecideAnimEnd = function() {
+        if ($('.crop_decide.animate_on').length > 0) {
+            //cropdecideAnim();
+            
+        } else {
+            $('.crop_decide').removeClass('active');
+        }
+    };
+
     this.openImageSize = function(e, id) {
         Debug.hide();
-        var deferred = $q.defer();
-        var promises = [];
+        //var deferred = $q.defer();
+        //var promises = [];
         var parent_container = getParentContainer(e.target);
         ImageAdjustment.setImageParent(parent_container);
         ImageAdjustment.setImageId(id);
         ImageAdjustment.setImageEditing(true);
-        var crop_decide = $('.crop_decide').clone().insertBefore('.' + parent_container);
-        crop_decide.addClass('active');
+        //var crop_decide = $('.crop_decide').clone().insertBefore('.' + parent_container);
+        //var crop_decide = $('.crop_decide').clone().insertBefore('.' + parent_container);
+        $('.crop_decide').addClass('active');
         $('.image_adjust_on').remove();
         if (ua.indexOf('AndroidApp') >= 0) {
             Android.changeTopBar('#5E5E5E');
         }
-        $(crop_decide).animate({ right: 0 }, {
-            duration: 400,
-            easing: "easeOutExpo",
-            complete: function() {
-                //var crop = $('.crop_box').clone().prependTo('.' + parent_container + ' #cropper_' + id);
-                //crop.addClass('pending');
-                $('.' + parent_container).prev('.crop_decide').find('#make_crop').attr("onclick", 'makeCrop(event, \'' + id + '\')');
-                // Create canvas with all current adjustments (uncropped).
-                var image = $('.' + parent_container + ' #image_' + id)[0];
-                var target = self.imageToCanvas(image);
-                var source = self.imageToCanvas(image);
-                var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
-                // All adjustements less crop - Filter target, Filter source, Sharpen target.
-                if (ia != undefined) {
-                    // Dont crop the image.
-                    ia.crop = undefined;
-                    // Dont rotate the image
-                    ia.rotate = undefined;
-                    // Dont add perspective to the image
-                    ia.perspective = undefined;
-                    var prom = ImageAdjustment.applyFilters(source, ia).then(function(result) {
-                        target.width = result.width;
-                        target.height = result.height;
-                        var ctx = target.getContext('2d');
-                        ctx.drawImage(result, 0, 0);
-                        deferred.resolve();
-                    });
-                    promises.push(prom);
-                }
-                $q.all(promises).then(function() {
-                    //self.buildCrop(parent_container, id, target);
-                    self.buildImageSize(parent_container, id, target);
-                    deferred.resolve();
+
+        $('.crop_decide').on('webkitTransitionEnd oTransitionEnd transitionend ', cropdecideAnimEnd);
+
+        $timeout(function() {
+            $('.crop_decide').addClass('animate_on');
+            cropdecideAnim();
+        }, 0);
+
+        /*
+                $(crop_decide).animate({ right: 0 }, {
+                    duration: 400,
+                    easing: "easeOutExpo",
+                    complete: function() {
+                        //var crop = $('.crop_box').clone().prependTo('.' + parent_container + ' #cropper_' + id);
+                        //crop.addClass('pending');
+                        
+                        $('.' + parent_container).prev('.crop_decide').find('#make_crop').attr("onclick", 'makeCrop(event, \'' + id + '\')');
+                        // Create canvas with all current adjustments (uncropped).
+                        var image = $('.' + parent_container + ' #image_' + id)[0];
+                        var target = self.imageToCanvas(image);
+                        var source = self.imageToCanvas(image);
+                        var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
+                        // All adjustements less crop - Filter target, Filter source, Sharpen target.
+                        if (ia != undefined) {
+                            // Dont crop the image.
+                            ia.crop = undefined;
+                            // Dont rotate the image
+                            ia.rotate = undefined;
+                            // Dont add perspective to the image
+                            ia.perspective = undefined;
+                            var prom = ImageAdjustment.applyFilters(source, ia).then(function(result) {
+                                target.width = result.width;
+                                target.height = result.height;
+                                var ctx = target.getContext('2d');
+                                ctx.drawImage(result, 0, 0);
+                                deferred.resolve();
+                            });
+                            promises.push(prom);
+                        }
+                        $q.all(promises).then(function() {
+                            //self.buildCrop(parent_container, id, target);
+                            self.buildImageSize(parent_container, id, target);
+                            deferred.resolve();
+                        });
+                       
+                    }
                 });
-            }
-        });
+         */
 
-
-        return deferred.promise;
+        // return deferred.promise;
     };
 
     this.filterClick = function(e, button, id, filter) {
