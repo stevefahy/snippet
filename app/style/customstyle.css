@@ -160,6 +160,8 @@ input[type="checkbox"] {
     margin-bottom: 10px;
     border-bottom: 1px solid #efefef;
     /*overflow: visible !important;*/
+    will-change: height;
+    transform: translateZ(0);
 }
 
 .resize-drag {
@@ -3418,6 +3420,8 @@ span.after_image {
     border-bottom-style: solid;
     border-bottom-width: .5px;
     border-bottom-color: #1f1f1f;
+    will-change: right;
+    transform: translateZ(0);
 }
 
 .crop_decide.active {}
@@ -3581,6 +3585,8 @@ img.graphic-icons {
     z-index: 100000;
     width: 100%;
     background-color: #5e5e5e;
+    will-change: height;
+    transform: translateZ(0);
 }
 
 .slider_container.animate {
@@ -3637,14 +3643,20 @@ img.graphic-icons {
 }
 
 .crop_decide.active {
-   
+    
     /*animation: slide-up 7s cubic-bezier(0.19, 1, 0.22, 1);*/
-    transition: right .7s cubic-bezier(0.19, 1, 0.22, 1);
+   
+   /*transition: slidecrop  .7s cubic-bezier(0.19, 1, 0.22, 1);*/
+    /* -webkit-animation: slidecrop .7s cubic-bezier(0.19, 1, 0.22, 1);*/
+      
+       transition: right .7s cubic-bezier(0.19, 1, 0.22, 1);
+
        
 }
 
+
 .crop_decide.animate_on {
-    right: 0;
-    
-       
+    right: 0;    
 }
+
+
