@@ -476,21 +476,32 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
     var closeSlider = function(slider) {
-        var slider_h = $('.slider_container_inner #' + slider).outerHeight();
+        var slider_h = 0;
+        var slider_count = $(".slider_container_inner").children().length;
+        for (i = 0; i < arguments.length; i++) {
+            console.log(arguments[i]);
+            slider_h += $('.slider_container_inner #' + arguments[i]).outerHeight();
+            $('.slider_container_inner #' + arguments[i]).addClass('animate_minimize');
+            slider_count--;
+        }
+
         $timeout(function() {
             var currentHeight = $('.slider_container_inner').outerHeight();
             console.log(currentHeight);
-            $('.slider_container_inner #' + slider).addClass('animate_minimize');
+             for (i = 0; i < arguments.length; i++) {
+           // $('.slider_container_inner #' + arguments[i]).addClass('animate_minimize');
+            }
             $(".animate_minimize").on('webkitTransitionEnd oTransitionEnd transitionend ', sliderAnimEnd);
             var h = currentHeight - slider_h;
-            var slider_count = $(".slider_container_inner").children().length;
+            console.log(h);
+            //var slider_count = $(".slider_container_inner").children().length;
             console.log(slider_count);
             console.log(slider);
             var s = slider.indexOf("s_perspective");
             console.log(s);
-            slider_count--;
+            //slider_count--;
             if(s >= 0){
-                slider_count-=2;
+               // slider_count--;
             } 
             console.log(slider_count);
             if (slider_count < 1 ) {
@@ -967,8 +978,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             addSlider(Slider.slider_perspective_v, parent_container, id, data_p_v);
             addSlider(Slider.slider_perspective_h, parent_container, id, data_p_h);
         } else {
-            closeSlider("s_perspective_v");
-            closeSlider("s_perspective_h");
+            closeSlider("s_perspective_v", "s_perspective_h");
+            //closeSlider("");
         }
     };
 

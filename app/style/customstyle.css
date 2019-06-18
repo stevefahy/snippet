@@ -3624,7 +3624,7 @@ img.graphic-icons {
 
 .slider_outer {
     overflow: hidden;
-    transition: max-height .3s ease-out, opacity ease-out .3s;
+    transition: max-height .2s ease-out, opacity ease-out .2s;
     height: auto;
     max-height: 100px;
 
