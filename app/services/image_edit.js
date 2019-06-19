@@ -449,6 +449,9 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
     this.buildImageSize = function(parent_container, id, target) {
+        
+
+
 
         if ($('.' + parent_container + ' #cropper_' + id + ' .crop_box').length <= 0) {
             var crop = $('.crop_box').clone().prependTo('.' + parent_container + ' #cropper_' + id);
@@ -483,15 +486,16 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 easing: "easeOutQuad",
                 start: function() {
                     self.createCropperImages(parent_container, id, target, image_h).then(function() {
-                        openCropRotate();
-                        $('.crop_decide').addClass('active');
+                   $('.crop_decide').addClass('active');
         $('.crop_decide').addClass('animate_in');
                     });
                 },
-                //complete: function() {
-                //    console.log('COMPLETE');
+                complete: function() {
+                    console.log('COMPLETE');
+                          openCropRotate();
+                       
                     //openCropRotate();
-                //}
+                }
             });
         } else {
             self.createCropperImages(parent_container, id, target, image_h).then(function() {
@@ -502,6 +506,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             //openCropRotate();
             console.log('NOT COMPLETE');
         }
+
+    
     };
 
     var sliderAnimEnd = function() {
