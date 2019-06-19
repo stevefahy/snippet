@@ -2718,6 +2718,8 @@ span#header b.header_3 {
     }
 }
 
+
+
 @keyframes slide-up {
     0% {
         transform: translateY(100%);
@@ -2725,6 +2727,16 @@ span#header b.header_3 {
 
     100% {
         transform: translateY(0);
+    }
+}
+
+@keyframes slide-down {
+    0% {
+        transform: translateY(0);
+    }
+
+    100% {
+        transform: translateY(100%);
     }
 }
 
@@ -3411,16 +3423,18 @@ span.after_image {
     width: 100vw;
     visibility: hidden;
     /* margin-left: -1.30em; */
-    position: fixed;
+    position: absolute;
     display: flex;
     justify-content: space-evenly;
     background-color: #5e5e5e;
     height: 56px;
+    
     box-shadow: rgba(0, 0, 0, 0.14) 0px 4px 5px 0px, rgba(0, 0, 0, 0.12) 0px 1px 10px 0px, rgba(0, 0, 0, 0.2) 0px 2px 4px -1px;
     border-bottom-style: solid;
     border-bottom-width: .5px;
     border-bottom-color: #1f1f1f;
-    will-change: right;
+    
+    will-change: transform;
     transform: translateZ(0);
 }
 
@@ -3655,11 +3669,13 @@ img.graphic-icons {
       -webkit-animation: slideOutRight .7s cubic-bezier(0.19, 1, 0.22, 1);
 }
 .crop_decide.animate_in {
-       will-change: transform;
-    -webkit-animation: slide-in .7s cubic-bezier(0.19, 1, 0.22, 1);
-}
+      
+    -webkit-animation: slide-in .7s ease-in;
 
+
+}
+/*
 .crop_decide.animate_on {
-    
     right: 0px;
 }
+*/

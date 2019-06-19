@@ -484,6 +484,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 start: function() {
                     self.createCropperImages(parent_container, id, target, image_h).then(function() {
                         openCropRotate();
+                        $('.crop_decide').addClass('active');
+        $('.crop_decide').addClass('animate_in');
                     });
                 },
                 //complete: function() {
@@ -494,6 +496,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         } else {
             self.createCropperImages(parent_container, id, target, image_h).then(function() {
                 openCropRotate();
+                $('.crop_decide').addClass('active');
+        $('.crop_decide').addClass('animate_in');
             });
             //openCropRotate();
             console.log('NOT COMPLETE');
@@ -1209,9 +1213,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         ImageAdjustment.setImageEditing(true);
         //var crop_decide = $('.crop_decide').clone().insertBefore('.' + parent_container);
         //var crop_decide = $('.crop_decide').clone().insertBefore('.' + parent_container);
-        $('.crop_decide').addClass('active');
-
-        $('.crop_decide').addClass('animate_in');
+        //$('.crop_decide').addClass('active');
+        //$('.crop_decide').addClass('animate_in');
 
         $('.image_adjust_on').remove();
         if (ua.indexOf('AndroidApp') >= 0) {
