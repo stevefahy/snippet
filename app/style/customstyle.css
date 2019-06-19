@@ -2714,7 +2714,7 @@ span#header b.header_3 {
 
     100% {
         transform: translateX(0);
-        
+
     }
 }
 
@@ -3403,7 +3403,7 @@ span.after_image {
     padding-right: 15px;
     */
     /* top: -10px; */
-    right: -100vw;
+    /*right: -100vw;*/
     align-items: center;
     /* top: -60px; */
     top: 0px;
@@ -3424,7 +3424,7 @@ span.after_image {
     transform: translateZ(0);
 }
 
-.crop_decide.active {}
+
 
 .crop_decide.active {
     visibility: visible;
@@ -3529,15 +3529,15 @@ span.after_image {
 }
 
 .crop_decide .crop_accept {
-     z-index: 10000;
-     /* text-align: unset; */
-     /* margin-right: unset; */
+    z-index: 10000;
+    /* text-align: unset; */
+    /* margin-right: unset; */
 }
 
 .crop_decide .crop_cancel {
-     z-index: 1001;
-     text-align: unset;
-     margin-right: unset;
+    z-index: 1001;
+    text-align: unset;
+    margin-right: unset;
 }
 
 .loading_spinner {
@@ -3574,7 +3574,7 @@ img.graphic-icons {
     /* border-bottom-style: solid; */
     /* border-bottom-width: .5px; */
     /* border-bottom-color: #3a3a3a; */
-    
+
 }
 
 .slider_container {
@@ -3591,8 +3591,8 @@ img.graphic-icons {
 
 .slider_container.animate {
     /*animation: slide-up 7s cubic-bezier(0.19, 1, 0.22, 1);*/
-     transition: height .7s cubic-bezier(0.19, 1, 0.22, 1);
-       
+    transition: height .7s cubic-bezier(0.19, 1, 0.22, 1);
+
 }
 
 .material-icons.light {
@@ -3641,22 +3641,25 @@ img.graphic-icons {
     max-height: 0px;
     opacity: 0;
 }
-
+/*
 .crop_decide.active {
-    
-    /*animation: slide-up 7s cubic-bezier(0.19, 1, 0.22, 1);*/
-   
-   /*transition: slidecrop  .7s cubic-bezier(0.19, 1, 0.22, 1);*/
-    /* -webkit-animation: slidecrop .7s cubic-bezier(0.19, 1, 0.22, 1);*/
-      
-       transition: right .7s cubic-bezier(0.19, 1, 0.22, 1);
-
-       
+    transition: right .7s cubic-bezier(0.19, 1, 0.22, 1);
 }
-
 
 .crop_decide.animate_on {
-    right: 0;    
+    right: 0;
+}
+*/
+
+.crop_decide.animate_out {
+      -webkit-animation: slideOutRight .7s cubic-bezier(0.19, 1, 0.22, 1);
+}
+.crop_decide.animate_in {
+       will-change: transform;
+    -webkit-animation: slide-in .7s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
-
+.crop_decide.animate_on {
+    
+    right: 0px;
+}

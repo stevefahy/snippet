@@ -297,12 +297,26 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         $('.slider_container_inner').removeClass('active');
     };
 
+    var cropDecideOutEnd = function(){
+        console.log('cropDecideOutEnd');
+               // remove the animation end listener which called this function.
+        $(this).off('webkitAnimationEnd oAnimationEnd animationend ', cropDecideOutEnd);
+         $('.crop_decide').removeClass('active');
+        $('.crop_decide').removeClass('animate_out');
+    };
+
     this.removeCrop = function() {
         $('.crop_box.active').remove();
         //$('.crop_decide.active').remove();
 
         $timeout(function() {
             $('.crop_decide.active').removeClass('animate_on');
+
+            $('.crop_decide').removeClass('animate_in');
+
+            $('.crop_decide.active').addClass('animate_out'); 
+            $(".crop_decide.animate_out").on('webkitAnimationEnd oAnimationEnd animationend ', cropDecideOutEnd);
+            
 
         }, 0);
 
@@ -1196,6 +1210,9 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         //var crop_decide = $('.crop_decide').clone().insertBefore('.' + parent_container);
         //var crop_decide = $('.crop_decide').clone().insertBefore('.' + parent_container);
         $('.crop_decide').addClass('active');
+
+        $('.crop_decide').addClass('animate_in');
+
         $('.image_adjust_on').remove();
         if (ua.indexOf('AndroidApp') >= 0) {
             Android.changeTopBar('#5E5E5E');
@@ -1204,7 +1221,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         $('.crop_decide').on('webkitTransitionEnd oTransitionEnd transitionend ', cropdecideAnimEnd);
 
         $timeout(function() {
-            $('.crop_decide').addClass('animate_on');
+            //$('.crop_decide').addClass('animate_on');
             cropdecideAnim();
         }, 0);
 
