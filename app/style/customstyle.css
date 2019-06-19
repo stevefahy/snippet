@@ -3670,7 +3670,7 @@ img.graphic-icons {
 }
 .crop_decide.animate_in {
       
-    -webkit-animation: slide-in .4s ease-in;
+    -webkit-animation: slide-in .4s cubic-bezier(0.550, 0.085, 0.680, 0.530);
 
 
 }
