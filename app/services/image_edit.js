@@ -86,7 +86,6 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
     var hideImages = function(parent_container, id) {
-        //var deferred = $q.defer();
         // If filtered image exists
         if ($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length > 0) {
             $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').addClass('hide');
@@ -94,10 +93,6 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         }
         $('#crop_src').removeClass('hide');
         $('.crop_bg').removeClass('hide');
-        //$('.pending').addClass('active');
-        //$('.pending').removeClass('pending');
-        // deferred.resolve();
-        //return deferred.promise;
     };
 
     // Methods
@@ -184,14 +179,22 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                                 var ia = $('.image_adjust').clone();
                                 $(ia).attr('id', 'image_adjust_' + id);
                                 ia.insertBefore('.' + parent_container + ' #cropper_' + id);
-                                var edit_btns = "<div class='image_editor'><div class='image_edit_btns'><div class='' onclick='testImage(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_tune'>adjust</i></div>  <div class='' onclick='adjustImage(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_tune'>tune</i></div><div class='' onclick='filterImage(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_filter'>filter</i></div><div class='' onclick='openImageSize(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_crop' >crop</i></div><div class='close_image_edit' onclick='closeEdit(event,\"" + id + "\")'><i class='material-icons image_edit' id='ie_close'>&#xE14C;</i></div></div></div>";
-                                $('#image_adjust_' + id).append(edit_btns);
-                                // Adjust marging top if this is the topmost image.
-                                if ($('.' + parent_container + ' #cropper_' + id).attr('class').indexOf('no_image_space') >= 0) {
-                                    $('#image_adjust_' + id).addClass('no_image_space_adjust');
-                                }
-                                // set this menu to active
-                                $('#image_adjust_' + id).addClass('image_adjust_on');
+                                // Import the edit_btns html.
+                                var edit_btns = $sce.getTrustedResourceUrl('/views/edit_btns.html');
+                                $templateRequest(edit_btns).then(function(template) {
+                                    var eb = $('#image_adjust_' + id).append(template);
+                                    $(eb).find('.ti').attr("onclick", 'testImage(event, \'' + id + '\')');
+                                    $(eb).find('.ai').attr("onclick", 'adjustImage(event, \'' + id + '\')');
+                                    $(eb).find('.fi').attr("onclick", 'filterImage(event, \'' + id + '\')');
+                                    $(eb).find('.ois').attr("onclick", 'openImageSize(event, \'' + id + '\')');
+                                    $(eb).find('.close_image_edit').attr("onclick", 'close_image_edit(event, \'' + id + '\')');
+                                    // Adjust marging top if this is the topmost image.
+                                    if ($('.' + parent_container + ' #cropper_' + id).attr('class').indexOf('no_image_space') >= 0) {
+                                        $('#image_adjust_' + id).addClass('no_image_space_adjust');
+                                    }
+                                    // set this menu to active
+                                    $('#image_adjust_' + id).addClass('image_adjust_on');
+                                });
                             }
                         });
                     }
@@ -201,9 +204,9 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
     this.makeCrop = function(e, id) {
-        console.log(id);
         e.preventDefault();
         e.stopPropagation();
+        // Change the top color on android.
         if (ua.indexOf('AndroidApp') >= 0) {
             Android.changeTopBar('#F0F0F0');
         }
@@ -282,42 +285,34 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             // Animate the cropped image onto screen.
             $(cropper).stop();
             $(cropper).animate({ height: anim_h }, {
-                duration: 300,
-                easing: "easeOutExpo"
+                duration: 700,
+                easing: "easeOutQuad"
             });
         });
     };
 
     this.removeSlider = function() {
-        //if ($('.rzslider').length > 0) {
-        //    $('.rzslider').remove();
-        //}
         $('.slider_container').css('height', '');
         $('.slider_container_inner').empty();
         $('.slider_container_inner').removeClass('active');
     };
 
-    var cropDecideOutEnd = function(){
-        console.log('cropDecideOutEnd');
-               // remove the animation end listener which called this function.
-        $(this).off('webkitAnimationEnd oAnimationEnd animationend ', cropDecideOutEnd);
-         $('.crop_decide').removeClass('active');
-        $('.crop_decide').removeClass('animate_out');
+    var image_size_menu_animate_out_end = function() {
+        // remove the animation end listener which called this function.
+        $(this).off('webkitAnimationEnd oAnimationEnd animationend ', image_size_menu_animate_out_end);
+        $('.image_size_menu').removeClass('active');
+        $('.image_size_menu').removeClass('animate_out');
     };
 
     this.removeCrop = function() {
         $('.crop_box.active').remove();
-        //$('.crop_decide.active').remove();
-
+        // Remove image_size_menu.
         $timeout(function() {
-            $('.crop_decide.active').removeClass('animate_on');
-
-            $('.crop_decide').removeClass('animate_in');
-
-            $('.crop_decide.active').addClass('animate_out'); 
-            $(".crop_decide.animate_out").on('webkitAnimationEnd oAnimationEnd animationend ', cropDecideOutEnd);
-            
-
+            $('.image_size_menu.active').removeClass('animate_on');
+            $('.image_size_menu').removeClass('animate_in');
+            // Animate offscreen
+            $('.image_size_menu.active').addClass('animate_out');
+            $(".image_size_menu.animate_out").on('webkitAnimationEnd oAnimationEnd animationend ', image_size_menu_animate_out_end);
         }, 0);
 
         if ($('.temp_canvas_filtered').length > 0) {
@@ -334,11 +329,10 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         e.preventDefault();
         e.stopPropagation();
         Debug.show();
-
+        // Change the top color on android.
         if (ua.indexOf('AndroidApp') >= 0) {
             Android.changeTopBar('#F0F0F0');
         }
-
         var parent_container = ImageAdjustment.getImageParent();
         var id = ImageAdjustment.getImageId();
         var cropper = $('.' + parent_container + ' #cropper_' + id);
@@ -358,19 +352,16 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             anim_h = (io.nat_height / scale).toFixed(2);
             anim_w = io.nat_width;
         }
-        console.log($(cropper).outerHeight().toFixed(2) + ' : ' + anim_h);
         self.removeCrop();
         self.removeSlider();
         ImageAdjustment.setImageEditing(false);
         var cropper_h = $(cropper).outerHeight().toFixed(2);
         if (cropper_h != anim_h) {
             $(cropper).stop();
-
             // Animate back to the existing image (original or adjusted).
-
             $(cropper).animate({ height: anim_h }, {
-                duration: 300,
-                easing: "easeOutExpo"
+                duration: 700,
+                easing: "easeOutQuad"
             });
         }
     };
@@ -449,7 +440,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
     this.buildImageSize = function(parent_container, id, target) {
-        
+
 
 
 
@@ -486,28 +477,28 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 easing: "easeOutQuad",
                 start: function() {
                     self.createCropperImages(parent_container, id, target, image_h).then(function() {
-                   $('.crop_decide').addClass('active');
-        $('.crop_decide').addClass('animate_in');
+                        $('.image_size_menu').addClass('active');
+                        $('.image_size_menu').addClass('animate_in');
                     });
                 },
                 complete: function() {
                     console.log('COMPLETE');
-                          openCropRotate();
-                       
+                    openCropRotate();
+
                     //openCropRotate();
                 }
             });
         } else {
             self.createCropperImages(parent_container, id, target, image_h).then(function() {
                 openCropRotate();
-                $('.crop_decide').addClass('active');
-        $('.crop_decide').addClass('animate_in');
+                $('.image_size_menu').addClass('active');
+                $('.image_size_menu').addClass('animate_in');
             });
             //openCropRotate();
             console.log('NOT COMPLETE');
         }
 
-    
+
     };
 
     var sliderAnimEnd = function() {
@@ -1169,7 +1160,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var id = ImageAdjustment.getImageId();
 
         //$('.' + parent_container).prev('.crop_decide').find('#make_crop').attr("onclick", 'makeCrop(event, \'' + id + '\')');
-        $('.crop_decide').find('#make_crop').attr("onclick", 'makeCrop(event, \'' + id + '\')');
+        $('.image_size_menu').find('#make_crop').attr("onclick", 'makeCrop(event, \'' + id + '\')');
         // Create canvas with all current adjustments (uncropped).
         var image = $('.' + parent_container + ' #image_' + id)[0];
         var target = self.imageToCanvas(image);
@@ -1201,11 +1192,11 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
     var cropdecideAnimEnd = function() {
-        if ($('.crop_decide.animate_on').length > 0) {
+        if ($('.image_size_menu.animate_on').length > 0) {
             //cropdecideAnim();
 
         } else {
-            $('.crop_decide').removeClass('active');
+            $('.image_size_menu').removeClass('active');
         }
     };
 
@@ -1223,11 +1214,12 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         //$('.crop_decide').addClass('animate_in');
 
         $('.image_adjust_on').remove();
+        // Change the top color on android.
         if (ua.indexOf('AndroidApp') >= 0) {
             Android.changeTopBar('#5E5E5E');
         }
 
-        $('.crop_decide').on('webkitTransitionEnd oTransitionEnd transitionend ', cropdecideAnimEnd);
+        $('.image_size_menu').on('webkitTransitionEnd oTransitionEnd transitionend ', cropdecideAnimEnd);
 
         $timeout(function() {
             //$('.crop_decide').addClass('animate_on');
