@@ -96,7 +96,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         $('.crop_bg').removeClass('hide');
         //$('.pending').addClass('active');
         //$('.pending').removeClass('pending');
-       // deferred.resolve();
+        // deferred.resolve();
         //return deferred.promise;
     };
 
@@ -362,6 +362,10 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
     this.createCropperImages = function(parent_container, id, target, height) {
+        var deferred = $q.defer();
+
+
+
         $('.' + parent_container + ' #image_' + id).addClass('hide');
         var new_canvas_src = ImageAdjustment.cloneCanvas(target);
         var new_canvas_bg = ImageAdjustment.cloneCanvas(target);
@@ -422,12 +426,12 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 //Resize.makeResizableDiv('.resizers', '.crop_area', '#crop_src', original_image, crop_data, id);
 
                 hideImages(parent_container, id);
-
-               //openCropRotate();
+                deferred.resolve();
+                //openCropRotate();
             });
         });
 
-
+        return deferred.promise;
     };
 
     this.buildImageSize = function(parent_container, id, target) {
@@ -464,15 +468,21 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 duration: 700,
                 easing: "easeOutQuad",
                 start: function() {
-                    self.createCropperImages(parent_container, id, target, image_h);
+                    self.createCropperImages(parent_container, id, target, image_h).then(function() {
+                        openCropRotate();
+                    });
                 },
-                complete: function() {
-                    openCropRotate();
-                }
+                //complete: function() {
+                //    console.log('COMPLETE');
+                    //openCropRotate();
+                //}
             });
         } else {
-            self.createCropperImages(parent_container, id, target, image_h);
-            openCropRotate();
+            self.createCropperImages(parent_container, id, target, image_h).then(function() {
+                openCropRotate();
+            });
+            //openCropRotate();
+            console.log('NOT COMPLETE');
         }
     };
 
@@ -529,7 +539,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         }, 0);
     };
 
-    var openRotateSlider = function(){
+    var openRotateSlider = function() {
         var parent_container = ImageAdjustment.getImageParent();
         var id = ImageAdjustment.getImageId();
         // Only open if it has not already been opened.
@@ -560,11 +570,11 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
     this.openCropRotate = function(e) {
-        if(e != undefined){
+        if (e != undefined) {
             e.preventDefault();
-        e.stopPropagation();
+            e.stopPropagation();
         }
-        
+
         var parent_container = ImageAdjustment.getImageParent();
         var id = ImageAdjustment.getImageId();
         //var crop = $('.crop_box').clone().prependTo('.' + parent_container + ' #cropper_' + id);
@@ -1127,49 +1137,49 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         return new_h;
     };
 
-    var cropdecideAnim = function(){
+    var cropdecideAnim = function() {
         console.log('cropdecideAnim');
         var deferred = $q.defer();
-            var promises = [];
-            var parent_container = ImageAdjustment.getImageParent();
-            var id = ImageAdjustment.getImageId();
+        var promises = [];
+        var parent_container = ImageAdjustment.getImageParent();
+        var id = ImageAdjustment.getImageId();
 
-            //$('.' + parent_container).prev('.crop_decide').find('#make_crop').attr("onclick", 'makeCrop(event, \'' + id + '\')');
-            $('.crop_decide').find('#make_crop').attr("onclick", 'makeCrop(event, \'' + id + '\')');
-            // Create canvas with all current adjustments (uncropped).
-            var image = $('.' + parent_container + ' #image_' + id)[0];
-            var target = self.imageToCanvas(image);
-            var source = self.imageToCanvas(image);
-            var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
-            // All adjustements less crop - Filter target, Filter source, Sharpen target.
-            if (ia != undefined) {
-                // Dont crop the image.
-                ia.crop = undefined;
-                // Dont rotate the image
-                ia.rotate = undefined;
-                // Dont add perspective to the image
-                ia.perspective = undefined;
-                var prom = ImageAdjustment.applyFilters(source, ia).then(function(result) {
-                    target.width = result.width;
-                    target.height = result.height;
-                    var ctx = target.getContext('2d');
-                    ctx.drawImage(result, 0, 0);
-                    deferred.resolve();
-                });
-                promises.push(prom);
-            }
-            $q.all(promises).then(function() {
-                //self.buildCrop(parent_container, id, target);
-                self.buildImageSize(parent_container, id, target);
+        //$('.' + parent_container).prev('.crop_decide').find('#make_crop').attr("onclick", 'makeCrop(event, \'' + id + '\')');
+        $('.crop_decide').find('#make_crop').attr("onclick", 'makeCrop(event, \'' + id + '\')');
+        // Create canvas with all current adjustments (uncropped).
+        var image = $('.' + parent_container + ' #image_' + id)[0];
+        var target = self.imageToCanvas(image);
+        var source = self.imageToCanvas(image);
+        var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
+        // All adjustements less crop - Filter target, Filter source, Sharpen target.
+        if (ia != undefined) {
+            // Dont crop the image.
+            ia.crop = undefined;
+            // Dont rotate the image
+            ia.rotate = undefined;
+            // Dont add perspective to the image
+            ia.perspective = undefined;
+            var prom = ImageAdjustment.applyFilters(source, ia).then(function(result) {
+                target.width = result.width;
+                target.height = result.height;
+                var ctx = target.getContext('2d');
+                ctx.drawImage(result, 0, 0);
                 deferred.resolve();
             });
-            return deferred.promise;
-        };
+            promises.push(prom);
+        }
+        $q.all(promises).then(function() {
+            //self.buildCrop(parent_container, id, target);
+            self.buildImageSize(parent_container, id, target);
+            deferred.resolve();
+        });
+        return deferred.promise;
+    };
 
     var cropdecideAnimEnd = function() {
         if ($('.crop_decide.animate_on').length > 0) {
             //cropdecideAnim();
-            
+
         } else {
             $('.crop_decide').removeClass('active');
         }
