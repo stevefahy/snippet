@@ -4,14 +4,17 @@
 
 cardApp.service('Slider', ['$window', '$rootScope', 'ImageAdjustment', function($window, $rootScope, ImageAdjustment) {
 
-    this.slider_sharpen = '<rzslider rz-slider-model="slider_settings.sharpen.amount" rz-slider-options="slider_settings.sharpen.options" </rzslider>';
+    //this.slider_sharpen = '<rzslider rz-slider-model="slider_settings.sharpen.amount" rz-slider-options="slider_settings.sharpen.options" </rzslider>';
+    
+    this.slider_sharpen = '<div class="slider_outer" id="s_sharpen"><div class="slider_s_icon"><i class="material-icons light">details</i></div><rzslider rz-slider-model="slider_settings.sharpen.amount" rz-slider-options="slider_settings.sharpen.options"></rzslider></div>';
+
     this.slider_rotate = '<div class="slider_outer" id="s_rotate"><div class="slider_r_icon"><i class="material-icons light rotate">autorenew</i></div><rzslider rz-slider-model="slider_settings.rotate.amount" rz-slider-options="slider_settings.rotate.options"></rzslider></div>';
     this.slider_perspective_v = '<div class="slider_outer" id="s_perspective_v"><div class="slider_p_v_icon"><img class="graphic-icons" src="/assets/images/perspective_w.png"></div><rzslider rz-slider-model="slider_settings.perspective_v.amount" rz-slider-options="slider_settings.perspective_v.options" id="slider_p_v"></rzslider></div>';
     this.slider_perspective_h = '<div class="slider_outer" id="s_perspective_h"><div class="slider_p_h_icon"><img class="graphic-icons" src="/assets/images/perspective_w.png"></div><rzslider rz-slider-model="slider_settings.perspective_h.amount" rz-slider-options="slider_settings.perspective_h.options" id="slider_p_h"></rzslider></div>';
     this.slider_test = '<rzslider rz-slider-model="slider_settings.test.amount" rz-slider-options="slider_settings.test.options"></rzslider>';
 
     $rootScope.slider_touch_settings = {
-            perspective_v: {
+        perspective_v: {
             amount: 0,
             reset: 0,
             options: {
@@ -69,9 +72,9 @@ cardApp.service('Slider', ['$window', '$rootScope', 'ImageAdjustment', function(
                 step: 0.001,
                 precision: 1,
                 id: 'slider-idt',
-                    translate: function(value) {
-      return value + '&deg;';
-    },
+                translate: function(value) {
+                    return value + '&deg;';
+                },
                 onStart: function() {
                     //console.log('on start ' + amount);
                 },
@@ -137,7 +140,7 @@ cardApp.service('Slider', ['$window', '$rootScope', 'ImageAdjustment', function(
             amount: 0,
             reset: 0,
             options: {
-                floor:-2,
+                floor: -2,
                 ceil: 2,
                 step: 0.00001,
                 precision: 5,

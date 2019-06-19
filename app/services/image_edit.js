@@ -187,7 +187,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                                     $(eb).find('.ai').attr("onclick", 'adjustImage(event, \'' + id + '\')');
                                     $(eb).find('.fi').attr("onclick", 'filterImage(event, \'' + id + '\')');
                                     $(eb).find('.ois').attr("onclick", 'openImageSize(event, \'' + id + '\')');
-                                    $(eb).find('.close_image_edit').attr("onclick", 'close_image_edit(event, \'' + id + '\')');
+                                    $(eb).find('.close_image_edit').attr("onclick", 'closeImageEdit(event, \'' + id + '\')');
                                     // Adjust marging top if this is the topmost image.
                                     if ($('.' + parent_container + ' #cropper_' + id).attr('class').indexOf('no_image_space') >= 0) {
                                         $('#image_adjust_' + id).addClass('no_image_space_adjust');
@@ -1311,6 +1311,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                     data.last_position = ia.sharpen;
                 }
             }
+            // addSlider(Slider.slider_perspective_v, parent_container, id, data_p_v);
             addSlider(Slider.slider_sharpen, parent_container, id, data);
         }
         var target = self.imageToCanvas(image);
@@ -1516,7 +1517,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         return deferred.promise;
     };
 
-    this.closeEdit = function(e, id) {
+    this.closeImageEdit = function(e, id) {
         e.stopPropagation();
         var parent_container = getParentContainer(e.target);
         var cropper = $('.' + parent_container + ' #cropper_' + id);

@@ -1,7 +1,7 @@
 cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$q', '$filter', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', 'ImageEdit', '$compile', 'ImageAdjustment', 'Keyboard', 'Scroll', '$animate', function($scope, $rootScope, $location, $http, $window, $q, $filter, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, ImageEdit, $compile, ImageAdjustment, Keyboard, Scroll, $animate) {
     openImageSize = ImageEdit.openImageSize;
     editImage = ImageEdit.editImage;
-    closeEdit = ImageEdit.closeEdit;
+    closeImageEdit = ImageEdit.closeImageEdit;
     filterImage = ImageEdit.filterImage;
     closeFilters = ImageEdit.closeFilters;
     filterClick = ImageEdit.filterClick;
