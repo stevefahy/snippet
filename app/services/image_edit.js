@@ -206,6 +206,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     this.makeCrop = function(e, id) {
         e.preventDefault();
         e.stopPropagation();
+        //var deferred = $q.defer();
+        //var promises = [];
         // Change the top color on android.
         if (ua.indexOf('AndroidApp') >= 0) {
             Android.changeTopBar('#F0F0F0');
@@ -268,35 +270,58 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             self.removeCrop();
             // remove the slider
             self.removeSlider();
+
+            // Convert the cropped canvas to an image an place it onscreen.
+            var p1 = self.canvasToImage(canvas, id).then(function(image) {
+                $('.canvas_temp').remove();
+                var img_new = $(image).prependTo('.content_cnv #cropper_' + id);
+                $('.loading_spinner').remove();
+                ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'crop', crop_data);
+                ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'rotate', $rootScope.slider_settings.rotate.amount);
+                ImageAdjustment.setImageAdjusted(true);
+                console.log('canvas to image');
+            });
+            //promises.push(prom);
+
+
             // Animate the cropped image onto screen.
             $(cropper).stop();
             console.log(anim_h);
-            $(cropper).animate({ height: anim_h }, {
+            var p2 = $(cropper).animate({ height: anim_h }, {
                 duration: 700,
                 easing: "easeOutQuad",
                 start: function() {
-                    // Convert the cropped canvas to an image an place it onscreen.
-                    self.canvasToImage(canvas, id).then(function(image) {
-                        $('.canvas_temp').remove();
-                        var img_new = $(image).prependTo('.content_cnv #cropper_' + id);
-                        $('.loading_spinner').remove();
-                        ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'crop', crop_data);
-                        ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'rotate', $rootScope.slider_settings.rotate.amount);
-                        ImageAdjustment.setImageAdjusted(true);
-                       
-                    });
+                    console.log('anim start');
+
+
 
 
                 },
-                complete: function () {
-                     // Unset the height of the cropper.
-                        $('.content_cnv #cropper_' + id).css('height', '');
-                        // Save
-                        ImageAdjustment.setImageEditing(false);
-                        saveCropper(cropper);
+                complete: function() {
+                    console.log('anim end');
+                
                 }
             });
+
+            $.when(p1, p2).then(function() {
+                // all are done here
+                console.log('done');
+                    // Unset the height of the cropper.
+                    $('.content_cnv #cropper_' + id).css('height', '');
+                    // Save
+                    ImageAdjustment.setImageEditing(false);
+                    saveCropper(cropper);
+            });
+
         });
+        //promises.push(prom1);
+
+
+
+        //$q.all(promises).then(function() {
+        //    console.log('all promises');
+        //});
+        //return deferred.promise;
     };
 
     this.removeSlider = function() {
