@@ -398,7 +398,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
     this.applyFilters = function(source, filters) {
         var deferred = $q.defer();
         if (filters == undefined) {
-            filters = { sharpen: undefined, filter: undefined, rotate: undefined, crop: undefined, perspective: undefined, flip_v: undefined, flip_h: undefined };
+            filters = { sharpen: undefined, filter: undefined, rotate: undefined, crop: undefined, perspective: undefined, flip_v: undefined, flip_h: undefined, rotated: undefined };
         }
         // Sharpen from source first, Crop last. Pass each adjustment to the next filter.
         self.filter(source, filters.filter)
