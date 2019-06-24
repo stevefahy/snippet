@@ -419,8 +419,9 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
     var animateImageSizeMenuIn = function() {
-        $('.image_size_menu').addClass('active');
-        $('.image_size_menu').addClass('animate_in');
+        $('.image_size_menu').addClass('animate_in active');
+        //$('.image_size_menu').addClass('active');
+        
     };
 
     this.buildImageSize = function(parent_container, id, target) {
@@ -435,7 +436,6 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var init_h = $(cropper).outerHeight().toFixed(2);
         // If the scaled original image size is different to the current size.
         if (image_h != init_h) {
-            //animateImageSizeMenuIn();
             // Set the cropper height to its current height so that it can be animated.
             $(cropper).css('height', init_h);
             $(cropper).stop();
@@ -444,7 +444,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 duration: 700,
                 easing: "easeOutQuad",
                 start: function() {
-                    animateImageSizeMenuIn();
+                    //animateImageSizeMenuIn();
                     self.createCropperImages(parent_container, id, target, image_h).then(function() {
                         
                     });
@@ -454,7 +454,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 }
             });
         } else {
-            animateImageSizeMenuIn();
+            //animateImageSizeMenuIn();
             self.createCropperImages(parent_container, id, target, image_h).then(function() {
                 openCropRotate();
                 
@@ -806,24 +806,31 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             promises.push(prom);
         }
         $q.all(promises).then(function() {
+            animateImageSizeMenuIn();
             self.buildImageSize(parent_container, id, target);
             deferred.resolve();
         });
         return deferred.promise;
     };
 
+    var t0;
+    var t1;
+
     this.openImageSize = function(e, id) {
-        Debug.hide();
+        t0 = performance.now();
+
         var parent_container = getParentContainer(e.target);
         ImageAdjustment.setImageParent(parent_container);
         ImageAdjustment.setImageId(id);
         ImageAdjustment.setImageEditing(true);
+        imageSizeMenuOpen();
+        Debug.hide();
         $('.image_adjust_on').remove();
         // Change the top color on android.
         if (ua.indexOf('AndroidApp') >= 0) {
             Android.changeTopBar('#5E5E5E');
         }
-        imageSizeMenuOpen();
+        
     };
 
     this.filterClick = function(e, button, id, filter) {

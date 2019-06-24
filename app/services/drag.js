@@ -27,7 +27,7 @@ cardApp.service('Drag', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Us
             pos3 = 0,
             pos4 = 0;
         elmnt.onmousedown = dragMouseDown;
-        elmnt.addEventListener("touchstart", dragMouseDown, false);
+        elmnt.addEventListener("touchstart", dragMouseDown,  {passive: true});
     };
 
     function dragMouseDown(e) {
