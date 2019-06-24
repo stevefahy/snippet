@@ -11,7 +11,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     makeCrop = ImageEdit.makeCrop;
     openCropRotate = ImageEdit.openCropRotate;
     openPerspective = ImageEdit.openPerspective;
-    //openRotate = ImageEdit.openRotate;
     flip = ImageEdit.flip;
     rotateImage = ImageEdit.rotateImage;
     sliderRotateChange = ImageEdit.sliderRotateChange;
@@ -33,9 +32,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.checkCursor = Format.checkCursor;
     $scope.test_card = [];
 
+    // leaving controller.
     $scope.$on('$destroy', function() {
-        //leaving controller.
-        //
         // Reset image editing to false
         ImageAdjustment.setImageEditing(false);
         $('.image_adjust_on').remove();
@@ -790,38 +788,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 }
             });
     };
-    var total_h = 0;
+
     addSlider = function($el, parent_container, id, data) {
-        //console.log($el);
         $rootScope.slider_settings[data.type].amount = data.last_position;
         var t = $compile($el)($scope);
-
-        //var s = $(t).insertAfter('.' + parent_container + ' #cropper_' + id);
         var s = $('.slider_container_inner').append(t);
-        //var new_h = 54;//$(t).height();
-        //total_h = total_h + new_h;
-        //console.log($(t).outerHeight());
-        //s.removeClass('active');
         s.addClass('active');
-
-        /*
-        $('.slider_container').removeClass('animate').delay(50).queue(
-            function(next) {
-                $(this).addClass('animate');
-                next();
-            }
-        );
-        */
         $('.slider_container').addClass('animate');
-        $timeout(function() {
-            var currentHeight = $('.slider_container_inner').outerHeight();
-            console.log(currentHeight);
-
-            $('.slider_container').css('height', currentHeight);
-        }, 0);
-
-        //$('.slider_container').removeClass('animate');
-        //$('.slider_container').addClass('animate');
+        var currentHeight = $('.slider_container_inner').outerHeight();
+        $('.slider_container').css('height', currentHeight);
         s.removeClass('hide');
     };
 

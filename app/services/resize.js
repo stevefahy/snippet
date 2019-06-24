@@ -1,6 +1,7 @@
 //
 // Resize Service
 //
+
 cardApp.service('Resize', ['Drag', 'ImageAdjustment', 'Scroll', function(Drag, ImageAdjustment, Scroll) {
 
     var ua = navigator.userAgent;
@@ -33,6 +34,7 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', 'Scroll', function(Drag, I
     };
 
     this.makeResizableDiv = function(cropping_box, cropping_area, cropping_source, cropping_original_image, crop_data, id) {
+
         var crop_box = document.querySelector(cropping_box);
         var resizers = document.querySelectorAll(cropping_box + ' .resizer');
         var crop_area = document.querySelector(cropping_area);
@@ -65,10 +67,8 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', 'Scroll', function(Drag, I
             previously_cropped = true;
         }
 
-
-  //$('.' + parent_container + ' #cropper_' + id + ' .resizable').addClass('active');
         $('.' + ImageAdjustment.getImageParent() + ' #cropper_' + ImageAdjustment.getImageId() + ' .resizable').addClass('active');
-        
+
         if (previously_cropped) {
             // Get scale ratio of the image (as displayed which may be scaled to fit compared to the original image).
             var scale = ImageAdjustment.getScale(original_image, crop_source);
@@ -100,8 +100,6 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', 'Scroll', function(Drag, I
         // Set the clip path for the crop area.
         $(crop_area)[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
 
-      
-
         for (var i = 0, len = resizers.length; i < len; i++) {
             const currentResizer = resizers[i];
             if (!mobile) {
@@ -117,20 +115,17 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', 'Scroll', function(Drag, I
                 $(crop_box).addClass('active_resize');
                 // Stop Drag
                 Drag.stopDragElement();
-
                 var cropper_loc = $(crop_box).closest('.cropper_cont');
                 offset_top = $(cropper_loc).offset().top;
                 offset_left = $(cropper_loc).offset().left;
-console.log(offset_left);
-                if(offset_left > 0){
-                   bound_r = crop_source.getBoundingClientRect().right -  offset_left; 
+                if (offset_left > 0) {
+                    bound_r = crop_source.getBoundingClientRect().right - offset_left;
                 }
                 bound_r = crop_source.getBoundingClientRect().right;
                 bound_l = crop_source.getBoundingClientRect().left;
                 bound_b = crop_source.getBoundingClientRect().bottom - offset_top;
                 bound_w = $(crop_source).outerWidth();
                 bound_h = $(crop_source).outerHeight();
-console.log(bound_r);
                 original_width = parseFloat(getComputedStyle(crop_box, null).getPropertyValue('width').replace('px', ''));
                 original_height = parseFloat(getComputedStyle(crop_box, null).getPropertyValue('height').replace('px', ''));
                 original_x = crop_box.getBoundingClientRect().left;

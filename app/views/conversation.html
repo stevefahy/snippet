@@ -69,7 +69,9 @@
             </div>
         </div>
     </div>
-    <div class="slider_container"><div class="slider_container_inner"></div></div>
+    <div class="slider_container">
+        <div class="slider_container_inner"></div>
+    </div>
     <div class="card_create_container" ng-if="isMember" ng-include src="'/views/card_create.html'"></div>
     <div class="footerinc" ng-if="feed" ng-include src="'/views/footer.html'"></div>
     <div class="image_adjust"></div>
@@ -84,33 +86,32 @@
     </div>
     <!--<div class="crop_decide">-->
     <div class="image_size_menu">
-            <div class="crop_rotate">
-                <a href="" onclick="rotateImage(event, 'left')"><i class="material-icons cd" id="mi-crop_rotate">rotate_left</i></a>
-            </div>
-            <div class="crop_rotate">
-                <a href="" onclick="rotateImage(event, 'right')"><i class="material-icons cd" id="mi-crop_rotate">rotate_right</i></a>
-            </div>
-            <div class="crop_flip_v">
-                <a href="" onclick="flip(event, 'v')"><i class="material-icons cd" id="mi-crop_flip_v">flip</i></a>
-            </div>
-            <div class="crop_flip_h">
-                <a href="" onclick="flip(event, 'h')"><i class="material-icons cd" id="mi-crop_flip_h">flip</i></a>
-            </div>
-            <div class="crop_rotate">
-                <a href="" onclick="openCropRotate(event)"><i class="material-icons rotate cd" id="mi-crop_rotate">autorenew</i></a>
-            </div>
-            <div class="crop_rotate">
-                <a href="" onclick="openPerspective(event)"><img class="graphic-icons" src="/assets/images/perspective_w.png"></a>
-            </div>
-            <div class="crop_accept">
-                <a id="make_crop" href="" onclick="makeCrop(event)"><i class="material-icons cd mi-done_crop">&#xE876;</i></a>
-            </div>
-            <div class="crop_cancel">
-                <a href="" onclick="cancelCrop(event)"><i class="material-icons cd " id="mi-clear">&#xE14C;</i></a>
-            </div>
+        <div class="crop_rotate">
+            <a href="" onclick="rotateImage(event, 'left')"><i class="material-icons cd" id="mi-crop_rotate">rotate_left</i></a>
         </div>
+        <div class="crop_rotate">
+            <a href="" onclick="rotateImage(event, 'right')"><i class="material-icons cd" id="mi-crop_rotate">rotate_right</i></a>
+        </div>
+        <div class="crop_flip_v">
+            <a href="" onclick="flip(event, 'v')"><i class="material-icons cd" id="mi-crop_flip_v">flip</i></a>
+        </div>
+        <div class="crop_flip_h">
+            <a href="" onclick="flip(event, 'h')"><i class="material-icons cd" id="mi-crop_flip_h">flip</i></a>
+        </div>
+        <div class="crop_rotate">
+            <a href="" onclick="openCropRotate(event)"><i class="material-icons rotate cd" id="mi-crop_rotate">autorenew</i></a>
+        </div>
+        <div class="crop_rotate">
+            <a href="" onclick="openPerspective(event)"><img class="graphic-icons" src="/assets/images/perspective_w.png"></a>
+        </div>
+        <div class="crop_accept">
+            <a id="make_crop" href="" onclick="makeCrop(event)"><i class="material-icons cd mi-done_crop">&#xE876;</i></a>
+        </div>
+        <div class="crop_cancel">
+            <a href="" onclick="cancelCrop(event)"><i class="material-icons cd " id="mi-clear">&#xE14C;</i></a>
+        </div>
+    </div>
     <div class="crop_box">
-        
         <div class="crop_area"></div>
         <div class="resizable">
             <div class="crop_adjust resizers" id="crop_adjust">

@@ -357,11 +357,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         if (rotated == 90 || rotated == 270) {
             nat_w = original_image.naturalHeight;
         }
-        //var window_w = $(window).width();
-        //var scale = nat_w / window_w;
-        //var current_w = original_image.width;
         var current_w = $(original_image).width();
-        console.log(current_w);
         var scale = nat_w / current_w;
         return scale;
     };
@@ -785,7 +781,6 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             [Number(hi_w), Number(hi_h)],
             [0, Number(hi_h)]
         ];
-        //var p_start = { p_s: p_s, p_x: p_x, p_s_hi: p_s_hi, p_x_hi: p_x_hi };
         deferred.resolve();
         return deferred.promise;
     };

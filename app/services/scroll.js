@@ -10,7 +10,6 @@ cardApp.service('Scroll', function() {
 
     this.disable = function(target) {
         $(target).css('overflow-y', 'hidden');
-        //$(target).css('overflow-x', 'visible');
     };
 
 });
