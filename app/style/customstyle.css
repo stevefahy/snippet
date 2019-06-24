@@ -3556,6 +3556,7 @@ img.graphic-icons {
 
 .slider_container.animate {
     transition: height .7s cubic-bezier(0.19, 1, 0.22, 1);
+    /*transition: height .7s cubic-bezier(0.550, 0.085, 0.680, 0.530);*/
 }
 
 .material-icons.light {
@@ -3608,5 +3609,6 @@ img.graphic-icons {
 }
 
 .image_size_menu.animate_in {
-    -webkit-animation: slide-in .6s cubic-bezier(0.550, 0.085, 0.680, 0.530);
+    -webkit-animation: slide-in .5s cubic-bezier(0.19, 1, 0.22, 1);
+    /*cubic-bezier(0.1, 0.085, 0.680, 0.530);*/
 }

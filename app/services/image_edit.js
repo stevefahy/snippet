@@ -435,6 +435,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var init_h = $(cropper).outerHeight().toFixed(2);
         // If the scaled original image size is different to the current size.
         if (image_h != init_h) {
+            //animateImageSizeMenuIn();
             // Set the cropper height to its current height so that it can be animated.
             $(cropper).css('height', init_h);
             $(cropper).stop();
@@ -443,8 +444,9 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 duration: 700,
                 easing: "easeOutQuad",
                 start: function() {
+                    animateImageSizeMenuIn();
                     self.createCropperImages(parent_container, id, target, image_h).then(function() {
-                        animateImageSizeMenuIn();
+                        
                     });
                 },
                 complete: function() {
@@ -452,9 +454,10 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 }
             });
         } else {
+            animateImageSizeMenuIn();
             self.createCropperImages(parent_container, id, target, image_h).then(function() {
                 openCropRotate();
-                animateImageSizeMenuIn();
+                
             });
         }
     };
