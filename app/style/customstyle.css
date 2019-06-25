@@ -3159,7 +3159,7 @@ span.after_image {
     overflow-anchor: auto;
     /* DANGER added x 01/04/18 */
     overflow-x: hidden;
-    margin-bottom: 132px;
+    margin-bottom: 0px;
     will-change: scroll-position;
     -webkit-overflow-scrolling: touch;
 }
@@ -3529,6 +3529,9 @@ img.graphic-icons {
 }
 
 .slider_container_inner.active {
+    /* display: flex; */
+    /* padding-bottom: 86px; */
+    /* margin-bottom: -22px; */
     height: auto;
     position: relative;
     bottom: 0px;
@@ -3537,21 +3540,24 @@ img.graphic-icons {
     background-color: #5e5e5e;
     padding-bottom: 15px;
     padding-top: 15px;
-    border-top-style: solid;
-    border-top-color: #1f1f1f;
-    border-top-width: .5px;
-    box-shadow: rgba(0, 0, 0, 0.14) 0px -2px 4px 0px, rgba(0, 0, 0, 0.12) 0px -1px 10px 0px, rgba(0, 0, 0, 0.2) 0px -2px 4px -1px;
+    /* border-top-style: solid; */
+    /* border-top-color: #1f1f1f; */
+    /* border-top-width: .5px; */
+    /* box-shadow: rgba(0, 0, 0, 0.14) 0px -2px 4px 0px, rgba(0, 0, 0, 0.12) 0px -1px 10px 0px, rgba(0, 0, 0, 0.2) 0px -2px 4px -1px; */
 }
 
 .slider_container {
-    position: absolute;
-    bottom: 0px;
+    /* margin-bottom: 0px; */
+    position: relative;
+    /* bottom: 8px; */
     height: 0px;
     z-index: 100000;
     width: 100%;
     background-color: #5e5e5e;
     will-change: height;
     transform: translateZ(0);
+    /* padding-top: 15px; */
+    /* padding-bottom: 15px; */
 }
 
 .slider_container.animate {
@@ -3571,6 +3577,7 @@ img.graphic-icons {
 }
 
 .slider_r_icon {
+    float: left;
     padding-top: 15px;
     padding-right: 10px;
     padding-left: 10px;
@@ -3588,6 +3595,18 @@ img.graphic-icons {
     padding-left: 10px;
 }
 
+.slider_t_icon {
+    padding-top: 15px;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+.slider_s_icon {
+    padding-top: 15px;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
 .material-icons.rotate {
     transform: scaleX(-1);
 }
@@ -3595,8 +3614,10 @@ img.graphic-icons {
 .slider_outer {
     overflow: hidden;
     transition: max-height .2s ease-out, opacity ease-out .2s;
-    height: auto;
+    /* height: 100%; */
+    /* padding-top: 15px; */
     max-height: 100px;
+    /* padding-bottom: 15px; */
 }
 
 .animate_minimize {

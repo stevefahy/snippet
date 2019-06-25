@@ -794,10 +794,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var t = $compile($el)($scope);
         var s = $('.slider_container_inner').append(t);
         s.addClass('active');
+         $timeout(function() {
         $('.slider_container').addClass('animate');
         var currentHeight = $('.slider_container_inner').outerHeight();
         $('.slider_container').css('height', currentHeight);
         s.removeClass('hide');
+    },0);
     };
 
     addCard = function(card) {

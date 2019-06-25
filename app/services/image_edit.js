@@ -469,13 +469,17 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     var closeSlider = function(slider) {
         var slider_h = 0;
         var slider_count = $(".slider_container_inner").children().length;
+        var currentHeight = $('.slider_container_inner').outerHeight();
         for (i = 0; i < arguments.length; i++) {
             slider_h += $('.slider_container_inner #' + arguments[i]).outerHeight();
             $('.slider_container_inner #' + arguments[i]).addClass('animate_minimize');
+            //slider_h += 30;
+            //slider_container_inner
             slider_count--;
         }
         $timeout(function() {
-            var currentHeight = $('.slider_container_inner').outerHeight();
+            
+            console.log(currentHeight );
             $(".animate_minimize").on('webkitTransitionEnd oTransitionEnd transitionend ', sliderAnimEnd);
             var h = currentHeight - slider_h;
             if (slider_count < 1) {
