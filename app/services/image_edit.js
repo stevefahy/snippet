@@ -834,12 +834,14 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
     this.filterClick = function(e, button, id, filter) {
+        console.log(button + ' : ' + id + ' : ' + filter);
         var parent_container = getParentContainer(e.target);
         ImageAdjustment.setImageParent(parent_container);
         // Store the selected filter in a custom attribute.
         ImageAdjustment.setImageAdjustment(parent_container, id, 'filter', filter);
-        var source = $('.source_canvas')[0];
-        var target = $('.target_canvas')[0];
+        var source = $('.content_cnv .source_canvas')[0];
+        var target = $('.content_cnv .target_canvas')[0];
+        console.log(target);
         $(target).addClass('adjusted');
         var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
         // Restore the orignal with all adjustments.
@@ -970,8 +972,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
     this.sliderTestChange = function(value) {
-        var ctx_source = $('.source_canvas')[0].getContext('2d');
-        var ctx_target = $('.target_canvas')[0].getContext('2d');
+        var ctx_source = $('.content_cnv .source_canvas')[0].getContext('2d');
+        var ctx_target = $('.content_cnv .target_canvas')[0].getContext('2d');
         //Get data for the entire image
         var data = ctx_source.getImageData(0, 0, ctx_source.canvas.width, ctx_source.canvas.height);
         ImageManipulate.exposure2.filter(data, { amount: value });
@@ -1037,13 +1039,15 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         $('.filters_active').remove();
         self.removeSlider();
         var prev_adjusted = $('.adjusted.hide')[0];
-        var current_adjusted = $('.target_canvas.adjusted')[0];
-        var current_canvas = $('.target_canvas')[0];
-        var source_canvas = $('.source_canvas')[0];
+        var current_adjusted = $('.content_cnv .target_canvas.adjusted')[0];
+        console.log(current_adjusted);
+        var current_canvas = $('.content_cnv .target_canvas')[0];
+        var source_canvas = $('.content_cnv .source_canvas')[0];
         var image_original = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
         adjustSrc(image_original, 'hide');
         // Filter added.
         if (current_adjusted != undefined) {
+            console.log('1');
             if (prev_adjusted != undefined) {
                 $(prev_adjusted).remove();
             }
@@ -1056,6 +1060,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             });
             promises.push(prom);
         } else {
+             console.log('2');
             // No filter added
             if (prev_adjusted != undefined) {
                 // Restore existing adjusted image.
