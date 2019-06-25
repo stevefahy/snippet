@@ -3159,9 +3159,11 @@ span.after_image {
     overflow-anchor: auto;
     /* DANGER added x 01/04/18 */
     overflow-x: hidden;
-    margin-bottom: 0px;
     will-change: scroll-position;
     -webkit-overflow-scrolling: touch;
+
+       /* height: calc(100% - 186px);*/
+       margin-bottom: 131px;
 }
 
 .content_cnv.user_setting {
@@ -3548,8 +3550,8 @@ img.graphic-icons {
 
 .slider_container {
     /* margin-bottom: 0px; */
-    position: relative;
-    /* bottom: 8px; */
+    position: absolute;
+     bottom: 0px; 
     height: 0px;
     z-index: 100000;
     width: 100%;
@@ -3613,7 +3615,7 @@ img.graphic-icons {
 
 .slider_outer {
     overflow: hidden;
-    transition: max-height .2s ease-out, opacity ease-out .2s;
+    transition: max-height .7s cubic-bezier(0.19, 1, 0.22, 1), opacity .7s cubic-bezier(0.19, 1, 0.22, 1);
     /* height: 100%; */
     /* padding-top: 15px; */
     max-height: 100px;
