@@ -302,10 +302,23 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     // Animtion
 
     var animateImageSizeMenuIn = function() {
+        //var deferred = $q.defer();
+        //deferred.resolve();
+        //return deferred.promise;
         $('.image_size_menu').addClass('animate_in active');
+        $(".image_size_menu.animate_in").on('webkitAnimationEnd oAnimationEnd animationend ', image_size_menu_animate_in_end);
     };
 
     // Animation Listener.
+
+    var image_size_menu_animate_in_end = function() {
+        // remove the animation end listener which called this function.
+        $(this).off('webkitAnimationEnd oAnimationEnd animationend ', image_size_menu_animate_in_end);
+        //$('.image_size_menu').removeClass('active');
+        //$('.image_size_menu').removeClass('animate_out');
+        imageSizeMenuOpen();
+    };
+
 
     var image_size_menu_animate_out_end = function() {
         // remove the animation end listener which called this function.
@@ -798,7 +811,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             promises.push(prom);
         }
         $q.all(promises).then(function() {
-            animateImageSizeMenuIn();
+            //animateImageSizeMenuIn();
             self.buildImageSize(parent_container, id, target);
             deferred.resolve();
         });
@@ -810,7 +823,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         ImageAdjustment.setImageParent(parent_container);
         ImageAdjustment.setImageId(id);
         ImageAdjustment.setImageEditing(true);
-        imageSizeMenuOpen();
+        animateImageSizeMenuIn();
+        //imageSizeMenuOpen();
         Debug.hide();
         $('.image_adjust_on').remove();
         // Change the top color on android.

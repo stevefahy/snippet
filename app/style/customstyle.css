@@ -3616,5 +3616,5 @@ img.graphic-icons {
 }
 
 .image_size_menu.animate_in {
-    -webkit-animation: slide-in .5s cubic-bezier(0.19, 1, 0.22, 1);
+    -webkit-animation: slide-in .4s cubic-bezier(0.19, 1, 0.22, 1);
 }
