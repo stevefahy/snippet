@@ -3161,9 +3161,7 @@ span.after_image {
     overflow-x: hidden;
     will-change: scroll-position;
     -webkit-overflow-scrolling: touch;
-
-       /* height: calc(100% - 186px);*/
-       margin-bottom: 131px;
+    margin-bottom: 131px;
 }
 
 .content_cnv.user_setting {
@@ -3531,9 +3529,6 @@ img.graphic-icons {
 }
 
 .slider_container_inner.active {
-    /* display: flex; */
-    /* padding-bottom: 86px; */
-    /* margin-bottom: -22px; */
     height: auto;
     position: relative;
     bottom: 0px;
@@ -3542,29 +3537,21 @@ img.graphic-icons {
     background-color: #5e5e5e;
     padding-bottom: 15px;
     padding-top: 15px;
-    /* border-top-style: solid; */
-    /* border-top-color: #1f1f1f; */
-    /* border-top-width: .5px; */
-    /* box-shadow: rgba(0, 0, 0, 0.14) 0px -2px 4px 0px, rgba(0, 0, 0, 0.12) 0px -1px 10px 0px, rgba(0, 0, 0, 0.2) 0px -2px 4px -1px; */
 }
 
 .slider_container {
-    /* margin-bottom: 0px; */
     position: absolute;
-     bottom: 0px; 
+    bottom: 0px;
     height: 0px;
     z-index: 100000;
     width: 100%;
     background-color: #5e5e5e;
     will-change: height;
     transform: translateZ(0);
-    /* padding-top: 15px; */
-    /* padding-bottom: 15px; */
 }
 
 .slider_container.animate {
     transition: height .7s cubic-bezier(0.19, 1, 0.22, 1);
-    /*transition: height .7s cubic-bezier(0.550, 0.085, 0.680, 0.530);*/
 }
 
 .material-icons.light {
@@ -3616,10 +3603,7 @@ img.graphic-icons {
 .slider_outer {
     overflow: hidden;
     transition: max-height .7s cubic-bezier(0.19, 1, 0.22, 1), opacity .7s cubic-bezier(0.19, 1, 0.22, 1);
-    /* height: 100%; */
-    /* padding-top: 15px; */
     max-height: 100px;
-    /* padding-bottom: 15px; */
 }
 
 .animate_minimize {
@@ -3633,5 +3617,4 @@ img.graphic-icons {
 
 .image_size_menu.animate_in {
     -webkit-animation: slide-in .5s cubic-bezier(0.19, 1, 0.22, 1);
-    /*cubic-bezier(0.1, 0.085, 0.680, 0.530);*/
 }

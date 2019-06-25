@@ -206,8 +206,6 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     this.makeCrop = function(e, id) {
         e.preventDefault();
         e.stopPropagation();
-        //var deferred = $q.defer();
-        //var promises = [];
         // Change the top color on android.
         if (ua.indexOf('AndroidApp') >= 0) {
             Android.changeTopBar('#F0F0F0');
@@ -301,11 +299,23 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         $('.slider_container_inner').removeClass('active');
     };
 
+    // Animtion
+
+    var animateImageSizeMenuIn = function() {
+        $('.image_size_menu').addClass('animate_in active');
+    };
+
+    // Animation Listener.
+
     var image_size_menu_animate_out_end = function() {
         // remove the animation end listener which called this function.
         $(this).off('webkitAnimationEnd oAnimationEnd animationend ', image_size_menu_animate_out_end);
         $('.image_size_menu').removeClass('active');
         $('.image_size_menu').removeClass('animate_out');
+    };
+
+    var sliderAnimEnd = function() {
+        $(this).remove();
     };
 
     this.removeCrop = function() {
@@ -376,13 +386,10 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var img_bg = $(new_canvas_bg).appendTo('.' + parent_container + ' #cropper_' + id);
         $(img_bg).addClass('crop_bg');
         $(img).attr('id', 'crop_src');
-
         if (h != undefined) {
             $(img_bg).css('height', h);
             $(img).css('height', h);
         }
-
-
         var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
         // Set up Perspective
         ImageAdjustment.perspectiveInit($('#crop_src')[0]).then(function(p) {
@@ -418,12 +425,6 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         return deferred.promise;
     };
 
-    var animateImageSizeMenuIn = function() {
-        $('.image_size_menu').addClass('animate_in active');
-        //$('.image_size_menu').addClass('active');
-        
-    };
-
     this.buildImageSize = function(parent_container, id, target) {
         if ($('.' + parent_container + ' #cropper_' + id + ' .crop_box').length <= 0) {
             var crop = $('.crop_box').clone().prependTo('.' + parent_container + ' #cropper_' + id);
@@ -444,26 +445,17 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 duration: 700,
                 easing: "easeOutQuad",
                 start: function() {
-                    //animateImageSizeMenuIn();
-                    self.createCropperImages(parent_container, id, target, image_h).then(function() {
-                        
-                    });
+                    self.createCropperImages(parent_container, id, target, image_h);
                 },
                 complete: function() {
                     openCropRotate();
                 }
             });
         } else {
-            //animateImageSizeMenuIn();
             self.createCropperImages(parent_container, id, target, image_h).then(function() {
                 openCropRotate();
-                
             });
         }
-    };
-
-    var sliderAnimEnd = function() {
-        $(this).remove();
     };
 
     var closeSlider = function(slider) {
@@ -473,13 +465,9 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         for (i = 0; i < arguments.length; i++) {
             slider_h += $('.slider_container_inner #' + arguments[i]).outerHeight();
             $('.slider_container_inner #' + arguments[i]).addClass('animate_minimize');
-            //slider_h += 30;
-            //slider_container_inner
             slider_count--;
         }
         $timeout(function() {
-            
-            console.log(currentHeight );
             $(".animate_minimize").on('webkitTransitionEnd oTransitionEnd transitionend ', sliderAnimEnd);
             var h = currentHeight - slider_h;
             if (slider_count < 1) {
@@ -817,12 +805,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         return deferred.promise;
     };
 
-    var t0;
-    var t1;
-
     this.openImageSize = function(e, id) {
-        t0 = performance.now();
-
         var parent_container = getParentContainer(e.target);
         ImageAdjustment.setImageParent(parent_container);
         ImageAdjustment.setImageId(id);
@@ -834,18 +817,15 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         if (ua.indexOf('AndroidApp') >= 0) {
             Android.changeTopBar('#5E5E5E');
         }
-        
     };
 
     this.filterClick = function(e, button, id, filter) {
-        console.log(button + ' : ' + id + ' : ' + filter);
         var parent_container = getParentContainer(e.target);
         ImageAdjustment.setImageParent(parent_container);
         // Store the selected filter in a custom attribute.
         ImageAdjustment.setImageAdjustment(parent_container, id, 'filter', filter);
         var source = $('.content_cnv .source_canvas')[0];
         var target = $('.content_cnv .target_canvas')[0];
-        console.log(target);
         $(target).addClass('adjusted');
         var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
         // Restore the orignal with all adjustments.
@@ -1044,14 +1024,12 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         self.removeSlider();
         var prev_adjusted = $('.adjusted.hide')[0];
         var current_adjusted = $('.content_cnv .target_canvas.adjusted')[0];
-        console.log(current_adjusted);
         var current_canvas = $('.content_cnv .target_canvas')[0];
         var source_canvas = $('.content_cnv .source_canvas')[0];
         var image_original = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
         adjustSrc(image_original, 'hide');
         // Filter added.
         if (current_adjusted != undefined) {
-            console.log('1');
             if (prev_adjusted != undefined) {
                 $(prev_adjusted).remove();
             }
@@ -1064,7 +1042,6 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             });
             promises.push(prom);
         } else {
-             console.log('2');
             // No filter added
             if (prev_adjusted != undefined) {
                 // Restore existing adjusted image.
