@@ -302,11 +302,18 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     // Animtion
 
     var animateImageSizeMenuIn = function() {
-        //var deferred = $q.defer();
-        //deferred.resolve();
-        //return deferred.promise;
+        var deferred = $q.defer();
+
+        
+        //
         $('.image_size_menu').addClass('animate_in active');
         $(".image_size_menu.animate_in").on('webkitAnimationEnd oAnimationEnd animationend ', image_size_menu_animate_in_end);
+       
+$timeout(function() {
+       deferred.resolve();
+   },300);
+
+       return deferred.promise;
     };
 
     // Animation Listener.
@@ -316,7 +323,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         $(this).off('webkitAnimationEnd oAnimationEnd animationend ', image_size_menu_animate_in_end);
         //$('.image_size_menu').removeClass('active');
         //$('.image_size_menu').removeClass('animate_out');
-        imageSizeMenuOpen();
+        //imageSizeMenuOpen();
+        //return;
     };
 
 
@@ -806,14 +814,14 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 target.height = result.height;
                 var ctx = target.getContext('2d');
                 ctx.drawImage(result, 0, 0);
-                deferred.resolve();
+                deferred.resolve(target);
             });
             promises.push(prom);
         }
-        $q.all(promises).then(function() {
+        $q.all(promises).then(function(target) {
             //animateImageSizeMenuIn();
-            self.buildImageSize(parent_container, id, target);
-            deferred.resolve();
+            //self.buildImageSize(parent_container, id, target);
+            deferred.resolve(target);
         });
         return deferred.promise;
     };
@@ -823,8 +831,18 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         ImageAdjustment.setImageParent(parent_container);
         ImageAdjustment.setImageId(id);
         ImageAdjustment.setImageEditing(true);
-        animateImageSizeMenuIn();
-        //imageSizeMenuOpen();
+        var target;
+        
+        var p2 = imageSizeMenuOpen().then(function(result) {
+            target = result;
+        });
+        var p1 = animateImageSizeMenuIn();
+           // all done
+            $.when(p1, p2).then(function() {
+              self.buildImageSize(parent_container, id, target);
+            });
+
+        
         Debug.hide();
         $('.image_adjust_on').remove();
         // Change the top color on android.
