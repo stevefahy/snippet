@@ -310,14 +310,14 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
         $('.image_size_menu').addClass('active');
         // $('.image_size_menu').css('-webkit-transform', 'translateY(100%)');
-        $('.image_size_menu').animate({ "right":"0" }, {
-             duration: 700,
-             easing: "easeOutQuad",
-                complete: function() {
-                    console.log('anim fin');
-                    deferred.resolve();
-                }
-         });
+        $('.image_size_menu').animate({ "right": "0" }, {
+            duration: 500,
+            easing: "easeOutQuad",
+            complete: function() {
+                console.log('anim fin');
+                deferred.resolve();
+            }
+        });
 
         return deferred.promise;
 
@@ -339,7 +339,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         $(this).off('webkitAnimationEnd oAnimationEnd animationend ', image_size_menu_animate_out_end);
         $('.image_size_menu').removeClass('active');
         $('.image_size_menu').removeClass('animate_out');
-         $('.image_size_menu').css('right', '');
+        $('.image_size_menu').css('right', '');
     };
 
     var sliderAnimEnd = function() {
@@ -822,14 +822,15 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 target.height = result.height;
                 var ctx = target.getContext('2d');
                 ctx.drawImage(result, 0, 0);
-                deferred.resolve();
+                deferred.resolve(target);
             });
             promises.push(prom);
         }
         $q.all(promises).then(function() {
             //animateImageSizeMenuIn();
-            self.buildImageSize(parent_container, id, target);
-            deferred.resolve();
+            //self.buildImageSize(parent_container, id, target);
+            console.log(target);
+            deferred.resolve(target);
         });
         return deferred.promise;
     };
@@ -840,17 +841,20 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         ImageAdjustment.setImageId(id);
         ImageAdjustment.setImageEditing(true);
         var p1 = animateImageSizeMenuIn();
-        //imageSizeMenuOpen();
+        var p2 = imageSizeMenuOpen();
         Debug.hide();
         $('.image_adjust_on').remove();
         // Change the top color on android.
         if (ua.indexOf('AndroidApp') >= 0) {
             Android.changeTopBar('#5E5E5E');
         }
-                // all done
-            $.when(p1).then(function() {
-                console.log('p1 fin');
-            });
+        // all done
+        $.when(p1,p2).then(function(r1, r2) {
+            console.log('p1 fin');
+            console.log('p2 fin: ' + r1);
+            console.log(r2);
+            self.buildImageSize(parent_container, id, r2);
+        });
     };
 
     this.filterClick = function(e, button, id, filter) {
