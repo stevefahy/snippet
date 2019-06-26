@@ -3399,8 +3399,10 @@ span.after_image {
     border-bottom-style: solid;
     border-bottom-width: .5px;
     border-bottom-color: #1f1f1f;
-    will-change: transform;
+    will-change: right;
     transform: translateZ(0);
+    /*transform: translateX(100%);*/
+    right: -100vw;
 }
 
 .image_size_menu.active {

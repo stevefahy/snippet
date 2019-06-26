@@ -302,11 +302,25 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     // Animtion
 
     var animateImageSizeMenuIn = function() {
-        //var deferred = $q.defer();
+        var deferred = $q.defer();
         //deferred.resolve();
         //return deferred.promise;
-        $('.image_size_menu').addClass('animate_in active');
-        $(".image_size_menu.animate_in").on('webkitAnimationEnd oAnimationEnd animationend ', image_size_menu_animate_in_end);
+        //$('.image_size_menu').addClass('animate_in active');
+        //$(".image_size_menu.animate_in").on('webkitAnimationEnd oAnimationEnd animationend ', image_size_menu_animate_in_end);
+
+        $('.image_size_menu').addClass('active');
+        // $('.image_size_menu').css('-webkit-transform', 'translateY(100%)');
+        $('.image_size_menu').animate({ "right":"0" }, {
+             duration: 700,
+             easing: "easeOutQuad",
+                complete: function() {
+                    console.log('anim fin');
+                    deferred.resolve();
+                }
+         });
+
+        return deferred.promise;
+
     };
 
     // Animation Listener.
@@ -325,6 +339,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         $(this).off('webkitAnimationEnd oAnimationEnd animationend ', image_size_menu_animate_out_end);
         $('.image_size_menu').removeClass('active');
         $('.image_size_menu').removeClass('animate_out');
+         $('.image_size_menu').css('right', '');
     };
 
     var sliderAnimEnd = function() {
@@ -334,8 +349,9 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     this.removeCrop = function() {
         $('.crop_box.active').remove();
         // Remove image_size_menu.
-        $('.image_size_menu.active').removeClass('animate_on');
-        $('.image_size_menu').removeClass('animate_in');
+        //$('.image_size_menu.active').removeClass('animate_on');
+        //$('.image_size_menu').removeClass('animate_in');
+
         // Animate offscreen
         $('.image_size_menu.active').addClass('animate_out');
         $(".image_size_menu.animate_out").on('webkitAnimationEnd oAnimationEnd animationend ', image_size_menu_animate_out_end);
@@ -823,7 +839,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         ImageAdjustment.setImageParent(parent_container);
         ImageAdjustment.setImageId(id);
         ImageAdjustment.setImageEditing(true);
-        animateImageSizeMenuIn();
+        var p1 = animateImageSizeMenuIn();
         //imageSizeMenuOpen();
         Debug.hide();
         $('.image_adjust_on').remove();
@@ -831,6 +847,10 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         if (ua.indexOf('AndroidApp') >= 0) {
             Android.changeTopBar('#5E5E5E');
         }
+                // all done
+            $.when(p1).then(function() {
+                console.log('p1 fin');
+            });
     };
 
     this.filterClick = function(e, button, id, filter) {
