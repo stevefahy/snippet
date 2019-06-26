@@ -242,6 +242,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         adjustSrc(original_image, 'hide');
         // Crop the image.
         ImageAdjustment.crop(source_canvas, crop_data).then(function(canvas) {
+            addSpinner(canvas);
+            /*
             spinner_w = canvas.width;
             spinner_h = canvas.height;
             if (canvas.width > cropper_width) {
@@ -256,6 +258,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 $('.loading_spinner').css('width', spinner_w);
                 $('.loading_spinner').css('height', spinner_h);
             });
+            */
             // If Adjusted exists hide original.
             if ($('.content_cnv #cropper_' + id + ' .adjusted').length > 0) {
                 $('.content_cnv #cropper_' + id + ' .adjusted').remove();
@@ -455,10 +458,16 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
     this.buildImageSize = function(parent_container, id, target) {
+
+      
+
         if ($('.' + parent_container + ' #cropper_' + id + ' .crop_box').length <= 0) {
             var crop = $('.crop_box').clone().prependTo('.' + parent_container + ' #cropper_' + id);
             crop.addClass('active');
         }
+
+
+
         var cropper = $('.' + parent_container + ' #cropper_' + id);
         $(cropper).css('maxWidth', '');
         var original_image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
@@ -471,7 +480,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             $(cropper).stop();
             // Animate the cropper tool onscreen
             $(cropper).animate({ height: image_h }, {
-                duration: 700,
+                duration: 500,
                 easing: "easeOutQuad",
                 start: function() {
                     self.createCropperImages(parent_container, id, target, image_h);
@@ -835,24 +844,29 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         return deferred.promise;
     };
 
-    this.openImageSize = function(e, id) {
-        var parent_container = getParentContainer(e.target);
-        ImageAdjustment.setImageParent(parent_container);
-        ImageAdjustment.setImageId(id);
-        ImageAdjustment.setImageEditing(true);
-        var p1 = animateImageSizeMenuIn();
-
+    var addSpinner = function(image) {
+        /*
+        spinner_w = canvas.width;
+            spinner_h = canvas.height;
+            if (canvas.width > cropper_width) {
+                spinner_w = cropper_width;
+                var spinner_scale = canvas.width / cropper_width;
+                spinner_h = canvas.height / spinner_scale;
+            }
+            // Import the loading spinner html.
+            var spinner = $sce.getTrustedResourceUrl('/views/loading_spinner.html');
+            $templateRequest(spinner).then(function(template) {
+                $(template).prependTo('.content_cnv #cropper_' + id);
+                $('.loading_spinner').css('width', spinner_w);
+                $('.loading_spinner').css('height', spinner_h);
+            });
+            */
+            var parent_container = ImageAdjustment.getImageParent();
+            var id = ImageAdjustment.getImageId();
 
         var cropper = $('.' + parent_container + ' #cropper_' + id)[0];
         var cropper_width = $(cropper).outerWidth().toFixed(2);
-        var image;
-        if ($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length > 0) {
-            image = $('.' + parent_container + ' #cropper_' + id + ' img.adjusted')[0];
-        } else {
-            image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
-        }
-
-
+     
         spinner_w = image.width;
         spinner_h = image.height;
         if (image.width > cropper_width) {
@@ -867,7 +881,47 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             $('.loading_spinner').css('width', spinner_w);
             $('.loading_spinner').css('height', spinner_h);
         });
+    };
 
+    this.openImageSize = function(e, id) {
+        var parent_container = getParentContainer(e.target);
+        ImageAdjustment.setImageParent(parent_container);
+        ImageAdjustment.setImageId(id);
+        ImageAdjustment.setImageEditing(true);
+        var p1 = animateImageSizeMenuIn();
+
+        var image;
+      if ($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length > 0) {
+            image = $('.' + parent_container + ' #cropper_' + id + ' img.adjusted')[0];
+        } else {
+            image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
+        }
+
+        addSpinner(image);
+        /*
+        var cropper = $('.' + parent_container + ' #cropper_' + id)[0];
+        var cropper_width = $(cropper).outerWidth().toFixed(2);
+        var image;
+        if ($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length > 0) {
+            image = $('.' + parent_container + ' #cropper_' + id + ' img.adjusted')[0];
+        } else {
+            image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
+        }
+        spinner_w = image.width;
+        spinner_h = image.height;
+        if (image.width > cropper_width) {
+            spinner_w = cropper_width;
+            var spinner_scale = image.width / cropper_width;
+            spinner_h = image.height / spinner_scale;
+        }
+        // Import the loading spinner html.
+        var spinner = $sce.getTrustedResourceUrl('/views/loading_spinner.html');
+        $templateRequest(spinner).then(function(template) {
+            $(template).prependTo('.content_cnv #cropper_' + id);
+            $('.loading_spinner').css('width', spinner_w);
+            $('.loading_spinner').css('height', spinner_h);
+        });
+        */
 
 
         var p2 = createImageSizeImages();
