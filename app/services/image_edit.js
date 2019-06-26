@@ -798,7 +798,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         return new_h;
     };
 
-    var imageSizeMenuOpen = function() {
+    var createImageSizeImages = function() {
         var deferred = $q.defer();
         var promises = [];
         var parent_container = ImageAdjustment.getImageParent();
@@ -841,7 +841,36 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         ImageAdjustment.setImageId(id);
         ImageAdjustment.setImageEditing(true);
         var p1 = animateImageSizeMenuIn();
-        var p2 = imageSizeMenuOpen();
+
+
+        var cropper = $('.' + parent_container + ' #cropper_' + id)[0];
+        var cropper_width = $(cropper).outerWidth().toFixed(2);
+        var image;
+        if ($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length > 0) {
+            image = $('.' + parent_container + ' #cropper_' + id + ' img.adjusted')[0];
+        } else {
+            image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
+        }
+
+
+        spinner_w = image.width;
+        spinner_h = image.height;
+        if (image.width > cropper_width) {
+            spinner_w = cropper_width;
+            var spinner_scale = image.width / cropper_width;
+            spinner_h = image.height / spinner_scale;
+        }
+        // Import the loading spinner html.
+        var spinner = $sce.getTrustedResourceUrl('/views/loading_spinner.html');
+        $templateRequest(spinner).then(function(template) {
+            $(template).prependTo('.content_cnv #cropper_' + id);
+            $('.loading_spinner').css('width', spinner_w);
+            $('.loading_spinner').css('height', spinner_h);
+        });
+
+
+
+        var p2 = createImageSizeImages();
         Debug.hide();
         $('.image_adjust_on').remove();
         // Change the top color on android.
@@ -849,10 +878,12 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             Android.changeTopBar('#5E5E5E');
         }
         // all done
-        $.when(p1,p2).then(function(r1, r2) {
+        $.when(p1, p2).then(function(r1, r2) {
+            //$.when(p2).then(function(r2) {
             console.log('p1 fin');
-            console.log('p2 fin: ' + r1);
+            console.log('p2 fin');
             console.log(r2);
+            $('.loading_spinner').remove();
             self.buildImageSize(parent_container, id, r2);
         });
     };
