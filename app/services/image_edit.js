@@ -408,9 +408,11 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
     this.createCropperImages = function(parent_container, id, target, h) {
         var deferred = $q.defer();
-        $('.' + parent_container + ' #image_' + id).addClass('hide');
+        console.log(target);
+        //$('.' + parent_container + ' #image_' + id).addClass('hide');
         var new_canvas_src = ImageAdjustment.cloneCanvas(target);
         var new_canvas_bg = ImageAdjustment.cloneCanvas(target);
+        console.log(new_canvas_src);
         $(new_canvas_src).addClass('hide');
         $(new_canvas_bg).addClass('hide');
         var img = $(new_canvas_src).appendTo('.' + parent_container + ' #cropper_' + id + ' .crop_area');
@@ -423,6 +425,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             $(img).css('height', h);
         }
         var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
+        console.log($('#crop_src')[0]);
         // Set up Perspective
         ImageAdjustment.perspectiveInit($('#crop_src')[0]).then(function(p) {
             ImageAdjustment.perspective_setup(p.cvso_lo.width, p.cvso_lo.height, p.cvso_hi.width, p.cvso_hi.height).then(function(result) {
@@ -450,6 +453,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                         self.sliderRotateChange(ia.rotate);
                     }
                 }
+                $('.' + parent_container + ' #image_' + id).addClass('hide');
                 hideImages(parent_container, id);
                 deferred.resolve();
             });
@@ -459,41 +463,50 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
     this.buildImageSize = function(parent_container, id, target) {
 
-      
+        var original_image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
+        var image_h = self.scaleToFit(original_image);
 
         if ($('.' + parent_container + ' #cropper_' + id + ' .crop_box').length <= 0) {
             var crop = $('.crop_box').clone().prependTo('.' + parent_container + ' #cropper_' + id);
             crop.addClass('active');
         }
 
+        self.createCropperImages(parent_container, id, target, image_h).then(function() {
 
 
-        var cropper = $('.' + parent_container + ' #cropper_' + id);
-        $(cropper).css('maxWidth', '');
-        var original_image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
-        var image_h = self.scaleToFit(original_image);
-        var init_h = $(cropper).outerHeight().toFixed(2);
-        // If the scaled original image size is different to the current size.
-        if (image_h != init_h) {
-            // Set the cropper height to its current height so that it can be animated.
-            $(cropper).css('height', init_h);
-            $(cropper).stop();
-            // Animate the cropper tool onscreen
-            $(cropper).animate({ height: image_h }, {
-                duration: 500,
-                easing: "easeOutQuad",
-                start: function() {
-                    self.createCropperImages(parent_container, id, target, image_h);
-                },
-                complete: function() {
-                    openCropRotate();
-                }
-            });
-        } else {
-            self.createCropperImages(parent_container, id, target, image_h).then(function() {
+
+
+
+
+
+            var cropper = $('.' + parent_container + ' #cropper_' + id);
+            $(cropper).css('maxWidth', '');
+            //var original_image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
+            //var image_h = self.scaleToFit(original_image);
+            var init_h = $(cropper).outerHeight().toFixed(2);
+            // If the scaled original image size is different to the current size.
+            if (image_h != init_h) {
+                // Set the cropper height to its current height so that it can be animated.
+                $(cropper).css('height', init_h);
+                $(cropper).stop();
+                // Animate the cropper tool onscreen
+                $(cropper).animate({ height: image_h }, {
+                    duration: 500,
+                    easing: "easeOutQuad",
+                    start: function() {
+                        //self.createCropperImages(parent_container, id, target, image_h);
+                    },
+                    complete: function() {
+                        openCropRotate();
+                    }
+                });
+            } else {
+                // self.createCropperImages(parent_container, id, target, image_h).then(function() {
                 openCropRotate();
-            });
-        }
+                // });
+            }
+
+        });
     };
 
     var closeSlider = function(slider) {
@@ -861,12 +874,12 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 $('.loading_spinner').css('height', spinner_h);
             });
             */
-            var parent_container = ImageAdjustment.getImageParent();
-            var id = ImageAdjustment.getImageId();
+        var parent_container = ImageAdjustment.getImageParent();
+        var id = ImageAdjustment.getImageId();
 
         var cropper = $('.' + parent_container + ' #cropper_' + id)[0];
         var cropper_width = $(cropper).outerWidth().toFixed(2);
-     
+
         spinner_w = image.width;
         spinner_h = image.height;
         if (image.width > cropper_width) {
@@ -891,7 +904,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var p1 = animateImageSizeMenuIn();
 
         var image;
-      if ($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length > 0) {
+        if ($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length > 0) {
             image = $('.' + parent_container + ' #cropper_' + id + ' img.adjusted')[0];
         } else {
             image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
