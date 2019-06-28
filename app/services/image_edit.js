@@ -314,7 +314,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         $('.image_size_menu').addClass('active');
         // $('.image_size_menu').css('-webkit-transform', 'translateY(100%)');
         $('.image_size_menu').animate({ "right": "0" }, {
-            duration: 500,
+            duration: 400,
             easing: "easeOutQuad",
             complete: function() {
                 console.log('anim fin');
@@ -491,7 +491,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 $(cropper).stop();
                 // Animate the cropper tool onscreen
                 $(cropper).animate({ height: image_h }, {
-                    duration: 300,
+                    duration: 400,
                     easing: "easeOutQuad",
                     start: function() {
                         //self.createCropperImages(parent_container, id, target, image_h);
