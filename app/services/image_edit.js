@@ -491,7 +491,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 $(cropper).stop();
                 // Animate the cropper tool onscreen
                 $(cropper).animate({ height: image_h }, {
-                    duration: 500,
+                    duration: 300,
                     easing: "easeOutQuad",
                     start: function() {
                         //self.createCropperImages(parent_container, id, target, image_h);
