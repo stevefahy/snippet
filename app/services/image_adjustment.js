@@ -33,6 +33,17 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         $('.' + parent_container + ' #image_' + id).attr('adjustment-data', JSON.stringify(ia));
     };
 
+    this.setImageAdjustments = function(parent_container, id, values) {
+        /*var ia = this.getImageAdjustments(parent_container, id);
+        if (ia == undefined) {
+            ia = {};
+        }
+        ia[name] = value;*/
+
+        // Custom attribute for storing image adjustments.
+        $('.' + parent_container + ' #image_' + id).attr('adjustment-data', JSON.stringify(values));
+    };
+
     this.getImageAdjustments = function(parent_container, id) {
         var adjustment_data;
         // Custom attribute for storing image adjustments.
@@ -64,8 +75,14 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         var adjustment_value;
         if (ia != undefined) {
             adjustment_data = JSON.parse(ia);
-            if (adjustment_data[adjustment]) {
+            console.log(adjustment_data);
+            console.log(adjustment_data[adjustment]);
+            //if (adjustment_data[adjustment]) {
+                console.log(adjustment_data.hasOwnProperty(adjustment));
+            if(adjustment_data.hasOwnProperty(adjustment)){
+                console.log(adjustment_data);
                 delete adjustment_data[adjustment];
+                console.log(adjustment_data);
                 $('.' + parent_container + ' #image_' + id).attr('adjustment-data', JSON.stringify(adjustment_data));
             }
         }
@@ -339,26 +356,32 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
     };
 
     this.getScale = function(original_image, crop_image) {
+        console.log('getScale');
         var nat_w = original_image.naturalWidth;
         // check whether rotated
         var rotated = self.getImageAdjustment(self.getImageParent(), self.getImageId(), 'rotated');
+        //var rotated = ImageSettings.getImageSetting('rotated', 'angle');
         if (rotated == 90 || rotated == 270) {
             nat_w = original_image.naturalHeight;
         }
         var cur_w = $(crop_image).outerWidth();
         var scale = nat_w / cur_w;
+        console.log(scale);
         return scale;
     };
 
     this.getImageScale = function(original_image) {
+        console.log('getImageScale');
         var nat_w = original_image.naturalWidth;
         // check whether rotated
         var rotated = self.getImageAdjustment(self.getImageParent(), self.getImageId(), 'rotated');
+        //var rotated = ImageSettings.getImageSetting('rotated', 'angle');
         if (rotated == 90 || rotated == 270) {
             nat_w = original_image.naturalHeight;
         }
         var current_w = $(original_image).width();
         var scale = nat_w / current_w;
+        console.log(scale);
         return scale;
     };
 
@@ -397,12 +420,15 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
     // Apply all image adjustments passed in the filters object.
     this.applyFilters = function(source, filters) {
         var deferred = $q.defer();
+        console.log(filters);
         if (filters == undefined) {
             filters = { sharpen: undefined, filter: undefined, rotate: undefined, crop: undefined, perspective: undefined, flip_v: undefined, flip_h: undefined, rotated: undefined };
         }
+        console.log(filters);
         // Sharpen from source first, Crop last. Pass each adjustment to the next filter.
         self.filter(source, filters.filter)
             .then(function(result) {
+                console.log(filters.rotated);
                 return self.rotated(result, filters.rotated);
             }).then(function(result) {
                 return self.flipV(result, filters.flip_v);
@@ -703,6 +729,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
     this.perspectiveInit = function(source_image_hi) {
         var deferred = $q.defer();
         var promises = [];
+        console.log(source_image_hi);
         var window_w = Math.round(window.innerWidth / WINDOW_SCALE);
         var image_w = source_image_hi.width;
         var image_h = source_image_hi.height;
@@ -714,7 +741,9 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             var cvso_hi = document.createElement('canvas');
             var cvso_lo = document.createElement('canvas');
             cvso_hi.width = parseInt(source_image_hi.width);
+
             cvso_hi.height = parseInt(source_image_hi.height);
+            console.log(cvso_hi.width + ' : ' + cvso_hi.height);
             cvso_lo.width = parseInt(source_image_lo.width);
             cvso_lo.height = parseInt(source_image_lo.height);
             var ctxo_hi = cvso_hi.getContext('2d');
@@ -932,6 +961,9 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
 
     // Make the rotation directly to the canvas for performance reasons.
     this.quickRotate = function(ctx, image, angle) {
+        console.log(ctx);
+        console.log(image);
+        console.log(angle);
         var adjusted_angle = angle / 100;
         var w = image.width;
         var h = image.height;
@@ -1141,6 +1173,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         var image = source;
         ctx.drawImage(source, 0, 0);
         if (degrees != undefined && degrees != 0) {
+            console.log('the rotated');
             var ctx_source = source.getContext('2d');
             if (degrees == 90 || degrees == 270) {
                 new_canvas.width = io.nat_height;
@@ -1307,6 +1340,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
 
     // Return the cropped canvas.
     this.crop = function(source, crop) {
+        console.log('crop');
         var deferred = $q.defer();
         var new_canvas = document.createElement("canvas");
         new_canvas.width = source.width;
@@ -1314,6 +1348,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
         var ctx = new_canvas.getContext('2d');
         ctx.drawImage(source, 0, 0);
         if (crop != undefined) {
+            console.log('DO CROP');
             var sx = crop.x;
             var sy = crop.y;
             var swidth = crop.width;

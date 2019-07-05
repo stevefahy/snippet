@@ -9,7 +9,7 @@ cardApp.service('Slider', ['$window', '$rootScope', 'ImageAdjustment', function(
     this.slider_perspective_v = '<div class="slider_outer" id="s_perspective_v"><div class="slider_p_v_icon"><img class="graphic-icons" src="/assets/images/perspective_w.png"></div><rzslider rz-slider-model="slider_settings.perspective_v.amount" rz-slider-options="slider_settings.perspective_v.options" id="slider_p_v"></rzslider></div>';
     this.slider_perspective_h = '<div class="slider_outer" id="s_perspective_h"><div class="slider_p_h_icon"><img class="graphic-icons" src="/assets/images/perspective_w.png"></div><rzslider rz-slider-model="slider_settings.perspective_h.amount" rz-slider-options="slider_settings.perspective_h.options" id="slider_p_h"></rzslider></div>';
     this.slider_test = '<div class="slider_outer" id="s_test"><div class="slider_t_icon"><i class="material-icons light rotate">adjust</i></div><rzslider rz-slider-model="slider_settings.test.amount" rz-slider-options="slider_settings.test.options"></rzslider></div>';
-
+    
     $rootScope.slider_settings = {
 
         sharpen: {
@@ -129,6 +129,18 @@ cardApp.service('Slider', ['$window', '$rootScope', 'ImageAdjustment', function(
             }
         }
 
+    };
+
+    this.reset = function() {
+        //$rootScope.slider_settings
+        for (var key in $rootScope.slider_settings) {
+            if ($rootScope.slider_settings.hasOwnProperty(key)) {
+                console.log(key, $rootScope.slider_settings[key]);
+                $rootScope.slider_settings[key].amount = $rootScope.slider_settings[key].reset;
+                console.log(key, $rootScope.slider_settings[key]);
+            }
+        }
+        console.log($rootScope.slider_settings);
     };
 
 }]);

@@ -378,11 +378,6 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         }
         var parent_container = ImageAdjustment.getImageParent();
         var id = ImageAdjustment.getImageId();
-
-        // Get initial settings
-        //initial_adjustments = ImageAdjustment.getImageAdjustments(parent_container, id);
-        ImageAdjustment.setImageAdjustments(parent_container, id, initial_adjustments);
-
         var cropper = $('.' + parent_container + ' #cropper_' + id);
         setContenteditable(cropper, true);
         var anim_h;
@@ -450,7 +445,6 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                     }
                 }
                 initCropRotate(parent_container, id);
-                setUpRotated(0);
                 var crop_data;
                 if (ia != undefined) {
                     crop_data = ia.crop;
@@ -646,15 +640,11 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var crop_bg = $('.crop_bg')[0];
         var crop_src = $('#crop_src')[0];
         var ia = ImageAdjustment.getImageAdjustments(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId());
-        if(ia!=undefined){
-           var stored_perspective = ia.perspective;
-        var stored_rotate = ia.rotate; 
+        var stored_perspective = ia.perspective;
+        var stored_rotate = ia.rotate;
         ia.crop = undefined;
         ia.perspective = undefined;
         ia.rotate = undefined;
-    }
-        
-        
         ImageAdjustment.applyFilters(source, ia).then(function(canvas_original_filters) {
             canvas_original = canvas_original_filters;
             crop_area_original = canvas_original_filters;
@@ -685,12 +675,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                     ctx_crop_src.drawImage(canvas_original, -canvas_original.width / 2, -canvas_original.height / 2);
                     p.ctxd1 = ctx_crop_bg;
                     p.ctxd2 = ctx_crop_src;
-                    if(ia!=undefined){
-                       p.rotated = ia.rotated; 
-                   } else {
-                    p.rotated = angle;
-                   }
-                    
+                    p.rotated = ia.rotated;
                     ImageAdjustment.setPerspective(p);
                     if (stored_perspective != undefined) {
                         $rootScope.slider_settings.perspective_v.amount = stored_perspective.vertical;
@@ -698,10 +683,9 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                         ImageAdjustment.quickPerspectiveChange(stored_perspective.vertical, stored_perspective.horizontal, 'high');
                     }
                     if (stored_rotate != undefined) {
-                        //var latest_rotate = $rootScope.slider_settings.rotate.amount;
-                        //console.log(latest_rotate);
+                        latest_rotate = $rootScope.slider_settings.rotate.amount;
                         // rotate the image(s).
-                        self.sliderRotateChange(stored_rotate);
+                        self.sliderRotateChange(latest_rotate);
                     }
                     self.sliderRotateUpdate();
                 });
@@ -912,19 +896,11 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         });
     };
 
-    var initial_adjustments;
-
     this.openImageSize = function(e, id) {
         var parent_container = getParentContainer(e.target);
         ImageAdjustment.setImageParent(parent_container);
         ImageAdjustment.setImageId(id);
         ImageAdjustment.setImageEditing(true);
-
-        Slider.reset();
-
-        // Get initial settings
-        initial_adjustments = ImageAdjustment.getImageAdjustments(parent_container, id);
-
         var p1 = animateImageSizeMenuIn();
 
         var image;

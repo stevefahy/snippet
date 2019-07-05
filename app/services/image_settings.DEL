@@ -1,0 +1,71 @@
+//
+// Image Settings Service
+//
+
+cardApp.service('ImageSettings', ['$window', '$rootScope', function($window, $rootScope) {
+
+    //var self = this; 
+
+    const image_settings_default = {
+
+        flip: {
+            flip_h: false,
+            flip_v: false
+        },
+
+        rotated: {
+            angle: 0
+        },
+
+        perspective: {
+            horizontal: 0,
+            vertical: 0
+        },
+
+    };
+    var temp = JSON.stringify(image_settings_default);
+    $rootScope.image_settings = JSON.parse(temp);
+    console.log($rootScope.image_settings);
+    console.log(image_settings_default);
+    this.reset = function() {
+        console.log(temp);
+        console.log(JSON.stringify(image_settings_default));
+        $rootScope.image_settings = JSON.parse(temp);
+        console.log(JSON.stringify($rootScope.image_settings));
+    };
+
+    this.setImageSetting = function(setting, type, val) {
+
+        $rootScope.image_settings[setting][type] = val;
+        console.log($rootScope.image_settings);
+    };
+
+    this.getImageSetting = function(setting, type) {
+        console.log(setting + ' : ' + type);
+        console.log($rootScope.image_settings[setting][type]);
+        console.log($rootScope.image_settings['flip']['flip_h']);
+        console.log($rootScope.image_settings);
+        //console.log(self.image_settings);
+        return $rootScope.image_settings[setting][type];
+    };
+
+    this.setImageSettingObject = function(setting, val) {
+        $rootScope.image_settings[setting] = val;
+        console.log($rootScope.image_settings);
+    };
+
+    this.getImageSettingObject = function(setting) {
+        console.log($rootScope.image_settings);
+        console.log($rootScope.image_settings[setting]);
+        //console.log($rootScope.image_settings['flip']['flip_h']);
+        //console.log($rootScope.image_settings);
+        //console.log(self.image_settings);
+        return $rootScope.image_settings[setting];
+    };
+
+    this.getImageAdjustments = function() {
+        var adjustment_data = $rootScope.image_settings;
+        return adjustment_data;
+    };
+
+}]);
