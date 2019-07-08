@@ -459,8 +459,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                         self.sliderRotateChange(ia.rotate);
                     }
                 }
-                $('.' + parent_container + ' #image_' + id).addClass('hide');
-                hideImages(parent_container, id);
+                //$('.' + parent_container + ' #image_' + id).addClass('hide');
+                //hideImages(parent_container, id);
                 deferred.resolve();
             });
         });
@@ -471,24 +471,23 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
         var original_image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
         var image_h = self.scaleToFit(original_image);
-console.log($('.' + parent_container + ' #cropper_' + id + ' .crop_box'));
+        console.log($('.' + parent_container + ' #cropper_' + id + ' .crop_box'));
         if ($('.' + parent_container + ' #cropper_' + id + ' .crop_box').length <= 0) {
             var crop = $('.crop_box').clone().prependTo('.' + parent_container + ' #cropper_' + id);
-            //crop.addClass('active');
         }
 
-               var cropper = $('.' + parent_container + ' #cropper_' + id)[0];
-            console.log(cropper);
-            $(cropper).css('maxWidth', '');
-            //var original_image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
-            //var image_h = self.scaleToFit(original_image);
-            var init_h = $(cropper).outerHeight().toFixed(2);
+        var cropper = $('.' + parent_container + ' #cropper_' + id)[0];
+        console.log(cropper);
+        $(cropper).css('maxWidth', '');
+        //var original_image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
+        //var image_h = self.scaleToFit(original_image);
+        var init_h = $(cropper).outerHeight().toFixed(2);
 
         self.createCropperImages(parent_container, id, target, image_h).then(function() {
 
-//crop.addClass('active');
-//setUpRotated(0);
-//openCropRotate();
+            //crop.addClass('active');
+            //setUpRotated(0);
+            //openCropRotate();
 
 
 
@@ -500,12 +499,16 @@ console.log($('.' + parent_container + ' #cropper_' + id + ' .crop_box'));
             //var init_h = $(cropper).outerHeight().toFixed(2);
             // If the scaled original image size is different to the current size.
             console.log(image_h + ' : ' + init_h);
+
+                      $('.' + parent_container + ' #image_' + id).addClass('hide');
+                hideImages(parent_container, id);
+
             if (image_h != init_h) {
                 console.log(init_h);
                 // Set the cropper height to its current height so that it can be animated.
                 $(cropper).css('height', init_h);
                 $(cropper).stop();
-                
+
                 // Animate the cropper tool onscreen
                 $(cropper).animate({ height: image_h }, {
                     duration: 900,
@@ -514,10 +517,13 @@ console.log($('.' + parent_container + ' #cropper_' + id + ' .crop_box'));
                         //self.createCropperImages(parent_container, id, target, image_h);
                     },
                     complete: function() {
+
+               
+
                         openCropRotate();
                     }
                 });
-                
+
             } else {
                 console.log('WHAT');
                 // self.createCropperImages(parent_container, id, target, image_h).then(function() {
@@ -574,6 +580,9 @@ console.log($('.' + parent_container + ' #cropper_' + id + ' .crop_box'));
             e.preventDefault();
             e.stopPropagation();
         }
+
+       
+
         var parent_container = ImageAdjustment.getImageParent();
         var id = ImageAdjustment.getImageId();
         var cropper = $('.' + parent_container + ' #cropper_' + id);
@@ -660,14 +669,14 @@ console.log($('.' + parent_container + ' #cropper_' + id + ' .crop_box'));
         var crop_bg = $('.crop_bg')[0];
         var crop_src = $('#crop_src')[0];
         var ia = ImageAdjustment.getImageAdjustments(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId());
-        if(ia!=undefined){
-           var stored_perspective = ia.perspective;
-        var stored_rotate = ia.rotate; 
-        ia.crop = undefined;
-        ia.perspective = undefined;
-        ia.rotate = undefined;
-    }
-        
+        if (ia != undefined) {
+            var stored_perspective = ia.perspective;
+            var stored_rotate = ia.rotate;
+            ia.crop = undefined;
+            ia.perspective = undefined;
+            ia.rotate = undefined;
+        }
+
         console.log('setUpRotated');
         ImageAdjustment.applyFilters(source, ia).then(function(canvas_original_filters) {
             canvas_original = canvas_original_filters;
@@ -700,12 +709,12 @@ console.log($('.' + parent_container + ' #cropper_' + id + ' .crop_box'));
                     ctx_crop_src.drawImage(canvas_original, -canvas_original.width / 2, -canvas_original.height / 2);
                     p.ctxd1 = ctx_crop_bg;
                     p.ctxd2 = ctx_crop_src;
-                    if(ia!=undefined){
-                       p.rotated = ia.rotated; 
-                   } else {
-                    p.rotated = angle;
-                   }
-                    
+                    if (ia != undefined) {
+                        p.rotated = ia.rotated;
+                    } else {
+                        p.rotated = angle;
+                    }
+
                     ImageAdjustment.setPerspective(p);
                     if (stored_perspective != undefined) {
                         $rootScope.slider_settings.perspective_v.amount = stored_perspective.vertical;
@@ -726,7 +735,7 @@ console.log($('.' + parent_container + ' #cropper_' + id + ' .crop_box'));
                 crop_data = ia.crop;
             }
             // Make resizable.
-            Resize.makeResizableDiv('.crop_box','.resizers', '.crop_area', '#crop_src', image_original, crop_data, ImageAdjustment.getImageId());
+            Resize.makeResizableDiv('.crop_box', '.resizers', '.crop_area', '#crop_src', image_original, crop_data, ImageAdjustment.getImageId());
         });
     };
 
