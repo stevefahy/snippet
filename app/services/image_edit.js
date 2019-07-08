@@ -479,7 +479,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
         self.createCropperImages(parent_container, id, target, image_h).then(function() {
 
-
+//crop.addClass('active');
 
 
 
@@ -491,13 +491,14 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             //var image_h = self.scaleToFit(original_image);
             var init_h = $(cropper).outerHeight().toFixed(2);
             // If the scaled original image size is different to the current size.
+            console.log(image_h + ' : ' + init_h);
             if (image_h != init_h) {
                 // Set the cropper height to its current height so that it can be animated.
                 $(cropper).css('height', init_h);
                 $(cropper).stop();
                 // Animate the cropper tool onscreen
                 $(cropper).animate({ height: image_h }, {
-                    duration: 400,
+                    duration: 700,
                     easing: "easeOutQuad",
                     start: function() {
                         //self.createCropperImages(parent_container, id, target, image_h);
@@ -575,7 +576,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         //Make the DIV element draggagle:
         Drag.setUp(document.getElementById("drag"), document.getElementById("crop_src"), document.querySelector('.crop_area'));
         // Make resizable.
-        Resize.makeResizableDiv('.resizers', '.crop_area', '#crop_src', original_image, crop_data, id);
+        Resize.makeResizableDiv('.crop_box', '.resizers', '.crop_area', '#crop_src', original_image, crop_data, id);
         // Open the Rotate slider.
         openRotateSlider();
     };

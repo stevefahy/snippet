@@ -33,8 +33,8 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', 'Scroll', function(Drag, I
         }
     };
 
-    this.makeResizableDiv = function(cropping_box, cropping_area, cropping_source, cropping_original_image, crop_data, id) {
-
+    this.makeResizableDiv = function(crop_box, cropping_box, cropping_area, cropping_source, cropping_original_image, crop_data, id) {
+        var crop_box_container = document.querySelector(crop_box);
         var crop_box = document.querySelector(cropping_box);
         var resizers = document.querySelectorAll(cropping_box + ' .resizer');
         var crop_area = document.querySelector(cropping_area);
@@ -99,6 +99,9 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', 'Scroll', function(Drag, I
 
         // Set the clip path for the crop area.
         $(crop_area)[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
+
+
+        //$(crop_box_container).addClass('active');
 
         for (var i = 0, len = resizers.length; i < len; i++) {
             const currentResizer = resizers[i];
