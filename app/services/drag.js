@@ -55,7 +55,7 @@ cardApp.service('Drag', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Us
             self.elmnt.addEventListener("touchmove", elementDrag, false);
         }
 
-        $(self.elmnt).addClass('active');
+        //$(self.elmnt).addClass('active');
     }
 
     function elementDrag(e) {

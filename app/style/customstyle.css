@@ -3178,11 +3178,13 @@ span.after_image {
 }
 
 .crop_box {
-    visibility: hidden;
+    /*visibility: hidden;*/
+    display: none;
 }
 
 .crop_box.active {
-    visibility: visible;
+    /*visibility: visible;*/
+    display: block;
     background-color: rgba(25, 25, 25, 0.6);
     position: absolute;
     top: 0px;
