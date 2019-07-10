@@ -213,7 +213,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
         // Sroll fix
         $('#progress-thumb').removeClass('crop_fix');
-        
+
         // Disable scrolling until the crop has been saved.
         Scroll.disable('.content_cnv');
         var parent_container = ImageAdjustment.getImageParent();
@@ -657,7 +657,9 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         setUpRotated().then(function(p) {
             console.log('setUpRotated returned');
 
-
+            // Sroll fix
+        $('#progress-thumb').addClass('crop_fix');
+        
             //Make the DIV element draggagle:
             Drag.setUp(document.getElementById("drag"), document.getElementById("crop_src"), document.querySelector('.crop_area'));
             // Make resizable.
@@ -1078,9 +1080,6 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         // Get initial settings
         initial_adjustments = ImageAdjustment.getImageAdjustments(parent_container, id);
         console.log(initial_adjustments);
-
-        // Sroll fix
-        $('#progress-thumb').addClass('crop_fix');
 
         var p1 = animateImageSizeMenuIn();
 
