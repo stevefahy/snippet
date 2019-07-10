@@ -132,6 +132,7 @@ cardApp.service('Slider', ['$window', '$rootScope', 'ImageAdjustment', function(
     };
 
     this.reset = function() {
+        console.log('slider reset start');
         //$rootScope.slider_settings
         for (var key in $rootScope.slider_settings) {
             if ($rootScope.slider_settings.hasOwnProperty(key)) {
@@ -141,6 +142,7 @@ cardApp.service('Slider', ['$window', '$rootScope', 'ImageAdjustment', function(
             }
         }
         console.log($rootScope.slider_settings);
+        console.log('slider reset end');
     };
 
 }]);

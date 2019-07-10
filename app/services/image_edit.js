@@ -441,7 +441,9 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         console.log($('#crop_src')[0]);
         // Set up Perspective
         var prom1 = ImageAdjustment.perspectiveInit($('#crop_src')[0]).then(function(p) {
+            console.log('perspectiveInit returned');
             var prom2 = ImageAdjustment.perspective_setup(p.cvso_lo.width, p.cvso_lo.height, p.cvso_hi.width, p.cvso_hi.height).then(function(result) {
+                console.log('perspective_setup returned');
                 var ctx1 = $('.crop_bg')[0].getContext('2d');
                 var ctx2 = $('#crop_src')[0].getContext('2d');
                 // Transform the context so that the image is centred like it is for the rotate function.
@@ -741,9 +743,11 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var crop_bg = $('.crop_bg')[0];
         var crop_src = $('#crop_src')[0];
         var ia = ImageAdjustment.getImageAdjustments(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId());
+        console.log(JSON.stringify(ia));
         if (ia != undefined) {
             var stored_perspective = ia.perspective;
             var stored_rotate = ia.rotate;
+            console.log(stored_rotate);
             ia.crop = undefined;
             ia.perspective = undefined;
             ia.rotate = undefined;
@@ -788,16 +792,23 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                     }
 
                     ImageAdjustment.setPerspective(p);
+                    console.log(stored_perspective);
                     if (stored_perspective != undefined) {
+                        console.log(stored_perspective);
                         $rootScope.slider_settings.perspective_v.amount = stored_perspective.vertical;
                         $rootScope.slider_settings.perspective_h.amount = stored_perspective.horizontal;
                         ImageAdjustment.quickPerspectiveChange(stored_perspective.vertical, stored_perspective.horizontal, 'high');
                     }
+                    console.log(stored_rotate);
                     if (stored_rotate != undefined) {
                         //var latest_rotate = $rootScope.slider_settings.rotate.amount;
-                        //console.log(latest_rotate);
+                        console.log(stored_rotate);
                         // rotate the image(s).
                         self.sliderRotateChange(stored_rotate);
+                    } else {
+                        var latest_rotate = $rootScope.slider_settings.rotate.amount;
+                        // rotate the image(s).
+                        self.sliderRotateChange(latest_rotate);
                     }
                     console.log('setUpRotated prom 3 done');
                     self.sliderRotateUpdate();
