@@ -2600,7 +2600,7 @@ span#header b.header_3 {
 }
 
 .progress_bar.crop_fix {
-    background-color: rgba(90, 90, 90, 0);
+    background-color: rgba(90, 90, 90, .1);
 }
 
 .progress_bar {
