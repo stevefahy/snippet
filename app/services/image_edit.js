@@ -381,6 +381,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
         // Get initial settings
         //initial_adjustments = ImageAdjustment.getImageAdjustments(parent_container, id);
+        console.log(initial_adjustments);
         ImageAdjustment.setImageAdjustments(parent_container, id, initial_adjustments);
 
         var cropper = $('.' + parent_container + ' #cropper_' + id);
@@ -390,23 +391,28 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         if ($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length > 0) {
             $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').removeClass('hide');
             adjustSrc(image_original, 'hide');
-            anim_h = $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').height();
+            anim_h = $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').height().toFixed(1);
         } else {
             var io = ImageAdjustment.getImageOriginal(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId());
             var scale = ImageAdjustment.getScale(image_original, cropper);
             $(image_original).removeClass('hide');
-            anim_h = (io.nat_height / scale).toFixed(2);
+            anim_h = (io.nat_height / scale).toFixed(1);
         }
         self.removeCrop();
         self.removeSlider();
         ImageAdjustment.setImageEditing(false);
-        var cropper_h = $(cropper).outerHeight().toFixed(2);
+        //var cropper_h = $(cropper).outerHeight().toFixed(1);
+        var cropper_h = $(cropper).height().toFixed(1);
+        console.log(cropper_h + ' : ' + anim_h);
         if (cropper_h != anim_h) {
             $(cropper).stop();
             // Animate back to the existing image (original or adjusted).
             $(cropper).animate({ height: anim_h }, {
                 duration: 700,
-                easing: "easeOutQuad"
+                easing: "easeOutQuad",
+                complete: function() {
+                    $(this).css('height', '');
+                }
             });
         }
     };
@@ -500,17 +506,22 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         console.log('buildImageSize');
         var original_image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
         var image_h = self.scaleToFit(original_image);
+        var cropper = $('.' + parent_container + ' #cropper_' + id)[0];
+        //var init_h = $(cropper).outerHeight().toFixed(2);
+        var init_h = $(cropper).height().toFixed(1);
+        console.log(image_h);
+        console.log($(cropper).height());
         //console.log($('.' + parent_container + ' #cropper_' + id + ' .crop_box'));
         if ($('.' + parent_container + ' #cropper_' + id + ' .crop_box').length <= 0) {
             var crop = $('.crop_box').clone().prependTo('.' + parent_container + ' #cropper_' + id);
         }
 
-        var cropper = $('.' + parent_container + ' #cropper_' + id)[0];
+        //var cropper = $('.' + parent_container + ' #cropper_' + id)[0];
         //console.log(cropper);
         $(cropper).css('maxWidth', '');
         //var original_image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
         //var image_h = self.scaleToFit(original_image);
-        var init_h = $(cropper).outerHeight().toFixed(2);
+        //var init_h = $(cropper).outerHeight().toFixed(2);
 
         self.createCropperImages(parent_container, id, target, image_h).then(function() {
             console.log('createCropperImages ended');
@@ -527,19 +538,21 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
 
             var cropper = $('.' + parent_container + ' #cropper_' + id)[0];
+            
             //console.log(cropper);
             $(cropper).css('maxWidth', '');
             //var original_image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
-            var image_h = self.scaleToFit(original_image);
+            //var image_h = self.scaleToFit(original_image);
             //var init_h = $(cropper).outerHeight().toFixed(2);
             // If the scaled original image size is different to the current size.
             console.log(image_h + ' : ' + init_h);
 
             $('.' + parent_container + ' #image_' + id).addClass('hide');
             hideImages(parent_container, id);
-
+            console.log(image_h + ' : ' + init_h);
             if (image_h != init_h) {
-                //console.log(init_h);
+
+                console.log(init_h);
                 // Set the cropper height to its current height so that it can be animated.
                 $(cropper).css('height', init_h);
                 $(cropper).stop();
@@ -937,17 +950,22 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var win_scale = ImageAdjustment.getImageScale(original_image);
         var orig_h = nat_h;
         if (win_scale > 1) {
-            orig_h = (nat_h / win_scale).toFixed(2);
+            console.log('winscale');
+            console.log(nat_h);
+            console.log(win_scale);
+            console.log(nat_h / win_scale);
+            orig_h = (nat_h / win_scale).toFixed(1);
         }
         var win_h = $(window).height();
         var display_used = $('.header').height() + $('.create_container').height() + $('.footer').height() + IMAGE_MARGIN;
-        var available_h = win_h - display_used;
+        var available_h = (win_h - display_used).toFixed(1);
         if (orig_h > available_h) {
+            console.log('available_h');
             new_h = available_h;
         } else {
             new_h = orig_h;
         }
-        return new_h;
+        return parseFloat(new_h).toFixed(1);
     };
 
     var createImageSizeImages = function() {
@@ -1040,7 +1058,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
         // Get initial settings
         initial_adjustments = ImageAdjustment.getImageAdjustments(parent_container, id);
-
+        console.log(initial_adjustments);
         var p1 = animateImageSizeMenuIn();
 
         var image;

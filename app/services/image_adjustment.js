@@ -34,14 +34,20 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
     };
 
     this.setImageAdjustments = function(parent_container, id, values) {
+        console.log(values);
         /*var ia = this.getImageAdjustments(parent_container, id);
         if (ia == undefined) {
             ia = {};
         }
         ia[name] = value;*/
+        if(values == undefined){
+            console.log('remove');
+             $('.' + parent_container + ' #image_' + id).removeAttr('adjustment-data');
+        } else {
+                  // Custom attribute for storing image adjustments.
+        $('.' + parent_container + ' #image_' + id).attr('adjustment-data', JSON.stringify(values));  
+        }
 
-        // Custom attribute for storing image adjustments.
-        $('.' + parent_container + ' #image_' + id).attr('adjustment-data', JSON.stringify(values));
     };
 
     this.getImageAdjustments = function(parent_container, id) {
