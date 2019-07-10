@@ -210,6 +210,10 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         if (ua.indexOf('AndroidApp') >= 0) {
             Android.changeTopBar('#F0F0F0');
         }
+
+        // Sroll fix
+        $('#progress-thumb').removeClass('crop_fix');
+        
         // Disable scrolling until the crop has been saved.
         Scroll.disable('.content_cnv');
         var parent_container = ImageAdjustment.getImageParent();
@@ -376,6 +380,10 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         if (ua.indexOf('AndroidApp') >= 0) {
             Android.changeTopBar('#F0F0F0');
         }
+
+        // Sroll fix
+        $('#progress-thumb').removeClass('crop_fix');
+
         var parent_container = ImageAdjustment.getImageParent();
         var id = ImageAdjustment.getImageId();
 
@@ -1073,7 +1081,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
         // Sroll fix
         $('#progress-thumb').addClass('crop_fix');
-        
+
         var p1 = animateImageSizeMenuIn();
 
         var image;
