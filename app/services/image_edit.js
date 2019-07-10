@@ -1070,6 +1070,10 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         // Get initial settings
         initial_adjustments = ImageAdjustment.getImageAdjustments(parent_container, id);
         console.log(initial_adjustments);
+
+        // Sroll fix
+        $('#progress-thumb').addClass('crop_fix');
+        
         var p1 = animateImageSizeMenuIn();
 
         var image;

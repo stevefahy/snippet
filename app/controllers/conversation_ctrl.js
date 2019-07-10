@@ -108,7 +108,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     if (ua.indexOf('AndroidApp') >= 0) {
         mobile = true;
     }
-
+mobile = true;
     Keyboard.keyBoardListenStart();
 
     // Use the urls id param from the route to load the conversation.

@@ -2599,6 +2599,10 @@ span#header b.header_3 {
     visibility: visible;
 }
 
+.progress_bar.crop_fix {
+    background-color: rgba(90, 90, 90, .4);
+}
+
 .progress_bar {
     position: relative;
     height: 20px;
@@ -2606,6 +2610,8 @@ span#header b.header_3 {
     opacity: 0;
     will-change: scroll-position;
 }
+
+
 
 
 /* ANIMATIONS
