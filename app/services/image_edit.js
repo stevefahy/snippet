@@ -412,8 +412,10 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
     this.createCropperImages = function(parent_container, id, target, h) {
+        console.log('createCropperImages');
         var deferred = $q.defer();
-        console.log(target);
+        var promises = [];
+        //console.log(target);
         //$('.' + parent_container + ' #image_' + id).addClass('hide');
         var new_canvas_src = ImageAdjustment.cloneCanvas(target);
         var new_canvas_bg = ImageAdjustment.cloneCanvas(target);
@@ -432,8 +434,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
         console.log($('#crop_src')[0]);
         // Set up Perspective
-        ImageAdjustment.perspectiveInit($('#crop_src')[0]).then(function(p) {
-            ImageAdjustment.perspective_setup(p.cvso_lo.width, p.cvso_lo.height, p.cvso_hi.width, p.cvso_hi.height).then(function(result) {
+        var prom1 = ImageAdjustment.perspectiveInit($('#crop_src')[0]).then(function(p) {
+            var prom2 = ImageAdjustment.perspective_setup(p.cvso_lo.width, p.cvso_lo.height, p.cvso_hi.width, p.cvso_hi.height).then(function(result) {
                 var ctx1 = $('.crop_bg')[0].getContext('2d');
                 var ctx2 = $('#crop_src')[0].getContext('2d');
                 // Transform the context so that the image is centred like it is for the rotate function.
@@ -449,8 +451,15 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                         ImageAdjustment.quickPerspectiveChange(ia.perspective.vertical, ia.perspective.horizontal, 'high');
                     }
                 }
-                initCropRotate(parent_container, id);
-                setUpRotated(0);
+                var prom3 = initCropRotate(parent_container, id).then(function(p) {
+                    console.log('initCropRotate returned');
+                });
+
+                //promises.push(prom3);
+                /*var prom4 = setUpRotated().then(function(p) {
+                    console.log('setUpRotated returned');
+                });*/
+
                 var crop_data;
                 if (ia != undefined) {
                     crop_data = ia.crop;
@@ -461,38 +470,64 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 }
                 //$('.' + parent_container + ' #image_' + id).addClass('hide');
                 //hideImages(parent_container, id);
-                deferred.resolve();
+                //deferred.resolve();
+
+                // all done
+                $.when(prom1, prom2, prom3).then(function(r1, r2, r3, r4) {
+                    console.log('createCropperImages fin');
+                    deferred.resolve();
+                });
             });
+            //promises.push(prom2);
         });
+        //promises.push(prom1);
+
+        /*
+        $q.all(promises).then(function() {
+            //animateImageSizeMenuIn();
+            //self.buildImageSize(parent_container, id, target);
+            //console.log(target);
+            console.log('createCropperImages fin');
+            deferred.resolve();
+        });
+        */
+
+
         return deferred.promise;
     };
 
     this.buildImageSize = function(parent_container, id, target) {
-
+        console.log('buildImageSize');
         var original_image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
         var image_h = self.scaleToFit(original_image);
-        console.log($('.' + parent_container + ' #cropper_' + id + ' .crop_box'));
+        //console.log($('.' + parent_container + ' #cropper_' + id + ' .crop_box'));
         if ($('.' + parent_container + ' #cropper_' + id + ' .crop_box').length <= 0) {
             var crop = $('.crop_box').clone().prependTo('.' + parent_container + ' #cropper_' + id);
         }
 
         var cropper = $('.' + parent_container + ' #cropper_' + id)[0];
-        console.log(cropper);
+        //console.log(cropper);
         $(cropper).css('maxWidth', '');
         //var original_image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
         //var image_h = self.scaleToFit(original_image);
         var init_h = $(cropper).outerHeight().toFixed(2);
 
         self.createCropperImages(parent_container, id, target, image_h).then(function() {
-
+            console.log('createCropperImages ended');
             //crop.addClass('active');
             //setUpRotated(0);
             //openCropRotate();
 
+            /*
+                         setUpRotated().then(function(p) {
+                                console.log('setUpRotated returned');
+                            });
+                            */
+
 
 
             var cropper = $('.' + parent_container + ' #cropper_' + id)[0];
-            console.log(cropper);
+            //console.log(cropper);
             $(cropper).css('maxWidth', '');
             //var original_image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
             var image_h = self.scaleToFit(original_image);
@@ -500,25 +535,25 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             // If the scaled original image size is different to the current size.
             console.log(image_h + ' : ' + init_h);
 
-                      $('.' + parent_container + ' #image_' + id).addClass('hide');
-                hideImages(parent_container, id);
+            $('.' + parent_container + ' #image_' + id).addClass('hide');
+            hideImages(parent_container, id);
 
             if (image_h != init_h) {
-                console.log(init_h);
+                //console.log(init_h);
                 // Set the cropper height to its current height so that it can be animated.
                 $(cropper).css('height', init_h);
                 $(cropper).stop();
 
                 // Animate the cropper tool onscreen
                 $(cropper).animate({ height: image_h }, {
-                    duration: 900,
+                    duration: 700,
                     easing: "easeOutQuad",
                     start: function() {
                         //self.createCropperImages(parent_container, id, target, image_h);
                     },
                     complete: function() {
 
-               
+
 
                         openCropRotate();
                     }
@@ -576,12 +611,13 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
     this.openCropRotate = function(e) {
+        console.log('openCropRotate');
         if (e != undefined) {
             e.preventDefault();
             e.stopPropagation();
         }
 
-       
+
 
         var parent_container = ImageAdjustment.getImageParent();
         var id = ImageAdjustment.getImageId();
@@ -594,17 +630,27 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         if (ia != undefined) {
             crop_data = ia.crop;
         }
-        //Make the DIV element draggagle:
-        Drag.setUp(document.getElementById("drag"), document.getElementById("crop_src"), document.querySelector('.crop_area'));
-        // Make resizable.
-        $('.' + parent_container + ' .crop_box').addClass('active');
-        Resize.makeResizableDiv('.crop_box', '.resizers', '.crop_area', '#crop_src', original_image, crop_data, id);
-        // Open the Rotate slider.
-        openRotateSlider();
+
+        setUpRotated().then(function(p) {
+            console.log('setUpRotated returned');
+
+
+            //Make the DIV element draggagle:
+            Drag.setUp(document.getElementById("drag"), document.getElementById("crop_src"), document.querySelector('.crop_area'));
+            // Make resizable.
+            $('.' + parent_container + ' .crop_box').addClass('active');
+            Resize.makeResizableDiv('.crop_box', '.resizers', '.crop_area', '#crop_src', original_image, crop_data, id);
+            // Open the Rotate slider.
+            openRotateSlider();
+        });
     };
 
     // Update the canvas contexts for rotation after perspective has changed.
     this.sliderRotateUpdate = function() {
+        console.log('sliderRotateUpdate');
+        var deferred = $q.defer();
+        var promises = [];
+
         var parent_container = ImageAdjustment.getImageParent();
         var id = ImageAdjustment.getImageId();
         var image = $('.' + parent_container + ' #image_' + id)[0];
@@ -615,10 +661,19 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             ia.crop = undefined;
             ia.rotate = undefined;
         }
-        ImageAdjustment.applyFilters(image, ia).then(function(new_image) {
+        var prom1 = ImageAdjustment.applyFilters(image, ia).then(function(new_image) {
+            console.log('sliderRotateUpdate filters ended');
             canvas_original = ImageAdjustment.cloneCanvas(new_image);
             crop_area_original = ImageAdjustment.cloneCanvas(new_image);
         });
+        promises.push(prom1);
+
+        $q.all(promises).then(function() {
+            console.log('sliderRotateUpdate Fin');
+            deferred.resolve();
+        });
+
+        return deferred.promise;
     };
 
     this.sliderRotateChange = function(value) {
@@ -664,6 +719,10 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
     var setUpRotated = function(angle) {
+        console.log('setUpRotated');
+        var deferred = $q.defer();
+        var promises = [];
+
         var image_original = $('.' + ImageAdjustment.getImageParent() + ' #cropper_' + ImageAdjustment.getImageId() + ' #image_' + ImageAdjustment.getImageId())[0];
         var source = self.imageToCanvas(image_original);
         var crop_bg = $('.crop_bg')[0];
@@ -677,8 +736,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             ia.rotate = undefined;
         }
 
-        console.log('setUpRotated');
-        ImageAdjustment.applyFilters(source, ia).then(function(canvas_original_filters) {
+        var prom1 = ImageAdjustment.applyFilters(source, ia).then(function(canvas_original_filters) {
             canvas_original = canvas_original_filters;
             crop_area_original = canvas_original_filters;
             $('.crop_bg')[0].width = canvas_original.width;
@@ -688,12 +746,13 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             var image_h = self.scaleToFit(image_original);
             $('.crop_bg').css('height', image_h);
             $('#crop_src').css('height', image_h);
-
+            console.log('setUpRotated prom 1 done');
             //$('.content_cnv #cropper_' + ImageAdjustment.getImageId()).css('maxWidth', canvas_original.width + 'px');
             //$('.content_cnv #cropper_' + ImageAdjustment.getImageId()).css('height', '');
             // Set up Perspective
-            ImageAdjustment.perspectiveInit(canvas_original).then(function(p) {
-                ImageAdjustment.perspective_setup(p.cvso_lo.width, p.cvso_lo.height, p.cvso_hi.width, p.cvso_hi.height).then(function(result) {
+            var prom2 = ImageAdjustment.perspectiveInit(canvas_original).then(function(p) {
+                console.log('setUpRotated prom 2 done');
+                var prom3 = ImageAdjustment.perspective_setup(p.cvso_lo.width, p.cvso_lo.height, p.cvso_hi.width, p.cvso_hi.height).then(function(result) {
                     ctx_crop_bg = $('.crop_bg')[0].getContext('2d');
                     ctx_crop_src = $('#crop_src')[0].getContext('2d');
                     $('.crop_bg')[0].width = canvas_original.width;
@@ -727,9 +786,20 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                         // rotate the image(s).
                         self.sliderRotateChange(stored_rotate);
                     }
+                    console.log('setUpRotated prom 3 done');
                     self.sliderRotateUpdate();
+
+
+                    // all done
+                    $.when(prom1, prom2, prom3).then(function(r1, r2, r3) {
+
+                        console.log('setUpRotated Fin');
+                        deferred.resolve();
+                    });
                 });
+                //promises.push(prom3);
             });
+            //promises.push(prom2);
             var crop_data;
             if (ia != undefined) {
                 crop_data = ia.crop;
@@ -737,6 +807,18 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             // Make resizable.
             Resize.makeResizableDiv('.crop_box', '.resizers', '.crop_area', '#crop_src', image_original, crop_data, ImageAdjustment.getImageId());
         });
+        //promises.push(prom1);
+
+
+
+
+        /*$q.all(promises).then(function() {
+            console.log('setUpRotated Fin');
+            deferred.resolve();
+        });*/
+
+        return deferred.promise;
+
     };
 
     this.rotateImage = function(e, dir) {
@@ -819,16 +901,24 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
     var initCropRotate = function(parent_container, id) {
+        console.log('initCropRotate');
         var deferred = $q.defer();
         var canvas_orig = $('.crop_bg')[0];
         var canvas_crop = $('#crop_src')[0];
         canvas_original = ImageAdjustment.cloneCanvas(canvas_orig);
         crop_area_original = ImageAdjustment.cloneCanvas(canvas_crop);
-        self.sliderRotateUpdate();
+        //self.sliderRotateUpdate();
         var canvas = $('.crop_bg')[0];
         ctx_crop_bg = canvas.getContext('2d', { alpha: false });
         var canvas2 = $('#crop_src')[0];
         ctx_crop_src = canvas2.getContext('2d', { alpha: false });
+        /*
+        self.sliderRotateUpdate().then(function(result) {
+            console.log('initCropRotate ended');
+            deferred.resolve();
+        });
+        */
+
         deferred.resolve();
         return deferred.promise;
     };
@@ -861,6 +951,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     };
 
     var createImageSizeImages = function() {
+        console.log('createImageSizeImages');
         var deferred = $q.defer();
         var promises = [];
         var parent_container = ImageAdjustment.getImageParent();
@@ -891,7 +982,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         $q.all(promises).then(function() {
             //animateImageSizeMenuIn();
             //self.buildImageSize(parent_container, id, target);
-            console.log(target);
+            //console.log(target);
+            console.log('createImageSizeImages fin');
             deferred.resolve(target);
         });
         return deferred.promise;
