@@ -548,7 +548,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
 
             var cropper = $('.' + parent_container + ' #cropper_' + id)[0];
-            
+
             //console.log(cropper);
             $(cropper).css('maxWidth', '');
             //var original_image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
@@ -646,6 +646,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var id = ImageAdjustment.getImageId();
         var cropper = $('.' + parent_container + ' #cropper_' + id);
         $(cropper).css('maxWidth', '');
+        /*
         var crop_data;
         var original_image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
         var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
@@ -653,21 +654,46 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         if (ia != undefined) {
             crop_data = ia.crop;
         }
+        */
 
         setUpRotated().then(function(p) {
             console.log('setUpRotated returned');
 
             // Sroll fix
-        $('#progress-thumb').addClass('crop_fix');
-        
+            $('#progress-thumb').addClass('crop_fix');
+/*
             //Make the DIV element draggagle:
             Drag.setUp(document.getElementById("drag"), document.getElementById("crop_src"), document.querySelector('.crop_area'));
             // Make resizable.
             $('.' + parent_container + ' .crop_box').addClass('active');
             Resize.makeResizableDiv('.crop_box', '.resizers', '.crop_area', '#crop_src', original_image, crop_data, id);
             // Open the Rotate slider.
-            openRotateSlider();
+            openRotateSlider();*/
+            self.toggleRotateSlider();
         });
+    };
+
+    this.toggleRotateSlider = function(e) {
+        console.log('toggleRotateSlider');
+        if (e != undefined) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        var crop_data;
+        var original_image = $('.' + ImageAdjustment.getImageParent() + ' #cropper_' + ImageAdjustment.getImageId() + ' #image_' + ImageAdjustment.getImageId())[0];
+        var ia = ImageAdjustment.getImageAdjustments(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId() );
+        $('.' + ImageAdjustment.getImageParent() + ' #cropper_' + ImageAdjustment.getImageId() + ' .crop_adjust').attr('id', 'drag');
+        if (ia != undefined) {
+            crop_data = ia.crop;
+        }
+          //Make the DIV element draggagle:
+            Drag.setUp(document.getElementById("drag"), document.getElementById("crop_src"), document.querySelector('.crop_area'));
+            // Make resizable.
+            $('.' + ImageAdjustment.getImageParent() + ' .crop_box').addClass('active');
+            Resize.makeResizableDiv('.crop_box', '.resizers', '.crop_area', '#crop_src', original_image, crop_data, ImageAdjustment.getImageId());
+            // Open the Rotate slider.
+            openRotateSlider();
     };
 
     // Update the canvas contexts for rotation after perspective has changed.
