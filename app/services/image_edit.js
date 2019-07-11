@@ -672,7 +672,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             self.toggleRotateSlider();
         });
     };
-
+// Update
     this.toggleRotateSlider = function(e) {
         console.log('toggleRotateSlider');
         if (e != undefined) {
