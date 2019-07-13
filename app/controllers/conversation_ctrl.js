@@ -9,12 +9,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     testImage = ImageEdit.testImage;
     cancelCrop = ImageEdit.cancelCrop;
     makeCrop = ImageEdit.makeCrop;
-    openCropRotate = ImageEdit.openCropRotate;
+    //openCropRotate = ImageEdit.openCropRotate;
     toggleRotateSlider = ImageEdit.toggleRotateSlider;
+    //openRotateSlider = ImageEdit.openRotateSlider;
     openPerspective = ImageEdit.openPerspective;
     flip = ImageEdit.flip;
     rotateImage = ImageEdit.rotateImage;
     sliderRotateChange = ImageEdit.sliderRotateChange;
+    sliderRotateEnd = ImageEdit.sliderRotateEnd;
     sliderperspectiveVChange = ImageEdit.sliderperspectiveVChange;
     sliderperspectiveHChange = ImageEdit.sliderperspectiveHChange;
     sliderTestChange = ImageEdit.sliderTestChange;
@@ -109,7 +111,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     if (ua.indexOf('AndroidApp') >= 0) {
         mobile = true;
     }
-mobile = true;
+
     Keyboard.keyBoardListenStart();
 
     // Use the urls id param from the route to load the conversation.

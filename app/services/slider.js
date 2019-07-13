@@ -54,8 +54,9 @@ cardApp.service('Slider', ['$window', '$rootScope', 'ImageAdjustment', function(
                     //console.log('on change ' + amount);
                     sliderRotateChange(amount);
                 },
-                onEnd: function() {
+                onEnd: function(id, amount) {
                     //console.log('on end ' + amount);
+                    sliderRotateEnd(amount);
                 }
             }
         },
