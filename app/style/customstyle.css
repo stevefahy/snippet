@@ -3184,12 +3184,10 @@ span.after_image {
 }
 
 .crop_box {
-    /*visibility: hidden;*/
     display: none;
 }
 
 .crop_box.active {
-    /*visibility: visible;*/
     display: block;
     background-color: rgba(25, 25, 25, 0.6);
     position: absolute;
@@ -3409,7 +3407,6 @@ span.after_image {
     border-bottom-color: #1f1f1f;
     will-change: right;
     transform: translateZ(0);
-    /*transform: translateX(100%);*/
     right: -100vw;
 }
 
@@ -3628,4 +3625,3 @@ img.graphic-icons {
 .image_size_menu.animate_in {
     -webkit-animation: slide-in .4s cubic-bezier(0.19, 1, 0.22, 1);
 }
-

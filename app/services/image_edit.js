@@ -449,6 +449,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                     duration: 700,
                     easing: "easeOutQuad",
                     complete: function() {
+                        // Unset the cropper height after animation completes.
+                        $(this).css('height', '');
                         openCropRotate();
                     }
                 });

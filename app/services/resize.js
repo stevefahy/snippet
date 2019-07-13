@@ -100,9 +100,6 @@ cardApp.service('Resize', ['Drag', 'ImageAdjustment', 'Scroll', function(Drag, I
         // Set the clip path for the crop area.
         $(crop_area)[0].style.clipPath = "inset(" + per_top + "px " + per_right + "px " + per_bottom + "px " + per_left + "px)";
 
-
-        //$(crop_box_container).addClass('active');
-
         for (var i = 0, len = resizers.length; i < len; i++) {
             const currentResizer = resizers[i];
             if (!mobile) {

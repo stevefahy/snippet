@@ -9,9 +9,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     testImage = ImageEdit.testImage;
     cancelCrop = ImageEdit.cancelCrop;
     makeCrop = ImageEdit.makeCrop;
-    //openCropRotate = ImageEdit.openCropRotate;
     toggleRotateSlider = ImageEdit.toggleRotateSlider;
-    //openRotateSlider = ImageEdit.openRotateSlider;
     openPerspective = ImageEdit.openPerspective;
     flip = ImageEdit.flip;
     rotateImage = ImageEdit.rotateImage;

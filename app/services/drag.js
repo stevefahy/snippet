@@ -2,7 +2,7 @@
 // Drag Service
 //
 
-cardApp.service('Drag', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', 'General', 'UserData', 'principal', 'ImageAdjustment', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML, General, UserData, principal, ImageAdjustment) {
+cardApp.service('Drag', ['$window', '$rootScope', function($window, $rootScope) {
     var ua = navigator.userAgent;
     var mobile = false;
     if (ua.indexOf('AndroidApp') >= 0) {
@@ -27,7 +27,7 @@ cardApp.service('Drag', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Us
             pos3 = 0,
             pos4 = 0;
         elmnt.onmousedown = dragMouseDown;
-        elmnt.addEventListener("touchstart", dragMouseDown,  {passive: true});
+        elmnt.addEventListener("touchstart", dragMouseDown, { passive: true });
     };
 
     function dragMouseDown(e) {
@@ -55,7 +55,6 @@ cardApp.service('Drag', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Us
             self.elmnt.addEventListener("touchmove", elementDrag, false);
         }
 
-        //$(self.elmnt).addClass('active');
     }
 
     function elementDrag(e) {
