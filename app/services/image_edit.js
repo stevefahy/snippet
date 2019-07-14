@@ -92,6 +92,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').addClass('hide');
             $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').addClass('temp_crop_hide');
         }
+       
         $('#crop_src').removeClass('hide');
         $('.crop_bg').removeClass('hide');
     };
@@ -337,6 +338,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var io;
         var scale;
         var cropper_h;
+        cropper_h = $(cropper).height().toFixed(1);
         Debug.show();
         // Change the top color on android.
         if (ua.indexOf('AndroidApp') >= 0) {
@@ -360,8 +362,9 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         removeCrop();
         removeSlider();
         ImageAdjustment.setImageEditing(false);
-        cropper_h = $(cropper).height().toFixed(1);
         if (cropper_h != anim_h) {
+            // Set the cropper height to its current height so that it can be animated.
+            $(cropper).css('height', cropper_h);
             $(cropper).stop();
             // Animate back to the existing image (original or adjusted).
             $(cropper).animate({ height: anim_h }, {
@@ -390,7 +393,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         img = $(new_canvas_src).appendTo('.' + parent_container + ' #cropper_' + id + ' .crop_area');
         $(img).addClass('temp_canvas_filtered');
         img_bg = $(new_canvas_bg).appendTo('.' + parent_container + ' #cropper_' + id);
-        $(img_bg).addClass('crop_bg');
+        $(img_bg).addClass('crop_bg hide');
+        //$(img_bg).addClass('hide');
         $(img).attr('id', 'crop_src');
         // Set up Perspective
         var prom1 = ImageAdjustment.perspectiveInit($('#crop_src')[0]).then(function(p) {
@@ -436,9 +440,11 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         if ($('.' + parent_container + ' #cropper_' + id + ' .crop_box').length <= 0) {
             $('.crop_box').clone().prependTo('.' + parent_container + ' #cropper_' + id);
         }
+       
         // Create the two images required for crop rotate.
         createCropperImages(parent_container, id, target).then(function() {
             $('.' + parent_container + ' #image_' + id).addClass('hide');
+            $('.crop_bg').css('height', image_h);
             hideImages(parent_container, id);
             if (image_h != init_h) {
                 // Set the cropper height to its current height so that it can be animated.
