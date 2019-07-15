@@ -2,7 +2,7 @@
 // Slider Service
 //
 
-cardApp.service('Slider', ['$window', '$rootScope', 'ImageAdjustment', function($window, $rootScope, ImageAdjustment) {
+cardApp.service('Slider', ['$window', '$rootScope', 'ImageAdjustment', '$timeout', function($window, $rootScope, ImageAdjustment, $timeout) {
 
     this.slider_sharpen = '<div class="slider_outer" id="s_sharpen"><div class="slider_s_icon"><i class="material-icons light">details</i></div><rzslider rz-slider-model="slider_settings.sharpen.amount" rz-slider-options="slider_settings.sharpen.options"></rzslider></div>';
     this.slider_rotate = '<div class="slider_outer" id="s_rotate"><div class="slider_r_icon"><i class="material-icons light rotate">autorenew</i></div><rzslider rz-slider-model="slider_settings.rotate.amount" rz-slider-options="slider_settings.rotate.options"></rzslider></div>';
@@ -139,6 +139,38 @@ cardApp.service('Slider', ['$window', '$rootScope', 'ImageAdjustment', function(
                 $rootScope.slider_settings[key].amount = $rootScope.slider_settings[key].reset;
             }
         }
+    };
+
+    this.removeSlider = function() {
+        $('.slider_container').css('height', '');
+        $('.slider_container_inner').empty();
+        $('.slider_container_inner').removeClass('active');
+    };
+
+    var sliderAnimEnd = function() {
+        $(this).remove();
+    };
+
+    // Close all open sliders.
+    this.closeSlider = function(slider) {
+        var slider_h = 0;
+        var slider_count = $(".slider_container_inner").children().length;
+        var currentHeight = $('.slider_container_inner').outerHeight();
+        for (i = 0; i < arguments.length; i++) {
+            slider_h += $('.slider_container_inner #' + arguments[i]).outerHeight();
+            $('.slider_container_inner #' + arguments[i]).addClass('animate_minimize');
+            slider_count--;
+        }
+        $timeout(function() {
+            $(".animate_minimize").on('webkitTransitionEnd oTransitionEnd transitionend ', sliderAnimEnd);
+            var h = currentHeight - slider_h;
+            if (slider_count < 1) {
+                $(".slider_container_inner").removeClass('active');
+                $(".slider_container").css('height', '');
+            } else {
+                $('.slider_container').css('height', h);
+            }
+        }, 0);
     };
 
 }]);

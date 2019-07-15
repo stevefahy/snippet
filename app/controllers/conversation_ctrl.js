@@ -1,4 +1,4 @@
-cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$q', '$filter', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', 'ImageEdit', '$compile', 'ImageAdjustment', 'Keyboard', 'Scroll', '$animate', function($scope, $rootScope, $location, $http, $window, $q, $filter, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, ImageEdit, $compile, ImageAdjustment, Keyboard, Scroll, $animate) {
+cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$q', '$filter', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', 'ImageEdit', '$compile', 'ImageAdjustment', 'Keyboard', 'Scroll', '$animate', 'CropRotate', function($scope, $rootScope, $location, $http, $window, $q, $filter, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, ImageEdit, $compile, ImageAdjustment, Keyboard, Scroll, $animate, CropRotate) {
     openImageSize = ImageEdit.openImageSize;
     editImage = ImageEdit.editImage;
     closeImageEdit = ImageEdit.closeImageEdit;
@@ -7,16 +7,23 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     filterClick = ImageEdit.filterClick;
     adjustImage = ImageEdit.adjustImage;
     testImage = ImageEdit.testImage;
-    cancelCrop = ImageEdit.cancelCrop;
-    makeCrop = ImageEdit.makeCrop;
-    toggleRotateSlider = ImageEdit.toggleRotateSlider;
+    //cancelCrop = ImageEdit.cancelCrop;
+    cancelCrop = CropRotate.cancelCrop;
+    //makeCrop = ImageEdit.makeCrop;
+    makeCrop = CropRotate.makeCrop;
+    //toggleRotateSlider = ImageEdit.toggleRotateSlider;
+    toggleRotateSlider = CropRotate.toggleRotateSlider;
     openPerspective = ImageEdit.openPerspective;
     flip = ImageEdit.flip;
     rotateImage = ImageEdit.rotateImage;
-    sliderRotateChange = ImageEdit.sliderRotateChange;
-    sliderRotateEnd = ImageEdit.sliderRotateEnd;
-    sliderperspectiveVChange = ImageEdit.sliderperspectiveVChange;
-    sliderperspectiveHChange = ImageEdit.sliderperspectiveHChange;
+    //sliderRotateChange = ImageEdit.sliderRotateChange;
+    //sliderRotateEnd = ImageEdit.sliderRotateEnd;
+    sliderRotateChange = CropRotate.sliderRotateChange;
+    sliderRotateEnd = CropRotate.sliderRotateEnd;
+    //sliderperspectiveVChange = ImageEdit.sliderperspectiveVChange;
+    //sliderperspectiveHChange = ImageEdit.sliderperspectiveHChange;
+    sliderperspectiveVChange = CropRotate.sliderperspectiveVChange;
+    sliderperspectiveHChange = CropRotate.sliderperspectiveHChange;
     sliderTestChange = ImageEdit.sliderTestChange;
 
     $scope.getFocus = Format.getFocus;
