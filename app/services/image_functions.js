@@ -4,6 +4,7 @@
 
 cardApp.service('ImageFunctions', ['$rootScope', 'Format', '$q', 'ContentEditable', 'ImageAdjustment', function($rootScope, Format, $q, ContentEditable, ImageAdjustment) {
 
+    var self = this;
     var temp_save = false;
 
     this.imageToCanvas = function(image) {
@@ -81,6 +82,20 @@ cardApp.service('ImageFunctions', ['$rootScope', 'Format', '$q', 'ContentEditabl
             deferred.resolve();
         }
         return deferred.promise;
+    };
+
+    this.hideAdjusted = function(parent_container, id) {
+        // If there is already an adjusted image then hide it.
+        if ($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length > 0) {
+            $('.' + parent_container + ' #cropper_' + id + ' img.adjusted').addClass('hide');
+        }
+    };
+
+    this.hideOriginal = function(parent_container, id) {
+        // Hide the original image.
+        $('.' + parent_container + ' #cropper_' + id + ' #image_' + id).addClass('hide');
+        var image_original = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
+        self.adjustSrc(image_original, 'hide');
     };
 
 }]);

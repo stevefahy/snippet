@@ -65,6 +65,87 @@ cardApp.service('CropRotate', ['$rootScope', 'Slider', 'ImageAdjustment', 'Image
         }
     };
 
+    // Rotated
+
+    this.rotateImage = function(e, dir) {
+        e.preventDefault();
+        e.stopPropagation();
+        var angle = ImageAdjustment.getImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'rotated');
+        if (angle == undefined) {
+            angle = 0;
+        }
+        if (dir == 'right' && angle < 270) {
+            angle += 90;
+        } else if (dir == 'right') {
+            angle = 0;
+        }
+        if (dir == 'left' && angle > 0) {
+            angle -= 90;
+        } else if (dir == 'left') {
+            angle = 270;
+        }
+        ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'rotated', angle);
+        self.setUpRotated();
+    };
+
+    // Flip
+
+    this.flipImage = function(e, dir) {
+        e.preventDefault();
+        e.stopPropagation();
+        var flip_dir = 'flip_v';
+        if (dir == 'h') {
+            flip_dir = 'flip_h';
+        }
+        var flipped = ImageAdjustment.getImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), flip_dir);
+        if (!flipped) {
+            ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), flip_dir, 'true');
+        } else {
+            ImageAdjustment.removeImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), flip_dir);
+        }
+        var p = ImageAdjustment.getPerspective();
+        var h = $rootScope.slider_settings.perspective_h.amount;
+        var v = $rootScope.slider_settings.perspective_v.amount;
+        if (dir == 'h') {
+            ImageAdjustment.quickFlipH(p.ctxo_hi);
+            ImageAdjustment.quickFlipH(p.ctxo_lo);
+            ImageAdjustment.quickPerspectiveChange(v, h, 'high');
+        } else {
+            ImageAdjustment.quickFlipV(p.ctxo_hi);
+            ImageAdjustment.quickFlipV(p.ctxo_lo);
+            ImageAdjustment.quickPerspectiveChange(v, h, 'high');
+        }
+        self.sliderRotateUpdate();
+    };
+
+    this.perspectiveImage = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var parent_container = ImageAdjustment.getImageParent();
+        var id = ImageAdjustment.getImageId();
+        var ia = ImageAdjustment.getImageAdjustments(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId());
+        // Only open if it has not already been opened.
+        if ($('.slider_container_inner #s_perspective_v').length <= 0) {
+            var data_p_v = { 'id': id, 'type': 'perspective_v' };
+            var data_p_h = { 'id': id, 'type': 'perspective_h' };
+            data_p_v.last_position = $rootScope.slider_settings.perspective_v.reset;
+            data_p_h.last_position = $rootScope.slider_settings.perspective_h.reset;
+            // Get the last position of the slider.
+            if (ia != undefined) {
+                if (ia.perspective != undefined) {
+                    $rootScope.slider_settings.perspective_v.amount = ia.perspective.vertical;
+                    $rootScope.slider_settings.perspective_h.amount = ia.perspective.horizontal;
+                    data_p_v.last_position = ia.perspective.vertical;
+                    data_p_h.last_position = ia.perspective.horizontal;
+                }
+            }
+            addSlider(Slider.slider_perspective_v, parent_container, id, data_p_v);
+            addSlider(Slider.slider_perspective_h, parent_container, id, data_p_h);
+        } else {
+            Slider.closeSlider("s_perspective_v", "s_perspective_h");
+        }
+    };
+
 
     // Crop Rotate
 
@@ -378,12 +459,6 @@ cardApp.service('CropRotate', ['$rootScope', 'Slider', 'ImageAdjustment', 'Image
             }
         });
     };
-
-
-
-
-
-
 
     var removeCrop = function() {
         $('.crop_box.active').remove();

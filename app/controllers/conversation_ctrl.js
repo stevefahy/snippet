@@ -1,10 +1,11 @@
-cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$q', '$filter', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', 'ImageEdit', '$compile', 'ImageAdjustment', 'Keyboard', 'Scroll', '$animate', 'CropRotate', function($scope, $rootScope, $location, $http, $window, $q, $filter, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, ImageEdit, $compile, ImageAdjustment, Keyboard, Scroll, $animate, CropRotate) {
-    openImageSize = ImageEdit.openImageSize;
+cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$q', '$filter', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', 'ImageEdit', '$compile', 'ImageAdjustment', 'Keyboard', 'Scroll', '$animate', 'CropRotate', 'ImageFilters', function($scope, $rootScope, $location, $http, $window, $q, $filter, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, ImageEdit, $compile, ImageAdjustment, Keyboard, Scroll, $animate, CropRotate, ImageFilters) {
+    openCropRotate = ImageEdit.openCropRotate;
     editImage = ImageEdit.editImage;
     closeImageEdit = ImageEdit.closeImageEdit;
-    filterImage = ImageEdit.filterImage;
+    openFilters = ImageEdit.openFilters;
     closeFilters = ImageEdit.closeFilters;
-    filterClick = ImageEdit.filterClick;
+    //filterClick = ImageEdit.filterClick;
+    filterClick = ImageFilters.filterClick;
     adjustImage = ImageEdit.adjustImage;
     testImage = ImageEdit.testImage;
     //cancelCrop = ImageEdit.cancelCrop;
@@ -13,9 +14,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     makeCrop = CropRotate.makeCrop;
     //toggleRotateSlider = ImageEdit.toggleRotateSlider;
     toggleRotateSlider = CropRotate.toggleRotateSlider;
-    openPerspective = ImageEdit.openPerspective;
-    flip = ImageEdit.flip;
-    rotateImage = ImageEdit.rotateImage;
+    //openPerspective = ImageEdit.openPerspective;
+    perspectiveImage = CropRotate.perspectiveImage;
+    //flip = ImageEdit.flip;
+    flipImage = CropRotate.flipImage;
+    //rotateImage = ImageEdit.rotateImage;
+    rotateImage = CropRotate.rotateImage;
     //sliderRotateChange = ImageEdit.sliderRotateChange;
     //sliderRotateEnd = ImageEdit.sliderRotateEnd;
     sliderRotateChange = CropRotate.sliderRotateChange;
