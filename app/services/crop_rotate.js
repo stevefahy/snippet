@@ -16,6 +16,19 @@ cardApp.service('CropRotate', ['$rootScope', 'Slider', 'ImageAdjustment', 'Image
 
     // Menu
 
+    var animateImageSizeMenuIn = function() {
+        var deferred = $q.defer();
+        $('.image_size_menu').addClass('active');
+        $('.image_size_menu').animate({ "right": "0" }, {
+            duration: 400,
+            easing: "easeOutQuad",
+            complete: function() {
+                deferred.resolve();
+            }
+        });
+        return deferred.promise;
+    };
+
     // Animation Listener.
 
     var image_size_menu_animate_out_end = function() {
@@ -47,6 +60,34 @@ cardApp.service('CropRotate', ['$rootScope', 'Slider', 'ImageAdjustment', 'Image
         }
         ImageAdjustment.setImageAdjustment(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId(), 'perspective', persp_object);
         self.sliderRotateUpdate();
+    };
+
+    this.togglePerspectiveSlider = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var parent_container = ImageAdjustment.getImageParent();
+        var id = ImageAdjustment.getImageId();
+        var ia = ImageAdjustment.getImageAdjustments(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId());
+        // Only open if it has not already been opened.
+        if ($('.slider_container_inner #s_perspective_v').length <= 0) {
+            var data_p_v = { 'id': id, 'type': 'perspective_v' };
+            var data_p_h = { 'id': id, 'type': 'perspective_h' };
+            data_p_v.last_position = $rootScope.slider_settings.perspective_v.reset;
+            data_p_h.last_position = $rootScope.slider_settings.perspective_h.reset;
+            // Get the last position of the slider.
+            if (ia != undefined) {
+                if (ia.perspective != undefined) {
+                    $rootScope.slider_settings.perspective_v.amount = ia.perspective.vertical;
+                    $rootScope.slider_settings.perspective_h.amount = ia.perspective.horizontal;
+                    data_p_v.last_position = ia.perspective.vertical;
+                    data_p_h.last_position = ia.perspective.horizontal;
+                }
+            }
+            addSlider(Slider.slider_perspective_v, parent_container, id, data_p_v);
+            addSlider(Slider.slider_perspective_h, parent_container, id, data_p_h);
+        } else {
+            Slider.closeSlider("s_perspective_v", "s_perspective_h");
+        }
     };
 
     this.sliderperspectiveVChange = function(value, quality) {
@@ -118,49 +159,8 @@ cardApp.service('CropRotate', ['$rootScope', 'Slider', 'ImageAdjustment', 'Image
         self.sliderRotateUpdate();
     };
 
-    this.perspectiveImage = function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        var parent_container = ImageAdjustment.getImageParent();
-        var id = ImageAdjustment.getImageId();
-        var ia = ImageAdjustment.getImageAdjustments(ImageAdjustment.getImageParent(), ImageAdjustment.getImageId());
-        // Only open if it has not already been opened.
-        if ($('.slider_container_inner #s_perspective_v').length <= 0) {
-            var data_p_v = { 'id': id, 'type': 'perspective_v' };
-            var data_p_h = { 'id': id, 'type': 'perspective_h' };
-            data_p_v.last_position = $rootScope.slider_settings.perspective_v.reset;
-            data_p_h.last_position = $rootScope.slider_settings.perspective_h.reset;
-            // Get the last position of the slider.
-            if (ia != undefined) {
-                if (ia.perspective != undefined) {
-                    $rootScope.slider_settings.perspective_v.amount = ia.perspective.vertical;
-                    $rootScope.slider_settings.perspective_h.amount = ia.perspective.horizontal;
-                    data_p_v.last_position = ia.perspective.vertical;
-                    data_p_h.last_position = ia.perspective.horizontal;
-                }
-            }
-            addSlider(Slider.slider_perspective_v, parent_container, id, data_p_v);
-            addSlider(Slider.slider_perspective_h, parent_container, id, data_p_h);
-        } else {
-            Slider.closeSlider("s_perspective_v", "s_perspective_h");
-        }
-    };
-
 
     // Crop Rotate
-
-    var animateImageSizeMenuIn = function() {
-        var deferred = $q.defer();
-        $('.image_size_menu').addClass('active');
-        $('.image_size_menu').animate({ "right": "0" }, {
-            duration: 400,
-            easing: "easeOutQuad",
-            complete: function() {
-                deferred.resolve();
-            }
-        });
-        return deferred.promise;
-    };
 
     var createImageSizeImages = function() {
         var deferred = $q.defer();
@@ -475,6 +475,8 @@ cardApp.service('CropRotate', ['$rootScope', 'Slider', 'ImageAdjustment', 'Image
         $('.crop_bg').remove();
     };
 
+    // Rotate
+
     this.toggleRotateSlider = function() {
         var parent_container = ImageAdjustment.getImageParent();
         var id = ImageAdjustment.getImageId();
@@ -642,7 +644,6 @@ cardApp.service('CropRotate', ['$rootScope', 'Slider', 'ImageAdjustment', 'Image
     };
 
     this.open = function() {
-        console.log('open');
         var image;
         Slider.reset();
         // Get initial settings (these will be reset if andjustments are cancelled).
