@@ -3531,10 +3531,6 @@ span.after_image {
     max-width: 100%;
 }
 
-img.graphic-icons {
-    width: 30px;
-}
-
 .slider_container_inner.active {
     height: auto;
     position: relative;
@@ -3628,4 +3624,5 @@ img.graphic-icons {
 
 .graphic-icons {
     width: 30px;
+    max-width: unset;
 }
