@@ -2927,9 +2927,12 @@ div.after_image:empty {
     background-color: rgba(0, 0, 0, 1);
     cursor: auto;
     z-index: 100;
-    left: -1.38em;
-    width: calc(100% + 2.8em);
-    top: -11px;
+    /* left: -1.38em; */
+    width: 100vw;
+    /* width: calc(100% + 1em); */
+    /*top: -11px;*/
+    /* white-space: nowrap; */
+    overflow-x: scroll;
 }
 
 .filter_list {
@@ -2939,12 +2942,12 @@ div.after_image:empty {
     flex-direction: row;
     margin-top: auto;
     margin-bottom: auto;
-    overflow-x: overlay;
+    /* overflow-x: overlay; */
 }
 
 .filter_list_outer {
-    overflow-x: auto;
-    overflow-y: hidden;
+    /* overflow-x: auto; */
+    /* overflow-y: hidden; */
     padding-right: 16px;
 }
 
@@ -2967,6 +2970,28 @@ div.after_image:empty {
     padding-right: 21px;
     margin-bottom: -10px;
     z-index: 1;
+}
+
+.close_filters2 {
+    position: relative;
+    /* display: flex; */
+    align-items: center;
+    /* position: relative; */
+    width: max-content;
+    /* margin-left: auto; */
+    /* padding-right: 21px; */
+    /* margin-bottom: -10px; */
+    z-index: 1;
+    height: 30px;
+}
+
+#ie_close2 {
+    font-size: 34px;
+    margin: 0;
+    padding: 0;
+    position: fixed;
+    /* height: 30px; */
+        right: 0px;
 }
 
 .temp:first-child {
@@ -3455,7 +3480,8 @@ span.after_image {
 }
 
 .filters_active {
-    position: relative;
+    position: absolute !important;
+    bottom: 0;
     visibility: visible;
 }
 

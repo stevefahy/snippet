@@ -5,7 +5,8 @@
 cardApp.service('ImageFilters', ['$rootScope', 'Format', '$q', 'ContentEditable', 'ImageAdjustment', 'ImageFunctions', 'Slider', function($rootScope, Format, $q, ContentEditable, ImageAdjustment, ImageFunctions, Slider) {
 
     var buildFilters = function(parent_container, id, image) {
-        var filt = $('.image_filt_div').clone().insertAfter('.' + parent_container + ' #cropper_' + id);
+        //var filt = $('.image_filt_div').clone().insertAfter('.' + parent_container + ' #cropper_' + id);
+        var filt = $('.image_filt_div');//.clone().insertAfter('.' + parent_container + ' #cropper_' + id);
         filt.attr('id', 'filters_' + id);
         filt.addClass('filters_active');
         for (var i in FILTERS) {
@@ -34,7 +35,7 @@ cardApp.service('ImageFilters', ['$rootScope', 'Format', '$q', 'ContentEditable'
         var parent_container = ImageAdjustment.getImageParent();
         var id = ImageAdjustment.getImageId();
         // Hide the original image.
-        if ($('.' + parent_container + ' #cropper_' + id + ' .image_filt_div').length <= 0) {
+        //if ($('.' + parent_container + ' #cropper_' + id + ' .image_filt_div').length <= 0) {
             var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
             var image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
             var source = ImageFunctions.imageToCanvas(image);
@@ -66,10 +67,10 @@ cardApp.service('ImageFilters', ['$rootScope', 'Format', '$q', 'ContentEditable'
                 ImageFunctions.canvasToTempImage(source, id).then(function(image) {
                     buildFilters(parent_container, id, image);
                     $(target).removeClass('hide');
-                    hideOriginal(parent_container, id);
+                    ImageFunctions.hideOriginal(parent_container, id);
                 });
             }
-        }
+       // }
     };
 
     this.filterClick = function(e, button, id, filter) {
