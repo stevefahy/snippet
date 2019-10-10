@@ -172,9 +172,10 @@ module.exports = function(app, passport) {
         } else {
             User.findById({ _id: req.principal._id }, function(err, user) {
                 if (err) {
-                    //console.log('err: ' + err);
+                    console.log('err: ' + err);
                     res.send(err);
                 } else {
+                    console.log('user: ' + user);
                     res.json({
                         user: user
                     });
@@ -497,7 +498,19 @@ module.exports = function(app, passport) {
     // Search for user by id
     // TODO - Needed for Public not logged in route?
     // Users.search_id(key.user)
-    app.post('/api/users/search_id/:id', function(req, res) {
+    /*
+        // get latest card for a conversation by conversation id
+    app.get('/chat/get_conversation_latest_card/:id', isLoggedIn, function(req, res) {
+        Card.findOne({ 'conversationId': req.params.id }).sort('-updatedAt').exec(function(err, card) {
+            if (err) {
+                //console.log('err: ' + err);
+            }
+            res.json(card);
+        });
+    });
+    */
+    //app.post('/api/users/search_id/:id', function(req, res) {
+    app.get('/api/users/search_id/:id', function(req, res) {
         var id = req.params.id;
         User.findById({ '_id': id }, function(error, user) {
             if (error) {
@@ -1066,7 +1079,8 @@ module.exports = function(app, passport) {
     // Update the conversation unviewed array for this participant with this card id.
     // Only add the card if it doesnt already exist in the array (for Updates).
     //Conversations.updateViewed(id, user_id, card_id);
-    app.put('/chat/conversation_viewed/:id/:card_id', isLoggedIn, function(req, res) {
+    //app.put('/chat/conversation_viewed/:id/:card_id', isLoggedIn, function(req, res) {
+    app.get('/chat/conversation_viewed/:id/:card_id', isLoggedIn, function(req, res) {    
         Conversation.findById({ _id: req.params.id }, function(err, conversation) {
             if (err) {
                 console.log('err: ' + err);
@@ -1402,11 +1416,23 @@ module.exports = function(app, passport) {
         });
     });
 
+//app.get('/chat/get_conversation_latest_card/:id', isLoggedIn, function(req, res) {
     // Get cards for the Users Feed conversations by conversation id(s).
-    app.post('/chat/get_feed/:val', isLoggedIn, function(req, res) {
+    //app.post('/chat/get_feed/:val', isLoggedIn, function(req, res) {
+    //app.get('/chat/get_feed/', isLoggedIn, function(req, res) {
+        app.get('/chat/get_feed/:val', function(req, res) {
+        //console.log(JSON.stringify(req.params));
+        console.log(req.query);
+        /*
         var user_array = req.body.ids;
         var amount = req.body.amount;
         var last_card = req.body.last_card;
+        */
+        var user_array = JSON.parse(req.query.ids);
+        var amount = Number(req.query.amount);
+        //var last_card = req.query.last_card;
+
+        var last_card = new Date().toISOString();
         var feed = {};
         Conversation.find({
             '_id': {

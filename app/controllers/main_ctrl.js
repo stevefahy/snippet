@@ -205,6 +205,8 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     };
 
     runUpdate = function() {
+        console.log('online: ' + $scope.online);
+        if($scope.online){      
         var id = Conversations.getConversationId();
         // update all required models (could be new conversations, multiple cards across conversations, new users or user data - Userdata first load re call?)
         if (Conversations.getConversationType() == 'feed') {
@@ -214,6 +216,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         } else if (Conversations.getConversationType() == 'public') {
             getPublicCardsUpdate(id);
         }
+    }
     };
 
     checkDataUpdate = function(queue) {

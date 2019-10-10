@@ -113,15 +113,19 @@ cardApp.config(['$httpProvider', function($httpProvider) {
 
 cardApp.run(function($window, $rootScope) {
     $rootScope.online = navigator.onLine;
+    console.log('ol: ' + $rootScope.online);
     $window.addEventListener("offline", function() {
         $rootScope.$apply(function() {
             $rootScope.online = false;
+            console.log('ol: ' + $rootScope.online);
         });
     }, false);
 
     $window.addEventListener("online", function() {
         $rootScope.$apply(function() {
-            $rootScope.online = true;
+            //$rootScope.online = true;
+            console.log('ol: ' + $rootScope.online);
+            console.log(navigator.onLine);
         });
     }, false);
 });

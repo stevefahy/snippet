@@ -124,9 +124,21 @@
     <script src="/controllers/debug_ctrl.js" defer></script>
     <!-- socket.io -->
     <script src="/socket.io/socket.io.js" defer></script>
+    <!-- Workbox -->
+    <!--<script src="/workbox/service-worker.js" defer></script>-->
 </head>
 
 <body>
+        <!-- Workbox -->
+    <script>
+    // Check that service workers are supported
+    if ('serviceWorker' in navigator) {
+        // Use the window load event to keep the page load performant
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('service-worker.js');
+        });
+    }
+    </script>
     <div ng-include="'/views/debug.html'"></div>
     <!-- Templates loaded into ng-view -->
     <div ng-controller="MainCtrl">
@@ -139,6 +151,7 @@
     <div id="hidden_input_container">
         <input class="form-control" type="text" autocorrect="off" autocapitalize="none" id="hidden_input">
     </div>
+
 </body>
 
 </html>

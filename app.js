@@ -23,6 +23,8 @@ var favicon = require('serve-favicon');
 var nodemailer = require('nodemailer');
 var request = require('request');
 
+var workboxBuild = require('workbox-build');
+
 //
 // socket.io
 //
@@ -376,3 +378,28 @@ server.listen(port);
 
 console.log("App listening on port " + port);
 console.log("Mongoose connection: " + dburl);
+
+
+
+
+// NOTE: This should be run *AFTER* all your assets are built
+const buildSW = () => {
+  // This will return a Promise
+  return workboxBuild.injectManifest({
+    //swSrc: 'app/src/sw.js',
+    //swDest: 'app/build/sw.js',
+    swSrc: 'app/service-worker.js',
+    //swDest: 'app/service-worker.js',
+    swDest: 'app/build/sw.js',
+    globDirectory: 'app',
+    globPatterns: [
+      '**\/*.{js,css,html,png}',
+    ]
+  }).then(({count, size, warnings}) => {
+    // Optionally, log any warnings and details.
+    warnings.forEach(console.warn);
+    console.log(`${count} files will be precached, totaling ${size} bytes.`);
+  });
+}
+
+buildSW();

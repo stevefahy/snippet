@@ -32,5 +32,8 @@
     "request": "*",
     "serve-favicon": "*",
     "socket.io": "2.2.0"
+  },
+  "devDependencies": {
+    "workbox-build": "^4.3.1"
   }
 }

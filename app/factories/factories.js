@@ -110,7 +110,13 @@ cardApp.factory('Users', ['$http', '$q', 'LocalDB', function($http, $q, LocalDB)
                     if (response.found) {
                         deferred.resolve(response);
                     } else {
-                        $http.post('api/users/search_id/' + id)
+                        /*
+        getConversationLatestCard: function(id) {
+            return $http.get('/chat/get_conversation_latest_card/' + id);
+        },
+                        */
+                        $http.get('api/users/search_id/' + id)
+                            //$http.post('api/users/search_id/' + id)
                             .then(function(response) {
                                 if (response.data.success) {
                                     LocalDB.updateUser(response.data.success);
@@ -234,7 +240,8 @@ cardApp.factory('Conversations', ['$http', '$q', 'LocalDB', function($http, $q, 
         },
         updateViewed: function(id, card_id) {
             var deferred = $q.defer();
-            $http.put('chat/conversation_viewed/' + id + '/' + card_id)
+            //$http.put('chat/conversation_viewed/' + id + '/' + card_id)
+            $http.get('chat/conversation_viewed/' + id + '/' + card_id)
                 .then(function(response) {
                     LocalDB.updateConversation(response.data);
                     deferred.resolve(response.data);
@@ -364,8 +371,44 @@ cardApp.factory('Conversations', ['$http', '$q', 'LocalDB', function($http, $q, 
             return $http.get('/chat/get_conversation_latest_card/' + id);
         },
         getFeed: function(val) {
+            console.log('val: ' + JSON.stringify(val));
             var theurl = '/chat/get_feed/' + val.ids;
-            return $http.post(theurl, val);
+            //return $http.post(theurl, val);
+            //return $http.get(theurl);
+            /*
+            return $http({
+                url: theurl,
+                method: "GET",
+                params: { valley: val }
+            });
+            */
+
+
+
+            
+            val.ids = JSON.stringify(val.ids);
+            var config = {
+                 params: val
+                //params: val,
+                //headers: { 'Accept': 'application/json' }
+            };
+            //return $http.get('/chat/get_feed/', config);
+            return $http.get(theurl, config);
+            
+
+
+
+            /*
+            return $http({
+                method: 'GET',
+                url: '/chat/get_feed',
+                params: {
+                    dept: "some_dept",
+                    office: "some_office"
+                }
+            });
+            */
+
         },
         updateFeed: function(val) {
             var theurl = '/chat/update_feed/' + val.ids;
