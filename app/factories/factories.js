@@ -374,41 +374,13 @@ cardApp.factory('Conversations', ['$http', '$q', 'LocalDB', function($http, $q, 
             console.log('val: ' + JSON.stringify(val));
             var theurl = '/chat/get_feed/' + val.ids;
             //return $http.post(theurl, val);
-            //return $http.get(theurl);
-            /*
-            return $http({
-                url: theurl,
-                method: "GET",
-                params: { valley: val }
-            });
-            */
-
-
-
             
             val.ids = JSON.stringify(val.ids);
             var config = {
                  params: val
-                //params: val,
-                //headers: { 'Accept': 'application/json' }
             };
-            //return $http.get('/chat/get_feed/', config);
             return $http.get(theurl, config);
             
-
-
-
-            /*
-            return $http({
-                method: 'GET',
-                url: '/chat/get_feed',
-                params: {
-                    dept: "some_dept",
-                    office: "some_office"
-                }
-            });
-            */
-
         },
         updateFeed: function(val) {
             var theurl = '/chat/update_feed/' + val.ids;

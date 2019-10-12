@@ -390,7 +390,7 @@ const buildSW = () => {
     //swDest: 'app/build/sw.js',
     swSrc: 'app/service-worker.js',
     //swDest: 'app/service-worker.js',
-    swDest: 'app/build/sw.js',
+    swDest: 'app/sw.js',
     globDirectory: 'app',
     globPatterns: [
       '**\/*.{js,css,html,png}',

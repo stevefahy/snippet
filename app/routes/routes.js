@@ -1416,23 +1416,13 @@ module.exports = function(app, passport) {
         });
     });
 
-//app.get('/chat/get_conversation_latest_card/:id', isLoggedIn, function(req, res) {
+/*
     // Get cards for the Users Feed conversations by conversation id(s).
-    //app.post('/chat/get_feed/:val', isLoggedIn, function(req, res) {
-    //app.get('/chat/get_feed/', isLoggedIn, function(req, res) {
-        app.get('/chat/get_feed/:val', function(req, res) {
-        //console.log(JSON.stringify(req.params));
-        console.log(req.query);
-        /*
+        app.post('/chat/get_feed/:val', function(req, res) {
         var user_array = req.body.ids;
         var amount = req.body.amount;
         var last_card = req.body.last_card;
-        */
-        var user_array = JSON.parse(req.query.ids);
-        var amount = Number(req.query.amount);
-        //var last_card = req.query.last_card;
-
-        var last_card = new Date().toISOString();
+    
         var feed = {};
         Conversation.find({
             '_id': {
@@ -1462,6 +1452,56 @@ module.exports = function(app, passport) {
             }).sort({ "updatedAt": -1 }).limit(amount);
         });
     });
+    */
+
+
+//app.get('/chat/get_conversation_latest_card/:id', isLoggedIn, function(req, res) {
+    // Get cards for the Users Feed conversations by conversation id(s).
+    //app.post('/chat/get_feed/:val', isLoggedIn, function(req, res) {
+    //app.get('/chat/get_feed/', isLoggedIn, function(req, res) {
+        app.get('/chat/get_feed/:val', function(req, res) {
+        //console.log(JSON.stringify(req.params));
+        console.log(req.query);
+        
+        //var user_array = req.body.ids;
+        //var amount = req.body.amount;
+        //var last_card = req.body.last_card;
+       
+        var user_array = JSON.parse(req.query.ids);
+        var amount = Number(req.query.amount);
+        var last_card = req.query.last_card;
+
+        //var last_card = new Date().toISOString();
+        var feed = {};
+        Conversation.find({
+            '_id': {
+                $in: user_array.map(function(o) { return mongoose.Types.ObjectId(o); })
+            },
+            'conversation_type': 'public'
+        }, function(err, conversations) {
+            if (err) {
+                console.log(err);
+            }
+            feed.conversations = conversations;
+            Card.find({
+                'conversationId': {
+                    $in: user_array.map(function(o) {
+                        return mongoose.Types.ObjectId(o);
+                    })
+                },
+                'updatedAt': {
+                    '$lt': last_card
+                }
+            }, function(err, cards) {
+                if (err) {
+                    console.log(err);
+                }
+                feed.cards = cards;
+                res.json(feed);
+            }).sort({ "updatedAt": -1 }).limit(amount);
+        });
+    });
+        
 
     // get latest card for a conversation by conversation id
     app.get('/chat/get_conversation_latest_card/:id', isLoggedIn, function(req, res) {

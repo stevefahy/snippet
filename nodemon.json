@@ -2,7 +2,7 @@
   "restartable": "rs",
   "ignore": [
     ".git",
-    "app/build/sw.js"
+    "app/sw.js"
   ],
   "verbose": true,
   "execMap": {
