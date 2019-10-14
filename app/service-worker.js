@@ -8,6 +8,10 @@ if (workbox) {
         return self.clients.claim();
     });
 
+    self.addEventListener('fetch', event => {
+        console.log('url: ' + event.request.url);
+    });
+
     // Debugging
     workbox.setConfig({
         debug: true
@@ -45,19 +49,7 @@ if (workbox) {
             console.log("sync event fired");
         }
     });
-
-
-
-    const cachedResponseWillBeUsed = ({ cache, request, cachedResponse }) => {
-        // If there's already a match against the request URL, return it.
-        if (cachedResponse) {
-            return cachedResponse;
-        }
-        // Otherwise, return a match for a specific URL:
-        const urlToMatch = 'chatty-feed'; //'https://example.com/data/generic/image.jpg';
-        return caches.match(urlToMatch);
-    };
-
+  
     const bgSyncPlugin = new workbox.backgroundSync.Plugin('my-queue', {
         maxRetentionTime: 24 * 60,
         onSync: async ({ queue }) => {
@@ -66,6 +58,7 @@ if (workbox) {
             while (entry = await queue.shiftRequest()) {
                 try {
                     console.log('...Replaying: ' + entry.request.url);
+                    console.log(entry);
                     await fetch(entry.request);
                     console.log('...Replayed: ' + entry.request.url);
                 } catch (error) {
@@ -78,21 +71,27 @@ if (workbox) {
         }
     });
 
+    const cachedResponseWillBeUsed = async ({ cache, request, cachedResponse }) => {
+        // If there's already a match against the request URL, return it.
+        if (cachedResponse) {
+            console.log(cachedResponse);
+            return cachedResponse;
+        }
+        var cachedFiles = await caches.match(request.url, {
+            ignoreSearch: true
+        }); 
+        return cachedFiles;
+    };
+
     workbox.routing.registerRoute(
         new RegExp('/chat/get_feed'),
         new workbox.strategies.NetworkFirst({
             cacheName: 'chatty-feed',
             plugins: [
-                cachedResponseWillBeUsed
-                /*
-                new workbox.expiration.Plugin({
-                    maxEntries: 1,
-                }),
-                */
-            ],
+                { cachedResponseWillBeUsed },
+            ]
         })
     );
-
 
     workbox.routing.registerRoute(
         new RegExp('/api/cards'),
@@ -104,64 +103,13 @@ if (workbox) {
 
     workbox.routing.registerRoute(
         new RegExp('/'),
-        new workbox.strategies.NetworkFirst()
+        new workbox.strategies.NetworkFirst({
+        }),
     );
-
-
-
-
-    /*
-        const imageCachingStrategy = workbox.strategies.CacheFirst({
-            cacheName: 'mycache',
-            cacheExpiration: {
-                maxEntries: 1
-            },
-            cacheableResponse: { statuses: [0, 200] },
-            plugins: [{ cachedResponseWillBeUsed }]
-        });
-
-    workbox.routing.registerRoute(
-      new RegExp('/images/'),
-      new workbox.strategies.CacheFirst({
-        cacheName: 'image-cache',
-        plugins: [
-          new workbox.expiration.Plugin({
-            maxEntries: 20,
-          }),
-        ],
-      })
-    );
-
-    */
-
-    const imageCachingStrategy = new workbox.strategies.CacheFirst({
-        cacheName: 'mycache',
-        plugins: [
-            new workbox.expiration.Plugin({
-                maxEntries: 1,
-            }),
-            cachedResponseWillBeUsed
-        ],
-    })
-
-    /*
-        workbox.routing.registerRoute(
-            new RegExp('/chat/get_feed/'),
-            imageCachingStrategy
-        );
-        */
-
-
-
-
-    self.addEventListener('fetch', event => {
-        console.log('url: ' + event.request.url);
-    });
 
     workbox.googleAnalytics.initialize();
 
     workbox.precaching.precacheAndRoute([]);
-
 
 } else {
     console.log("Boo! Workbox didn't load 😬");

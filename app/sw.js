@@ -8,6 +8,10 @@ if (workbox) {
         return self.clients.claim();
     });
 
+    self.addEventListener('fetch', event => {
+        console.log('url: ' + event.request.url);
+    });
+
     // Debugging
     workbox.setConfig({
         debug: true
@@ -45,19 +49,7 @@ if (workbox) {
             console.log("sync event fired");
         }
     });
-
-
-
-    const cachedResponseWillBeUsed = ({ cache, request, cachedResponse }) => {
-        // If there's already a match against the request URL, return it.
-        if (cachedResponse) {
-            return cachedResponse;
-        }
-        // Otherwise, return a match for a specific URL:
-        const urlToMatch = 'chatty-feed'; //'https://example.com/data/generic/image.jpg';
-        return caches.match(urlToMatch);
-    };
-
+  
     const bgSyncPlugin = new workbox.backgroundSync.Plugin('my-queue', {
         maxRetentionTime: 24 * 60,
         onSync: async ({ queue }) => {
@@ -66,6 +58,7 @@ if (workbox) {
             while (entry = await queue.shiftRequest()) {
                 try {
                     console.log('...Replaying: ' + entry.request.url);
+                    console.log(entry);
                     await fetch(entry.request);
                     console.log('...Replayed: ' + entry.request.url);
                 } catch (error) {
@@ -78,21 +71,27 @@ if (workbox) {
         }
     });
 
+    const cachedResponseWillBeUsed = async ({ cache, request, cachedResponse }) => {
+        // If there's already a match against the request URL, return it.
+        if (cachedResponse) {
+            console.log(cachedResponse);
+            return cachedResponse;
+        }
+        var cachedFiles = await caches.match(request.url, {
+            ignoreSearch: true
+        }); 
+        return cachedFiles;
+    };
+
     workbox.routing.registerRoute(
         new RegExp('/chat/get_feed'),
         new workbox.strategies.NetworkFirst({
             cacheName: 'chatty-feed',
             plugins: [
-                cachedResponseWillBeUsed
-                /*
-                new workbox.expiration.Plugin({
-                    maxEntries: 1,
-                }),
-                */
-            ],
+                { cachedResponseWillBeUsed },
+            ]
         })
     );
-
 
     workbox.routing.registerRoute(
         new RegExp('/api/cards'),
@@ -104,59 +103,9 @@ if (workbox) {
 
     workbox.routing.registerRoute(
         new RegExp('/'),
-        new workbox.strategies.NetworkFirst()
+        new workbox.strategies.NetworkFirst({
+        }),
     );
-
-
-
-
-    /*
-        const imageCachingStrategy = workbox.strategies.CacheFirst({
-            cacheName: 'mycache',
-            cacheExpiration: {
-                maxEntries: 1
-            },
-            cacheableResponse: { statuses: [0, 200] },
-            plugins: [{ cachedResponseWillBeUsed }]
-        });
-
-    workbox.routing.registerRoute(
-      new RegExp('/images/'),
-      new workbox.strategies.CacheFirst({
-        cacheName: 'image-cache',
-        plugins: [
-          new workbox.expiration.Plugin({
-            maxEntries: 20,
-          }),
-        ],
-      })
-    );
-
-    */
-
-    const imageCachingStrategy = new workbox.strategies.CacheFirst({
-        cacheName: 'mycache',
-        plugins: [
-            new workbox.expiration.Plugin({
-                maxEntries: 1,
-            }),
-            cachedResponseWillBeUsed
-        ],
-    })
-
-    /*
-        workbox.routing.registerRoute(
-            new RegExp('/chat/get_feed/'),
-            imageCachingStrategy
-        );
-        */
-
-
-
-
-    self.addEventListener('fetch', event => {
-        console.log('url: ' + event.request.url);
-    });
 
     workbox.googleAnalytics.initialize();
 
@@ -243,7 +192,7 @@ if (workbox) {
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "75cdaa7da8a07d41a94cab7795189fff"
+    "revision": "d16fdecbf09687eb5a90d2b810b3dacb"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -275,7 +224,7 @@ if (workbox) {
   },
   {
     "url": "controllers/main_ctrl.js",
-    "revision": "ac5c758991d8a371b19495faafb26c07"
+    "revision": "d4a130b131f049f35300aae1a1c0d57b"
   },
   {
     "url": "controllers/usersetting_ctrl.js",
@@ -367,7 +316,7 @@ if (workbox) {
   },
   {
     "url": "service-worker.js",
-    "revision": "fd1d8868e2dfbfebe91f88bc8927850a"
+    "revision": "10c2146dcd3bbeea5f0b229f87114f44"
   },
   {
     "url": "services/content_editable.js",
@@ -379,7 +328,7 @@ if (workbox) {
   },
   {
     "url": "services/database.js",
-    "revision": "1e8ff9b936f22403bcf936f4eb61cd5d"
+    "revision": "79b897b8d6a9e56153468408e951b3b9"
   },
   {
     "url": "services/debug.js",
@@ -546,7 +495,6 @@ if (workbox) {
     "revision": "d4edb77cf8070f188bfe583139bf98a4"
   }
 ]);
-
 
 } else {
     console.log("Boo! Workbox didn't load 😬");

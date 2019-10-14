@@ -1020,6 +1020,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // TODO - change if adding button to notify user of new card.
     updateCards = function(arr) {
+        console.log(JSON.stringify(arr));
         var all_cards;
         var sort_card;
         var spliced;
@@ -1028,6 +1029,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             arr[i].new_card = true;
         }
         if (!$scope.top_down) {
+            console.log('td');
+            console.log($scope.cards);
             if ($scope.removed_cards_bottom.length > 0) {
                 all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
                 sort_card = $filter('orderBy')(all_cards, 'updatedAt', true);
@@ -1047,6 +1050,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 }
             }
         } else {
+            console.log('!td');
+            console.log($scope.cards);
             if ($scope.removed_cards_top.length > 0) {
                 all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
                 sort_card = $filter('orderBy')(all_cards, 'updatedAt', true);
@@ -1156,6 +1161,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 operand = '$lt';
             }
             var val = { ids: followed, amount: load_amount, last_card: last_card, operand: operand };
+            
+            // IF ONLINE AND IF OFFLINE!
+
             //var val = { ids: followed, amount: load_amount, operand: operand };
             if (last_card != last_card_stored) {
                 last_card_stored = last_card;
