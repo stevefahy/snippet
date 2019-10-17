@@ -346,7 +346,7 @@ if (workbox) {
   },
   {
     "url": "modules/app.js",
-    "revision": "01a015c60ae0ed174abda567f3484166"
+    "revision": "2cafd0583072d687eb01c560c1a2556f"
   },
   {
     "url": "routes/routes.js",

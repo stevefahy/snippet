@@ -123,7 +123,11 @@ cardApp.run(function($window, $rootScope) {
 
     $window.addEventListener("online", function() {
         $rootScope.$apply(function() {
-            //$rootScope.online = true;
+            /*$rootScope.online = true;
+            console.log('ol: ' + $rootScope.online);
+            console.log(navigator.onLine);
+            */
+             $rootScope.online = true;
             console.log('ol: ' + $rootScope.online);
             console.log(navigator.onLine);
         });
