@@ -110,6 +110,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         var promises = [];
         var promises_followers = [];
         var online_card_create = Object.assign({}, card_create);
+        var offline_card_create = Object.assign({}, card_create);
         online_card_create.user = currentUser.google.name;
         // Get the Conversation in which this card is being created.
         var current_conversation_id = Conversations.getConversationId();
@@ -120,6 +121,9 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         online_card_create.content = replaceTags.removeFocusIds(online_card_create.content);
         // Remove any temp filtered images
         online_card_create.content = Format.removeTempFiltered(online_card_create.content);
+        
+        var offline_card_create = Object.assign({}, online_card_create);
+
         var sent_content;
         var notification_title;
         var notification_body;
@@ -129,20 +133,21 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         console.log(online_card_create);
 
         console.log('online: ' + $rootScope.online);
-        if(!$rootScope.online){
-            var offline_card_create = Object.assign({}, card_create);
+        if (!$rootScope.online) {
+            //var offline_card_create = Object.assign({}, card_create);
             var currentUser = UserData.getUser();
             offline_card_create.user_name = currentUser.user_name;
             offline_card_create.user = currentUser._id;
-          
+
             console.log(currentUser);
             //$rootScope.$broadcast('PUBLIC_NOTIFICATION_CREATED', card_create);
-             offline_card_create._id = 'offline';
-             offline_card_create.avatar = currentUser.avatar;
+            offline_card_create._id = 'offline';
+            offline_card_create.avatar = currentUser.avatar;
 
-             console.log(offline_card_create);
-             updateCards([offline_card_create]);
-             $rootScope.$broadcast('CARD_CREATED');
+            console.log(offline_card_create);
+            updateCards([offline_card_create]).then(function(result) {
+                $rootScope.$broadcast('CARD_CREATED');
+            })
         }
 
         Cards.create(online_card_create)

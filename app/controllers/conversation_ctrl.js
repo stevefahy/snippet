@@ -1020,6 +1020,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // TODO - change if adding button to notify user of new card.
     updateCards = function(arr) {
+        var deferred = $q.defer();
+        var promises = [];
         console.log(JSON.stringify(arr));
         var all_cards;
         var sort_card;
@@ -1043,11 +1045,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 checkNext();
                 programmatic_scroll = true;
                 $scope.$broadcast("items_changed", 'bottom');
+                deferred.resolve();
             } else {
                 // No cards have been removed due to scrolling.
                 for (var i = 0, len = arr.length; i < len; i++) {
                     $scope.cards.push(arr[i]);
                 }
+                deferred.resolve();
             }
         } else {
             console.log('!td');
@@ -1064,13 +1068,16 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 checkNext();
                 programmatic_scroll = true;
                 $scope.$broadcast("items_changed", 'top');
+                deferred.resolve();
             } else {
                 // No cards have been removed due to scrolling.
                 for (var i = 0, len = arr.length; i < len; i++) {
                     $scope.cards.push(arr[i]);
                 }
+                deferred.resolve();
             }
         }
+        return deferred.promise;
     };
 
     getCardsUpdate = function(id) {

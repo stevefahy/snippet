@@ -49,7 +49,42 @@ if (workbox) {
             console.log("sync event fired");
         }
     });
-  
+
+    //client to SW
+    self.addEventListener('message', function(event) {
+        console.log("SW Received Message: " + event.data);
+    });
+
+    function send_message_to_sw(msg) {
+        navigator.serviceWorker.controller.postMessage(msg);
+    }
+
+    function send_message_to_client(client, msg) {
+        return new Promise(function(resolve, reject) {
+            var msg_chan = new MessageChannel();
+
+            msg_chan.port1.onmessage = function(event) {
+                if (event.data.error) {
+                    reject(event.data.error);
+                } else {
+                    resolve(event.data);
+                }
+            };
+
+            //client.postMessage("SW Says: '" + msg + "'", [msg_chan.port2]);
+            client.postMessage(msg, [msg_chan.port2]);
+        });
+    }
+
+    function send_message_to_all_clients(msg) {
+        clients.matchAll().then(clients => {
+            clients.forEach(client => {
+                send_message_to_client(client, msg).then(m => console.log("SW Received Message: " + m));
+            })
+        })
+    }
+
+
     const bgSyncPlugin = new workbox.backgroundSync.Plugin('my-queue', {
         maxRetentionTime: 24 * 60,
         onSync: async ({ queue }) => {
@@ -58,18 +93,22 @@ if (workbox) {
             while (entry = await queue.shiftRequest()) {
                 try {
                     console.log('...Replaying: ' + entry.request.url);
-                    console.log(entry);
+                    send_message_to_all_clients('post_updating');
                     await fetch(entry.request);
                     console.log('...Replayed: ' + entry.request.url);
+                     
                 } catch (error) {
                     console.error('Replay failed for request', entry.request, error);
                     await queue.unshiftRequest(entry);
                     return;
                 }
             }
+            send_message_to_all_clients('post_updated');
             console.log('Replay complete!');
         }
     });
+
+
 
     const cachedResponseWillBeUsed = async ({ cache, request, cachedResponse }) => {
         // If there's already a match against the request URL, return it.
@@ -79,7 +118,7 @@ if (workbox) {
         }
         var cachedFiles = await caches.match(request.url, {
             ignoreSearch: true
-        }); 
+        });
         return cachedFiles;
     };
 
@@ -103,8 +142,7 @@ if (workbox) {
 
     workbox.routing.registerRoute(
         new RegExp('/'),
-        new workbox.strategies.NetworkFirst({
-        }),
+        new workbox.strategies.NetworkFirst({}),
     );
 
     workbox.googleAnalytics.initialize();
@@ -192,7 +230,7 @@ if (workbox) {
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "d16fdecbf09687eb5a90d2b810b3dacb"
+    "revision": "23bf1b3530598715684a3eb03960dcf7"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -224,7 +262,7 @@ if (workbox) {
   },
   {
     "url": "controllers/main_ctrl.js",
-    "revision": "d4a130b131f049f35300aae1a1c0d57b"
+    "revision": "75d56c25ffd9038ee1c1a58d3119a926"
   },
   {
     "url": "controllers/usersetting_ctrl.js",
@@ -248,7 +286,7 @@ if (workbox) {
   },
   {
     "url": "indexa.html",
-    "revision": "5764525d91f35a4b8aa5e0b4154d94d4"
+    "revision": "5c50bc4378e8d463ef39e20223bb8a06"
   },
   {
     "url": "js/angular_moment.js",
@@ -316,7 +354,7 @@ if (workbox) {
   },
   {
     "url": "service-worker.js",
-    "revision": "10c2146dcd3bbeea5f0b229f87114f44"
+    "revision": "ec64f5723fdd083dc75db1a2e1495b2d"
   },
   {
     "url": "services/content_editable.js",
@@ -328,7 +366,7 @@ if (workbox) {
   },
   {
     "url": "services/database.js",
-    "revision": "79b897b8d6a9e56153468408e951b3b9"
+    "revision": "8880048191bbfad2a32b280d7745db80"
   },
   {
     "url": "services/debug.js",
@@ -404,7 +442,7 @@ if (workbox) {
   },
   {
     "url": "style/customstyle.css",
-    "revision": "bb8cd1616c4d7c087a24b4468062597f"
+    "revision": "f41dedd937ee8b222b549d7875e422b5"
   },
   {
     "url": "style/instagram.css",
@@ -417,6 +455,10 @@ if (workbox) {
   {
     "url": "style/rzslider.css",
     "revision": "f64b354fa187e356e40b21b70a994355"
+  },
+  {
+    "url": "views/alert.html",
+    "revision": "c89d3254f47cd12aea6d1ec37b91d451"
   },
   {
     "url": "views/card_create.html",

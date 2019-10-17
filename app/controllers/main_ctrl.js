@@ -1,4 +1,4 @@
-cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '$location', 'UserData', 'socket', 'principal', 'viewAnimationsService', 'Conversations', 'Cards', '$q', 'Profile', 'Users', 'General', '$animate', function($scope, $window, $rootScope, $timeout, $location, UserData, socket, principal, viewAnimationsService, Conversations, Cards, $q, Profile, Users, General, $animate) {
+cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '$location', 'UserData', 'socket', 'principal', 'viewAnimationsService', 'Conversations', 'Cards', '$q', 'Profile', 'Users', 'General', '$animate', '$templateRequest', '$sce', function($scope, $window, $rootScope, $timeout, $location, UserData, socket, principal, viewAnimationsService, Conversations, Cards, $q, Profile, Users, General, $animate, $templateRequest, $sce) {
 
     $window.networkChange = this.networkChange;
     $window.onResume = this.onResume;
@@ -12,6 +12,8 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     $window.onStart = this.onStart;
 
     $scope.debug = true;
+
+    $scope.show_alert = false;
 
     var ua = navigator.userAgent;
 
@@ -207,17 +209,17 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     runUpdate = function() {
         console.log('online: ' + $scope.online);
-        if($scope.online){      
-        var id = Conversations.getConversationId();
-        // update all required models (could be new conversations, multiple cards across conversations, new users or user data - Userdata first load re call?)
-        if (Conversations.getConversationType() == 'feed') {
-            getFollowingUpdate();
-        } else if (Conversations.getConversationType() == 'private') {
-            getCardsUpdate(id);
-        } else if (Conversations.getConversationType() == 'public') {
-            getPublicCardsUpdate(id);
+        if ($scope.online) {
+            var id = Conversations.getConversationId();
+            // update all required models (could be new conversations, multiple cards across conversations, new users or user data - Userdata first load re call?)
+            if (Conversations.getConversationType() == 'feed') {
+                getFollowingUpdate();
+            } else if (Conversations.getConversationType() == 'private') {
+                getCardsUpdate(id);
+            } else if (Conversations.getConversationType() == 'public') {
+                getPublicCardsUpdate(id);
+            }
         }
-    }
     };
 
     checkDataUpdate = function(queue) {
@@ -235,6 +237,91 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             runUpdate();
         }
     };
+    var endalert = false;
+    var addingalert = false;
+
+    function alertAddEnd() {
+        console.log('alertAddEnd!');
+        $(".alert_anim_on").off('animationend', alertAddEnd);
+        //$(".alert_anim_on").off('transitionend', alertAddEnd);
+        //$(".alert_container").removeClass('alert_anim_on');
+        //removeAlert();
+        addingalert = false;
+        console.log('endalert: ' + endalert);
+        if (endalert) {
+            console.log('endalert true: removeAlert');
+            removeAlert();
+        }
+    }
+
+    function alertRemoveEnd() {
+        endalert = false;
+        console.log('alertRemoveEnd!');
+        $(".alert_anim_off").off('animationend', alertRemoveEnd);
+        $(".alert_container").removeClass('alert_anim_off');
+        $(".alert_container").remove();
+        /*
+        $timeout(function() {
+            addAlert();
+        }, 5000);
+        */
+    }
+
+    addAlert = function() {
+        if (!addingalert) {
+            console.log('addAlert');
+            //$(".alert_container").remove();
+            var alert = $sce.getTrustedResourceUrl('/views/alert.html');
+            $templateRequest(alert).then(function(template) {
+                console.log('open start');
+                var eb = $('.main').prepend(template);
+                addingalert = true;
+                $timeout(function() {
+                    console.log('addingalert');
+                    $(".alert_container").addClass('alert_anim_on');
+                    //$(".alert_anim_on").on("transitionend", alertAddEnd);
+                    $(".alert_anim_on").on("animationend", alertAddEnd);
+
+
+
+                }, 100);
+
+            });
+        }
+    }
+
+    // addAlert();
+
+    function removeAlert() {
+        console.log('removeAlert: ' + addingalert);
+        if (!addingalert) {
+            console.log('not addingalert. removeAlert');
+            // $(".alert_container").removeClass('alert_anim_on');
+            $(".alert_container").addClass('alert_anim_off');
+            $(".alert_anim_off").on('animationend', alertRemoveEnd);
+        }
+
+
+    }
+
+
+
+    if ('serviceWorker' in navigator) {
+        // Handler for messages coming from the service worker
+        navigator.serviceWorker.addEventListener('message', function(event) {
+            console.log("Client 1 Received Message: " + event.data);
+            //event.ports[0].postMessage("Client 1 Says 'Hello back!'");
+            if (event.data == "post_updated") {
+                console.log('post_updated');
+                endalert = true;
+                removeAlert();
+            }
+            if (event.data == "post_updating") {
+                console.log('post_updating');
+                addAlert();
+            }
+        });
+    }
 
     // Broadcast by socket after it has reconnected. Check for updates.
     $scope.$on('SOCKET_RECONNECT', function(event) {

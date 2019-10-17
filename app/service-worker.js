@@ -49,7 +49,42 @@ if (workbox) {
             console.log("sync event fired");
         }
     });
-  
+
+    //client to SW
+    self.addEventListener('message', function(event) {
+        console.log("SW Received Message: " + event.data);
+    });
+
+    function send_message_to_sw(msg) {
+        navigator.serviceWorker.controller.postMessage(msg);
+    }
+
+    function send_message_to_client(client, msg) {
+        return new Promise(function(resolve, reject) {
+            var msg_chan = new MessageChannel();
+
+            msg_chan.port1.onmessage = function(event) {
+                if (event.data.error) {
+                    reject(event.data.error);
+                } else {
+                    resolve(event.data);
+                }
+            };
+
+            //client.postMessage("SW Says: '" + msg + "'", [msg_chan.port2]);
+            client.postMessage(msg, [msg_chan.port2]);
+        });
+    }
+
+    function send_message_to_all_clients(msg) {
+        clients.matchAll().then(clients => {
+            clients.forEach(client => {
+                send_message_to_client(client, msg).then(m => console.log("SW Received Message: " + m));
+            })
+        })
+    }
+
+
     const bgSyncPlugin = new workbox.backgroundSync.Plugin('my-queue', {
         maxRetentionTime: 24 * 60,
         onSync: async ({ queue }) => {
@@ -58,18 +93,22 @@ if (workbox) {
             while (entry = await queue.shiftRequest()) {
                 try {
                     console.log('...Replaying: ' + entry.request.url);
-                    console.log(entry);
+                    send_message_to_all_clients('post_updating');
                     await fetch(entry.request);
                     console.log('...Replayed: ' + entry.request.url);
+                     
                 } catch (error) {
                     console.error('Replay failed for request', entry.request, error);
                     await queue.unshiftRequest(entry);
                     return;
                 }
             }
+            send_message_to_all_clients('post_updated');
             console.log('Replay complete!');
         }
     });
+
+
 
     const cachedResponseWillBeUsed = async ({ cache, request, cachedResponse }) => {
         // If there's already a match against the request URL, return it.
@@ -79,7 +118,7 @@ if (workbox) {
         }
         var cachedFiles = await caches.match(request.url, {
             ignoreSearch: true
-        }); 
+        });
         return cachedFiles;
     };
 
@@ -103,8 +142,7 @@ if (workbox) {
 
     workbox.routing.registerRoute(
         new RegExp('/'),
-        new workbox.strategies.NetworkFirst({
-        }),
+        new workbox.strategies.NetworkFirst({}),
     );
 
     workbox.googleAnalytics.initialize();

@@ -140,8 +140,11 @@
     }
     </script>
     <div ng-include="'/views/debug.html'"></div>
+
+    <!--<div ng-include="'/views/alert.html'"></div>-->
+
     <!-- Templates loaded into ng-view -->
-    <div ng-controller="MainCtrl">
+    <div ng-controller="MainCtrl" class="main">
         <ng-view view-animations class="page" id="page-system"></ng-view>
         <div ng-if="$root.dataLoading">
             <div class="data_loading_screen" ng-include="'/views/spinner.html'"></div>
