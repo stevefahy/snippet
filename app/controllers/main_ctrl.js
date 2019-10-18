@@ -121,6 +121,10 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     // Watch the online status.
     $scope.$watch('online', function(newStatus) {
+        console.log('ONLINE');
+        //ports[0].postMessage("replayRequests");
+        navigator.serviceWorker.controller.postMessage("replayRequests");
+
         if (!last_network_status && newStatus) {
             // Connection restored.
             reconnect_socket();
