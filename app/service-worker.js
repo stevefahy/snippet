@@ -15,7 +15,7 @@ if (workbox) {
 
         // Clone the request to ensure it's safe to read when
         // adding to the Queue.
-    
+
 
     });
 
@@ -42,30 +42,58 @@ if (workbox) {
         debug: true
     });
 
-    //const queue = new workbox.backgroundSync.Queue('myQueueName');
+    const queue = new workbox.backgroundSync.Queue('myQueueName');
 
-    const queue = new workbox.backgroundSync.Queue('myQueueName', {
-        maxRetentionTime: 60 * 24 * 30,
-        onSync: async ({ queue }) => {
-            console.log('...Synchronizing ' + queue.name);
-            let entry;
-            while (entry = await queue.shiftRequest()) {
-                try {
-                    console.log('...Replaying: ' + entry.request.url);
-                    send_message_to_all_clients('post_updating');
-                    await fetch(entry.request);
-                    console.log('...Replayed: ' + entry.request.url);
 
-                } catch (error) {
-                    console.error('Replay failed for request', entry.request, error);
-                    await queue.unshiftRequest(entry);
-                    return;
-                }
+
+    async function firstAsync() {
+        console.log('...Synchronizing ' + queue.name);
+        //await queue.replayRequests();
+        let entry;
+        while (entry = await queue.shiftRequest()) {
+            try {
+                console.log('...Replaying: ' + entry.request.url);
+                send_message_to_all_clients('post_updating');
+                await fetch(entry.request);
+                console.log('...Replayed: ' + entry.request.url);
+
+            } catch (error) {
+                console.error('Replay failed for request', entry.request, error);
+                await queue.unshiftRequest(entry);
+                return;
             }
-            send_message_to_all_clients('post_updated');
-            console.log('Replay complete!');
         }
-    });
+        send_message_to_all_clients('post_updated');
+        console.log('Replay complete!');
+    }
+
+
+
+    /*
+        const queue = new workbox.backgroundSync.Queue('myQueueName', {
+            maxRetentionTime: 60 * 24 * 30,
+            onSync: async ({ queue }) => {
+                console.log('...Synchronizing ' + queue.name);
+                //await queue.replayRequests();
+                let entry;
+                while (entry = await queue.shiftRequest()) {
+                    try {
+                        console.log('...Replaying: ' + entry.request.url);
+                        send_message_to_all_clients('post_updating');
+                        await fetch(entry.request);
+                        console.log('...Replayed: ' + entry.request.url);
+
+                    } catch (error) {
+                        console.error('Replay failed for request', entry.request, error);
+                        await queue.unshiftRequest(entry);
+                        return;
+                    }
+                }
+                send_message_to_all_clients('post_updated');
+                console.log('Replay complete!');
+            }
+        });
+        */
 
     // Register Routes
 
@@ -105,9 +133,10 @@ if (workbox) {
         console.log("SW Received Message: " + event.data);
         if (event.data === 'replayRequests') {
             console.log('replayRequests');
-            queue.replayRequests();
+            //queue.replayRequests();
+            firstAsync();
 
-            //myqueue.replayRequests();
+
         }
 
     });
@@ -152,7 +181,7 @@ if (workbox) {
             // the underlying `fetch()` to fail.
             console.log('push2');
             // adding to the Queue.
-            queue.pushRequest({request: request});
+            queue.pushRequest({ request: request });
         }
     }
 
