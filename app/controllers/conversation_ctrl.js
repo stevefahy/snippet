@@ -932,7 +932,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     removeUserCards = function(conversation_id) {
-        // Reomve cards
+        // Remove cards
         var i = $scope.cards.length;
         while (i--) {
             if ($scope.cards[i].conversationId == conversation_id) {
@@ -1017,6 +1017,33 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             });
         }
     };
+
+    removeOfflineCards = function() {
+        var deferred = $q.defer();
+        //all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
+        //all_cards = $scope.cards;
+        //var offline_cards = all_cards.filter(x => x.offline == true);
+        //console.log(all_cards);
+        /* var offline_cards =  all_cards.filter(function(card, index) {
+             return card.offline === true;
+         });
+         console.log(offline_cards);
+         */
+
+        // Remove cards
+        var i = $scope.cards.length;
+        while (i--) {
+            //if ($scope.cards[i].conversationId == conversation_id) {
+            if ($scope.cards[i].offline == true) {
+                $scope.cards.splice(i, 1);
+            }
+        }
+        console.log('OFFLINE CARDS REMOVED');
+        console.log($scope.cards);
+        deferred.resolve();
+         return deferred.promise;
+
+    }
 
     // TODO - change if adding button to notify user of new card.
     updateCards = function(arr) {
@@ -1168,7 +1195,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 operand = '$lt';
             }
             var val = { ids: followed, amount: load_amount, last_card: last_card, operand: operand };
-            
+
             // IF ONLINE AND IF OFFLINE!
 
             //var val = { ids: followed, amount: load_amount, operand: operand };
@@ -1276,6 +1303,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     getPublicCards = function(id) {
         var deferred = $q.defer();
         var promises = [];
+        console.log($rootScope.loading_cards_offscreen);
         if (!$rootScope.loading_cards_offscreen) {
             $rootScope.loading_cards_offscreen = true;
             var last_card;
@@ -1295,10 +1323,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 operand = '$lt';
             }
             var val = { id: id, amount: NUM_TO_LOAD, last_card: last_card, operand: operand };
+            console.log(val);
+            console.log(last_card + '!=' + last_card_stored);
             if (last_card != last_card_stored) {
                 last_card_stored = last_card;
                 var prom1 = Conversations.getPublicConversationCards(val)
                     .then(function(res) {
+                        console.log(res);
                         if (res.data.length > 0) {
                             var users = UserData.getContacts();
                             var user;
@@ -1321,6 +1352,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                 }
                             }
                         } else {
+                            console.log('here');
                             $rootScope.loading_cards_offscreen = false;
                         }
                     })
@@ -1330,6 +1362,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 promises.push(prom1);
                 // All the cards have been mapped.
                 $q.all(promises).then(function() {
+                    console.log('all promises');
                     deferred.resolve();
                 });
             } else {
@@ -1343,7 +1376,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var deferred = $q.defer();
         var promises = [];
         var cards_new = [];
+        console.log($rootScope.loading_cards);
         if (!$rootScope.loading_cards) {
+            console.log('1');
             $rootScope.loading_cards = true;
             var last_card;
             var operand;
@@ -1357,8 +1392,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 operand = '$lt';
             }
             var val = { id: id, amount: NUM_TO_LOAD, last_card: last_card, operand: operand };
+            console.log(val);
             promises.push(Conversations.getPublicConversationCards(val)
                 .then(function(res) {
+                    console.log(res);
                     if (res.data.length > 0) {
                         promises.push(res.data.map(function(key, array) {
                             // Get the user for this card
@@ -1396,6 +1433,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     }
                     // All the cards have been mapped.
                     $q.all(promises).then(function() {
+                        console.log('all promises');
                         var sort_card = $filter('orderBy')($scope.cards, 'updatedAt');
                         last_card = sort_card[sort_card.length - 1];
                         $rootScope.loading_cards = false;

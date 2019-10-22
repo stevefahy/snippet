@@ -111,6 +111,8 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         var promises_followers = [];
         var online_card_create = Object.assign({}, card_create);
         var offline_card_create = Object.assign({}, card_create);
+        // Create a temp id
+        online_card_create._id = 'temp_id_' + new Date().getTime();
         online_card_create.user = currentUser.google.name;
         // Get the Conversation in which this card is being created.
         var current_conversation_id = Conversations.getConversationId();
@@ -141,11 +143,18 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
             console.log(currentUser);
             //$rootScope.$broadcast('PUBLIC_NOTIFICATION_CREATED', card_create);
-            offline_card_create._id = 'offline';
+            //offline_card_create._id = 'offline_' + new Date().getTime();
             offline_card_create.avatar = currentUser.avatar;
+
+            offline_card_create.createdAt = General.getISODate();
+            offline_card_create.updatedAt = General.getISODate();
+            offline_card_create.original_content = offline_card_create.content;
+
+            offline_card_create.offline = true;
 
             console.log(offline_card_create);
             updateCards([offline_card_create]).then(function(result) {
+
                 $rootScope.$broadcast('CARD_CREATED');
             })
         }
@@ -153,6 +162,10 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         Cards.create(online_card_create)
             .then(function(response) {
                 console.log(response);
+
+                // BACK HERE !
+                // GET CARDS UPDATE?
+
                 var card_id = response.data._id;
                 var card_response = response.data;
                 var updated_viewed_users;

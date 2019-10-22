@@ -1,40 +1,17 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/4.1.1/workbox-sw.js');
 
 if (workbox) {
-    console.log("Yay! Workbox is loaded 🎉");
-
-
+    //console.log("Yay! Workbox is loaded 🎉");
 
     self.addEventListener('activate', function(event) {
-        console.log('Claiming control');
         return self.clients.claim();
     });
 
+    /*
     self.addEventListener('fetch', event => {
         console.log('url: ' + event.request.url);
-
-        // Clone the request to ensure it's safe to read when
-        // adding to the Queue.
-
-
     });
-
-
-    /*
-        self.addEventListener('fetch', (event) => {
-            // Clone the request to ensure it's safe to read when
-            // adding to the Queue.
-            console.log(event);
-            const promiseChain = fetch(event.request.clone())
-                .catch((err) => {
-                    console.log('PUSHING');
-                   // return queue.pushRequest({ request: event.request });
-                });
-
-            event.waitUntil(promiseChain);
-        });
-        */
-
+    */
 
 
     // Debugging
@@ -42,106 +19,7 @@ if (workbox) {
         debug: true
     });
 
-    const queue = new workbox.backgroundSync.Queue('myQueueName');
-
-
-
-    async function firstAsync() {
-        console.log('...Synchronizing ' + queue.name);
-        //await queue.replayRequests();
-        let entry;
-        while (entry = await queue.shiftRequest()) {
-            try {
-                console.log('...Replaying: ' + entry.request.url);
-                send_message_to_all_clients('post_updating');
-                await fetch(entry.request);
-                console.log('...Replayed: ' + entry.request.url);
-
-            } catch (error) {
-                console.error('Replay failed for request', entry.request, error);
-                await queue.unshiftRequest(entry);
-                return;
-            }
-        }
-        send_message_to_all_clients('post_updated');
-        console.log('Replay complete!');
-    }
-
-
-
-    /*
-        const queue = new workbox.backgroundSync.Queue('myQueueName', {
-            maxRetentionTime: 60 * 24 * 30,
-            onSync: async ({ queue }) => {
-                console.log('...Synchronizing ' + queue.name);
-                //await queue.replayRequests();
-                let entry;
-                while (entry = await queue.shiftRequest()) {
-                    try {
-                        console.log('...Replaying: ' + entry.request.url);
-                        send_message_to_all_clients('post_updating');
-                        await fetch(entry.request);
-                        console.log('...Replayed: ' + entry.request.url);
-
-                    } catch (error) {
-                        console.error('Replay failed for request', entry.request, error);
-                        await queue.unshiftRequest(entry);
-                        return;
-                    }
-                }
-                send_message_to_all_clients('post_updated');
-                console.log('Replay complete!');
-            }
-        });
-        */
-
-    // Register Routes
-
-
-    workbox.routing.registerRoute(
-        /\.js$/,
-        new workbox.strategies.NetworkFirst()
-    );
-
-    workbox.routing.registerRoute(
-        /\.css$/,
-        new workbox.strategies.NetworkFirst()
-    );
-
-    workbox.routing.registerRoute(
-        /\.ico$/,
-        new workbox.strategies.NetworkFirst()
-    );
-
-    workbox.routing.registerRoute(
-        new RegExp('/api/user_data'),
-        new workbox.strategies.NetworkFirst()
-    );
-
-
-
-    self.addEventListener("sync", function(event) {
-        console.log("firing sync: " + event.tag);
-        console.log(event);
-        if (event.tag == "workbox-background-sync:myQueueName") {
-            console.log("sync event fired");
-        }
-    });
-
-    //client to SW
-    self.addEventListener('message', function(event) {
-        console.log("SW Received Message: " + event.data);
-        if (event.data === 'replayRequests') {
-            console.log('replayRequests');
-            //queue.replayRequests();
-            firstAsync();
-
-
-        }
-
-    });
-
-
+    // Messaging
 
     function send_message_to_sw(msg) {
         navigator.serviceWorker.controller.postMessage(msg);
@@ -150,7 +28,6 @@ if (workbox) {
     function send_message_to_client(client, msg) {
         return new Promise(function(resolve, reject) {
             var msg_chan = new MessageChannel();
-
             msg_chan.port1.onmessage = function(event) {
                 if (event.data.error) {
                     reject(event.data.error);
@@ -158,8 +35,6 @@ if (workbox) {
                     resolve(event.data);
                 }
             };
-
-            //client.postMessage("SW Says: '" + msg + "'", [msg_chan.port2]);
             client.postMessage(msg, [msg_chan.port2]);
         });
     }
@@ -172,14 +47,101 @@ if (workbox) {
         })
     }
 
-    const myPlugin = {
+    // const queue = new workbox.backgroundSync.Queue('api_posts');
+
+
+
+
+
+    // Event Lisiteners
+
+
+    self.addEventListener("sync", function(event) {
+        console.log(event);
+        if (event.tag == "workbox-background-sync:api_posts") {
+            console.log("sync event fired");
+        }
+
+    });
+
+    //client to SW
+    self.addEventListener('message', function(event) {
+        if (event.data === 'replayRequests') {
+            syncPosts();
+        }
+    });
+
+    //const queue = new workbox.backgroundSync.Queue('api_posts');
+
+
+
+    async function syncPosts(queue) {
+        //console.log('...Synchronizing ' + queue.name);
+        let entry;
+        let clone;
+        let response;
+        while (entry = await queue.shiftRequest()) {
+            try {
+                clone = await entry.request.clone();
+                console.log('...Replaying: ' + entry.request.url);
+                send_message_to_all_clients({ message: 'post_updating' });
+                response = await fetch(entry.request);
+                console.log(response);
+                let requestData = await clone.json();
+                console.log(requestData);
+                let assetsData = await response.json();
+                console.log(assetsData);
+                var card_data = { temp: requestData, posted: assetsData };
+                console.log('...Replayed: ' + entry.request.url);
+                send_message_to_all_clients({ message: 'post_updated', data: card_data });
+            } catch (error) {
+                console.error('Replay failed for request', entry.request, error);
+                await queue.unshiftRequest(entry);
+                return;
+            }
+        }
+        send_message_to_all_clients({message: 'all_posts_updated'});
+        console.log('Replay complete!');
+    }
+
+    const queue = new workbox.backgroundSync.Queue('api_posts', {
+        onSync: async ({ queue }) => {
+            let entry;
+            let clone;
+            let response;
+            while (entry = await queue.shiftRequest()) {
+                try {
+                    clone = await entry.request.clone();
+                    console.log('...Replaying: ' + entry.request.url);
+                    send_message_to_all_clients({ message: 'post_updating' });
+                    response = await fetch(entry.request);
+                    console.log(response);
+                    let requestData = await clone.json();
+                    console.log(requestData);
+                    let assetsData = await response.json();
+                    console.log(assetsData);
+                    var card_data = { temp: requestData, posted: assetsData };
+                    console.log('...Replayed: ' + entry.request.url);
+                    send_message_to_all_clients({ message: 'post_updated', data: card_data });
+                } catch (error) {
+                    console.error('Replay failed for request', entry.request, error);
+                    await queue.unshiftRequest(entry);
+                    return;
+                }
+            }
+            send_message_to_all_clients({ message: 'all_posts_updated' });
+            console.log('Replay complete!');
+        }
+    });
+
+    const rest_fail = {
+        // If the request fails then add this REST Post to the queue.
         fetchDidFail: async ({ originalRequest, request, error, event }) => {
             // No return expected.
             // NOTE: `originalRequest` is the browser's request, `request` is the
             // request after being passed through plugins with
             // `requestWillFetch` callbacks, and `error` is the exception that caused
             // the underlying `fetch()` to fail.
-            console.log('push2');
             // adding to the Queue.
             queue.pushRequest({ request: request });
         }
@@ -210,46 +172,83 @@ if (workbox) {
     });
     */
 
-
-
     const cachedResponseWillBeUsed = async ({ cache, request, cachedResponse }) => {
         // If there's already a match against the request URL, return it.
         if (cachedResponse) {
-            console.log(cachedResponse);
             return cachedResponse;
         }
+        // Search for the file ignoring the query part of the url.
         var cachedFiles = await caches.match(request.url, {
             ignoreSearch: true
         });
         return cachedFiles;
     };
 
+    // Register Routes
+
+    workbox.routing.registerRoute(
+        /\.js$/,
+        new workbox.strategies.NetworkFirst()
+    );
+
+    workbox.routing.registerRoute(
+        /\.css$/,
+        new workbox.strategies.NetworkFirst()
+    );
+
+    workbox.routing.registerRoute(
+        /\.ico$/,
+        new workbox.strategies.NetworkFirst()
+    );
+
+    workbox.routing.registerRoute(
+        new RegExp('/api/user_data'),
+        new workbox.strategies.NetworkFirst()
+    );
+
     workbox.routing.registerRoute(
         new RegExp('/chat/get_feed'),
         new workbox.strategies.NetworkFirst({
-            cacheName: 'chatty-feed',
+            cacheName: 'user-feed',
             plugins: [
                 { cachedResponseWillBeUsed },
             ]
         })
     );
-    /*
-        workbox.routing.registerRoute(
-            new RegExp('/api/cards'),
-            new workbox.strategies.NetworkOnly({
-                plugins: [bgSyncPlugin]
-            }),
-            'POST'
-        );
-        */
+
+    workbox.routing.registerRoute(
+        new RegExp('/chat/update_feed'),
+        new workbox.strategies.NetworkFirst({
+            cacheName: 'user-feed2',
+            plugins: [
+                { cachedResponseWillBeUsed },
+            ]
+        })
+    );
+
+
+
+
+
 
     workbox.routing.registerRoute(
         new RegExp('/api/cards'),
         new workbox.strategies.NetworkOnly({
-            plugins: [myPlugin]
+            plugins: [rest_fail]
         }),
         'POST'
     );
+
+    workbox.routing.registerRoute(
+        new RegExp('chat/get_public_conversation_cards'),
+        new workbox.strategies.NetworkOnly({
+            plugins: [rest_fail]
+        }),
+        'POST'
+    );
+
+
+
 
     workbox.routing.registerRoute(
         new RegExp('/'),
@@ -333,7 +332,7 @@ if (workbox) {
   },
   {
     "url": "controllers/cardcreate_ctrl.js",
-    "revision": "39f6a673228b5dda4649ea5816a18b42"
+    "revision": "efbf02fa4194beb03a58a967947e20ad"
   },
   {
     "url": "controllers/contacts_ctrl.js",
@@ -341,7 +340,7 @@ if (workbox) {
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "23bf1b3530598715684a3eb03960dcf7"
+    "revision": "552fb14d462540f534311b77a3816db5"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -373,7 +372,7 @@ if (workbox) {
   },
   {
     "url": "controllers/main_ctrl.js",
-    "revision": "2a2a3ede6bd8f2c26415175272935008"
+    "revision": "8951964e3bb92fddd5deb17eb63bd6c7"
   },
   {
     "url": "controllers/usersetting_ctrl.js",
@@ -465,7 +464,7 @@ if (workbox) {
   },
   {
     "url": "service-worker.js",
-    "revision": "2e73f1c65ac49c9ec96a006d537c9b69"
+    "revision": "9c09b799ac4a17b052779b8bb9ca817b"
   },
   {
     "url": "services/content_editable.js",
@@ -477,7 +476,7 @@ if (workbox) {
   },
   {
     "url": "services/database.js",
-    "revision": "8880048191bbfad2a32b280d7745db80"
+    "revision": "c9a2c61620f8467af001abcd5ff6422f"
   },
   {
     "url": "services/debug.js",
@@ -650,5 +649,5 @@ if (workbox) {
 ]);
 
 } else {
-    console.log("Boo! Workbox didn't load 😬");
+    //console.log("Boo! Workbox didn't load 😬");
 }

@@ -121,9 +121,12 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     // Watch the online status.
     $scope.$watch('online', function(newStatus) {
-        console.log('ONLINE');
+        console.log('ONLINE: ' + newStatus);
         //ports[0].postMessage("replayRequests");
-        navigator.serviceWorker.controller.postMessage("replayRequests");
+        if (navigator.serviceWorker.controller && newStatus && DEVICE_TYPE == 'mobile') {
+            navigator.serviceWorker.controller.postMessage("replayRequests");
+        }
+
 
         if (!last_network_status && newStatus) {
             // Connection restored.
@@ -315,14 +318,23 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         navigator.serviceWorker.addEventListener('message', function(event) {
             console.log("Client 1 Received Message: " + event.data);
             //event.ports[0].postMessage("Client 1 Says 'Hello back!'");
-            if (event.data == "post_updated") {
-                console.log('post_updated');
+            if (event.data.message == "all_posts_updated") {
+                console.log('all_posts_updated');
                 endalert = true;
                 removeAlert();
             }
-            if (event.data == "post_updating") {
+            if (event.data.message == "post_updating") {
                 console.log('post_updating');
+                // Remove offline cards if any exist?
+                //removeOfflineCards();
                 addAlert();
+            }
+            if (event.data.message == "post_updated") {
+                console.log('post_updated');
+                console.log(event.data.data);
+                // Remove offline cards if any exist?
+                //removeOfflineCards();
+                //addAlert();
             }
         });
     }
@@ -367,27 +379,44 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     $rootScope.$on('PUBLIC_NOTIFICATION_CREATED', function(event, msg) {
         console.log('PUBLIC_NOTIFICATION_CREATED');
         var id = Conversations.getConversationId();
+        console.log(id + ' === ' + msg.conversation_id);
         // only update the conversation if the user is currently in that conversation
         if (id === msg.conversation_id) {
+            console.log('NOT FEED');
+            // Remove offline cards if any exist?
+
+
             getPublicCardsUpdate(id).then(function(result) {
+                console.log(result);
                 if (result.length > 0) {
+
                     console.log(result);
-                    updateCards(result);
-                    // Update Conversations
-                    for (var i = 0, len = result.length; i < len; i++) {
-                        UserData.conversationsLatestCardAdd(msg.conversation_id, result[i]);
-                    }
-                }
-            });
-        } else if (Conversations.getConversationType() == 'feed') {
-            getFollowingUpdate()
-                .then(function(result) {
-                    if (result.length > 0) {
+                    // Remove offline cards if any exist?
+                    removeOfflineCards().then(function() {
                         updateCards(result);
                         // Update Conversations
                         for (var i = 0, len = result.length; i < len; i++) {
                             UserData.conversationsLatestCardAdd(msg.conversation_id, result[i]);
                         }
+                    });
+                }
+            });
+        } else if (Conversations.getConversationType() == 'feed') {
+            console.log('FEED');
+            getFollowingUpdate()
+                .then(function(result) {
+                    if (result.length > 0) {
+
+                        // Remove offline cards if any exist?
+                        removeOfflineCards().then(function() {
+                            updateCards(result);
+                            // Update Conversations
+                            for (var i = 0, len = result.length; i < len; i++) {
+                                UserData.conversationsLatestCardAdd(msg.conversation_id, result[i]);
+                            }
+                        });
+
+
                     }
                 });
         }
