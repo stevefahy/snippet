@@ -1,5 +1,6 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/4.1.1/workbox-sw.js');
 
+
 if (workbox) {
     //console.log("Yay! Workbox is loaded 🎉");
 
@@ -60,11 +61,15 @@ if (workbox) {
         console.log(event);
         if (event.tag == "workbox-background-sync:api_posts") {
             console.log("sync event fired");
+            //syncPosts();
         }
 
     });
 
-const queue = new workbox.backgroundSync.Queue('api_posts', {
+    //const queue = new workbox.backgroundSync.Queue('api_posts');
+
+    
+    const queue = new workbox.backgroundSync.Queue('api_posts', {
         onSync: async ({ queue }) => {
             let entry;
             let clone;
@@ -93,6 +98,7 @@ const queue = new workbox.backgroundSync.Queue('api_posts', {
             console.log('Replay complete!');
         }
     });
+    
 
     //client to SW
     self.addEventListener('message', function(event) {
@@ -104,7 +110,7 @@ const queue = new workbox.backgroundSync.Queue('api_posts', {
     //const queue = new workbox.backgroundSync.Queue('api_posts');
 
 
-
+    // Mobile
     async function syncPosts() {
         console.log('...Synchronizing ' + queue.name);
         let entry;
@@ -130,11 +136,11 @@ const queue = new workbox.backgroundSync.Queue('api_posts', {
                 return;
             }
         }
-        send_message_to_all_clients({message: 'all_posts_updated'});
+        send_message_to_all_clients({ message: 'all_posts_updated' });
         console.log('Replay complete!');
     }
 
-    
+
 
     const rest_fail = {
         // If the request fails then add this REST Post to the queue.
