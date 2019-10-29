@@ -67,7 +67,7 @@ if (workbox) {
         })
     }
 
-    // When sync is enabled (Desktop).
+// When sync is enabled (Desktop).
     const queue_image = new workbox.backgroundSync.Queue('api_image', {
         onSync: async ({ queue }) => {
             let entry;
@@ -128,7 +128,7 @@ if (workbox) {
             console.log('Replay complete!');
         }
     });
-
+    
     // When sync is disabled (Mobile).
     async function syncPosts() {
         console.log('...Synchronizing ' + queue.name);
@@ -238,12 +238,11 @@ if (workbox) {
         /\.ico$/,
         new workbox.strategies.NetworkFirst()
     );
-/*
+
     workbox.routing.registerRoute(
         /\.html$/,
         new workbox.strategies.NetworkFirst()
     );
-    */
 
     workbox.routing.registerRoute(
         /\.gif$/,
@@ -254,7 +253,7 @@ if (workbox) {
         /\.jpeg$/,
         new workbox.strategies.NetworkFirst()
     );
-
+    
 
 
     workbox.routing.registerRoute(
@@ -262,32 +261,10 @@ if (workbox) {
         new workbox.strategies.NetworkFirst()
     );
 
-    /*
-    workbox.routing.registerRoute(
-        new RegExp('/views/.*\\.html'),
-        new workbox.strategies.CacheFirst({
-            cacheName: 'views-cache',
-            plugins: [
-                { cachedResponseWillBeUsed },
-            ]
-        })
-    );
-    */
-
-    workbox.routing.registerRoute(
-        new RegExp('/views/.*\\.html'),
-        new workbox.strategies.NetworkFirst({
-            cacheName: 'views-cache',
-            plugins: [
-                { cachedResponseWillBeUsed },
-            ]
-        })
-    );
-
     workbox.routing.registerRoute(
         new RegExp('/chat/get_feed'),
         new workbox.strategies.NetworkFirst({
-            cacheName: 'user-feed1',
+            cacheName: 'user-feed',
             plugins: [
                 { cachedResponseWillBeUsed },
             ]
@@ -328,21 +305,12 @@ if (workbox) {
         'POST'
     );
 
-
-
-
-
     workbox.routing.registerRoute(
         new RegExp('/'),
         new workbox.strategies.NetworkFirst({}),
     );
 
-
-
-
     workbox.googleAnalytics.initialize();
-
-
 
     workbox.precaching.precacheAndRoute([
   {
@@ -483,7 +451,7 @@ if (workbox) {
   },
   {
     "url": "indexa.html",
-    "revision": "4a2b63406cb8edb38151e2fd2f74e68f"
+    "revision": "809f9e7bffeb523297ba0d029a5025df"
   },
   {
     "url": "js/angular_moment.js",
@@ -550,10 +518,6 @@ if (workbox) {
     "revision": "997d170a1b4defb1692464948b505db7"
   },
   {
-    "url": "service-worker.js",
-    "revision": "55ffd2aa4252e96d69588811762f7169"
-  },
-  {
     "url": "services/content_editable.js",
     "revision": "7380e4d3572d8c0e82e8a571c8f1f8da"
   },
@@ -563,7 +527,7 @@ if (workbox) {
   },
   {
     "url": "services/database.js",
-    "revision": "74a2d7a1db53202359102f625a5dd17d"
+    "revision": "c3b5af7565a39f00fc2210c8639b5225"
   },
   {
     "url": "services/debug.js",
@@ -583,7 +547,7 @@ if (workbox) {
   },
   {
     "url": "services/format.js",
-    "revision": "c1ccb8345dc259da421d4b97c4520d35"
+    "revision": "c9819aaf28002dff56a8262d0600af13"
   },
   {
     "url": "services/general.js",
@@ -733,10 +697,7 @@ if (workbox) {
     "url": "views/user_setting.html",
     "revision": "d4edb77cf8070f188bfe583139bf98a4"
   }
-], {
-        // Ignore all URL parameters.
-
-    });
+]);
 
 } else {
     //console.log("Boo! Workbox didn't load 😬");

@@ -222,6 +222,66 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         });
     };
 
+    this.replaceBase64 = function(content) {
+        console.log(content);
+        var div = document.createElement('div');
+        //div.innerHTML = content.trim();
+        div.innerHTML = content.trim();
+        //var el = $(content);
+        //console.log(el);
+        //var images = $(content + ' .cropper_cont').children('img');
+        //var images = $(content).children('.cropper_cont').children('img');
+        //var images = $(content).find('img').attr('src');
+        $(div).find('img').each(function() {
+            console.log($(this).attr('id'));
+            console.log($(this).attr('src').substr(0, 10));
+
+            if ($(this).attr('src').substr(0, 10) == 'data:image') {
+                $(this).attr('src', IMAGES_URL + $(this).attr('id').substr(6) + '.jpg');
+            }
+        });
+        //console.log(images);
+        //content = self.removeTempFiltered(content);
+        //console.log(content);
+        console.log(div.innerHTML);
+
+        //var replaced = $(div.innerHTML).prop('outerHTML');
+        var replaced = div.innerHTML;
+        console.log(replaced);
+        //console.log($(el).html());
+        return replaced;
+    }
+
+    this.replaceBlob = function(content) {
+        console.log(content);
+        var div = document.createElement('div');
+        //div.innerHTML = content.trim();
+        div.innerHTML = content.trim();
+        //var el = $(content);
+        //console.log(el);
+        //var images = $(content + ' .cropper_cont').children('img');
+        //var images = $(content).children('.cropper_cont').children('img');
+        //var images = $(content).find('img').attr('src');
+        $(div).find('img').each(function() {
+            console.log($(this).attr('id'));
+            console.log($(this).attr('src').substr(0, 5));
+
+            if ($(this).attr('src').substr(0, 5) == 'blob:') {
+                $(this).attr('src', IMAGES_URL + $(this).attr('id').substr(6) + '.jpg');
+            }
+        });
+        //console.log(images);
+        //content = self.removeTempFiltered(content);
+        //console.log(content);
+        console.log(div.innerHTML);
+
+        //var replaced = $(div.innerHTML).prop('outerHTML');
+        var replaced = div.innerHTML;
+        console.log(replaced);
+        //console.log($(el).html());
+        return replaced;
+    }
+
     this.removeDeleteIds = function() {
         $('#cecard_create').html($('#cecard_create').html().replace(/<span id="delete">/g, ""));
         $('#cecard_create').html($('#cecard_create').html().replace(/<\/span>/g, ""));
@@ -304,7 +364,19 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         $rootScope.$broadcast('imagePasted');
     };
 
+    insertB64Image = function(data) {
+        console.log('insertB64Image');
+        console.log(data);
+        if (data.response === 'saved') {
+            data.file_name = data.file_name.substring(0, data.file_name.indexOf('.'));
+            var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src=\"" + data.file + "\"></div><slider></slider><span class='after_image' id='after_image_" + data.file_name + "'>&#x200b;&#10;</span><span class='clear_after_image'></span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
+            self.pasteHtmlAtCaret(new_image);
+        }
+    };
+
     insertImage = function(data) {
+        console.log('insertImage');
+        console.log(data);
         if (data.response === 'saved') {
             data.file_name = data.file.substring(0, data.file.indexOf('.'));
             var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src=\"" + IMAGES_URL + data.file + "\"></div><slider></slider><span class='after_image' id='after_image_" + data.file_name + "'>&#x200b;&#10;</span><span class='clear_after_image'></span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
@@ -364,7 +436,229 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         });
     };
 
+    let db;
+    let dbVersion = 1;
+    let dbReady = false;
+
+    // public method for encoding an Uint8Array to base64
+    function encode(input) {
+        var keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+        var output = "";
+        var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
+        var i = 0;
+
+        while (i < input.length) {
+            chr1 = input[i++];
+            chr2 = i < input.length ? input[i++] : Number.NaN; // Not sure if the index 
+            chr3 = i < input.length ? input[i++] : Number.NaN; // checks are needed here
+
+            enc1 = chr1 >> 2;
+            enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+            enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+            enc4 = chr3 & 63;
+
+            if (isNaN(chr2)) {
+                enc3 = enc4 = 64;
+            } else if (isNaN(chr3)) {
+                enc4 = 64;
+            }
+            output += keyStr.charAt(enc1) + keyStr.charAt(enc2) +
+                keyStr.charAt(enc3) + keyStr.charAt(enc4);
+        }
+        return output;
+    }
+
+    /*
+        insertImage = function(data) {
+        console.log('insertImage');
+        console.log(data);
+        if (data.response === 'saved') {
+            data.file_name = data.file.substring(0, data.file.indexOf('.'));
+            var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src=\"" + IMAGES_URL + data.file + "\"></div><slider></slider><span class='after_image' id='after_image_" + data.file_name + "'>&#x200b;&#10;</span><span class='clear_after_image'></span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
+            self.pasteHtmlAtCaret(new_image);
+        }
+    };
+
+    insertImage(data);
+
+    file: "1571910349557_abstract_3d_4-wallpaper-1920x1080.jpg"
+file_name: "1571910349557_abstract_3d_4-wallpaper-1920x1080"
+response: "saved"
+    */
+
+    function createImage(e) {
+        console.log('createImage');
+
+        console.log(e.get('uploads[]'));
+        console.log(e.get('uploads[]').name);
+
+
+
+        let file = e.get('uploads[]');
+        let name = e.get('uploads[]').name;
+
+        var arrayBuffer = file;
+        var bytes = new Uint8Array(arrayBuffer);
+
+
+
+        /*
+                // Blob
+                //var base64data = window.URL.createObjectURL(file);
+                var canvas = document.createElement('canvas');
+                var ctx = canvas.getContext('2d');
+
+                const img = document.createElement("img");
+                var base64data  = window.URL.createObjectURL(file);
+                //img.height = 60;
+                img.onload = function() {
+                    //window.URL.revokeObjectURL(this.src);
+                    ctx.drawImage(img,0,0);
+
+                    var image_object = {
+                        file: this.src,
+                        file_name: name,
+                        response: "saved"
+                    };
+
+                    insertB64Image(image_object);
+                }
+                img.src = base64data;
+        */
+
+
+
+        // Blob
+        var base64data = window.URL.createObjectURL(file);
+
+        var image_object = {
+            file: base64data,
+            file_name: name,
+            response: "saved"
+        };
+
+        insertB64Image(image_object);
+
+
+
+        // Datat Url
+        /*
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = function() {
+            var base64data = reader.result;
+            //console.log(base64data);
+            //var encoded = encodeURIComponent(base64data);
+
+            var image_object = {
+                file: base64data,
+                file_name: name,
+                response: "saved"
+            };
+
+            insertB64Image(image_object);
+
+        }
+        */
+
+
+
+        //console.log(image_data);
+    }
+
+    function doImageTest() {
+        console.log('doImageTest');
+        //let image = document.querySelector('#testImage');
+        //let recordToLoad = parseInt(document.querySelector('#recordToLoad').value, 10);
+        let recordToLoad = 1;
+        if (recordToLoad === '') recordToLoad = 1;
+
+        let trans = db.transaction(['cachedForms'], 'readonly');
+
+        let req = trans.objectStore('cachedForms').get(recordToLoad);
+        req.onsuccess = function(e) {
+            let record = e.target.result;
+            console.log('get success', record);
+            console.log(record.name)
+            console.log(record.data);
+            //image.src = 'data:image/jpeg;base64,' + btoa(record.data);
+        }
+    }
+
+
+    function storeFile(e) {
+        console.log('storeFile');
+
+        console.log(e.get('uploads[]'));
+        console.log(e.get('uploads[]').name);
+
+        let file = e.get('uploads[]');
+        let name = e.get('uploads[]').name;
+
+        var reader = new FileReader();
+        //reader.readAsDataURL(file);
+        reader.readAsBinaryString(file);
+
+        reader.onload = function(e) {
+            //alert(e.target.result);
+            let bits = e.target.result;
+            let ob = {
+                created: new Date(),
+                data: bits,
+                name: name
+            };
+
+            /*
+            file: "1571861507075_abstract_3d_4-wallpaper-1920x1080.jpg"
+file_name: "1571861507075_abstract_3d_4-wallpaper-1920x1080"
+response: "saved"
+*/
+
+            let trans = db.transaction(['cachedForms'], 'readwrite');
+            let addReq = trans.objectStore('cachedForms').add(ob);
+
+            addReq.onerror = function(e) {
+                console.log('error storing data');
+                console.error(e);
+            }
+
+            trans.oncomplete = function(e) {
+                console.log('data stored');
+                doImageTest();
+            }
+        }
+    }
+
+    initDb = function(formdata) {
+        console.log('initDb');
+        let request = indexedDB.open('testPics', dbVersion);
+
+        request.onerror = function(e) {
+            console.error('Unable to open database.');
+        }
+
+        request.onsuccess = function(e) {
+            db = e.target.result;
+            console.log('db opened');
+            storeFile(formdata);
+        }
+
+        request.onupgradeneeded = function(e) {
+            let db = e.target.result;
+            db.createObjectStore('cachedForms', { keyPath: 'id', autoIncrement: true });
+            dbReady = true;
+        }
+    }
+
+
+    function postImagetoIDB(formdata) {
+        console.log('postImagetoIDB');
+        initDb(formdata);
+    }
+
     this.prepareImage = function(files, callback) {
+        //var fd;
+
         var promises = [];
         self.formData = new FormData();
         angular.forEach(files, function(file, key) {
@@ -384,6 +678,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     } else {
                         file_name = file.name;
                     }
+                    //fd = { blob: blob, fn: file_name };
                     self.formData.append('uploads[]', blob, file_name);
                 })
             );
@@ -391,6 +686,14 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         $q.all(promises).then(function(formData) {
             // Image processing of ALL images complete. Upload form
             self.uploadImages(self.formData, callback);
+            console.log('Blobs created');
+
+            //postImagetoIDB(self.formData);
+            console.log($rootScope.online);
+            if (!$rootScope.online) {
+                createImage(self.formData);
+            }
+
         });
     };
 
@@ -452,15 +755,18 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.removeTempFiltered = function(content) {
+        console.log(content);
         var content_less_pre;
         if (content !== undefined) {
-            var reg_pre = /(<img src="data:image.*?>)(.*?)(>)/ig;
+            //var reg_pre = /(<img src="data:image.*?>)(.*?)(>)/ig;
+            var reg_pre = /(<img)(.*src="data:image.*?>)(.*?)(>)/ig;
             content_less_pre = content;
             var pre_match = content_less_pre.match(reg_pre);
             for (var v in pre_match) {
                 content_less_pre = content_less_pre.replace(pre_match[v], '');
             }
         }
+        console.log(content_less_pre);
         return content_less_pre;
     };
 
@@ -816,7 +1122,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         // Inject the General Service
         var General = $injector.get('General');
         // Ignore Canvas Images (which may contain chars from markey_array).
-        var content_less_temp = self.removeTempFiltered(content);
+        //const copied = Object.assign({}, content)
+        var string_copy = (' ' + content).slice(1);
+        var content_less_temp = self.removeTempFiltered(string_copy);
         var content_to_match = content_less_temp;
         var mark_list_current;
         var ma_index;
@@ -994,9 +1302,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.selectText = function(element, word) {
+        console.log(element);
+        console.log(word);
         var doc = document;
         var current_node;
         var node_pos = self.findNodeNumber(doc.getElementById(element), word);
+        console.log(node_pos);
         var text = doc.getElementById(element);
         if (doc.body.createTextRange) {
             range = document.body.createTextRange();

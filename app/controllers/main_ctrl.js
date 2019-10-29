@@ -332,6 +332,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             if (event.data.message == "post_updated") {
                 console.log('post_updated');
                 console.log(event.data.data);
+                updateOfflineCard(event.data.data);
                 // Remove offline cards if any exist?
                 //removeOfflineCards();
                 //addAlert();
@@ -382,41 +383,24 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         console.log(id + ' === ' + msg.conversation_id);
         // only update the conversation if the user is currently in that conversation
         if (id === msg.conversation_id) {
-            console.log('NOT FEED');
-            // Remove offline cards if any exist?
-
-
             getPublicCardsUpdate(id).then(function(result) {
-                console.log(result);
                 if (result.length > 0) {
-
-                    console.log(result);
-                    // Remove offline cards if any exist?
-                    removeOfflineCards().then(function() {
+                    updateCards(result);
+                    // Update Conversations
+                    for (var i = 0, len = result.length; i < len; i++) {
+                        UserData.conversationsLatestCardAdd(msg.conversation_id, result[i]);
+                    }
+                }
+            });
+        } else if (Conversations.getConversationType() == 'feed') {
+            getFollowingUpdate()
+                .then(function(result) {
+                    if (result.length > 0) {
                         updateCards(result);
                         // Update Conversations
                         for (var i = 0, len = result.length; i < len; i++) {
                             UserData.conversationsLatestCardAdd(msg.conversation_id, result[i]);
                         }
-                    });
-                }
-            });
-        } else if (Conversations.getConversationType() == 'feed') {
-            console.log('FEED');
-            getFollowingUpdate()
-                .then(function(result) {
-                    if (result.length > 0) {
-
-                        // Remove offline cards if any exist?
-                        removeOfflineCards().then(function() {
-                            updateCards(result);
-                            // Update Conversations
-                            for (var i = 0, len = result.length; i < len; i++) {
-                                UserData.conversationsLatestCardAdd(msg.conversation_id, result[i]);
-                            }
-                        });
-
-
                     }
                 });
         }

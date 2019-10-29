@@ -148,11 +148,19 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
             offline_card_create.createdAt = General.getISODate();
             offline_card_create.updatedAt = General.getISODate();
+
+            // replace base 64 image with image reference
+            //online_card_create.content = Format.replaceBase64(offline_card_create.content);
+
+            // replace blob image with image reference
+            online_card_create.content = Format.replaceBlob(offline_card_create.content);
+
             offline_card_create.original_content = offline_card_create.content;
 
-            offline_card_create.offline = true;
+            //offline_card_create.offline = true;
 
             console.log(offline_card_create);
+            console.log(online_card_create);
             updateCards([offline_card_create]).then(function(result) {
 
                 $rootScope.$broadcast('CARD_CREATED');
