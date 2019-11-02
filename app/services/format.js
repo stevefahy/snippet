@@ -31,9 +31,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         insertImage(data);
     };
 
-    this.imageUploadedOffline = function() {
+    this.imageUploadedOffline = function(data) {
+        // mCurrentPhotoPath: /storage/emulated/0/Snipbee/Snipbee Images/JPEG_20191102_203845.jpg
         //insertImage(data);
-        console.log('imageUploadedOffline');
+        console.log('imageUploadedOffline!');
+        console.log(data);
+
     };
 
     // Array to dynamically set marky chars to html tags
