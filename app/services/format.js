@@ -17,7 +17,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     var savedSelection;
 
     $window.imageUploaded = self.imageUploaded;
-    $window.imageUploadedOffline = self..imageUploadedOffline;
+    $window.imageUploadedOffline = self.imageUploadedOffline;
 
     // Set serverUrl based upon current host (local or live)
     if (location.hostname === 'localhost') {
