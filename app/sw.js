@@ -419,7 +419,7 @@ if (workbox) {
   },
   {
     "url": "controllers/cardcreate_ctrl.js",
-    "revision": "efbf02fa4194beb03a58a967947e20ad"
+    "revision": "627fec0de5cbb03c1a404e36d8f91101"
   },
   {
     "url": "controllers/contacts_ctrl.js",
@@ -583,7 +583,7 @@ if (workbox) {
   },
   {
     "url": "services/format.js",
-    "revision": "c1ccb8345dc259da421d4b97c4520d35"
+    "revision": "1ed8095b819d218be16ac5dfd51440e5"
   },
   {
     "url": "services/general.js",

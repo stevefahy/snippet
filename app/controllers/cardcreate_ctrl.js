@@ -15,6 +15,7 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
     $scope.checkCursor = Format.checkCursor;
 
     $window.imageUploaded = Format.imageUploaded;
+    $window.imageUploadedOffline = Format.imageUploadedOffline;
 
     $scope.input = false;
     var isFocused = false;
