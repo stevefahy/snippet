@@ -396,6 +396,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     insertImageOffline = function(data) {
         console.log('insertImageOffline');
         console.log(data);
+        console.log(data.base64);
         if (data.response === 'saved') {
             //data.file_name = data.file.substring(0, data.file.indexOf('.'));
             //var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src=\"" + data.file_directory + "/" + data.file + "\"></div><slider></slider><span class='after_image' id='after_image_" + data.file_name + "'>&#x200b;&#10;</span><span class='clear_after_image'></span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
@@ -558,6 +559,7 @@ response: "saved"
 
 
         // Blob
+        console.log(file);
         var base64data = window.URL.createObjectURL(file);
 
         var image_object = {
