@@ -583,7 +583,7 @@ if (workbox) {
   },
   {
     "url": "services/format.js",
-    "revision": "3bf71c4bdc075dbd87968d0b7a623818"
+    "revision": "7e04bf01f6e24c709779e32656706d7f"
   },
   {
     "url": "services/general.js",

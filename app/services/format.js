@@ -398,8 +398,18 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         console.log(data);
         if (data.response === 'saved') {
             //data.file_name = data.file.substring(0, data.file.indexOf('.'));
-            var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src=\"" + data.file_directory + "/" + data.file + "\"></div><slider></slider><span class='after_image' id='after_image_" + data.file_name + "'>&#x200b;&#10;</span><span class='clear_after_image'></span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
-            self.pasteHtmlAtCaret(new_image);
+            //var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src=\"" + data.file_directory + "/" + data.file + "\"></div><slider></slider><span class='after_image' id='after_image_" + data.file_name + "'>&#x200b;&#10;</span><span class='clear_after_image'></span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
+            //self.pasteHtmlAtCaret(new_image);
+            // Blob
+            var base64data = window.URL.createObjectURL(data.base64);
+
+            var image_object = {
+                file: base64data,
+                file_name: data.file,
+                response: "saved"
+            };
+
+            insertB64Image(image_object);
         }
     };
 
