@@ -24,6 +24,7 @@ if (workbox) {
     self.addEventListener('message', function(event) {
         if (event.data === 'replayRequests') {
             syncPosts();
+            syncImages();
         }
     });
 
@@ -157,6 +158,35 @@ if (workbox) {
         }
         send_message_to_all_clients({ message: 'all_posts_updated' });
         console.log('Replay complete!');
+    }
+
+// When sync is disabled (Mobile).
+    async function syncImages() {
+        let entry;
+            let clone;
+            let response;
+            while (entry = await queue_image.shiftRequest()) {
+                try {
+                    clone = await entry.request.clone();
+                    console.log('...Replaying: ' + entry.request.url);
+                    send_message_to_all_clients({ message: 'post_updating' });
+                    response = await fetch(entry.request);
+                    console.log(response);
+                    //let requestData = await clone.json();
+                    //console.log(requestData);
+                    //let assetsData = await response.json();
+                    //console.log(assetsData);
+                    //var card_data = { temp: requestData, posted: assetsData };
+                    console.log('...Replayed: ' + entry.request.url);
+                    //send_message_to_all_clients({ message: 'post_updated', data: entry.request.url });
+                } catch (error) {
+                    console.error('Replay failed for request', entry.request, error);
+                    await queue.unshiftRequest(entry);
+                    return;
+                }
+            }
+            send_message_to_all_clients({ message: 'all_posts_updated' });
+            console.log('Replay complete!');
     }
 
     const rest_fail = {
@@ -557,7 +587,7 @@ if (workbox) {
   },
   {
     "url": "service-worker.js",
-    "revision": "2c878be112c999cb2a5426d242fa390c"
+    "revision": "c2c5cd2970408642f7d1c2ce2d6b622c"
   },
   {
     "url": "services/content_editable.js",
