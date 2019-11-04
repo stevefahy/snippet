@@ -449,9 +449,13 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 response: "saved"
             };
 
-            insertB64Image(image_object);
+            //insertB64Image(image_object);
 
-            self.uploadFileAndroidOffline(blob);
+            //blob.name = data.file;
+
+            fileBlob = new File([blob], data.file);
+
+            self.uploadFileAndroidOffline(fileBlob);
             //insertImage(image_object);
             //}
             //img.src = 'data:image/png;base64,' + data.base64;
@@ -810,7 +814,8 @@ response: "saved"
         //$rootScope.$broadcast('imageUpload', id);
         //var files = $(this).get(0).files;
         //if (files.length > 0) {
-            self.prepareImage(file);
+            file_array = [file];
+            self.prepareImage(file_array);
         //}
     }
 
