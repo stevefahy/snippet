@@ -393,6 +393,26 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         }
     };
 
+    const b64toBlob = (b64Data, contentType = '', sliceSize = 512) => {
+        const byteCharacters = atob(b64Data);
+        const byteArrays = [];
+
+        for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+            const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+            const byteNumbers = new Array(slice.length);
+            for (let i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+            }
+
+            const byteArray = new Uint8Array(byteNumbers);
+            byteArrays.push(byteArray);
+        }
+
+        const blob = new Blob(byteArrays, { type: contentType });
+        return blob;
+    }
+
     insertImageOffline = function(data) {
         console.log('insertImageOffline');
         console.log(data);
@@ -402,19 +422,53 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             //var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src=\"" + data.file_directory + "/" + data.file + "\"></div><slider></slider><span class='after_image' id='after_image_" + data.file_name + "'>&#x200b;&#10;</span><span class='clear_after_image'></span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
             //self.pasteHtmlAtCaret(new_image);
             // Blob
-            var base64data = window.URL.createObjectURL('data:image/png;base64,'+data.base64);
+            //var image = new Image();
+            //image.src = 'data:image/png;base64,' + data.base64;
+            //var base64data = window.URL.createObjectURL(data.base64);
 
-            //data:image/png;base64,
-            //img.src = 
-            //then create objecturl
+            //const img = document.createElement("img");
+            //var base64data = window.URL.createObjectURL(file);
+            //img.height = 60;
+            //img.onload = function() {
+            //window.URL.revokeObjectURL(this.src);
+            //ctx.drawImage(img, 0, 0);
+            //var base64data = window.URL.createObjectURL(this.src);
+
+
+            //var dataUrl = getDataUrl(img)
+            //console.log(dataUrl)
+            const contentType = 'image/png';
+            const b64Data = data.base64;
+
+            const blob = b64toBlob(b64Data, contentType);
+            const blobUrl = URL.createObjectURL(blob);
 
             var image_object = {
-                file: base64data,
+                file: blobUrl,
                 file_name: data.file,
                 response: "saved"
             };
 
             insertB64Image(image_object);
+
+            self.uploadFileAndroidOffline(blob);
+            //insertImage(image_object);
+            //}
+            //img.src = 'data:image/png;base64,' + data.base64;
+            //img.src = base64data;
+
+            //data:image/png;base64,
+            //img.src = 
+            //then create objecturl
+            /*
+                        var image_object = {
+                            file: base64data,
+                            file_name: data.file,
+                            response: "saved"
+                        };
+
+                        insertB64Image(image_object);
+                        */
         }
     };
 
@@ -751,6 +805,14 @@ response: "saved"
             Database.saveTempCard(id, card, currentUser);
         }
     };
+
+    this.uploadFileAndroidOffline = function(file) {
+        //$rootScope.$broadcast('imageUpload', id);
+        //var files = $(this).get(0).files;
+        //if (files.length > 0) {
+            self.prepareImage(file);
+        //}
+    }
 
     this.uploadFile = function(id, card, currentUser) {
         if (ua.indexOf('AndroidApp') >= 0) {

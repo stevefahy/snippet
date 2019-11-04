@@ -328,7 +328,13 @@ if (workbox) {
         'POST'
     );
 
-
+    workbox.routing.registerRoute(
+        new RegExp('https://www.snipbee.com/upload'),
+        new workbox.strategies.NetworkOnly({
+            plugins: [rest_image_fail]
+        }),
+        'POST'
+    );
 
 
 
@@ -551,7 +557,7 @@ if (workbox) {
   },
   {
     "url": "service-worker.js",
-    "revision": "55ffd2aa4252e96d69588811762f7169"
+    "revision": "0b1ed91628467591250afa0acfb3f744"
   },
   {
     "url": "services/content_editable.js",
@@ -583,7 +589,7 @@ if (workbox) {
   },
   {
     "url": "services/format.js",
-    "revision": "4ad8244f1bc302f10d463475a8d852a9"
+    "revision": "acfd5334b0898673b2014b4833fb6640"
   },
   {
     "url": "services/general.js",
