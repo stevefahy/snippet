@@ -23,8 +23,8 @@ if (workbox) {
     //client to SW
     self.addEventListener('message', function(event) {
         if (event.data === 'replayRequests') {
-            syncPosts();
-            //syncImages();
+            //syncPosts();
+            syncImages();
         }
     });
 
@@ -158,7 +158,7 @@ if (workbox) {
         }
         send_message_to_all_clients({ message: 'all_posts_updated' });
         console.log('Replay Posts complete!');
-        syncImages();
+        //syncImages();
     }
 
     // When sync is disabled (Mobile).
@@ -188,6 +188,7 @@ if (workbox) {
         }
         send_message_to_all_clients({ message: 'all_posts_updated' });
         console.log('Replay Images complete!');
+        syncPosts();
     }
 
     const rest_fail = {
