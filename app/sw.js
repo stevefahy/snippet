@@ -329,7 +329,7 @@ if (workbox) {
     );
 
     workbox.routing.registerRoute(
-        new RegExp('https://www.snipbee.com/upload'),
+        new RegExp('/upload'),
         new workbox.strategies.NetworkOnly({
             plugins: [rest_image_fail]
         }),
@@ -557,7 +557,7 @@ if (workbox) {
   },
   {
     "url": "service-worker.js",
-    "revision": "0b1ed91628467591250afa0acfb3f744"
+    "revision": "2c878be112c999cb2a5426d242fa390c"
   },
   {
     "url": "services/content_editable.js",
