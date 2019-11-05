@@ -1018,9 +1018,18 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     };
 
+
+    // Use updateCard height and alpha setting above.
+    //updateCard = function(card) 
+
     updateOfflineCard = function(card) {
         console.log(card);
-        var id = card.temp._id;
+        //var id = card.temp._id;
+         card.posted._id = card.temp._id;
+         $('#card_' + id).attr("id", "card_" + card.posted._id);
+        $scope.$apply();
+        updateCard(card.posted);
+/*
         // Check the existence of the card across all arrays.
         var card_arrays = [$scope.cards, $scope.cards_temp, $scope.removed_cards_bottom, $scope.removed_cards_top];
         var found_pos = -1;
@@ -1044,35 +1053,54 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 //delete $scope.cards[pos].new_card;
                 delete card_arrays[arr][found_pos].new_card;
                 // change the div id
-                $('#card_' + id).attr("id","card_" + card.posted._id);
+                $('#card_' + id).attr("id", "card_" + card.posted._id);
                 $scope.$apply();
             });
             $rootScope.deleting_card = false;
         }
+        */
 
     }
 
-/*
-    removeOfflineCards = function() {
-        var deferred = $q.defer();
-        //all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
-        //all_cards = $scope.cards;
-        //var offline_cards = all_cards.filter(x => x.offline == true);
-        //console.log(all_cards);
-        // Remove cards
-        var i = $scope.cards.length;
-        while (i--) {
-            //if ($scope.cards[i].conversationId == conversation_id) {
-            if ($scope.cards[i].offline == true) {
-                $scope.cards.splice(i, 1);
+    /*
+        updateOfflineCard = function(card) {
+            console.log(card);
+            var id = card.temp._id;
+            // Check the existence of the card across all arrays.
+            var card_arrays = [$scope.cards, $scope.cards_temp, $scope.removed_cards_bottom, $scope.removed_cards_top];
+            var found_pos = -1;
+            var arr;
+            for (var i = 0, len = card_arrays.length; i < len; i++) {
+                found_pos = General.findWithAttr(card_arrays[i], '_id', id);
+                if (found_pos >= 0) {
+                    arr = i;
+                    break;
+                }
             }
+            if (found_pos >= 0) {
+                $rootScope.deleting_card = true;
+                $timeout(function() {
+                    //card_arrays[arr].splice(found_pos, 1);
+                    card_arrays[arr][found_pos]._id = card.posted._id;
+                    card_arrays[arr][found_pos].content = card.posted.content + ' UPDATED!';
+                    card_arrays[arr][found_pos].user = card.posted.user;
+                    card_arrays[arr][found_pos].createdAt = card.posted.createdAt;
+                    card_arrays[arr][found_pos].updatedAt = card.posted.updatedAt;
+                    //delete $scope.cards[pos].new_card;
+                    delete card_arrays[arr][found_pos].new_card;
+                    // change the div id
+                    $('#card_' + id).attr("id","card_" + card.posted._id);
+                    $scope.$apply();
+                });
+                $rootScope.deleting_card = false;
+            }
+
         }
-        console.log('OFFLINE CARDS REMOVED');
-        console.log($scope.cards);
-        deferred.resolve();
-        return deferred.promise;
-    }
-    */
+        */
+
+
+
+
 
     // TODO - change if adding button to notify user of new card.
     updateCards = function(arr) {
