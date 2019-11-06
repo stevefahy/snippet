@@ -13,9 +13,10 @@ if (workbox) {
 
     self.addEventListener("sync", function(event) {
         console.log(event);
-        if (event.tag == "workbox-background-sync:api_posts") {
+        if (event.tag == "workbox-background-sync:api_image") {
             console.log("sync event fired");
             //syncPosts();
+            syncImages();
         }
 
     });
@@ -69,8 +70,10 @@ if (workbox) {
     }
 
     // When sync is enabled (Desktop).
+    
     const queue_image = new workbox.backgroundSync.Queue('api_image', {
         onSync: async ({ queue }) => {
+            /*
             let entry;
             let clone;
             let response;
@@ -96,12 +99,14 @@ if (workbox) {
             }
             send_message_to_all_clients({ message: 'all_posts_updated' });
             console.log('Replay complete!');
+            */
         }
     });
 
     // When sync is enabled (Desktop).
     const queue = new workbox.backgroundSync.Queue('api_posts', {
         onSync: async ({ queue }) => {
+            /*
             let entry;
             let clone;
             let response;
@@ -127,8 +132,10 @@ if (workbox) {
             }
             send_message_to_all_clients({ message: 'all_posts_updated' });
             console.log('Replay complete!');
+            */
         }
     });
+    
 
     // When sync is disabled (Mobile).
     async function syncPosts() {
@@ -465,7 +472,7 @@ if (workbox) {
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "93950d7ddabced8af8500def65e66709"
+    "revision": "23f0701cfda5fc6a4b6ebcdfc965faac"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -589,7 +596,7 @@ if (workbox) {
   },
   {
     "url": "service-worker.js",
-    "revision": "e372430afe92db04be10d86d0b191e83"
+    "revision": "c537ea58f1d42ba7f3e4f163e69747eb"
   },
   {
     "url": "services/content_editable.js",

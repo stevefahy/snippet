@@ -838,6 +838,59 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     };
 
+    /*
+        function awaitImages(div) {
+            //$timeout(function() {
+            let images = $(div + ' img');
+            console.log(images);
+            let loaded_images_count = 0;
+            console.log(loaded_images_count);
+            //images.load(function() {
+            images.on('load', function(){
+                loaded_images_count++;
+                console.log(loaded_images_count);
+                if (loaded_images_count == images.length) {
+                    //$("div").show();
+                    console.log('ALL IMAGES LOADED');
+                }
+            });
+        //},1000);
+        }
+        */
+
+    function awaitImages(div) {
+        var deferred = $q.defer();
+        // Images loaded is zero because we're going to process a new set of images.
+        var imagesLoaded = 0;
+        // Total images is still the total number of <img> elements on the page.
+        var totalImages = $(div + ' img').length;
+        console.log(totalImages);
+        if (totalImages == 0) {
+            deferred.resolve();
+        }
+        // Step through each image in the DOM, clone it, attach an onload event
+        // listener, then set its source to the source of the original image. When
+        // that new image has loaded, fire the imageLoaded() callback.
+        $(div + ' img').each(function(idx, img) {
+            $('<img>').on('load', imageLoaded).attr('src', $(img).attr('src'));
+        });
+
+        // Do exactly as we had before -- increment the loaded count and if all are
+        // loaded, call the allImagesLoaded() function.
+        function imageLoaded() {
+            imagesLoaded++;
+            if (imagesLoaded == totalImages) {
+                allImagesLoaded();
+            }
+        }
+
+        function allImagesLoaded() {
+            console.log('ALL IMAGES LOADED');
+            deferred.resolve();
+        }
+        return deferred.promise;
+    }
+
     updateCard = function(card) {
         // Check the existece of the card across all arrays.
         var card_arrays = [$scope.cards, $scope.cards_temp, $scope.removed_cards_bottom, $scope.removed_cards_top];
@@ -853,18 +906,89 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         if (found_pos >= 0) {
             if (card_arrays[arr][found_pos].content != card.content) {
                 // Get the card height.
+                //$scope.test_card.content = card.content;
+                //{
+                let test = awaitImages('.test_card .ce').then(function(result) {
+                    console.log('CONTINUE!')
+
+                    // Animate the change onscreen.
+                    $timeout(function() {
+                        card.old_h = $('#ce' + card._id).height().toFixed(2);
+                        card.new_h = $('.test_card .ce').height().toFixed(2);
+                        console.log(card.old_h + ' : ' + card.new_h);
+                        $('#ce' + card._id).height(card.old_h);
+                        console.log(card._id + ' : ' + $('#ce' + card._id).height());
+                        $($('#ce' + card._id))
+                            .animate({ opacity: 0 }, 300, function() {
+                                // Animation complete.
+                                card_arrays[arr][found_pos].original_content = card.content;
+                                card_arrays[arr][found_pos].content = card.content;
+
+
+                                //card_arrays[arr][found_pos]._id = card.posted._id;
+                                //card_arrays[arr][found_pos].content = card.posted.content + ' UPDATED!';
+                                card_arrays[arr][found_pos].user = card.user;
+                                card_arrays[arr][found_pos].createdAt = card.createdAt;
+                                card_arrays[arr][found_pos].updatedAt = card.updatedAt;
+                                //delete $scope.cards[pos].new_card;
+                                delete card_arrays[arr][found_pos].new_card;
+
+
+                                if (card.new_h != card.old_h) {
+                                    $($('#ce' + card._id)).animate({ height: card.new_h }, 500, function() {
+                                        // Animation complete.
+                                        if (!$scope.$$phase) {
+                                            $scope.$apply();
+                                        }
+                                        $(this).animate({ opacity: 1 }, 400, function() {
+                                            $(this).css('opacity', '');
+                                            $(this).css('height', '');
+                                            delete card_arrays[arr][found_pos].old_h;
+                                            delete card_arrays[arr][found_pos].new_h;
+                                        });
+                                    });
+                                } else {
+                                    if (!$scope.$$phase) {
+                                        $scope.$apply();
+                                    }
+                                    $(this).animate({ opacity: 1 }, 300, function() {
+                                        $(this).css('opacity', '');
+                                        $(this).css('height', '');
+                                        delete card_arrays[arr][found_pos].old_h;
+                                        delete card_arrays[arr][found_pos].new_h;
+                                    });
+                                }
+                            });
+                    }, 1000);
+                });
+                //}
                 $scope.test_card.content = card.content;
+                /*
                 // Animate the change onscreen.
                 $timeout(function() {
-                    var old_h = $('#ce' + card._id).height().toFixed(2);
-                    var new_h = $('.test_card .ce').height().toFixed(2);
+                    card.old_h = $('#ce' + card._id).height().toFixed(2);
+                    card.new_h = $('.test_card .ce').height().toFixed(2);
+                    console.log(card.old_h + ' : ' + card.new_h);
+                    $('#ce' + card._id).height(card.old_h);
+                    console.log(card._id + ' : ' + $('#ce' + card._id).height());
                     $($('#ce' + card._id))
                         .animate({ opacity: 0 }, 300, function() {
                             // Animation complete.
                             card_arrays[arr][found_pos].original_content = card.content;
                             card_arrays[arr][found_pos].content = card.content;
-                            if (new_h != old_h) {
-                                $($('#ce' + card._id)).animate({ height: new_h }, 500, function() {
+
+
+                            //card_arrays[arr][found_pos]._id = card.posted._id;
+                            //card_arrays[arr][found_pos].content = card.posted.content + ' UPDATED!';
+                            card_arrays[arr][found_pos].user = card.user;
+                            card_arrays[arr][found_pos].createdAt = card.createdAt;
+                            card_arrays[arr][found_pos].updatedAt = card.updatedAt;
+                            //delete $scope.cards[pos].new_card;
+                            delete card_arrays[arr][found_pos].new_card;
+
+
+                            if (card.new_h != card.old_h) {
+                                $($('#ce' + card._id)).animate({ height: card.new_h }, 500, function() {
                                     // Animation complete.
                                     if (!$scope.$$phase) {
                                         $scope.$apply();
@@ -872,6 +996,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                     $(this).animate({ opacity: 1 }, 400, function() {
                                         $(this).css('opacity', '');
                                         $(this).css('height', '');
+                                        delete card_arrays[arr][found_pos].old_h;
+                                        delete card_arrays[arr][found_pos].new_h;
                                     });
                                 });
                             } else {
@@ -880,10 +1006,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                 }
                                 $(this).animate({ opacity: 1 }, 300, function() {
                                     $(this).css('opacity', '');
+                                    $(this).css('height', '');
+                                    delete card_arrays[arr][found_pos].old_h;
+                                    delete card_arrays[arr][found_pos].new_h;
                                 });
                             }
                         });
-                }, 500);
+                }, 1000);
+                */
             }
             card_arrays[arr][found_pos].updatedAt = card.updatedAt;
         }
@@ -1025,40 +1155,40 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     updateOfflineCard = function(card) {
         console.log(card);
         //var id = card.temp._id;
-         card.posted._id = card.temp._id;
-         $('#card_' + id).attr("id", "card_" + card.posted._id);
+        card.posted._id = card.temp._id;
+        $('#card_' + id).attr("id", "card_" + card.posted._id);
         $scope.$apply();
         updateCard(card.posted);
-/*
-        // Check the existence of the card across all arrays.
-        var card_arrays = [$scope.cards, $scope.cards_temp, $scope.removed_cards_bottom, $scope.removed_cards_top];
-        var found_pos = -1;
-        var arr;
-        for (var i = 0, len = card_arrays.length; i < len; i++) {
-            found_pos = General.findWithAttr(card_arrays[i], '_id', id);
-            if (found_pos >= 0) {
-                arr = i;
-                break;
-            }
-        }
-        if (found_pos >= 0) {
-            $rootScope.deleting_card = true;
-            $timeout(function() {
-                //card_arrays[arr].splice(found_pos, 1);
-                card_arrays[arr][found_pos]._id = card.posted._id;
-                card_arrays[arr][found_pos].content = card.posted.content + ' UPDATED!';
-                card_arrays[arr][found_pos].user = card.posted.user;
-                card_arrays[arr][found_pos].createdAt = card.posted.createdAt;
-                card_arrays[arr][found_pos].updatedAt = card.posted.updatedAt;
-                //delete $scope.cards[pos].new_card;
-                delete card_arrays[arr][found_pos].new_card;
-                // change the div id
-                $('#card_' + id).attr("id", "card_" + card.posted._id);
-                $scope.$apply();
-            });
-            $rootScope.deleting_card = false;
-        }
-        */
+        /*
+                // Check the existence of the card across all arrays.
+                var card_arrays = [$scope.cards, $scope.cards_temp, $scope.removed_cards_bottom, $scope.removed_cards_top];
+                var found_pos = -1;
+                var arr;
+                for (var i = 0, len = card_arrays.length; i < len; i++) {
+                    found_pos = General.findWithAttr(card_arrays[i], '_id', id);
+                    if (found_pos >= 0) {
+                        arr = i;
+                        break;
+                    }
+                }
+                if (found_pos >= 0) {
+                    $rootScope.deleting_card = true;
+                    $timeout(function() {
+                        //card_arrays[arr].splice(found_pos, 1);
+                        card_arrays[arr][found_pos]._id = card.posted._id;
+                        card_arrays[arr][found_pos].content = card.posted.content + ' UPDATED!';
+                        card_arrays[arr][found_pos].user = card.posted.user;
+                        card_arrays[arr][found_pos].createdAt = card.posted.createdAt;
+                        card_arrays[arr][found_pos].updatedAt = card.posted.updatedAt;
+                        //delete $scope.cards[pos].new_card;
+                        delete card_arrays[arr][found_pos].new_card;
+                        // change the div id
+                        $('#card_' + id).attr("id", "card_" + card.posted._id);
+                        $scope.$apply();
+                    });
+                    $rootScope.deleting_card = false;
+                }
+                */
 
     }
 
