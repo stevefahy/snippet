@@ -523,7 +523,7 @@ if (workbox) {
   },
   {
     "url": "factories/factories.js",
-    "revision": "fda41b2860af84252bf1dfdc3b8f736d"
+    "revision": "858dc6bfd63d4a709f8e54ed4aebf890"
   },
   {
     "url": "factories/local_db.js",

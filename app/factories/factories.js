@@ -284,7 +284,7 @@ cardApp.factory('Conversations', ['$http', '$q', 'LocalDB', function($http, $q, 
                     if (response.found) {
                         deferred.resolve(response.data);
                     } else {
-                        $http.get('chat/conversation_id/' + id)
+                        $http.get('/chat/conversation_id/' + id)
                             .then(function(response) {
                                 console.log(response);
                                 LocalDB.addConversation(response.data);
