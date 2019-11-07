@@ -90,6 +90,7 @@ function createPublicConversation(user, callback) {
 function isMember(req, res, next) {
     // must be logged in to be a member
     var token = req.headers['x-access-token'];
+    console.log(token);
     if (req.principal) {
         req.principal.isAuthenticated = false;
     }
@@ -101,20 +102,22 @@ function isMember(req, res, next) {
                 _id: decoded.data.user._id
             };
         } catch (err) {
-            //console.log('ERROR when parsing access token.', err);
+            console.log('ERROR when parsing access token.', err);
             //req.principal.isAuthenticated = false;
             res.redirect('/api/login');
         }
     }
-
+    console.log(req.principal.isAuthenticated);
     if (req.principal.isAuthenticated) {
         // get the members of this conversation
         var query = getConversationId(req.params.id);
         query.exec(function(err, conversation) {
+            console.log(conversation);
             if (err) {
                 return console.log(err);
             }
             var user_pos = findWithAttr(conversation.participants, '_id', req.principal._id);
+            console.log(user_pos);
             // Check that the conversation exists.
             if (conversation === null) {
                 res.redirect('/');
@@ -122,11 +125,13 @@ function isMember(req, res, next) {
                 // if the current is is a member of this conversation continue
                 return next();
             } else {
+                console.log('redirect login');
                 // otherwise redirect to login
                 res.redirect('/api/login');
             }
         });
     } else {
+         console.log('redirect login 2');
         // causing infinite loop
         res.redirect('/api/login');
     }
