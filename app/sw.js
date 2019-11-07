@@ -171,7 +171,7 @@ if (workbox) {
     // When sync is disabled (Mobile).
     async function syncImages() {
         let entry;
-        let clone;
+        let clone1;
         let response;
         while (entry = await queue_image.shiftRequest()) {
             try {
@@ -180,16 +180,20 @@ if (workbox) {
                 send_message_to_all_clients({ message: 'post_updating' });
                 response = await fetch(entry.request);
                 console.log(response);
-                //let requestData = await clone.json();
-                //console.log(requestData);
-                //let assetsData = await response.json();
-                //console.log(assetsData);
+                console.log(response.body);
+                console.log(entry);
+                console.log(entry.request.body);
+                let requestData = await clone.formData();
+                console.log(requestData);
+                console.log(requestData.get('uploads[]'));
+                let assetsData = await response.json();
+                console.log(assetsData);
                 //var card_data = { temp: requestData, posted: assetsData };
                 console.log('...Replayed: ' + entry.request.url);
-                //send_message_to_all_clients({ message: 'post_updated', data: entry.request.url });
+                send_message_to_all_clients({ message: 'image_updated', data: assetsData });
             } catch (error) {
                 console.error('Replay failed for request', entry.request, error);
-                await queue.unshiftRequest(entry);
+                await queue_image.unshiftRequest(entry);
                 return;
             }
         }
@@ -212,8 +216,11 @@ if (workbox) {
     }
 
     const rest_image_fail = {
+
         // If the request fails then add this REST Post to the queue.
         fetchDidFail: async ({ originalRequest, request, error, event }) => {
+            console.log(originalRequest);
+
             // No return expected.
             // NOTE: `originalRequest` is the browser's request, `request` is the
             // request after being passed through plugins with
@@ -472,7 +479,7 @@ if (workbox) {
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "23f0701cfda5fc6a4b6ebcdfc965faac"
+    "revision": "731752390f4e3f05e85f674228b46714"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -504,7 +511,7 @@ if (workbox) {
   },
   {
     "url": "controllers/main_ctrl.js",
-    "revision": "ef9509d92e945335e994a4dddf1d83b7"
+    "revision": "0553d0b89e2b23b1aa85ec73a63efcb5"
   },
   {
     "url": "controllers/usersetting_ctrl.js",
@@ -596,7 +603,7 @@ if (workbox) {
   },
   {
     "url": "service-worker.js",
-    "revision": "c537ea58f1d42ba7f3e4f163e69747eb"
+    "revision": "31a9e1e52ed6a5b09193d8c5fa3fc66d"
   },
   {
     "url": "services/content_editable.js",
@@ -608,7 +615,7 @@ if (workbox) {
   },
   {
     "url": "services/database.js",
-    "revision": "74a2d7a1db53202359102f625a5dd17d"
+    "revision": "3d829736aa0a49e38fae8b2f82b2cbfc"
   },
   {
     "url": "services/debug.js",

@@ -333,6 +333,19 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                 console.log('post_updated');
                 console.log(event.data.data);
                 updateOfflineCard(event.data.data);
+
+                 //cardPosted(event.data.data.posted);
+                // Remove offline cards if any exist?
+                //removeOfflineCards();
+                //addAlert();
+            }
+
+            if (event.data.message == "image_updated") {
+                console.log('image_updated');
+                console.log(event.data);
+                updateOfflineImage(event.data.data);
+
+                 //cardPosted(event.data.data.posted);
                 // Remove offline cards if any exist?
                 //removeOfflineCards();
                 //addAlert();
@@ -382,7 +395,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         var id = Conversations.getConversationId();
         console.log(id + ' === ' + msg.conversation_id);
         // only update the conversation if the user is currently in that conversation
-        if (id === msg.conversation_id) {
+        if (id === msg.conversation_id && Conversations.getConversationType() != 'feed') {
             getPublicCardsUpdate(id).then(function(result) {
                 if (result.length > 0) {
                     updateCards(result);

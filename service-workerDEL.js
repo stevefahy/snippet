@@ -13,10 +13,9 @@ if (workbox) {
 
     self.addEventListener("sync", function(event) {
         console.log(event);
-        if (event.tag == "workbox-background-sync:api_image") {
+        if (event.tag == "workbox-background-sync:api_posts") {
             console.log("sync event fired");
             //syncPosts();
-            syncImages();
         }
 
     });
@@ -24,8 +23,7 @@ if (workbox) {
     //client to SW
     self.addEventListener('message', function(event) {
         if (event.data === 'replayRequests') {
-            //syncPosts();
-            syncImages();
+            syncPosts();
         }
     });
 
@@ -69,11 +67,9 @@ if (workbox) {
         })
     }
 
-    // When sync is enabled (Desktop).
-    
+// When sync is enabled (Desktop).
     const queue_image = new workbox.backgroundSync.Queue('api_image', {
         onSync: async ({ queue }) => {
-            /*
             let entry;
             let clone;
             let response;
@@ -99,14 +95,12 @@ if (workbox) {
             }
             send_message_to_all_clients({ message: 'all_posts_updated' });
             console.log('Replay complete!');
-            */
         }
     });
 
     // When sync is enabled (Desktop).
     const queue = new workbox.backgroundSync.Queue('api_posts', {
         onSync: async ({ queue }) => {
-            /*
             let entry;
             let clone;
             let response;
@@ -132,11 +126,9 @@ if (workbox) {
             }
             send_message_to_all_clients({ message: 'all_posts_updated' });
             console.log('Replay complete!');
-            */
         }
     });
     
-
     // When sync is disabled (Mobile).
     async function syncPosts() {
         console.log('...Synchronizing ' + queue.name);
@@ -164,42 +156,7 @@ if (workbox) {
             }
         }
         send_message_to_all_clients({ message: 'all_posts_updated' });
-        console.log('Replay Posts complete!');
-        //syncImages();
-    }
-
-    // When sync is disabled (Mobile).
-    async function syncImages() {
-        let entry;
-        let clone1;
-        let response;
-        while (entry = await queue_image.shiftRequest()) {
-            try {
-                clone = await entry.request.clone();
-                console.log('...Replaying: ' + entry.request.url);
-                send_message_to_all_clients({ message: 'post_updating' });
-                response = await fetch(entry.request);
-                console.log(response);
-                console.log(response.body);
-                console.log(entry);
-                console.log(entry.request.body);
-                let requestData = await clone.formData();
-                console.log(requestData);
-                console.log(requestData.get('uploads[]'));
-                let assetsData = await response.json();
-                console.log(assetsData);
-                //var card_data = { temp: requestData, posted: assetsData };
-                console.log('...Replayed: ' + entry.request.url);
-                send_message_to_all_clients({ message: 'image_updated', data: assetsData });
-            } catch (error) {
-                console.error('Replay failed for request', entry.request, error);
-                await queue_image.unshiftRequest(entry);
-                return;
-            }
-        }
-        send_message_to_all_clients({ message: 'all_posts_updated' });
-        console.log('Replay Images complete!');
-        syncPosts();
+        console.log('Replay complete!');
     }
 
     const rest_fail = {
@@ -216,11 +173,8 @@ if (workbox) {
     }
 
     const rest_image_fail = {
-
         // If the request fails then add this REST Post to the queue.
         fetchDidFail: async ({ originalRequest, request, error, event }) => {
-            console.log(originalRequest);
-
             // No return expected.
             // NOTE: `originalRequest` is the browser's request, `request` is the
             // request after being passed through plugins with
@@ -284,12 +238,11 @@ if (workbox) {
         /\.ico$/,
         new workbox.strategies.NetworkFirst()
     );
-    /*
-        workbox.routing.registerRoute(
-            /\.html$/,
-            new workbox.strategies.NetworkFirst()
-        );
-        */
+
+    workbox.routing.registerRoute(
+        /\.html$/,
+        new workbox.strategies.NetworkFirst()
+    );
 
     workbox.routing.registerRoute(
         /\.gif$/,
@@ -300,7 +253,7 @@ if (workbox) {
         /\.jpeg$/,
         new workbox.strategies.NetworkFirst()
     );
-
+    
 
 
     workbox.routing.registerRoute(
@@ -308,32 +261,10 @@ if (workbox) {
         new workbox.strategies.NetworkFirst()
     );
 
-    /*
-    workbox.routing.registerRoute(
-        new RegExp('/views/.*\\.html'),
-        new workbox.strategies.CacheFirst({
-            cacheName: 'views-cache',
-            plugins: [
-                { cachedResponseWillBeUsed },
-            ]
-        })
-    );
-    */
-
-    workbox.routing.registerRoute(
-        new RegExp('/views/.*\\.html'),
-        new workbox.strategies.NetworkFirst({
-            cacheName: 'views-cache',
-            plugins: [
-                { cachedResponseWillBeUsed },
-            ]
-        })
-    );
-
     workbox.routing.registerRoute(
         new RegExp('/chat/get_feed'),
         new workbox.strategies.NetworkFirst({
-            cacheName: 'user-feed1',
+            cacheName: 'user-feed',
             plugins: [
                 { cachedResponseWillBeUsed },
             ]
@@ -375,31 +306,13 @@ if (workbox) {
     );
 
     workbox.routing.registerRoute(
-        new RegExp('/upload'),
-        new workbox.strategies.NetworkOnly({
-            plugins: [rest_image_fail]
-        }),
-        'POST'
-    );
-
-
-
-    workbox.routing.registerRoute(
         new RegExp('/'),
         new workbox.strategies.NetworkFirst({}),
     );
 
-
-
-
     workbox.googleAnalytics.initialize();
 
-
-
-    workbox.precaching.precacheAndRoute([], {
-        // Ignore all URL parameters.
-
-    });
+    workbox.precaching.precacheAndRoute([]);
 
 } else {
     //console.log("Boo! Workbox didn't load 😬");

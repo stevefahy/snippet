@@ -891,6 +891,25 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         return deferred.promise;
     }
 
+    updateImage = function(data){
+        console.log(data);
+        console.log($('.create_container'));
+        console.log($('.create_container .ce'));
+        if(data.response == 'saved'){
+            var image_name = data.file.split('.').slice(0, -1).join('.');
+            console.log(image_name);
+            //$('.create_container .ce img.1573130471301_abstract_3d_4-wallpaper-1920x1080');
+            console.log($('.create_container .ce img.' + image_name));
+            var current_image = $('.create_container .ce img.' + image_name);
+            if(current_image.length > 0){
+                console.log('image found');
+                console.log($(current_image));
+                $(current_image).attr('src', IMAGES_URL + data.file);
+            }
+        }
+        
+    }
+
     updateCard = function(card) {
         // Check the existece of the card across all arrays.
         var card_arrays = [$scope.cards, $scope.cards_temp, $scope.removed_cards_bottom, $scope.removed_cards_top];
@@ -1152,12 +1171,17 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // Use updateCard height and alpha setting above.
     //updateCard = function(card) 
 
+    updateOfflineImage = function(data){
+        updateImage(data);
+    }
+
     updateOfflineCard = function(card) {
         console.log(card);
         //var id = card.temp._id;
         card.posted._id = card.temp._id;
         $('#card_' + id).attr("id", "card_" + card.posted._id);
         $scope.$apply();
+        cardPosted(card.posted);
         updateCard(card.posted);
         /*
                 // Check the existence of the card across all arrays.
