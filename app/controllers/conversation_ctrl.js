@@ -947,7 +947,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                 card_arrays[arr][found_pos].original_content = card.content;
                                 card_arrays[arr][found_pos].content = card.content;
 
-
+                                card_arrays[arr][found_pos]._id = card.new_id
                                 //card_arrays[arr][found_pos]._id = card.posted._id;
                                 //card_arrays[arr][found_pos].content = card.posted.content + ' UPDATED!';
                                 card_arrays[arr][found_pos].user = card.user;
@@ -1186,6 +1186,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         $('#card_' + id).attr("id", "card_" + card.posted._id);
         $scope.$apply();
         cardPosted(card.posted);
+        card.posted.new_id = card.temp._id;
         updateCard(card.posted);
         /*
                 // Check the existence of the card across all arrays.
