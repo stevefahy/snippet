@@ -599,7 +599,7 @@ if (workbox) {
   },
   {
     "url": "routes/routes.js",
-    "revision": "1894f9a537a47c7668fcfe252f155d0e"
+    "revision": "b7c82c1d323d44e26de13a53dba505df"
   },
   {
     "url": "service-worker.js",
