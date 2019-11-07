@@ -1204,8 +1204,11 @@ module.exports = function(app, passport) {
     // get a conversation by conversation id
     app.get('/chat/conversation_id/:id', isMember, function(req, res) {
         console.log(req.params.id);
+        //\'' + id + '\'
+        stringed_id = "'" + req.params.id + "'";
+        console.log(stringed_id);
         //Conversation.findOne({ '_id': req.params.id }, function(err, conversation) {
-        Conversation.findOne({ '_id': ObjectId( req.params.id ) }, function(err, conversation) {
+        Conversation.findOne({ '_id': ObjectId(  stringed_id  ) }, function(err, conversation) {
             if (err) {
                 console.log(err);
                 return done(err);
