@@ -693,11 +693,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     getConversationId = function() {
         var deferred = $q.defer();
         // Use the id from $routeParams.id if it exists. The conversation may have been loaded by username.
+        console.log('id: ' + id);
         if (id != undefined) {
             Conversations.setConversationId(id);
             // LDB
             Conversations.find_conversation_id(id)
                 .then(function(res) {
+                    console.log(res);
                     Conversations.setConversationType(res.conversation_type);
                     deferred.resolve(res);
                 });
@@ -706,6 +708,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             // LDB
             Conversations.find_user_public_conversation_id(username)
                 .then(function(res) {
+                    console.log(res);
                     // check if this is a valid username
                     if (res.error) {
                         $location.path("/api/login");
@@ -720,6 +723,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 });
         } else {
             // No id or username - Feed.
+            console.log('feed');
             Conversations.setConversationType('feed');
             deferred.resolve({ conversation: 'feed' });
         }
@@ -1826,6 +1830,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // START - find the conversation id
     getConversationId()
         .then(function(res) {
+            console.log(res);
+            console.log(Conversations.getConversationType());
             if (Conversations.getConversationType() == 'feed') {
                 $scope.feed = true;
                 $scope.top_down = true;
