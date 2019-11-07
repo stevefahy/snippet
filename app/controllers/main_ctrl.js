@@ -151,6 +151,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     // ANDROID CALLED FUNCTIONS
 
     mobileNotification = function(data) {
+        console.log(data);
         $timeout(function() {
             $location.path("/chat/conversation/" + data);
         });

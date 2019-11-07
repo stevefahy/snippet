@@ -447,7 +447,7 @@ if (workbox) {
   },
   {
     "url": "configs/config.js",
-    "revision": "f44c948c75ac5fb649d1eb9cd57a6677"
+    "revision": "5d336195135e3839a80aa8a49f793274"
   },
   {
     "url": "configs/fcm.js",
@@ -511,7 +511,7 @@ if (workbox) {
   },
   {
     "url": "controllers/main_ctrl.js",
-    "revision": "0553d0b89e2b23b1aa85ec73a63efcb5"
+    "revision": "3c9dc341fae8c92c991359f1371a297c"
   },
   {
     "url": "controllers/usersetting_ctrl.js",
@@ -635,7 +635,7 @@ if (workbox) {
   },
   {
     "url": "services/format.js",
-    "revision": "fcf217c619c3c9d64764c542b72d92e0"
+    "revision": "538830450a1b477098d8a05d2607e3d6"
   },
   {
     "url": "services/general.js",

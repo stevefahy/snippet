@@ -378,7 +378,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         console.log(data);
         if (data.response === 'saved') {
             data.file_name = data.file_name.substring(0, data.file_name.indexOf('.'));
-            var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src=\"" + data.file + "\"></div><slider></slider><span class='after_image' id='after_image_" + data.file_name + "'>&#x200b;&#10;</span><span class='clear_after_image'></span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
+            var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><img loading='eager' class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src=\"" + data.file + "\"></div><slider></slider><span class='after_image' id='after_image_" + data.file_name + "'>&#x200b;&#10;</span><span class='clear_after_image'></span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
             self.pasteHtmlAtCaret(new_image);
         }
     };
@@ -388,7 +388,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         console.log(data);
         if (data.response === 'saved') {
             data.file_name = data.file.substring(0, data.file.indexOf('.'));
-            var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src=\"" + IMAGES_URL + data.file + "\"></div><slider></slider><span class='after_image' id='after_image_" + data.file_name + "'>&#x200b;&#10;</span><span class='clear_after_image'></span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
+            var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><img loading='eager' class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src=\"" + IMAGES_URL + data.file + "\"></div><slider></slider><span class='after_image' id='after_image_" + data.file_name + "'>&#x200b;&#10;</span><span class='clear_after_image'></span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
             self.pasteHtmlAtCaret(new_image);
         }
     };
