@@ -152,9 +152,19 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     mobileNotification = function(data) {
         console.log(data);
-        $timeout(function() {
-            $location.path("/chat/conversation/" + data);
+        //Conversation.find_user_public_conversation_by_id
+        Conversations.find_public_conversation_id(data).then(function(result) {
+            console.log(result);
+            if (result.conversation_type == 'public') {
+                $location.path("/");
+            } else {
+                $timeout(function() {
+                    $location.path("/chat/conversation/" + data);
+                });
+            }
         });
+
+
     };
 
     notificationReceived = function() {
@@ -335,7 +345,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                 console.log(event.data.data);
                 updateOfflineCard(event.data.data);
 
-                 //cardPosted(event.data.data.posted);
+                //cardPosted(event.data.data.posted);
                 // Remove offline cards if any exist?
                 //removeOfflineCards();
                 //addAlert();
@@ -346,7 +356,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                 console.log(event.data);
                 updateOfflineImage(event.data.data);
 
-                 //cardPosted(event.data.data.posted);
+                //cardPosted(event.data.data.posted);
                 // Remove offline cards if any exist?
                 //removeOfflineCards();
                 //addAlert();

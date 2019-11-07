@@ -511,7 +511,7 @@ if (workbox) {
   },
   {
     "url": "controllers/main_ctrl.js",
-    "revision": "3c9dc341fae8c92c991359f1371a297c"
+    "revision": "e54bc784304108ee63f5d530165fdaac"
   },
   {
     "url": "controllers/usersetting_ctrl.js",
