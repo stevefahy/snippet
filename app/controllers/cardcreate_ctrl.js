@@ -67,7 +67,6 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
             $('#cecard_create').focus();
         }
         checkInput('#cecard_create');
-        console.log($scope.cards);
     });
 
     // If cecard_create was the last focused element restore the caret position there and create image.

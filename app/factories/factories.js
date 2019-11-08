@@ -110,13 +110,7 @@ cardApp.factory('Users', ['$http', '$q', 'LocalDB', function($http, $q, LocalDB)
                     if (response.found) {
                         deferred.resolve(response);
                     } else {
-                        /*
-        getConversationLatestCard: function(id) {
-            return $http.get('/chat/get_conversation_latest_card/' + id);
-        },
-                        */
                         $http.get('api/users/search_id/' + id)
-                            //$http.post('api/users/search_id/' + id)
                             .then(function(response) {
                                 if (response.data.success) {
                                     LocalDB.updateUser(response.data.success);
@@ -280,13 +274,11 @@ cardApp.factory('Conversations', ['$http', '$q', 'LocalDB', function($http, $q, 
             var deferred = $q.defer();
             LocalDB.getConversationById(id)
                 .then(function(response) {
-                    console.log(response);
                     if (response.found) {
                         deferred.resolve(response.data);
                     } else {
                         $http.get('/chat/conversation_id/' + id)
                             .then(function(response) {
-                                console.log(response);
                                 LocalDB.addConversation(response.data);
                                 deferred.resolve(response.data);
                             });
@@ -373,16 +365,12 @@ cardApp.factory('Conversations', ['$http', '$q', 'LocalDB', function($http, $q, 
             return $http.get('/chat/get_conversation_latest_card/' + id);
         },
         getFeed: function(val) {
-            console.log('val: ' + JSON.stringify(val));
             var theurl = '/chat/get_feed/' + val.ids;
-            //return $http.post(theurl, val);
-            
             val.ids = JSON.stringify(val.ids);
             var config = {
-                 params: val
+                params: val
             };
             return $http.get(theurl, config);
-            
         },
         updateFeed: function(val) {
             var theurl = '/chat/update_feed/' + val.ids;
@@ -868,7 +856,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                     }
                 })
                 .catch(function(error) {
-                    console.log('error: ' + error);
+                    //console.log('error: ' + error);
                 }));
         }));
 
@@ -881,7 +869,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                         finish(contacts);
                     })
                     .catch(function(error) {
-                        console.log(error);
+                        //console.log(error);
                     });
             } else {
                 return finish(contacts);
@@ -949,7 +937,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                                     }
                                 })
                                 .catch(function(error) {
-                                    console.log('error: ' + error);
+                                    //console.log('error: ' + error);
                                 }));
                         }
                     });
@@ -960,7 +948,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                     temp_users = [];
                     deferred.resolve(res);
                 }).catch(function(error) {
-                    console.log('error: ' + error);
+                    //console.log('error: ' + error);
                 });
             });
         return deferred.promise;
@@ -1028,7 +1016,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                 $q.all(promises).then(function() {
                     deferred.resolve(res);
                 }).catch(function(err) {
-                    console.log('error: ' + err);
+                    //console.log('error: ' + err);
                 });
             });
         return deferred.promise;

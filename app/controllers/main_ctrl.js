@@ -121,13 +121,9 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     // Watch the online status.
     $scope.$watch('online', function(newStatus) {
-        console.log('ONLINE: ' + newStatus);
-        //ports[0].postMessage("replayRequests");
         if (navigator.serviceWorker.controller && newStatus && DEVICE_TYPE == 'mobile') {
             navigator.serviceWorker.controller.postMessage("replayRequests");
         }
-
-
         if (!last_network_status && newStatus) {
             // Connection restored.
             reconnect_socket();
@@ -151,10 +147,8 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     // ANDROID CALLED FUNCTIONS
 
     mobileNotification = function(data) {
-        console.log(data);
         //Conversation.find_user_public_conversation_by_id
         Conversations.find_public_conversation_id(data).then(function(result) {
-            console.log(result);
             if (result.conversation_type == 'public') {
                 $location.path("/");
             } else {
@@ -163,8 +157,6 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                 });
             }
         });
-
-
     };
 
     notificationReceived = function() {
@@ -226,7 +218,6 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     };
 
     runUpdate = function() {
-        console.log('online: ' + $scope.online);
         if ($scope.online) {
             var id = Conversations.getConversationId();
             // update all required models (could be new conversations, multiple cards across conversations, new users or user data - Userdata first load re call?)
@@ -259,107 +250,57 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     var addingalert = false;
 
     function alertAddEnd() {
-        console.log('alertAddEnd!');
         $(".alert_anim_on").off('animationend', alertAddEnd);
-        //$(".alert_anim_on").off('transitionend', alertAddEnd);
-        //$(".alert_container").removeClass('alert_anim_on');
-        //removeAlert();
         addingalert = false;
-        console.log('endalert: ' + endalert);
         if (endalert) {
-            console.log('endalert true: removeAlert');
             removeAlert();
         }
     }
 
     function alertRemoveEnd() {
         endalert = false;
-        console.log('alertRemoveEnd!');
         $(".alert_anim_off").off('animationend', alertRemoveEnd);
         $(".alert_container").removeClass('alert_anim_off');
         $(".alert_container").remove();
-        /*
-        $timeout(function() {
-            addAlert();
-        }, 5000);
-        */
     }
 
     addAlert = function() {
         if (!addingalert) {
-            console.log('addAlert');
-            //$(".alert_container").remove();
             var alert = $sce.getTrustedResourceUrl('/views/alert.html');
             $templateRequest(alert).then(function(template) {
-                console.log('open start');
                 var eb = $('.main').prepend(template);
                 addingalert = true;
                 $timeout(function() {
-                    console.log('addingalert');
                     $(".alert_container").addClass('alert_anim_on');
-                    //$(".alert_anim_on").on("transitionend", alertAddEnd);
                     $(".alert_anim_on").on("animationend", alertAddEnd);
-
-
-
                 }, 100);
-
             });
         }
     }
 
-    // addAlert();
-
     function removeAlert() {
-        console.log('removeAlert: ' + addingalert);
         if (!addingalert) {
-            console.log('not addingalert. removeAlert');
-            // $(".alert_container").removeClass('alert_anim_on');
             $(".alert_container").addClass('alert_anim_off');
             $(".alert_anim_off").on('animationend', alertRemoveEnd);
         }
-
-
     }
-
-
 
     if ('serviceWorker' in navigator) {
         // Handler for messages coming from the service worker
         navigator.serviceWorker.addEventListener('message', function(event) {
-            console.log("Client 1 Received Message: " + event.data);
-            //event.ports[0].postMessage("Client 1 Says 'Hello back!'");
             if (event.data.message == "all_posts_updated") {
-                console.log('all_posts_updated');
                 endalert = true;
                 removeAlert();
             }
             if (event.data.message == "post_updating") {
-                console.log('post_updating');
-                // Remove offline cards if any exist?
-                //removeOfflineCards();
                 addAlert();
             }
             if (event.data.message == "post_updated") {
-                console.log('post_updated');
-                console.log(event.data.data);
                 updateOfflineCard(event.data.data);
-
-                //cardPosted(event.data.data.posted);
-                // Remove offline cards if any exist?
-                //removeOfflineCards();
-                //addAlert();
             }
 
             if (event.data.message == "image_updated") {
-                console.log('image_updated');
-                console.log(event.data);
                 updateOfflineImage(event.data.data);
-
-                //cardPosted(event.data.data.posted);
-                // Remove offline cards if any exist?
-                //removeOfflineCards();
-                //addAlert();
             }
         });
     }
@@ -402,9 +343,8 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     // NOTIFICATION for public conversation.
     $rootScope.$on('PUBLIC_NOTIFICATION_CREATED', function(event, msg) {
-        console.log('PUBLIC_NOTIFICATION_CREATED');
+        //console.log('PUBLIC_NOTIFICATION_CREATED');
         var id = Conversations.getConversationId();
-        console.log(id + ' === ' + msg.conversation_id);
         // only update the conversation if the user is currently in that conversation
         if (id === msg.conversation_id && Conversations.getConversationType() != 'feed') {
             getPublicCardsUpdate(id).then(function(result) {

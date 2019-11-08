@@ -124,29 +124,23 @@
     <script src="/controllers/debug_ctrl.js" defer></script>
     <!-- socket.io -->
     <script src="/socket.io/socket.io.js" defer></script>
-    <!-- Workbox -->
-    <!--<script src="/workbox/service-worker.js" defer></script>-->
 </head>
 
 <body>
-        <!-- Workbox -->
+    <!-- Workbox -->
     <script>
-
         if ('serviceWorker' in navigator && 'SyncManager' in window) {
             console.log('serviceWorker and SyncManager supported!');
         }
-    // Check that service workers are supported
-    if ('serviceWorker' in navigator) {
-        // Use the window load event to keep the page load performant
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('sw.js', { scope: '/' });
-        });
-    }
+        // Check that service workers are supported
+        if ('serviceWorker' in navigator) {
+            // Use the window load event to keep the page load performant
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js', { scope: '/' });
+            });
+        }
     </script>
     <div ng-include="'/views/debug.html'"></div>
-
-    <!--<div ng-include="'/views/alert.html'"></div>-->
-
     <!-- Templates loaded into ng-view -->
     <div ng-controller="MainCtrl" class="main">
         <ng-view view-animations class="page" id="page-system"></ng-view>
@@ -158,7 +152,6 @@
     <div id="hidden_input_container">
         <input class="form-control" type="text" autocorrect="off" autocapitalize="none" id="hidden_input">
     </div>
-
 </body>
 
 </html>

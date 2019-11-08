@@ -598,7 +598,7 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
                         }));
                     },
                     error: function(error) {
-                        console.log(error);
+                        //console.log(error);
                     }
                 });
             },

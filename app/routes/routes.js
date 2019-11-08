@@ -90,7 +90,6 @@ function createPublicConversation(user, callback) {
 function isMember(req, res, next) {
     // must be logged in to be a member
     var token = req.headers['x-access-token'];
-    console.log(token);
     if (req.principal) {
         req.principal.isAuthenticated = false;
     }
@@ -102,22 +101,19 @@ function isMember(req, res, next) {
                 _id: decoded.data.user._id
             };
         } catch (err) {
-            console.log('ERROR when parsing access token.', err);
+            //console.log('ERROR when parsing access token.', err);
             //req.principal.isAuthenticated = false;
             res.redirect('/api/login');
         }
     }
-    console.log(req.principal.isAuthenticated);
     if (req.principal.isAuthenticated) {
         // get the members of this conversation
         var query = getConversationId(req.params.id);
         query.exec(function(err, conversation) {
-            console.log(conversation);
             if (err) {
                 return console.log(err);
             }
             var user_pos = findWithAttr(conversation.participants, '_id', req.principal._id);
-            console.log(user_pos);
             // Check that the conversation exists.
             if (conversation === null) {
                 res.redirect('/');
@@ -125,13 +121,11 @@ function isMember(req, res, next) {
                 // if the current is is a member of this conversation continue
                 return next();
             } else {
-                console.log('redirect login');
                 // otherwise redirect to login
                 res.redirect('/api/login');
             }
         });
     } else {
-         console.log('redirect login 2');
         // causing infinite loop
         res.redirect('/api/login');
     }
@@ -180,7 +174,6 @@ module.exports = function(app, passport) {
                     console.log('err: ' + err);
                     res.send(err);
                 } else {
-                    console.log('user: ' + user);
                     res.json({
                         user: user
                     });
@@ -503,18 +496,7 @@ module.exports = function(app, passport) {
     // Search for user by id
     // TODO - Needed for Public not logged in route?
     // Users.search_id(key.user)
-    /*
-        // get latest card for a conversation by conversation id
-    app.get('/chat/get_conversation_latest_card/:id', isLoggedIn, function(req, res) {
-        Card.findOne({ 'conversationId': req.params.id }).sort('-updatedAt').exec(function(err, card) {
-            if (err) {
-                //console.log('err: ' + err);
-            }
-            res.json(card);
-        });
-    });
-    */
-    //app.post('/api/users/search_id/:id', function(req, res) {
+
     app.get('/api/users/search_id/:id', function(req, res) {
         var id = req.params.id;
         User.findById({ '_id': id }, function(error, user) {
@@ -703,7 +685,7 @@ module.exports = function(app, passport) {
         //console.log(options);
         request(options, function(err, response, body) {
             if (err) {
-                console.log('err: ' + err);
+                //console.log('err: ' + err);
                 throw err;
             } else {
                 if (body.results[0].error == "NotRegistered") {
@@ -881,7 +863,7 @@ module.exports = function(app, passport) {
             _id: req.params.card_id
         }, function(err, card) {
             if (err) {
-                console.log(err);
+                //console.log(err);
                 res.send(err);
             }
             res.json(card);
@@ -1085,7 +1067,7 @@ module.exports = function(app, passport) {
     // Only add the card if it doesnt already exist in the array (for Updates).
     //Conversations.updateViewed(id, user_id, card_id);
     //app.put('/chat/conversation_viewed/:id/:card_id', isLoggedIn, function(req, res) {
-    app.get('/chat/conversation_viewed/:id/:card_id', isLoggedIn, function(req, res) {    
+    app.get('/chat/conversation_viewed/:id/:card_id', isLoggedIn, function(req, res) {
         Conversation.findById({ _id: req.params.id }, function(err, conversation) {
             if (err) {
                 console.log('err: ' + err);
@@ -1111,7 +1093,7 @@ module.exports = function(app, passport) {
             var updated_conversation = new Conversation(conversation);
             updated_conversation.save(function(err, conversation) {
                 if (err) {
-                    console.log('err: ' + err);
+                    //console.log('err: ' + err);
                     res.send(err);
                 } else {
                     res.send(conversation);
@@ -1208,17 +1190,11 @@ module.exports = function(app, passport) {
 
     // get a conversation by conversation id
     app.get('/chat/conversation_id/:id', isMember, function(req, res) {
-        console.log(req.params.id);
-        //\'' + id + '\'
-        //stringed_id = "'" + req.params.id + "'";
-        //console.log(stringed_id);
         Conversation.findOne({ '_id': req.params.id }, function(err, conversation) {
-        //Conversation.findOne({ '_id': ObjectId(  stringed_id  ) }, function(err, conversation) {
             if (err) {
-                console.log(err);
+                //console.log(err);
                 return done(err);
             }
-            console.log(conversation);
             res.json(conversation);
         });
     });
@@ -1374,7 +1350,7 @@ module.exports = function(app, passport) {
                 'conversationId': req.params.id
             }, function(err, cards) {
                 if (err) {
-                    console.log(err);
+                    //console.log(err);
                 }
                 res.json(cards);
             }).sort({ "updatedAt": -1 }).limit(amount);
@@ -1386,7 +1362,7 @@ module.exports = function(app, passport) {
                 'conversationId': req.params.id
             }, function(err, cards) {
                 if (err) {
-                    console.log(err);
+                    //console.log(err);
                 }
                 res.json(cards);
             }).sort({ "updatedAt": -1 }).limit(amount);
@@ -1406,7 +1382,7 @@ module.exports = function(app, passport) {
             'conversation_type': 'public'
         }, function(err, conversations) {
             if (err) {
-                console.log(err);
+                //console.log(err);
             }
             feed.conversations = conversations;
             Card.find({
@@ -1420,7 +1396,7 @@ module.exports = function(app, passport) {
                 }
             }, function(err, cards) {
                 if (err) {
-                    console.log(err);
+                    //console.log(err);
                 }
                 feed.cards = cards;
                 res.json(feed);
@@ -1428,62 +1404,11 @@ module.exports = function(app, passport) {
         });
     });
 
-/*
     // Get cards for the Users Feed conversations by conversation id(s).
-        app.post('/chat/get_feed/:val', function(req, res) {
-        var user_array = req.body.ids;
-        var amount = req.body.amount;
-        var last_card = req.body.last_card;
-    
-        var feed = {};
-        Conversation.find({
-            '_id': {
-                $in: user_array.map(function(o) { return mongoose.Types.ObjectId(o); })
-            },
-            'conversation_type': 'public'
-        }, function(err, conversations) {
-            if (err) {
-                console.log(err);
-            }
-            feed.conversations = conversations;
-            Card.find({
-                'conversationId': {
-                    $in: user_array.map(function(o) {
-                        return mongoose.Types.ObjectId(o);
-                    })
-                },
-                'updatedAt': {
-                    '$lt': last_card
-                }
-            }, function(err, cards) {
-                if (err) {
-                    console.log(err);
-                }
-                feed.cards = cards;
-                res.json(feed);
-            }).sort({ "updatedAt": -1 }).limit(amount);
-        });
-    });
-    */
-
-
-//app.get('/chat/get_conversation_latest_card/:id', isLoggedIn, function(req, res) {
-    // Get cards for the Users Feed conversations by conversation id(s).
-    //app.post('/chat/get_feed/:val', isLoggedIn, function(req, res) {
-    //app.get('/chat/get_feed/', isLoggedIn, function(req, res) {
-        app.get('/chat/get_feed/:val', function(req, res) {
-        //console.log(JSON.stringify(req.params));
-        console.log(req.query);
-        
-        //var user_array = req.body.ids;
-        //var amount = req.body.amount;
-        //var last_card = req.body.last_card;
-       
+    app.get('/chat/get_feed/:val', function(req, res) {
         var user_array = JSON.parse(req.query.ids);
         var amount = Number(req.query.amount);
         var last_card = req.query.last_card;
-
-        //var last_card = new Date().toISOString();
         var feed = {};
         Conversation.find({
             '_id': {
@@ -1492,7 +1417,7 @@ module.exports = function(app, passport) {
             'conversation_type': 'public'
         }, function(err, conversations) {
             if (err) {
-                console.log(err);
+                //console.log(err);
             }
             feed.conversations = conversations;
             Card.find({
@@ -1506,14 +1431,13 @@ module.exports = function(app, passport) {
                 }
             }, function(err, cards) {
                 if (err) {
-                    console.log(err);
+                    //console.log(err);
                 }
                 feed.cards = cards;
                 res.json(feed);
             }).sort({ "updatedAt": -1 }).limit(amount);
         });
     });
-        
 
     // get latest card for a conversation by conversation id
     app.get('/chat/get_conversation_latest_card/:id', isLoggedIn, function(req, res) {

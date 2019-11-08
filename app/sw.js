@@ -2,8 +2,6 @@ importScripts('https://storage.googleapis.com/workbox-cdn/releases/4.1.1/workbox
 
 
 if (workbox) {
-    //console.log("Yay! Workbox is loaded 🎉");
-
 
     // Event Lisiteners
 
@@ -12,33 +10,24 @@ if (workbox) {
     });
 
     self.addEventListener("sync", function(event) {
-        console.log(event);
         if (event.tag == "workbox-background-sync:api_image") {
-            console.log("sync event fired");
-            //syncPosts();
             syncImages();
         }
 
     });
 
-    //client to SW
+    // Client to Workbox
+
     self.addEventListener('message', function(event) {
         if (event.data === 'replayRequests') {
-            //syncPosts();
             syncImages();
         }
     });
 
-    /*
-    self.addEventListener('fetch', event => {
-        console.log('url: ' + event.request.url);
-    });
-    */
-
-
     // Debugging
+
     workbox.setConfig({
-        debug: true
+        debug: false
     });
 
     // Messaging
@@ -70,105 +59,46 @@ if (workbox) {
     }
 
     // When sync is enabled (Desktop).
-    
+
     const queue_image = new workbox.backgroundSync.Queue('api_image', {
-        onSync: async ({ queue }) => {
-            /*
-            let entry;
-            let clone;
-            let response;
-            while (entry = await queue.shiftRequest()) {
-                try {
-                    clone = await entry.request.clone();
-                    console.log('...Replaying: ' + entry.request.url);
-                    send_message_to_all_clients({ message: 'post_updating' });
-                    response = await fetch(entry.request);
-                    console.log(response);
-                    //let requestData = await clone.json();
-                    //console.log(requestData);
-                    //let assetsData = await response.json();
-                    //console.log(assetsData);
-                    //var card_data = { temp: requestData, posted: assetsData };
-                    console.log('...Replayed: ' + entry.request.url);
-                    //send_message_to_all_clients({ message: 'post_updated', data: entry.request.url });
-                } catch (error) {
-                    console.error('Replay failed for request', entry.request, error);
-                    await queue.unshiftRequest(entry);
-                    return;
-                }
-            }
-            send_message_to_all_clients({ message: 'all_posts_updated' });
-            console.log('Replay complete!');
-            */
-        }
+        onSync: async ({ queue }) => {}
     });
 
-    // When sync is enabled (Desktop).
     const queue = new workbox.backgroundSync.Queue('api_posts', {
-        onSync: async ({ queue }) => {
-            /*
-            let entry;
-            let clone;
-            let response;
-            while (entry = await queue.shiftRequest()) {
-                try {
-                    clone = await entry.request.clone();
-                    console.log('...Replaying: ' + entry.request.url);
-                    send_message_to_all_clients({ message: 'post_updating' });
-                    response = await fetch(entry.request);
-                    console.log(response);
-                    let requestData = await clone.json();
-                    console.log(requestData);
-                    let assetsData = await response.json();
-                    console.log(assetsData);
-                    var card_data = { temp: requestData, posted: assetsData };
-                    console.log('...Replayed: ' + entry.request.url);
-                    send_message_to_all_clients({ message: 'post_updated', data: card_data });
-                } catch (error) {
-                    console.error('Replay failed for request', entry.request, error);
-                    await queue.unshiftRequest(entry);
-                    return;
-                }
-            }
-            send_message_to_all_clients({ message: 'all_posts_updated' });
-            console.log('Replay complete!');
-            */
-        }
+        onSync: async ({ queue }) => {}
     });
-    
+
 
     // When sync is disabled (Mobile).
+
     async function syncPosts() {
-        console.log('...Synchronizing ' + queue.name);
+        //console.log('...Synchronizing ' + queue.name);
         let entry;
         let clone;
         let response;
         while (entry = await queue.shiftRequest()) {
             try {
                 clone = await entry.request.clone();
-                console.log('...Replaying: ' + entry.request.url);
+                //console.log('...Replaying: ' + entry.request.url);
                 send_message_to_all_clients({ message: 'post_updating' });
                 response = await fetch(entry.request);
-                console.log(response);
+                //console.log(response);
                 let requestData = await clone.json();
-                console.log(requestData);
+                //console.log(requestData);
                 let assetsData = await response.json();
-                console.log(assetsData);
+                //console.log(assetsData);
                 var card_data = { temp: requestData, posted: assetsData };
-                console.log('...Replayed: ' + entry.request.url);
+                //console.log('...Replayed: ' + entry.request.url);
                 send_message_to_all_clients({ message: 'post_updated', data: card_data });
             } catch (error) {
-                console.error('Replay failed for request', entry.request, error);
+                //console.error('Replay failed for request', entry.request, error);
                 await queue.unshiftRequest(entry);
                 return;
             }
         }
         send_message_to_all_clients({ message: 'all_posts_updated' });
-        console.log('Replay Posts complete!');
-        //syncImages();
     }
 
-    // When sync is disabled (Mobile).
     async function syncImages() {
         let entry;
         let clone1;
@@ -176,29 +106,24 @@ if (workbox) {
         while (entry = await queue_image.shiftRequest()) {
             try {
                 clone = await entry.request.clone();
-                console.log('...Replaying: ' + entry.request.url);
+                //console.log('...Replaying: ' + entry.request.url);
                 send_message_to_all_clients({ message: 'post_updating' });
                 response = await fetch(entry.request);
-                console.log(response);
-                console.log(response.body);
-                console.log(entry);
-                console.log(entry.request.body);
-                let requestData = await clone.formData();
-                console.log(requestData);
-                console.log(requestData.get('uploads[]'));
+                //console.log(response);
+                //let requestData = await clone.formData();
+                //console.log(requestData);
                 let assetsData = await response.json();
-                console.log(assetsData);
-                //var card_data = { temp: requestData, posted: assetsData };
-                console.log('...Replayed: ' + entry.request.url);
+                //console.log(assetsData);
+                //console.log('...Replayed: ' + entry.request.url);
                 send_message_to_all_clients({ message: 'image_updated', data: assetsData });
             } catch (error) {
-                console.error('Replay failed for request', entry.request, error);
+                //console.error('Replay failed for request', entry.request, error);
                 await queue_image.unshiftRequest(entry);
                 return;
             }
         }
         send_message_to_all_clients({ message: 'all_posts_updated' });
-        console.log('Replay Images complete!');
+        // Sync posts after images have been loaded.
         syncPosts();
     }
 
@@ -216,11 +141,8 @@ if (workbox) {
     }
 
     const rest_image_fail = {
-
         // If the request fails then add this REST Post to the queue.
         fetchDidFail: async ({ originalRequest, request, error, event }) => {
-            console.log(originalRequest);
-
             // No return expected.
             // NOTE: `originalRequest` is the browser's request, `request` is the
             // request after being passed through plugins with
@@ -230,31 +152,6 @@ if (workbox) {
             queue_image.pushRequest({ request: request });
         }
     }
-
-    /*
-    const bgSyncPlugin = new workbox.backgroundSync.Plugin('myqueue', {
-        maxRetentionTime: 24 * 60,
-        onSync: async ({ queue }) => {
-            console.log('...Synchronizing ' + queue.name);
-            let entry;
-            while (entry = await queue.shiftRequest()) {
-                try {
-                    console.log('...Replaying: ' + entry.request.url);
-                    send_message_to_all_clients('post_updating');
-                    await fetch(entry.request);
-                    console.log('...Replayed: ' + entry.request.url);
-
-                } catch (error) {
-                    console.error('Replay failed for request', entry.request, error);
-                    await queue.unshiftRequest(entry);
-                    return;
-                }
-            }
-            send_message_to_all_clients('post_updated');
-            console.log('Replay complete!');
-        }
-    });
-    */
 
     const cachedResponseWillBeUsed = async ({ cache, request, cachedResponse }) => {
         // If there's already a match against the request URL, return it.
@@ -284,12 +181,6 @@ if (workbox) {
         /\.ico$/,
         new workbox.strategies.NetworkFirst()
     );
-    /*
-        workbox.routing.registerRoute(
-            /\.html$/,
-            new workbox.strategies.NetworkFirst()
-        );
-        */
 
     workbox.routing.registerRoute(
         /\.gif$/,
@@ -301,24 +192,15 @@ if (workbox) {
         new workbox.strategies.NetworkFirst()
     );
 
-
+    workbox.routing.registerRoute(
+        /\.png$/,
+        new workbox.strategies.NetworkFirst()
+    );
 
     workbox.routing.registerRoute(
         new RegExp('/api/user_data'),
         new workbox.strategies.NetworkFirst()
     );
-
-    /*
-    workbox.routing.registerRoute(
-        new RegExp('/views/.*\\.html'),
-        new workbox.strategies.CacheFirst({
-            cacheName: 'views-cache',
-            plugins: [
-                { cachedResponseWillBeUsed },
-            ]
-        })
-    );
-    */
 
     workbox.routing.registerRoute(
         new RegExp('/views/.*\\.html'),
@@ -382,19 +264,12 @@ if (workbox) {
         'POST'
     );
 
-
-
     workbox.routing.registerRoute(
         new RegExp('/'),
         new workbox.strategies.NetworkFirst({}),
     );
 
-
-
-
     workbox.googleAnalytics.initialize();
-
-
 
     workbox.precaching.precacheAndRoute([
   {
@@ -471,15 +346,15 @@ if (workbox) {
   },
   {
     "url": "controllers/cardcreate_ctrl.js",
-    "revision": "627fec0de5cbb03c1a404e36d8f91101"
+    "revision": "b0df764548feb6e106753e47a28958b8"
   },
   {
     "url": "controllers/contacts_ctrl.js",
-    "revision": "3d0b5fc772b7513adc9026d58f075742"
+    "revision": "a2f1acd789576577721d5f2aa966deaa"
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "bfd1e4cda3e496d717c59e7a06240ebf"
+    "revision": "30eb4fad9685d5ef07509f1ff118d43f"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -511,7 +386,7 @@ if (workbox) {
   },
   {
     "url": "controllers/main_ctrl.js",
-    "revision": "e54bc784304108ee63f5d530165fdaac"
+    "revision": "f93392899b9a4fbe8611f9050833d058"
   },
   {
     "url": "controllers/usersetting_ctrl.js",
@@ -523,7 +398,7 @@ if (workbox) {
   },
   {
     "url": "factories/factories.js",
-    "revision": "858dc6bfd63d4a709f8e54ed4aebf890"
+    "revision": "bb080f77eabf4a48b7a999650f1a90ea"
   },
   {
     "url": "factories/local_db.js",
@@ -535,7 +410,7 @@ if (workbox) {
   },
   {
     "url": "indexa.html",
-    "revision": "4a2b63406cb8edb38151e2fd2f74e68f"
+    "revision": "49c853620b799076479c83b1d04f049e"
   },
   {
     "url": "js/angular_moment.js",
@@ -595,15 +470,15 @@ if (workbox) {
   },
   {
     "url": "modules/app.js",
-    "revision": "2cafd0583072d687eb01c560c1a2556f"
+    "revision": "dcb0ea590a2ba2a4c8567742c0de606b"
   },
   {
     "url": "routes/routes.js",
-    "revision": "b7c82c1d323d44e26de13a53dba505df"
+    "revision": "817835a6b4861394cfb5c02268cedeef"
   },
   {
     "url": "service-worker.js",
-    "revision": "31a9e1e52ed6a5b09193d8c5fa3fc66d"
+    "revision": "5de8f84059e81f1334c1c19fe7808dac"
   },
   {
     "url": "services/content_editable.js",
@@ -615,7 +490,7 @@ if (workbox) {
   },
   {
     "url": "services/database.js",
-    "revision": "3d829736aa0a49e38fae8b2f82b2cbfc"
+    "revision": "1c7460e73676cbdb36103a8131562a54"
   },
   {
     "url": "services/debug.js",
@@ -635,7 +510,7 @@ if (workbox) {
   },
   {
     "url": "services/format.js",
-    "revision": "538830450a1b477098d8a05d2607e3d6"
+    "revision": "85b7b5a683b902cb38c9a99579eea193"
   },
   {
     "url": "services/general.js",
@@ -691,7 +566,7 @@ if (workbox) {
   },
   {
     "url": "style/customstyle.css",
-    "revision": "f41dedd937ee8b222b549d7875e422b5"
+    "revision": "b9ea2432ea3aef56c6ea23745dbce51e"
   },
   {
     "url": "style/instagram.css",
@@ -707,7 +582,7 @@ if (workbox) {
   },
   {
     "url": "views/alert.html",
-    "revision": "c89d3254f47cd12aea6d1ec37b91d451"
+    "revision": "53f5b07f3e38b65ea6fbcef910514bec"
   },
   {
     "url": "views/card_create.html",
@@ -786,10 +661,7 @@ if (workbox) {
     "revision": "d4edb77cf8070f188bfe583139bf98a4"
   }
 ], {
-        // Ignore all URL parameters.
 
     });
 
-} else {
-    //console.log("Boo! Workbox didn't load 😬");
 }

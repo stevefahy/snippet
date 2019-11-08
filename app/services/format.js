@@ -32,10 +32,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.imageUploadedOffline = function(data) {
-        // mCurrentPhotoPath: /storage/emulated/0/Snipbee/Snipbee Images/JPEG_20191102_203845.jpg
-        //insertImage(data);
-        console.log('imageUploadedOffline!');
-        console.log(data);
         insertImageOffline(data);
     };
 
@@ -231,63 +227,15 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         });
     };
 
-    this.replaceBase64 = function(content) {
-        console.log(content);
-        var div = document.createElement('div');
-        //div.innerHTML = content.trim();
-        div.innerHTML = content.trim();
-        //var el = $(content);
-        //console.log(el);
-        //var images = $(content + ' .cropper_cont').children('img');
-        //var images = $(content).children('.cropper_cont').children('img');
-        //var images = $(content).find('img').attr('src');
-        $(div).find('img').each(function() {
-            console.log($(this).attr('id'));
-            console.log($(this).attr('src').substr(0, 10));
-
-            if ($(this).attr('src').substr(0, 10) == 'data:image') {
-                $(this).attr('src', IMAGES_URL + $(this).attr('id').substr(6) + '.jpg');
-            }
-        });
-        //console.log(images);
-        //content = self.removeTempFiltered(content);
-        //console.log(content);
-        console.log(div.innerHTML);
-
-        //var replaced = $(div.innerHTML).prop('outerHTML');
-        var replaced = div.innerHTML;
-        console.log(replaced);
-        //console.log($(el).html());
-        return replaced;
-    }
-
     this.replaceBlob = function(content) {
-        console.log(content);
         var div = document.createElement('div');
-        //div.innerHTML = content.trim();
         div.innerHTML = content.trim();
-        //var el = $(content);
-        //console.log(el);
-        //var images = $(content + ' .cropper_cont').children('img');
-        //var images = $(content).children('.cropper_cont').children('img');
-        //var images = $(content).find('img').attr('src');
         $(div).find('img').each(function() {
-            console.log($(this).attr('id'));
-            console.log($(this).attr('src').substr(0, 5));
-
             if ($(this).attr('src').substr(0, 5) == 'blob:') {
                 $(this).attr('src', IMAGES_URL + $(this).attr('id').substr(6) + '.jpg');
             }
         });
-        //console.log(images);
-        //content = self.removeTempFiltered(content);
-        //console.log(content);
-        console.log(div.innerHTML);
-
-        //var replaced = $(div.innerHTML).prop('outerHTML');
         var replaced = div.innerHTML;
-        console.log(replaced);
-        //console.log($(el).html());
         return replaced;
     }
 
@@ -373,9 +321,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         $rootScope.$broadcast('imagePasted');
     };
 
-    insertB64Image = function(data) {
-        console.log('insertB64Image');
-        console.log(data);
+    insertObjUrl = function(data) {
         if (data.response === 'saved') {
             data.file_name = data.file_name.substring(0, data.file_name.indexOf('.'));
             var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><img loading='eager' class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src=\"" + data.file + "\"></div><slider></slider><span class='after_image' id='after_image_" + data.file_name + "'>&#x200b;&#10;</span><span class='clear_after_image'></span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
@@ -384,8 +330,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     insertImage = function(data) {
-        console.log('insertImage');
-        console.log(data);
         if (data.response === 'saved') {
             data.file_name = data.file.substring(0, data.file.indexOf('.'));
             var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><img loading='eager' class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src=\"" + IMAGES_URL + data.file + "\"></div><slider></slider><span class='after_image' id='after_image_" + data.file_name + "'>&#x200b;&#10;</span><span class='clear_after_image'></span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
@@ -396,83 +340,32 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     const b64toBlob = (b64Data, contentType = '', sliceSize = 512) => {
         const byteCharacters = atob(b64Data);
         const byteArrays = [];
-
         for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
             const slice = byteCharacters.slice(offset, offset + sliceSize);
-
             const byteNumbers = new Array(slice.length);
             for (let i = 0; i < slice.length; i++) {
                 byteNumbers[i] = slice.charCodeAt(i);
             }
-
             const byteArray = new Uint8Array(byteNumbers);
             byteArrays.push(byteArray);
         }
-
         const blob = new Blob(byteArrays, { type: contentType });
         return blob;
     }
 
     insertImageOffline = function(data) {
-        console.log('insertImageOffline');
-        console.log(data);
-        console.log(data.base64);
         if (data.response === 'saved') {
-            //data.file_name = data.file.substring(0, data.file.indexOf('.'));
-            //var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src=\"" + data.file_directory + "/" + data.file + "\"></div><slider></slider><span class='after_image' id='after_image_" + data.file_name + "'>&#x200b;&#10;</span><span class='clear_after_image'></span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
-            //self.pasteHtmlAtCaret(new_image);
-            // Blob
-            //var image = new Image();
-            //image.src = 'data:image/png;base64,' + data.base64;
-            //var base64data = window.URL.createObjectURL(data.base64);
-
-            //const img = document.createElement("img");
-            //var base64data = window.URL.createObjectURL(file);
-            //img.height = 60;
-            //img.onload = function() {
-            //window.URL.revokeObjectURL(this.src);
-            //ctx.drawImage(img, 0, 0);
-            //var base64data = window.URL.createObjectURL(this.src);
-
-
-            //var dataUrl = getDataUrl(img)
-            //console.log(dataUrl)
             const contentType = 'image/png';
             const b64Data = data.base64;
-
             const blob = b64toBlob(b64Data, contentType);
             const blobUrl = URL.createObjectURL(blob);
-
             var image_object = {
                 file: blobUrl,
                 file_name: data.file,
                 response: "saved"
             };
-
-            //insertB64Image(image_object);
-
-            //blob.name = data.file;
-
             fileBlob = new File([blob], data.file);
-
             self.uploadFileAndroidOffline(fileBlob);
-            //insertImage(image_object);
-            //}
-            //img.src = 'data:image/png;base64,' + data.base64;
-            //img.src = base64data;
-
-            //data:image/png;base64,
-            //img.src = 
-            //then create objecturl
-            /*
-                        var image_object = {
-                            file: base64data,
-                            file_name: data.file,
-                            response: "saved"
-                        };
-
-                        insertB64Image(image_object);
-                        */
         }
     };
 
@@ -490,6 +383,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 } else {
                     insertImage(data);
                 }
+            },
+            error: function(jqXHR, exception) {
+                //console.log(jqXHR);
             },
             xhr: function() {
                 // create an XMLHttpRequest
@@ -528,230 +424,21 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         });
     };
 
-    let db;
-    let dbVersion = 1;
-    let dbReady = false;
-
-    // public method for encoding an Uint8Array to base64
-    function encode(input) {
-        var keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-        var output = "";
-        var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
-        var i = 0;
-
-        while (i < input.length) {
-            chr1 = input[i++];
-            chr2 = i < input.length ? input[i++] : Number.NaN; // Not sure if the index 
-            chr3 = i < input.length ? input[i++] : Number.NaN; // checks are needed here
-
-            enc1 = chr1 >> 2;
-            enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
-            enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
-            enc4 = chr3 & 63;
-
-            if (isNaN(chr2)) {
-                enc3 = enc4 = 64;
-            } else if (isNaN(chr3)) {
-                enc4 = 64;
-            }
-            output += keyStr.charAt(enc1) + keyStr.charAt(enc2) +
-                keyStr.charAt(enc3) + keyStr.charAt(enc4);
-        }
-        return output;
-    }
-
-    /*
-        insertImage = function(data) {
-        console.log('insertImage');
-        console.log(data);
-        if (data.response === 'saved') {
-            data.file_name = data.file.substring(0, data.file.indexOf('.'));
-            var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><img class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src=\"" + IMAGES_URL + data.file + "\"></div><slider></slider><span class='after_image' id='after_image_" + data.file_name + "'>&#x200b;&#10;</span><span class='clear_after_image'></span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
-            self.pasteHtmlAtCaret(new_image);
-        }
-    };
-
-    insertImage(data);
-
-    file: "1571910349557_abstract_3d_4-wallpaper-1920x1080.jpg"
-file_name: "1571910349557_abstract_3d_4-wallpaper-1920x1080"
-response: "saved"
-    */
-
-    function createImage(e) {
-        console.log('createImage');
-
-        console.log(e.get('uploads[]'));
-        console.log(e.get('uploads[]').name);
-
-
-
+    function createObjUrlImage(e) {
         let file = e.get('uploads[]');
         let name = e.get('uploads[]').name;
-
-        var arrayBuffer = file;
-        var bytes = new Uint8Array(arrayBuffer);
-
-
-
-        /*
-                // Blob
-                //var base64data = window.URL.createObjectURL(file);
-                var canvas = document.createElement('canvas');
-                var ctx = canvas.getContext('2d');
-
-                const img = document.createElement("img");
-                var base64data  = window.URL.createObjectURL(file);
-                //img.height = 60;
-                img.onload = function() {
-                    //window.URL.revokeObjectURL(this.src);
-                    ctx.drawImage(img,0,0);
-
-                    var image_object = {
-                        file: this.src,
-                        file_name: name,
-                        response: "saved"
-                    };
-
-                    insertB64Image(image_object);
-                }
-                img.src = base64data;
-        */
-
-
-
-        // Blob
-        console.log(file);
-        var base64data = window.URL.createObjectURL(file);
+        var objUrl = window.URL.createObjectURL(file);
 
         var image_object = {
-            file: base64data,
+            file: objUrl,
             file_name: name,
             response: "saved"
         };
 
-        insertB64Image(image_object);
-
-
-
-        // Datat Url
-        /*
-        var reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onloadend = function() {
-            var base64data = reader.result;
-            //console.log(base64data);
-            //var encoded = encodeURIComponent(base64data);
-
-            var image_object = {
-                file: base64data,
-                file_name: name,
-                response: "saved"
-            };
-
-            insertB64Image(image_object);
-
-        }
-        */
-
-
-
-        //console.log(image_data);
-    }
-
-    function doImageTest() {
-        console.log('doImageTest');
-        //let image = document.querySelector('#testImage');
-        //let recordToLoad = parseInt(document.querySelector('#recordToLoad').value, 10);
-        let recordToLoad = 1;
-        if (recordToLoad === '') recordToLoad = 1;
-
-        let trans = db.transaction(['cachedForms'], 'readonly');
-
-        let req = trans.objectStore('cachedForms').get(recordToLoad);
-        req.onsuccess = function(e) {
-            let record = e.target.result;
-            console.log('get success', record);
-            console.log(record.name)
-            console.log(record.data);
-            //image.src = 'data:image/jpeg;base64,' + btoa(record.data);
-        }
-    }
-
-
-    function storeFile(e) {
-        console.log('storeFile');
-
-        console.log(e.get('uploads[]'));
-        console.log(e.get('uploads[]').name);
-
-        let file = e.get('uploads[]');
-        let name = e.get('uploads[]').name;
-
-        var reader = new FileReader();
-        //reader.readAsDataURL(file);
-        reader.readAsBinaryString(file);
-
-        reader.onload = function(e) {
-            //alert(e.target.result);
-            let bits = e.target.result;
-            let ob = {
-                created: new Date(),
-                data: bits,
-                name: name
-            };
-
-            /*
-            file: "1571861507075_abstract_3d_4-wallpaper-1920x1080.jpg"
-file_name: "1571861507075_abstract_3d_4-wallpaper-1920x1080"
-response: "saved"
-*/
-
-            let trans = db.transaction(['cachedForms'], 'readwrite');
-            let addReq = trans.objectStore('cachedForms').add(ob);
-
-            addReq.onerror = function(e) {
-                console.log('error storing data');
-                console.error(e);
-            }
-
-            trans.oncomplete = function(e) {
-                console.log('data stored');
-                doImageTest();
-            }
-        }
-    }
-
-    initDb = function(formdata) {
-        console.log('initDb');
-        let request = indexedDB.open('testPics', dbVersion);
-
-        request.onerror = function(e) {
-            console.error('Unable to open database.');
-        }
-
-        request.onsuccess = function(e) {
-            db = e.target.result;
-            console.log('db opened');
-            storeFile(formdata);
-        }
-
-        request.onupgradeneeded = function(e) {
-            let db = e.target.result;
-            db.createObjectStore('cachedForms', { keyPath: 'id', autoIncrement: true });
-            dbReady = true;
-        }
-    }
-
-
-    function postImagetoIDB(formdata) {
-        console.log('postImagetoIDB');
-        initDb(formdata);
+        insertObjUrl(image_object);
     }
 
     this.prepareImage = function(files, callback) {
-        //var fd;
-
         var promises = [];
         self.formData = new FormData();
         angular.forEach(files, function(file, key) {
@@ -771,7 +458,6 @@ response: "saved"
                     } else {
                         file_name = file.name;
                     }
-                    //fd = { blob: blob, fn: file_name };
                     self.formData.append('uploads[]', blob, file_name);
                 })
             );
@@ -779,12 +465,9 @@ response: "saved"
         $q.all(promises).then(function(formData) {
             // Image processing of ALL images complete. Upload form
             self.uploadImages(self.formData, callback);
-            console.log('Blobs created');
-
-            //postImagetoIDB(self.formData);
-            console.log($rootScope.online);
+            // Offline. Create temporary object url image.
             if (!$rootScope.online) {
-                createImage(self.formData);
+                createObjUrlImage(self.formData);
             }
 
         });
@@ -811,12 +494,8 @@ response: "saved"
     };
 
     this.uploadFileAndroidOffline = function(file) {
-        //$rootScope.$broadcast('imageUpload', id);
-        //var files = $(this).get(0).files;
-        //if (files.length > 0) {
-            file_array = [file];
-            self.prepareImage(file_array);
-        //}
+        file_array = [file];
+        self.prepareImage(file_array);
     }
 
     this.uploadFile = function(id, card, currentUser) {
@@ -857,7 +536,6 @@ response: "saved"
     };
 
     this.removeTempFiltered = function(content) {
-        console.log(content);
         var content_less_pre;
         if (content !== undefined) {
             //var reg_pre = /(<img src="data:image.*?>)(.*?)(>)/ig;
@@ -868,7 +546,6 @@ response: "saved"
                 content_less_pre = content_less_pre.replace(pre_match[v], '');
             }
         }
-        console.log(content_less_pre);
         return content_less_pre;
     };
 
@@ -1404,12 +1081,9 @@ response: "saved"
     };
 
     this.selectText = function(element, word) {
-        console.log(element);
-        console.log(word);
         var doc = document;
         var current_node;
         var node_pos = self.findNodeNumber(doc.getElementById(element), word);
-        console.log(node_pos);
         var text = doc.getElementById(element);
         if (doc.body.createTextRange) {
             range = document.body.createTextRange();
