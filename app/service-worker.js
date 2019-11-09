@@ -27,7 +27,7 @@ if (workbox) {
     // Debugging
 
     workbox.setConfig({
-        debug: false
+        debug: true
     });
 
     // Messaging

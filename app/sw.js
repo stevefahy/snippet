@@ -27,7 +27,7 @@ if (workbox) {
     // Debugging
 
     workbox.setConfig({
-        debug: false
+        debug: true
     });
 
     // Messaging
@@ -410,11 +410,11 @@ if (workbox) {
   },
   {
     "url": "indexa.html",
-    "revision": "49c853620b799076479c83b1d04f049e"
+    "revision": "26b65c1b9d1760154dc26e48a01ac29a"
   },
   {
     "url": "js/angular_moment.js",
-    "revision": "a4636560ae4460aa57b93706db6a788d"
+    "revision": "9782d9786bfb852471abdd236d8e9672"
   },
   {
     "url": "js/angular-cookies.min_1.6.9.js",
@@ -478,7 +478,7 @@ if (workbox) {
   },
   {
     "url": "service-worker.js",
-    "revision": "5de8f84059e81f1334c1c19fe7808dac"
+    "revision": "57bc05cbed32433e85862196df8afdaa"
   },
   {
     "url": "services/content_editable.js",
@@ -526,7 +526,7 @@ if (workbox) {
   },
   {
     "url": "services/image_filters.js",
-    "revision": "cb2a8a37ea31f85e08abc8ed0f4a1a8d"
+    "revision": "8a5a6c0d71d402d456e64f1df72d5abf"
   },
   {
     "url": "services/image_functions.js",
