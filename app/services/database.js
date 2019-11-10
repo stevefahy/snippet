@@ -86,6 +86,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
     // SAVE CARD (Android image bug. Temporarily save the updated card but do not send notification.)
     this.saveTempCard = function(card_id, card, currentUser) {
+        console.log('SAVETEMPCARD');
         if (!updateinprogress) {
             updateinprogress = true;
             setTimeout(function() {
@@ -105,7 +106,10 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         }
     };
 
-    cardPosted = function(response) {
+    cardPosted = function(response, method) {
+        console.log('cardPosted!: ' + method);
+        console.log(response);
+        var deferred = $q.defer();
         var card_id = response._id;
         var card_response = response;
         var updated_viewed_users;
@@ -116,13 +120,27 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         var notification_body;
         var card_content = response.content;
         var recipients;
-        // notify conversation_ctrl and cardcreate_ctrl that the conversation has been updated
-        // reset the input box
-        $rootScope.$broadcast('CARD_CREATED');
+        if (method == 'POST') {
+            // notify conversation_ctrl and cardcreate_ctrl that the conversation has been updated
+            // reset the input box
+            $rootScope.$broadcast('CARD_CREATED');
+        }
+
+
+        switch (method) {
+            case 'POST':
+                post_type = 'created';
+                break;
+            case 'PUT':
+                post_type = 'updated';
+                break;
+        }
+
         var viewed_users = [];
         // Update the participants viewed array for this conversation with this card (Conversation updateAt time is also updated.). Public conversations do not store viewed data.
         Conversations.updateViewed(current_conversation_id, card_id)
             .then(function(response) {
+                console.log(response);
                 updated_viewed_users = response.participants;
                 var notification = self.setNotification(response, currentUser, card_content);
                 notification_title = notification.title;
@@ -165,20 +183,26 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                     viewed_users.push({ "_id": currentUser._id });
                     // Emit that the card has been created.
                     if (response.conversation_type == 'public') {
-                        socket.emit('public_created', { sender_id: socket.getId(), conversation_id: current_conversation_id, card_id: card_id, followers: viewed_users });
+                        socket.emit('public_' + post_type, { sender_id: socket.getId(), conversation_id: current_conversation_id, card_id: card_id, followers: viewed_users });
                     } else {
                         // update other paticipants in the conversation via socket.
-                        socket.emit('private_created', { sender_id: socket.getId(), conversation_id: current_conversation_id, card_id: card_id, participants: viewed_users, viewed_users: updated_viewed_users });
+                        socket.emit('private_' + post_type, { sender_id: socket.getId(), conversation_id: current_conversation_id, card_id: card_id, participants: viewed_users, viewed_users: updated_viewed_users });
                     }
+                    updateinprogress = false;
+                    deferred.resolve();
                 } else {
                     // Add the current user to the participants being notified of update in case they have multiple devices.
                     viewed_users.push({ "_id": currentUser._id });
                     // Emit that the card has been created.
                     if (response.conversation_type == 'public') {
-                        socket.emit('public_created', { sender_id: socket.getId(), conversation_id: current_conversation_id, card_id: card_id, followers: viewed_users });
+                        socket.emit('public_' + post_type, { sender_id: socket.getId(), conversation_id: current_conversation_id, card_id: card_id, followers: viewed_users });
                     }
+                    updateinprogress = false;
+                    deferred.resolve();
                 }
             });
+
+        return deferred.promise;
     }
 
     // CREATE CARD
@@ -220,36 +244,58 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         Cards.create(online_card_create)
             .then(function(response) {
                 // Update viewed users and send notifications.
-                cardPosted(response.data);
+                cardPosted(response.data, 'POST');
             });
     };
 
     // UPDATE CARD
     this.updateCard = function(card_id, card, currentUser) {
+        console.log('UPDATE START');
+        console.log(card);
+        console.log('updateinprogress: ' + updateinprogress);
         var deferred = $q.defer();
         if (!updateinprogress) {
-            updateinprogress = true;
+            console.log($rootScope.online);
+            if ($rootScope.online) {
+                console.log('ERRORHERE');
+                updateinprogress = true;
+                console.log('updateinprogress: ' + updateinprogress);
+            }
+
             setTimeout(function() {
                 var promises = [];
                 var promises_followers = [];
+
+                var temp_card = Object.assign({}, card);
+                // replace blob image with image url.
+            temp_card.content = Format.replaceBlob(temp_card.content);
+
                 // Get the Conversation in which this card is being created.
-                card.content = replaceTags.replace(card.content);
+                temp_card.content = replaceTags.replace(temp_card.content);
                 // DANGER These had been removed for android image save bug
-                card.content = replaceTags.removeDeleteId(card.content);
-                card.content = replaceTags.removeFocusIds(card.content);
+                temp_card.content = replaceTags.removeDeleteId(temp_card.content);
+                temp_card.content = replaceTags.removeFocusIds(temp_card.content);
                 // Remove any temp filtered images
-                card.content = Format.removeTempFiltered(card.content);
+                temp_card.content = Format.removeTempFiltered(temp_card.content);
                 // Get the Conversation in which this card is being created.
-                var current_conversation_id = card.conversationId;
+                var current_conversation_id = temp_card.conversationId;
                 var sent_content;
                 var notification_title;
                 var notification_body;
-                var card_content = card.content;
-                var pms = { 'id': card_id, 'card': card };
+                var card_content = temp_card.content;
+                var pms = { 'id': card_id, 'card': temp_card };
                 var recipients;
+                console.log(pms);
                 // call the create function from our service (returns a promise object)
                 Cards.update(pms)
                     .then(function(returned) {
+                        console.log(returned);
+                        //updateinprogress = false;
+                        cardPosted(response.data, 'PUT').then(function(returned) {
+                            console.log('UPDATE COMPLETE');
+                            deferred.resolve();
+                        });
+                        /*
                         var viewed_users = [];
                         var updated_viewed_users;
                         // Update the participants viewed array for this conversation with this card (Conversation updateAt time is also updated.). Public conversations do not store viewed data.
@@ -313,6 +359,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                 }
                             });
                         deferred.resolve();
+                        */
                     })
                     .catch(function(error) {
                         //console.log('error: ' + error);

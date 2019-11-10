@@ -121,7 +121,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     // Watch the online status.
     $scope.$watch('online', function(newStatus) {
-        if (navigator.serviceWorker.controller && newStatus && DEVICE_TYPE == 'mobile') {
+        if (navigator.serviceWorker.controller && newStatus) {
             navigator.serviceWorker.controller.postMessage("replayRequests");
         }
         if (!last_network_status && newStatus) {

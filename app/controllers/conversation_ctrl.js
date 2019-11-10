@@ -866,13 +866,36 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         return deferred.promise;
     }
 
+
+    // Update to find image in all arrays or create container!
+
     updateImage = function(data) {
+        console.log('UPDATE IMAGE');
+        console.log(data);
+        //$('.ce img#image_filtered_1573404932693_abstract_3d_4-wallpaper-1920x1080');
+
         if (data.response == 'saved') {
             var image_name = data.file.split('.').slice(0, -1).join('.');
-            var current_image = $('.create_container .ce img.' + image_name);
+            //var current_image = $('.create_container .ce img.' + image_name);
+            var current_image = $('.ce img#' + image_name);
+            console.log('.ce img#' + image_name);
+            console.log(current_image);
             if (current_image.length > 0) {
-                $(current_image).attr('src', IMAGES_URL + data.file);
+                //$(current_image).onload = function(){
+                   // console.log('new image loaded');
+                   // $(current_image).attr('src', IMAGES_URL + data.file);
+                //}
+                //console.log('load');
+                $(current_image).attr('src', IMAGES_URL + data.file + '?' +  + new Date());
             }
+            
+            var current_image_create = $('.create_container .ce img.' + image_name);
+            console.log('.create_container .ce img.' + image_name);
+            console.log(current_image_create);
+            if (current_image_create.length > 0) {
+                $(current_image_create).attr('src', IMAGES_URL + data.file);
+            }
+            
         }
     }
 
@@ -1074,13 +1097,18 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         updateImage(data);
     }
 
-    updateOfflineCard = function(card) {
-        card.posted._id = card.temp._id;
-        $('#card_' + id).attr("id", "card_" + card.posted._id);
+    updateOfflineCard = function(data) {
+        console.log(data);
+        if(data.method == 'POST'){
+            data.posted._id = data.temp._id;
+            $('#card_' + id).attr("id", "card_" + data.posted._id);
+        }
+        
+        
         $scope.$apply();
-        cardPosted(card.posted);
-        card.posted.new_id = card.temp._id;
-        updateCard(card.posted);
+        cardPosted(data.posted, data.method);
+        data.posted.new_id = data.temp._id;
+        updateCard(data.posted);
     }
 
     // TODO - change if adding button to notify user of new card.

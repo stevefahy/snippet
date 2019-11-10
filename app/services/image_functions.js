@@ -22,19 +22,37 @@ cardApp.service('ImageFunctions', ['$rootScope', 'Format', '$q', 'ContentEditabl
     };
 
     this.canvasToImage = function(canvas, id) {
+        console.log('cti 2');
         var deferred = $q.defer();
         var dataUrl = canvas.toDataURL('image/jpeg', JPEG_COMPRESSION);
         Format.dataURItoBlob(dataUrl).then(function(blob) {
             blob.name = 'image_filtered_' + id + '.jpg';
             blob.renamed = true;
             Format.prepImage([blob], function(result) {
-                var img_new = new Image();
-                img_new.src = IMAGES_URL + result.file + '?' + new Date();
-                img_new.className = 'adjusted';
-                img_new.id = 'image_filtered_' + id;
-                img_new.onload = function() {
-                    deferred.resolve(this);
-                };
+                console.log(result);
+                console.log($rootScope.online);
+                if ($rootScope.online) {
+                    console.log('online');
+                    var img_new = new Image();
+                    img_new.src = IMAGES_URL + result.file + '?' + new Date();
+                    img_new.className = 'adjusted';
+                    img_new.id = 'image_filtered_' + id;
+                    img_new.onload = function() {
+                        deferred.resolve(this);
+                    };
+                } else {
+                    console.log('offline');
+
+                      var img_new = new Image();
+                    img_new.src = result.file;
+                    img_new.className = 'adjusted';
+                    img_new.id = 'image_filtered_' + id;
+                    //img_new.onload = function() {
+                        deferred.resolve(img_new);
+                    //};
+
+                }
+
             });
         });
         return deferred.promise;

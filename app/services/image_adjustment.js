@@ -374,6 +374,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
     };
 
     this.canvasToImage = function(canvas, id) {
+        console.log('cti 1');
         var deferred = $q.defer();
         var dataUrl = canvas.toDataURL('image/jpeg', JPEG_COMPRESSION);
         var Format = $injector.get('Format');
@@ -381,6 +382,7 @@ cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', '
             blob.name = 'image_filtered_' + id + '.jpg';
             blob.renamed = true;
             Format.prepImage([blob], function(result) {
+                console.log(result);
                 var img_new = new Image();
                 img_new.src = IMAGES_URL + result.file + '?' + new Date();
                 img_new.className = 'adjusted';

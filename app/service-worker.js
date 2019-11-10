@@ -72,14 +72,19 @@ if (workbox) {
     // When sync is disabled (Mobile).
 
     async function syncPosts() {
-        //console.log('...Synchronizing ' + queue.name);
+        console.log('...Synchronizing ' + queue.name);
         let entry;
         let clone;
         let response;
         while (entry = await queue.shiftRequest()) {
             try {
                 clone = await entry.request.clone();
-                //console.log('...Replaying: ' + entry.request.url);
+                console.log('...Replaying: ' + entry.request.url);
+                console.log(entry);
+                //if(entry.request.method == "PUT"){
+
+                //}
+                let method = entry.request.method;
                 send_message_to_all_clients({ message: 'post_updating' });
                 response = await fetch(entry.request);
                 //console.log(response);
@@ -87,7 +92,7 @@ if (workbox) {
                 //console.log(requestData);
                 let assetsData = await response.json();
                 //console.log(assetsData);
-                var card_data = { temp: requestData, posted: assetsData };
+                var card_data = { temp: requestData, posted: assetsData, method: method };
                 //console.log('...Replayed: ' + entry.request.url);
                 send_message_to_all_clients({ message: 'post_updated', data: card_data });
             } catch (error) {
@@ -97,13 +102,30 @@ if (workbox) {
             }
         }
         send_message_to_all_clients({ message: 'all_posts_updated' });
+
     }
 
     async function syncImages() {
+        console.log('...Synchronizing ' + queue_image.name);
         let entry;
-        let clone1;
+        let clone;
         let response;
+        //queue_image.reverse(); 
+        console.log(queue_image);
+        //let new_queue = await queue_image.getAll();
+       // console.log(new_queue);
+
+        // take off last item
+        //while (entry = await queue_image.popRequest()) {
+            // push to first
+           // console.log('ADJUST');
+            //console.log(entry);
+            //await queue_image.unshiftRequest(entry);
+
+        //}
+        
         while (entry = await queue_image.shiftRequest()) {
+        //while (entry = await queue_image.popRequest()) {
             try {
                 clone = await entry.request.clone();
                 //console.log('...Replaying: ' + entry.request.url);
@@ -113,12 +135,13 @@ if (workbox) {
                 //let requestData = await clone.formData();
                 //console.log(requestData);
                 let assetsData = await response.json();
-                //console.log(assetsData);
+                console.log(assetsData);
                 //console.log('...Replayed: ' + entry.request.url);
                 send_message_to_all_clients({ message: 'image_updated', data: assetsData });
             } catch (error) {
                 //console.error('Replay failed for request', entry.request, error);
                 await queue_image.unshiftRequest(entry);
+                //await queue_image.pushRequest(entry);
                 return;
             }
         }
@@ -238,6 +261,14 @@ if (workbox) {
             plugins: [rest_fail]
         }),
         'POST'
+    );
+
+    workbox.routing.registerRoute(
+        new RegExp('/api/cards'),
+        new workbox.strategies.NetworkOnly({
+            plugins: [rest_fail]
+        }),
+        'PUT'
     );
 
     workbox.routing.registerRoute(

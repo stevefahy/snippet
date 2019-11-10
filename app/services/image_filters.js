@@ -102,7 +102,6 @@ cardApp.service('ImageFilters', ['$rootScope', 'Format', '$q', 'ContentEditable'
         var id = ImageAdjustment.getImageId();
         var cropper = $('.' + parent_container + ' #cropper_' + id);
         ContentEditable.setContenteditable(cropper, true);
-        //$('.filters_active').remove();
         $('.image_filt_div').removeClass('filters_active');
         Slider.removeSlider();
         var prev_adjusted = $('.adjusted.hide')[0];

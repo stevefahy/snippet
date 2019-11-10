@@ -232,7 +232,14 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         div.innerHTML = content.trim();
         $(div).find('img').each(function() {
             if ($(this).attr('src').substr(0, 5) == 'blob:') {
-                $(this).attr('src', IMAGES_URL + $(this).attr('id').substr(6) + '.jpg');
+                if(!$(this).attr('id').includes('filtered')){
+                    console.log('NOT FILTERED');
+                    $(this).attr('src', IMAGES_URL + $(this).attr('id').substr(6) + '.jpg');
+                } else {
+                    console.log('FILTERED');
+                    $(this).attr('src', IMAGES_URL + $(this).attr('id') + '.jpg?TEMP_DATE_' + new Date());
+                }
+                
             }
         });
         var replaced = div.innerHTML;
@@ -379,13 +386,23 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             success: function(data) {
                 // insert or callback?
                 if (callback) {
+                    console.log(callback);
                     callback(data);
                 } else {
+                    console.log('insertImage');
                     insertImage(data);
                 }
             },
             error: function(jqXHR, exception) {
-                //console.log(jqXHR);
+                
+                console.log(jqXHR);
+                    if (callback) {
+                    callback(image_object);
+                } else {
+                    insertObjUrl(image_object);
+                   // insertImage(data);
+                }
+                
             },
             xhr: function() {
                 // create an XMLHttpRequest
@@ -421,21 +438,34 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         $q.all(promises).then(function(formData) {
             // Image processing of ALL images complete. Upload form
             self.uploadImages(self.formData, callback);
+            // Offline. Create temporary object url image.
+            if (!$rootScope.online) {
+                createObjUrlImage(self.formData, callback);
+            }
         });
     };
 
+    /*
+         // Image processing of ALL images complete. Upload form
+            self.uploadImages(self.formData, callback);
+            // Offline. Create temporary object url image.
+            if (!$rootScope.online) {
+                createObjUrlImage(self.formData);
+            }
+            */
+var image_object;
     function createObjUrlImage(e) {
         let file = e.get('uploads[]');
         let name = e.get('uploads[]').name;
         var objUrl = window.URL.createObjectURL(file);
 
-        var image_object = {
+        image_object = {
             file: objUrl,
             file_name: name,
             response: "saved"
         };
 
-        insertObjUrl(image_object);
+        //insertObjUrl(image_object);
     }
 
     this.prepareImage = function(files, callback) {
@@ -467,7 +497,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             self.uploadImages(self.formData, callback);
             // Offline. Create temporary object url image.
             if (!$rootScope.online) {
-                createObjUrlImage(self.formData);
+                createObjUrlImage(self.formData, callback);
             }
 
         });
@@ -513,6 +543,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             $('#upload-input').on('change', function() {
                 $rootScope.$broadcast('imageUpload', id);
                 var files = $(this).get(0).files;
+                console.log(files);
                 if (files.length > 0) {
                     self.prepareImage(files);
                 }

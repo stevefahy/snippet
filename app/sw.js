@@ -72,14 +72,19 @@ if (workbox) {
     // When sync is disabled (Mobile).
 
     async function syncPosts() {
-        //console.log('...Synchronizing ' + queue.name);
+        console.log('...Synchronizing ' + queue.name);
         let entry;
         let clone;
         let response;
         while (entry = await queue.shiftRequest()) {
             try {
                 clone = await entry.request.clone();
-                //console.log('...Replaying: ' + entry.request.url);
+                console.log('...Replaying: ' + entry.request.url);
+                console.log(entry);
+                //if(entry.request.method == "PUT"){
+
+                //}
+                let method = entry.request.method;
                 send_message_to_all_clients({ message: 'post_updating' });
                 response = await fetch(entry.request);
                 //console.log(response);
@@ -87,7 +92,7 @@ if (workbox) {
                 //console.log(requestData);
                 let assetsData = await response.json();
                 //console.log(assetsData);
-                var card_data = { temp: requestData, posted: assetsData };
+                var card_data = { temp: requestData, posted: assetsData, method: method };
                 //console.log('...Replayed: ' + entry.request.url);
                 send_message_to_all_clients({ message: 'post_updated', data: card_data });
             } catch (error) {
@@ -97,13 +102,30 @@ if (workbox) {
             }
         }
         send_message_to_all_clients({ message: 'all_posts_updated' });
+
     }
 
     async function syncImages() {
+        console.log('...Synchronizing ' + queue_image.name);
         let entry;
-        let clone1;
+        let clone;
         let response;
+        //queue_image.reverse(); 
+        console.log(queue_image);
+        //let new_queue = await queue_image.getAll();
+       // console.log(new_queue);
+
+        // take off last item
+        //while (entry = await queue_image.popRequest()) {
+            // push to first
+           // console.log('ADJUST');
+            //console.log(entry);
+            //await queue_image.unshiftRequest(entry);
+
+        //}
+        
         while (entry = await queue_image.shiftRequest()) {
+        //while (entry = await queue_image.popRequest()) {
             try {
                 clone = await entry.request.clone();
                 //console.log('...Replaying: ' + entry.request.url);
@@ -113,12 +135,13 @@ if (workbox) {
                 //let requestData = await clone.formData();
                 //console.log(requestData);
                 let assetsData = await response.json();
-                //console.log(assetsData);
+                console.log(assetsData);
                 //console.log('...Replayed: ' + entry.request.url);
                 send_message_to_all_clients({ message: 'image_updated', data: assetsData });
             } catch (error) {
                 //console.error('Replay failed for request', entry.request, error);
                 await queue_image.unshiftRequest(entry);
+                //await queue_image.pushRequest(entry);
                 return;
             }
         }
@@ -241,6 +264,14 @@ if (workbox) {
     );
 
     workbox.routing.registerRoute(
+        new RegExp('/api/cards'),
+        new workbox.strategies.NetworkOnly({
+            plugins: [rest_fail]
+        }),
+        'PUT'
+    );
+
+    workbox.routing.registerRoute(
         new RegExp('chat/get_public_conversation_cards'),
         new workbox.strategies.NetworkOnly({
             plugins: [rest_fail]
@@ -354,7 +385,7 @@ if (workbox) {
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "30eb4fad9685d5ef07509f1ff118d43f"
+    "revision": "dc8b2a2de3228520c74283615231e659"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -386,7 +417,7 @@ if (workbox) {
   },
   {
     "url": "controllers/main_ctrl.js",
-    "revision": "f93392899b9a4fbe8611f9050833d058"
+    "revision": "5632a30dc929f0875382ecb26fe90aa4"
   },
   {
     "url": "controllers/usersetting_ctrl.js",
@@ -478,7 +509,7 @@ if (workbox) {
   },
   {
     "url": "service-worker.js",
-    "revision": "57bc05cbed32433e85862196df8afdaa"
+    "revision": "cdf7770812df525f1bc528d8a06b1bcc"
   },
   {
     "url": "services/content_editable.js",
@@ -490,7 +521,7 @@ if (workbox) {
   },
   {
     "url": "services/database.js",
-    "revision": "1c7460e73676cbdb36103a8131562a54"
+    "revision": "a19e6cf102ea2cc4a0432b54378aa60d"
   },
   {
     "url": "services/debug.js",
@@ -510,7 +541,7 @@ if (workbox) {
   },
   {
     "url": "services/format.js",
-    "revision": "85b7b5a683b902cb38c9a99579eea193"
+    "revision": "e098fed3ff5ea2604a27bdb593d89e64"
   },
   {
     "url": "services/general.js",
@@ -518,7 +549,7 @@ if (workbox) {
   },
   {
     "url": "services/image_adjustment.js",
-    "revision": "2779cf2fdfb1e3bf8be72a2c0afefa5c"
+    "revision": "0eb652adedee73d698adf0007bf579f4"
   },
   {
     "url": "services/image_edit.js",
@@ -526,11 +557,11 @@ if (workbox) {
   },
   {
     "url": "services/image_filters.js",
-    "revision": "8a5a6c0d71d402d456e64f1df72d5abf"
+    "revision": "6c3fc5d3e0014b1b2be36e9236ca8419"
   },
   {
     "url": "services/image_functions.js",
-    "revision": "e2f1ec1bdd7ecd0913c3c37e4055e20f"
+    "revision": "26fd9ebf8e36307aced9fec38deaf96f"
   },
   {
     "url": "services/image_manipulate.js",
