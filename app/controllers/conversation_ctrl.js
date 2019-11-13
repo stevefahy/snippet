@@ -1171,6 +1171,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         } else {
             console.log('offline update card');
             updateCard(data.posted);
+
+            cardPosted(data.posted, data.method);
         }
         //
 
