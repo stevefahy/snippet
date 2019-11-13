@@ -298,13 +298,22 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             if (event.data.message == "post_updated") {
                 updateOfflineCard(event.data.data);
             }
-
+            if (event.data.message == "post_id_updated") {
+                //updateOfflineCard(event.data.data);
+                console.log(event.data);
+                updateCardId(event.data.data.temp, event.data.data.db);
+            }
             if (event.data.message == "image_updated") {
                 updateOfflineImage(event.data.data);
             }
         });
     }
 
+/*
+let id_data = {temp: requestData._id, db: assetsData._id};
+                            send_message_to_all_clients({ message: 'post_id_updated', data: id_data });
+                            //updateCardId(requestData._id, assetsData._id);
+                            */
     // Broadcast by socket after it has reconnected. Check for updates.
     $scope.$on('SOCKET_RECONNECT', function(event) {
         //console.log('SOCKET_RECONNECT');
@@ -343,8 +352,11 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     // NOTIFICATION for public conversation.
     $rootScope.$on('PUBLIC_NOTIFICATION_CREATED', function(event, msg) {
-        //console.log('PUBLIC_NOTIFICATION_CREATED');
+        console.log('PUBLIC_NOTIFICATION_CREATED');
+
         var id = Conversations.getConversationId();
+        console.log(Conversations.getConversationType());
+        console.log(id);
         // only update the conversation if the user is currently in that conversation
         if (id === msg.conversation_id && Conversations.getConversationType() != 'feed') {
             getPublicCardsUpdate(id).then(function(result) {
@@ -404,7 +416,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     // NOTIFICATION for private conversation.
     $rootScope.$on('PRIVATE_NOTIFICATION_UPDATED', function(event, msg) {
-        //console.log('PRIVATE_NOTIFICATION_UPDATED');
+        console.log('PRIVATE_NOTIFICATION_UPDATED');
         UserData.addConversationViewed(msg.conversation_id, msg.viewed_users);
         var id = Conversations.getConversationId();
         Conversations.getConversationLatestCard(msg.conversation_id)
@@ -430,7 +442,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     // NOTIFICATION for public conversation.
     $rootScope.$on('PUBLIC_NOTIFICATION_UPDATED', function(event, msg) {
-        //console.log('PUBLIC_NOTIFICATION_UPDATED');
+        console.log('PUBLIC_NOTIFICATION_UPDATED');
         var id = Conversations.getConversationId();
         var followed = UserData.getUser().following;
         if ((Conversations.getConversationType() == 'feed' && followed.indexOf(msg.conversation_id) >= 0) || (msg.conversation_id == Conversations.getConversationId())) {

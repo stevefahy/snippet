@@ -21,7 +21,8 @@ cardApp.factory('Cards', ['$http', function($http) {
             return $http.delete('api/cards/' + id);
         },
         update: function(pms) {
-            var theurl = 'api/cards/' + pms.id;
+            //var theurl = 'api/cards/' + pms.id;
+            var theurl = 'api/cards/';
             return $http.put(theurl, pms);
         },
         search: function(input) {

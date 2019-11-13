@@ -877,29 +877,81 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         if (data.response == 'saved') {
             var image_name = data.file.split('.').slice(0, -1).join('.');
             //var current_image = $('.create_container .ce img.' + image_name);
-            var current_image = $('.ce img#' + image_name);
-            console.log('.ce img#' + image_name);
+            //var current_image = $('.ce img#' + image_name);
+            var current_image = $('.ce img#image_' + image_name);
+            console.log('.ce img#image_' + image_name);
             console.log(current_image);
             if (current_image.length > 0) {
                 //$(current_image).onload = function(){
-                   // console.log('new image loaded');
-                   // $(current_image).attr('src', IMAGES_URL + data.file);
+                // console.log('new image loaded');
+                // $(current_image).attr('src', IMAGES_URL + data.file);
                 //}
                 //console.log('load');
-                $(current_image).attr('src', IMAGES_URL + data.file + '?' +  + new Date());
+                $(current_image).attr('src', IMAGES_URL + data.file + '?' + new Date());
+                //$(current_image).attr('src', IMAGES_URL + data.file);
             }
-            
+
+            var current_image_filtered = $('.ce img#' + image_name);
+            console.log('.ce img#' + image_name);
+            console.log(current_image_filtered);
+            if (current_image_filtered.length > 0) {
+                //$(current_image).onload = function(){
+                // console.log('new image loaded');
+                // $(current_image).attr('src', IMAGES_URL + data.file);
+                //}
+                //console.log('load');
+                $(current_image_filtered).attr('src', IMAGES_URL + data.file + '?' + new Date());
+                //$(current_image).attr('src', IMAGES_URL + data.file);
+            }
+
             var current_image_create = $('.create_container .ce img.' + image_name);
             console.log('.create_container .ce img.' + image_name);
             console.log(current_image_create);
             if (current_image_create.length > 0) {
                 $(current_image_create).attr('src', IMAGES_URL + data.file);
             }
-            
+
         }
     }
 
+    updateCardId = function(temp_id, db_id) {
+        // update dom and cards array with new id from database.
+        // DB 1573646432859
+        // TERMP temp_id_1573646432859
+        //$('#card_temp_id_1573646432859');
+        //$('#card_temp_id_1573646432859 #cetemp_id_1573646432859');
+        console.log(temp_id + ' : ' + db_id);
+
+        
+        $('#card_'+temp_id).attr('id', 'card_'+db_id);
+        $('#card_'+db_id + ' #ce'+temp_id).attr('id','ce'+db_id);
+
+        // Check the existece of the card across all arrays.
+        var card_arrays = [$scope.cards, $scope.cards_temp, $scope.removed_cards_bottom, $scope.removed_cards_top];
+        var found_pos = -1;
+        var arr;
+        for (var i = 0, len = card_arrays.length; i < len; i++) {
+            found_pos = General.findWithAttr(card_arrays[i], '_id', temp_id);
+            if (found_pos >= 0) {
+                arr = i;
+                break;
+            }
+        }
+        if (found_pos >= 0) {
+            console.log('card arrays updated.')
+            //delete 
+            card_arrays[arr][found_pos]._id = db_id;
+            if (!$scope.$$phase) {
+                $scope.$apply();
+            }
+            console.log($scope.cards);
+        }
+
+    }
+
     updateCard = function(card) {
+        console.log('updateCard');
+        console.log(card);
         // Check the existece of the card across all arrays.
         var card_arrays = [$scope.cards, $scope.cards_temp, $scope.removed_cards_bottom, $scope.removed_cards_top];
         var found_pos = -1;
@@ -911,6 +963,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 break;
             }
         }
+        console.log(found_pos);
+        //console.log(card_arrays[arr][found_pos]);
         if (found_pos >= 0) {
             if (card_arrays[arr][found_pos].content != card.content) {
                 // Get the card height.
@@ -1099,16 +1153,27 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     updateOfflineCard = function(data) {
         console.log(data);
-        if(data.method == 'POST'){
-            data.posted._id = data.temp._id;
+        if (data.method == 'POST') {
+            //data.posted._id = data.temp._id;
             $('#card_' + id).attr("id", "card_" + data.posted._id);
         }
-        
-        
+
+
         $scope.$apply();
-        cardPosted(data.posted, data.method);
-        data.posted.new_id = data.temp._id;
-        updateCard(data.posted);
+        //cardPosted(data.posted, data.method);
+        //data.posted.new_id = data.temp._id;
+        console.log($rootScope.online);
+        if($rootScope.online == true){
+            //deleteCard(data.temp._id);
+            updateCardId(data.temp._id, data.posted._id);
+            updateCard(data.posted);
+            cardPosted(data.posted, data.method);
+        } else {
+            console.log('offline update card');
+            updateCard(data.posted);
+        }
+        //
+
     }
 
     // TODO - change if adding button to notify user of new card.

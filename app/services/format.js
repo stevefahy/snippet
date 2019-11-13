@@ -651,6 +651,7 @@ var image_object;
     };
 
     this.updateCard = function(id, card, currentUser) {
+        console.log('Format.updateCard');
         var deferred = $q.defer();
         var content = $('.content_cnv #ce' + card._id).html();
         if ((content != card.original_content)) {

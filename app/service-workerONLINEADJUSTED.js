@@ -3,21 +3,15 @@ importScripts('https://storage.googleapis.com/workbox-cdn/releases/4.1.1/workbox
 
 if (workbox) {
 
-    let temp_ids = [];
-
-    let sync_in_progress = false;
-
     // Event Lisiteners
-    
+
     self.addEventListener('activate', function(event) {
         return self.clients.claim();
     });
 
-    
     self.addEventListener("sync", function(event) {
         if (event.tag == "workbox-background-sync:api_image") {
-            sync_in_progress = true;
-            syncImages();
+            //syncImages();
         }
 
     });
@@ -25,15 +19,16 @@ if (workbox) {
     // Client to Workbox
 
     self.addEventListener('message', function(event) {
-        if (event.data === 'replayRequests' && !sync_in_progress) {
-            syncImages();
+        if (event.data === 'replayRequests') {
+            //syncImages();
+            syncPosts();
         }
     });
 
     // Debugging
 
     workbox.setConfig({
-        debug: false
+        debug: true
     });
 
     // Messaging
@@ -77,7 +72,6 @@ if (workbox) {
 
     // When sync is disabled (Mobile).
 
-
     async function syncPosts() {
         console.log('...Synchronizing ' + queue.name);
         let entry;
@@ -85,73 +79,31 @@ if (workbox) {
         let response;
         while (entry = await queue.shiftRequest()) {
             try {
-                clone0 = await entry.request.clone();
                 clone = await entry.request.clone();
-                //clone2 = await entry.request.clone();
                 console.log('...Replaying: ' + entry.request.url);
                 console.log(entry);
+                //if(entry.request.method == "PUT"){
+
+                //}
                 let method = entry.request.method;
                 send_message_to_all_clients({ message: 'post_updating' });
-
+                response = await fetch(entry.request);
+                //console.log(response);
                 let requestData = await clone.json();
-                console.log(requestData);
-
-
-                if (method == 'PUT') {
-                    console.log('put');
-                    if (requestData.card._id.includes('temp_id')) {
-                        let obj = temp_ids.find(obj => obj.temp_id == requestData.card._id);
-                        console.log(obj);
-                        if (obj != undefined) {
-                            updated_id = true;
-                            console.log(obj);
-                            // Change the requestData id.
-                            requestData.card._id = obj._id;
-                            console.log(requestData);
-                            response = await fetch(clone0, { body: JSON.stringify(requestData) });
-                            console.log(response);
-                            //assetsData = await response.json();
-                            //console.log(assetsData);
-                        }
-                    } else {
-                        response = await fetch(clone0);
-                        console.log(response);
-                        //assetsData = await response.json();
-                        //console.log(assetsData);
-                    }
-                    assetsData = await response.json();
-                    console.log(assetsData);
-                }
-
-                if (method == 'POST') {
-                    console.log('post');
-                    if (requestData._id.includes('temp_id')) {
-                        let obj = temp_ids.find(obj => obj.temp_id == requestData._id);
-                        if (obj == undefined) {
-                            let response = await fetch(clone0);
-                            console.log(response);
-                            assetsData = await response.json();
-                            console.log(assetsData);
-                            temp_ids.push({ temp_id: requestData._id, _id: assetsData._id })
-                            console.log('store temp_id _id value');
-                            console.log(temp_ids);
-
-                        }
-                    }
-                }
-
+                //console.log(requestData);
+                let assetsData = await response.json();
+                //console.log(assetsData);
                 var card_data = { temp: requestData, posted: assetsData, method: method };
-                console.log('...Replayed: ' + entry.request.url);
+                //console.log('...Replayed: ' + entry.request.url);
                 send_message_to_all_clients({ message: 'post_updated', data: card_data });
             } catch (error) {
-                console.error('Replay failed for request', entry.request, error);
+                //console.error('Replay failed for request', entry.request, error);
                 await queue.unshiftRequest(entry);
                 return;
             }
         }
         send_message_to_all_clients({ message: 'all_posts_updated' });
-        sync_in_progress = false;
-
+        syncImages();
     }
 
     async function syncImages() {
@@ -159,15 +111,28 @@ if (workbox) {
         let entry;
         let clone;
         let response;
+        //queue_image.reverse(); 
         console.log(queue_image);
+        //let new_queue = await queue_image.getAll();
+       // console.log(new_queue);
+
+        // take off last item
+        //while (entry = await queue_image.popRequest()) {
+            // push to first
+           // console.log('ADJUST');
+            //console.log(entry);
+            //await queue_image.unshiftRequest(entry);
+
+        //}
+        
         while (entry = await queue_image.shiftRequest()) {
-            //while (entry = await queue_image.popRequest()) {
+        //while (entry = await queue_image.popRequest()) {
             try {
                 clone = await entry.request.clone();
                 //console.log('...Replaying: ' + entry.request.url);
                 send_message_to_all_clients({ message: 'post_updating' });
                 response = await fetch(entry.request);
-                console.log(response);
+                //console.log(response);
                 //let requestData = await clone.formData();
                 //console.log(requestData);
                 let assetsData = await response.json();
@@ -183,7 +148,7 @@ if (workbox) {
         }
         send_message_to_all_clients({ message: 'all_posts_updated' });
         // Sync posts after images have been loaded.
-        syncPosts();
+        //syncPosts();
     }
 
     const rest_fail = {
@@ -199,43 +164,6 @@ if (workbox) {
         }
     }
 
-
-    async function deleteExisting(name) {
-        console.log('deleteExisting');
-        let openRequest = indexedDB.open("workbox-background-sync");
-
-        openRequest.onupgradeneeded = function() {
-            // triggers if the client had no database
-            // ...perform initialization...
-        };
-
-        openRequest.onerror = function() {
-            console.error("Error", openRequest.error);
-        };
-
-        openRequest.onsuccess = async function() {
-            let db = openRequest.result;
-            console.log('success: ' + db);
-            // continue to work with database using db object
-            let transaction = db.transaction("requests", "readwrite"); // (1)
-            // get an object store to operate on it
-            let books = transaction.objectStore("requests"); // (2)
-            // get all books
-            let a = await books.getAll();
-            let d = books.get(['api_image', 1])
-            console.log(a);
-            console.log(d);
-            a.onsuccess = async function() {
-                let obj = await a.result.find(obj => obj.metadata == name);
-                console.log(obj);
-                if (obj != undefined) {
-                    books.delete(obj.id);
-                }
-            }
-        };
-    }
-
-
     const rest_image_fail = {
         // If the request fails then add this REST Post to the queue.
         fetchDidFail: async ({ originalRequest, request, error, event }) => {
@@ -245,16 +173,7 @@ if (workbox) {
             // `requestWillFetch` callbacks, and `error` is the exception that caused
             // the underlying `fetch()` to fail.
             // adding to the Queue.
-            let clone = await request.clone();
-            console.log(clone);
-            //let response = await fetch(request);
-            //console.log(response);
-            let requestData = await clone.formData();
-            let uploads = requestData.get('uploads[]');
-            console.log(uploads);
-            console.log(uploads.name);
-            deleteExisting(uploads.name);
-            queue_image.pushRequest({ request: request, metadata: uploads.name });
+            queue_image.pushRequest({ request: request });
         }
     }
 

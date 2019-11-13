@@ -3,14 +3,20 @@ importScripts('https://storage.googleapis.com/workbox-cdn/releases/4.1.1/workbox
 
 if (workbox) {
 
-    // Event Lisiteners
+    let temp_ids = [];
 
+    let sync_in_progress = false;
+
+    // Event Lisiteners
+    
     self.addEventListener('activate', function(event) {
         return self.clients.claim();
     });
 
+    
     self.addEventListener("sync", function(event) {
         if (event.tag == "workbox-background-sync:api_image") {
+            sync_in_progress = true;
             syncImages();
         }
 
@@ -19,7 +25,7 @@ if (workbox) {
     // Client to Workbox
 
     self.addEventListener('message', function(event) {
-        if (event.data === 'replayRequests') {
+        if (event.data === 'replayRequests' && !sync_in_progress) {
             syncImages();
         }
     });
@@ -27,7 +33,7 @@ if (workbox) {
     // Debugging
 
     workbox.setConfig({
-        debug: true
+        debug: false
     });
 
     // Messaging
@@ -71,6 +77,7 @@ if (workbox) {
 
     // When sync is disabled (Mobile).
 
+
     async function syncPosts() {
         console.log('...Synchronizing ' + queue.name);
         let entry;
@@ -78,30 +85,72 @@ if (workbox) {
         let response;
         while (entry = await queue.shiftRequest()) {
             try {
+                clone0 = await entry.request.clone();
                 clone = await entry.request.clone();
+                //clone2 = await entry.request.clone();
                 console.log('...Replaying: ' + entry.request.url);
                 console.log(entry);
-                //if(entry.request.method == "PUT"){
-
-                //}
                 let method = entry.request.method;
                 send_message_to_all_clients({ message: 'post_updating' });
-                response = await fetch(entry.request);
-                //console.log(response);
+
                 let requestData = await clone.json();
-                //console.log(requestData);
-                let assetsData = await response.json();
-                //console.log(assetsData);
+                console.log(requestData);
+
+
+                if (method == 'PUT') {
+                    console.log('put');
+                    if (requestData.card._id.includes('temp_id')) {
+                        let obj = temp_ids.find(obj => obj.temp_id == requestData.card._id);
+                        console.log(obj);
+                        if (obj != undefined) {
+                            updated_id = true;
+                            console.log(obj);
+                            // Change the requestData id.
+                            requestData.card._id = obj._id;
+                            console.log(requestData);
+                            response = await fetch(clone0, { body: JSON.stringify(requestData) });
+                            console.log(response);
+                            //assetsData = await response.json();
+                            //console.log(assetsData);
+                        }
+                    } else {
+                        response = await fetch(clone0);
+                        console.log(response);
+                        //assetsData = await response.json();
+                        //console.log(assetsData);
+                    }
+                    assetsData = await response.json();
+                    console.log(assetsData);
+                }
+
+                if (method == 'POST') {
+                    console.log('post');
+                    if (requestData._id.includes('temp_id')) {
+                        let obj = temp_ids.find(obj => obj.temp_id == requestData._id);
+                        if (obj == undefined) {
+                            let response = await fetch(clone0);
+                            console.log(response);
+                            assetsData = await response.json();
+                            console.log(assetsData);
+                            temp_ids.push({ temp_id: requestData._id, _id: assetsData._id })
+                            console.log('store temp_id _id value');
+                            console.log(temp_ids);
+
+                        }
+                    }
+                }
+
                 var card_data = { temp: requestData, posted: assetsData, method: method };
-                //console.log('...Replayed: ' + entry.request.url);
+                console.log('...Replayed: ' + entry.request.url);
                 send_message_to_all_clients({ message: 'post_updated', data: card_data });
             } catch (error) {
-                //console.error('Replay failed for request', entry.request, error);
+                console.error('Replay failed for request', entry.request, error);
                 await queue.unshiftRequest(entry);
                 return;
             }
         }
         send_message_to_all_clients({ message: 'all_posts_updated' });
+        sync_in_progress = false;
 
     }
 
@@ -110,28 +159,15 @@ if (workbox) {
         let entry;
         let clone;
         let response;
-        //queue_image.reverse(); 
         console.log(queue_image);
-        //let new_queue = await queue_image.getAll();
-       // console.log(new_queue);
-
-        // take off last item
-        //while (entry = await queue_image.popRequest()) {
-            // push to first
-           // console.log('ADJUST');
-            //console.log(entry);
-            //await queue_image.unshiftRequest(entry);
-
-        //}
-        
         while (entry = await queue_image.shiftRequest()) {
-        //while (entry = await queue_image.popRequest()) {
+            //while (entry = await queue_image.popRequest()) {
             try {
                 clone = await entry.request.clone();
                 //console.log('...Replaying: ' + entry.request.url);
                 send_message_to_all_clients({ message: 'post_updating' });
                 response = await fetch(entry.request);
-                //console.log(response);
+                console.log(response);
                 //let requestData = await clone.formData();
                 //console.log(requestData);
                 let assetsData = await response.json();
@@ -163,6 +199,43 @@ if (workbox) {
         }
     }
 
+
+    async function deleteExisting(name) {
+        console.log('deleteExisting');
+        let openRequest = indexedDB.open("workbox-background-sync");
+
+        openRequest.onupgradeneeded = function() {
+            // triggers if the client had no database
+            // ...perform initialization...
+        };
+
+        openRequest.onerror = function() {
+            console.error("Error", openRequest.error);
+        };
+
+        openRequest.onsuccess = async function() {
+            let db = openRequest.result;
+            console.log('success: ' + db);
+            // continue to work with database using db object
+            let transaction = db.transaction("requests", "readwrite"); // (1)
+            // get an object store to operate on it
+            let books = transaction.objectStore("requests"); // (2)
+            // get all books
+            let a = await books.getAll();
+            let d = books.get(['api_image', 1])
+            console.log(a);
+            console.log(d);
+            a.onsuccess = async function() {
+                let obj = await a.result.find(obj => obj.metadata == name);
+                console.log(obj);
+                if (obj != undefined) {
+                    books.delete(obj.id);
+                }
+            }
+        };
+    }
+
+
     const rest_image_fail = {
         // If the request fails then add this REST Post to the queue.
         fetchDidFail: async ({ originalRequest, request, error, event }) => {
@@ -172,7 +245,16 @@ if (workbox) {
             // `requestWillFetch` callbacks, and `error` is the exception that caused
             // the underlying `fetch()` to fail.
             // adding to the Queue.
-            queue_image.pushRequest({ request: request });
+            let clone = await request.clone();
+            console.log(clone);
+            //let response = await fetch(request);
+            //console.log(response);
+            let requestData = await clone.formData();
+            let uploads = requestData.get('uploads[]');
+            console.log(uploads);
+            console.log(uploads.name);
+            deleteExisting(uploads.name);
+            queue_image.pushRequest({ request: request, metadata: uploads.name });
         }
     }
 
@@ -373,7 +455,7 @@ if (workbox) {
   },
   {
     "url": "controllers/card_ctrl.js",
-    "revision": "b85597d223fb1ef35ff2f44a258d49ef"
+    "revision": "fd579dd3056125454245f4471c30ac7e"
   },
   {
     "url": "controllers/cardcreate_ctrl.js",
@@ -385,7 +467,7 @@ if (workbox) {
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "dc8b2a2de3228520c74283615231e659"
+    "revision": "c7503917fae844c0e118147472259d73"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -417,7 +499,7 @@ if (workbox) {
   },
   {
     "url": "controllers/main_ctrl.js",
-    "revision": "5632a30dc929f0875382ecb26fe90aa4"
+    "revision": "d03ae9c4470151bd54aa9b0be842eabc"
   },
   {
     "url": "controllers/usersetting_ctrl.js",
@@ -429,7 +511,7 @@ if (workbox) {
   },
   {
     "url": "factories/factories.js",
-    "revision": "bb080f77eabf4a48b7a999650f1a90ea"
+    "revision": "69aa7b7290c385271d07dbc149f77051"
   },
   {
     "url": "factories/local_db.js",
@@ -505,11 +587,15 @@ if (workbox) {
   },
   {
     "url": "routes/routes.js",
-    "revision": "817835a6b4861394cfb5c02268cedeef"
+    "revision": "f20e4596501ec3ded9b2ad6b371134ef"
   },
   {
     "url": "service-worker.js",
-    "revision": "cdf7770812df525f1bc528d8a06b1bcc"
+    "revision": "ce5b03399af0ddd034bdea67b9db9b6d"
+  },
+  {
+    "url": "service-workerONLINEADJUSTED.js",
+    "revision": "163cdd6faef42418ae24874afe232bb3"
   },
   {
     "url": "services/content_editable.js",
@@ -521,7 +607,7 @@ if (workbox) {
   },
   {
     "url": "services/database.js",
-    "revision": "a19e6cf102ea2cc4a0432b54378aa60d"
+    "revision": "c8d2e14d527a9b5c07d7b7ba9d051062"
   },
   {
     "url": "services/debug.js",
@@ -541,7 +627,7 @@ if (workbox) {
   },
   {
     "url": "services/format.js",
-    "revision": "e098fed3ff5ea2604a27bdb593d89e64"
+    "revision": "e2efa0bfc81691ea5128a6d5a55ae4ee"
   },
   {
     "url": "services/general.js",

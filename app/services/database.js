@@ -93,7 +93,8 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 card.content = replaceTags.replace(card.content);
                 // Remove any temp filtered images
                 card.content = Format.removeTempFiltered(card.content);
-                var pms = { 'id': card_id, 'card': card };
+                //var pms = { 'id': card_id, 'card': card };
+                var pms = { 'card': card };
                 // call the update function from our service (returns a promise object)
                 Cards.update(pms)
                     .then(function(returned) {
@@ -283,7 +284,8 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 var notification_title;
                 var notification_body;
                 var card_content = temp_card.content;
-                var pms = { 'id': card_id, 'card': temp_card };
+                //var pms = { 'id': card_id, 'card': temp_card };
+                var pms = { 'card': temp_card };
                 var recipients;
                 console.log(pms);
                 // call the create function from our service (returns a promise object)
