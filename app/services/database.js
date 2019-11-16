@@ -206,6 +206,10 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                     console.log('cardPosted end');
                     deferred.resolve();
                 }
+            })
+            .catch(function(error) {
+                console.log('error: ' + error);
+                deferred.resolve();
             });
 
         return deferred.promise;
@@ -274,7 +278,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
                 var temp_card = Object.assign({}, card);
                 // replace blob image with image url.
-            temp_card.content = Format.replaceBlob(temp_card.content);
+                temp_card.content = Format.replaceBlob(temp_card.content);
 
                 // Get the Conversation in which this card is being created.
                 temp_card.content = replaceTags.replace(temp_card.content);
