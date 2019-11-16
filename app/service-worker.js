@@ -8,12 +8,12 @@ if (workbox) {
     let sync_in_progress = false;
 
     // Event Lisiteners
-    
+
     self.addEventListener('activate', function(event) {
         return self.clients.claim();
     });
 
-    
+
     self.addEventListener("sync", function(event) {
         if (event.tag == "workbox-background-sync:api_image") {
             sync_in_progress = true;
@@ -74,6 +74,90 @@ if (workbox) {
         onSync: async ({ queue }) => {}
     });
 
+    let sync_data = [];
+
+    processUpdates = function(sync_data) {
+        console.log('PROCESS');
+        // Reset
+        const sd = [...sync_data];
+        let updated = [];
+        let posts_updated = [];
+        let images_posted = [];
+        //sync_data = [];
+        console.log(sd);
+        console.log(sync_data);
+        // check for updates to created cards.
+        // Return an array of POSTs
+        let posted = sd.filter(x => x.method == "POST");
+        let post_updated = sd.filter(x => x.method == "PUT");
+        images_posted = sd.filter(x => x.image != undefined);
+        console.log(posted);
+        console.log(post_updated);
+        console.log(images_posted);
+        // Return an array of PUTs for each POST (by POST returned ._id)
+        
+        posted.forEach(function(element) {
+            console.log(element.returned._id);
+            let a = post_updated.filter(x => x.returned._id == element.returned._id);
+            console.log(a);
+            if (a.length > 0) {
+                let b = a.filter(x => x.returned._id == element.returned._id);
+                posts_updated.push(b);
+            }
+        });
+        console.log(posts_updated);
+        // Get the latest update.
+
+
+        posts_updated.forEach(function(element) {
+            let arr = element;
+            console.log(arr);
+            let b = arr.sort(function(a, b) {
+                var keyA = new Date(a.returned.updatedAt),
+                    keyB = new Date(b.returned.updatedAt);
+                // Compare the 2 dates
+                if (keyA < keyB) return 1;
+                if (keyA > keyB) return -1;
+                return 0;
+            });
+            console.log(b[0]);
+            // Update each posted with the latest updated content.
+            let posted_id = (element) => element.returned._id == b[0].returned._id;
+
+            let c = posted.findIndex(posted_id);
+            let d = post_updated.findIndex(posted_id);
+            console.log(c);
+            console.log(d);
+            if (c >= 0) {
+                // Update posted with the latest updated content.
+                posted[c].returned = b[0].returned;
+            }
+        });
+
+        
+
+
+        post_updated.forEach(function(element, index, object) {
+
+            let posted_id = element.returned._id;
+            console.log(posted_id);
+
+            let found = posted.filter(x => x.returned._id == posted_id);
+            console.log(found);
+            if(found.length == 0){
+                //object.splice(index, 1);
+                updated.push(element);
+            }
+            
+        });
+
+        console.log(posted);
+        console.log(updated);
+        console.log(images_posted);
+        return {posted:posted, updated:updated, images:images_posted};
+
+    }
+
 
     // When sync is disabled (Mobile).
 
@@ -83,6 +167,7 @@ if (workbox) {
         let entry;
         let clone;
         let response;
+        let requestDataFormat;
         while (entry = await queue.shiftRequest()) {
             try {
                 clone0 = await entry.request.clone();
@@ -91,10 +176,11 @@ if (workbox) {
                 console.log('...Replaying: ' + entry.request.url);
                 console.log(entry);
                 let method = entry.request.method;
-                send_message_to_all_clients({ message: 'post_updating' });
+                send_message_to_all_clients({ message: 'request_updating' });
 
                 let requestData = await clone.json();
                 console.log(requestData);
+
 
 
                 if (method == 'PUT') {
@@ -107,6 +193,7 @@ if (workbox) {
                             console.log(obj);
                             // Change the requestData id.
                             requestData.card._id = obj._id;
+                            requestDataFormat = requestData.card;
                             console.log(requestData);
                             response = await fetch(clone0, { body: JSON.stringify(requestData) });
                             console.log(response);
@@ -120,10 +207,12 @@ if (workbox) {
                         //console.log(assetsData);
                     }
                     assetsData = await response.json();
+                    //assetsData = assetsData.card;
                     console.log(assetsData);
                 }
 
                 if (method == 'POST') {
+                    requestDataFormat = requestData;
                     console.log('post');
                     if (requestData._id.includes('temp_id')) {
                         let obj = temp_ids.find(obj => obj.temp_id == requestData._id);
@@ -141,31 +230,41 @@ if (workbox) {
                 }
 
                 var card_data = { temp: requestData, posted: assetsData, method: method };
+                var card_data2 = { requested: requestDataFormat, returned: assetsData, method: method };
+                //var card_data2 = { temp: requestDataFormat, posted: assetsData, method: method };
                 console.log('...Replayed: ' + entry.request.url);
-                send_message_to_all_clients({ message: 'post_updated', data: card_data });
+                sync_data.push(card_data2);
+                //send_message_to_all_clients({ message: 'post_updated', data: card_data });
             } catch (error) {
                 console.error('Replay failed for request', entry.request, error);
                 await queue.unshiftRequest(entry);
                 return;
             }
         }
-        send_message_to_all_clients({ message: 'all_posts_updated' });
+        
         sync_in_progress = false;
+        console.log(sync_data);
+        const all_requests = processUpdates(sync_data);
+        console.log('END SYNC');
+        send_message_to_all_clients({ message: 'all_requests_updated', all_requests: all_requests });
+        
 
     }
 
     async function syncImages() {
+        console.log('START SYNC');
         console.log('...Synchronizing ' + queue_image.name);
         let entry;
         let clone;
         let response;
+        sync_data = [];
         console.log(queue_image);
         while (entry = await queue_image.shiftRequest()) {
             //while (entry = await queue_image.popRequest()) {
             try {
                 clone = await entry.request.clone();
                 //console.log('...Replaying: ' + entry.request.url);
-                send_message_to_all_clients({ message: 'post_updating' });
+                send_message_to_all_clients({ message: 'request_updating' });
                 response = await fetch(entry.request);
                 console.log(response);
                 //let requestData = await clone.formData();
@@ -173,7 +272,9 @@ if (workbox) {
                 let assetsData = await response.json();
                 console.log(assetsData);
                 //console.log('...Replayed: ' + entry.request.url);
-                send_message_to_all_clients({ message: 'image_updated', data: assetsData });
+                let i = { image: assetsData.file };
+                sync_data.push(i);
+                //send_message_to_all_clients({ message: 'image_updated', data: assetsData });
             } catch (error) {
                 //console.error('Replay failed for request', entry.request, error);
                 await queue_image.unshiftRequest(entry);
@@ -181,7 +282,7 @@ if (workbox) {
                 return;
             }
         }
-        send_message_to_all_clients({ message: 'all_posts_updated' });
+        //send_message_to_all_clients({ message: 'all_posts_updated' });
         // Sync posts after images have been loaded.
         syncPosts();
     }

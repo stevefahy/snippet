@@ -107,8 +107,10 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         }
     };
 
-    cardPosted = function(response, method) {
-        console.log('cardPosted!: ' + method);
+    // Use seperate function for updated etc...
+
+    cardPosted = async function(response, method) {
+        console.log('cardPosted start!: ' + method);
         console.log(response);
         var deferred = $q.defer();
         var card_id = response._id;
@@ -142,6 +144,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         Conversations.updateViewed(current_conversation_id, card_id)
             .then(function(response) {
                 console.log(response);
+                console.log(post_type);
                 updated_viewed_users = response.participants;
                 var notification = self.setNotification(response, currentUser, card_content);
                 notification_title = notification.title;
@@ -190,6 +193,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                         socket.emit('private_' + post_type, { sender_id: socket.getId(), conversation_id: current_conversation_id, card_id: card_id, participants: viewed_users, viewed_users: updated_viewed_users });
                     }
                     updateinprogress = false;
+                    console.log('cardPosted end');
                     deferred.resolve();
                 } else {
                     // Add the current user to the participants being notified of update in case they have multiple devices.
@@ -199,6 +203,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                         socket.emit('public_' + post_type, { sender_id: socket.getId(), conversation_id: current_conversation_id, card_id: card_id, followers: viewed_users });
                     }
                     updateinprogress = false;
+                    console.log('cardPosted end');
                     deferred.resolve();
                 }
             });
@@ -241,7 +246,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 $rootScope.$broadcast('CARD_CREATED');
             })
         }
-        // Post rhe card to the server.
+        // Post the card to the server.
         Cards.create(online_card_create)
             .then(function(response) {
                 // Update viewed users and send notifications.
@@ -293,7 +298,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                     .then(function(returned) {
                         console.log(returned);
                         //updateinprogress = false;
-                        cardPosted(response.data, 'PUT').then(function(returned) {
+                        cardPosted(returned.data, 'PUT').then(function(returned) {
                             console.log('UPDATE COMPLETE');
                             deferred.resolve();
                         });

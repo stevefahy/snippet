@@ -288,32 +288,44 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     if ('serviceWorker' in navigator) {
         // Handler for messages coming from the service worker
         navigator.serviceWorker.addEventListener('message', function(event) {
-            if (event.data.message == "all_posts_updated") {
+            if (event.data.message == "all_requests_updated") {
                 endalert = true;
                 removeAlert();
+                console.log(event.data.all_requests);
+                if (event.data.all_requests.posted.length > 0) {
+                    updateCardIds(event.data.all_requests.posted);
+                }
+                console.log('card ids updated!');
+                console.log('updare local images start');
+                if (event.data.all_requests.images.length > 0) {
+                    updateImages(event.data.all_requests.images)
+                }
+                //'original-image-name'
+                sendRequested(event.data.all_requests.posted, event.data.all_requests.updated)
+
             }
-            if (event.data.message == "post_updating") {
+            if (event.data.message == "request_updating") {
+                //post_updating
                 addAlert();
             }
             if (event.data.message == "post_updated") {
-                updateOfflineCard(event.data.data);
+                //updateOfflineCard(event.data.data);
             }
             if (event.data.message == "post_id_updated") {
-                //updateOfflineCard(event.data.data);
-                console.log(event.data);
-                updateCardId(event.data.data.temp, event.data.data.db);
+                //console.log(event.data);
+                //updateCardId(event.data.data.temp, event.data.data.db);
             }
             if (event.data.message == "image_updated") {
-                updateOfflineImage(event.data.data);
+                //updateOfflineImage(event.data.data);
             }
         });
     }
 
-/*
-let id_data = {temp: requestData._id, db: assetsData._id};
-                            send_message_to_all_clients({ message: 'post_id_updated', data: id_data });
-                            //updateCardId(requestData._id, assetsData._id);
-                            */
+    /*
+    let id_data = {temp: requestData._id, db: assetsData._id};
+                                send_message_to_all_clients({ message: 'post_id_updated', data: id_data });
+                                //updateCardId(requestData._id, assetsData._id);
+                                */
     // Broadcast by socket after it has reconnected. Check for updates.
     $scope.$on('SOCKET_RECONNECT', function(event) {
         //console.log('SOCKET_RECONNECT');
@@ -350,13 +362,18 @@ let id_data = {temp: requestData._id, db: assetsData._id};
         }
     });
 
+    let public_created_inprogress = false;
     // NOTIFICATION for public conversation.
     $rootScope.$on('PUBLIC_NOTIFICATION_CREATED', function(event, msg) {
         console.log('PUBLIC_NOTIFICATION_CREATED');
 
         var id = Conversations.getConversationId();
+
+        // Only 
         console.log(Conversations.getConversationType());
         console.log(id);
+        console.log(msg);
+
         // only update the conversation if the user is currently in that conversation
         if (id === msg.conversation_id && Conversations.getConversationType() != 'feed') {
             getPublicCardsUpdate(id).then(function(result) {
@@ -371,6 +388,7 @@ let id_data = {temp: requestData._id, db: assetsData._id};
         } else if (Conversations.getConversationType() == 'feed') {
             getFollowingUpdate()
                 .then(function(result) {
+                    console.log(result);
                     if (result.length > 0) {
                         updateCards(result);
                         // Update Conversations

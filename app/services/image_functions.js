@@ -47,6 +47,8 @@ cardApp.service('ImageFunctions', ['$rootScope', 'Format', '$q', 'ContentEditabl
                     img_new.src = result.file;
                     img_new.className = 'adjusted';
                     img_new.id = 'image_filtered_' + id;
+                    img_new.setAttribute('original-image-name',result.original_image);
+                    //mg_new.original-image-name = result.original_image;
                     //img_new.onload = function() {
                         deferred.resolve(img_new);
                     //};

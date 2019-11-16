@@ -232,12 +232,14 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         div.innerHTML = content.trim();
         $(div).find('img').each(function() {
             if ($(this).attr('src').substr(0, 5) == 'blob:') {
+                let original_image_name = $(this).attr('original-image-name');
+                $(this).removeAttr('original-image-name');
                 if(!$(this).attr('id').includes('filtered')){
                     console.log('NOT FILTERED');
-                    $(this).attr('src', IMAGES_URL + $(this).attr('id').substr(6) + '.jpg');
+                    $(this).attr('src', IMAGES_URL + original_image_name);
                 } else {
                     console.log('FILTERED');
-                    $(this).attr('src', IMAGES_URL + $(this).attr('id') + '.jpg?TEMP_DATE_' + new Date());
+                    $(this).attr('src', IMAGES_URL + original_image_name + '?TEMP_DATE_' + new Date());
                 }
                 
             }
@@ -328,18 +330,33 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         $rootScope.$broadcast('imagePasted');
     };
 
+/*
+        image_object = {
+            file: objUrl,
+            file_name: name,
+            original_image: file.name,
+            response: "saved"
+        };
+        */
+
     insertObjUrl = function(data) {
+        console.log(data);
         if (data.response === 'saved') {
-            data.file_name = data.file_name.substring(0, data.file_name.indexOf('.'));
-            var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><img loading='eager' class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src=\"" + data.file + "\"></div><slider></slider><span class='after_image' id='after_image_" + data.file_name + "'>&#x200b;&#10;</span><span class='clear_after_image'></span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
+            let full_file = data.file;
+            let file_name = data.file_name.substring(0, data.file_name.indexOf('.'));
+            let original_image = data.original_image;
+            var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + file_name + "\")' id='cropper_" + file_name + "'><img loading='eager' class='resize-drag " + file_name + "' id='new_image' original-image-name='" + original_image +  "' onload='imageLoaded(); imagePosted();' src=\"" + full_file + "\"></div><slider></slider><span class='after_image' id='after_image_" + file_name + "'>&#x200b;&#10;</span><span class='clear_after_image'></span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
             self.pasteHtmlAtCaret(new_image);
         }
     };
 
     insertImage = function(data) {
+        console.log(data);
         if (data.response === 'saved') {
-            data.file_name = data.file.substring(0, data.file.indexOf('.'));
-            var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + data.file_name + "\")' id='cropper_" + data.file_name + "'><img loading='eager' class='resize-drag " + data.file_name + "' id='new_image' onload='imageLoaded(); imagePosted();' src=\"" + IMAGES_URL + data.file + "\"></div><slider></slider><span class='after_image' id='after_image_" + data.file_name + "'>&#x200b;&#10;</span><span class='clear_after_image'></span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
+            let full_file = data.file;
+            let file_name = data.file.substring(0, data.file.indexOf('.'));
+            //data.file_name = data.file.substring(0, data.file.indexOf('.'));
+            var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + file_name + "\")' id='cropper_" + file_name + "'><img loading='eager' class='resize-drag " + file_name + "' id='new_image' original-image-name='" + full_file +  "' onload='imageLoaded(); imagePosted();' src=\"" + IMAGES_URL + full_file + "\"></div><slider></slider><span class='after_image' id='after_image_" + file_name + "'>&#x200b;&#10;</span><span class='clear_after_image'></span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
             self.pasteHtmlAtCaret(new_image);
         }
     };
@@ -359,7 +376,15 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         const blob = new Blob(byteArrays, { type: contentType });
         return blob;
     }
-
+/*
+        image_object = {
+            file: objUrl,
+            file_name: name,
+            original_image: file.name,
+            response: "saved"
+        };
+console.log(image_object);
+*/
     insertImageOffline = function(data) {
         if (data.response === 'saved') {
             const contentType = 'image/png';
@@ -369,8 +394,10 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             var image_object = {
                 file: blobUrl,
                 file_name: data.file,
+                original_image: data.file,
                 response: "saved"
             };
+            console.log(image_object);
             fileBlob = new File([blob], data.file);
             self.uploadFileAndroidOffline(fileBlob);
         }
@@ -462,9 +489,10 @@ var image_object;
         image_object = {
             file: objUrl,
             file_name: name,
+            original_image: file.name,
             response: "saved"
         };
-
+console.log(image_object);
         //insertObjUrl(image_object);
     }
 
