@@ -612,7 +612,7 @@ if (workbox) {
   },
   {
     "url": "factories/factories.js",
-    "revision": "69aa7b7290c385271d07dbc149f77051"
+    "revision": "9f83cff271e3a289e86c6e2b8ffe8043"
   },
   {
     "url": "factories/local_db.js",
@@ -688,7 +688,7 @@ if (workbox) {
   },
   {
     "url": "routes/routes.js",
-    "revision": "f20e4596501ec3ded9b2ad6b371134ef"
+    "revision": "bef4d550468c46c09918b431117f4895"
   },
   {
     "url": "service-worker.js",

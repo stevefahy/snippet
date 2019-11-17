@@ -238,8 +238,13 @@ cardApp.factory('Conversations', ['$http', '$q', 'LocalDB', function($http, $q, 
             //$http.put('chat/conversation_viewed/' + id + '/' + card_id)
             $http.get('chat/conversation_viewed/' + id + '/' + card_id)
                 .then(function(response) {
+                    console.log(response);
                     LocalDB.updateConversation(response.data);
                     deferred.resolve(response.data);
+                })
+                .catch(function(error) {
+                    console.log('error: ' + error);
+                    deferred.resolve(error);
                 });
             return deferred.promise;
         },

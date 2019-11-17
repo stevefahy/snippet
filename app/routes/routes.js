@@ -1099,7 +1099,7 @@ module.exports = function(app, passport) {
             var updated_conversation = new Conversation(conversation);
             updated_conversation.save(function(err, conversation) {
                 if (err) {
-                    //console.log('err: ' + err);
+                    console.log('err: ' + err);
                     res.send(err);
                 } else {
                     res.send(conversation);
