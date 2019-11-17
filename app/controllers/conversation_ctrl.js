@@ -975,6 +975,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log('sendRequested start');
         var deferred = $q.defer();
         posted.forEach(function(element) {
+            console.log('posted');
+            console.log(element.returned + ' : ' + element.method);
+            cardPosted(element.returned, element.method);
+        });
+
+        updated.forEach(function(element) {
+            console.log('updated');
             console.log(element.returned + ' : ' + element.method);
             cardPosted(element.returned, element.method);
         });
