@@ -301,7 +301,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 Cards.update(pms)
                     .then(function(returned) {
                         console.log(returned);
-                        //updateinprogress = false;
+                        updateinprogress = false;
                         cardPosted(returned.data, 'PUT').then(function(returned) {
                             console.log('UPDATE COMPLETE');
                             deferred.resolve();
@@ -373,7 +373,8 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                         */
                     })
                     .catch(function(error) {
-                        //console.log('error: ' + error);
+                        console.log('error: ' + error);
+                        updateinprogress = false;
                         deferred.resolve();
                     });
             }, 0);

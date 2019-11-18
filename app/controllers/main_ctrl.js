@@ -301,6 +301,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                     updateImages(event.data.all_requests.images)
                 }
                 //'original-image-name'
+                if(event.data.all_requests.posted.length > 0 || event.data.all_requests.updated.length > 0)
                 sendRequested(event.data.all_requests.posted, event.data.all_requests.updated)
 
             }

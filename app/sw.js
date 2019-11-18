@@ -614,7 +614,7 @@ if (workbox) {
   },
   {
     "url": "controllers/main_ctrl.js",
-    "revision": "6e654141b62f117344f033edf05eb09d"
+    "revision": "f8543e23b8ae8b5b256a6c0dc27e4800"
   },
   {
     "url": "controllers/usersetting_ctrl.js",
@@ -722,7 +722,7 @@ if (workbox) {
   },
   {
     "url": "services/database.js",
-    "revision": "18006c6dbb7ad0973094cc3405610145"
+    "revision": "069968be6a7d640a970bdbea466b4d94"
   },
   {
     "url": "services/debug.js",
