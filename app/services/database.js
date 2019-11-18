@@ -382,6 +382,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         return deferred.promise;
     };
 
+
     // DELETE CARD
     this.deleteCard = function(card_id, conversation_id, currentUser) {
         var promises = [];

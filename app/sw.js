@@ -722,7 +722,7 @@ if (workbox) {
   },
   {
     "url": "services/database.js",
-    "revision": "069968be6a7d640a970bdbea466b4d94"
+    "revision": "8f2dd5b424084f314a491cfc0ac17c50"
   },
   {
     "url": "services/debug.js",
