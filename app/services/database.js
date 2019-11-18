@@ -109,7 +109,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
     // Use seperate function for updated etc...
 
-    cardPosted = async function(response, method) {
+    this.cardPosted = async function (response, method) {
         console.log('cardPosted start!: ' + method);
         console.log(response);
         var deferred = $q.defer();

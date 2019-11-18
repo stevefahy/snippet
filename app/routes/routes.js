@@ -767,6 +767,16 @@ module.exports = function(app, passport) {
     // CARDS
     //
 
+    // get card by card id
+    app.get('/api/cards/get_card/:id', isLoggedIn, function(req, res) {
+        Card.findOne({ '_id': req.params.id }).sort('-updatedAt').exec(function(err, card) {
+            if (err) {
+                console.log('err: ' + err);
+            }
+            res.json(card);
+        });
+    });
+
     // search for cards by username
     app.post('/api/cards/search_user/:username', isLoggedIn, function(req, res) {
         var username = req.params.username;

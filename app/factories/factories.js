@@ -25,6 +25,9 @@ cardApp.factory('Cards', ['$http', function($http) {
             var theurl = 'api/cards/';
             return $http.put(theurl, pms);
         },
+        getCard: function(id) {
+            return $http.get('/api/cards/get_card/' + id);
+        },
         search: function(input) {
             return $http.post('api/cards/search/' + input);
         },

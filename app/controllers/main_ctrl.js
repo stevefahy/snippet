@@ -461,12 +461,17 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     // NOTIFICATION for public conversation.
     $rootScope.$on('PUBLIC_NOTIFICATION_UPDATED', function(event, msg) {
         console.log('PUBLIC_NOTIFICATION_UPDATED');
+        console.log(msg);
         var id = Conversations.getConversationId();
         var followed = UserData.getUser().following;
         if ((Conversations.getConversationType() == 'feed' && followed.indexOf(msg.conversation_id) >= 0) || (msg.conversation_id == Conversations.getConversationId())) {
-            Conversations.getConversationLatestCard(msg.conversation_id)
+            // Not necessarily the latest card
+            Cards.getCard(msg.card_id)
+            //Conversations.getConversationLatestCard(msg.conversation_id)
                 .then(function(result) {
                     updateCard(result.data);
+                        console.log('UPDATECARD END');
+                //});
                     // Update Conversations
                     UserData.conversationsLatestCardAdd(msg.conversation_id, result.data);
                 });

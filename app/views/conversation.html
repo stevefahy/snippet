@@ -62,7 +62,7 @@
                         <div class="cf_btn" ng-show="{{::card.user != currentUser._id}}" ng-click="follow(card)"><i class="material-icons btn_follow" ng-class="{'following': card.following}">directions_walk</i></div>
                         <div class="cf_btn send"><i class="material-icons send">send</i></div>
                         <div class="cf_btn"><i class="material-icons edit" ng-class="{'file_edit': {{::card.user == currentUser._id}}}">edit</i></div>
-                        <div moment-time-conv="::card.updatedAt" id="time"></div>
+                        <div moment-time-conv="card.updatedAt" id="time"></div>
                     </div>
                 </div>
                 <div class="likes">7,255 likes</div>

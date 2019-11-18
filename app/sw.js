@@ -81,35 +81,39 @@ if (workbox) {
         // Reset
         const sd = [...sync_data];
         let updated = [];
+        // Those posts which have also been updated.
         let posts_updated = [];
-        let images_posted = [];
+        //let images_posted = [];
         //sync_data = [];
         console.log(sd);
         console.log(sync_data);
         // check for updates to created cards.
         // Return an array of POSTs
-        let posted = sd.filter(x => x.method == "POST");
-        let post_updated = sd.filter(x => x.method == "PUT");
-        images_posted = sd.filter(x => x.image != undefined);
-        console.log(posted);
-        console.log(post_updated);
+        let all_posted = sd.filter(x => x.method == "POST");
+        let all_updated = sd.filter(x => x.method == "PUT");
+        let images_posted = sd.filter(x => x.image != undefined);
+        console.log(all_posted);
+        console.log(all_updated);
         console.log(images_posted);
         // Return an array of PUTs for each POST (by POST returned ._id)
         
-        posted.forEach(function(element) {
+        all_posted.forEach(function(element) {
             console.log(element.returned._id);
-            let a = post_updated.filter(x => x.returned._id == element.returned._id);
+            let a = all_updated.filter(x => x.returned._id == element.returned._id);
             console.log(a);
             if (a.length > 0) {
                 let b = a.filter(x => x.returned._id == element.returned._id);
                 posts_updated.push(b);
             }
         });
-        console.log(posts_updated);
+        //updated = post_updated;
+       // const updated = [...post_updated];
+        //console.log(posts_updated);
         // Get the latest update.
 
 
         posts_updated.forEach(function(element) {
+            // For each posts updated array find the latest updated post
             let arr = element;
             console.log(arr);
             let b = arr.sort(function(a, b) {
@@ -121,28 +125,36 @@ if (workbox) {
                 return 0;
             });
             console.log(b[0]);
+            // Add this to the updated array
+            //updated.push(b[0]);
             // Update each posted with the latest updated content.
             let posted_id = (element) => element.returned._id == b[0].returned._id;
 
-            let c = posted.findIndex(posted_id);
-            let d = post_updated.findIndex(posted_id);
+            let c = all_posted.findIndex(posted_id);
+            let d = all_updated.findIndex(posted_id);
             console.log(c);
             console.log(d);
             if (c >= 0) {
                 // Update posted with the latest updated content.
-                posted[c].returned = b[0].returned;
+                all_posted[c].returned = b[0].returned;
+                // Remove update for this card from array!
+                //all_updated.splice(d,1);
+           // } else {
+                //updated.push(b[0]);
             }
         });
 
         
 
 
-        post_updated.forEach(function(element, index, object) {
+        all_updated.forEach(function(element, index, object) {
+            // Only one updae per card!
 
             let posted_id = element.returned._id;
             console.log(posted_id);
 
-            let found = posted.filter(x => x.returned._id == posted_id);
+            // If not in the posted array then push to the updated array
+            let found = all_posted.filter(x => x.returned._id == posted_id);
             console.log(found);
             if(found.length == 0){
                 //object.splice(index, 1);
@@ -150,11 +162,13 @@ if (workbox) {
             }
             
         });
+        
+        
 
-        console.log(posted);
+        console.log(all_posted);
         console.log(updated);
         console.log(images_posted);
-        return {posted:posted, updated:updated, images:images_posted};
+        return {posted:all_posted, updated:updated, images:images_posted};
 
     }
 
@@ -568,7 +582,7 @@ if (workbox) {
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "e44bd6c5b65a272095c24008404f1545"
+    "revision": "86d59ff6c4bbe87513407d9179f4c8b6"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -600,7 +614,7 @@ if (workbox) {
   },
   {
     "url": "controllers/main_ctrl.js",
-    "revision": "8faa522a150e34ca3c5fdcdc4ea946d9"
+    "revision": "6e654141b62f117344f033edf05eb09d"
   },
   {
     "url": "controllers/usersetting_ctrl.js",
@@ -612,7 +626,7 @@ if (workbox) {
   },
   {
     "url": "factories/factories.js",
-    "revision": "9f83cff271e3a289e86c6e2b8ffe8043"
+    "revision": "7afbefe300897bca2b2eb4e8071665e4"
   },
   {
     "url": "factories/local_db.js",
@@ -688,11 +702,11 @@ if (workbox) {
   },
   {
     "url": "routes/routes.js",
-    "revision": "bef4d550468c46c09918b431117f4895"
+    "revision": "936a8af052a907ec9ade912325d186fc"
   },
   {
     "url": "service-worker.js",
-    "revision": "4eadda3f655159090178c82b3c595c8b"
+    "revision": "40dad5a16bc86e4f81b05b67eaf8169d"
   },
   {
     "url": "service-workerONLINEADJUSTED.js",
@@ -708,7 +722,7 @@ if (workbox) {
   },
   {
     "url": "services/database.js",
-    "revision": "dff75ddd49d8b8a98429d319aabe0c64"
+    "revision": "18006c6dbb7ad0973094cc3405610145"
   },
   {
     "url": "services/debug.js",
@@ -816,7 +830,7 @@ if (workbox) {
   },
   {
     "url": "views/conversation.html",
-    "revision": "758abba94106e54cd12053ecf31cf037"
+    "revision": "0dd483c07655f5e5d8e12f001c163069"
   },
   {
     "url": "views/conversations.html",

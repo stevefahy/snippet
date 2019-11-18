@@ -971,20 +971,37 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log('UPDATE IMAGE end');
     }
 
-    sendRequested = function(posted, updated) {
+    sendRequested = async function(posted, updated) {
         console.log('sendRequested start');
         var deferred = $q.defer();
-        posted.forEach(function(element) {
+        /*
+          for (const file of files) {
+    const contents = await fs.readFile(file, 'utf8');
+    console.log(contents);
+  }
+  */
+        //console.log(posted);
+        //posted.forEach(function(element) {
+        //for (const element of posted) {
+        for (n in posted) {
             console.log('posted');
-            console.log(element.returned + ' : ' + element.method);
-            cardPosted(element.returned, element.method);
-        });
+            console.log(posted[n].returned + ' : ' + posted[n].method);
+            const cp = await Database.cardPosted(posted[n].returned, posted[n].method);
+            console.log(cp);
+        }
+        //});
 
-        updated.forEach(function(element) {
+        //updated.forEach(function(element) {
+        //for (const element of posted) {
+        for (n in updated) {
+            //console.log(element);
             console.log('updated');
-            console.log(element.returned + ' : ' + element.method);
-            cardPosted(element.returned, element.method);
-        });
+            console.log(updated[n].returned + ' : ' + updated[n].method);
+            const cp = Database.cardPosted(updated[n].returned, updated[n].method);
+            console.log(cp);
+        }
+        //});
+
         console.log('sendRequested end');
         deferred.resolve();
         return deferred.promise;
@@ -1037,7 +1054,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     }
 
     updateCard = function(card) {
-        console.log('updateCard');
+        console.log('updateCard start');
         console.log(card);
         // Check the existece of the card across all arrays.
         var card_arrays = [$scope.cards, $scope.cards_temp, $scope.removed_cards_bottom, $scope.removed_cards_top];
@@ -1101,9 +1118,30 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     }, 1000);
                 });
                 $scope.test_card.content = card.content;
+            } else {
+                console.log('same content')
+
+                card_arrays[arr][found_pos].original_content = card.content;
+                //card_arrays[arr][found_pos].content = card.content;
+                //card_arrays[arr][found_pos].user = card.user;
+                card_arrays[arr][found_pos].createdAt = card.createdAt;
+                card_arrays[arr][found_pos].updatedAt = card.updatedAt;
+
+               // if (!$scope.$$phase) {
+                //    $scope.$apply();
+                //}
+                //card_arrays[arr][found_pos].updatedAt = card.updatedAt;
+                console.log($scope.cards);
             }
-            card_arrays[arr][found_pos].updatedAt = card.updatedAt;
+
         }
+        setTimeout(function() {
+            if (!$scope.$$phase) {
+                $scope.$apply();
+            }
+            console.log('updateCard timeout end');
+        }, 1000);
+        console.log('updateCard end');
     };
 
     updateFollowingIcons = function(newValue) {
@@ -1279,6 +1317,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log(arr);
 
         // Check if card already exists (may have been created by this user offline).
+        
         var i = arr.length;
         while (i--) {
             let found = all_cards.filter(x => x._id == arr[i]._id);
@@ -1286,9 +1325,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             if (found.length == 0) {
                 arr[i].new_card = true;
             } else {
+                // UPDATE the UPDATED AT HERE!
+                //const newobj = {...original, prop: newOne}
+                let obj3 = JSON.parse(JSON.stringify(arr[i]));
+                console.log(obj3);
+                updateCard(obj3);
                 arr.splice(i, 1);
             }
         }
+        
 
         /*
         for (var i = 0, len = arr.length; i < len; i++) {
