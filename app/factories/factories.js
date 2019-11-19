@@ -21,7 +21,6 @@ cardApp.factory('Cards', ['$http', function($http) {
             return $http.delete('api/cards/' + id);
         },
         update: function(pms) {
-            //var theurl = 'api/cards/' + pms.id;
             var theurl = 'api/cards/';
             return $http.put(theurl, pms);
         },
@@ -238,15 +237,13 @@ cardApp.factory('Conversations', ['$http', '$q', 'LocalDB', function($http, $q, 
         },
         updateViewed: function(id, card_id) {
             var deferred = $q.defer();
-            //$http.put('chat/conversation_viewed/' + id + '/' + card_id)
             $http.get('chat/conversation_viewed/' + id + '/' + card_id)
                 .then(function(response) {
-                    console.log(response);
                     LocalDB.updateConversation(response.data);
                     deferred.resolve(response.data);
                 })
                 .catch(function(error) {
-                    console.log('error: ' + error);
+                    //console.log('error: ' + error);
                     deferred.resolve(error);
                 });
             return deferred.promise;

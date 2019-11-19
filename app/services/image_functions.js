@@ -22,17 +22,13 @@ cardApp.service('ImageFunctions', ['$rootScope', 'Format', '$q', 'ContentEditabl
     };
 
     this.canvasToImage = function(canvas, id) {
-        console.log('cti 2');
         var deferred = $q.defer();
         var dataUrl = canvas.toDataURL('image/jpeg', JPEG_COMPRESSION);
         Format.dataURItoBlob(dataUrl).then(function(blob) {
             blob.name = 'image_filtered_' + id + '.jpg';
             blob.renamed = true;
             Format.prepImage([blob], function(result) {
-                console.log(result);
-                console.log($rootScope.online);
                 if ($rootScope.online) {
-                    console.log('online');
                     var img_new = new Image();
                     img_new.src = IMAGES_URL + result.file + '?' + new Date();
                     img_new.className = 'adjusted';
@@ -41,18 +37,13 @@ cardApp.service('ImageFunctions', ['$rootScope', 'Format', '$q', 'ContentEditabl
                         deferred.resolve(this);
                     };
                 } else {
-                    console.log('offline');
-
-                      var img_new = new Image();
+                    // Offline (use blob and save original-image-name)
+                    var img_new = new Image();
                     img_new.src = result.file;
                     img_new.className = 'adjusted';
                     img_new.id = 'image_filtered_' + id;
-                    img_new.setAttribute('original-image-name',result.original_image);
-                    //mg_new.original-image-name = result.original_image;
-                    //img_new.onload = function() {
-                        deferred.resolve(img_new);
-                    //};
-
+                    img_new.setAttribute('original-image-name', result.original_image);
+                    deferred.resolve(img_new);
                 }
 
             });

@@ -60,7 +60,6 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     createObserver = function(id) {
         $('.content_cnv #card' + id).ready(function() {
             var target = document.querySelector('.content_cnv #card_' + id);
-            //console.log(target);
             var newObserver = new IntersectionObserver(intersectionCallback, $scope.observerOptions);
             observers.push(newObserver);
             newObserver.observe(target);
@@ -291,42 +290,25 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             if (event.data.message == "all_requests_updated") {
                 endalert = true;
                 removeAlert();
-                console.log(event.data.all_requests);
+                // Update local card ids
                 if (event.data.all_requests.posted.length > 0) {
                     updateCardIds(event.data.all_requests.posted);
                 }
-                console.log('card ids updated!');
-                console.log('updare local images start');
+                // Update local images
                 if (event.data.all_requests.images.length > 0) {
                     updateImages(event.data.all_requests.images)
                 }
-                //'original-image-name'
-                if(event.data.all_requests.posted.length > 0 || event.data.all_requests.updated.length > 0)
-                sendRequested(event.data.all_requests.posted, event.data.all_requests.updated)
-
+                // Update posted and updated cards
+                if (event.data.all_requests.posted.length > 0 || event.data.all_requests.updated.length > 0) {
+                    sendRequested(event.data.all_requests.posted, event.data.all_requests.updated)
+                }
             }
             if (event.data.message == "request_updating") {
-                //post_updating
                 addAlert();
-            }
-            if (event.data.message == "post_updated") {
-                //updateOfflineCard(event.data.data);
-            }
-            if (event.data.message == "post_id_updated") {
-                //console.log(event.data);
-                //updateCardId(event.data.data.temp, event.data.data.db);
-            }
-            if (event.data.message == "image_updated") {
-                //updateOfflineImage(event.data.data);
             }
         });
     }
 
-    /*
-    let id_data = {temp: requestData._id, db: assetsData._id};
-                                send_message_to_all_clients({ message: 'post_id_updated', data: id_data });
-                                //updateCardId(requestData._id, assetsData._id);
-                                */
     // Broadcast by socket after it has reconnected. Check for updates.
     $scope.$on('SOCKET_RECONNECT', function(event) {
         //console.log('SOCKET_RECONNECT');
@@ -363,23 +345,15 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         }
     });
 
-    let public_created_inprogress = false;
     // NOTIFICATION for public conversation.
     $rootScope.$on('PUBLIC_NOTIFICATION_CREATED', function(event, msg) {
-        console.log('PUBLIC_NOTIFICATION_CREATED');
-
+        //console.log('PUBLIC_NOTIFICATION_CREATED');
         var id = Conversations.getConversationId();
-
-        // Only 
-        console.log(Conversations.getConversationType());
-        console.log(id);
-        console.log(msg);
-
         // only update the conversation if the user is currently in that conversation
         if (id === msg.conversation_id && Conversations.getConversationType() != 'feed') {
             getPublicCardsUpdate(id).then(function(result) {
                 if (result.length > 0) {
-                    updateCards(result);
+                    addCards(result);
                     // Update Conversations
                     for (var i = 0, len = result.length; i < len; i++) {
                         UserData.conversationsLatestCardAdd(msg.conversation_id, result[i]);
@@ -389,9 +363,8 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         } else if (Conversations.getConversationType() == 'feed') {
             getFollowingUpdate()
                 .then(function(result) {
-                    console.log(result);
                     if (result.length > 0) {
-                        updateCards(result);
+                        addCards(result);
                         // Update Conversations
                         for (var i = 0, len = result.length; i < len; i++) {
                             UserData.conversationsLatestCardAdd(msg.conversation_id, result[i]);
@@ -412,7 +385,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             getCardsUpdate(id)
                 .then(function(result) {
                     if (result.length > 0) {
-                        updateCards(result);
+                        addCards(result);
                         // Update Conversations
                         for (var i = 0, len = result.length; i < len; i++) {
                             UserData.conversationsLatestCardAdd(msg.conversation_id, result[i]);
@@ -435,7 +408,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     // NOTIFICATION for private conversation.
     $rootScope.$on('PRIVATE_NOTIFICATION_UPDATED', function(event, msg) {
-        console.log('PRIVATE_NOTIFICATION_UPDATED');
+        //console.log('PRIVATE_NOTIFICATION_UPDATED');
         UserData.addConversationViewed(msg.conversation_id, msg.viewed_users);
         var id = Conversations.getConversationId();
         Conversations.getConversationLatestCard(msg.conversation_id)
@@ -461,19 +434,16 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     // NOTIFICATION for public conversation.
     $rootScope.$on('PUBLIC_NOTIFICATION_UPDATED', function(event, msg) {
-        console.log('PUBLIC_NOTIFICATION_UPDATED');
-        console.log(msg);
+        //console.log('PUBLIC_NOTIFICATION_UPDATED');
         var id = Conversations.getConversationId();
         var followed = UserData.getUser().following;
         if ((Conversations.getConversationType() == 'feed' && followed.indexOf(msg.conversation_id) >= 0) || (msg.conversation_id == Conversations.getConversationId())) {
-            // Not necessarily the latest card
+            // Get the updated card (not necessarily the latest card).
             Cards.getCard(msg.card_id)
-            //Conversations.getConversationLatestCard(msg.conversation_id)
                 .then(function(result) {
                     updateCard(result.data);
-                        console.log('UPDATECARD END');
-                //});
                     // Update Conversations
+                    // TODO Check that this is the latest
                     UserData.conversationsLatestCardAdd(msg.conversation_id, result.data);
                 });
         }

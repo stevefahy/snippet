@@ -203,7 +203,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             // If a new card has been posted.
             //
             // TODO - If not at top or bottom add dialogue to notify user of new post
-            // but only scroll to the card if the user chooses. Requires change to updateCards also.
+            // but only scroll to the card if the user chooses. Requires change to addCards also.
             if ($scope.cards[i].new_card) {
                 var card_id = $scope.cards[i]._id;
                 // Get the height of the new card.
@@ -866,40 +866,18 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         return deferred.promise;
     }
 
-
-    // Update to find image in all arrays or create container!
-
-    updateImages = function(images) {
-        console.log('updateImages start');
-        var deferred = $q.defer();
-        /*
-        images.forEach(function(element) {
-            console.log(element.image);
-            updateImage(element.image)
-        });
-        */
-
-        replaceAllBlobs();
-        deferred.resolve();
-        return deferred.promise;
-        console.log('updateImages end');
-    }
-
     replaceAllBlobs = function() {
-        //var div = document.createElement('div');
-        //div.innerHTML = content.trim();
         $('.container_cnv').find('img').each(function() {
             if ($(this).attr('src').substr(0, 5) == 'blob:') {
                 let original_image_name = $(this).attr('original-image-name');
                 $(this).removeAttr('original-image-name');
                 if (!$(this).attr('id').includes('filtered')) {
-                    console.log('NOT FILTERED');
+                    // Original image
                     $(this).attr('src', IMAGES_URL + original_image_name);
                 } else {
-                    console.log('FILTERED');
+                    // Filtered Image
                     $(this).attr('src', IMAGES_URL + original_image_name + '?TEMP_DATE_' + new Date());
                 }
-
             }
             // Original image (adjusted)
             if ($(this).attr('data-src')) {
@@ -909,127 +887,35 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     $(this).attr('data-src', IMAGES_URL + original_image_name);
                 }
             }
-
         });
     }
 
-    updateImage = function(data) {
-        console.log('UPDATE IMAGE start');
-        console.log(data);
-        let original_image;
-        //$('.ce img#image_filtered_1573404932693_abstract_3d_4-wallpaper-1920x1080');
-
-        //if (data.response == 'saved') {
-        var image_name = data.split('.').slice(0, -1).join('.');
-        //var current_image = $('.create_container .ce img.' + image_name);
-        //var current_image = $('.ce img#' + image_name);
-        var current_image = $('.ce img#image_' + image_name);
-        console.log('.ce img#image_' + image_name);
-        console.log(current_image);
-        if (current_image.length > 0) {
-            console.log('original');
-            original_image = $(current_image).attr('original-image-name');
-            //$(current_image).onload = function(){
-            // console.log('new image loaded');
-            // $(current_image).attr('src', IMAGES_URL + data.file);
-            //}
-            //console.log('load');
-            $(current_image).attr('src', IMAGES_URL + original_image);
-            //$(current_image).attr('src', IMAGES_URL + data.file);
-            $(current_image).removeAttr('original-image-name');
-        }
-
-        var current_image_filtered = $('.ce img#' + image_name);
-        console.log('.ce img#' + image_name);
-        console.log(current_image_filtered);
-        if (current_image_filtered.length > 0) {
-            console.log('filtered');
-            original_image = $(current_image_filtered).attr('original-image-name');
-            //$(current_image).onload = function(){
-            // console.log('new image loaded');
-            // $(current_image).attr('src', IMAGES_URL + data.file);
-            //}
-            //console.log('load');
-            $(current_image_filtered).attr('src', IMAGES_URL + original_image + '?' + new Date());
-            //$(current_image).attr('src', IMAGES_URL + data.file);
-            $(current_image_filtered).removeAttr('original-image-name');
-        }
-        /*
-                    var current_image_create = $('.create_container .ce img.' + image_name);
-                    console.log('.create_container .ce img.' + image_name);
-                    console.log(current_image_create);
-                    if (current_image_create.length > 0) {
-                        console.log('card create');
-                        original_image = $(current_image_create).attr('original-image-name');
-                        console.log(original_image);
-                        $(current_image_create).attr('src', IMAGES_URL + original_image);
-                        $(current_image_create).removeAttr('original-image-name');
-                    }
-                    */
-
-        //}
-        console.log('UPDATE IMAGE end');
+    // Update to find image in all arrays or create container!
+    updateImages = function(images) {
+        var deferred = $q.defer();
+        replaceAllBlobs();
+        deferred.resolve();
+        return deferred.promise;
     }
 
     sendRequested = async function(posted, updated) {
-        console.log('sendRequested start');
         var deferred = $q.defer();
-        /*
-          for (const file of files) {
-    const contents = await fs.readFile(file, 'utf8');
-    console.log(contents);
-  }
-  */
-        //console.log(posted);
-        //posted.forEach(function(element) {
-        //for (const element of posted) {
+        // Send notifications and update viewed (POSTs)
         for (n in posted) {
-            console.log('posted');
-            console.log(posted[n].returned + ' : ' + posted[n].method);
             const cp = await Database.cardPosted(posted[n].returned, posted[n].method);
-            console.log(cp);
         }
-        //});
-
-        //updated.forEach(function(element) {
-        //for (const element of posted) {
+        // Send notifications and update viewed (PUTs)
         for (n in updated) {
-            //console.log(element);
-            console.log('updated');
-            console.log(updated[n].returned + ' : ' + updated[n].method);
             const cp = Database.cardPosted(updated[n].returned, updated[n].method);
-            console.log(cp);
         }
-        //});
-
-        console.log('sendRequested end');
         deferred.resolve();
         return deferred.promise;
     }
 
-    updateCardIds = function(posted) {
-        var deferred = $q.defer();
-        posted.forEach(function(element) {
-            console.log(element.requested._id + ' : ' + element.returned._id);
-            updateCardId(element.requested._id, element.returned._id);
-        });
-        deferred.resolve();
-        return deferred.promise;
-    }
-
+    // Update card id from temp to the id returned from the DB.
     updateCardId = function(temp_id, db_id) {
-        console.log('start updateCardId');
-        // update dom and cards array with new id from database.
-        // DB 1573646432859
-        // TERMP temp_id_1573646432859
-        //$('#card_temp_id_1573646432859');
-        //$('#card_temp_id_1573646432859 #cetemp_id_1573646432859');
-        console.log(temp_id + ' : ' + db_id);
-
-
         $('#card_' + temp_id).attr('id', 'card_' + db_id);
         $('#card_' + db_id + ' #ce' + temp_id).attr('id', 'ce' + db_id);
-
         // Check the existece of the card across all arrays.
         var card_arrays = [$scope.cards, $scope.cards_temp, $scope.removed_cards_bottom, $scope.removed_cards_top];
         var found_pos = -1;
@@ -1042,20 +928,24 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }
         }
         if (found_pos >= 0) {
-            console.log('card arrays updated.')
-            //delete 
             card_arrays[arr][found_pos]._id = db_id;
             if (!$scope.$$phase) {
                 $scope.$apply();
             }
-            console.log($scope.cards);
         }
-        console.log('end updateCardId');
+    }
+
+    // Update card ids from temp to the id returned from the DB.
+    updateCardIds = function(posted) {
+        var deferred = $q.defer();
+        posted.forEach(function(element) {
+            updateCardId(element.requested._id, element.returned._id);
+        });
+        deferred.resolve();
+        return deferred.promise;
     }
 
     updateCard = function(card) {
-        console.log('updateCard start');
-        console.log(card);
         // Check the existece of the card across all arrays.
         var card_arrays = [$scope.cards, $scope.cards_temp, $scope.removed_cards_bottom, $scope.removed_cards_top];
         var found_pos = -1;
@@ -1067,8 +957,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 break;
             }
         }
-        console.log(found_pos);
-        //console.log(card_arrays[arr][found_pos]);
         if (found_pos >= 0) {
             if (card_arrays[arr][found_pos].content != card.content) {
                 // Get the card height.
@@ -1119,29 +1007,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 });
                 $scope.test_card.content = card.content;
             } else {
-                console.log('same content')
-
+                // Same content
                 card_arrays[arr][found_pos].original_content = card.content;
-                //card_arrays[arr][found_pos].content = card.content;
-                //card_arrays[arr][found_pos].user = card.user;
                 card_arrays[arr][found_pos].createdAt = card.createdAt;
                 card_arrays[arr][found_pos].updatedAt = card.updatedAt;
-
-               // if (!$scope.$$phase) {
-                //    $scope.$apply();
-                //}
-                //card_arrays[arr][found_pos].updatedAt = card.updatedAt;
-                console.log($scope.cards);
+                if (!$scope.$$phase) {
+                    $scope.$apply();
+                }
             }
-
         }
-        setTimeout(function() {
-            if (!$scope.$$phase) {
-                $scope.$apply();
-            }
-            console.log('updateCard timeout end');
-        }, 1000);
-        console.log('updateCard end');
     };
 
     updateFollowingIcons = function(newValue) {
@@ -1273,89 +1147,31 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     };
 
-    updateOfflineImage = function(data) {
-        updateImage(data);
-    }
-
-    updateOfflineCard = function(data) {
-        console.log(data);
-        if (data.method == 'POST') {
-            //data.posted._id = data.temp._id;
-            $('#card_' + id).attr("id", "card_" + data.posted._id);
-        }
-
-
-        $scope.$apply();
-        //cardPosted(data.posted, data.method);
-        //data.posted.new_id = data.temp._id;
-        console.log($rootScope.online);
-        if ($rootScope.online == true) {
-            //deleteCard(data.temp._id);
-            updateCardId(data.temp._id, data.posted._id);
-            updateCard(data.posted);
-            cardPosted(data.posted, data.method);
-        } else {
-            console.log('offline update card');
-            updateCard(data.posted);
-
-            cardPosted(data.posted, data.method);
-        }
-        //
-
-    }
-
     // TODO - change if adding button to notify user of new card.
-    // TODO - rename to addCards?
-    updateCards = function(arr) {
+    addCards = function(arr) {
         var deferred = $q.defer();
         var promises = [];
         var all_cards;
         var sort_card;
         var spliced;
         all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
-        // Set this as a new card (for animating onscreen).
-        console.log(arr);
-
         // Check if card already exists (may have been created by this user offline).
-        
         var i = arr.length;
         while (i--) {
             let found = all_cards.filter(x => x._id == arr[i]._id);
-            console.log(found);
+            // Not found. New Card. Set this as a new card (for animating onscreen).
             if (found.length == 0) {
                 arr[i].new_card = true;
             } else {
-                // UPDATE the UPDATED AT HERE!
-                //const newobj = {...original, prop: newOne}
-                let obj3 = JSON.parse(JSON.stringify(arr[i]));
-                console.log(obj3);
-                updateCard(obj3);
+                // Already exists (may have been added offline).
+                let card_data = JSON.parse(JSON.stringify(arr[i]));
+                updateCard(card_data);
+                // Remove this card from the array of cards to add.
                 arr.splice(i, 1);
             }
         }
-        
-
-        /*
-        for (var i = 0, len = arr.length; i < len; i++) {
-            //arr.forEach(function(element, index, object) {
-            // Check if card already exists (may have been created by this user offline).
-
-            // Update each posted with the latest updated content.
-            let found = all_cards.filter(x => x._id == arr[i]._id);
-            console.log(found);
-
-            if (found.length == 0) {
-                arr[i].new_card = true;
-            } else {
-                arr.splice(i, 1);
-            }
-            //});
-        }
-        */
-        console.log(arr);
         if (!$scope.top_down) {
             if ($scope.removed_cards_bottom.length > 0) {
-                //all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
                 sort_card = $filter('orderBy')(all_cards, 'updatedAt', true);
                 spliced = sort_card.splice(0, MAX_OUT_BOUNDS);
                 $scope.removed_cards_top = sort_card;
@@ -1376,7 +1192,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }
         } else {
             if ($scope.removed_cards_top.length > 0) {
-                //all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
                 sort_card = $filter('orderBy')(all_cards, 'updatedAt', true);
                 spliced = sort_card.splice(0, MAX_OUT_BOUNDS);
                 $scope.removed_cards_bottom = sort_card;
@@ -1487,10 +1302,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 operand = '$lt';
             }
             var val = { ids: followed, amount: load_amount, last_card: last_card, operand: operand };
-
-            // IF ONLINE AND IF OFFLINE!
-
-            //var val = { ids: followed, amount: load_amount, operand: operand };
             if (last_card != last_card_stored) {
                 last_card_stored = last_card;
                 var prom1 = Conversations.getFeed(val)

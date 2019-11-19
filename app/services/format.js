@@ -16,6 +16,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     var focused_user;
     var savedSelection;
 
+    // Android Javascript Interface calls from app
+
     $window.imageUploaded = self.imageUploaded;
     $window.imageUploadedOffline = self.imageUploadedOffline;
 
@@ -234,14 +236,13 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             if ($(this).attr('src').substr(0, 5) == 'blob:') {
                 let original_image_name = $(this).attr('original-image-name');
                 $(this).removeAttr('original-image-name');
-                if(!$(this).attr('id').includes('filtered')){
-                    console.log('NOT FILTERED');
+                if (!$(this).attr('id').includes('filtered')) {
+                    // Original image
                     $(this).attr('src', IMAGES_URL + original_image_name);
                 } else {
-                    console.log('FILTERED');
+                    // Filtered image
                     $(this).attr('src', IMAGES_URL + original_image_name + '?TEMP_DATE_' + new Date());
                 }
-                
             }
         });
         var replaced = div.innerHTML;
@@ -330,37 +331,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         $rootScope.$broadcast('imagePasted');
     };
 
-/*
-        image_object = {
-            file: objUrl,
-            file_name: name,
-            original_image: file.name,
-            response: "saved"
-        };
-        */
-
-    insertObjUrl = function(data) {
-        console.log(data);
-        if (data.response === 'saved') {
-            let full_file = data.file;
-            let file_name = data.file_name.substring(0, data.file_name.indexOf('.'));
-            let original_image = data.original_image;
-            var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + file_name + "\")' id='cropper_" + file_name + "'><img loading='eager' class='resize-drag " + file_name + "' id='new_image' original-image-name='" + original_image +  "' onload='imageLoaded(); imagePosted();' src=\"" + full_file + "\"></div><slider></slider><span class='after_image' id='after_image_" + file_name + "'>&#x200b;&#10;</span><span class='clear_after_image'></span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
-            self.pasteHtmlAtCaret(new_image);
-        }
-    };
-
-    insertImage = function(data) {
-        console.log(data);
-        if (data.response === 'saved') {
-            let full_file = data.file;
-            let file_name = data.file.substring(0, data.file.indexOf('.'));
-            //data.file_name = data.file.substring(0, data.file.indexOf('.'));
-            var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + file_name + "\")' id='cropper_" + file_name + "'><img loading='eager' class='resize-drag " + file_name + "' id='new_image' original-image-name='" + full_file +  "' onload='imageLoaded(); imagePosted();' src=\"" + IMAGES_URL + full_file + "\"></div><slider></slider><span class='after_image' id='after_image_" + file_name + "'>&#x200b;&#10;</span><span class='clear_after_image'></span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
-            self.pasteHtmlAtCaret(new_image);
-        }
-    };
-
     const b64toBlob = (b64Data, contentType = '', sliceSize = 512) => {
         const byteCharacters = atob(b64Data);
         const byteArrays = [];
@@ -376,34 +346,38 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         const blob = new Blob(byteArrays, { type: contentType });
         return blob;
     }
-/*
-        image_object = {
-            file: objUrl,
-            file_name: name,
-            original_image: file.name,
-            response: "saved"
-        };
-console.log(image_object);
-*/
+
+    insertImage = function(data) {
+        if (data.response === 'saved') {
+            let full_file = data.file;
+            let file_name = data.file.substring(0, data.file.indexOf('.'));
+            var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + file_name + "\")' id='cropper_" + file_name + "'><img loading='eager' class='resize-drag " + file_name + "' id='new_image' original-image-name='" + full_file + "' onload='imageLoaded(); imagePosted();' src=\"" + IMAGES_URL + full_file + "\"></div><slider></slider><span class='after_image' id='after_image_" + file_name + "'>&#x200b;&#10;</span><span class='clear_after_image'></span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
+            self.pasteHtmlAtCaret(new_image);
+        }
+    };
+
     insertImageOffline = function(data) {
         if (data.response === 'saved') {
             const contentType = 'image/png';
             const b64Data = data.base64;
             const blob = b64toBlob(b64Data, contentType);
             const blobUrl = URL.createObjectURL(blob);
-            var image_object = {
-                file: blobUrl,
-                file_name: data.file,
-                original_image: data.file,
-                response: "saved"
-            };
-            console.log(image_object);
             fileBlob = new File([blob], data.file);
             self.uploadFileAndroidOffline(fileBlob);
         }
     };
 
-    self.uploadImages = function(form, callback) {
+    insertObjUrl = function(data) {
+        if (data.response === 'saved') {
+            let full_file = data.file;
+            let file_name = data.file_name.substring(0, data.file_name.indexOf('.'));
+            let original_image = data.original_image;
+            var new_image = "<div class='cropper_cont' onclick='editImage(this, \"" + file_name + "\")' id='cropper_" + file_name + "'><img loading='eager' class='resize-drag " + file_name + "' id='new_image' original-image-name='" + original_image + "' onload='imageLoaded(); imagePosted();' src=\"" + full_file + "\"></div><slider></slider><span class='after_image' id='after_image_" + file_name + "'>&#x200b;&#10;</span><span class='clear_after_image'></span><span class='scroll_image_latest' id='delete'>&#x200b</span>";
+            self.pasteHtmlAtCaret(new_image);
+        }
+    };
+
+    self.uploadImages = function(form, image_obj, callback) {
         $.ajax({
             url: serverUrl,
             type: 'POST',
@@ -413,23 +387,17 @@ console.log(image_object);
             success: function(data) {
                 // insert or callback?
                 if (callback) {
-                    console.log(callback);
                     callback(data);
                 } else {
-                    console.log('insertImage');
                     insertImage(data);
                 }
             },
             error: function(jqXHR, exception) {
-                
-                console.log(jqXHR);
-                    if (callback) {
-                    callback(image_object);
+                if (callback) {
+                    callback(image_obj);
                 } else {
-                    insertObjUrl(image_object);
-                   // insertImage(data);
+                    insertObjUrl(image_obj);
                 }
-                
             },
             xhr: function() {
                 // create an XMLHttpRequest
@@ -463,37 +431,28 @@ console.log(image_object);
             );
         });
         $q.all(promises).then(function(formData) {
-            // Image processing of ALL images complete. Upload form
-            self.uploadImages(self.formData, callback);
+            let image_obj;
             // Offline. Create temporary object url image.
             if (!$rootScope.online) {
-                createObjUrlImage(self.formData, callback);
+                image_obj = createObjUrlImage(self.formData, callback);
             }
+            // Image processing of ALL images complete. Upload form
+            self.uploadImages(self.formData, image_obj, callback);
+
         });
     };
 
-    /*
-         // Image processing of ALL images complete. Upload form
-            self.uploadImages(self.formData, callback);
-            // Offline. Create temporary object url image.
-            if (!$rootScope.online) {
-                createObjUrlImage(self.formData);
-            }
-            */
-var image_object;
     function createObjUrlImage(e) {
         let file = e.get('uploads[]');
         let name = e.get('uploads[]').name;
         var objUrl = window.URL.createObjectURL(file);
-
-        image_object = {
+        let image_object = {
             file: objUrl,
             file_name: name,
             original_image: file.name,
             response: "saved"
         };
-console.log(image_object);
-        //insertObjUrl(image_object);
+        return image_object;
     }
 
     this.prepareImage = function(files, callback) {
@@ -521,13 +480,13 @@ console.log(image_object);
             );
         });
         $q.all(promises).then(function(formData) {
-            // Image processing of ALL images complete. Upload form
-            self.uploadImages(self.formData, callback);
+            let image_obj;
             // Offline. Create temporary object url image.
             if (!$rootScope.online) {
-                createObjUrlImage(self.formData, callback);
+                image_obj = createObjUrlImage(self.formData, callback);
             }
-
+            // Image processing of ALL images complete. Upload form
+            self.uploadImages(self.formData, image_obj, callback);
         });
     };
 
@@ -571,7 +530,6 @@ console.log(image_object);
             $('#upload-input').on('change', function() {
                 $rootScope.$broadcast('imageUpload', id);
                 var files = $(this).get(0).files;
-                console.log(files);
                 if (files.length > 0) {
                     self.prepareImage(files);
                 }
@@ -597,7 +555,6 @@ console.log(image_object);
     this.removeTempFiltered = function(content) {
         var content_less_pre;
         if (content !== undefined) {
-            //var reg_pre = /(<img src="data:image.*?>)(.*?)(>)/ig;
             var reg_pre = /(<img)(.*src="data:image.*?>)(.*?)(>)/ig;
             content_less_pre = content;
             var pre_match = content_less_pre.match(reg_pre);
@@ -679,7 +636,6 @@ console.log(image_object);
     };
 
     this.updateCard = function(id, card, currentUser) {
-        console.log('Format.updateCard');
         var deferred = $q.defer();
         var content = $('.content_cnv #ce' + card._id).html();
         if ((content != card.original_content)) {
@@ -722,7 +678,6 @@ console.log(image_object);
                 }
             }
         }, 100);
-
     };
 
     this.getTagCountPrevious = function(content) {

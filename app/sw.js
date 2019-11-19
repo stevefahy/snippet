@@ -6,6 +6,7 @@ if (workbox) {
     let temp_ids = [];
 
     let sync_in_progress = false;
+    let sync_data = [];
 
     // Event Lisiteners
 
@@ -13,19 +14,18 @@ if (workbox) {
         return self.clients.claim();
     });
 
-
     self.addEventListener("sync", function(event) {
         if (event.tag == "workbox-background-sync:api_image") {
             sync_in_progress = true;
             syncImages();
         }
-
     });
 
     // Client to Workbox
 
     self.addEventListener('message', function(event) {
         if (event.data === 'replayRequests' && !sync_in_progress) {
+            sync_in_progress = true;
             syncImages();
         }
     });
@@ -74,49 +74,30 @@ if (workbox) {
         onSync: async ({ queue }) => {}
     });
 
-    let sync_data = [];
 
     processUpdates = function(sync_data) {
-        console.log('PROCESS');
         // Reset
         const sd = [...sync_data];
         let updated = [];
         // Those posts which have also been updated.
         let posts_updated = [];
-        //let images_posted = [];
-        //sync_data = [];
-        console.log(sd);
-        console.log(sync_data);
-        // check for updates to created cards.
-        // Return an array of POSTs
+        // Reset sync_data.
+        sync_data = [];
+        // Check for updates to POST, PUT and Images.(Return an array)
         let all_posted = sd.filter(x => x.method == "POST");
         let all_updated = sd.filter(x => x.method == "PUT");
         let images_posted = sd.filter(x => x.image != undefined);
-        console.log(all_posted);
-        console.log(all_updated);
-        console.log(images_posted);
         // Return an array of PUTs for each POST (by POST returned ._id)
-        
         all_posted.forEach(function(element) {
-            console.log(element.returned._id);
             let a = all_updated.filter(x => x.returned._id == element.returned._id);
-            console.log(a);
             if (a.length > 0) {
                 let b = a.filter(x => x.returned._id == element.returned._id);
                 posts_updated.push(b);
             }
         });
-        //updated = post_updated;
-       // const updated = [...post_updated];
-        //console.log(posts_updated);
-        // Get the latest update.
-
-
-        posts_updated.forEach(function(element) {
-            // For each posts updated array find the latest updated post
-            let arr = element;
-            console.log(arr);
-            let b = arr.sort(function(a, b) {
+        // For each posts_updated array find the latest updated post by updatedAt date.
+        posts_updated.forEach(function(arr) {
+            let latest_updated = arr.sort(function(a, b) {
                 var keyA = new Date(a.returned.updatedAt),
                     keyB = new Date(b.returned.updatedAt);
                 // Compare the 2 dates
@@ -124,52 +105,55 @@ if (workbox) {
                 if (keyA > keyB) return -1;
                 return 0;
             });
-            console.log(b[0]);
-            // Add this to the updated array
-            //updated.push(b[0]);
-            // Update each posted with the latest updated content.
-            let posted_id = (element) => element.returned._id == b[0].returned._id;
-
+            // Find the index of the latest updated card in the posted array
+            // (may have been previously posted and only updated this time).
+            let posted_id = (arr) => arr.returned._id == latest_updated[0].returned._id;
             let c = all_posted.findIndex(posted_id);
-            let d = all_updated.findIndex(posted_id);
-            console.log(c);
-            console.log(d);
+            // If the latest updated card is found in the posted array by id 
+            // then update each posted with the latest updated content.
             if (c >= 0) {
-                // Update posted with the latest updated content.
-                all_posted[c].returned = b[0].returned;
-                // Remove update for this card from array!
-                //all_updated.splice(d,1);
-           // } else {
-                //updated.push(b[0]);
+                all_posted[c].returned = latest_updated[0].returned;
             }
         });
-
-        
-
-
+        // Check whether an updated exists in the posted array.
+        // If it does then the post has already been updated with the update content.
+        // If it doesnt then add it to the updated array.
         all_updated.forEach(function(element, index, object) {
-            // Only one updae per card!
-
-            let posted_id = element.returned._id;
-            console.log(posted_id);
-
+            let updated_id = element.returned._id;
             // If not in the posted array then push to the updated array
-            let found = all_posted.filter(x => x.returned._id == posted_id);
-            console.log(found);
-            if(found.length == 0){
-                //object.splice(index, 1);
-                updated.push(element);
+            let found = all_posted.filter(x => x.returned._id == updated_id);
+            if (found.length == 0) {
+                // Check whether an update with this id already exists in the updated array.
+                let exists = updated.filter(x => x.returned._id == updated_id);
+                // If not then add it.
+                if (exists.length == 0) {
+                    updated.push(element);
+                } else {
+                    // If an update with this id already exists in the updated array
+                    // then update the updated array with the latest updatedAt version.
+                    // Find the the latest updatedAt.
+                    let arr = [exists[0], element];
+                    let latest_updated = arr.sort(function(a, b) {
+                        var keyA = new Date(a.returned.updatedAt),
+                            keyB = new Date(b.returned.updatedAt);
+                        // Compare the 2 dates
+                        if (keyA < keyB) return 1;
+                        if (keyA > keyB) return -1;
+                        return 0;
+                    });
+                    // Find the index of the duplicated id in the updated array.
+                    let duplicate_id = (arr) => arr.returned._id == latest_updated[0].returned._id;
+                    let duplicate_index = updated.findIndex(duplicate_id);
+                    // Delete the duplicate from the updated array.
+                    updated.splice(duplicate_index,1);
+                    // Add the latest to the updated array.
+                    updated.push(latest_updated[0]);
+                }
+
             }
-            
         });
-        
-        
 
-        console.log(all_posted);
-        console.log(updated);
-        console.log(images_posted);
-        return {posted:all_posted, updated:updated, images:images_posted};
-
+        return { posted: all_posted, updated: updated, images: images_posted };
     }
 
 
@@ -177,128 +161,134 @@ if (workbox) {
 
 
     async function syncPosts() {
-        console.log('...Synchronizing ' + queue.name);
+        //console.log('...Synchronizing ' + queue.name);
         let entry;
         let clone;
         let response;
         let requestDataFormat;
         while (entry = await queue.shiftRequest()) {
             try {
-                clone0 = await entry.request.clone();
-                clone = await entry.request.clone();
-                //clone2 = await entry.request.clone();
-                console.log('...Replaying: ' + entry.request.url);
-                console.log(entry);
+                clone_1 = await entry.request.clone();
+                clone_2 = await entry.request.clone();
+                //console.log('...Replaying: ' + entry.request.url);
                 let method = entry.request.method;
                 send_message_to_all_clients({ message: 'request_updating' });
-
-                let requestData = await clone.json();
-                console.log(requestData);
-
-
-
+                let requestData = await clone_1.json();
+                // Check whether the update was added to a card with a temp_id.
+                // Cards posted offline temporarily have a temp_id.
+                // If so then find the returned actual id for this post in the temp_ids array.
                 if (method == 'PUT') {
-                    console.log('put');
                     if (requestData.card._id.includes('temp_id')) {
                         let obj = temp_ids.find(obj => obj.temp_id == requestData.card._id);
-                        console.log(obj);
                         if (obj != undefined) {
                             updated_id = true;
-                            console.log(obj);
-                            // Change the requestData id.
+                            // Change the requestData temp id to the id from the DB.
                             requestData.card._id = obj._id;
                             requestDataFormat = requestData.card;
-                            console.log(requestData);
-                            response = await fetch(clone0, { body: JSON.stringify(requestData) });
-                            console.log(response);
-                            //assetsData = await response.json();
-                            //console.log(assetsData);
+                            // Get Fetch response.
+                            response = await fetch(clone_2, { body: JSON.stringify(requestData) });
                         }
                     } else {
-                        response = await fetch(clone0);
-                        console.log(response);
-                        //assetsData = await response.json();
-                        //console.log(assetsData);
+                        // Get Fetch response.
+                        response = await fetch(clone_2);
                     }
+                    // Get the response as JSOM.
                     assetsData = await response.json();
-                    //assetsData = assetsData.card;
-                    console.log(assetsData);
                 }
-
+                // Check whether the post was created offline with a temp_id.
+                // Cards posted offline temporarily have a temp_id.
+                // If so then find the returned actual id for this post in the temp_ids array.
                 if (method == 'POST') {
                     requestDataFormat = requestData;
-                    console.log('post');
                     if (requestData._id.includes('temp_id')) {
                         let obj = temp_ids.find(obj => obj.temp_id == requestData._id);
                         if (obj == undefined) {
-                            let response = await fetch(clone0);
-                            console.log(response);
+                            // Get Fetch response.
+                            let response = await fetch(clone_2);
+                            // Get the response as JSOM.
                             assetsData = await response.json();
-                            console.log(assetsData);
-                            temp_ids.push({ temp_id: requestData._id, _id: assetsData._id })
-                            console.log('store temp_id _id value');
-                            console.log(temp_ids);
-
+                            // Add the returned id from the DB to the temp_ids array
+                            // so that it can be looked up.
+                            temp_ids.push({ temp_id: requestData._id, _id: assetsData._id });
                         }
                     }
                 }
-
-                var card_data = { temp: requestData, posted: assetsData, method: method };
-                var card_data2 = { requested: requestDataFormat, returned: assetsData, method: method };
-                //var card_data2 = { temp: requestDataFormat, posted: assetsData, method: method };
-                console.log('...Replayed: ' + entry.request.url);
-                sync_data.push(card_data2);
-                //send_message_to_all_clients({ message: 'post_updated', data: card_data });
+                var card_data = { requested: requestDataFormat, returned: assetsData, method: method };
+                //console.log('...Replayed: ' + entry.request.url);
+                // Add the POST, PUT data to the sync_data array.
+                sync_data.push(card_data);
             } catch (error) {
-                console.error('Replay failed for request', entry.request, error);
+                //console.error('Replay failed for request', entry.request, error);
                 await queue.unshiftRequest(entry);
                 return;
             }
         }
-        
         sync_in_progress = false;
-        console.log(sync_data);
+        // Process the data before updating the DOM and sending notifications.
         const all_requests = processUpdates(sync_data);
-        console.log('END SYNC');
+        // Update the DOM and sending notifications.
         send_message_to_all_clients({ message: 'all_requests_updated', all_requests: all_requests });
-        
-
     }
 
     async function syncImages() {
-        console.log('START SYNC');
-        console.log('...Synchronizing ' + queue_image.name);
+        //console.log('...Synchronizing ' + queue_image.name);
         let entry;
         let clone;
         let response;
+        // Reset sync_data
         sync_data = [];
-        console.log(queue_image);
         while (entry = await queue_image.shiftRequest()) {
-            //while (entry = await queue_image.popRequest()) {
             try {
                 clone = await entry.request.clone();
                 //console.log('...Replaying: ' + entry.request.url);
                 send_message_to_all_clients({ message: 'request_updating' });
                 response = await fetch(entry.request);
-                console.log(response);
-                //let requestData = await clone.formData();
-                //console.log(requestData);
                 let assetsData = await response.json();
-                console.log(assetsData);
                 //console.log('...Replayed: ' + entry.request.url);
+                // Add the Image data to the sync_data array.
                 let i = { image: assetsData.file };
                 sync_data.push(i);
-                //send_message_to_all_clients({ message: 'image_updated', data: assetsData });
             } catch (error) {
                 //console.error('Replay failed for request', entry.request, error);
                 await queue_image.unshiftRequest(entry);
-                //await queue_image.pushRequest(entry);
                 return;
             }
         }
-        //send_message_to_all_clients({ message: 'all_posts_updated' });
         // Sync posts after images have been loaded.
         syncPosts();
+    }
+
+    // Find image already stored in indexeddb.
+    // Delete the existing image if it is found.
+    async function deleteExisting(name) {
+        let openRequest = indexedDB.open("workbox-background-sync");
+
+        openRequest.onupgradeneeded = function() {
+            // triggers if the client had no database
+            // ...perform initialization...
+        };
+
+        openRequest.onerror = function() {
+            //console.error("Error", openRequest.error);
+        };
+
+        openRequest.onsuccess = async function() {
+            let db = openRequest.result;
+            // continue to work with database using db object
+            let transaction = db.transaction("requests", "readwrite");
+            // get an object store to operate on it
+            let requests = transaction.objectStore("requests");
+            // get all requests
+            let a = await requests.getAll();
+            //let d = requests.get(['api_image', 1])
+            a.onsuccess = async function() {
+                let obj = await a.result.find(obj => obj.metadata == name);
+                console.log(obj);
+                if (obj != undefined) {
+                    requests.delete(obj.id);
+                }
+            }
+        };
     }
 
     const rest_fail = {
@@ -314,43 +304,6 @@ if (workbox) {
         }
     }
 
-
-    async function deleteExisting(name) {
-        console.log('deleteExisting');
-        let openRequest = indexedDB.open("workbox-background-sync");
-
-        openRequest.onupgradeneeded = function() {
-            // triggers if the client had no database
-            // ...perform initialization...
-        };
-
-        openRequest.onerror = function() {
-            console.error("Error", openRequest.error);
-        };
-
-        openRequest.onsuccess = async function() {
-            let db = openRequest.result;
-            console.log('success: ' + db);
-            // continue to work with database using db object
-            let transaction = db.transaction("requests", "readwrite"); // (1)
-            // get an object store to operate on it
-            let books = transaction.objectStore("requests"); // (2)
-            // get all books
-            let a = await books.getAll();
-            let d = books.get(['api_image', 1])
-            console.log(a);
-            console.log(d);
-            a.onsuccess = async function() {
-                let obj = await a.result.find(obj => obj.metadata == name);
-                console.log(obj);
-                if (obj != undefined) {
-                    books.delete(obj.id);
-                }
-            }
-        };
-    }
-
-
     const rest_image_fail = {
         // If the request fails then add this REST Post to the queue.
         fetchDidFail: async ({ originalRequest, request, error, event }) => {
@@ -361,13 +314,9 @@ if (workbox) {
             // the underlying `fetch()` to fail.
             // adding to the Queue.
             let clone = await request.clone();
-            console.log(clone);
-            //let response = await fetch(request);
-            //console.log(response);
             let requestData = await clone.formData();
             let uploads = requestData.get('uploads[]');
-            console.log(uploads);
-            console.log(uploads.name);
+            // Delete this image from the indexeddb if a previous version has been stored.
             deleteExisting(uploads.name);
             queue_image.pushRequest({ request: request, metadata: uploads.name });
         }
@@ -582,7 +531,7 @@ if (workbox) {
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "86d59ff6c4bbe87513407d9179f4c8b6"
+    "revision": "9b629af7d6381d7c673558f3a163afa9"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -614,7 +563,7 @@ if (workbox) {
   },
   {
     "url": "controllers/main_ctrl.js",
-    "revision": "f8543e23b8ae8b5b256a6c0dc27e4800"
+    "revision": "a9e58003be3c97dc3754ead93ac26dbe"
   },
   {
     "url": "controllers/usersetting_ctrl.js",
@@ -626,7 +575,7 @@ if (workbox) {
   },
   {
     "url": "factories/factories.js",
-    "revision": "7afbefe300897bca2b2eb4e8071665e4"
+    "revision": "e4e58cecc388acb39a226000e4657a18"
   },
   {
     "url": "factories/local_db.js",
@@ -702,15 +651,11 @@ if (workbox) {
   },
   {
     "url": "routes/routes.js",
-    "revision": "936a8af052a907ec9ade912325d186fc"
+    "revision": "68718a199104db89b6c943e511985684"
   },
   {
     "url": "service-worker.js",
-    "revision": "40dad5a16bc86e4f81b05b67eaf8169d"
-  },
-  {
-    "url": "service-workerONLINEADJUSTED.js",
-    "revision": "163cdd6faef42418ae24874afe232bb3"
+    "revision": "2ecb88cdfad106dfc0f7cb9373eaa580"
   },
   {
     "url": "services/content_editable.js",
@@ -722,7 +667,7 @@ if (workbox) {
   },
   {
     "url": "services/database.js",
-    "revision": "8f2dd5b424084f314a491cfc0ac17c50"
+    "revision": "bdb322009bb347ead7bb52300fd1c3b3"
   },
   {
     "url": "services/debug.js",
@@ -742,7 +687,7 @@ if (workbox) {
   },
   {
     "url": "services/format.js",
-    "revision": "d3c227ad1f06c96e680563a2bc6b2ca5"
+    "revision": "a6a8ffeb1d4f7114e89b7a0e441c7c11"
   },
   {
     "url": "services/general.js",
@@ -750,7 +695,7 @@ if (workbox) {
   },
   {
     "url": "services/image_adjustment.js",
-    "revision": "0eb652adedee73d698adf0007bf579f4"
+    "revision": "fc14dcb4efc230b8c0e1a38d081c9be7"
   },
   {
     "url": "services/image_edit.js",
@@ -762,7 +707,7 @@ if (workbox) {
   },
   {
     "url": "services/image_functions.js",
-    "revision": "56c00018a946041a360c593abbb6f7aa"
+    "revision": "f07ff2d466eb41e41b57a5eabc285ba2"
   },
   {
     "url": "services/image_manipulate.js",
@@ -830,7 +775,7 @@ if (workbox) {
   },
   {
     "url": "views/conversation.html",
-    "revision": "0dd483c07655f5e5d8e12f001c163069"
+    "revision": "758abba94106e54cd12053ecf31cf037"
   },
   {
     "url": "views/conversations.html",

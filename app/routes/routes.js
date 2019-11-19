@@ -771,7 +771,7 @@ module.exports = function(app, passport) {
     app.get('/api/cards/get_card/:id', isLoggedIn, function(req, res) {
         Card.findOne({ '_id': req.params.id }).sort('-updatedAt').exec(function(err, card) {
             if (err) {
-                console.log('err: ' + err);
+                //console.log('err: ' + err);
             }
             res.json(card);
         });
@@ -847,16 +847,12 @@ module.exports = function(app, passport) {
     // TODO - Check that user has permission to update this card.
     //app.put('/api/cards/:card_id', isLoggedIn, function(req, res) {
     app.put('/api/cards/', isLoggedIn, function(req, res) {
-        //console.log(req.params.card_id);
-        console.log(req.body.card._id);
         Card.findById({ _id: req.body.card._id }, function(err, card) {
-        //Card.findById({ _id: req.params.card_id }, function(err, card) {
             if (err) {
-                console.log(err);
+                //console.log(err);
                 res.send(err);
             }
             var toupdate = req.body.card;
-            console.log(card);
             if (card.length < req.body.card.length) {
                 card.push({ content: '', user: '' });
             }
@@ -1086,7 +1082,7 @@ module.exports = function(app, passport) {
     app.get('/chat/conversation_viewed/:id/:card_id', isLoggedIn, function(req, res) {
         Conversation.findById({ _id: req.params.id }, function(err, conversation) {
             if (err) {
-                console.log('err: ' + err);
+                //console.log('err: ' + err);
                 return res.send(err);
             }
             // Only update viewed for private conversations
@@ -1109,7 +1105,7 @@ module.exports = function(app, passport) {
             var updated_conversation = new Conversation(conversation);
             updated_conversation.save(function(err, conversation) {
                 if (err) {
-                    console.log('err: ' + err);
+                    //console.log('err: ' + err);
                     res.send(err);
                 } else {
                     res.send(conversation);
