@@ -109,6 +109,9 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
 
     this.cardPosted = async function(response, method) {
+        console.log(method);
+        console.log(response);
+
         var deferred = $q.defer();
         var card_id = response._id;
         var card_response = response;
@@ -132,6 +135,9 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 break;
             case 'PUT':
                 post_type = 'updated';
+                break;
+            case 'DELETE':
+                post_type = 'deleted';
                 break;
         }
 
@@ -200,7 +206,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 }
             })
             .catch(function(error) {
-                //console.log('error: ' + error);
+                console.log('error: ' + error);
                 deferred.resolve();
             });
         return deferred.promise;
@@ -240,6 +246,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
             // replace blob image with image url.
             online_card_create.content = Format.replaceBlob(offline_card_create.content);
             offline_card_create.original_content = offline_card_create.content;
+            console.log('7');
             addCards([offline_card_create]).then(function(result) {
                 $rootScope.$broadcast('CARD_CREATED');
             })
@@ -308,8 +315,16 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         var recipients;
         var viewed_users = [];
         var updated_viewed_users;
+        // Offline
+        if (!$rootScope.online) {
+            console.log('offline: ' + card_id);
+            deleteCard(card_id);
+        }
         Cards.delete(card_id)
-            .then(function(response) {
+            .then(function(returned) {
+                console.log(returned);
+                self.cardPosted(returned.data, 'DELETE');
+                /*
                 // remove this Card from the unviewed array for all Conversation participants.
                 Conversations.removeViewed(conversation_id, currentUser, card_id)
                     .then(function(response) {
@@ -365,10 +380,10 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                                 socket.emit('public_deleted', { sender_id: socket.getId(), conversation_id: current_conversation_id, card_id: card_id, followers: viewed_users });
                             }
                         }
-                    });
+                    });*/
             })
             .catch(function(error) {
-                //console.log('error: ' + error);
+                console.log('error: ' + error);
             });
     };
 

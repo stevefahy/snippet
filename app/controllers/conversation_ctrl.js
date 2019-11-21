@@ -815,6 +815,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     deleteCard = function(id) {
+        console.log('deleteCard: ' + id);
         // Check the existence of the card across all arrays.
         var card_arrays = [$scope.cards, $scope.cards_temp, $scope.removed_cards_bottom, $scope.removed_cards_top];
         var found_pos = -1;
@@ -898,7 +899,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         return deferred.promise;
     }
 
-    sendRequested = async function(posted, updated) {
+    sendRequested = async function(posted, updated, deleted) {
         var deferred = $q.defer();
         // Send notifications and update viewed (POSTs)
         for (n in posted) {
@@ -906,11 +907,70 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
         // Send notifications and update viewed (PUTs)
         for (n in updated) {
-            const cp = Database.cardPosted(updated[n].returned, updated[n].method);
+            const cp = await Database.cardPosted(updated[n].returned, updated[n].method);
+        }
+        // Send notifications and update viewed (DELETEs)
+        for (n in deleted) {
+            const cp = await Database.cardPosted(deleted[n].returned, deleted[n].method);
         }
         deferred.resolve();
         return deferred.promise;
     }
+
+    /*
+        // Update card id from temp to the id returned from the DB.
+        updateCardId = function(temp_id, db_id) {
+
+            // Check the existece of the card across all arrays.
+            var card_arrays = [$scope.cards, $scope.cards_temp, $scope.removed_cards_bottom, $scope.removed_cards_top];
+
+            var found_pos_db = -1;
+            //var arr;
+            for (var i = 0, len = card_arrays.length; i < len; i++) {
+                found_pos_db = General.findWithAttr(card_arrays[i], '_id', db_id);
+                if (found_pos_db >= 0) {
+                    arr = i;
+                    break;
+                }
+            }
+            console.log('DB');
+            console.log(found_pos_db);
+
+            var found_pos_temp = -1;
+            var arr;
+            for (var i = 0, len = card_arrays.length; i < len; i++) {
+                found_pos_temp = General.findWithAttr(card_arrays[i], '_id', temp_id);
+                if (found_pos_temp >= 0) {
+                    arr = i;
+                    break;
+                }
+            }
+            console.log('TEMP');
+            console.log(found_pos_temp);
+
+            // If not already updated
+            if (found_pos_db < 0) {
+                console.log('update temp as db not there');
+                $('#card_' + temp_id).attr('id', 'card_' + db_id);
+                $('#card_' + db_id + ' #ce' + temp_id).attr('id', 'ce' + db_id);
+
+                if (found_pos_temp >= 0) {
+                    card_arrays[arr][found_pos_temp]._id = db_id;
+                    if (!$scope.$$phase) {
+                        $scope.$apply();
+                    }
+                }
+            } else if (found_pos_temp >= 0) {
+                console.log('delete temp as db already there');
+                console.log(card_arrays[arr]);
+                card_arrays[arr].splice(found_pos_temp,1);
+                console.log(card_arrays[arr]);
+                if (!$scope.$$phase) {
+                    $scope.$apply();
+                }
+            }
+        }
+        */
 
     // Update card id from temp to the id returned from the DB.
     updateCardId = function(temp_id, db_id) {
@@ -946,6 +1006,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     }
 
     updateCard = function(card) {
+        console.log(card);
         // Check the existece of the card across all arrays.
         var card_arrays = [$scope.cards, $scope.cards_temp, $scope.removed_cards_bottom, $scope.removed_cards_top];
         var found_pos = -1;
@@ -958,6 +1019,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }
         }
         if (found_pos >= 0) {
+            console.log(card_arrays[arr][found_pos]);
             if (card_arrays[arr][found_pos].content != card.content) {
                 // Get the card height.
                 let test = awaitImages('.test_card .ce').then(function(result) {
@@ -1149,6 +1211,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // TODO - change if adding button to notify user of new card.
     addCards = function(arr) {
+        console.log('ADD CARDS');
         var deferred = $q.defer();
         var promises = [];
         var all_cards;
@@ -1160,16 +1223,19 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         while (i--) {
             let found = all_cards.filter(x => x._id == arr[i]._id);
             // Not found. New Card. Set this as a new card (for animating onscreen).
+            console.log(found);
             if (found.length == 0) {
                 arr[i].new_card = true;
             } else {
                 // Already exists (may have been added offline).
                 let card_data = JSON.parse(JSON.stringify(arr[i]));
+                console.log(card_data);
                 updateCard(card_data);
                 // Remove this card from the array of cards to add.
                 arr.splice(i, 1);
             }
         }
+        console.log(arr);
         if (!$scope.top_down) {
             if ($scope.removed_cards_bottom.length > 0) {
                 sort_card = $filter('orderBy')(all_cards, 'updatedAt', true);
@@ -1218,6 +1284,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var deferred = $q.defer();
         var promises = [];
         var cards_new = [];
+        console.log($rootScope.loading_cards);
         if (!$rootScope.loading_cards) {
             $rootScope.loading_cards = true;
             var last_card;
@@ -1237,6 +1304,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             var val = { id: id, amount: load_amount, last_card: last_card, operand: operand };
             var prom1 = Conversations.getConversationCards(val)
                 .then(function(res) {
+                    console.log(res);
                     if (res.data.length > 0) {
                         var users = UserData.getContacts();
                         var user;
@@ -1263,7 +1331,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     }
                 })
                 .catch(function(error) {
-                    //console.log(error);
+                    console.log(error);
                 });
             promises.push(prom1);
             // All the cards have been mapped.
@@ -1273,7 +1341,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             });
         } else {
             // Wait for loading to finish.
-            deferred.resolve();
+            deferred.resolve(cards_new);
         }
         return deferred.promise;
     };
