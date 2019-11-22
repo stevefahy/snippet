@@ -1369,6 +1369,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 last_card = General.getISODate();
                 operand = '$lt';
             }
+            
             var val = { ids: followed, amount: load_amount, last_card: last_card, operand: operand };
             if (last_card != last_card_stored) {
                 last_card_stored = last_card;
