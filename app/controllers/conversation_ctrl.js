@@ -1291,22 +1291,18 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             var followed = UserData.getUser().following;
             var last_card;
             var operand;
-            var load_amount;
             var sort_card;
+            var load_amount = NUM_TO_LOAD;;
             if ($scope.cards.length > 0) {
                 // Only get newer than temp but check removed cards
                 var all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
                 sort_card = $filter('orderBy')(all_cards, 'updatedAt');
-                last_card = sort_card[0].updatedAt;
-                operand = '$lt';
-                load_amount = NUM_TO_LOAD;
+                last_card = sort_card[0]._id;
             } else {
-                load_amount = NUM_TO_LOAD;
-                last_card = General.getISODate();
-                operand = '$lt';
+                last_card = '0';
             }
 
-            var val = { ids: followed, amount: load_amount, last_card: last_card, operand: operand };
+            var val = { ids: followed, amount: load_amount, last_card: last_card };
             if (last_card != last_card_stored) {
                 last_card_stored = last_card;
                 var prom1 = Conversations.getFeed(val)
