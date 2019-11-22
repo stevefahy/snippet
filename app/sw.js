@@ -35,7 +35,7 @@ if (workbox) {
     // Debugging
 
     workbox.setConfig({
-        debug: true
+        debug: false
     });
 
     // Messaging
@@ -89,17 +89,11 @@ if (workbox) {
         let posts_updated = [];
         // Reset sync_data.
         sync_data = [];
-        console.log(sd);
         // Check for updates to POST, PUT and Images.(Return an array)
         let all_posted = sd.filter(x => x.method == "POST");
         let all_updated = sd.filter(x => x.method == "PUT");
         let all_deleted = sd.filter(x => x.method == "DELETE");
         let images_posted = sd.filter(x => x.image != undefined);
-        console.log(sd);
-        console.log(all_deleted);
-
-
-
 
         // Return an array of PUTs for each POST (by POST returned ._id)
         all_posted.forEach(function(element) {
@@ -167,25 +161,6 @@ if (workbox) {
             }
         });
 
-        // Check whether deleted was in posted or updated?
-        // Cant have been in posted because temp id deletes are not fetched
-        // Could have been updated
-        // Could be in update array, need to remove.
-
-        all_deleted.forEach(function(element, index, object) {
-            let updated_id = element.returned._id;
-            // If not in the posted array then push to the updated array
-            let found = updated.filter(x => x.returned._id == updated_id);
-            console.log(found[0]);
-
-            // Find the index of the duplicated id in the updated array.
-            //let duplicate_id = (element) => element.returned._id == found[0].returned._id;
-            //let duplicate_index = updated.findIndex(duplicate_id);
-            //console.log(duplicate_index);
-        });
-
-
-
         return { posted: all_posted, updated: updated, deleted: all_deleted, images: images_posted };
     }
 
@@ -193,7 +168,7 @@ if (workbox) {
     // When sync is disabled (Mobile).
 
     async function syncDeletes() {
-        console.log('...Synchronizing ' + queue_delete.name);
+        //console.log('...Synchronizing ' + queue_delete.name);
         let entry;
         let clone;
         let response;
@@ -201,13 +176,10 @@ if (workbox) {
         let requestDataFormat;
         while (entry = await queue_delete.shiftRequest()) {
             try {
-
                 clone_1 = await entry.request.clone();
                 send_message_to_all_clients({ message: 'request_updating' });
                 let method = entry.request.method;
-                console.log(method);
                 let requestData = await clone_1;
-                console.log(requestData);
                 // If this card has a temp id then it has not yet
                 // been created on the DB so thare is no need to 
                 // send this request to the DB. Remove from the indexedDB.
@@ -215,41 +187,33 @@ if (workbox) {
                     console.log('delete temp');
                     // check whether needs to be removed from posts
                 } else {
-                    console.log('delete id');
                     requestDataFormat = 'requestData';
-                    //requestDataFormat = JSON.parse(JSON.stringify(requestDataFormat));
                     response = await fetch(entry.request);
-                    console.log(response);
                     // Get the response as JSOM.
                     assetsData = await response.json();
-                    console.log(assetsData);
                     var card_data = { requested: requestDataFormat, returned: assetsData, method: method };
                     //console.log('...Replayed: ' + entry.request.url);
-                    // Add the POST, PUT data to the sync_data array.
+                    // Add the DELETE data to the sync_data array.
                     sync_data.push(card_data);
                 }
-                console.log('...Replayed: ' + entry.request.url);
+                //console.log('...Replayed: ' + entry.request.url);
             } catch (error) {
-                console.error('Replay failed for request', entry.request, error);
+                //console.error('Replay failed for request', entry.request, error);
                 await queue_delete.unshiftRequest(entry);
                 return;
             }
         }
-
-        console.log(sync_data);
         // Process the data before updating the DOM and sending notifications.
         const all_requests = processUpdates(sync_data);
         console.log(all_requests);
         // Update the DOM and sending notifications.
         send_message_to_all_clients({ message: 'all_requests_updated', all_requests: all_requests });
         sync_in_progress = false;
-
-
     }
 
 
     async function syncPosts() {
-        console.log('...Synchronizing ' + queue.name);
+        //console.log('...Synchronizing ' + queue.name);
         let entry;
         let clone;
         let response;
@@ -259,9 +223,8 @@ if (workbox) {
             try {
                 clone_1 = await entry.request.clone();
                 clone_2 = await entry.request.clone();
-                console.log('...Replaying: ' + entry.request.url);
+                //console.log('...Replaying: ' + entry.request.url);
                 let method = entry.request.method;
-                console.log(method);
                 send_message_to_all_clients({ message: 'request_updating' });
                 let requestData = await clone_1.json();
                 // Check whether the update was added to a card with a temp_id.
@@ -304,23 +267,20 @@ if (workbox) {
                     }
                 }
                 var card_data = { requested: requestDataFormat, returned: assetsData, method: method };
-                console.log('...Replayed: ' + entry.request.url);
+                //console.log('...Replayed: ' + entry.request.url);
                 // Add the POST, PUT data to the sync_data array.
                 sync_data.push(card_data);
-                console.log(sync_data);
             } catch (error) {
-                console.error('Replay failed for request', entry.request, error);
+                //console.error('Replay failed for request', entry.request, error);
                 await queue.unshiftRequest(entry);
                 return;
             }
         }
         syncDeletes();
-
-
     }
 
     async function syncImages() {
-        console.log('...Synchronizing ' + queue_image.name);
+        //console.log('...Synchronizing ' + queue_image.name);
         let entry;
         let clone;
         let response;
@@ -338,20 +298,16 @@ if (workbox) {
                 let i = { image: assetsData.file };
                 sync_data.push(i);
             } catch (error) {
-                console.error('Replay failed for request', entry.request, error);
+                //console.error('Replay failed for request', entry.request, error);
                 await queue_image.unshiftRequest(entry);
                 return;
             }
         }
         // Sync posts after images have been loaded.
-        //syncPosts();
-        console.log('images fin');
-
         syncPosts();
     }
 
-    // Find image already stored in indexeddb.
-    // Delete the existing image if it is found.
+    // Get all POST and PUT with this ID and delete as the card has been deleted.
     async function deleteDelete(id) {
         let openRequest = indexedDB.open("workbox-background-sync");
 
@@ -372,23 +328,14 @@ if (workbox) {
             let requests = transaction.objectStore("requests");
             // get all requests
             let a = await requests.getAll();
-            console.log(a);
-            //let d = requests.get(['api_image', 1])
             a.onsuccess = async function() {
                 // Get all POST and PUT with this ID and delete as the card has been deleted.
-                //let obj = await a.result.find(obj => obj.metadata == id);
                 let obj = await a.result.filter(x => x.metadata == id);
-
-                console.log(obj);
                 if (obj.length > 0) {
                     obj.forEach(function(element, index, object) {
-                        console.log(element);
                         requests.delete(element.id);
                     });
                 }
-                //if (obj != undefined) {
-                //requests.delete(obj.id);
-                //}
             }
         };
     }
@@ -418,7 +365,6 @@ if (workbox) {
             //let d = requests.get(['api_image', 1])
             a.onsuccess = async function() {
                 let obj = await a.result.find(obj => obj.metadata == name);
-                console.log(obj);
                 if (obj != undefined) {
                     requests.delete(obj.id);
                 }
@@ -435,15 +381,11 @@ if (workbox) {
             // `requestWillFetch` callbacks, and `error` is the exception that caused
             // the underlying `fetch()` to fail.
 
-            // Delete this image from the indexeddb if a previous version has been stored.
+            // Get all POST and PUT with this ID and delete as the card has been deleted.
             let clone = await request.clone();
             let requestData = await clone;
-            console.log(requestData);
             let id = requestData.url.substring(requestData.url.lastIndexOf('/') + 1);
-            console.log(id);
-            //let uploads = requestData.get('uploads[]');
             deleteDelete(id);
-
             // adding to the Queue.
             queue_delete.pushRequest({ request: request });
         }
@@ -460,9 +402,7 @@ if (workbox) {
 
             let clone = await request.clone();
             let requestData = await clone.json();
-            console.log(requestData);
             let method = request.method;
-            console.log(method);
             let id;
             if (method == "POST") {
                 id = requestData._id;
@@ -552,14 +492,11 @@ if (workbox) {
         })
     );
 
-
-
     workbox.routing.registerRoute(
         new RegExp('/chat/get_feed'),
         new workbox.strategies.NetworkFirst({
             cacheName: 'user-feed1',
-            plugins: [ { cachedResponseWillBeUsed },
-            ]
+            plugins: [{ cachedResponseWillBeUsed }, ]
         })
     );
 
@@ -711,11 +648,11 @@ if (workbox) {
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "d5fae03f178dc75fc7fe5b3a7c412a1f"
+    "revision": "7d996348b0240c9ce01aba2ad43e281f"
   },
   {
     "url": "controllers/conversations_ctrl.js",
-    "revision": "f7ede12183ea44644a2ac7dc472bdb34"
+    "revision": "39d364c4c4dc0ee79364c69a804a599f"
   },
   {
     "url": "controllers/debug_ctrl.js",
@@ -743,7 +680,7 @@ if (workbox) {
   },
   {
     "url": "controllers/main_ctrl.js",
-    "revision": "718674fdb2d0ad734e7bd005c0806f51"
+    "revision": "37b2465836bc5261549f284ae263bc7e"
   },
   {
     "url": "controllers/usersetting_ctrl.js",
@@ -831,11 +768,11 @@ if (workbox) {
   },
   {
     "url": "routes/routes.js",
-    "revision": "0fbbb38b809773e153f19267ead15fbc"
+    "revision": "3000707e2d95a1de8689c4327a93911b"
   },
   {
     "url": "service-worker.js",
-    "revision": "3ae42f6ecb6306ee5c6b43c8858c20b1"
+    "revision": "bdbaf4c274cf57db8be9329903a6f45b"
   },
   {
     "url": "services/content_editable.js",
@@ -847,7 +784,7 @@ if (workbox) {
   },
   {
     "url": "services/database.js",
-    "revision": "5bbd809744e6862bbe9cb6f50bf904a1"
+    "revision": "68f9b37c89a94db841e138070782d580"
   },
   {
     "url": "services/debug.js",

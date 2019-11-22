@@ -171,7 +171,7 @@ module.exports = function(app, passport) {
         } else {
             User.findById({ _id: req.principal._id }, function(err, user) {
                 if (err) {
-                    console.log('err: ' + err);
+                    //console.log('err: ' + err);
                     res.send(err);
                 } else {
                     res.json({
@@ -874,10 +874,8 @@ module.exports = function(app, passport) {
             _id: req.params.card_id
         }, function(err, card) {
             if (err) {
-                console.log(err);
                 res.send(err);
             }
-            console.log(card);
             res.send(card);
         });
     });

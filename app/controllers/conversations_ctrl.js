@@ -88,7 +88,6 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
         currentScroll = $('.content_cnv').scrollTop();
         maxScroll = $('.content_cnv')[0].scrollHeight - $('.content_cnv')[0].clientHeight;
         if (mobile) {
-
             if (maxScroll > 0) {
                 $('.progress-container').addClass('active');
                 $('#progress-thumb').removeClass('fade_in');
