@@ -79,15 +79,16 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
     };
 
     setUpScrollBar = function() {
+        $('.progress-container').css('top', $('.content_cnv').offset().top);
+        $('.progress-container').css('height', $('.content_cnv').height());
+        pb = document.getElementById('progress-thumb');
+        $(pb).css('height', SCROLL_THUMB_MIN + "%");
+        cdh = $('.content_cnv').height();
+        ch = $('.content_cnv')[0].scrollHeight;
+        currentScroll = $('.content_cnv').scrollTop();
+        maxScroll = $('.content_cnv')[0].scrollHeight - $('.content_cnv')[0].clientHeight;
         if (mobile) {
-            $('.progress-container').css('top', $('.content_cnv').offset().top);
-            $('.progress-container').css('height', $('.content_cnv').height());
-            pb = document.getElementById('progress-thumb');
-            $(pb).css('height', SCROLL_THUMB_MIN + "%");
-            cdh = $('.content_cnv').height();
-            ch = $('.content_cnv')[0].scrollHeight;
-            currentScroll = $('.content_cnv').scrollTop();
-            maxScroll = $('.content_cnv')[0].scrollHeight - $('.content_cnv')[0].clientHeight;
+
             if (maxScroll > 0) {
                 $('.progress-container').addClass('active');
                 $('#progress-thumb').removeClass('fade_in');

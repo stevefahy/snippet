@@ -125,7 +125,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         }
         if (!last_network_status && newStatus) {
             if ('serviceWorker' in navigator) {
-            $rootScope.sync_finished = false;
+                $rootScope.sync_finished = false;
             } else {
                 $rootScope.sync_finished = true;
             }
@@ -290,7 +290,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         var unbind1 = $rootScope.$watch('sync_finished', function(n) {
             console.log(n);
             if (n) {
-                
+
                 console.log('sync fin!');
                 console.log($rootScope.sync_finished);
                 // queue this request
@@ -306,7 +306,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                     // only run this request if not already running.
                     runUpdate();
                 }
-unbind1();
+                unbind1();
             }
         });
     };
@@ -350,12 +350,12 @@ unbind1();
     }
 
 
-   // $rootScope.sync_finished = false;
+    // $rootScope.sync_finished = false;
 
     if ('serviceWorker' in navigator) {
         // Handler for messages coming from the service worker
         navigator.serviceWorker.addEventListener('message', function(event) {
-            
+
             if (event.data.message == "sync_started") {
                 $rootScope.sync_finished = false;
             }
@@ -377,7 +377,7 @@ unbind1();
                 }
                 console.log('$rootScope.sync_finished: ' + $rootScope.sync_finished);
                 $rootScope.sync_finished = true;
-                 if (!$scope.$$phase) {
+                if (!$scope.$$phase) {
                     $scope.$apply();
                 }
                 //checkDataUpdate(false);

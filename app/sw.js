@@ -35,7 +35,7 @@ if (workbox) {
     // Debugging
 
     workbox.setConfig({
-        debug: false
+        debug: true
     });
 
     // Messaging
@@ -235,15 +235,15 @@ if (workbox) {
                 return;
             }
         }
-        
+
         console.log(sync_data);
         // Process the data before updating the DOM and sending notifications.
         const all_requests = processUpdates(sync_data);
         console.log(all_requests);
         // Update the DOM and sending notifications.
         send_message_to_all_clients({ message: 'all_requests_updated', all_requests: all_requests });
-    sync_in_progress = false;
-        
+        sync_in_progress = false;
+
 
     }
 
@@ -380,14 +380,14 @@ if (workbox) {
                 let obj = await a.result.filter(x => x.metadata == id);
 
                 console.log(obj);
-                if(obj.length >0){
+                if (obj.length > 0) {
                     obj.forEach(function(element, index, object) {
                         console.log(element);
                         requests.delete(element.id);
                     });
                 }
                 //if (obj != undefined) {
-                    //requests.delete(obj.id);
+                //requests.delete(obj.id);
                 //}
             }
         };
@@ -552,12 +552,13 @@ if (workbox) {
         })
     );
 
+
+
     workbox.routing.registerRoute(
         new RegExp('/chat/get_feed'),
         new workbox.strategies.NetworkFirst({
             cacheName: 'user-feed1',
-            plugins: [
-                { cachedResponseWillBeUsed },
+            plugins: [ { cachedResponseWillBeUsed },
             ]
         })
     );
@@ -710,11 +711,11 @@ if (workbox) {
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "bb0a79ac90efcd2b477e8b07ff7025e6"
+    "revision": "5df2bf872524ff0e9cef90fd3849bcb9"
   },
   {
     "url": "controllers/conversations_ctrl.js",
-    "revision": "c8e7276b3c09507bffc125483c9f778e"
+    "revision": "f7ede12183ea44644a2ac7dc472bdb34"
   },
   {
     "url": "controllers/debug_ctrl.js",
@@ -742,7 +743,7 @@ if (workbox) {
   },
   {
     "url": "controllers/main_ctrl.js",
-    "revision": "4eacf71adab0b337837b9b85e23d9b7b"
+    "revision": "718674fdb2d0ad734e7bd005c0806f51"
   },
   {
     "url": "controllers/usersetting_ctrl.js",
@@ -754,7 +755,7 @@ if (workbox) {
   },
   {
     "url": "factories/factories.js",
-    "revision": "e4e58cecc388acb39a226000e4657a18"
+    "revision": "fc9508c4a30de2accdff3124d869ab12"
   },
   {
     "url": "factories/local_db.js",
@@ -834,7 +835,7 @@ if (workbox) {
   },
   {
     "url": "service-worker.js",
-    "revision": "92b82aa31d666934aa96b5ac441bfd69"
+    "revision": "3ae42f6ecb6306ee5c6b43c8858c20b1"
   },
   {
     "url": "services/content_editable.js",

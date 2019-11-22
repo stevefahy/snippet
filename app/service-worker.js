@@ -35,7 +35,7 @@ if (workbox) {
     // Debugging
 
     workbox.setConfig({
-        debug: false
+        debug: true
     });
 
     // Messaging
@@ -235,15 +235,15 @@ if (workbox) {
                 return;
             }
         }
-        
+
         console.log(sync_data);
         // Process the data before updating the DOM and sending notifications.
         const all_requests = processUpdates(sync_data);
         console.log(all_requests);
         // Update the DOM and sending notifications.
         send_message_to_all_clients({ message: 'all_requests_updated', all_requests: all_requests });
-    sync_in_progress = false;
-        
+        sync_in_progress = false;
+
 
     }
 
@@ -380,14 +380,14 @@ if (workbox) {
                 let obj = await a.result.filter(x => x.metadata == id);
 
                 console.log(obj);
-                if(obj.length >0){
+                if (obj.length > 0) {
                     obj.forEach(function(element, index, object) {
                         console.log(element);
                         requests.delete(element.id);
                     });
                 }
                 //if (obj != undefined) {
-                    //requests.delete(obj.id);
+                //requests.delete(obj.id);
                 //}
             }
         };
@@ -552,12 +552,13 @@ if (workbox) {
         })
     );
 
+
+
     workbox.routing.registerRoute(
         new RegExp('/chat/get_feed'),
         new workbox.strategies.NetworkFirst({
             cacheName: 'user-feed1',
-            plugins: [
-                { cachedResponseWillBeUsed },
+            plugins: [ { cachedResponseWillBeUsed },
             ]
         })
     );
