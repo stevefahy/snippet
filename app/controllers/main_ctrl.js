@@ -568,6 +568,11 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             // Not a directly loaded page.
             $rootScope.animate_pages = true;
         }
+        
+        console.log('$rootScope.animate_pages: ' + $rootScope.animate_pages);
+        console.log('from: ' + from);
+        console.log('to: ' + to);
+        
         if (from == '/' && to == '/chat/conversations') {
             //console.log('FROM / TO /chat/conversations');
             $('#page-system').removeClass("page-static");

@@ -648,7 +648,7 @@ if (workbox) {
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "7bfda8ab513164a7614fc096703bee56"
+    "revision": "6605e2e30eecb3bf93e309fdff78a333"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -680,7 +680,7 @@ if (workbox) {
   },
   {
     "url": "controllers/main_ctrl.js",
-    "revision": "37b2465836bc5261549f284ae263bc7e"
+    "revision": "ded8d66618fd70a3e7480a4d585058da"
   },
   {
     "url": "controllers/usersetting_ctrl.js",
@@ -820,7 +820,7 @@ if (workbox) {
   },
   {
     "url": "services/image_filters.js",
-    "revision": "6c3fc5d3e0014b1b2be36e9236ca8419"
+    "revision": "0a97a0048ac59fe852f3b93ccc80eda6"
   },
   {
     "url": "services/image_functions.js",

@@ -9,6 +9,8 @@ cardApp.service('ImageFilters', ['$rootScope', 'Format', '$q', 'ContentEditable'
         var filt = $('.image_filt_div');//.clone().insertAfter('.' + parent_container + ' #cropper_' + id);
         filt.attr('id', 'filters_' + id);
         filt.addClass('filters_active');
+        // Empty the filter list from previous use.
+        $('.filter_list').empty();
         for (var i in FILTERS) {
             var outmost = document.createElement('div');
             var outer = document.createElement('div');
