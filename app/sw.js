@@ -680,7 +680,7 @@ if (workbox) {
   },
   {
     "url": "controllers/main_ctrl.js",
-    "revision": "ded8d66618fd70a3e7480a4d585058da"
+    "revision": "f7637fc3e604eafd9a5ca9a7ec6495fc"
   },
   {
     "url": "controllers/usersetting_ctrl.js",
@@ -704,7 +704,7 @@ if (workbox) {
   },
   {
     "url": "indexa.html",
-    "revision": "26b65c1b9d1760154dc26e48a01ac29a"
+    "revision": "68af9641a2a652670c362f6c7fdf663e"
   },
   {
     "url": "js/angular_moment.js",
@@ -860,7 +860,7 @@ if (workbox) {
   },
   {
     "url": "style/customstyle.css",
-    "revision": "b9ea2432ea3aef56c6ea23745dbce51e"
+    "revision": "efe38f600a3cd226abff0fae553d60b6"
   },
   {
     "url": "style/instagram.css",

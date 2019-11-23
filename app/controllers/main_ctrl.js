@@ -568,7 +568,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             // Not a directly loaded page.
             $rootScope.animate_pages = true;
         }
-        
+
         console.log('$rootScope.animate_pages: ' + $rootScope.animate_pages);
         console.log('from: ' + from);
         console.log('to: ' + to);
@@ -586,11 +586,11 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             viewAnimationsService.setEnterAnimation('page-static z5000');
             viewAnimationsService.setLeaveAnimation('page-anim z6000');
         } else if (from == '/chat/conversations' && to == '/chat/conversation/:id') {
-            //console.log('FROM /chat/conversations TO /chat/conversation/:id');
+            console.log('FROM /chat/conversations TO /chat/conversation/:id');
             viewAnimationsService.setEnterAnimation('page-anim z9000');
             viewAnimationsService.setLeaveAnimation('page-static z5000');
         } else if (from == '/chat/conversation/:id' && to == '/chat/conversations') {
-            //console.log('FROM /chat/conversation/:id TO /chat/conversations');
+            console.log('FROM /chat/conversation/:id TO /chat/conversations');
             $('#page-system').removeClass("page-static");
             $('#page-system').addClass("page-anim");
             viewAnimationsService.setEnterAnimation('page-static z5000');
