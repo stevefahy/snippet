@@ -676,11 +676,11 @@ if (workbox) {
   },
   {
     "url": "controllers/login_ctrl.js",
-    "revision": "1406b7b1f829710a77746078adaa7220"
+    "revision": "997a5bf0c527192d70f9fc3b5a2ad49f"
   },
   {
     "url": "controllers/main_ctrl.js",
-    "revision": "f7637fc3e604eafd9a5ca9a7ec6495fc"
+    "revision": "997d8b16ae554e5dbba4d38957d853b5"
   },
   {
     "url": "controllers/usersetting_ctrl.js",
@@ -780,7 +780,7 @@ if (workbox) {
   },
   {
     "url": "modules/app.js",
-    "revision": "dcb0ea590a2ba2a4c8567742c0de606b"
+    "revision": "cc7454dda74b90c0c73f22a17c2bd16e"
   },
   {
     "url": "routes/routes.js",

@@ -548,6 +548,13 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             .then(function(result) {});
     });
 
+    var document_hidden;
+    document.addEventListener("visibilitychange", function() {
+        console.log('document.hidden: ' + document.hidden);
+        // Modify behavior...
+        document_hidden = document.hidden;
+    });
+
     //
     // ROUTE ANIMATION
     //
@@ -566,13 +573,16 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         if (current != undefined) {
             from = current.$$route.originalPath;
             // Not a directly loaded page.
+            console.log('Not a directly loaded page.');
             $rootScope.animate_pages = true;
         }
-
+        $animate.enabled(true);
+        console.log('document_hidden: ' + document_hidden);
+        console.log('$animate.enabled: ' + $animate.enabled());
         console.log('$rootScope.animate_pages: ' + $rootScope.animate_pages);
         console.log('from: ' + from);
         console.log('to: ' + to);
-        
+
         if (from == '/' && to == '/chat/conversations') {
             //console.log('FROM / TO /chat/conversations');
             $('#page-system').removeClass("page-static");
