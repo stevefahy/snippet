@@ -174,23 +174,32 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     };
 
     // Android activity lifecycle states.
-    restoreState = function() {};
+    restoreState = function() {
+        console.log('restoreState');
+    };
 
     onPause = function() {
         mobile_active = false;
         // Mobile disconnect
         disconnect_socket();
+        console.log('onPause');
     };
 
     onStop = function() {
         mobile_active = false;
+        console.log('onRStop');
     };
 
-    onRestart = function() {};
+    onRestart = function() {
+        console.log('onRestart');
+    };
 
-    onStart = function() {};
+    onStart = function() {
+        console.log('onStart');
+    };
 
     onResume = function() {
+        console.log('onResume');
         mobile_active = true;
         // Mobile reconnect
         reconnect_socket();
@@ -555,6 +564,14 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         document_hidden = document.hidden;
     });
 
+    forceVisible = function() {
+        console.log('forceVisible');
+        Object.defineProperty(document, 'visibilityState', { value: 'visible', writable: true });
+        Object.defineProperty(document, 'hidden', { value: false, writable: true });
+        document.dispatchEvent(new Event("visibilitychange"));
+    }
+
+
     //
     // ROUTE ANIMATION
     //
@@ -577,6 +594,10 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             $rootScope.animate_pages = true;
         }
         $animate.enabled(true);
+        if (document_hidden) {
+            console.log('hidden. forceVisible()');
+            forceVisible();
+        }
         console.log('document_hidden: ' + document_hidden);
         console.log('$animate.enabled: ' + $animate.enabled());
         console.log('$rootScope.animate_pages: ' + $rootScope.animate_pages);
