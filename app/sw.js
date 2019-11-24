@@ -704,11 +704,15 @@ if (workbox) {
   },
   {
     "url": "indexa.html",
-    "revision": "68af9641a2a652670c362f6c7fdf663e"
+    "revision": "d3ae1a9ccb8a192b6ba5f3ce5070d629"
   },
   {
     "url": "js/angular_moment.js",
     "revision": "9782d9786bfb852471abdd236d8e9672"
+  },
+  {
+    "url": "js/angular-animate.1.7.9.js",
+    "revision": "e7f3e2df550c74fbfb7aabd21769ea91"
   },
   {
     "url": "js/angular-cookies.min_1.6.9.js",
@@ -717,6 +721,18 @@ if (workbox) {
   {
     "url": "js/angular-jwt.js",
     "revision": "20b4a8c03265120b6dfe747c14ad1069"
+  },
+  {
+    "url": "js/angular-resource.1.7.9.min.js",
+    "revision": "74c531c03c5c52adb9ecde6379d29953"
+  },
+  {
+    "url": "js/angular-route.1.7.9.min.js",
+    "revision": "7e52566e95d50de210f83a120bb299c6"
+  },
+  {
+    "url": "js/angular.1.7.9.min.js",
+    "revision": "fabefdbf372d18c3cfdf8020eecd92a5"
   },
   {
     "url": "js/exif.js",
@@ -860,7 +876,7 @@ if (workbox) {
   },
   {
     "url": "style/customstyle.css",
-    "revision": "efe38f600a3cd226abff0fae553d60b6"
+    "revision": "5ac5f7f0e8d3634ee7e34d69fd5c3d0b"
   },
   {
     "url": "style/instagram.css",

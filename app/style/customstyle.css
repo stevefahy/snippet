@@ -2644,12 +2644,21 @@ span#header b.header_3 {
 
 /* NEW */
 
+/*
+  animation: my_fade_animation 0.5s linear;
+  -webkit-animation: my_fade_animation 0.5s linear;
+  */
+
 .page-anim.ng-leave-prepare {
- -webkit-animation: slideOutRight 10s cubic-bezier(0.19, 1, 0.22, 1);
+ /*-webkit-animation: slideOutRight 10s cubic-bezier(0.19, 1, 0.22, 1);*/
+    animation: slideOutRight 10s linear;
+    -webkit-animation: slideOutRight 10s linear;
 } 
 
 .page-anim.ng-leave {
-    -webkit-animation: slideOutRight 10s cubic-bezier(0.19, 1, 0.22, 1);
+    /*-webkit-animation: slideOutRight 10s cubic-bezier(0.19, 1, 0.22, 1);*/
+    animation: slideOutRight 10s linear;
+    -webkit-animation: slideOutRight 10s linear;
 }
 
 .page-anim.ng-leave .content_cnv {
@@ -2662,12 +2671,16 @@ span#header b.header_3 {
 
 .page-anim.ng-enter-prepare {
     will-change: transform;
-    -webkit-animation: slide-in 10s cubic-bezier(0.19, 1, 0.22, 1);
+    /*-webkit-animation: slide-in 10s cubic-bezier(0.19, 1, 0.22, 1);*/
+        animation: slide-in 10s linear;
+    -webkit-animation: slide-in 10s linear;
 }
 
 .page-anim.ng-enter {
     will-change: transform;
-    -webkit-animation: slide-in 10s cubic-bezier(0.19, 1, 0.22, 1);
+    /*-webkit-animation: slide-in 10s cubic-bezier(0.19, 1, 0.22, 1);*/
+            animation: slide-in 10s linear;
+    -webkit-animation: slide-in 10s linear;
 }
 
 .page-anim.ng-enter .content_cnv {
@@ -2680,7 +2693,7 @@ span#header b.header_3 {
 
 .page-static.ng-leave {
     will-change: transform;
-    -webkit-animation: .3s conversations-leave;
+    -webkit-animation: conversations-leave 10s linear;
 }
 
 .page-static.ng-leave .content_cnv {
@@ -2692,7 +2705,7 @@ span#header b.header_3 {
 }
 
 .page-static.ng-enter {
-    -webkit-animation: .3s conversations-leave;
+    -webkit-animation: conversations-leave 10s linear;
 }
 
 .page-static.ng-enter .content_cnv {
@@ -2745,6 +2758,17 @@ span#header b.header_3 {
 
     100% {
         transform: translateY(100%);
+    }
+}
+
+/* TEST did not exist */
+@keyframes conversations-leave {
+        0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(0);
     }
 }
 
