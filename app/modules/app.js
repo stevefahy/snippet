@@ -105,9 +105,11 @@ cardApp.config(['$httpProvider', function($httpProvider) {
 }]);
 
 
+/*
 cardApp.value('$$isDocumentHidden', function() { 
     return false; 
 });
+*/
 
 //
 // DETECT NETWORK STATUS

@@ -780,7 +780,7 @@ if (workbox) {
   },
   {
     "url": "modules/app.js",
-    "revision": "cc7454dda74b90c0c73f22a17c2bd16e"
+    "revision": "517811b2e9c866035cba4c4df692643c"
   },
   {
     "url": "routes/routes.js",
