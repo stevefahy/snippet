@@ -2663,12 +2663,16 @@ span#header b.header_3 {
 */
 
 .page-anim.ng-leave {
+    /*
     animation: slideOutRight .7s cubic-bezier(0.19, 1, 0.22, 1);
     -webkit-animation: slideOutRight .7s cubic-bezier(0.19, 1, 0.22, 1);
+    */
     /*
     animation: slideOutRight .4s linear;
     -webkit-animation: slideOutRight .4s linear;
     */
+        animation: slideOutRight .3s ease-in-out;
+    -webkit-animation: slideOutRight .3s ease-in-out;
 }
 
 .page-anim.ng-leave .content_cnv {
@@ -2709,8 +2713,8 @@ span#header b.header_3 {
 
 .page-static.ng-leave {
     will-change: transform;
-    animation: conversations-leave .3s;
-    -webkit-animation: conversations-leave .3s;
+    animation: conversations-leave .2s;
+    -webkit-animation: conversations-leave .2s;
 }
 
 .page-static.ng-leave .content_cnv {
@@ -2722,8 +2726,10 @@ span#header b.header_3 {
 }
 
 .page-static.ng-enter {
-    animation: conversations-leave .4s;
-    -webkit-animation: conversations-leave .4s;
+    animation: conversations-leave .2s;
+    -webkit-animation: conversations-leave .2s;
+
+
 }
 
 .page-static.ng-enter .content_cnv {
