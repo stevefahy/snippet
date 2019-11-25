@@ -111,6 +111,7 @@ cardApp.value('$$isDocumentHidden', function() {
 });
 */
 
+
 //
 // DETECT NETWORK STATUS
 //

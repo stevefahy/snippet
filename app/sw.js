@@ -680,7 +680,7 @@ if (workbox) {
   },
   {
     "url": "controllers/main_ctrl.js",
-    "revision": "63fd7b838062efdff9d29634d45d3e86"
+    "revision": "a0a7ffd5e8bc6dc8864bca0aaadf12f7"
   },
   {
     "url": "controllers/usersetting_ctrl.js",
@@ -780,7 +780,7 @@ if (workbox) {
   },
   {
     "url": "modules/app.js",
-    "revision": "517811b2e9c866035cba4c4df692643c"
+    "revision": "602b55b0df180f6ac3536977e4257772"
   },
   {
     "url": "routes/routes.js",
