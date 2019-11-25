@@ -645,7 +645,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             if (first_load) {
                 programmatic_scroll = true;
                 $scope.$broadcast("items_changed", scroll_direction);
+                $timeout(function() {
+                    console.log('PAGE LOADED');
                 $rootScope.pageLoading = false;
+            },500);
                 // Wait for the page transition animation to end before applying scroll.
                 $timeout(function() {
                     bindScroll();
@@ -1396,7 +1399,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                 }
                             }
                         } else {
-                            $rootScope.pageLoading = false;
+                            //$rootScope.pageLoading = false;
                             $rootScope.loading_cards_offscreen = false;
                         }
                     })

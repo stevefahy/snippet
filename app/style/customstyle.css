@@ -2644,11 +2644,13 @@ span#header b.header_3 {
 
 .page_anim {
     will-change: transform;
+    transition-property: opacity;
 }
-
+/*
 .page-static {
     will-change: transform;
 }
+*/
 
 /* NEW */
 
@@ -2657,14 +2659,12 @@ span#header b.header_3 {
   -webkit-animation: my_fade_animation 0.5s linear;
   */
 
+/*
 .page-anim.ng-leave-prepare {
     animation: slideOutRight .7s cubic-bezier(0.19, 1, 0.22, 1);
  -webkit-animation: slideOutRight .7s cubic-bezier(0.19, 1, 0.22, 1);
-    /*
-    animation: slideOutRight .4s linear;
-    -webkit-animation: slideOutRight .4s linear;
-    */
 } 
+*/
 
 .page-anim.ng-leave {
     animation: slideOutRight .7s cubic-bezier(0.19, 1, 0.22, 1);
@@ -2683,15 +2683,13 @@ span#header b.header_3 {
     overflow-y: hidden;
 }
 
+/*
 .page-anim.ng-enter-prepare {
     will-change: transform;
     animation: slide-in .7s cubic-bezier(0.19, 1, 0.22, 1);
     -webkit-animation: slide-in .7s cubic-bezier(0.19, 1, 0.22, 1);
-    /*
-        animation: slide-in .4s linear;
-    -webkit-animation: slide-in .4s linear;
-    */
 }
+*/
 
 .page-anim.ng-enter {
     /*will-change: transform;*/
@@ -2755,10 +2753,12 @@ span#header b.header_3 {
 @keyframes slide-in {
     0% {
         transform: translateX(100%);
+       
     }
 
     100% {
         transform: translateX(0);
+
 
     }
 }
