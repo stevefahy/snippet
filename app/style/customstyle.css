@@ -2651,14 +2651,14 @@ span#header b.header_3 {
 
 .page-anim.ng-leave-prepare {
  /*-webkit-animation: slideOutRight 10s cubic-bezier(0.19, 1, 0.22, 1);*/
-    animation: slideOutRight .5s linear;
-    -webkit-animation: slideOutRight .5s linear;
+    animation: slideOutRight .4s linear;
+    -webkit-animation: slideOutRight .4s linear;
 } 
 
 .page-anim.ng-leave {
     /*-webkit-animation: slideOutRight 10s cubic-bezier(0.19, 1, 0.22, 1);*/
-    animation: slideOutRight .5s linear;
-    -webkit-animation: slideOutRight .5s linear;
+    animation: slideOutRight .4s linear;
+    -webkit-animation: slideOutRight .4s linear;
 }
 
 .page-anim.ng-leave .content_cnv {
@@ -2672,15 +2672,15 @@ span#header b.header_3 {
 .page-anim.ng-enter-prepare {
     will-change: transform;
     /*-webkit-animation: slide-in 10s cubic-bezier(0.19, 1, 0.22, 1);*/
-        animation: slide-in .5s linear;
-    -webkit-animation: slide-in .5s linear;
+        animation: slide-in .4s linear;
+    -webkit-animation: slide-in .4s linear;
 }
 
 .page-anim.ng-enter {
     will-change: transform;
     /*-webkit-animation: slide-in 10s cubic-bezier(0.19, 1, 0.22, 1);*/
-            animation: slide-in .5s linear;
-    -webkit-animation: slide-in .5s linear;
+            animation: slide-in .4s linear;
+    -webkit-animation: slide-in .4s linear;
 }
 
 .page-anim.ng-enter .content_cnv {
@@ -2693,7 +2693,7 @@ span#header b.header_3 {
 
 .page-static.ng-leave {
     will-change: transform;
-    -webkit-animation: conversations-leave .5s linear;
+    -webkit-animation: conversations-leave .4s linear;
 }
 
 .page-static.ng-leave .content_cnv {
@@ -2705,7 +2705,7 @@ span#header b.header_3 {
 }
 
 .page-static.ng-enter {
-    -webkit-animation: conversations-leave .5s linear;
+    -webkit-animation: conversations-leave .4s linear;
 }
 
 .page-static.ng-enter .content_cnv {
