@@ -832,7 +832,7 @@ if (workbox) {
   },
   {
     "url": "services/image_edit.js",
-    "revision": "05d7cd72ebad29176472d0a6b1030596"
+    "revision": "59fb4556bd1e25427a782ce3570c0e05"
   },
   {
     "url": "services/image_filters.js",
@@ -876,7 +876,7 @@ if (workbox) {
   },
   {
     "url": "style/customstyle.css",
-    "revision": "d17aebc2473546b30b4b0c62dedad926"
+    "revision": "b492e71f418eb22e62589c3737556afe"
   },
   {
     "url": "style/instagram.css",
