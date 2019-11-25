@@ -5,8 +5,7 @@
 cardApp.service('ImageFilters', ['$rootScope', 'Format', '$q', 'ContentEditable', 'ImageAdjustment', 'ImageFunctions', 'Slider', function($rootScope, Format, $q, ContentEditable, ImageAdjustment, ImageFunctions, Slider) {
 
     var buildFilters = function(parent_container, id, image) {
-        //var filt = $('.image_filt_div').clone().insertAfter('.' + parent_container + ' #cropper_' + id);
-        var filt = $('.image_filt_div');//.clone().insertAfter('.' + parent_container + ' #cropper_' + id);
+        var filt = $('.image_filt_div');
         filt.attr('id', 'filters_' + id);
         filt.addClass('filters_active');
         // Empty the filter list from previous use.
@@ -36,43 +35,40 @@ cardApp.service('ImageFilters', ['$rootScope', 'Format', '$q', 'ContentEditable'
         $('.image_adjust_on').remove();
         var parent_container = ImageAdjustment.getImageParent();
         var id = ImageAdjustment.getImageId();
-        // Hide the original image.
-        //if ($('.' + parent_container + ' #cropper_' + id + ' .image_filt_div').length <= 0) {
-            var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
-            var image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
-            var source = ImageFunctions.imageToCanvas(image);
-            var target = ImageFunctions.imageToCanvas(image);
-            $(source).addClass('source_canvas');
-            $(target).addClass('target_canvas');
-            $(target).addClass('hide');
-            var source2 = $(source).prependTo('.content_cnv #cropper_' + id)[0];
-            var target2 = $(target).prependTo('.content_cnv #cropper_' + id)[0];
-            if (ia != undefined) {
-                // Target canvas - All adjustments
+        var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
+        var image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
+        var source = ImageFunctions.imageToCanvas(image);
+        var target = ImageFunctions.imageToCanvas(image);
+        $(source).addClass('source_canvas');
+        $(target).addClass('target_canvas');
+        $(target).addClass('hide');
+        var source2 = $(source).prependTo('.content_cnv #cropper_' + id)[0];
+        var target2 = $(target).prependTo('.content_cnv #cropper_' + id)[0];
+        if (ia != undefined) {
+            // Target canvas - All adjustments
+            ImageAdjustment.applyFilters(source, ia).then(function(result) {
+                target.width = result.width;
+                target.height = result.height;
+                var ctx = target.getContext('2d');
+                ctx.drawImage(result, 0, 0);
+                // Source canvas (all adjustments less filter)
+                ia.filter = undefined;
                 ImageAdjustment.applyFilters(source, ia).then(function(result) {
-                    target.width = result.width;
-                    target.height = result.height;
-                    var ctx = target.getContext('2d');
-                    ctx.drawImage(result, 0, 0);
-                    // Source canvas (all adjustments less filter)
-                    ia.filter = undefined;
-                    ImageAdjustment.applyFilters(source, ia).then(function(result) {
-                        ImageFunctions.canvasToTempImage(result, id).then(function(image) {
-                            buildFilters(parent_container, id, image);
-                            $(target).removeClass('hide');
-                            ImageFunctions.hideAdjusted(parent_container, id);
-                        });
+                    ImageFunctions.canvasToTempImage(result, id).then(function(image) {
+                        buildFilters(parent_container, id, image);
+                        $(target).removeClass('hide');
+                        ImageFunctions.hideAdjusted(parent_container, id);
                     });
                 });
-            } else {
-                // Source canvas - no adjustments
-                ImageFunctions.canvasToTempImage(source, id).then(function(image) {
-                    buildFilters(parent_container, id, image);
-                    $(target).removeClass('hide');
-                    ImageFunctions.hideOriginal(parent_container, id);
-                });
-            }
-       // }
+            });
+        } else {
+            // Source canvas - no adjustments
+            ImageFunctions.canvasToTempImage(source, id).then(function(image) {
+                buildFilters(parent_container, id, image);
+                $(target).removeClass('hide');
+                ImageFunctions.hideOriginal(parent_container, id);
+            });
+        }
     };
 
     this.filterClick = function(e, button, id, filter) {

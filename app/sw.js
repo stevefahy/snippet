@@ -648,7 +648,7 @@ if (workbox) {
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "a3d80763d01c35025bf79ca3b6ea5279"
+    "revision": "d5785eb031c6f3703a4269803e55e711"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -676,11 +676,11 @@ if (workbox) {
   },
   {
     "url": "controllers/login_ctrl.js",
-    "revision": "997a5bf0c527192d70f9fc3b5a2ad49f"
+    "revision": "930fa3c04eff7a1ead757780932106b9"
   },
   {
     "url": "controllers/main_ctrl.js",
-    "revision": "d9f72925a8a2fdfb87835d3b5fb08910"
+    "revision": "2cc76de941c96aee18837b76d9a45141"
   },
   {
     "url": "controllers/usersetting_ctrl.js",
@@ -692,7 +692,7 @@ if (workbox) {
   },
   {
     "url": "factories/factories.js",
-    "revision": "67612d57edf06d78c8c7af8928310049"
+    "revision": "640c3f1afb260da4b4dcee6d6bf7dffa"
   },
   {
     "url": "factories/local_db.js",
@@ -704,39 +704,59 @@ if (workbox) {
   },
   {
     "url": "indexa.html",
-    "revision": "d3ae1a9ccb8a192b6ba5f3ce5070d629"
+    "revision": "6bd01fdfb3bc7b33cd5f4f0cae716878"
   },
   {
     "url": "js/angular_moment.js",
     "revision": "9782d9786bfb852471abdd236d8e9672"
   },
   {
-    "url": "js/angular-animate.1.7.9.js",
-    "revision": "e7f3e2df550c74fbfb7aabd21769ea91"
-  },
-  {
-    "url": "js/angular-cookies.min_1.6.9.js",
-    "revision": "7d01657d4fb5a95aedf51c8a1900ccde"
-  },
-  {
     "url": "js/angular-jwt.js",
     "revision": "20b4a8c03265120b6dfe747c14ad1069"
   },
   {
-    "url": "js/angular-resource.1.7.9.min.js",
+    "url": "js/angular/angular-animate.1.7.9.min.js",
+    "revision": "485d5a06f12a4b4e106b84a016a2e720"
+  },
+  {
+    "url": "js/angular/angular-cookies.min.1.7.9.js",
+    "revision": "93fd1303c0ac97de44b79a55afbac530"
+  },
+  {
+    "url": "js/angular/angular-resource.1.7.9.min.js",
     "revision": "74c531c03c5c52adb9ecde6379d29953"
   },
   {
-    "url": "js/angular-route.1.7.9.min.js",
+    "url": "js/angular/angular-route.1.7.9.min.js",
     "revision": "7e52566e95d50de210f83a120bb299c6"
   },
   {
-    "url": "js/angular.1.7.9.min.js",
+    "url": "js/angular/angular-sanitize.1.7.9.min.js",
+    "revision": "7d3fd84d72e274944e5e37573748937d"
+  },
+  {
+    "url": "js/angular/angular.1.7.9.min.js",
     "revision": "fabefdbf372d18c3cfdf8020eecd92a5"
+  },
+  {
+    "url": "js/bootstrap/bootstrap.4.3.1.min.js",
+    "revision": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  {
+    "url": "js/bootstrap/popper.1.14.7.min.js",
+    "revision": "d504f567785f24c3122b66d0a652b525"
   },
   {
     "url": "js/exif.js",
     "revision": "bb882034f8ea66b2ad6c0f06adcc2e91"
+  },
+  {
+    "url": "js/jquery/jquery-3.4.1.min.js",
+    "revision": "2f772fed444d5489079f275bd01e26cc"
+  },
+  {
+    "url": "js/jquery/jquery.ui.1.12.1.min.js",
+    "revision": "7ea717799ef7fa610f53ea03784ff68e"
   },
   {
     "url": "js/moment.config.js",
@@ -780,7 +800,7 @@ if (workbox) {
   },
   {
     "url": "modules/app.js",
-    "revision": "602b55b0df180f6ac3536977e4257772"
+    "revision": "dcb0ea590a2ba2a4c8567742c0de606b"
   },
   {
     "url": "routes/routes.js",
@@ -796,7 +816,7 @@ if (workbox) {
   },
   {
     "url": "services/crop_rotate.js",
-    "revision": "23793d0384d92d63b55057cf77b8cdf5"
+    "revision": "f6a160e0ff842ad09912a1f1e55c68b8"
   },
   {
     "url": "services/database.js",
@@ -832,11 +852,11 @@ if (workbox) {
   },
   {
     "url": "services/image_edit.js",
-    "revision": "59fb4556bd1e25427a782ce3570c0e05"
+    "revision": "05d7cd72ebad29176472d0a6b1030596"
   },
   {
     "url": "services/image_filters.js",
-    "revision": "0a97a0048ac59fe852f3b93ccc80eda6"
+    "revision": "756b64d62b5dbe9fac67d1cecaab6f7d"
   },
   {
     "url": "services/image_functions.js",
@@ -875,12 +895,20 @@ if (workbox) {
     "revision": "e1d5904149bb2f5d90a03ec537d3ea62"
   },
   {
+    "url": "style/bootstrap/bootstrap.min.css",
+    "revision": "8fe70898895271ddc62823321011273a"
+  },
+  {
     "url": "style/customstyle.css",
-    "revision": "b492e71f418eb22e62589c3737556afe"
+    "revision": "23b68c06e97c82479669e312b6cf4314"
   },
   {
     "url": "style/instagram.css",
     "revision": "9cf7b92233d015f5719aba6b4344809a"
+  },
+  {
+    "url": "style/jquery/jquery-ui.base.min.css",
+    "revision": "b2f794b2ff16e69147d761f7f3a88fcc"
   },
   {
     "url": "style/ng-img-crop.css",

@@ -646,7 +646,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 programmatic_scroll = true;
                 $scope.$broadcast("items_changed", scroll_direction);
                 $timeout(function() {
-                    console.log('PAGE LOADED');
                     $rootScope.pageLoading = false;
                 }, 300);
                 // Wait for the page transition animation to end before applying scroll.
@@ -813,7 +812,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     addCard = function(card) {
-        console.log('addCard');
         // Get the user for this card
         var users = UserData.getContacts();
         var user_pos = General.findWithAttr(users, '_id', card.user);
@@ -1165,7 +1163,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // TODO - change if adding button to notify user of new card.
     addCards = function(arr) {
-        console.log('addCards: ' + $scope.top_down);
         var deferred = $q.defer();
         var promises = [];
         var all_cards;
@@ -1178,7 +1175,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             let found = all_cards.filter(x => x._id == arr[i]._id);
             // Not found. New Card. Set this as a new card (for animating onscreen).
             if (found.length == 0) {
-                console.log('new');
                 arr[i].new_card = true;
             } else {
                 // Already exists (may have been added offline).

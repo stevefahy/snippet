@@ -30,7 +30,6 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             // Reset image editing to false
             ImageAdjustment.setImageEditing(false);
         }
-        
         // Check that the user has permission to edit.
         if (principal.isValid()) {
             UserData.checkUser().then(function(result) {

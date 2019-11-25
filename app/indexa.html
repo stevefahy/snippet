@@ -39,31 +39,27 @@
     <!-- Google Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- Angular -->
-    <!--<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js" defer></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular-resource.min.js" defer></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular-route.js" defer></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.7/angular-animate.min.js" defer></script>-->
-    <script type="text/javascript" src="/js/angular.1.7.9.min.js" defer></script>
-    <script type="text/javascript" src="/js/angular-resource.1.7.9.min.js" defer></script>
-    <script type="text/javascript" src="/js/angular-route.1.7.9.min.js" defer></script>
-    <script type="text/javascript" src="/js/angular-animate.1.7.9.js" defer></script>
+    <script type="text/javascript" src="/js/angular/angular.1.7.9.min.js" defer></script>
+    <script type="text/javascript" src="/js/angular/angular-resource.1.7.9.min.js" defer></script>
+    <script type="text/javascript" src="/js/angular/angular-route.1.7.9.min.js" defer></script>
+    <script type="text/javascript" src="/js/angular/angular-animate.1.7.9.min.js" defer></script>
+    <!-- Sanitize -->
+    <script type="text/javascript" src="/js/angular/angular-sanitize.1.7.9.min.js" defer></script>
+    <!-- Angular Cookies -->
+    <script type="text/javascript" src="/js/angular/angular-cookies.min.1.7.9.js" defer></script>
     <!-- jQuery -->
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" defer></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous" defer></script>
+    <script type="text/javascript" src="/js/jquery/jquery-3.4.1.min.js" defer></script>
+    <script type="text/javascript" src="/js/jquery/jquery.ui.1.12.1.min.js" defer></script>
+    <link rel="stylesheet" href="/style/jquery/jquery-ui.base.min.css">
     <!-- Bootstrap -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous" defer></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous" defer></script>
+    <link rel="stylesheet" href="/style/bootstrap/bootstrap.min.css">
+    <script src="/js/bootstrap/popper.1.14.7.min.js" defer></script>
+    <script src="/js/bootstrap/bootstrap.4.3.1.min.js" defer></script>
     <!-- Custom Styles -->
     <link rel="stylesheet" href="/style/customstyle.css">
     <link rel="stylesheet" href="/style/ng-img-crop.css">
     <link rel="stylesheet" href="/style/instagram.css">
     <link rel="stylesheet" href="/style/rzslider.css">
-    <!-- Sanitize -->
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular-sanitize.js" defer></script>
-    <!-- Angular Cookies -->
-    <script type="text/javascript" src="/js/angular-cookies.min_1.6.9.js" defer></script>
     <!-- Angular JWT -->
     <script type="text/javascript" src="/js/angular-jwt.js" defer></script>
     <!-- Moment -->
@@ -144,7 +140,7 @@
             });
         }
     </script>
-    <div ng-include="'/views/debug.html'"></div>
+    <!--<div ng-include="'/views/debug.html'"></div>-->
     <!-- Templates loaded into ng-view -->
     <div ng-controller="MainCtrl" class="main">
         <ng-view view-animations class="page" id="page-system"></ng-view>

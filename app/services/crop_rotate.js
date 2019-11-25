@@ -434,7 +434,6 @@ cardApp.service('CropRotate', ['$rootScope', 'Slider', 'ImageAdjustment', 'Image
         if ($('.' + parent_container + ' #cropper_' + id + ' .crop_box').length <= 0) {
             $('.crop_box').clone().prependTo('.' + parent_container + ' #cropper_' + id);
         }
-
         // Create the two images required for crop rotate.
         createCropperImages(parent_container, id, target).then(function() {
             $('.' + parent_container + ' #image_' + id).addClass('hide');

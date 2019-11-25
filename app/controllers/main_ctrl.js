@@ -176,31 +176,31 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     // Android activity lifecycle states.
     restoreState = function() {
-        console.log('restoreState');
+        //console.log('restoreState');
     };
 
     onPause = function() {
         mobile_active = false;
         // Mobile disconnect
         disconnect_socket();
-        console.log('onPause');
+        //console.log('onPause');
     };
 
     onStop = function() {
         mobile_active = false;
-        console.log('onStop');
+        //console.log('onStop');
     };
 
     onRestart = function() {
-        console.log('onRestart');
+        //console.log('onRestart');
     };
 
     onStart = function() {
-        console.log('onStart');
+        //console.log('onStart');
     };
 
     onResume = function() {
-        console.log('onResume');
+        //console.log('onResume');
         mobile_active = true;
         // Mobile reconnect
         reconnect_socket();
@@ -558,35 +558,17 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             .then(function(result) {});
     });
 
-    
+    // Fix for bug on Android. Whn the app is topped and the onResime the
+    // webView incorrectly returns document.hidden true which mean ngAnimate will not work.
     document.addEventListener("visibilitychange", function() {
-        console.log('document.hidden: ' + document.hidden);
-        // Modify behavior...
         document_hidden = document.hidden;
     });
 
     forceVisible = function() {
-        console.log('forceVisible');
         Object.defineProperty(document, 'visibilityState', { value: 'visible', writable: true });
         Object.defineProperty(document, 'hidden', { value: false, writable: true });
         document.dispatchEvent(new Event("visibilitychange"));
     }
-
-
-    /*function handleVisibilityChange() {
-        console.log(document.hidden);
-        if (!document.hidden) {
-            chatFocus();
-        }
-    }
-
-    function reFocus() {
-        console.log('REFOCUS');
-        document.getElementById("page-system").focus();
-    }
-    */
-
-    //document.addEventListener("visibilitychange", handleVisibilityChange, false);
 
     //
     // ROUTE ANIMATION
@@ -606,20 +588,12 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         if (current != undefined) {
             from = current.$$route.originalPath;
             // Not a directly loaded page.
-            console.log('Not a directly loaded page.');
             $rootScope.animate_pages = true;
         }
         $animate.enabled(true);
         if (document_hidden) {
-            console.log('hidden. forceVisible()');
             forceVisible();
-            //reFocus();
         }
-        console.log('document_hidden: ' + document_hidden);
-        console.log('$animate.enabled: ' + $animate.enabled());
-        console.log('$rootScope.animate_pages: ' + $rootScope.animate_pages);
-        console.log('from: ' + from);
-        console.log('to: ' + to);
 
         if (from == '/' && to == '/chat/conversations') {
             //console.log('FROM / TO /chat/conversations');
@@ -634,11 +608,11 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             viewAnimationsService.setEnterAnimation('page-static z5000');
             viewAnimationsService.setLeaveAnimation('page-anim z6000');
         } else if (from == '/chat/conversations' && to == '/chat/conversation/:id') {
-            console.log('FROM /chat/conversations TO /chat/conversation/:id');
+            //console.log('FROM /chat/conversations TO /chat/conversation/:id');
             viewAnimationsService.setEnterAnimation('page-anim z9000');
             viewAnimationsService.setLeaveAnimation('page-static z5000');
         } else if (from == '/chat/conversation/:id' && to == '/chat/conversations') {
-            console.log('FROM /chat/conversation/:id TO /chat/conversations');
+            //console.log('FROM /chat/conversation/:id TO /chat/conversations');
             $('#page-system').removeClass("page-static");
             $('#page-system').addClass("page-anim");
             viewAnimationsService.setEnterAnimation('page-static z5000');

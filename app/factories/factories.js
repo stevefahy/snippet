@@ -598,12 +598,12 @@ cardApp.factory('socket', function($rootScope, $window, $interval, $q) {
         connect: connectNamespace,
         disconnect: function() {
             //console.log('disconnect');
-            if(socket_n){
+            if (socket_n) {
                 socket_n.disconnect();
             }
-            if(socket_m){
-            socket_m.disconnect();
-        }
+            if (socket_m) {
+                socket_m.disconnect();
+            }
         },
         getId: function() {
             return property;
