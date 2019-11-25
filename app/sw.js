@@ -676,11 +676,11 @@ if (workbox) {
   },
   {
     "url": "controllers/login_ctrl.js",
-    "revision": "930fa3c04eff7a1ead757780932106b9"
+    "revision": "1406b7b1f829710a77746078adaa7220"
   },
   {
     "url": "controllers/main_ctrl.js",
-    "revision": "2cc76de941c96aee18837b76d9a45141"
+    "revision": "21720cfef6bc85ff1c03df2e6b4c7a18"
   },
   {
     "url": "controllers/usersetting_ctrl.js",

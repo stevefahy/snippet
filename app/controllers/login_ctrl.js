@@ -2,6 +2,6 @@ cardApp.controller("loginCtrl", ['$scope', '$rootScope', '$animate', function($s
 
     $scope.pageClass = '';
     $rootScope.dataLoading = false;
-    //$animate.enabled(false);
+    $animate.enabled(false);
 
 }]);

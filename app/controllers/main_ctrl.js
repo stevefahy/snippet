@@ -590,7 +590,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             // Not a directly loaded page.
             $rootScope.animate_pages = true;
         }
-        $animate.enabled(true);
+
         if (document_hidden) {
             forceVisible();
         }
