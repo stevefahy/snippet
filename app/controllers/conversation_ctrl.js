@@ -262,7 +262,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                 bindScroll();
                             });
                         }
-                    },100);
+                    }, 100);
                 });
                 $scope.test_card.content = $scope.cards[i].content;
                 //$scope.test_card.content = card.content;
@@ -647,8 +647,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $scope.$broadcast("items_changed", scroll_direction);
                 $timeout(function() {
                     console.log('PAGE LOADED');
-                $rootScope.pageLoading = false;
-            },200);
+                    $rootScope.pageLoading = false;
+                }, 300);
                 // Wait for the page transition animation to end before applying scroll.
                 $timeout(function() {
                     bindScroll();
@@ -1399,7 +1399,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                 }
                             }
                         } else {
-                            //$rootScope.pageLoading = false;
+                            $rootScope.pageLoading = false;
                             $rootScope.loading_cards_offscreen = false;
                         }
                     })
