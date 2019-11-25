@@ -22,6 +22,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     var last_network_status = true;
     var endalert = false;
     var addingalert = false;
+    var document_hidden;
 
     var DEVICE_TYPE;
     var DEVICE_OS;
@@ -557,7 +558,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             .then(function(result) {});
     });
 
-    var document_hidden;
+    
     document.addEventListener("visibilitychange", function() {
         console.log('document.hidden: ' + document.hidden);
         // Modify behavior...
@@ -577,12 +578,13 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         if (!document.hidden) {
             chatFocus();
         }
-    }*/
+    }
 
     function reFocus() {
         console.log('REFOCUS');
         document.getElementById("page-system").focus();
     }
+    */
 
     //document.addEventListener("visibilitychange", handleVisibilityChange, false);
 
@@ -610,8 +612,8 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         $animate.enabled(true);
         if (document_hidden) {
             console.log('hidden. forceVisible()');
-            //forceVisible();
-            reFocus();
+            forceVisible();
+            //reFocus();
         }
         console.log('document_hidden: ' + document_hidden);
         console.log('$animate.enabled: ' + $animate.enabled());
