@@ -596,7 +596,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         $animate.enabled(true);
         if (document_hidden) {
             console.log('hidden. forceVisible()');
-            forceVisible();
+            //forceVisible();
         }
         console.log('document_hidden: ' + document_hidden);
         console.log('$animate.enabled: ' + $animate.enabled());
