@@ -572,6 +572,20 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     }
 
 
+    /*function handleVisibilityChange() {
+        console.log(document.hidden);
+        if (!document.hidden) {
+            chatFocus();
+        }
+    }*/
+
+    function reFocus() {
+        console.log('REFOCUS');
+        document.getElementById("page-system").focus();
+    }
+
+    //document.addEventListener("visibilitychange", handleVisibilityChange, false);
+
     //
     // ROUTE ANIMATION
     //
@@ -596,7 +610,8 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         $animate.enabled(true);
         if (document_hidden) {
             console.log('hidden. forceVisible()');
-            forceVisible();
+            //forceVisible();
+            reFocus();
         }
         console.log('document_hidden: ' + document_hidden);
         console.log('$animate.enabled: ' + $animate.enabled());

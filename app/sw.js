@@ -680,7 +680,7 @@ if (workbox) {
   },
   {
     "url": "controllers/main_ctrl.js",
-    "revision": "a0a7ffd5e8bc6dc8864bca0aaadf12f7"
+    "revision": "952756f258d4815efc9ef85744cf6ae5"
   },
   {
     "url": "controllers/usersetting_ctrl.js",
