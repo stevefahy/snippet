@@ -2642,9 +2642,8 @@ span#header b.header_3 {
     z-index: 9000;
 }
 
-.page_anim {
+.page {
     will-change: transform;
-    transition-property: opacity;
 }
 /*
 .page-static {
