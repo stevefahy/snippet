@@ -2642,9 +2642,6 @@ span#header b.header_3 {
     z-index: 9000;
 }
 
-.page {
-    will-change: transform;
-}
 /*
 .page-static {
     will-change: transform;
@@ -2691,13 +2688,15 @@ span#header b.header_3 {
 */
 
 .page-anim.ng-enter {
-    /*will-change: transform;*/
-    animation: slide-in .7s cubic-bezier(0.19, 1, 0.22, 1);
-    -webkit-animation: slide-in .7s cubic-bezier(0.19, 1, 0.22, 1);
-    /*
-    animation: slide-in .4s linear;
-    -webkit-animation: slide-in .4s linear;
-    */
+    will-change: transform;
+/*
+    animation: slide-in .5s cubic-bezier(0.19, 1, 0.22, 1);
+    -webkit-animation: slide-in .5s cubic-bezier(0.19, 1, 0.22, 1);
+*/
+    
+    animation: slide-in .3s ease-in-out;
+    -webkit-animation: slide-in .3s ease-in-out;
+    
 }
 
 .page-anim.ng-enter .content_cnv {
@@ -2709,7 +2708,7 @@ span#header b.header_3 {
 }
 
 .page-static.ng-leave {
-    /*will-change: transform;*/
+    will-change: transform;
     animation: conversations-leave .3s;
     -webkit-animation: conversations-leave .3s;
 }

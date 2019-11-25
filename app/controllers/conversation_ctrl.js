@@ -648,7 +648,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $timeout(function() {
                     console.log('PAGE LOADED');
                 $rootScope.pageLoading = false;
-            },500);
+            },200);
                 // Wait for the page transition animation to end before applying scroll.
                 $timeout(function() {
                     bindScroll();
