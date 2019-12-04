@@ -200,7 +200,8 @@ if (workbox) {
     self.addEventListener('message', function(event) {
         console.log(event);
         console.log(sync_in_progress);
-        if (event.data.message === 'replayRequests' && !sync_in_progress) {
+        //if (event.data.message === 'replayRequests' && !sync_in_progress) {
+        if (event.data.message === 'replayRequests' ) {
             send_message_to_all_clients({ message: 'sync_started' });
 
             sync_in_progress = true;
@@ -1100,7 +1101,7 @@ if (workbox) {
   },
   {
     "url": "service-worker.js",
-    "revision": "ef165b5085156e50ad4c2c924daede3a"
+    "revision": "caa01b73f4a0bce11883203b2382a708"
   },
   {
     "url": "services/content_editable.js",
