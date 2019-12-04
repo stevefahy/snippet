@@ -3,7 +3,7 @@
 //
 
 cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http', 'Users', 'Cards', 'Conversations', 'replaceTags', 'socket', 'Format', 'FormatHTML', 'General', 'UserData', 'principal', 'ImageEdit', function($window, $rootScope, $timeout, $q, $http, Users, Cards, Conversations, replaceTags, socket, Format, FormatHTML, General, UserData, principal, ImageEdit) {
-
+console.log('DB');
     var self = this;
 
     var updateinprogress = false;
@@ -209,6 +209,15 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         return deferred.promise;
     }
 
+    function send_message_to_sw(msg, obj) {
+        //console.log(card);
+        var send = { "message": msg, object: obj };
+        //send = JSON.parse(JSON.stringify(send));
+        if (navigator.serviceWorker.controller) {
+            navigator.serviceWorker.controller.postMessage(send);
+        }
+    }
+
     // CREATE CARD
     this.createCard = function(id, card_create, currentUser) {
         var promises = [];
@@ -246,18 +255,50 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
             addCards([offline_card_create]).then(function(result) {
                 $rootScope.$broadcast('CARD_CREATED');
             })
+            var type = Conversations.getConversationType();
+            console.log(type);
+
+            //UserData.conversationsLatestCardAdd = function(id, data) {
+            UserData.conversationsLatestCardAdd(offline_card_create.conversationId, offline_card_create);
+
+            send_message_to_sw("card_create_update", { operation: 'create_update', card: offline_card_create, conversation_type: type });
         }
         // Post the card to the server.
         Cards.create(online_card_create)
             .then(function(response) {
                 // Update viewed users and send notifications.
                 self.cardPosted(response.data, 'POST');
+            })
+            .catch(function(error) {
+                console.log('error: ' + error);
+                //updateinprogress = false;
+                //deferred.resolve();
             });
     };
 
     // UPDATE CARD
     this.updateCard = function(card_id, card, currentUser) {
         var deferred = $q.defer();
+        if (!$rootScope.online) {
+            var type = Conversations.getConversationType();
+            //$rootScope.$apply(function() {
+            card.updatedAt = new Date().toISOString();
+
+            //updateCards(card);
+            //console.log($rootScope.cards);
+
+            // let found_card = $rootScope.cards.find(x => x._id == card_id);
+            //   console.log(found_card);
+            // });
+
+            //UserData.conversationsLatestCardAdd = function(id, data) {
+            UserData.conversationsLatestCardAdd(card.conversationId, card);
+
+            console.log(type);
+            console.log(card);
+            send_message_to_sw("card_create_update", { operation: 'create_update', card: card, conversation_type: type });
+        }
+
         if (!updateinprogress) {
             setTimeout(function() {
                 var promises = [];
@@ -300,7 +341,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
 
 
     // DELETE CARD
-    this.deleteCard = function(card_id, conversation_id, currentUser) {
+    this.deleteCard = async function(card_id, conversation_id, currentUser) {
         var promises = [];
         var promises_followers = [];
         var sent_content;
@@ -311,9 +352,35 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         var recipients;
         var viewed_users = [];
         var updated_viewed_users;
+
+
+
         // Offline
         if (!$rootScope.online) {
-            deleteCard(card_id);
+           
+            /*
+            //UserData.conversationsLatestCardAdd = function(id, data) {
+            let arr = $filter('orderBy')($scope.cards, 'updatedAt', true);
+            let card_exists = (arr) => arr._id == card_id;
+            //console.log(card_exists);
+            let card_index = arr.findIndex(card_exists);
+            console.log(card_index);
+            let previous_card= {content:"empty"};
+            if(card_index-1 >= 0){
+                previous_card = arr[card_index-1];
+            }
+            */
+
+ let previous_card = await deleteCard(card_id);
+            console.log(previous_card);
+            UserData.conversationsLatestCardDelete(conversation_id, card_id, previous_card);
+            
+
+            var type = Conversations.getConversationType();
+            console.log(type);
+            let temp_card = { _id: card_id };
+            send_message_to_sw("card_create_update", { operation: 'delete', card: temp_card, conversation_type: type });
+
         }
         Cards.delete(card_id)
             .then(function(returned) {

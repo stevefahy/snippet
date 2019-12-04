@@ -6,6 +6,7 @@ if (workbox) {
     let temp_ids = [];
 
     let sync_in_progress = false;
+    console.log('SET: ' + sync_in_progress);
     let sync_data = [];
 
     // Event Lisiteners
@@ -14,22 +15,223 @@ if (workbox) {
         return self.clients.claim();
     });
 
+/*
     self.addEventListener("sync", function(event) {
         if (event.tag == "workbox-background-sync:api_image") {
             send_message_to_all_clients({ message: 'sync_started' });
             sync_in_progress = true;
+            console.log('SET: ' + sync_in_progress);
             syncImages();
         }
     });
+    */
+
+
+
+    // When card is added to feed (update when back online and offline?)
+    // get the cache for feed/0 (latest)
+    // And add the content of the card to the feed/0 response
+
+
+    // TODO 
+    // feed new card done
+    // feed update done
+    // feed delete
+    // private conversation new card
+    // private conversation update
+    // private conversation new card
+
+    async function updateConversation(obj) {
+        console.log(obj);
+
+        // Get the current cache for the feed
+        return caches.open('conversation').then(async function(cache) {
+            return cache.keys().then(function(requests) {
+                var urls = requests.map(function(request) {
+                    return request;
+                });
+                console.log(urls);
+                return caches.match(urls[0]).then(async function(cacheResponse) {
+                    console.log(cacheResponse);
+                    // Found it in the cache
+                    if (cacheResponse) {
+                        //let clone_1 = await cacheResponse.clone();
+                        // Get the original response
+                        let response_json = await cacheResponse.json();
+                        console.log(response_json);
+                        console.log('here1');
+                        // Get the latest card by updatedAt.
+
+                        latest = obj.reduce(function(r, a) {
+                            return r.date > a.date ? r : a;
+                        });
+
+                        console.log(latest);
+
+                    }
+                });
+            });
+        });
+
+
+    }
+
+    async function updateLatestCard(id, card) {
+        console.log(id);
+        console.log(card);
+        // Get the current cache for the feed
+        return caches.open('get_conversation_latest_card').then(async function(cache) {
+            return cache.keys().then(function(requests) {
+                var urls = requests.map(function(request) {
+                    return request;
+                });
+                console.log(urls);
+                // Find the first cache item (create and update are the most recent)
+                let found_url = urls.find(x => x.url.includes(id));
+                console.log(found_url);
+                return caches.match(found_url).then(async function(cacheResponse) {
+                     console.log(cacheResponse);
+                    // Found it in the cache
+                    if (cacheResponse) {
+                        // Get the original response
+                        let response_json = await cacheResponse.json();
+                        console.log(response_json);
+                        console.log(card);
+
+                        let headers = { "status": 200, headers: { "Content-Type": "application/json; charset=utf-8", "Response-Type": "basic" } }
+                        let blob_headers = { type: 'basic' };
+                        var blob = new Blob([JSON.stringify(card)], blob_headers);
+                        let new_response = new Response(blob, headers);
+                        cache.put(found_url, new_response);
+                        return response_json;
+
+                    }
+                });
+            })
+        });
+
+    }
+
+    async function updateFeed(card, operation, conversation_type) {
+        console.log(card);
+        // remove the new_card
+        delete card.new_card;
+        delete card.$$hashKey;
+        let cache_name;
+        //if (conversation_type == 'feed') {
+        //    cache_name = 'user-feed1';
+        //}
+
+        switch (conversation_type) {
+            case 'feed':
+                cache_name = 'user-feed1';
+                break;
+            case 'private':
+                cache_name = 'private-conversation';
+                break;
+        }
+
+        // Get the current cache for the feed
+        return caches.open(cache_name).then(async function(cache) {
+            return cache.keys().then(function(requests) {
+                var urls = requests.map(function(request) {
+                    return request;
+                });
+                console.log(urls);
+                // Find the first cache item (create and update are the most recent)
+                let found_url = urls.find(x => x.url.includes('last_card=0'));
+                console.log(found_url);
+                return caches.match(found_url).then(async function(cacheResponse) {
+                    console.log(cacheResponse);
+                    // Found it in the cache
+                    if (cacheResponse) {
+                        // Get the original response
+                        let response_json = await cacheResponse.json();
+                        console.log(response_json);
+                        // Add the new card
+                        // check whether to add or update
+                        //card_exists = response_json.cards.find(x => x._id == card._id);
+                        //let arr = response_json.cards;
+                        let arr;
+                        if (conversation_type == 'feed') {
+                            arr = response_json['cards'];
+                        } else if (conversation_type == 'private') {
+                            arr = response_json;
+                        }
+                        let card_exists = (arr) => arr._id == card._id;
+                        console.log(card_exists);
+                        let card_index = arr.findIndex(card_exists);
+                        console.log(card_index);
+                        if (operation == 'create_update') {
+                            if (card_index >= 0) {
+                                console.log('update');
+                                console.log(arr[card_index]);
+                                console.log(card);
+                                card.original_content = card.content;
+                                arr[card_index] = card;
+                                console.log(arr);
+                            } else {
+                                console.log('create');
+                                arr.push(card);
+                            }
+                        }
+                        if (operation == 'delete') {
+                            console.log('delete');
+                            if (card_index >= 0) {
+                                arr.splice(card_index, 1);
+                            }
+                        }
+
+
+                        let headers = { "status": 200, headers: { "Content-Type": "application/json; charset=utf-8", "Response-Type": "basic" } }
+                        let blob_headers = { type: 'basic' };
+                        var blob = new Blob([JSON.stringify(response_json)], blob_headers);
+                        let new_response = new Response(blob, headers);
+                        cache.put(found_url, new_response);
+                        return response_json;
+                    }
+                });
+            });
+        });
+    }
 
     // Client to Workbox
 
     self.addEventListener('message', function(event) {
-        if (event.data === 'replayRequests' && !sync_in_progress) {
+        console.log(event);
+        console.log(sync_in_progress);
+        if (event.data.message === 'replayRequests' && !sync_in_progress) {
             send_message_to_all_clients({ message: 'sync_started' });
+
             sync_in_progress = true;
+            console.log('SET: ' + sync_in_progress);
             syncImages();
         }
+        //"card_create_update"
+        if (event.data.message === "card_create_update") {
+            //card: card, type: type
+            console.log(event);
+            console.log(event.data.object.card);
+            console.log(event.data.object.conversation_type);
+            let operation = event.data.object.operation;
+            let conversation_type = event.data.object.conversation_type;
+            //if (event.data.object.conversation_type == "feed") {
+            //updateFeed(event.data.object.card, operation, conversation_type);
+            updateFeed(event.data.object.card, operation, conversation_type);
+            //console.log(a);
+            //}
+            //if (event.data.object.conversation_type == "feed") {
+            //    updateFeed(event.data.object.card, operation)
+            //}
+            // updateConversations(a);
+        }
+
+        if (event.data.message === "updatelatestcard") {
+            console.log(event.data.object);
+            updateLatestCard(event.data.object.id, event.data.object.card);
+
+        }
+
     });
 
     // Debugging
@@ -41,6 +243,7 @@ if (workbox) {
     // Messaging
 
     function send_message_to_sw(msg) {
+        console.log(msg);
         navigator.serviceWorker.controller.postMessage(msg);
     }
 
@@ -53,6 +256,8 @@ if (workbox) {
                 } else {
                     resolve(event.data);
                 }
+                // Add this line:
+                return Promise.resolve("Dummy response to keep the console quiet");
             };
             client.postMessage(msg, [msg_chan.port2]);
         });
@@ -94,6 +299,8 @@ if (workbox) {
         let all_updated = sd.filter(x => x.method == "PUT");
         let all_deleted = sd.filter(x => x.method == "DELETE");
         let images_posted = sd.filter(x => x.image != undefined);
+
+        console.log(all_posted);
 
         // Return an array of PUTs for each POST (by POST returned ._id)
         all_posted.forEach(function(element) {
@@ -168,7 +375,7 @@ if (workbox) {
     // When sync is disabled (Mobile).
 
     async function syncDeletes() {
-        //console.log('...Synchronizing ' + queue_delete.name);
+        console.log('...Synchronizing ' + queue_delete.name);
         let entry;
         let clone;
         let response;
@@ -209,11 +416,12 @@ if (workbox) {
         // Update the DOM and sending notifications.
         send_message_to_all_clients({ message: 'all_requests_updated', all_requests: all_requests });
         sync_in_progress = false;
+        console.log('SET: ' + sync_in_progress);
     }
 
 
     async function syncPosts() {
-        //console.log('...Synchronizing ' + queue.name);
+        console.log('...Synchronizing ' + queue.name);
         let entry;
         let clone;
         let response;
@@ -280,7 +488,7 @@ if (workbox) {
     }
 
     async function syncImages() {
-        //console.log('...Synchronizing ' + queue_image.name);
+        console.log('...Synchronizing ' + queue_image.name);
         let entry;
         let clone;
         let response;
@@ -404,6 +612,7 @@ if (workbox) {
             let requestData = await clone.json();
             let method = request.method;
             let id;
+            console.log(requestData);
             if (method == "POST") {
                 id = requestData._id;
             }
@@ -412,6 +621,7 @@ if (workbox) {
             }
             // adding to the Queue.
             queue.pushRequest({ request: request, metadata: id });
+
         }
     }
 
@@ -432,6 +642,46 @@ if (workbox) {
             queue_image.pushRequest({ request: request, metadata: uploads.name });
         }
     }
+
+    const cachedAPIResponseWillBeUsed = async ({ cache, request, cachedResponse }) => {
+
+        // Search for the file ignoring the query part of the url.
+        var cachedFiles = await caches.match(request.url, {
+            ignoreSearch: true
+        });
+        console.log(cachedFiles);
+        if (cachedFiles) {
+            return cachedFiles;
+        }
+
+        // If there's already a match against the request URL, return it.
+        if (cachedResponse) {
+            console.log(cachedResponse);
+            //return cachedResponse;
+        }
+
+
+    };
+
+    const DBResponseWillBeUsed = async ({ cache, request, cachedResponse }) => {
+
+        // Search for the file ignoring the query part of the url.
+        var cachedFiles = await caches.match(request.url, {
+            //ignoreSearch: true
+        });
+        console.log(cachedFiles);
+        if (cachedFiles) {
+            return cachedFiles;
+        }
+
+        // If there's already a match against the request URL, return it.
+        if (cachedResponse) {
+            console.log(cachedResponse);
+            return cachedResponse;
+        }
+
+
+    };
 
     const cachedResponseWillBeUsed = async ({ cache, request, cachedResponse }) => {
         // If there's already a match against the request URL, return it.
@@ -496,7 +746,7 @@ if (workbox) {
         new RegExp('/chat/get_feed'),
         new workbox.strategies.NetworkFirst({
             cacheName: 'user-feed1',
-            plugins: [{ cachedResponseWillBeUsed }, ]
+            plugins: [{ cachedAPIResponseWillBeUsed }, ]
         })
     );
 
@@ -505,10 +755,52 @@ if (workbox) {
         new workbox.strategies.NetworkFirst({
             cacheName: 'user-feed2',
             plugins: [
-                { cachedResponseWillBeUsed },
+                { cachedAPIResponseWillBeUsed },
             ]
         })
     );
+
+    workbox.routing.registerRoute(
+        new RegExp('/chat/get_conversation_cards'),
+        new workbox.strategies.NetworkFirst({
+            cacheName: 'private-conversation',
+            plugins: [
+                { cachedAPIResponseWillBeUsed },
+            ]
+        })
+    );
+
+    workbox.routing.registerRoute(
+        new RegExp('/api/conversations/'),
+        new workbox.strategies.NetworkFirst({
+            cacheName: 'conversations',
+            plugins: [
+                { DBResponseWillBeUsed },
+            ]
+        })
+    );
+
+    workbox.routing.registerRoute(
+        new RegExp('/chat/conversation'),
+        new workbox.strategies.NetworkFirst({
+            cacheName: 'conversation',
+            plugins: [
+                { cachedAPIResponseWillBeUsed },
+            ]
+        })
+    );
+
+    workbox.routing.registerRoute(
+        new RegExp('/chat/get_conversation_latest_card/'),
+        new workbox.strategies.NetworkFirst({
+            cacheName: 'get_conversation_latest_card',
+            plugins: [
+                { cachedAPIResponseWillBeUsed },
+            ]
+        })
+    );
+
+
 
     workbox.routing.registerRoute(
         new RegExp('/api/cards'),

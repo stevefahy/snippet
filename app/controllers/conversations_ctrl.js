@@ -112,8 +112,11 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
         var card_content;
         var formatted_conversations;
         var prom1 = UserData.getConversations().then(function(result) {
+            console.log(result);
             formatted_conversations = result;
+            console.log(formatted_conversations);
             formatted_conversations.map(function(key, array) {
+                console.log(key);
                 var prom2 = UserData.getConversationLatestCardById(key._id).then(function(result) {
                     var user_unviewed;
                     if (result.data == null) {

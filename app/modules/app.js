@@ -122,3 +122,26 @@ cardApp.run(function($window, $rootScope) {
         });
     }, false);
 });
+
+/*
+// WebWorker
+
+// Create worker
+const webworker_db = new Worker('/workers/ww_db.js');
+
+// Send message to worker
+//myWorker.postMessage('Hello!');
+let msg = { message: 'int_idb_conversations' }
+webworker_db.postMessage(msg);
+
+
+// Receive message from worker
+webworker_db.onmessage = function(e) {
+    console.log(e.data);
+    if (e.data.message == "conversationsLatestCard") {
+        //if (e.data.data == true) {
+            UserData.conversationsLatestCard(e.data.data);
+        //}
+    }
+}
+*/

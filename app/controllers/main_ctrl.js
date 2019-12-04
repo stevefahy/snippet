@@ -1,4 +1,4 @@
-cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '$location', 'UserData', 'socket', 'principal', 'viewAnimationsService', 'Conversations', 'Cards', '$q', 'Profile', 'Users', 'General', '$animate', '$templateRequest', '$sce', function($scope, $window, $rootScope, $timeout, $location, UserData, socket, principal, viewAnimationsService, Conversations, Cards, $q, Profile, Users, General, $animate, $templateRequest, $sce) {
+cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '$location', 'UserData', 'socket', 'principal', 'viewAnimationsService', 'Conversations', 'Cards', '$q', 'Profile', 'Users', 'General', '$animate', '$templateRequest', '$sce', 'WWIDB', function($scope, $window, $rootScope, $timeout, $location, UserData, socket, principal, viewAnimationsService, Conversations, Cards, $q, Profile, Users, General, $animate, $templateRequest, $sce, WWIDB) {
 
     $window.networkChange = this.networkChange;
     $window.onResume = this.onResume;
@@ -36,6 +36,19 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     } else {
         DEVICE_TYPE = 'non-mobile';
     }
+
+
+    var webworker_db = WWIDB.getWorker();
+    // Receive message from worker
+   /* webworker_db.onmessage = function(e) {
+        if (e.data.message == "conversationsLatestCard") {
+            UserData.conversationsLatestCard(e.data.data);
+        }
+    }*/
+   // console.log('INITY');
+   // let msg = { message: 'int_idb_conversations' }
+   // webworker_db.postMessage(msg);
+
 
     // Intersection Observer
 
@@ -124,7 +137,8 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     // Watch the online status.
     $scope.$watch('online', function(newStatus) {
         if (navigator.serviceWorker.controller && newStatus) {
-            navigator.serviceWorker.controller.postMessage("replayRequests");
+            var send = { "message": "replayRequests" };
+            navigator.serviceWorker.controller.postMessage(send);
         }
         if (!last_network_status && newStatus) {
             if ('serviceWorker' in navigator) {
@@ -334,7 +348,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     if ('serviceWorker' in navigator) {
         // Handler for messages coming from the service worker
         navigator.serviceWorker.addEventListener('message', function(event) {
-
+            console.log(event);
             if (event.data.message == "sync_started") {
                 $rootScope.sync_finished = false;
             }
@@ -517,11 +531,14 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         var id = Conversations.getConversationId();
         // Get the updated card (not necessarily the latest card).
         Cards.getCard(msg.card_id)
-            .then(function(res) {
-                UserData.conversationsLatestCardAdd(msg.conversation_id, res.data);
+            .then(async function(res) {
+
+                //UserData.conversationsLatestCardDelete = function(conversation_id, card_id, previous_card) {
+                //UserData.conversationsLatestCardAdd(msg.conversation_id, res.data);
                 if (id == msg.conversation_id) {
                     updateConversationViewed(id);
-                    deleteCard(msg.card_id);
+                    let previous_card = await deleteCard(msg.card_id);
+                    UserData.conversationsLatestCardDelete(msg.conversation_id, msg.card_id, previous_card);
                 }
                 if ($location.url() == '/chat/conversations') {
                     loadConversations();
@@ -530,19 +547,24 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     });
 
     // NOTIFICATION for private conversation.
-    $rootScope.$on('PUBLIC_NOTIFICATION_DELETED', function(event, msg) {
+    $rootScope.$on('PUBLIC_NOTIFICATION_DELETED', async function(event, msg) {
         //console.log('PUBLIC_NOTIFICATION_DELETED');
         var id = Conversations.getConversationId();
         var followed = UserData.getUser().following;
+        let previous_card;
         if (Conversations.getConversationType() == 'feed' && followed.indexOf(msg.conversation_id) >= 0) {
-            deleteCard(msg.card_id);
+            previous_card = await deleteCard(msg.card_id);
         } else if (msg.conversation_id == id) {
-            deleteCard(msg.card_id);
+            previous_card = await deleteCard(msg.card_id);
+
+            
+                   
         }
         // Get the updated card (not necessarily the latest card).
         Cards.getCard(msg.card_id)
             .then(function(res) {
-                UserData.conversationsLatestCardAdd(msg.conversation_id, res.data);
+                //UserData.conversationsLatestCardDelete(msg.conversation_id, res.data);
+                 UserData.conversationsLatestCardDelete(msg.conversation_id, msg.card_id, previous_card);
             });
     });
 

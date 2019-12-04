@@ -6,6 +6,8 @@
 // Cards Factory
 //
 
+
+
 cardApp.factory('Cards', ['$http', function($http) {
     return {
         create_card: function() {
@@ -197,12 +199,15 @@ cardApp.factory('Conversations', ['$http', '$q', 'LocalDB', function($http, $q, 
         },
         // Find all conversations for the current user.
         find: function() {
-            return $http.get('chat/conversation')
+            console.log('/api/conversations');
+            //return $http.get('/chat/conversations/')
+            return $http.get('/api/conversations/')
                 .then(function(response) {
+                    console.log(response);
                     for (var i in response.data) {
                         LocalDB.updateConversation(response.data[i]);
                     }
-                    return response;
+                    return response.data;
                 });
         },
         addFollower: function(conversation) {
@@ -383,8 +388,11 @@ cardApp.factory('Conversations', ['$http', '$q', 'LocalDB', function($http, $q, 
             return $http.post(theurl, val);
         },
         getConversationCards: function(val) {
-            var theurl = '/chat/get_conversation_cards/' + val.id;
-            return $http.post(theurl, val);
+            var theurl = '/chat/get_conversation_cards/' + val.id + '/' + val.last_card;;
+            var config = {
+                params: val
+            };
+            return $http.get(theurl, config);
         },
         getPublicConversationCards: function(val) {
             var theurl = '/chat/get_public_conversation_cards/' + val.id;
@@ -691,12 +699,70 @@ cardApp.factory('principal', function($cookies, jwtHelper, $q, $rootScope) {
     return principal;
 });
 
+
+
+cardApp.factory('WWIDB', function($rootScope) {
+
+
+    console.log('WWIDB');
+    // WebWorker
+    var self = this;
+    //var WWIDB = this;
+    // Create worker
+    var webworker_db = new Worker('/workers/ww_db.js');
+    this.worker = webworker_db;
+    console.log(self.webworker_db);
+    // Send message to worker
+    //myWorker.postMessage('Hello!');
+    //let msg = { message: 'int_idb_conversations' }
+    //webworker_db.postMessage(msg);
+
+
+    // Receive message from worker
+    webworker_db.onmessage = function(e) {
+        console.log(e.data);
+        if (e.data.message == "conversationsLatestCard") {
+            //var UserData = $injector.get('UserData');
+            //if (e.data.data == true) {
+            //WWIDB_UD.go(e.data.data);
+            //UserData.conversationsLatestCard(e.data.data);
+            WWIDBS.conversationsLatestCard(e.data.data);
+            //}
+        }
+    }
+
+
+
+    //return WWIDB;
+
+
+    return {
+        getWorker: function() {
+            console.log('getWorker');
+            return self.worker;
+        },
+        postMessage: function(msg) {
+            console.log(msg);
+            console.log(webworker_db);
+            //console.log(WWIDB);
+            console.log(self);
+            //defer = $q.defer();
+            webworker_db.postMessage(msg);
+            //return defer.promise;
+        }
+
+    };
+
+
+
+});
+
 //
 // UserData Factory
 //
 
 //cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $http, $cookies, $location, jwtHelper, $q, principal, Users, Conversations, FormatHTML, General, socket, $filter, LocalDB) {
-cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $http, $cookies, $location, jwtHelper, $q, principal, Users, Conversations, General, socket, $filter, LocalDB) {
+cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $http, $cookies, $location, jwtHelper, $q, principal, Users, Conversations, General, socket, $filter, LocalDB, WWIDB) {
     var self = this;
     var user;
     var contacts = [];
@@ -714,6 +780,39 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     var ua = navigator.userAgent;
     $window.androidToken = this.androidToken;
     $window.androidTokenUpdated = this.androidTokenUpdated;
+
+/*
+    var webworker_db = WWIDB.getWorker();
+    // Receive message from worker
+    webworker_db.onmessage = function(e) {
+        if (e.data.message == "conversationsLatestCard") {
+            UserData.conversationsLatestCard(e.data.data);
+        }
+    }
+    */
+
+
+    UserData.send_message_to_sw = function(msg, obj) {
+        console.log('send_message_to_sw');
+        var send = { "message": msg, object: obj };
+        //send = JSON.parse(JSON.stringify(send));
+        if (navigator.serviceWorker.controller) {
+            navigator.serviceWorker.controller.postMessage(send);
+        }
+    }
+    /*
+        UserData.smtsw = function(msg, obj) {
+            var s = 'steve';
+            console.log('send_message_to_sw');
+            //console.log(card);
+            //var send = { "message": msg, object: obj };
+            //send = JSON.parse(JSON.stringify(send));
+            // if (navigator.serviceWorker.controller) {
+            //    navigator.serviceWorker.controller.postMessage(send);
+            //}
+            return s;
+        }
+        */
 
     androidTokenUpdated = function() {
         UserData.getFCMToken();
@@ -891,6 +990,8 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
         return deferred.promise;
     };
 
+    // CONVDB CHECK for updates
+
     UserData.getConversations = function() {
         var deferred = $q.defer();
         deferred.resolve(conversations);
@@ -912,10 +1013,189 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
         return deferred.promise;
     };
 
+    /*
+        updateCacheConversationsOLD = function(conversations) {
+
+            // Get the current cache for the feed
+            return caches.open('conversations').then(async function(cache) {
+                return cache.keys().then(function(requests) {
+                    var urls = requests.map(function(request) {
+                        return request;
+                    });
+                    console.log(urls);
+                    // Find the first cache item (create and update are the most recent)
+                    //let found_url = urls.find(x => x.url.includes('last_card=0'));
+                    //console.log(found_url);
+                    return caches.match(urls[0]).then(async function(cacheResponse) {
+                        console.log(cacheResponse);
+                        // Found it in the cache
+                        if (cacheResponse) {
+                            // Get the original response
+                            let response_json = await cacheResponse.json();
+                            console.log(response_json);
+
+                            let headers = { "status": 200, headers: { "Content-Type": "application/json; charset=utf-8", "Response-Type": "basic" } }
+                            let blob_headers = { type: 'basic' };
+                            var blob = new Blob([JSON.stringify(conversations)], blob_headers);
+                            let new_response = new Response(blob, headers);
+                            cache.put(urls[0], new_response);
+
+                        }
+                    });
+                });
+            });
+
+        }
+        */
+
+    /*
+        storeLatestCard = function(card) {
+            var transaction = db.transaction(["latestcards"], "readwrite");
+            console.log(card);
+            // Do something when all the data is added to the database.
+            transaction.oncomplete = function(event) {
+                console.log("All done!");
+            };
+
+            transaction.onerror = function(event) {
+                // Don't forget to handle errors!
+            };
+
+     //var customerObjectStore = db.transaction("latestcards", "readwrite").objectStore("latestcards");
+
+            var objectStore = transaction.objectStore("latestcards");
+            //customerData.forEach(function(customer) {
+                var request = objectStore.add(card);
+                request.onsuccess = function(event) {
+                    // event.target.result === customer.ssn;
+                    console.log('added');
+                };
+            //});
+        }
+        */
+
+    /*
+     var db;
+        createLatestCard = function() {
+            //console.log(card);
+           
+            // In the following line, you should include the prefixes of implementations you want to test.
+            window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+            // DON'T use "var indexedDB = ..." if you're not in a function.
+            // Moreover, you may need references to some window.IDB* objects:
+            window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction || { READ_WRITE: "readwrite" }; // This line should only be needed if it is needed to support the object's constants for older browsers
+            window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
+            // (Mozilla has never prefixed these objects, so we don't need window.mozIDB*)
+
+            // Let us open our database
+            var request = window.indexedDB.open("latestcards_store", 3);
+
+            request.onerror = function(event) {
+                console.log('error: ' + event);
+            };
+            request.onsuccess = function(event) {
+                console.log('success: ' + event);
+                db = event.target.result;
+            };
+
+
+            request.onupgradeneeded = function(event) {
+                var db = event.target.result;
+
+                // Create an objectStore to hold information about our customers. We're
+                // going to use "ssn" as our key path because it's guaranteed to be
+                // unique - or at least that's what I was told during the kickoff meeting.
+                var objectStore = db.createObjectStore("latestcards", { keyPath: "_id" });
+
+                // Create an index to search customers by name. We may have duplicates
+                // so we can't use a unique index.
+                objectStore.createIndex("_id", "_id", { unique: false });
+
+                // Create an index to search customers by email. We want to ensure that
+                // no two customers have the same email, so use a unique index.
+                //objectStore.createIndex("email", "email", { unique: true });
+
+                // Use transaction oncomplete to make sure the objectStore creation is 
+                // finished before adding data into it.
+                objectStore.transaction.oncomplete = function(event) {
+                    // Store values in the newly created objectStore.
+                    var customerObjectStore = db.transaction("latestcards", "readwrite").objectStore("latestcards");
+                    //conversations.forEach(function(card) {
+                    //console.log(card);
+                    //customerObjectStore.add(card);
+                    //});
+                };
+            };
+
+        }
+        */
+
+    /*
+        storeConversations = function(conversations) {
+            var db;
+            // In the following line, you should include the prefixes of implementations you want to test.
+            window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+            // DON'T use "var indexedDB = ..." if you're not in a function.
+            // Moreover, you may need references to some window.IDB* objects:
+            window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction || { READ_WRITE: "readwrite" }; // This line should only be needed if it is needed to support the object's constants for older browsers
+            window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
+            // (Mozilla has never prefixed these objects, so we don't need window.mozIDB*)
+
+            // Let us open our database
+            var request = window.indexedDB.open("MyTestDatabase", 3);
+
+            request.onerror = function(event) {
+                console.log('error: ' + event);
+            };
+            request.onsuccess = function(event) {
+                console.log('success: ' + event);
+                db = event.target.result;
+            };
+
+
+            request.onupgradeneeded = function(event) {
+                var db = event.target.result;
+
+                // Create an objectStore to hold information about our customers. We're
+                // going to use "ssn" as our key path because it's guaranteed to be
+                // unique - or at least that's what I was told during the kickoff meeting.
+                var objectStore = db.createObjectStore("customers", { keyPath: "_id" });
+
+                // Create an index to search customers by name. We may have duplicates
+                // so we can't use a unique index.
+                objectStore.createIndex("_id", "_id", { unique: false });
+
+                // Create an index to search customers by email. We want to ensure that
+                // no two customers have the same email, so use a unique index.
+                //objectStore.createIndex("email", "email", { unique: true });
+
+                // Use transaction oncomplete to make sure the objectStore creation is 
+                // finished before adding data into it.
+                objectStore.transaction.oncomplete = function(event) {
+                    // Store values in the newly created objectStore.
+                    var customerObjectStore = db.transaction("customers", "readwrite").objectStore("customers");
+                    conversations.forEach(function(customer) {
+                        console.log(customer);
+                        customerObjectStore.add(customer);
+                    });
+                };
+            };
+
+        }
+        */
+
+    // CONVDB START
+
+
+
     UserData.loadConversations = function() {
         var deferred = $q.defer();
         Conversations.find().then(function(result) {
-            conversations = result.data;
+            conversations = result;
+            //storeConversations(conversations);
+            //updateCacheConversations(conversations);
+            //let msg = {message:'updateCacheConversations', data: conversations}
+            //webworker_db.postMessage(msg);
             deferred.resolve(conversations);
         });
         return deferred.promise;
@@ -968,10 +1248,38 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     // Conversations - Latest cards
     //
 
-    UserData.conversationsLatestCardAdd = function(id, data) {
+    UserData.conversationsLatestCard = function(obj) {
+        console.log('KOOL');
+        conversationsLatestCard = obj;
+    }
+
+    //UserData.conversationsLatestCardDelete(conversation_id, card_id);
+
+    UserData.conversationsLatestCardDelete = function(conversation_id, card_id, previous_card) {
         var deferred = $q.defer();
-        var index = General.findWithAttr(conversationsLatestCard, '_id', id);
+        var index = General.findWithAttr(conversationsLatestCard, '_id', conversation_id);
         // Add if conversationsLatestCard for with this id doesnt exist. otherwise update
+        console.log(previous_card);
+        console.log(index);
+        if (index >= 0) {
+            //delete conversationsLatestCard[index];
+            // Add.
+            //let prev = { content: previous_card.content, conversationId: previous_card.conversationId, createdAt: previous_card.createdAt, updatedAt: previous_card.updatedAt, user: previous_card.user, _id: previous_card._id };
+            var card = { _id: conversation_id, data: previous_card };
+            //conversationsLatestCard.push(card);
+            conversationsLatestCard[index].data = previous_card;
+            console.log(conversationsLatestCard);
+
+            //let card = {_id:conversationsLatestCard[index]._id, data: previous_card};
+            let msg = { message: 'conversationsLatestCardUpdate', data: card }
+            //webworker_db.postMessage(msg);
+            WWIDB.postMessage(msg);
+
+            deferred.resolve(conversationsLatestCard);
+        } else {
+            deferred.resolve(conversationsLatestCard);
+        }
+        /*
         if (index >= 0) {
             // Update.
             conversationsLatestCard[index].data = data;
@@ -981,6 +1289,61 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
             var card = { _id: id, data: data };
             conversationsLatestCard.push(card);
             deferred.resolve(conversationsLatestCard);
+        }
+        */
+        return deferred.promise;
+    };
+
+    //createLatestCard();
+
+
+
+    UserData.conversationsLatestCardAdd = async function(id, data) {
+        console.log('conversationsLatestCardAdd');
+
+        var deferred = $q.defer();
+        //send_message_to_sw("card_create_update", { operation: 'create_update', card: offline_card_create, conversation_type: type });
+
+        console.log(id);
+        console.log(conversationsLatestCard);
+        var index = General.findWithAttr(conversationsLatestCard, '_id', id);
+        console.log(index);
+        // Add if conversationsLatestCard for with this id doesnt exist. otherwise update
+        if (index >= 0) {
+            // Update.
+            conversationsLatestCard[index].data = data;
+            console.log('update');
+
+            let card = { _id: conversationsLatestCard[index]._id, data: data };
+            let msg = { message: 'conversationsLatestCardAdd', data: card }
+            webworker_db.postMessage(msg);
+            //console.log('POST MSG!!!');
+            //WWIDB.postMessage(msg);
+
+            let a = await UserData.send_message_to_sw("updatelatestcard", { id: id, card: data });
+
+            deferred.resolve(conversationsLatestCard);
+        } else {
+            console.log('addit');
+            // Add.
+            var card = { _id: id, data: data };
+            conversationsLatestCard.push(card);
+
+            let msg = { message: 'conversationsLatestCardAdd', data: card }
+            webworker_db.postMessage(msg);
+            //console.log('POST MSG');
+            //WWIDB.postM(msg);
+            //console.log(WWIDB.getWorker());
+            //let ww = WWIDB.getWorker();
+            //WWIDB.postMessage(msg);
+
+            //General.smtsw("updatelatestcard", { operation: 'create_update', card: card, conversation_type: type });
+
+            //storeLatestCard(card);
+            let a = await UserData.send_message_to_sw("updatelatestcard", { id: id, card: data });
+
+            deferred.resolve(conversationsLatestCard);
+
         }
         return deferred.promise;
     };
@@ -1043,6 +1406,28 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
             });
     };
 
+    let webworker_db;
+    UserData.initWorker = function() {
+        var deferred = $q.defer();
+        console.log('INITY');
+        webworker_db = WWIDB.getWorker();
+        let msg = { message: 'int_idb_conversations' };
+        webworker_db.postMessage(msg);
+        webworker_db.onmessage = function(e) {
+            console.log(e);
+            if (e.data.message == "IDB_OPENED") {
+                //UserData.conversationsLatestCard(e.data.data);
+                console.log(e);
+                //if(e.data.data == true){
+                    deferred.resolve();
+                //}
+            }
+        }
+
+        //deferred.resolve();
+        return deferred.promise;
+    }
+
     //
     // LOAD ALL USER DATA
     //
@@ -1051,8 +1436,15 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
         var self = this;
         isLoading = true;
         var deferred = $q.defer();
-        //console.log('GET 1 LU');
-        UserData.loadUser().then(function(user) {
+        console.log('GET 0 WDDB');
+        UserData.initWorker().then(function() {
+            console.log('GOT 0 WDDB');
+        }).then(function() {
+
+            console.log('GET 1 LU');
+            return UserData.loadUser();
+
+        }).then(function(user) {
             if (user != null) {
                 return UserData.setUser(user);
             } else {
@@ -1120,16 +1512,23 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
         return deferred.promise;
     };
 
+
+
+
+
     // Check that the user has a valid token.
     // Then load the users data if they have a vald token.
     if (principal.isValid()) {
         this.isAuthenticated = true;
+
         UserData.loadUserData().then(function(result) {
             //console.log('USER DATA LOADED');
         });
     } else {
         this.isAuthenticated = false;
     }
+
+
 
     //
     // Profile
