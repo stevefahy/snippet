@@ -723,6 +723,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Find the conversation id.
     getConversationId = function() {
+        console.log('getConversationId');
         var deferred = $q.defer();
         // Use the id from $routeParams.id if it exists. The conversation may have been loaded by username.
         if (id != undefined) {
@@ -748,7 +749,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     }
                 })
                 .catch(function(error) {
-                    //console.log(error);
+                    console.log(error);
                 });
         } else {
             // No id or username - Feed.
@@ -760,6 +761,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // card_create.html is added to the conversation if $scope.isMember=true.
     checkPermit = function(conv) {
+        console.log(conv);
         var result = false;
         // Logged in
         if (principal.isValid()) {
@@ -1778,9 +1780,38 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     $scope.inviewoptions = { offset: [100, 0, 100, 0] };
 
+    setUp = function(res){
+        var deferred = $q.defer();
+
+
+         if (Conversations.getConversationType() == 'feed') {
+                $scope.feed = true;
+                $scope.top_down = true;
+                $rootScope.top_down = true;
+                $scope.isMember = true;
+                scroll_direction = "top";
+                deferred.resolve();
+            } else if (Conversations.getConversationType() == 'public') {
+                $scope.top_down = true;
+                $rootScope.top_down = true;
+                $scope.isMember = checkPermit(res);
+                scroll_direction = "top";
+                deferred.resolve();
+            } else if (Conversations.getConversationType() == 'private') {
+                $scope.isMember = checkPermit(res);
+                scroll_direction = "bottom";
+                $scope.top_down = false;
+                $rootScope.top_down = false;
+                deferred.resolve();
+            }
+            return deferred.promise;
+    }
     // START - find the conversation id
+    console.log('start');
     getConversationId()
         .then(function(res) {
+            console.log(res);
+            /*
             if (Conversations.getConversationType() == 'feed') {
                 $scope.feed = true;
                 $scope.top_down = true;
@@ -1798,10 +1829,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $scope.top_down = false;
                 $rootScope.top_down = false;
             }
+            */
             // Load the public feed, public conversation or private conversation.
+            console.log('principal.isValid(): ' + principal.isValid());
             if (principal.isValid()) {
                 // Logged in
                 UserData.checkUser().then(function(result) {
+                    console.log(result);
+                    setUp(res).then(function() {
                     $scope.currentUser = UserData.getUser();
                     if (Conversations.getConversationType() == 'feed') {
                         // Display the users feed.
@@ -1813,12 +1848,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         loadConversation();
                     }
                 });
+                });
             } else {
                 $rootScope.dataLoading = false;
                 // Not logged in
                 if (Conversations.getConversationType() == 'public') {
                     // Public route (Does not need to be logged in).
+                    setUp(res).then(function() {
                     loadPublicConversation();
+                })
                 } else {
                     $location.path("/api/login/");
                 }

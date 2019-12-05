@@ -664,6 +664,26 @@ if (workbox) {
 
     };
 
+    const cachedAPIResponseWillBeUsed2 = async ({ cache, request, cachedResponse }) => {
+
+        // Search for the file ignoring the query part of the url.
+        var cachedFiles = await caches.match(request.url, {
+            //ignoreSearch: true
+        });
+        console.log(cachedFiles);
+        if (cachedFiles) {
+            //return cachedFiles;
+        }
+
+        // If there's already a match against the request URL, return it.
+        if (cachedResponse) {
+            console.log(cachedResponse);
+            return cachedResponse;
+        }
+
+
+    };
+
     const DBResponseWillBeUsed = async ({ cache, request, cachedResponse }) => {
 
         // Search for the file ignoring the query part of the url.
@@ -781,15 +801,17 @@ if (workbox) {
         })
     );
 
+    
     workbox.routing.registerRoute(
-        new RegExp('/chat/conversation'),
+        new RegExp('/chat/conversation/'),
         new workbox.strategies.NetworkFirst({
             cacheName: 'conversation',
             plugins: [
-                { cachedAPIResponseWillBeUsed },
+                { cachedAPIResponseWillBeUsed2 },
             ]
         })
     );
+    
 
     workbox.routing.registerRoute(
         new RegExp('/chat/get_conversation_latest_card/'),

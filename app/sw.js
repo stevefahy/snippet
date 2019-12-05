@@ -664,6 +664,26 @@ if (workbox) {
 
     };
 
+    const cachedAPIResponseWillBeUsed2 = async ({ cache, request, cachedResponse }) => {
+
+        // Search for the file ignoring the query part of the url.
+        var cachedFiles = await caches.match(request.url, {
+            //ignoreSearch: true
+        });
+        console.log(cachedFiles);
+        if (cachedFiles) {
+            //return cachedFiles;
+        }
+
+        // If there's already a match against the request URL, return it.
+        if (cachedResponse) {
+            console.log(cachedResponse);
+            return cachedResponse;
+        }
+
+
+    };
+
     const DBResponseWillBeUsed = async ({ cache, request, cachedResponse }) => {
 
         // Search for the file ignoring the query part of the url.
@@ -781,15 +801,17 @@ if (workbox) {
         })
     );
 
+    
     workbox.routing.registerRoute(
-        new RegExp('/chat/conversation'),
+        new RegExp('/chat/conversation/'),
         new workbox.strategies.NetworkFirst({
             cacheName: 'conversation',
             plugins: [
-                { cachedAPIResponseWillBeUsed },
+                { cachedAPIResponseWillBeUsed2 },
             ]
         })
     );
+    
 
     workbox.routing.registerRoute(
         new RegExp('/chat/get_conversation_latest_card/'),
@@ -941,11 +963,11 @@ if (workbox) {
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "4067e2cd8981a242483b3d6500905667"
+    "revision": "65a59620984fb0d9b5c494a151ecdb9e"
   },
   {
     "url": "controllers/conversations_ctrl.js",
-    "revision": "373db47e7e65add053da7a56d2003078"
+    "revision": "9a64851ec8b0e6f76b10c93a31f4f628"
   },
   {
     "url": "controllers/debug_ctrl.js",
@@ -985,7 +1007,7 @@ if (workbox) {
   },
   {
     "url": "factories/factories.js",
-    "revision": "44ab16700f4d67c8dc1d52f9945ecdce"
+    "revision": "b68c9e94a2ed4c4910f03d289ecdb142"
   },
   {
     "url": "factories/local_db.js",
@@ -1101,7 +1123,7 @@ if (workbox) {
   },
   {
     "url": "service-worker.js",
-    "revision": "caa01b73f4a0bce11883203b2382a708"
+    "revision": "57cefeff6ce2b10212238c52ee1b756f"
   },
   {
     "url": "services/content_editable.js",

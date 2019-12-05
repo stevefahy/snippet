@@ -1481,7 +1481,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
             $rootScope.loaded = true;
             $rootScope.dataLoading = false;
             isLoading = false;
-            //console.log('FIN loadUserData');
+            console.log('FIN loadUserData');
             deferred.resolve();
         });
         return deferred.promise;
@@ -1489,9 +1489,10 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
 
     // Check whether the loadUserData is loading or has been loaded already.
     UserData.checkUser = function() {
+        console.log('checkUser');
         var deferred = $q.defer();
         if (isLoading) {
-            //console.log('already loading...wait');
+            console.log('already loading...wait');
             $rootScope.$watch('loaded', function(n) {
                 if (n) {
                     // loaded!
@@ -1499,13 +1500,13 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                 }
             });
         } else {
-            //console.log('not loading...get');
+            console.log('not loading...get');
             // Check whether the user data has already been retrieved.
             if (UserData.getUser() != undefined) {
-                //console.log('CALL VAR /api/user_data');
+                console.log('CALL VAR /api/user_data');
                 deferred.resolve(user);
             } else {
-                //console.log('CALL HTTP /api/user_data');
+                console.log('CALL HTTP /api/user_data');
                 deferred.resolve(loadUserData());
             }
         }

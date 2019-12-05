@@ -25,7 +25,10 @@ cardApp.controller("conversationsCtrl", ['$scope', '$rootScope', '$location', '$
         profile_obj.avatar = conversation.avatar;
         Profile.setConvProfile(profile_obj);
         // Redirect to the conversation.
+        //$http.get("/chat/conversation/" + conversation_id);
         $location.path("/chat/conversation/" + conversation_id);
+        console.log("/chat/conversation/" + conversation_id);
+        
     };
 
     // Continue public conversation
