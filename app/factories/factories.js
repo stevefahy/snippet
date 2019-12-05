@@ -1432,6 +1432,8 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     // LOAD ALL USER DATA
     //
 
+    // With webworker
+
     UserData.loadUserData = function() {
         var self = this;
         isLoading = true;

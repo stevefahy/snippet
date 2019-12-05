@@ -1007,7 +1007,7 @@ if (workbox) {
   },
   {
     "url": "factories/factories.js",
-    "revision": "b68c9e94a2ed4c4910f03d289ecdb142"
+    "revision": "7c6cbe4c66f0b1401a5f27579cd4c69d"
   },
   {
     "url": "factories/local_db.js",
