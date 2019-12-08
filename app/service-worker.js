@@ -5,8 +5,6 @@ if (workbox) {
 
     let temp_ids = [];
 
-    let sync_in_progress = false;
-    console.log('SET: ' + sync_in_progress);
     let sync_data = [];
 
     // Event Lisiteners
@@ -15,119 +13,46 @@ if (workbox) {
         return self.clients.claim();
     });
 
-/*
-    self.addEventListener("sync", function(event) {
-        if (event.tag == "workbox-background-sync:api_image") {
-            send_message_to_all_clients({ message: 'sync_started' });
-            sync_in_progress = true;
-            console.log('SET: ' + sync_in_progress);
-            syncImages();
-        }
-    });
-    */
-
-
-
-    // When card is added to feed (update when back online and offline?)
-    // get the cache for feed/0 (latest)
-    // And add the content of the card to the feed/0 response
-
-
-    // TODO 
-    // feed new card done
-    // feed update done
-    // feed delete
-    // private conversation new card
-    // private conversation update
-    // private conversation new card
-
-    async function updateConversation(obj) {
-        console.log(obj);
-
-        // Get the current cache for the feed
-        return caches.open('conversation').then(async function(cache) {
-            return cache.keys().then(function(requests) {
-                var urls = requests.map(function(request) {
-                    return request;
-                });
-                console.log(urls);
-                return caches.match(urls[0]).then(async function(cacheResponse) {
-                    console.log(cacheResponse);
-                    // Found it in the cache
-                    if (cacheResponse) {
-                        //let clone_1 = await cacheResponse.clone();
-                        // Get the original response
-                        let response_json = await cacheResponse.json();
-                        console.log(response_json);
-                        console.log('here1');
-                        // Get the latest card by updatedAt.
-
-                        latest = obj.reduce(function(r, a) {
-                            return r.date > a.date ? r : a;
-                        });
-
-                        console.log(latest);
-
-                    }
-                });
-            });
-        });
-
-
-    }
-
+    // Update cache with offline card
     async function updateLatestCard(id, card) {
-        console.log(id);
-        console.log(card);
         // Get the current cache for the feed
-        return caches.open('get_conversation_latest_card').then(async function(cache) {
+        return caches.open('chat-get_conversation_latest_card').then(async function(cache) {
             return cache.keys().then(function(requests) {
                 var urls = requests.map(function(request) {
                     return request;
                 });
-                console.log(urls);
                 // Find the first cache item (create and update are the most recent)
                 let found_url = urls.find(x => x.url.includes(id));
-                console.log(found_url);
                 return caches.match(found_url).then(async function(cacheResponse) {
-                     console.log(cacheResponse);
                     // Found it in the cache
                     if (cacheResponse) {
                         // Get the original response
                         let response_json = await cacheResponse.json();
-                        console.log(response_json);
-                        console.log(card);
-
                         let headers = { "status": 200, headers: { "Content-Type": "application/json; charset=utf-8", "Response-Type": "basic" } }
                         let blob_headers = { type: 'basic' };
                         var blob = new Blob([JSON.stringify(card)], blob_headers);
                         let new_response = new Response(blob, headers);
                         cache.put(found_url, new_response);
                         return response_json;
-
                     }
                 });
             })
         });
-
     }
 
+    // Update cache.
     async function updateFeed(card, operation, conversation_type) {
-        console.log(card);
-        // remove the new_card
+        // remove the new_card value.
         delete card.new_card;
         delete card.$$hashKey;
         let cache_name;
-        //if (conversation_type == 'feed') {
-        //    cache_name = 'user-feed1';
-        //}
 
         switch (conversation_type) {
             case 'feed':
-                cache_name = 'user-feed1';
+                cache_name = 'chat-get_feed';
                 break;
             case 'private':
-                cache_name = 'private-conversation';
+                cache_name = 'chat-get_conversation_cards';
                 break;
         }
 
@@ -137,21 +62,13 @@ if (workbox) {
                 var urls = requests.map(function(request) {
                     return request;
                 });
-                console.log(urls);
                 // Find the first cache item (create and update are the most recent)
                 let found_url = urls.find(x => x.url.includes('last_card=0'));
-                console.log(found_url);
                 return caches.match(found_url).then(async function(cacheResponse) {
-                    console.log(cacheResponse);
                     // Found it in the cache
                     if (cacheResponse) {
                         // Get the original response
                         let response_json = await cacheResponse.json();
-                        console.log(response_json);
-                        // Add the new card
-                        // check whether to add or update
-                        //card_exists = response_json.cards.find(x => x._id == card._id);
-                        //let arr = response_json.cards;
                         let arr;
                         if (conversation_type == 'feed') {
                             arr = response_json['cards'];
@@ -159,30 +76,20 @@ if (workbox) {
                             arr = response_json;
                         }
                         let card_exists = (arr) => arr._id == card._id;
-                        console.log(card_exists);
                         let card_index = arr.findIndex(card_exists);
-                        console.log(card_index);
                         if (operation == 'create_update') {
                             if (card_index >= 0) {
-                                console.log('update');
-                                console.log(arr[card_index]);
-                                console.log(card);
                                 card.original_content = card.content;
                                 arr[card_index] = card;
-                                console.log(arr);
                             } else {
-                                console.log('create');
                                 arr.push(card);
                             }
                         }
                         if (operation == 'delete') {
-                            console.log('delete');
                             if (card_index >= 0) {
                                 arr.splice(card_index, 1);
                             }
                         }
-
-
                         let headers = { "status": 200, headers: { "Content-Type": "application/json; charset=utf-8", "Response-Type": "basic" } }
                         let blob_headers = { type: 'basic' };
                         var blob = new Blob([JSON.stringify(response_json)], blob_headers);
@@ -198,39 +105,20 @@ if (workbox) {
     // Client to Workbox
 
     self.addEventListener('message', function(event) {
-        console.log(event);
-        console.log(sync_in_progress);
-        //if (event.data.message === 'replayRequests' && !sync_in_progress) {
-        if (event.data.message === 'replayRequests' ) {
-            send_message_to_all_clients({ message: 'sync_started' });
 
-            sync_in_progress = true;
-            console.log('SET: ' + sync_in_progress);
+        if (event.data.message === 'replayRequests') {
+            send_message_to_all_clients({ message: 'sync_started' });
             syncImages();
         }
-        //"card_create_update"
+
         if (event.data.message === "card_create_update") {
-            //card: card, type: type
-            console.log(event);
-            console.log(event.data.object.card);
-            console.log(event.data.object.conversation_type);
             let operation = event.data.object.operation;
             let conversation_type = event.data.object.conversation_type;
-            //if (event.data.object.conversation_type == "feed") {
-            //updateFeed(event.data.object.card, operation, conversation_type);
             updateFeed(event.data.object.card, operation, conversation_type);
-            //console.log(a);
-            //}
-            //if (event.data.object.conversation_type == "feed") {
-            //    updateFeed(event.data.object.card, operation)
-            //}
-            // updateConversations(a);
         }
 
         if (event.data.message === "updatelatestcard") {
-            console.log(event.data.object);
             updateLatestCard(event.data.object.id, event.data.object.card);
-
         }
 
     });
@@ -243,10 +131,9 @@ if (workbox) {
 
     // Messaging
 
-    function send_message_to_sw(msg) {
-        console.log(msg);
+    /*function send_message_to_sw(msg) {
         navigator.serviceWorker.controller.postMessage(msg);
-    }
+    }*/
 
     function send_message_to_client(client, msg) {
         return new Promise(function(resolve, reject) {
@@ -257,7 +144,6 @@ if (workbox) {
                 } else {
                     resolve(event.data);
                 }
-                // Add this line:
                 return Promise.resolve("Dummy response to keep the console quiet");
             };
             client.postMessage(msg, [msg_chan.port2]);
@@ -301,8 +187,6 @@ if (workbox) {
         let all_deleted = sd.filter(x => x.method == "DELETE");
         let images_posted = sd.filter(x => x.image != undefined);
 
-        console.log(all_posted);
-
         // Return an array of PUTs for each POST (by POST returned ._id)
         all_posted.forEach(function(element) {
             let a = all_updated.filter(x => x.returned._id == element.returned._id);
@@ -311,6 +195,7 @@ if (workbox) {
                 posts_updated.push(b);
             }
         });
+
         // For each posts_updated array find the latest updated post by updatedAt date.
         posts_updated.forEach(function(arr) {
             let latest_updated = arr.sort(function(a, b) {
@@ -365,18 +250,15 @@ if (workbox) {
                     // Add the latest to the updated array.
                     updated.push(latest_updated[0]);
                 }
-
             }
         });
-
         return { posted: all_posted, updated: updated, deleted: all_deleted, images: images_posted };
     }
-
 
     // When sync is disabled (Mobile).
 
     async function syncDeletes() {
-        console.log('...Synchronizing ' + queue_delete.name);
+        //console.log('...Synchronizing ' + queue_delete.name);
         let entry;
         let clone;
         let response;
@@ -392,7 +274,6 @@ if (workbox) {
                 // been created on the DB so thare is no need to 
                 // send this request to the DB. Remove from the indexedDB.
                 if (requestData.url.includes('temp_id')) {
-                    console.log('delete temp');
                     // check whether needs to be removed from posts
                 } else {
                     requestDataFormat = 'requestData';
@@ -413,16 +294,12 @@ if (workbox) {
         }
         // Process the data before updating the DOM and sending notifications.
         const all_requests = processUpdates(sync_data);
-        console.log(all_requests);
         // Update the DOM and sending notifications.
         send_message_to_all_clients({ message: 'all_requests_updated', all_requests: all_requests });
-        sync_in_progress = false;
-        console.log('SET: ' + sync_in_progress);
     }
 
-
     async function syncPosts() {
-        console.log('...Synchronizing ' + queue.name);
+        //console.log('...Synchronizing ' + queue.name);
         let entry;
         let clone;
         let response;
@@ -489,7 +366,7 @@ if (workbox) {
     }
 
     async function syncImages() {
-        console.log('...Synchronizing ' + queue_image.name);
+        //console.log('...Synchronizing ' + queue_image.name);
         let entry;
         let clone;
         let response;
@@ -571,7 +448,6 @@ if (workbox) {
             let requests = transaction.objectStore("requests");
             // get all requests
             let a = await requests.getAll();
-            //let d = requests.get(['api_image', 1])
             a.onsuccess = async function() {
                 let obj = await a.result.find(obj => obj.metadata == name);
                 if (obj != undefined) {
@@ -608,12 +484,10 @@ if (workbox) {
             // request after being passed through plugins with
             // `requestWillFetch` callbacks, and `error` is the exception that caused
             // the underlying `fetch()` to fail.
-
             let clone = await request.clone();
             let requestData = await clone.json();
             let method = request.method;
             let id;
-            console.log(requestData);
             if (method == "POST") {
                 id = requestData._id;
             }
@@ -622,7 +496,6 @@ if (workbox) {
             }
             // adding to the Queue.
             queue.pushRequest({ request: request, metadata: id });
-
         }
     }
 
@@ -644,76 +517,59 @@ if (workbox) {
         }
     }
 
-    const cachedAPIResponseWillBeUsed = async ({ cache, request, cachedResponse }) => {
+    const route_plugin = {
+        cacheWillUpdate: async ({ request, response, event }) => {
+            // Return `response`, a different Response object or null
+            return response;
+        },
+        cacheDidUpdate: async ({ cacheName, request, oldResponse, newResponse, event }) => {
+            // No return expected
+            // Note: `newResponse.bodyUsed` is `true` when this is called,
+            // meaning the body has already been read. If you need access to
+            // the body of the fresh response, use a technique like:
+            //const freshResponse = await caches.match(request, {cacheName});
+            //let response_json = await freshResponse.json();
+        },
+        cacheKeyWillBeUsed: async ({ request, mode }) => {
+            // request is the Request object that would otherwise be used as the cache key.
+            // mode is either 'read' or 'write'.
+            // Return either a string, or a Request whose url property will be used as the cache key.
+            // Returning the original request will make this a no-op.
+        },
+        cachedResponseWillBeUsed: async ({ cacheName, request, matchOptions, cachedResponse, event }) => {
+            // Return `cachedResponse`, a different Response object or null
 
-        // Search for the file ignoring the query part of the url.
-        var cachedFiles = await caches.match(request.url, {
-            ignoreSearch: true
-        });
-        console.log(cachedFiles);
-        if (cachedFiles) {
-            return cachedFiles;
+            var cachedFiles = await cacheName.match(request.url, {
+                //ignoreSearch: true
+            });
+
+            if (cachedFiles) {
+                return cachedFiles;
+            }
+
+            // If there's already a match against the request URL, return it.
+            if (cachedResponse) {
+                return cachedResponse;
+            }
+
+        },
+        requestWillFetch: async ({ request }) => {
+            // Return `request` or a different Request
+            return request;
+
+        },
+        fetchDidFail: async ({ originalRequest, request, error, event }) => {
+            // No return expected.
+            // NOTE: `originalRequest` is the browser's request, `request` is the
+            // request after being passed through plugins with
+            // `requestWillFetch` callbacks, and `error` is the exception that caused
+            // the underlying `fetch()` to fail.
+        },
+        fetchDidSucceed: async ({ request, response }) => {
+            // Return `response` to use the network response as-is,
+            // or alternatively create and return a new Response object.
+            return response;
         }
-
-        // If there's already a match against the request URL, return it.
-        if (cachedResponse) {
-            console.log(cachedResponse);
-            //return cachedResponse;
-        }
-
-
-    };
-
-    const cachedAPIResponseWillBeUsed2 = async ({ cache, request, cachedResponse }) => {
-
-        // Search for the file ignoring the query part of the url.
-        var cachedFiles = await caches.match(request.url, {
-            //ignoreSearch: true
-        });
-        console.log(cachedFiles);
-        if (cachedFiles) {
-            //return cachedFiles;
-        }
-
-        // If there's already a match against the request URL, return it.
-        if (cachedResponse) {
-            console.log(cachedResponse);
-            return cachedResponse;
-        }
-
-
-    };
-
-    const DBResponseWillBeUsed = async ({ cache, request, cachedResponse }) => {
-
-        // Search for the file ignoring the query part of the url.
-        var cachedFiles = await caches.match(request.url, {
-            //ignoreSearch: true
-        });
-        console.log(cachedFiles);
-        if (cachedFiles) {
-            return cachedFiles;
-        }
-
-        // If there's already a match against the request URL, return it.
-        if (cachedResponse) {
-            console.log(cachedResponse);
-            return cachedResponse;
-        }
-
-
-    };
-
-    const cachedResponseWillBeUsed = async ({ cache, request, cachedResponse }) => {
-        // If there's already a match against the request URL, return it.
-        if (cachedResponse) {
-            return cachedResponse;
-        }
-        // Search for the file ignoring the query part of the url.
-        var cachedFiles = await caches.match(request.url, {
-            ignoreSearch: true
-        });
-        return cachedFiles;
     };
 
     // Register Routes
@@ -758,7 +614,7 @@ if (workbox) {
         new workbox.strategies.NetworkFirst({
             cacheName: 'views-cache',
             plugins: [
-                { cachedResponseWillBeUsed },
+                route_plugin
             ]
         })
     );
@@ -766,17 +622,9 @@ if (workbox) {
     workbox.routing.registerRoute(
         new RegExp('/chat/get_feed'),
         new workbox.strategies.NetworkFirst({
-            cacheName: 'user-feed1',
-            plugins: [{ cachedAPIResponseWillBeUsed }, ]
-        })
-    );
-
-    workbox.routing.registerRoute(
-        new RegExp('/chat/update_feed'),
-        new workbox.strategies.NetworkFirst({
-            cacheName: 'user-feed2',
+            cacheName: 'chat-get_feed',
             plugins: [
-                { cachedAPIResponseWillBeUsed },
+                route_plugin
             ]
         })
     );
@@ -784,9 +632,9 @@ if (workbox) {
     workbox.routing.registerRoute(
         new RegExp('/chat/get_conversation_cards'),
         new workbox.strategies.NetworkFirst({
-            cacheName: 'private-conversation',
+            cacheName: 'chat-get_conversation_cards',
             plugins: [
-                { cachedAPIResponseWillBeUsed },
+                route_plugin
             ]
         })
     );
@@ -794,36 +642,53 @@ if (workbox) {
     workbox.routing.registerRoute(
         new RegExp('/api/conversations/'),
         new workbox.strategies.NetworkFirst({
-            cacheName: 'conversations',
+            cacheName: 'api-conversations',
             plugins: [
-                { DBResponseWillBeUsed },
+                route_plugin,
             ]
         })
     );
 
-    
     workbox.routing.registerRoute(
-        new RegExp('/chat/conversation/'),
+        new RegExp('/chat/conversations'),
         new workbox.strategies.NetworkFirst({
-            cacheName: 'conversation',
+            cacheName: 'chat-conversations',
             plugins: [
-                { cachedAPIResponseWillBeUsed2 },
+                route_plugin,
             ]
         })
     );
-    
+
+    workbox.routing.registerRoute(
+        new RegExp('/chat/conversation'),
+        new workbox.strategies.NetworkFirst({
+            cacheName: 'chat-conversation',
+            plugins: [
+                route_plugin
+            ]
+        })
+    );
+
+    workbox.routing.registerRoute(
+        new RegExp('/chat/conversation_id'),
+        new workbox.strategies.NetworkFirst({
+            cacheName: 'chat-conversation_id',
+            plugins: [
+                route_plugin
+            ]
+        })
+    );
+
 
     workbox.routing.registerRoute(
         new RegExp('/chat/get_conversation_latest_card/'),
         new workbox.strategies.NetworkFirst({
-            cacheName: 'get_conversation_latest_card',
+            cacheName: 'chat-get_conversation_latest_card',
             plugins: [
-                { cachedAPIResponseWillBeUsed },
+                route_plugin
             ]
         })
     );
-
-
 
     workbox.routing.registerRoute(
         new RegExp('/api/cards'),

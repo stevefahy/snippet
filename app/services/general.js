@@ -6,20 +6,6 @@ cardApp.service('General', ['$rootScope', function($rootScope) {
 
     var self = this;
 
-/*
-    this.smtsw = function(msg, obj) {
-        var s = 'steve';
-        console.log('send_message_to_sw');
-        //console.log(card);
-        //var send = { "message": msg, object: obj };
-        //send = JSON.parse(JSON.stringify(send));
-        // if (navigator.serviceWorker.controller) {
-        //    navigator.serviceWorker.controller.postMessage(send);
-        //}
-        return s;
-    }
-    */
-
     // Profile Image
     // Transform the cropped image to a blob.
     this.urltoFile = function(url, filename, mimeType) {

@@ -1076,7 +1076,6 @@ module.exports = function(app, passport) {
     // Update the conversation unviewed array for this participant with this card id.
     // Only add the card if it doesnt already exist in the array (for Updates).
     //Conversations.updateViewed(id, user_id, card_id);
-    //app.put('/chat/conversation_viewed/:id/:card_id', isLoggedIn, function(req, res) {
     app.get('/chat/conversation_viewed/:id/:card_id', isLoggedIn, function(req, res) {
         Conversation.findById({ _id: req.params.id }, function(err, conversation) {
             if (err) {
@@ -1190,7 +1189,6 @@ module.exports = function(app, passport) {
     // get all conversations for current user
     // Conversations.find();
     app.get('/api/conversations', isLoggedIn, function(req, res) {
-        console.log('is logged in');
         Conversation.find({ 'participants._id': req.principal._id }, function(err, conversations) {
             if (err) {
                 return res.send(err);

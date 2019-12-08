@@ -254,6 +254,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 $rootScope.$broadcast('CARD_CREATED');
             })
             var type = Conversations.getConversationType();
+            console.log(type);
             UserData.conversationsLatestCardAdd(offline_card_create.conversationId, offline_card_create);
             send_message_to_sw("card_create_update", { operation: 'create_update', card: offline_card_create, conversation_type: type });
         }
@@ -273,6 +274,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         var deferred = $q.defer();
         if (!$rootScope.online) {
             var type = Conversations.getConversationType();
+            console.log(type);
             card.updatedAt = new Date().toISOString();
             UserData.conversationsLatestCardAdd(card.conversationId, card);
             send_message_to_sw("card_create_update", { operation: 'create_update', card: card, conversation_type: type });
@@ -335,6 +337,7 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
             let previous_card = await deleteCard(card_id);
             UserData.conversationsLatestCardDelete(conversation_id, card_id, previous_card);
             var type = Conversations.getConversationType();
+            console.log(type);
             let temp_card = { _id: card_id };
             send_message_to_sw("card_create_update", { operation: 'delete', card: temp_card, conversation_type: type });
         }

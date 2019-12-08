@@ -246,7 +246,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                             addCards(result);
                             // Update Conversations
                             for (var i = 0, len = result.length; i < len; i++) {
-                                UserData.conversationsLatestCardAdd(msg.conversation_id, result[i]);
+                                UserData.conversationsLatestCardAdd('feed', msg.conversation_id, result[i]);
                             }
                         }
                     });
@@ -258,7 +258,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                             addCards(result);
                             // Update Conversations
                             for (var i = 0, len = result.length; i < len; i++) {
-                                UserData.conversationsLatestCardAdd(id, result[i]);
+                                UserData.conversationsLatestCardAdd('private', id, result[i]);
                             }
                         }
                     });
@@ -268,7 +268,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                         addCards(result);
                         // Update Conversations
                         for (var i = 0, len = result.length; i < len; i++) {
-                            UserData.conversationsLatestCardAdd(msg.conversation_id, result[i]);
+                            UserData.conversationsLatestCardAdd('public', msg.conversation_id, result[i]);
                         }
                     }
                 });
@@ -416,7 +416,8 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                     addCards(result);
                     // Update Conversations
                     for (var i = 0, len = result.length; i < len; i++) {
-                        UserData.conversationsLatestCardAdd(msg.conversation_id, result[i]);
+                        console.log('public?: ' + Conversations.getConversationType());
+                        UserData.conversationsLatestCardAdd('public', msg.conversation_id, result[i]);
                     }
                 }
             });
@@ -427,7 +428,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                         addCards(result);
                         // Update Conversations
                         for (var i = 0, len = result.length; i < len; i++) {
-                            UserData.conversationsLatestCardAdd(msg.conversation_id, result[i]);
+                            UserData.conversationsLatestCardAdd('feed', msg.conversation_id, result[i]);
                         }
                     }
                 });
@@ -448,7 +449,8 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                         addCards(result);
                         // Update Conversations
                         for (var i = 0, len = result.length; i < len; i++) {
-                            UserData.conversationsLatestCardAdd(msg.conversation_id, result[i]);
+                            console.log('private?: ' + Conversations.getConversationType());
+                            UserData.conversationsLatestCardAdd('private', msg.conversation_id, result[i]);
                         }
                     }
                 });
@@ -456,7 +458,8 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             // Get the updated card (not necessarily the latest card).
             Cards.getCard(msg.card_id)
                 .then(function(res) {
-                    UserData.conversationsLatestCardAdd(msg.conversation_id, res.data);
+                    console.log('private?: ' + Conversations.getConversationType());
+                    UserData.conversationsLatestCardAdd('private', msg.conversation_id, res.data);
                     if ($location.url() == '/chat/conversations') {
                         loadConversations();
                     }
@@ -483,7 +486,8 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                     }
                     updateConversationViewed(msg.conversation_id);
                 }
-                UserData.conversationsLatestCardAdd(msg.conversation_id, res.data);
+                console.log('private?: ' + Conversations.getConversationType());
+                UserData.conversationsLatestCardAdd('private', msg.conversation_id, res.data);
                 if (id == msg.conversation_id) {
                     updateConversationViewed(id);
                     updateCard(res.data);
@@ -506,7 +510,8 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                     updateCard(result.data);
                     // Update Conversations
                     // TODO Check that this is the latest
-                    UserData.conversationsLatestCardAdd(msg.conversation_id, result.data);
+                    console.log('feed?: ' + Conversations.getConversationType());
+                    UserData.conversationsLatestCardAdd('feed', msg.conversation_id, result.data);
                 });
         }
     });
@@ -522,7 +527,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                 if (id == msg.conversation_id) {
                     updateConversationViewed(id);
                     let previous_card = await deleteCard(msg.card_id);
-                    UserData.conversationsLatestCardDelete(msg.conversation_id, msg.card_id, previous_card);
+                    UserData.conversationsLatestCardDelete('private', msg.conversation_id, msg.card_id, previous_card);
                 }
                 if ($location.url() == '/chat/conversations') {
                     loadConversations();
@@ -544,7 +549,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         // Get the updated card (not necessarily the latest card).
         Cards.getCard(msg.card_id)
             .then(function(res) {
-                UserData.conversationsLatestCardDelete(msg.conversation_id, msg.card_id, previous_card);
+                UserData.conversationsLatestCardDelete('public', msg.conversation_id, msg.card_id, previous_card);
             });
     });
 

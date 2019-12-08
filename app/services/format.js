@@ -671,7 +671,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     if (!ImageAdjustment.getImageEditing()) {
                         card.content = $('.content_cnv #ce' + card._id).html();
                     }
-                    
+
                     // Inject the Database Service
                     var Database = $injector.get('Database');
                     // Update the card

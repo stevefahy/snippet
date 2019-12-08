@@ -282,6 +282,7 @@ cardApp.factory('Conversations', ['$http', '$q', 'LocalDB', function($http, $q, 
         find_conversation_id: function(id) {
             var deferred = $q.defer();
             // Forces caching for /chat/conversations
+            console.log('/chat/conversation_id/' + id);
             $http.get('/chat/conversation_id/' + id)
                 .then(function(response) {
                     LocalDB.addConversation(response.data);
@@ -1008,7 +1009,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     // Conversations - Latest cards
     //
 
-    UserData.conversationsLatestCardDelete = function(conversation_id, card_id, previous_card) {
+    UserData.conversationsLatestCardDelete = function(conv_type, conversation_id, card_id, previous_card) {
         var deferred = $q.defer();
         var index = General.findWithAttr(conversationsLatestCard, '_id', conversation_id);
         if (index >= 0) {
@@ -1023,17 +1024,18 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
         return deferred.promise;
     };
 
-    UserData.conversationsLatestCardAdd = async function(id, data) {
+    UserData.conversationsLatestCardAdd = async function(conv_type, id, data) {
         var deferred = $q.defer();
         var index = General.findWithAttr(conversationsLatestCard, '_id', id);
         // Add if conversationsLatestCard for with this id doesnt exist. otherwise update
+        console.log(conv_type);
         if (index >= 0) {
             // Update.
             conversationsLatestCard[index].data = data;
             let card = { _id: conversationsLatestCard[index]._id, data: data };
             let msg = { message: 'conversationsLatestCardAdd', data: card }
             WWIDB.postMessage(msg);
-            let a = await UserData.send_message_to_sw("updatelatestcard", { id: id, card: data });
+            let a = await UserData.send_message_to_sw("updatelatestcard", { id: id, card: data, conversation_type: conv_type});
             deferred.resolve(conversationsLatestCard);
         } else {
             // Add.
@@ -1041,7 +1043,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
             conversationsLatestCard.push(card);
             let msg = { message: 'conversationsLatestCardAdd', data: card }
             WWIDB.postMessage(msg);
-            let a = await UserData.send_message_to_sw("updatelatestcard", { id: id, card: data });
+            let a = await UserData.send_message_to_sw("updatelatestcard", { id: id, card: data, conversation_type: conv_type});
             deferred.resolve(conversationsLatestCard);
         }
         return deferred.promise;
@@ -1076,11 +1078,12 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
         var promises = [];
         var result = UserData.getConversations()
             .then(function(res) {
+                console.log(res);
                 res.map(function(key, array) {
                     // Get the latest card posted to this conversation
                     promises.push(Conversations.getConversationLatestCard(key._id)
                         .then(function(res) {
-                            return UserData.conversationsLatestCardAdd(key._id, res.data)
+                            return UserData.conversationsLatestCardAdd(key.conversation_type, key._id, res.data)
                                 .then(function(res) {});
                         }));
                 });
