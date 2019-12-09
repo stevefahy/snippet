@@ -13,14 +13,48 @@ if (workbox) {
         return self.clients.claim();
     });
 
+    self.addEventListener('install', (event) => {
+        const urls = [
+        '/views/alert.html',
+        '/views/card.html',
+        '/views/card_create.html',
+        '/views/contacts.html',
+        '/views/conversation.html',
+        '/views/conversations.html',
+        '/views/debug.html',
+        '/views/edit_btns.html',
+        '/views/footer.html',
+        '/views/group.html',
+        '/views/header.html',
+        '/views/header_contacts.html',
+        '/views/header_conv.html',
+        '/views/header_group.html',
+        '/views/header_settings.html',
+        '/views/join.html',
+        '/views/loading_spinner.html',
+        '/views/login.html',
+        '/views/offline.html',
+        '/views/spinner.html',
+        '/views/user_setting.html',
+        '/assets/images/favicon.ico'
+        ];
+        const cacheName = workbox.core.cacheNames.runtime;
+        event.waitUntil(caches.open(cacheName).then((cache) => cache.addAll(urls)));
+    });
+
     // Update cache with offline card
-    async function updateLatestCard(id, card) {
+    async function updateLatestCard(id, card, operation, conversation_type) {
         // Get the current cache for the feed
+        delete card.new_card;
+        delete card.$$hashKey;
+        console.log(id);
+        console.log(card);
         return caches.open('chat-get_conversation_latest_card').then(async function(cache) {
             return cache.keys().then(function(requests) {
                 var urls = requests.map(function(request) {
                     return request;
                 });
+                console.log(urls);
                 // Find the first cache item (create and update are the most recent)
                 let found_url = urls.find(x => x.url.includes(id));
                 return caches.match(found_url).then(async function(cacheResponse) {
@@ -28,11 +62,36 @@ if (workbox) {
                     if (cacheResponse) {
                         // Get the original response
                         let response_json = await cacheResponse.json();
+                        console.log(response_json);
+
+                        /*
+                        let arr;
+                        if (operation == 'delete') {
+                            if (conversation_type == 'feed') {
+                                arr = response_json['cards'];
+                            } else if (conversation_type == 'private') {
+                                arr = response_json;
+                            }
+                            let card_exists = (arr) => arr._id == card._id;
+                            let card_index = arr.findIndex(card_exists);
+
+
+                            console.log('delete');
+                            if (card_index >= 0) {
+                                console.log(arr[card_index]);
+                                arr[card_index] = card;
+                                console.log(arr[card_index]);
+                            }
+
+                        }
+                        */
+
                         let headers = { "status": 200, headers: { "Content-Type": "application/json; charset=utf-8", "Response-Type": "basic" } }
                         let blob_headers = { type: 'basic' };
                         var blob = new Blob([JSON.stringify(card)], blob_headers);
                         let new_response = new Response(blob, headers);
                         cache.put(found_url, new_response);
+                        updateFeed(card, operation, conversation_type);
                         return response_json;
                     }
                 });
@@ -42,6 +101,9 @@ if (workbox) {
 
     // Update cache.
     async function updateFeed(card, operation, conversation_type) {
+        console.log(card);
+        console.log(operation);
+        console.log(conversation_type);
         // remove the new_card value.
         delete card.new_card;
         delete card.$$hashKey;
@@ -92,6 +154,7 @@ if (workbox) {
                         }
                         let headers = { "status": 200, headers: { "Content-Type": "application/json; charset=utf-8", "Response-Type": "basic" } }
                         let blob_headers = { type: 'basic' };
+                        console.log(response_json);
                         var blob = new Blob([JSON.stringify(response_json)], blob_headers);
                         let new_response = new Response(blob, headers);
                         cache.put(found_url, new_response);
@@ -118,7 +181,7 @@ if (workbox) {
         }
 
         if (event.data.message === "updatelatestcard") {
-            updateLatestCard(event.data.object.id, event.data.object.card);
+            updateLatestCard(event.data.object.id, event.data.object.card, event.data.object.operation, event.data.object.conversation_type);
         }
 
     });
@@ -126,7 +189,7 @@ if (workbox) {
     // Debugging
 
     workbox.setConfig({
-        debug: false
+        debug: true
     });
 
     // Messaging
@@ -552,6 +615,12 @@ if (workbox) {
                 return cachedResponse;
             }
 
+            if (!cachedFiles && !cachedResponse) {
+                //return cachedResponse;
+                console.log('NOTHING CACHED');
+                send_message_to_all_clients({ message: 'nothing_cached' });
+            }
+
         },
         requestWillFetch: async ({ request }) => {
             // Return `request` or a different Request
@@ -607,16 +676,6 @@ if (workbox) {
     workbox.routing.registerRoute(
         new RegExp('/api/user_data'),
         new workbox.strategies.NetworkFirst()
-    );
-
-    workbox.routing.registerRoute(
-        new RegExp('/views/.*\\.html'),
-        new workbox.strategies.NetworkFirst({
-            cacheName: 'views-cache',
-            plugins: [
-                route_plugin
-            ]
-        })
     );
 
     workbox.routing.registerRoute(
@@ -827,16 +886,8 @@ if (workbox) {
     "revision": "a2f1acd789576577721d5f2aa966deaa"
   },
   {
-    "url": "controllers/conversation_ctrl - Copy.js",
-    "revision": "a9d1583272c2fe1446b757a918510790"
-  },
-  {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "a9d1583272c2fe1446b757a918510790"
-  },
-  {
-    "url": "controllers/conversations_ctrl - Copy.js",
-    "revision": "6bac791277a39a6a00836fc060da2bfb"
+    "revision": "40586a1f1d3e6261ab3cb8385772cc67"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -867,12 +918,8 @@ if (workbox) {
     "revision": "1406b7b1f829710a77746078adaa7220"
   },
   {
-    "url": "controllers/main_ctrl - Copy.js",
-    "revision": "a172d82d0aeb34dd5ee222d1edd60228"
-  },
-  {
     "url": "controllers/main_ctrl.js",
-    "revision": "ef56e7629cca0b23e524a34e90eaf347"
+    "revision": "8fccfac5e5b56d9b17ca7b2fa077fe4c"
   },
   {
     "url": "controllers/usersetting_ctrl.js",
@@ -883,12 +930,8 @@ if (workbox) {
     "revision": "a9e61e2bb75abcfb9914de37f9595324"
   },
   {
-    "url": "factories/factories - Copy.js",
-    "revision": "2a898743fd4504bf2fc6bb0d6182bc2b"
-  },
-  {
     "url": "factories/factories.js",
-    "revision": "4a7a29039f8ffd7a84f2f863925931eb"
+    "revision": "32c416355bb51f13eabe3dc930b7d365"
   },
   {
     "url": "factories/local_db.js",
@@ -1003,12 +1046,8 @@ if (workbox) {
     "revision": "203611c990bd6ada1e21cebd8f0608a3"
   },
   {
-    "url": "service-worker - Copy.js",
-    "revision": "60f16d0ce91b5873c23d8445e5d6b2bc"
-  },
-  {
     "url": "service-worker.js",
-    "revision": "82d74f3184a604eadc1672231e1dfa7b"
+    "revision": "f99c325a4611c2818423e5aecafd9584"
   },
   {
     "url": "services/content_editable.js",
@@ -1017,10 +1056,6 @@ if (workbox) {
   {
     "url": "services/crop_rotate.js",
     "revision": "f6a160e0ff842ad09912a1f1e55c68b8"
-  },
-  {
-    "url": "services/database - Copy.js",
-    "revision": "83464a6784e2dd5e17c9e4533dd18228"
   },
   {
     "url": "services/database.js",
@@ -1140,7 +1175,7 @@ if (workbox) {
   },
   {
     "url": "views/conversation.html",
-    "revision": "0dd483c07655f5e5d8e12f001c163069"
+    "revision": "4515b3a294d025124864f0155e9662d1"
   },
   {
     "url": "views/conversations.html",
@@ -1193,6 +1228,10 @@ if (workbox) {
   {
     "url": "views/login.html",
     "revision": "ee415d18c1aa5292680e55e5449c5eec"
+  },
+  {
+    "url": "views/offline.html",
+    "revision": "155861678f0c1ed07d58d896088e0a25"
   },
   {
     "url": "views/spinner.html",

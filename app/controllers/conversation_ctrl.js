@@ -73,6 +73,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var SCROLL_THUMB_MIN = 5;
 
     $rootScope.pageLoading = true;
+    $rootScope.offlineMode = false;
+    $scope.no_cards = true;
     $rootScope.loading_cards = false;
     $scope.feed = false;
     $scope.top_down = false;
@@ -639,6 +641,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     }
                 } else {
                     $(this).on('load', function() {
+                        store[loc].img_loaded++;
+                        if (store[loc].img_count == store[loc].img_loaded || store[loc].img_count == 0) {
+                            imagesLoaded(store[loc]);
+                        }
+                    });
+                    $(this).on('error', function() {
+                        console.log('image load error');
+                        console.log(this);
                         store[loc].img_loaded++;
                         if (store[loc].img_count == store[loc].img_loaded || store[loc].img_count == 0) {
                             imagesLoaded(store[loc]);
@@ -1342,6 +1352,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 last_card_stored = last_card;
                 var prom1 = Conversations.getConversationCards(val)
                     .then(function(res) {
+                        console.log(res);
                         if (res.data.length > 0) {
                             var users = UserData.getContacts();
                             var user;
@@ -1369,7 +1380,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         }
                     })
                     .catch(function(error) {
-                        //console.log(error);
+                        console.log(error);
                     });
                 promises.push(prom1);
                 // All the cards have been mapped.

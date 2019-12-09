@@ -341,6 +341,17 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                 $rootScope.sync_finished = false;
             }
 
+            if (event.data.message == "nothing_cached") {
+                console.log('nothing');
+console.log($rootScope.cards_length);
+                if($rootScope.cards_length < 1){
+                    $rootScope.pageLoading = false;
+                $rootScope.offlineMode = true;
+                }
+                
+
+            }
+
             if (event.data.message == "all_requests_updated") {
                 endalert = true;
                 removeAlert();

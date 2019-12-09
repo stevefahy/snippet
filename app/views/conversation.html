@@ -4,6 +4,9 @@
     <div ng-if="$root.pageLoading" class="loading_screen">
         <div ng-include="'/views/spinner.html'"></div>
     </div>
+    <div ng-if="$root.offlineMode" class="loading_screen">
+        <div ng-include="'/views/offline.html'"></div>
+    </div>
     <div class="progress-container">
         <div id="progress-thumb" class="progress_bar"></div>
     </div>
