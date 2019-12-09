@@ -342,14 +342,10 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             }
 
             if (event.data.message == "nothing_cached") {
-                console.log('nothing');
-console.log($rootScope.cards_length);
-                if($rootScope.cards_length < 1){
+                if ($rootScope.cards_length < 1) {
                     $rootScope.pageLoading = false;
-                $rootScope.offlineMode = true;
+                    $rootScope.offlineMode = true;
                 }
-                
-
             }
 
             if (event.data.message == "all_requests_updated") {
