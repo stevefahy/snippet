@@ -123,7 +123,6 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
             // reset the input box
             $rootScope.$broadcast('CARD_CREATED');
         }
-
         switch (method) {
             case 'POST':
                 post_type = 'created';
@@ -135,7 +134,6 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 post_type = 'deleted';
                 break;
         }
-
         var viewed_users = [];
         // Update the participants viewed array for this conversation with this card (Conversation updateAt time is also updated.). Public conversations do not store viewed data.
         Conversations.updateViewed(current_conversation_id, card_id)
@@ -271,19 +269,11 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
     // UPDATE CARD
     this.updateCard = function(card_id, card, currentUser) {
         var deferred = $q.defer();
-        /*
-        if (!$rootScope.online) {
-            var type = Conversations.getConversationType();
-            card.updatedAt = new Date().toISOString();
-            UserData.conversationsLatestCardAdd(card.conversationId, card);
-            send_message_to_sw("card_create_update", { operation: 'create_update', card: card, conversation_type: type });
-        }*/
         if (!updateinprogress) {
             setTimeout(function() {
                 var promises = [];
                 var promises_followers = [];
                 var temp_card = Object.assign({}, card);
-
                 // Get the Conversation in which this card is being created.
                 temp_card.content = replaceTags.replace(temp_card.content);
                 // DANGER These had been removed for android image save bug
@@ -291,31 +281,17 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
                 temp_card.content = replaceTags.removeFocusIds(temp_card.content);
                 // Remove any temp filtered images
                 temp_card.content = Format.removeTempFiltered(temp_card.content);
-
                 // Copy the data from online object to offline object.
                 var offline_temp_card = Object.assign({}, temp_card);
                 if (!$rootScope.online) {
                     var type = Conversations.getConversationType();
                     offline_temp_card.updatedAt = new Date().toISOString();
                     // replace blob image with image url.
-                    console.log(JSON.stringify(temp_card.content));
                     temp_card.content = Format.replaceBlob(offline_temp_card.content);
-                    console.log(JSON.stringify(temp_card.content));
-
                 }
                 UserData.conversationsLatestCardAdd(offline_temp_card.conversationId, offline_temp_card);
                 send_message_to_sw("card_create_update", { operation: 'create_update', card: offline_temp_card, conversation_type: type });
-
-
-                // Get the Conversation in which this card is being created.
-                //var current_conversation_id = temp_card.conversationId;
-                // var sent_content;
-                //var notification_title;
-                //var notification_body;
-                //var card_content = temp_card.content;
                 var pms = { 'card': temp_card };
-                //var recipients;
-
                 // call the create function from our service (returns a promise object)
                 Cards.update(pms)
                     .then(function(returned) {
@@ -333,7 +309,6 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         }
         return deferred.promise;
     };
-
 
     // DELETE CARD
     this.deleteCard = async function(card_id, conversation_id, currentUser) {

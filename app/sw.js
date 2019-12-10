@@ -49,38 +49,18 @@ if (workbox) {
         delete card.new_card;
         delete card.$$hashKey;
 
-        // chat-get_feed
-        /*
-                switch (conversation_type) {
-                    case 'feed':
-                        cache_name = 'chat-get_feed';
-                        break;
-                    case 'private':
-                        cache_name = 'chat-get_conversation_cards';
-                        break;
-                }
-                */
-        console.log(id);
-        console.log(card);
-        console.log(operation);
-        console.log(conversation_type);
-
-
         return caches.open('chat-get_conversation_latest_card').then(async function(cache) {
             return cache.keys().then(function(requests) {
                 var urls = requests.map(function(request) {
                     return request;
                 });
-                console.log(urls);
                 // Find the first cache item (create and update are the most recent)
                 let found_url = urls.find(x => x.url.includes(id));
-                console.log(found_url);
                 return caches.match(found_url).then(async function(cacheResponse) {
                     // Found it in the cache
                     if (cacheResponse) {
                         // Get the original response
                         let response_json = await cacheResponse.json();
-                        console.log(response_json);
                         let headers = { "status": 200, headers: { "Content-Type": "application/json; charset=utf-8", "Response-Type": "basic" } }
                         let blob_headers = { type: 'basic' };
                         var blob = new Blob([JSON.stringify(card)], blob_headers);
@@ -96,7 +76,6 @@ if (workbox) {
 
     // Update cache.
     async function updateFeed(card, operation, conversation_type) {
-        console.log('updateFeed');
         // remove the new_card value.
         delete card.new_card;
         delete card.$$hashKey;
@@ -116,33 +95,19 @@ if (workbox) {
                 cache_arr.push({ name: cache_name, conversation_type: conversation_type });
                 break;
         }
-
-        //event.waitUntil(Promise.all(
         await cache_arr.map(async function(myCache) {
-            console.log(myCache);
             return caches.open(myCache.name).then(async function(cache) {
-                /*return cache.keys().then(function(requests) {
-                    var urls = requests.map(function(request) {
-                        return request;
-                    });
-                    console.log(urls);
-                });*/
-
-
                 return cache.keys().then(function(requests) {
                     var urls = requests.map(function(request) {
                         return request;
                     });
-                    console.log(urls);
                     // Find the first cache item (create and update are the most recent)
                     let found_url = urls.find(x => x.url.includes('last_card=0'));
-                    console.log(found_url);
                     return caches.match(found_url).then(async function(cacheResponse) {
                         // Found it in the cache
                         if (cacheResponse) {
                             // Get the original response
                             let response_json = await cacheResponse.json();
-                            console.log(response_json);
                             let arr;
                             if (myCache.conversation_type == 'feed') {
                                 arr = response_json['cards'];
@@ -166,7 +131,6 @@ if (workbox) {
                                     arr.splice(card_index, 1);
                                 }
                             }
-                            console.log(response_json);
                             let headers = { "status": 200, headers: { "Content-Type": "application/json; charset=utf-8", "Response-Type": "basic" } }
                             let blob_headers = { type: 'basic' };
                             var blob = new Blob([JSON.stringify(response_json)], blob_headers);
@@ -176,67 +140,8 @@ if (workbox) {
                         }
                     });
                 });
-
-
             });
         })
-        //));
-
-
-
-
-        // Get the current cache for the feed
-        /*
-        return caches.open(cache_name).then(async function(cache) {
-            return cache.keys().then(function(requests) {
-                var urls = requests.map(function(request) {
-                    return request;
-                });
-                console.log(urls);
-                // Find the first cache item (create and update are the most recent)
-                let found_url = urls.find(x => x.url.includes('last_card=0'));
-                console.log(found_url);
-                return caches.match(found_url).then(async function(cacheResponse) {
-                    // Found it in the cache
-                    if (cacheResponse) {
-                        // Get the original response
-                        let response_json = await cacheResponse.json();
-                        console.log(response_json);
-                        let arr;
-                        if (conversation_type == 'feed') {
-                            arr = response_json['cards'];
-                        } else if (conversation_type == 'public') {
-                            arr = response_json;
-                        } else if (conversation_type == 'private') {
-                            arr = response_json;
-                        }
-                        let card_exists = (arr) => arr._id == card._id;
-                        let card_index = arr.findIndex(card_exists);
-                        if (operation == 'create_update') {
-                            if (card_index >= 0) {
-                                card.original_content = card.content;
-                                arr[card_index] = card;
-                            } else {
-                                arr.push(card);
-                            }
-                        }
-                        if (operation == 'delete') {
-                            if (card_index >= 0) {
-                                arr.splice(card_index, 1);
-                            }
-                        }
-                         console.log(response_json);
-                        let headers = { "status": 200, headers: { "Content-Type": "application/json; charset=utf-8", "Response-Type": "basic" } }
-                        let blob_headers = { type: 'basic' };
-                        var blob = new Blob([JSON.stringify(response_json)], blob_headers);
-                        let new_response = new Response(blob, headers);
-                        cache.put(found_url, new_response);
-                        return response_json;
-                    }
-                });
-            });
-        });
-        */
     }
 
     // Client to Workbox
@@ -305,7 +210,6 @@ if (workbox) {
         onSync: async ({ queue }) => {}
     });
 
-
     processUpdates = function(sync_data) {
         // Reset
         const sd = [...sync_data];
@@ -319,8 +223,6 @@ if (workbox) {
         let all_updated = sd.filter(x => x.method == "PUT");
         let all_deleted = sd.filter(x => x.method == "DELETE");
         let images_posted = sd.filter(x => x.image != undefined);
-console.log(all_posted);
-console.log(all_updated);
         // Return an array of PUTs for each POST (by POST returned ._id)
         all_posted.forEach(function(element) {
             let a = all_updated.filter(x => x.returned._id == element.returned._id);
@@ -968,7 +870,7 @@ console.log(all_updated);
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "634c4c370847e5bda6018d9af02ea332"
+    "revision": "af162ca6686ac605fbc39820414ad390"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -1000,7 +902,7 @@ console.log(all_updated);
   },
   {
     "url": "controllers/main_ctrl.js",
-    "revision": "bd3560e4684ba8b83560c2d7aa3250d1"
+    "revision": "4d995e760ff7f8addc1f801419186509"
   },
   {
     "url": "controllers/usersetting_ctrl.js",
@@ -1012,7 +914,7 @@ console.log(all_updated);
   },
   {
     "url": "factories/factories.js",
-    "revision": "3b13b380a9bc3835666b9ecada8a7193"
+    "revision": "cae72c576a4ca58741b10938f34fd69e"
   },
   {
     "url": "factories/local_db.js",
@@ -1124,11 +1026,11 @@ console.log(all_updated);
   },
   {
     "url": "routes/routes.js",
-    "revision": "c4bfce2b244ca5b6f952d6c28733afe6"
+    "revision": "2ff9ddcdc9d18186ded4bcc09de085d3"
   },
   {
     "url": "service-worker.js",
-    "revision": "20ff3395a4eff4447f00d66e6ee6ac1c"
+    "revision": "61e5ecfefb3c642c5055563c277b7389"
   },
   {
     "url": "services/content_editable.js",
@@ -1140,7 +1042,7 @@ console.log(all_updated);
   },
   {
     "url": "services/database.js",
-    "revision": "b29a8a12d65c29ecdc84cd786052701b"
+    "revision": "05e6e17ef299870f174d1ef0bef34a9a"
   },
   {
     "url": "services/debug.js",
@@ -1160,7 +1062,7 @@ console.log(all_updated);
   },
   {
     "url": "services/format.js",
-    "revision": "7939f0e51f1248381fa746fcc9244a57"
+    "revision": "31502abc4b9b44bc021142d5bddaa3d2"
   },
   {
     "url": "services/general.js",

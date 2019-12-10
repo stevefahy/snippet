@@ -1301,7 +1301,6 @@ module.exports = function(app, passport) {
         var amount = Number(req.query.amount);
         var last_card = req.query.last_card;
         var operand = req.query.operand;
-
         var query;
         var query1 = {}
         query1[operand] = last_card;
@@ -1310,7 +1309,6 @@ module.exports = function(app, passport) {
         } else {
             query = { _id: query1, 'conversationId': id };
         }
-
         Conversation.findOne({
             '_id': id,
             'conversation_type': 'public'
@@ -1321,77 +1319,20 @@ module.exports = function(app, passport) {
             if (conversation == null) {
                 res.json({ 'error': 'denied' });
             } else {
-                console.log(conversation);
                 if (conversation.conversation_type === 'public') {
-
-
                     Card.find(
                         query,
                         function(err, cards) {
                             if (err) {
-                                console.log(err);
-                            }
-                            console.log(cards);
-                            res.json(cards);
-                        }).sort({ "updatedAt": -1 }).limit(amount);
-
-
-                 } else {
-                    res.json({ 'error': 'denied' });
-                }
-            }
-        });
-
-
-
-
-        /*var id = req.body.id;
-        var amount = req.body.amount;
-        var last_card = req.body.last_card;
-        var operand = req.body.operand;
-        // Ensure the conversation id is a public conversation
-        Conversation.findOne({
-            '_id': id,
-            'conversation_type': 'public'
-        }, function(err, conversation) {
-            if (err) {
-                res.json({ 'error': 'not found' });
-            }
-            if (conversation == null) {
-                res.json({ 'error': 'denied' });
-            } else {
-                if (conversation.conversation_type === 'public') {
-                    if (operand == '$lt') {
-                        Card.find({
-                            'updatedAt': {
-                                $lt: last_card
-                            },
-                            'conversationId': req.params.id
-                        }, function(err, cards) {
-                            if (err) {
-                                console.log('err: ' + err);
+                                //console.log(err);
                             }
                             res.json(cards);
                         }).sort({ "updatedAt": -1 }).limit(amount);
-                    } else if (operand == '$gt') {
-                        Card.find({
-                            'updatedAt': {
-                                $gt: last_card
-                            },
-                            'conversationId': req.params.id
-                        }, function(err, cards) {
-                            if (err) {
-                                console.log('err: ' + err);
-                            }
-                            res.json(cards);
-                        }).sort({ "updatedAt": -1 }).limit(amount);
-                    }
                 } else {
                     res.json({ 'error': 'denied' });
                 }
             }
-        });*/
-
+        });
     });
 
     // Get all cards for a PRIVATE conversation by conversation id.
@@ -1400,7 +1341,6 @@ module.exports = function(app, passport) {
         var amount = Number(req.query.amount);
         var last_card = req.query.last_card;
         var operand = req.query.operand;
-
         var query;
         var query1 = {}
         query1[operand] = last_card;
@@ -1409,7 +1349,6 @@ module.exports = function(app, passport) {
         } else {
             query = { _id: query1, 'conversationId': id };
         }
-
         Card.find(
             query,
             function(err, cards) {
@@ -1461,11 +1400,9 @@ module.exports = function(app, passport) {
         var amount = Number(req.query.amount);
         var last_card = req.query.last_card;
         var feed = {};
-
         var query;
         var query1 = {};
         var oid;
-
         if (last_card == '0') {
             query = { 'conversationId': { $in: user_array.map(function(o) { return mongoose.Types.ObjectId(o); }) } };
         } else {
@@ -1473,7 +1410,6 @@ module.exports = function(app, passport) {
             query1['$lt'] = oid;
             query = { 'conversationId': { $in: user_array.map(function(o) { return mongoose.Types.ObjectId(o); }) }, _id: query1 };
         }
-
         Conversation.find({
             '_id': {
                 $in: user_array.map(function(o) { return mongoose.Types.ObjectId(o); })
@@ -1481,14 +1417,14 @@ module.exports = function(app, passport) {
             'conversation_type': 'public'
         }, function(err, conversations) {
             if (err) {
-                console.log(err);
+                //console.log(err);
             }
             feed.conversations = conversations;
             Card.find(
                 query,
                 function(err, cards) {
                     if (err) {
-                        console.log(err);
+                        //console.log(err);
                     }
                     feed.cards = cards;
                     res.json(feed);

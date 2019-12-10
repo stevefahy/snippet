@@ -15,6 +15,9 @@ cardApp.factory('Cards', ['$http', function($http) {
             return $http.post('api/cards', carddata)
                 .then(function(response) {
                     return response;
+                })
+                 .catch(function(error) {
+                    //console.log('error: ' + error);
                 });
         },
         delete: function(id) {
@@ -387,9 +390,8 @@ cardApp.factory('Conversations', ['$http', '$q', 'LocalDB', function($http, $q, 
             return $http.get(theurl, config);
         },
         getPublicConversationCards: function(val) {
-            console.log(val);
             var theurl = '/chat/get_public_conversation_cards/' + val.id + '/' + val.last_card;
-             var config = {
+            var config = {
                 params: val
             };
             return $http.get(theurl, config);
@@ -1015,9 +1017,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     UserData.conversationsLatestCardDelete = async function(conversation_id, card_id, previous_card) {
         var deferred = $q.defer();
         let conversation = await UserData.getConversationById(conversation_id);
-        console.log(conversation);
         let conversation_type = conversation.conversation_type;
-        console.log(conversation_type);
         let operation = 'create_update';
         var index = General.findWithAttr(conversationsLatestCard, '_id', conversation_id);
         if (index >= 0) {
@@ -1034,8 +1034,6 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     };
 
     UserData.conversationsLatestCardAdd = async function(id, data) {
-        console.log(id);
-        console.log(data);
         var deferred = $q.defer();
         let conversation = await UserData.getConversationById(data.conversationId);
         let conversation_type = conversation.conversation_type;

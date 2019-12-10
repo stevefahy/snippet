@@ -1419,7 +1419,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 last_card_stored = last_card;
                 var prom1 = Conversations.getPublicConversationCards(val)
                     .then(function(res) {
-                        console.log(res);
                         if (res.data.length > 0) {
                             var users = UserData.getContacts();
                             var user;
