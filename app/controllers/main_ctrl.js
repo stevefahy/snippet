@@ -349,6 +349,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             }
 
             if (event.data.message == "all_requests_updated") {
+                console.log(event.data.all_requests);
                 endalert = true;
                 removeAlert();
                 // Update local card ids

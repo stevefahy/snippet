@@ -1404,12 +1404,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 // Only get newer than temp but check removed cards
                 var all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
                 sort_card = $filter('orderBy')(all_cards, 'updatedAt');
-                last_card = sort_card[0].updatedAt;
+                //last_card = sort_card[0].updatedAt;
+                last_card = sort_card[0]._id;
                 operand = '$lt';
                 load_amount = NUM_TO_LOAD;
             } else {
                 load_amount = NUM_TO_LOAD;
-                last_card = General.getISODate();
+                last_card = '0';
+                //last_card = General.getISODate();
                 operand = '$lt';
             }
             var val = { id: id, amount: NUM_TO_LOAD, last_card: last_card, operand: operand };
@@ -1417,6 +1419,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 last_card_stored = last_card;
                 var prom1 = Conversations.getPublicConversationCards(val)
                     .then(function(res) {
+                        console.log(res);
                         if (res.data.length > 0) {
                             var users = UserData.getContacts();
                             var user;
@@ -1468,10 +1471,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             if ($scope.cards.length > 0) {
                 var all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
                 var sort_card = $filter('orderBy')(all_cards, 'updatedAt');
-                last_card = sort_card[sort_card.length - 1].updatedAt;
+                //last_card = sort_card[sort_card.length - 1].updatedAt;
+                last_card = sort_card[sort_card.length - 1]._id;
                 operand = '$gt';
             } else {
-                last_card = General.getISODate();
+                //last_card = General.getISODate();
+                last_card = '0';
                 operand = '$lt';
             }
             var val = { id: id, amount: NUM_TO_LOAD, last_card: last_card, operand: operand };

@@ -48,18 +48,39 @@ if (workbox) {
         // remove the new_card value.
         delete card.new_card;
         delete card.$$hashKey;
+
+        // chat-get_feed
+        /*
+                switch (conversation_type) {
+                    case 'feed':
+                        cache_name = 'chat-get_feed';
+                        break;
+                    case 'private':
+                        cache_name = 'chat-get_conversation_cards';
+                        break;
+                }
+                */
+        console.log(id);
+        console.log(card);
+        console.log(operation);
+        console.log(conversation_type);
+
+
         return caches.open('chat-get_conversation_latest_card').then(async function(cache) {
             return cache.keys().then(function(requests) {
                 var urls = requests.map(function(request) {
                     return request;
                 });
+                console.log(urls);
                 // Find the first cache item (create and update are the most recent)
                 let found_url = urls.find(x => x.url.includes(id));
+                console.log(found_url);
                 return caches.match(found_url).then(async function(cacheResponse) {
                     // Found it in the cache
                     if (cacheResponse) {
                         // Get the original response
                         let response_json = await cacheResponse.json();
+                        console.log(response_json);
                         let headers = { "status": 200, headers: { "Content-Type": "application/json; charset=utf-8", "Response-Type": "basic" } }
                         let blob_headers = { type: 'basic' };
                         var blob = new Blob([JSON.stringify(card)], blob_headers);
@@ -75,34 +96,117 @@ if (workbox) {
 
     // Update cache.
     async function updateFeed(card, operation, conversation_type) {
+        console.log('updateFeed');
         // remove the new_card value.
         delete card.new_card;
         delete card.$$hashKey;
         let cache_name;
+        let cache_arr = [];
         switch (conversation_type) {
             case 'feed':
                 cache_name = 'chat-get_feed';
+                cache_arr.push({ name: cache_name, conversation_type: conversation_type });
+                break;
+            case 'public':
+                cache_name = 'chat-get_public_conversation_cards';
+                cache_arr.push({ name: cache_name, conversation_type: conversation_type }, { name: 'chat-get_feed', conversation_type: 'feed' });
                 break;
             case 'private':
                 cache_name = 'chat-get_conversation_cards';
+                cache_arr.push({ name: cache_name, conversation_type: conversation_type });
                 break;
         }
+
+        //event.waitUntil(Promise.all(
+        await cache_arr.map(async function(myCache) {
+            console.log(myCache);
+            return caches.open(myCache.name).then(async function(cache) {
+                /*return cache.keys().then(function(requests) {
+                    var urls = requests.map(function(request) {
+                        return request;
+                    });
+                    console.log(urls);
+                });*/
+
+
+                return cache.keys().then(function(requests) {
+                    var urls = requests.map(function(request) {
+                        return request;
+                    });
+                    console.log(urls);
+                    // Find the first cache item (create and update are the most recent)
+                    let found_url = urls.find(x => x.url.includes('last_card=0'));
+                    console.log(found_url);
+                    return caches.match(found_url).then(async function(cacheResponse) {
+                        // Found it in the cache
+                        if (cacheResponse) {
+                            // Get the original response
+                            let response_json = await cacheResponse.json();
+                            console.log(response_json);
+                            let arr;
+                            if (myCache.conversation_type == 'feed') {
+                                arr = response_json['cards'];
+                            } else if (myCache.conversation_type == 'public') {
+                                arr = response_json;
+                            } else if (myCache.conversation_type == 'private') {
+                                arr = response_json;
+                            }
+                            let card_exists = (arr) => arr._id == card._id;
+                            let card_index = arr.findIndex(card_exists);
+                            if (operation == 'create_update') {
+                                if (card_index >= 0) {
+                                    card.original_content = card.content;
+                                    arr[card_index] = card;
+                                } else {
+                                    arr.push(card);
+                                }
+                            }
+                            if (operation == 'delete') {
+                                if (card_index >= 0) {
+                                    arr.splice(card_index, 1);
+                                }
+                            }
+                            console.log(response_json);
+                            let headers = { "status": 200, headers: { "Content-Type": "application/json; charset=utf-8", "Response-Type": "basic" } }
+                            let blob_headers = { type: 'basic' };
+                            var blob = new Blob([JSON.stringify(response_json)], blob_headers);
+                            let new_response = new Response(blob, headers);
+                            cache.put(found_url, new_response);
+                            return response_json;
+                        }
+                    });
+                });
+
+
+            });
+        })
+        //));
+
+
+
+
         // Get the current cache for the feed
+        /*
         return caches.open(cache_name).then(async function(cache) {
             return cache.keys().then(function(requests) {
                 var urls = requests.map(function(request) {
                     return request;
                 });
+                console.log(urls);
                 // Find the first cache item (create and update are the most recent)
                 let found_url = urls.find(x => x.url.includes('last_card=0'));
+                console.log(found_url);
                 return caches.match(found_url).then(async function(cacheResponse) {
                     // Found it in the cache
                     if (cacheResponse) {
                         // Get the original response
                         let response_json = await cacheResponse.json();
+                        console.log(response_json);
                         let arr;
                         if (conversation_type == 'feed') {
                             arr = response_json['cards'];
+                        } else if (conversation_type == 'public') {
+                            arr = response_json;
                         } else if (conversation_type == 'private') {
                             arr = response_json;
                         }
@@ -121,6 +225,7 @@ if (workbox) {
                                 arr.splice(card_index, 1);
                             }
                         }
+                         console.log(response_json);
                         let headers = { "status": 200, headers: { "Content-Type": "application/json; charset=utf-8", "Response-Type": "basic" } }
                         let blob_headers = { type: 'basic' };
                         var blob = new Blob([JSON.stringify(response_json)], blob_headers);
@@ -131,6 +236,7 @@ if (workbox) {
                 });
             });
         });
+        */
     }
 
     // Client to Workbox
@@ -213,7 +319,8 @@ if (workbox) {
         let all_updated = sd.filter(x => x.method == "PUT");
         let all_deleted = sd.filter(x => x.method == "DELETE");
         let images_posted = sd.filter(x => x.image != undefined);
-
+console.log(all_posted);
+console.log(all_updated);
         // Return an array of PUTs for each POST (by POST returned ._id)
         all_posted.forEach(function(element) {
             let a = all_updated.filter(x => x.returned._id == element.returned._id);
@@ -358,7 +465,7 @@ if (workbox) {
                         // Get Fetch response.
                         response = await fetch(clone_2);
                     }
-                    // Get the response as JSOM.
+                    // Get the response as JSON.
                     assetsData = await response.json();
                 }
                 // Check whether the post was created offline with a temp_id.
@@ -663,6 +770,16 @@ if (workbox) {
     );
 
     workbox.routing.registerRoute(
+        new RegExp('/chat/get_public_conversation_cards'),
+        new workbox.strategies.NetworkFirst({
+            cacheName: 'chat-get_public_conversation_cards',
+            plugins: [
+                route_plugin
+            ]
+        })
+    );
+
+    workbox.routing.registerRoute(
         new RegExp('/api/conversations/'),
         new workbox.strategies.NetworkFirst({
             cacheName: 'api-conversations',
@@ -851,7 +968,7 @@ if (workbox) {
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "2c494601a0e0f50053016560cd7988a1"
+    "revision": "634c4c370847e5bda6018d9af02ea332"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -883,7 +1000,7 @@ if (workbox) {
   },
   {
     "url": "controllers/main_ctrl.js",
-    "revision": "4d995e760ff7f8addc1f801419186509"
+    "revision": "bd3560e4684ba8b83560c2d7aa3250d1"
   },
   {
     "url": "controllers/usersetting_ctrl.js",
@@ -895,7 +1012,7 @@ if (workbox) {
   },
   {
     "url": "factories/factories.js",
-    "revision": "aa57b82e360411635757e90413dd8320"
+    "revision": "3b13b380a9bc3835666b9ecada8a7193"
   },
   {
     "url": "factories/local_db.js",
@@ -1007,11 +1124,11 @@ if (workbox) {
   },
   {
     "url": "routes/routes.js",
-    "revision": "203611c990bd6ada1e21cebd8f0608a3"
+    "revision": "c4bfce2b244ca5b6f952d6c28733afe6"
   },
   {
     "url": "service-worker.js",
-    "revision": "216e6245e85478582d5dceb8fd040e6e"
+    "revision": "20ff3395a4eff4447f00d66e6ee6ac1c"
   },
   {
     "url": "services/content_editable.js",
@@ -1023,7 +1140,7 @@ if (workbox) {
   },
   {
     "url": "services/database.js",
-    "revision": "2748d380b51b2519ac9d44a2b63009ff"
+    "revision": "b29a8a12d65c29ecdc84cd786052701b"
   },
   {
     "url": "services/debug.js",
@@ -1043,7 +1160,7 @@ if (workbox) {
   },
   {
     "url": "services/format.js",
-    "revision": "2528f775c8881561e2da9c7c53c35027"
+    "revision": "7939f0e51f1248381fa746fcc9244a57"
   },
   {
     "url": "services/general.js",

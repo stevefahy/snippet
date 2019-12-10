@@ -244,6 +244,16 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     $(this).attr('src', IMAGES_URL + original_image_name + '?TEMP_DATE_' + new Date());
                 }
             }
+            if ($(this).attr('data-src')){
+                            if ($(this).attr('data-src').substr(0, 5) == 'blob:') {
+                console.log('filtered');
+                let original_image_name = $(this).attr('original-image-name');
+                $(this).removeAttr('original-image-name');
+                $(this).attr('data-src', IMAGES_URL + original_image_name + '?TEMP_DATE_' + new Date());
+
+            }
+            }
+
         });
         var replaced = div.innerHTML;
         return replaced;

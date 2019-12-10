@@ -380,15 +380,19 @@ cardApp.factory('Conversations', ['$http', '$q', 'LocalDB', function($http, $q, 
             return $http.post(theurl, val);
         },
         getConversationCards: function(val) {
-            var theurl = '/chat/get_conversation_cards/' + val.id + '/' + val.last_card;;
+            var theurl = '/chat/get_conversation_cards/' + val.id + '/' + val.last_card;
             var config = {
                 params: val
             };
             return $http.get(theurl, config);
         },
         getPublicConversationCards: function(val) {
-            var theurl = '/chat/get_public_conversation_cards/' + val.id;
-            return $http.post(theurl, val);
+            console.log(val);
+            var theurl = '/chat/get_public_conversation_cards/' + val.id + '/' + val.last_card;
+             var config = {
+                params: val
+            };
+            return $http.get(theurl, config);
         }
     };
 }]);
@@ -1030,6 +1034,8 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     };
 
     UserData.conversationsLatestCardAdd = async function(id, data) {
+        console.log(id);
+        console.log(data);
         var deferred = $q.defer();
         let conversation = await UserData.getConversationById(data.conversationId);
         let conversation_type = conversation.conversation_type;
