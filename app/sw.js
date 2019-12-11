@@ -1026,7 +1026,7 @@ if (workbox) {
   },
   {
     "url": "routes/routes.js",
-    "revision": "52f0cf3a54c321c84381e2f47d8ac0c2"
+    "revision": "d260fc24a239c9e9add193da84824432"
   },
   {
     "url": "service-worker.js",

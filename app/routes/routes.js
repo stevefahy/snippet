@@ -95,7 +95,7 @@ console.log(token);
     if (req.principal) {
         req.principal.isAuthenticated = false;
     } else {
-        res.redirect('/api/login');
+        //res.redirect('/api/login');
     }
     if (token) {
         try {
@@ -1211,8 +1211,10 @@ module.exports = function(app, passport) {
             if (err) {
                 //console.log(err);
                 return done(err);
+            } else {
+               res.json(conversation); 
             }
-            res.json(conversation);
+            
         });
     });
 
