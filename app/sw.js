@@ -870,7 +870,7 @@ if (workbox) {
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "af162ca6686ac605fbc39820414ad390"
+    "revision": "96ea2a31ed90b09b434156025b56d561"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -902,7 +902,7 @@ if (workbox) {
   },
   {
     "url": "controllers/main_ctrl.js",
-    "revision": "4d995e760ff7f8addc1f801419186509"
+    "revision": "9fb32d272d6a56483dd5d4ebd239c7b4"
   },
   {
     "url": "controllers/usersetting_ctrl.js",
@@ -914,7 +914,7 @@ if (workbox) {
   },
   {
     "url": "factories/factories.js",
-    "revision": "cae72c576a4ca58741b10938f34fd69e"
+    "revision": "00e16387c31bf3012fff39c9611560df"
   },
   {
     "url": "factories/local_db.js",
@@ -1026,7 +1026,7 @@ if (workbox) {
   },
   {
     "url": "routes/routes.js",
-    "revision": "d260fc24a239c9e9add193da84824432"
+    "revision": "fb930331358c40cf6b938b0bf472c3ac"
   },
   {
     "url": "service-worker.js",

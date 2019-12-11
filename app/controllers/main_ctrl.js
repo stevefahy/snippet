@@ -23,6 +23,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     var endalert = false;
     var addingalert = false;
     var document_hidden;
+    let unbind_sync_finished;
 
     var DEVICE_TYPE;
     var DEVICE_OS;
@@ -276,25 +277,38 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         }
     };
 
-    checkDataUpdate = function(queue) {
-        var unbind_1 = $rootScope.$watch('sync_finished', function(n) {
-            if (n) {
-                // queue this request
-                if (queue) {
-                    checkLoadingCards()
-                        .then(function(result) {
-                            runUpdate();
-                        })
-                        .catch(function(error) {
-                            //console.log(error);
-                        });
-                } else if (!$rootScope.loading_cards) {
-                    // only run this request if not already running.
+    syncFinished = function(queue, unbind) {
+        // queue this request
+        if (queue) {
+            checkLoadingCards()
+                .then(function(result) {
                     runUpdate();
+                })
+                .catch(function(error) {
+                    //console.log(error);
+                });
+        } else if (!$rootScope.loading_cards) {
+            // only run this request if not already running.
+            runUpdate();
+        }
+        if (unbind) {
+            unbind_sync_finished();
+        }
+    }
+
+    checkDataUpdate = function(queue) {
+        if (!$scope.$$phase) {
+            $scope.$apply();
+        }
+        if ($rootScope.sync_finished) {
+            syncFinished(queue, false);
+        } else {
+            unbind_sync_finished = $rootScope.$watch('sync_finished', function(n) {
+                if (n) {
+                    syncFinished(queue, true);
                 }
-                unbind_1();
-            }
-        });
+            });
+        }
     };
 
     function alertAddEnd() {
@@ -336,7 +350,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     if ('serviceWorker' in navigator) {
         // Handler for messages coming from the service worker
         navigator.serviceWorker.addEventListener('message', function(event) {
-
+            
             if (event.data.message == "sync_started") {
                 $rootScope.sync_finished = false;
             }

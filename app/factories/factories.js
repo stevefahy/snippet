@@ -16,7 +16,7 @@ cardApp.factory('Cards', ['$http', function($http) {
                 .then(function(response) {
                     return response;
                 })
-                 .catch(function(error) {
+                .catch(function(error) {
                     //console.log('error: ' + error);
                 });
         },
@@ -58,7 +58,6 @@ cardApp.factory('Invites', ['$http', function($http) {
             return $http.post('api/invite/search_id/' + code);
         }
     };
-
 }]);
 
 //

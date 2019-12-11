@@ -1470,11 +1470,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             if ($scope.cards.length > 0) {
                 var all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
                 var sort_card = $filter('orderBy')(all_cards, 'updatedAt');
-                //last_card = sort_card[sort_card.length - 1].updatedAt;
                 last_card = sort_card[sort_card.length - 1]._id;
                 operand = '$gt';
             } else {
-                //last_card = General.getISODate();
                 last_card = '0';
                 operand = '$lt';
             }
