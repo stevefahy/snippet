@@ -90,6 +90,8 @@ function createPublicConversation(user, callback) {
 function isMember(req, res, next) {
     // must be logged in to be a member
     var token = req.headers['x-access-token'];
+console.log(req.principal);
+console.log(token);
     if (req.principal) {
         req.principal.isAuthenticated = false;
     } else {
@@ -107,7 +109,11 @@ function isMember(req, res, next) {
             //req.principal.isAuthenticated = false;
             res.redirect('/api/login');
         }
-    }
+    } else {
+// otherwise redirect to login
+                res.redirect('/api/login');
+
+}
     if (req.principal.isAuthenticated) {
         // get the members of this conversation
         var query = getConversationId(req.params.id);
@@ -1215,8 +1221,10 @@ module.exports = function(app, passport) {
         Conversation.findOne({ '_id': req.params.id, 'conversation_type': 'public' }, function(err, conversation) {
             if (err) {
                 res.json({ 'error': 'not found' });
-            }
+return;
+            } else {
             res.json(conversation);
+}
         });
     });
 
@@ -1356,8 +1364,10 @@ module.exports = function(app, passport) {
             function(err, cards) {
                 if (err) {
                     console.log(err);
-                }
+return;
+                } else {
                 res.json(cards);
+        }
             }).sort({ "updatedAt": -1 }).limit(amount);
     });
 
