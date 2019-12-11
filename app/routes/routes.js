@@ -92,6 +92,8 @@ function isMember(req, res, next) {
     var token = req.headers['x-access-token'];
     if (req.principal) {
         req.principal.isAuthenticated = false;
+    } else {
+        res.redirect('/api/login');
     }
     if (token) {
         try {
