@@ -18,6 +18,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     var ua = navigator.userAgent;
 
     $rootScope.deleting_card = false;
+    $rootScope.sync_finished = true;
 
     var last_network_status = true;
     var endalert = false;
@@ -129,9 +130,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             navigator.serviceWorker.controller.postMessage(send);
         }
         if (!last_network_status && newStatus) {
-            if ('serviceWorker' in navigator) {
-                $rootScope.sync_finished = false;
-            } else {
+            if (!'serviceWorker' in navigator) {
                 $rootScope.sync_finished = true;
             }
             // Connection restored.
@@ -350,7 +349,6 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     if ('serviceWorker' in navigator) {
         // Handler for messages coming from the service worker
         navigator.serviceWorker.addEventListener('message', function(event) {
-            
             if (event.data.message == "sync_started") {
                 $rootScope.sync_finished = false;
             }

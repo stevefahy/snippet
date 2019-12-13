@@ -790,5 +790,5 @@ if (workbox) {
     workbox.precaching.precacheAndRoute([], {
 
     });
-
+    
 }

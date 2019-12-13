@@ -197,6 +197,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // SCROLLING
 
+    newCardAnimComplete = function(card_id) {
+        var pos = General.findWithAttr($scope.cards, '_id', card_id);
+        if (pos >= 0) {
+            createObserver($scope.cards[pos]._id);
+            disableCheckboxes($scope.cards[pos]._id);
+        }
+        bindScroll();
+    }
+
     upDateObservers = function() {
         resetObserver_queue();
         intObservers();
@@ -207,9 +216,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             // TODO - If not at top or bottom add dialogue to notify user of new post
             // but only scroll to the card if the user chooses. Requires change to addCards also.
             if ($scope.cards[i].new_card) {
+                delete $scope.cards[i].new_card;
                 var card_id = $scope.cards[i]._id;
                 // Get the height of the new card.
-                let test = awaitImages('.test_card .ce').then(function(result) {
+                let test = awaitImages('#card_' + card_id).then(function(result) {
                     // Animate the change onscreen.
                     $timeout(function() {
                         if ($scope.top_down) {
@@ -228,18 +238,17 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                 // not top
                                 unbindScroll();
                                 $(".first_load_anim").removeClass('zero_height');
+                                // Stop the animation if the user scrolls.
+                                $(".content_cnv").bind("touchstart", function(e) {
+                                    $(".content_cnv").stop(true, false).unbind('touchstart');
+                                    newCardAnimComplete(card_id);
+                                });
                                 // Animate the card into position
                                 $(".content_cnv").animate({
                                     scrollTop: 0
                                 }, 800, "easeOutQuad", function() {
                                     // Animation complete.
-                                    var pos = General.findWithAttr($scope.cards, '_id', card_id);
-                                    if (pos >= 0) {
-                                        delete $scope.cards[pos].new_card;
-                                        createObserver($scope.cards[pos]._id);
-                                        disableCheckboxes($scope.cards[pos]._id);
-                                    }
-                                    bindScroll();
+                                    newCardAnimComplete(card_id);
                                 });
                             }
                         } else {
@@ -247,20 +256,19 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             unbindScroll();
                             $(".first_load_anim").removeClass('zero_height');
                             var max_s = $(".content_cnv")[0].scrollHeight - $(".content_cnv")[0].clientHeight;
+                            // Stop the animation if the user scrolls.
+                            $(".content_cnv").bind("touchstart", function(e) {
+                                $(".content_cnv").stop(true, false).unbind('touchstart');
+                                newCardAnimComplete(card_id);
+                            });
                             $(".content_cnv").animate({
                                 scrollTop: max_s
                             }, 800, "easeOutQuad", function() {
                                 // Animation complete.
-                                var pos = General.findWithAttr($scope.cards, '_id', card_id);
-                                if (pos >= 0) {
-                                    delete $scope.cards[pos].new_card;
-                                    createObserver($scope.cards[pos]._id);
-                                    disableCheckboxes($scope.cards[pos]._id);
-                                }
-                                bindScroll();
+                                newCardAnimComplete(card_id);
                             });
                         }
-                    }, 100);
+                    });
                 });
                 $scope.test_card.content = $scope.cards[i].content;
                 //$scope.test_card.content = card.content;
@@ -1178,9 +1186,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 deferred.resolve();
             } else {
                 // No cards have been removed due to scrolling.
-                for (var i = 0, len = arr.length; i < len; i++) {
-                    $scope.cards.push(arr[i]);
-                }
+                $scope.cards = $scope.cards.concat(arr);
                 deferred.resolve();
             }
         } else {
@@ -1198,9 +1204,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 deferred.resolve();
             } else {
                 // No cards have been removed due to scrolling.
-                for (var i = 0, len = arr.length; i < len; i++) {
-                    $scope.cards.push(arr[i]);
-                }
+                $scope.cards = $scope.cards.concat(arr);
                 deferred.resolve();
             }
         }
@@ -1770,7 +1774,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             // Delete the new card value.
             var pos = General.findWithAttr($scope.cards, '_id', id);
             if (pos >= 0) {
-                delete $scope.cards[pos].new_card;
                 createObserver($scope.cards[pos]._id);
                 disableCheckboxes($scope.cards[pos]._id);
             }
