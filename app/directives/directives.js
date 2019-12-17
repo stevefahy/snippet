@@ -90,6 +90,10 @@ cardApp.directive('onFinishRender', function($timeout, $rootScope) {
                         $rootScope.$broadcast("ngRepeatFinished", { temp: "some value" });
                     }
                 });
+            } else {
+                if (attr.onFinishRender == 'ngRepeatFinished') {
+                    $rootScope.$broadcast("ngRepeatFinishedAdd", { temp: "some value" });
+                }
             }
         }
     };

@@ -236,6 +236,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     };
 
     runUpdate = function() {
+        console.log('runUpdate');
         if ($scope.online) {
             var id = Conversations.getConversationId();
             // update all required models (could be new conversations, multiple cards across conversations, new users or user data - Userdata first load re call?)
