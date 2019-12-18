@@ -1,4 +1,4 @@
-cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '$location', 'UserData', 'socket', 'principal', 'viewAnimationsService', 'Conversations', 'Cards', '$q', 'Profile', 'Users', 'General', '$animate', '$templateRequest', '$sce', function($scope, $window, $rootScope, $timeout, $location, UserData, socket, principal, viewAnimationsService, Conversations, Cards, $q, Profile, Users, General, $animate, $templateRequest, $sce) {
+cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '$interval', '$location', 'UserData', 'socket', 'principal', 'viewAnimationsService', 'Conversations', 'Cards', '$q', 'Profile', 'Users', 'General', '$animate', '$templateRequest', '$sce', function($scope, $window, $rootScope, $timeout, $interval, $location, UserData, socket, principal, viewAnimationsService, Conversations, Cards, $q, Profile, Users, General, $animate, $templateRequest, $sce) {
 
     $window.networkChange = this.networkChange;
     $window.onResume = this.onResume;
@@ -18,7 +18,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     var ua = navigator.userAgent;
 
     $rootScope.deleting_card = false;
-    $rootScope.sync_finished = true;
+    $rootScope.sync_finished = false;
 
     var last_network_status = true;
     var endalert = false;
@@ -236,7 +236,6 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     };
 
     runUpdate = function() {
-        console.log('runUpdate');
         if ($scope.online) {
             var id = Conversations.getConversationId();
             // update all required models (could be new conversations, multiple cards across conversations, new users or user data - Userdata first load re call?)
@@ -246,9 +245,15 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                         if (result.length > 0) {
                             addCards(result);
                             // Update Conversations
-                            for (var i = 0, len = result.length; i < len; i++) {
-                                UserData.conversationsLatestCardAdd(msg.conversation_id, result[i]);
-                            }
+                            var i = result.length;
+                            timeoutId = $interval(function() {
+                                console.log('INTERVAL');
+                                i--;
+                                console.log(i);
+                                if (i >= 0) {
+                                    UserData.conversationsLatestCardAdd(id, result[i]);
+                                }
+                            }, 100, result.length);
                         }
                     });
 
@@ -258,19 +263,39 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                         if (result.length > 0) {
                             addCards(result);
                             // Update Conversations
-                            for (var i = 0, len = result.length; i < len; i++) {
+                            /*for (var i = 0, len = result.length; i < len; i++) {
                                 UserData.conversationsLatestCardAdd(id, result[i]);
-                            }
+                            }*/
+                             var i = result.length;
+                            timeoutId = $interval(function() {
+                                console.log('INTERVAL PRIV');
+                                i--;
+                                console.log(i);
+                                if (i >= 0) {
+                                    UserData.conversationsLatestCardAdd(id, result[i]);
+                                }
+                            }, 100, result.length);
                         }
                     });
             } else if (Conversations.getConversationType() == 'public') {
+                console.log('public')
                 getPublicCardsUpdate(id).then(function(result) {
+                    console.log(result);
                     if (result.length > 0) {
                         addCards(result);
                         // Update Conversations
-                        for (var i = 0, len = result.length; i < len; i++) {
-                            UserData.conversationsLatestCardAdd(msg.conversation_id, result[i]);
-                        }
+                        /*for (var i = 0, len = result.length; i < len; i++) {
+                            UserData.conversationsLatestCardAdd(id, result[i]);
+                        }*/
+                         var i = result.length;
+                            timeoutId = $interval(function() {
+                                console.log('INTERVAL PUB');
+                                i--;
+                                console.log(i);
+                                if (i >= 0) {
+                                    UserData.conversationsLatestCardAdd(id, result[i]);
+                                }
+                            }, 100, result.length);
                     }
                 });
             }
@@ -436,7 +461,8 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                     addCards(result);
                     // Update Conversations
                     for (var i = 0, len = result.length; i < len; i++) {
-                        UserData.conversationsLatestCardAdd(msg.conversation_id, result[i]);
+                        //UserData.conversationsLatestCardAdd(msg.conversation_id, result[i]);
+                        UserData.conversationsLatestCardAdd(id, result[i]);
                     }
                 }
             });
@@ -444,10 +470,13 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             getFollowingUpdate()
                 .then(function(result) {
                     if (result.length > 0) {
+                        console.log(JSON.stringify(result));
                         addCards(result);
                         // Update Conversations
                         for (var i = 0, len = result.length; i < len; i++) {
-                            UserData.conversationsLatestCardAdd(msg.conversation_id, result[i]);
+                            //for (var i = result.length-1, len = result.length; i >= 0; i--) {
+                            //UserData.conversationsLatestCardAdd(msg.conversation_id, result[i]);
+                            UserData.conversationsLatestCardAdd(id, result[i]);
                         }
                     }
                 });
@@ -456,7 +485,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     // NOTIFICATION for private conversation.
     $rootScope.$on('PRIVATE_NOTIFICATION_CREATED', function(event, msg) {
-        //console.log('PRIVATE_NOTIFICATION_CREATED');
+        console.log('PRIVATE_NOTIFICATION_CREATED');
         UserData.addConversationViewed(msg.conversation_id, msg.viewed_users);
         var id = Conversations.getConversationId();
         // only update the conversation if the user is currently in that conversation
@@ -526,7 +555,8 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                     updateCard(result.data);
                     // Update Conversations
                     // TODO Check that this is the latest
-                    UserData.conversationsLatestCardAdd(msg.conversation_id, result.data);
+                    //UserData.conversationsLatestCardAdd(msg.conversation_id, result.data);
+                    UserData.conversationsLatestCardAdd(id, result.data);
                 });
         }
     });
@@ -564,7 +594,8 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         // Get the updated card (not necessarily the latest card).
         Cards.getCard(msg.card_id)
             .then(function(res) {
-                UserData.conversationsLatestCardDelete(msg.conversation_id, msg.card_id, previous_card);
+                //UserData.conversationsLatestCardDelete(msg.conversation_id, msg.card_id, previous_card);
+                UserData.conversationsLatestCardDelete(id, msg.card_id, previous_card);
             });
     });
 

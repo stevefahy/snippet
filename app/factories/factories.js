@@ -1033,12 +1033,16 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     };
 
     UserData.conversationsLatestCardAdd = async function(id, data) {
+        console.log(id);
+        console.log(data);
         var deferred = $q.defer();
-        let conversation = await UserData.getConversationById(data.conversationId);
+        let conversation = await Conversations.find_public_conversation_id(data.conversationId);
         let conversation_type = conversation.conversation_type;
+        console.log(conversation_type);
         let operation = 'create_update';
         var index = General.findWithAttr(conversationsLatestCard, '_id', id);
         // Add if conversationsLatestCard for with this id doesnt exist. otherwise update
+        console.log(index);
         if (index >= 0) {
             // Update.
             conversationsLatestCard[index].data = data;

@@ -66,7 +66,7 @@ if (workbox) {
                         var blob = new Blob([JSON.stringify(card)], blob_headers);
                         let new_response = new Response(blob, headers);
                         cache.put(found_url, new_response);
-                        updateFeed(card, operation, conversation_type);
+                        await updateFeed(card, operation, conversation_type);
                         return response_json;
                     }
                 });
@@ -81,6 +81,8 @@ if (workbox) {
         delete card.$$hashKey;
         let cache_name;
         let cache_arr = [];
+        console.log(conversation_type);
+        console.log(card);
         switch (conversation_type) {
             case 'feed':
                 cache_name = 'chat-get_feed';
@@ -102,7 +104,14 @@ if (workbox) {
                         return request;
                     });
                     // Find the first cache item (create and update are the most recent)
-                    let found_url = urls.find(x => x.url.includes('last_card=0'));
+                    let query_0 = 'last_card=0';
+                    let query_1 = '';
+                    if(myCache.conversation_type == 'private'){
+                        query_1 = card.conversationId;
+                    }
+                    //   element => element.color === 'red' && element.shape === 'circle'
+                    let found_url = urls.find(x => x.url.includes(query_0) && x.url.includes(query_1));
+                    console.log(found_url);
                     return caches.match(found_url).then(async function(cacheResponse) {
                         // Found it in the cache
                         if (cacheResponse) {
@@ -118,6 +127,7 @@ if (workbox) {
                             }
                             let card_exists = (arr) => arr._id == card._id;
                             let card_index = arr.findIndex(card_exists);
+                            console.log(card_index);
                             if (operation == 'create_update') {
                                 if (card_index >= 0) {
                                     card.original_content = card.content;
@@ -135,7 +145,8 @@ if (workbox) {
                             let blob_headers = { type: 'basic' };
                             var blob = new Blob([JSON.stringify(response_json)], blob_headers);
                             let new_response = new Response(blob, headers);
-                            cache.put(found_url, new_response);
+                            await cache.put(found_url, new_response);
+                            console.log(response_json);
                             return response_json;
                         }
                     });
@@ -146,7 +157,7 @@ if (workbox) {
 
     // Client to Workbox
 
-    self.addEventListener('message', function(event) {
+    self.addEventListener('message', async function(event) {
 
         if (event.data.message === 'replayRequests') {
             send_message_to_all_clients({ message: 'sync_started' });
@@ -156,7 +167,7 @@ if (workbox) {
         if (event.data.message === "card_create_update") {
             let operation = event.data.object.operation;
             let conversation_type = event.data.object.conversation_type;
-            updateFeed(event.data.object.card, operation, conversation_type);
+            await updateFeed(event.data.object.card, operation, conversation_type);
         }
 
         if (event.data.message === "updatelatestcard") {
@@ -870,7 +881,7 @@ if (workbox) {
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "e448ff7d1e4e86479a30f09970d29e91"
+    "revision": "dc1b0a1dd059297e6b87e82f14dd2027"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -902,7 +913,7 @@ if (workbox) {
   },
   {
     "url": "controllers/main_ctrl.js",
-    "revision": "8c2b65907e06372f45b6bf31660837a9"
+    "revision": "1d5188e16b1500a285e687754f9ce984"
   },
   {
     "url": "controllers/usersetting_ctrl.js",
@@ -910,11 +921,11 @@ if (workbox) {
   },
   {
     "url": "directives/directives.js",
-    "revision": "21aaaf51d485c99e3d67ce4599a08b31"
+    "revision": "a9e61e2bb75abcfb9914de37f9595324"
   },
   {
     "url": "factories/factories.js",
-    "revision": "00e16387c31bf3012fff39c9611560df"
+    "revision": "8e4f007a7210e57148ae374c77470390"
   },
   {
     "url": "factories/local_db.js",
@@ -1030,7 +1041,7 @@ if (workbox) {
   },
   {
     "url": "service-worker.js",
-    "revision": "38319e240ddbcb30f128c5839bf0f7cb"
+    "revision": "0c3629a81b717181e9ec14019fc22033"
   },
   {
     "url": "services/content_editable.js",

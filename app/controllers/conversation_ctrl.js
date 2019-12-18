@@ -108,6 +108,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var time_1;
     var time_2;
 
+    // Adding cards
+    let new_cards = [];
+
     if (ua.indexOf('AndroidApp') >= 0) {
         mobile = true;
     }
@@ -181,13 +184,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     });
 
     $scope.$on('ngRepeatFinishedTemp', function(ngRepeatFinishedEvent) {
-        console.log('ngRepeatFinishedTemp');
         image_check_counter++;
         checkImages('load_off_screen', image_check_counter);
     });
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
-        console.log('ngRepeatFinished');
         dir = 2;
         image_check_counter++;
         checkImages('content_cnv', image_check_counter);
@@ -196,24 +197,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             $('.cropper-hidden').removeClass('cropper-hidden');
         }
     });
-
-    $scope.$on('ngRepeatFinishedAdd', function(ngRepeatFinishedEvent) {
-        console.log('ngRepeatFinishedAdd');
-        dir = 2;
-        image_check_counter++;
-        checkImages('content_cnv', image_check_counter);
-        if ($('.cropper-container').length > 0) {
-            $('.cropper-container').remove();
-            $('.cropper-hidden').removeClass('cropper-hidden');
-        }
-    });
-
-
 
     // SCROLLING
 
     newCardAnimComplete = function(card_id) {
-        console.log('newCardAnimComplete: ' + card_id);
         var deferred = $q.defer();
         var pos = General.findWithAttr($scope.cards, '_id', card_id);
         if (pos >= 0) {
@@ -221,7 +208,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             disableCheckboxes($scope.cards[pos]._id);
         }
         bindScroll();
-        console.log('newCardAnimComplete fin: ' + card_id);
         deferred.resolve();
         return deferred.promise;
     }
@@ -229,113 +215,47 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     animateCard = async function(card_id) {
         var deferred = $q.defer();
         let speed = 800;
-        console.log(new_cards.length);
+        // Only animate the last added card.
         if (new_cards.length > 0) {
-            //speed = 0;
             deferred.resolve();
         } else {
-
-        console.log('animateCard: ' + speed);
-        
-        var max_s;
-        if (!$scope.top_down) {
-            max_s = $(".content_cnv")[0].scrollHeight - $(".content_cnv")[0].clientHeight;
-
-            console.log(max_s);
-        } else {
-            max_s = 0;
+            var max_s;
+            if (!$scope.top_down) {
+                max_s = $(".content_cnv")[0].scrollHeight - $(".content_cnv")[0].clientHeight;
+            } else {
+                max_s = 0;
+            }
+            unbindScroll();
+            // Stop the animation if the user scrolls.
+            $(".content_cnv").bind("touchstart", function(e) {
+                $(".content_cnv").stop(true, false).unbind('touchstart');
+                newCardAnimComplete(card_id);
+            });
+            $(".content_cnv").animate({
+                scrollTop: max_s
+            }, speed, "easeOutQuad", async function() {
+                // Animation complete.
+                await newCardAnimComplete(card_id);
+                deferred.resolve();
+            });
         }
-        // If at top 
-        unbindScroll();
-        $(".first_load_anim").removeClass('zero_height');
-
-        // Stop the animation if the user scrolls.
-        $(".content_cnv").bind("touchstart", function(e) {
-            $(".content_cnv").stop(true, false).unbind('touchstart');
-            newCardAnimComplete(card_id);
-        });
-        $(".content_cnv").animate({
-            scrollTop: max_s
-        }, speed, "easeOutQuad", async function() {
-            // Animation complete.
-            await newCardAnimComplete(card_id);
-            console.log('animateCard fin');
-            deferred.resolve();
-        });
-    }
         return deferred.promise;
     }
-    /*
-        addthecard = function(card){
-            var deferred = $q.defer();
-            $scope.cards.push(card);
-            deferred.resolve();
-            return deferred.promise;
-        }
-        */
 
     addNewCards = async function() {
-        console.log('addNewCards: ' + new_cards.length);
         console.log(new_cards);
-        //for (var i = 0, len = arr.length; i < len; i++) {
-            
         if (new_cards.length > 0) {
             let next_card = new_cards.pop();
-            console.log(next_card);
             $scope.cards.push(next_card);
             if (!$scope.$$phase) {
                 $scope.$apply();
             }
         }
-        
-//let next_card = new_cards[0];
-//let next_card_0 = [];
-/*
-let next_card;
-
-        if (new_cards.length > 1) {
-            next_card = new_cards.pop();
-            console.log(next_card._id);
-            cards_watch = false;
-            //let next_card_1 = new_cards.pop();
-            $scope.cards = $scope.cards.concat(new_cards);
-            new_cards = [];
-            new_cards[0] = next_card;
-            cards_watch = true;
-            //$scope.cards.push(next_card);
-            if (!$scope.$$phase) {
-                $scope.$apply();
-            }
-        } else if(new_cards.length == 1){
-            next_card = new_cards.pop();
-            console.log(next_card._id);
-               $scope.cards.push(next_card);
-            if (!$scope.$$phase) {
-                $scope.$apply();
-            }
-        }
-*/
-
-
-        //}
     }
-
-    /*
-        upDateObserver = function(card) {
-
-            var deferred = $q.defer();
-            console.log('upDateObserver start: ' + card._id);
-            $scope.cards.push(card);
-            deferred.resolve();
-
-            return deferred.promise;
-        };
-        */
 
     upDateObservers = function() {
         resetObserver_queue();
         intObservers();
-        console.log($scope.cards);
         for (var i = 0, len = $scope.cards.length; i < len; i++) {
             //
             // If a new card has been posted.
@@ -343,7 +263,9 @@ let next_card;
             // TODO - If not at top or bottom add dialogue to notify user of new post
             // but only scroll to the card if the user chooses. Requires change to addCards also.
             if ($scope.cards[i].new_card) {
-                delete $scope.cards[i].new_card;
+                if (!$scope.top_down) {
+                    delete $scope.cards[i].new_card;
+                }
                 var card_id = $scope.cards[i]._id;
                 // Get the height of the new card.
                 let test = awaitImages('#card_' + card_id).then(async function(result) {
@@ -352,107 +274,57 @@ let next_card;
                         if ($scope.top_down) {
                             var cur_s = $(".content_cnv").scrollTop();
                             if (cur_s == 0) {
+                                console.log('a');
+                                // If at top - animate the card into position.
+                                
+                                // Only animate the last added card.
+        
                                 unbindScroll();
                                 Scroll.disable('.content_cnv');
-                                // If at top - animate the card into position.
                                 var new_h = Number($('.test_card').outerHeight(true).toFixed(2));
-                                $(".first_load_anim").css('margin-top', new_h * -1);
-                                $(".first_load_anim").addClass('will_transform');
-                                $(".first_load_anim").removeClass('zero_height');
-                                $(".first_load_anim").addClass('animate_down');
-                                $(".first_load_anim").on('webkitAnimationEnd oAnimationEnd animationend ', cardAnimEnd);
+                                $("#card_" + card_id).css('margin-top', new_h * -1);
+                                $("#card_" + card_id).addClass('will_transform');
+                                $("#card_" + card_id).removeClass('zero_height');
+                                $("#card_" + card_id).addClass('animate_down');
+                                $("#card_" + card_id).on('webkitAnimationEnd oAnimationEnd animationend ', cardAnimEnd);
+                             
+                                var pos = General.findWithAttr($scope.cards, '_id', card_id);
+                                if (pos >= 0) {
+                                    delete $scope.cards[pos].new_card;
+                                }
                             } else {
+                                console.log('b');
                                 // not top
-                                console.log('call animateCard: ' + card_id);
-                                //var max_s = 0;
+                                var pos = General.findWithAttr($scope.cards, '_id', card_id);
+                                if (pos >= 0) {
+                                    delete $scope.cards[pos].new_card;
+                                }
                                 await animateCard(card_id);
-                                console.log('call animateCard fin: ' + card_id);
                                 addNewCards();
                             }
                         } else {
-                            // working
-                            console.log('call animateCard: ' + card_id);
-
                             await animateCard(card_id);
-                            console.log($(".content_cnv")[0].scrollHeight - $(".content_cnv")[0].clientHeight);
-                            console.log('call animateCard fin: ' + card_id);
                             addNewCards();
                         }
                     }, 100);
-                    /*
-                    $timeout(function() {
-                        if ($scope.top_down) {
-                            var cur_s = $(".content_cnv").scrollTop();
-                            if (cur_s == 0) {
-                                unbindScroll();
-                                Scroll.disable('.content_cnv');
-                                // If at top - animate the card into position.
-                                var new_h = Number($('.test_card').outerHeight(true).toFixed(2));
-                                $(".first_load_anim").css('margin-top', new_h * -1);
-                                $(".first_load_anim").addClass('will_transform');
-                                $(".first_load_anim").removeClass('zero_height');
-                                $(".first_load_anim").addClass('animate_down');
-                                $(".first_load_anim").on('webkitAnimationEnd oAnimationEnd animationend ', cardAnimEnd);
-                            } else {
-                                // not top
-                                unbindScroll();
-                                $(".first_load_anim").removeClass('zero_height');
-                                // Stop the animation if the user scrolls.
-                                $(".content_cnv").bind("touchstart", function(e) {
-                                    $(".content_cnv").stop(true, false).unbind('touchstart');
-                                    newCardAnimComplete(card_id);
-                                });
-                                // Animate the card into position
-                                $(".content_cnv").animate({
-                                    scrollTop: 0
-                                }, 800, "easeOutQuad", function() {
-                                    // Animation complete.
-                                    newCardAnimComplete(card_id);
-                                });
-                            }
-                        } else {
-                            // If at top 
-                            unbindScroll();
-                            $(".first_load_anim").removeClass('zero_height');
-                            var max_s = $(".content_cnv")[0].scrollHeight - $(".content_cnv")[0].clientHeight;
-                            // Stop the animation if the user scrolls.
-                            $(".content_cnv").bind("touchstart", function(e) {
-                                $(".content_cnv").stop(true, false).unbind('touchstart');
-                                newCardAnimComplete(card_id);
-                            });
-                            $(".content_cnv").animate({
-                                scrollTop: max_s
-                            }, 800, "easeOutQuad", function() {
-                                // Animation complete.
-                                newCardAnimComplete(card_id);
-                            });
-                        }
-                    });
-                    */
                 });
-                //$scope.test_card.content = $scope.cards[i].content;
-                //$scope.test_card.content = card.content;
+                $scope.test_card.content = $scope.cards[i].content;
             } else {
                 createObserver($scope.cards[i]._id);
                 disableCheckboxes($scope.cards[i]._id);
-                //addNewCards();
             }
         }
     };
-let cards_watch = true;
+
     $scope.$watch('cards.length', function(newStatus) {
-        console.log(newStatus);
         // Debugging
         $rootScope.cards_length = newStatus;
-        if (cards_watch == true) {
-            $timeout(function() {
-                upDateObservers();
-            }, 100);
-            if (maxScroll > 0) {
-                setUpScrollBar();
-            }
+        $timeout(function() {
+            upDateObservers();
+        }, 100);
+        if (maxScroll > 0) {
+            setUpScrollBar();
         }
-
     });
 
     // doRepeat Directive finished loading onscreen
@@ -791,7 +663,6 @@ let cards_watch = true;
         if (obj.location == 'content_cnv') {
             $rootScope.loading_cards = false;
             obj = null;
-            console.log('NGRF');
         } else if (obj.location == 'load_off_screen') {
             $rootScope.loading_cards_offscreen = false;
             obj = null;
@@ -1024,7 +895,6 @@ let cards_watch = true;
         }
 
         function allImagesLoaded() {
-            console.log('allImagesLoaded');
             deferred.resolve();
         }
         return deferred.promise;
@@ -1315,13 +1185,9 @@ let cards_watch = true;
         }
     };
 
-    let new_cards = [];
     // TODO - change if adding button to notify user of new card.
     addCards = function(arr) {
         var deferred = $q.defer();
-
-
-
         var promises = [];
         var all_cards;
         var sort_card;
@@ -1344,6 +1210,7 @@ let cards_watch = true;
         }
         new_cards = [...arr];
         if (!$scope.top_down) {
+            console.log('!top_down');
             if ($scope.removed_cards_bottom.length > 0) {
                 sort_card = $filter('orderBy')(all_cards, 'updatedAt', true);
                 spliced = sort_card.splice(0, MAX_OUT_BOUNDS);
@@ -1358,12 +1225,13 @@ let cards_watch = true;
                 deferred.resolve();
             } else {
                 // No cards have been removed due to scrolling.
-                //$scope.cards = $scope.cards.concat(arr);
                 addNewCards();
                 deferred.resolve();
             }
         } else {
+            console.log('top_down');
             if ($scope.removed_cards_top.length > 0) {
+                console.log('1');
                 sort_card = $filter('orderBy')(all_cards, 'updatedAt', true);
                 spliced = sort_card.splice(0, MAX_OUT_BOUNDS);
                 $scope.removed_cards_bottom = sort_card;
@@ -1376,8 +1244,8 @@ let cards_watch = true;
                 //$scope.$broadcast("items_changed", 'top');
                 deferred.resolve();
             } else {
+                console.log('2');
                 // No cards have been removed due to scrolling.
-                //$scope.cards = $scope.cards.concat(arr);
                 addNewCards();
                 deferred.resolve();
             }
@@ -1938,6 +1806,7 @@ let cards_watch = true;
         });
 
     var cardAnimEnd = function() {
+        //delete $scope.cards[i].new_card;
         var id = (this.id).substr(5, (this.id).length);
         // remove the animation end listener which called this function.
         $(this).off('webkitAnimationEnd oAnimationEnd animationend ', cardAnimEnd);
@@ -1954,6 +1823,7 @@ let cards_watch = true;
         });
         bindScroll();
         Scroll.enable('.content_cnv');
+        addNewCards();
     };
 
 }]);
