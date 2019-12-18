@@ -295,7 +295,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                                 if (i >= 0) {
                                     UserData.conversationsLatestCardAdd(id, result[i]);
                                 }
-                            }, 100, result.length);
+                            }, 300, result.length);
                     }
                 });
             }

@@ -913,7 +913,7 @@ if (workbox) {
   },
   {
     "url": "controllers/main_ctrl.js",
-    "revision": "1d5188e16b1500a285e687754f9ce984"
+    "revision": "cd323ac89064462de97517d8c1bbc10e"
   },
   {
     "url": "controllers/usersetting_ctrl.js",
