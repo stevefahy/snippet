@@ -117,6 +117,7 @@ if (workbox) {
                         if (cacheResponse) {
                             // Get the original response
                             let response_json = await cacheResponse.json();
+                            //console.log(JSON.stringify(response_json));
                             let arr;
                             if (myCache.conversation_type == 'feed') {
                                 arr = response_json['cards'];
@@ -145,7 +146,15 @@ if (workbox) {
                             let blob_headers = { type: 'basic' };
                             var blob = new Blob([JSON.stringify(response_json)], blob_headers);
                             let new_response = new Response(blob, headers);
-                            await cache.put(found_url, new_response);
+                            
+                            
+
+                            caches.open(myCache.name).then(function(cache) {
+                                console.log(cache);
+                                cache.put(found_url,  new_response);
+                            }); 
+
+                            //cache.put(found_url, new_response);
                             console.log(response_json);
                             return response_json;
                         }

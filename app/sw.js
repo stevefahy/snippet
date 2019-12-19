@@ -117,6 +117,7 @@ if (workbox) {
                         if (cacheResponse) {
                             // Get the original response
                             let response_json = await cacheResponse.json();
+                            //console.log(JSON.stringify(response_json));
                             let arr;
                             if (myCache.conversation_type == 'feed') {
                                 arr = response_json['cards'];
@@ -145,7 +146,15 @@ if (workbox) {
                             let blob_headers = { type: 'basic' };
                             var blob = new Blob([JSON.stringify(response_json)], blob_headers);
                             let new_response = new Response(blob, headers);
-                            await cache.put(found_url, new_response);
+                            
+                            
+
+                            caches.open(myCache.name).then(function(cache) {
+                                console.log(cache);
+                                cache.put(found_url,  new_response);
+                            }); 
+
+                            //cache.put(found_url, new_response);
                             console.log(response_json);
                             return response_json;
                         }
@@ -913,7 +922,7 @@ if (workbox) {
   },
   {
     "url": "controllers/main_ctrl.js",
-    "revision": "cd323ac89064462de97517d8c1bbc10e"
+    "revision": "47b1436a2fb3da3ff84ae78b79ee17bb"
   },
   {
     "url": "controllers/usersetting_ctrl.js",
@@ -1041,7 +1050,7 @@ if (workbox) {
   },
   {
     "url": "service-worker.js",
-    "revision": "0c3629a81b717181e9ec14019fc22033"
+    "revision": "5fd4cadc0ef8baf585df604b56da5056"
   },
   {
     "url": "services/content_editable.js",

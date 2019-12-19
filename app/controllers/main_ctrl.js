@@ -268,7 +268,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                             }*/
                              var i = result.length;
                             timeoutId = $interval(function() {
-                                console.log('INTERVAL PRIV');
+                                console.log('INTERVAL PRIV 500');
                                 i--;
                                 console.log(i);
                                 if (i >= 0) {
