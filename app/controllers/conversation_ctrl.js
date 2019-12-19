@@ -243,7 +243,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     }
 
     addNewCards = async function() {
-        console.log(new_cards);
         if (new_cards.length > 0) {
             let next_card = new_cards.pop();
             $scope.cards.push(next_card);
@@ -274,11 +273,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         if ($scope.top_down) {
                             var cur_s = $(".content_cnv").scrollTop();
                             if (cur_s == 0) {
-                                console.log('a');
                                 // If at top - animate the card into position.
-                                
-                                // Only animate the last added card.
-        
                                 unbindScroll();
                                 Scroll.disable('.content_cnv');
                                 var new_h = Number($('.test_card').outerHeight(true).toFixed(2));
@@ -287,13 +282,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                 $("#card_" + card_id).removeClass('zero_height');
                                 $("#card_" + card_id).addClass('animate_down');
                                 $("#card_" + card_id).on('webkitAnimationEnd oAnimationEnd animationend ', cardAnimEnd);
-                             
                                 var pos = General.findWithAttr($scope.cards, '_id', card_id);
                                 if (pos >= 0) {
                                     delete $scope.cards[pos].new_card;
                                 }
                             } else {
-                                console.log('b');
                                 // not top
                                 var pos = General.findWithAttr($scope.cards, '_id', card_id);
                                 if (pos >= 0) {
@@ -735,7 +728,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     }
                 })
                 .catch(function(error) {
-                    console.log(error);
+                    //console.log(error);
                 });
         } else {
             // No id or username - Feed.
@@ -1210,7 +1203,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
         new_cards = [...arr];
         if (!$scope.top_down) {
-            console.log('!top_down');
             if ($scope.removed_cards_bottom.length > 0) {
                 sort_card = $filter('orderBy')(all_cards, 'updatedAt', true);
                 spliced = sort_card.splice(0, MAX_OUT_BOUNDS);
@@ -1229,9 +1221,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 deferred.resolve();
             }
         } else {
-            console.log('top_down');
             if ($scope.removed_cards_top.length > 0) {
-                console.log('1');
                 sort_card = $filter('orderBy')(all_cards, 'updatedAt', true);
                 spliced = sort_card.splice(0, MAX_OUT_BOUNDS);
                 $scope.removed_cards_bottom = sort_card;
@@ -1244,7 +1234,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 //$scope.$broadcast("items_changed", 'top');
                 deferred.resolve();
             } else {
-                console.log('2');
                 // No cards have been removed due to scrolling.
                 addNewCards();
                 deferred.resolve();

@@ -81,8 +81,6 @@ if (workbox) {
         delete card.$$hashKey;
         let cache_name;
         let cache_arr = [];
-        console.log(conversation_type);
-        console.log(card);
         switch (conversation_type) {
             case 'feed':
                 cache_name = 'chat-get_feed';
@@ -106,12 +104,10 @@ if (workbox) {
                     // Find the first cache item (create and update are the most recent)
                     let query_0 = 'last_card=0';
                     let query_1 = '';
-                    if(myCache.conversation_type == 'private'){
+                    if (myCache.conversation_type == 'private') {
                         query_1 = card.conversationId;
                     }
-                    //   element => element.color === 'red' && element.shape === 'circle'
                     let found_url = urls.find(x => x.url.includes(query_0) && x.url.includes(query_1));
-                    console.log(found_url);
                     return caches.match(found_url).then(async function(cacheResponse) {
                         // Found it in the cache
                         if (cacheResponse) {
@@ -128,7 +124,6 @@ if (workbox) {
                             }
                             let card_exists = (arr) => arr._id == card._id;
                             let card_index = arr.findIndex(card_exists);
-                            console.log(card_index);
                             if (operation == 'create_update') {
                                 if (card_index >= 0) {
                                     card.original_content = card.content;
@@ -146,16 +141,10 @@ if (workbox) {
                             let blob_headers = { type: 'basic' };
                             var blob = new Blob([JSON.stringify(response_json)], blob_headers);
                             let new_response = new Response(blob, headers);
-                            
-                            
 
                             caches.open(myCache.name).then(function(cache) {
-                                console.log(cache);
-                                cache.put(found_url,  new_response);
-                            }); 
-
-                            //cache.put(found_url, new_response);
-                            console.log(response_json);
+                                cache.put(found_url, new_response);
+                            });
                             return response_json;
                         }
                     });
@@ -810,5 +799,5 @@ if (workbox) {
     workbox.precaching.precacheAndRoute([], {
 
     });
-    
+
 }

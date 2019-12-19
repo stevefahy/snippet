@@ -731,7 +731,6 @@ cardApp.factory('WWIDB', function($rootScope) {
 // UserData Factory
 //
 
-//cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $http, $cookies, $location, jwtHelper, $q, principal, Users, Conversations, FormatHTML, General, socket, $filter, LocalDB) {
 cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $http, $cookies, $location, jwtHelper, $q, principal, Users, Conversations, General, socket, $filter, LocalDB, WWIDB) {
     var self = this;
     var user;
@@ -1015,7 +1014,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
 
     UserData.conversationsLatestCardDelete = async function(conversation_id, card_id, previous_card) {
         var deferred = $q.defer();
-        let conversation = await UserData.getConversationById(conversation_id);
+        let conversation = await Conversations.find_public_conversation_id(conversation_id);
         let conversation_type = conversation.conversation_type;
         let operation = 'create_update';
         var index = General.findWithAttr(conversationsLatestCard, '_id', conversation_id);
@@ -1033,16 +1032,12 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
     };
 
     UserData.conversationsLatestCardAdd = async function(id, data) {
-        console.log(id);
-        console.log(data);
         var deferred = $q.defer();
         let conversation = await Conversations.find_public_conversation_id(data.conversationId);
         let conversation_type = conversation.conversation_type;
-        console.log(conversation_type);
         let operation = 'create_update';
         var index = General.findWithAttr(conversationsLatestCard, '_id', id);
         // Add if conversationsLatestCard for with this id doesnt exist. otherwise update
-        console.log(index);
         if (index >= 0) {
             // Update.
             conversationsLatestCard[index].data = data;

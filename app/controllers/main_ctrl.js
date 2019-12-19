@@ -155,7 +155,6 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     // ANDROID CALLED FUNCTIONS
 
     mobileNotification = function(data) {
-        //Conversation.find_user_public_conversation_by_id
         Conversations.find_public_conversation_id(data).then(function(result) {
             if (result.conversation_type == 'public') {
                 $location.path("/");
@@ -247,9 +246,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                             // Update Conversations
                             var i = result.length;
                             timeoutId = $interval(function() {
-                                console.log('INTERVAL');
                                 i--;
-                                console.log(i);
                                 if (i >= 0) {
                                     UserData.conversationsLatestCardAdd(id, result[i]);
                                 }
@@ -263,14 +260,9 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                         if (result.length > 0) {
                             addCards(result);
                             // Update Conversations
-                            /*for (var i = 0, len = result.length; i < len; i++) {
-                                UserData.conversationsLatestCardAdd(id, result[i]);
-                            }*/
-                             var i = result.length;
+                            var i = result.length;
                             timeoutId = $interval(function() {
-                                console.log('INTERVAL PRIV 500');
                                 i--;
-                                console.log(i);
                                 if (i >= 0) {
                                     UserData.conversationsLatestCardAdd(id, result[i]);
                                 }
@@ -278,24 +270,17 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                         }
                     });
             } else if (Conversations.getConversationType() == 'public') {
-                console.log('public')
                 getPublicCardsUpdate(id).then(function(result) {
-                    console.log(result);
                     if (result.length > 0) {
                         addCards(result);
                         // Update Conversations
-                        /*for (var i = 0, len = result.length; i < len; i++) {
-                            UserData.conversationsLatestCardAdd(id, result[i]);
-                        }*/
-                         var i = result.length;
-                            timeoutId = $interval(function() {
-                                console.log('INTERVAL PUB');
-                                i--;
-                                console.log(i);
-                                if (i >= 0) {
-                                    UserData.conversationsLatestCardAdd(id, result[i]);
-                                }
-                            }, 300, result.length);
+                        var i = result.length;
+                        timeoutId = $interval(function() {
+                            i--;
+                            if (i >= 0) {
+                                UserData.conversationsLatestCardAdd(id, result[i]);
+                            }
+                        }, 100, result.length);
                     }
                 });
             }
@@ -401,12 +386,10 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                 if (event.data.all_requests.posted.length > 0 || event.data.all_requests.updated.length > 0 || event.data.all_requests.deleted.length > 0) {
                     sendRequested(event.data.all_requests.posted, event.data.all_requests.updated, event.data.all_requests.deleted);
                 }
-
                 $rootScope.sync_finished = true;
                 if (!$scope.$$phase) {
                     $scope.$apply();
                 }
-
             }
             if (event.data.message == "request_updating") {
                 addAlert();
@@ -461,7 +444,6 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                     addCards(result);
                     // Update Conversations
                     for (var i = 0, len = result.length; i < len; i++) {
-                        //UserData.conversationsLatestCardAdd(msg.conversation_id, result[i]);
                         UserData.conversationsLatestCardAdd(id, result[i]);
                     }
                 }
@@ -470,12 +452,9 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             getFollowingUpdate()
                 .then(function(result) {
                     if (result.length > 0) {
-                        console.log(JSON.stringify(result));
                         addCards(result);
                         // Update Conversations
                         for (var i = 0, len = result.length; i < len; i++) {
-                            //for (var i = result.length-1, len = result.length; i >= 0; i--) {
-                            //UserData.conversationsLatestCardAdd(msg.conversation_id, result[i]);
                             UserData.conversationsLatestCardAdd(id, result[i]);
                         }
                     }
@@ -485,7 +464,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     // NOTIFICATION for private conversation.
     $rootScope.$on('PRIVATE_NOTIFICATION_CREATED', function(event, msg) {
-        console.log('PRIVATE_NOTIFICATION_CREATED');
+        //console.log('PRIVATE_NOTIFICATION_CREATED');
         UserData.addConversationViewed(msg.conversation_id, msg.viewed_users);
         var id = Conversations.getConversationId();
         // only update the conversation if the user is currently in that conversation
@@ -555,7 +534,6 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                     updateCard(result.data);
                     // Update Conversations
                     // TODO Check that this is the latest
-                    //UserData.conversationsLatestCardAdd(msg.conversation_id, result.data);
                     UserData.conversationsLatestCardAdd(id, result.data);
                 });
         }
@@ -594,7 +572,6 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         // Get the updated card (not necessarily the latest card).
         Cards.getCard(msg.card_id)
             .then(function(res) {
-                //UserData.conversationsLatestCardDelete(msg.conversation_id, msg.card_id, previous_card);
                 UserData.conversationsLatestCardDelete(id, msg.card_id, previous_card);
             });
     });
