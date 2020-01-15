@@ -75,7 +75,16 @@ if (workbox) {
     }
 
     // Update cache.
-    async function updateFeed(card, operation, conversation_type) {
+    async function updateFeed(card_param, operation, conversation_type) {
+        let id;
+        let card;
+        if (operation == "delete") {
+            id = card_param._id;
+            card = card_param.data;
+        } else {
+            id = card_param._id;
+            card = card_param;
+        }
         // remove the new_card value.
         delete card.new_card;
         delete card.$$hashKey;
@@ -122,7 +131,7 @@ if (workbox) {
                             } else if (myCache.conversation_type == 'private') {
                                 arr = response_json;
                             }
-                            let card_exists = (arr) => arr._id == card._id;
+                            let card_exists = (arr) => arr._id == id;
                             let card_index = arr.findIndex(card_exists);
                             if (operation == 'create_update') {
                                 if (card_index >= 0) {
@@ -141,7 +150,6 @@ if (workbox) {
                             let blob_headers = { type: 'basic' };
                             var blob = new Blob([JSON.stringify(response_json)], blob_headers);
                             let new_response = new Response(blob, headers);
-
                             caches.open(myCache.name).then(function(cache) {
                                 cache.put(found_url, new_response);
                             });
@@ -879,7 +887,7 @@ if (workbox) {
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "ba6107b28aaec1487847efdc68153ace"
+    "revision": "f7828b5d6025abf41e85f34d835be6e2"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -911,7 +919,7 @@ if (workbox) {
   },
   {
     "url": "controllers/main_ctrl.js",
-    "revision": "e36fb20d94babacb662bb4b0978209e9"
+    "revision": "818f8f8929560cf213ff04d4afe95ece"
   },
   {
     "url": "controllers/usersetting_ctrl.js",
@@ -923,7 +931,7 @@ if (workbox) {
   },
   {
     "url": "factories/factories.js",
-    "revision": "ded4cc20e13f11df05a51f11847cde35"
+    "revision": "4326d28ded2c16c5476ea5efa6117008"
   },
   {
     "url": "factories/local_db.js",
@@ -1039,7 +1047,7 @@ if (workbox) {
   },
   {
     "url": "service-worker.js",
-    "revision": "63262087829830b1118eff1d07baa86e"
+    "revision": "a6ee9fd8dbda90f060fce42e802146e9"
   },
   {
     "url": "services/content_editable.js",
@@ -1051,7 +1059,7 @@ if (workbox) {
   },
   {
     "url": "services/database.js",
-    "revision": "05e6e17ef299870f174d1ef0bef34a9a"
+    "revision": "ba4b3590020a5680523acb8cae1c6c22"
   },
   {
     "url": "services/debug.js",

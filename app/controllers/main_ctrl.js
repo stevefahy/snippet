@@ -235,6 +235,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     };
 
     runUpdate = function() {
+        $rootScope.sync_finished = false;
         if ($scope.online) {
             var id = Conversations.getConversationId();
             // update all required models (could be new conversations, multiple cards across conversations, new users or user data - Userdata first load re call?)
@@ -258,15 +259,17 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                 getCardsUpdate(id)
                     .then(function(result) {
                         if (result.length > 0) {
+                            console.log(result);
+                            let cards_copy = [...result];
                             addCards(result);
                             // Update Conversations
-                            var i = result.length;
+                            var i = cards_copy.length;
                             timeoutId = $interval(function() {
                                 i--;
                                 if (i >= 0) {
-                                    UserData.conversationsLatestCardAdd(id, result[i]);
+                                    UserData.conversationsLatestCardAdd(id, cards_copy[i]);
                                 }
-                            }, 100, result.length);
+                            }, 100, cards_copy.length);
                         }
                     });
             } else if (Conversations.getConversationType() == 'public') {
@@ -307,6 +310,11 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     }
 
     checkDataUpdate = function(queue) {
+        if (!'serviceWorker' in navigator) {
+            $rootScope.sync_finished = true;
+        } else {
+            $rootScope.sync_finished = false;
+        }
         if (!$scope.$$phase) {
             $scope.$apply();
         }
@@ -363,14 +371,12 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             if (event.data.message == "sync_started") {
                 $rootScope.sync_finished = false;
             }
-
             if (event.data.message == "nothing_cached") {
                 if ($rootScope.cards_length < 1) {
                     $rootScope.pageLoading = false;
                     $rootScope.offlineMode = true;
                 }
             }
-
             if (event.data.message == "all_requests_updated") {
                 endalert = true;
                 removeAlert();
@@ -588,7 +594,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             .then(function(result) {});
     });
 
-    // Fix for bug on Android. Whn the app is topped and the onResime the
+    // Fix for bug on Android. When the app is stopped and the onResume the
     // webView incorrectly returns document.hidden true which mean ngAnimate will not work.
     document.addEventListener("visibilitychange", function() {
         document_hidden = document.hidden;

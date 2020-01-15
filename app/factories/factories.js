@@ -1016,14 +1016,15 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
         var deferred = $q.defer();
         let conversation = await Conversations.find_public_conversation_id(conversation_id);
         let conversation_type = conversation.conversation_type;
-        let operation = 'create_update';
+        let operation = 'delete';
         var index = General.findWithAttr(conversationsLatestCard, '_id', conversation_id);
         if (index >= 0) {
             var card = { _id: conversation_id, data: previous_card };
             conversationsLatestCard[index].data = previous_card;
             let msg = { message: 'conversationsLatestCardAdd', data: card }
             WWIDB.postMessage(msg);
-            let a = await UserData.send_message_to_sw("updatelatestcard", { id: conversation_id, card: previous_card, operation: operation, conversation_type: conversation_type });
+            var card_delete = { _id: card_id, data: previous_card };
+            let a = await UserData.send_message_to_sw("updatelatestcard", { id: conversation_id, card: card_delete, operation: operation, conversation_type: conversation_type });
             deferred.resolve(conversationsLatestCard);
         } else {
             deferred.resolve(conversationsLatestCard);

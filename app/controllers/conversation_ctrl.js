@@ -1185,9 +1185,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var all_cards;
         var sort_card;
         var spliced;
+        let new_cards_temp = [];
         all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
         // Check if card already exists (may have been created by this user offline).
         var i = arr.length;
+        //new_cards = [...arr];
         while (i--) {
             let found = all_cards.filter(x => x._id == arr[i]._id);
             // Not found. New Card. Set this as a new card (for animating onscreen).
@@ -1198,10 +1200,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 let card_data = JSON.parse(JSON.stringify(arr[i]));
                 updateCard(card_data);
                 // Remove this card from the array of cards to add.
+                new_cards_temp.push(card_data);
                 arr.splice(i, 1);
             }
         }
         new_cards = [...arr];
+        //new_cards = new_cards.concat(new_cards_temp);
         if (!$scope.top_down) {
             if ($scope.removed_cards_bottom.length > 0) {
                 sort_card = $filter('orderBy')(all_cards, 'updatedAt', true);
@@ -1254,7 +1258,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             if ($scope.cards.length > 0) {
                 var all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
                 var sort_card = $filter('orderBy')(all_cards, 'updatedAt');
-                last_card = sort_card[sort_card.length - 1]._id;
+                //last_card = sort_card[sort_card.length - 1]._id;
+                last_card = sort_card[0]._id;
                 operand = '$gt';
                 load_amount = NUM_TO_LOAD;
             } else {

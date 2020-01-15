@@ -75,7 +75,16 @@ if (workbox) {
     }
 
     // Update cache.
-    async function updateFeed(card, operation, conversation_type) {
+    async function updateFeed(card_param, operation, conversation_type) {
+        let id;
+        let card;
+        if (operation == "delete") {
+            id = card_param._id;
+            card = card_param.data;
+        } else {
+            id = card_param._id;
+            card = card_param;
+        }
         // remove the new_card value.
         delete card.new_card;
         delete card.$$hashKey;
@@ -122,7 +131,7 @@ if (workbox) {
                             } else if (myCache.conversation_type == 'private') {
                                 arr = response_json;
                             }
-                            let card_exists = (arr) => arr._id == card._id;
+                            let card_exists = (arr) => arr._id == id;
                             let card_index = arr.findIndex(card_exists);
                             if (operation == 'create_update') {
                                 if (card_index >= 0) {
@@ -141,7 +150,6 @@ if (workbox) {
                             let blob_headers = { type: 'basic' };
                             var blob = new Blob([JSON.stringify(response_json)], blob_headers);
                             let new_response = new Response(blob, headers);
-
                             caches.open(myCache.name).then(function(cache) {
                                 cache.put(found_url, new_response);
                             });
