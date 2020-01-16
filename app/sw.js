@@ -199,7 +199,8 @@ if (workbox) {
                 } else {
                     resolve(event.data);
                 }
-                return Promise.resolve("Dummy response to keep the console quiet");
+                // return true to stop error message.
+                return true;
             };
             client.postMessage(msg, [msg_chan.port2]);
         });
@@ -919,7 +920,7 @@ if (workbox) {
   },
   {
     "url": "controllers/main_ctrl.js",
-    "revision": "818f8f8929560cf213ff04d4afe95ece"
+    "revision": "932db682e7ff37101e65dd050df6def8"
   },
   {
     "url": "controllers/usersetting_ctrl.js",
@@ -1047,7 +1048,7 @@ if (workbox) {
   },
   {
     "url": "service-worker.js",
-    "revision": "a6ee9fd8dbda90f060fce42e802146e9"
+    "revision": "8a27f2b3bfb831577f35b3ff1c52ed8b"
   },
   {
     "url": "services/content_editable.js",

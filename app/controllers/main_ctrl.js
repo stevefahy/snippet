@@ -201,7 +201,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     };
 
     onResume = function() {
-        //console.log('onResume');
+        $rootScope.sync_finished = true;
         mobile_active = true;
         // Mobile reconnect
         reconnect_socket();
@@ -259,7 +259,6 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                 getCardsUpdate(id)
                     .then(function(result) {
                         if (result.length > 0) {
-                            console.log(result);
                             let cards_copy = [...result];
                             addCards(result);
                             // Update Conversations
@@ -312,8 +311,6 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     checkDataUpdate = function(queue) {
         if (!'serviceWorker' in navigator) {
             $rootScope.sync_finished = true;
-        } else {
-            $rootScope.sync_finished = false;
         }
         if (!$scope.$$phase) {
             $scope.$apply();

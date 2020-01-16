@@ -199,7 +199,8 @@ if (workbox) {
                 } else {
                     resolve(event.data);
                 }
-                return Promise.resolve("Dummy response to keep the console quiet");
+                // return true to stop error message.
+                return true;
             };
             client.postMessage(msg, [msg_chan.port2]);
         });
