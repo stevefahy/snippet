@@ -1312,6 +1312,97 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         return deferred.promise;
     };
 
+    getCardType = function(c) {
+        //console.log(c);
+        let node = $.parseHTML(c);
+        //let html = $(c);
+        //console.log(html);
+        //console.log(node[0].nodeName);
+
+        //console.log(html.first().attr('class'));
+
+        var card_type = 'card_text';
+        if (node[0].nodeName != '#text') {
+            card_type = 'card_image';
+        }
+        return card_type;
+    }
+
+    callMe = function() {
+        console.log('HELLO');
+    }
+
+    $scope.toggleHeight = function(event, id) {
+        if (event) {
+            event.stopPropagation();
+            event.preventDefault();
+        }
+        console.log(id);
+        console.log(event);
+        console.log(event.target.tagName);
+
+        var index = General.findWithAttr($scope.cards, '_id', id);
+        console.log(index);
+        console.log($scope.cards[index]);
+        if($scope.cards[index].expanded == true && event.target.tagName !="IMG"){
+            $scope.cards[index].expanded = false;
+            $('#card_'  + id + ' .resize-container').removeClass('expanded');
+        } else {
+            $scope.cards[index].expanded = true;
+            $('#card_'  + id + ' .resize-container').addClass('expanded');
+        }
+        
+        //$('#card_'  + id + ' .resize-container').height('unset');
+        
+
+    }
+
+    setCardMin = function(key) {
+        let node = $.parseHTML(key.content);
+        let html = $(key.content);
+        var card_min = {};
+        if (node[0].nodeName != '#text') {
+            card_min = 'card_image';
+            var c = $('.test_card').clone();
+            $(".test_container").append(c);
+            var d = $(".test_container .test_card").addClass('test_' + key._id);
+            $(d).removeClass('test_card');
+            $('.test_container .test_' + key._id + ' .ce').append(key.content);
+
+            let test = awaitImages('.test_container .test_' + key._id).then(function(result) {
+                var h = $('.test_container .test_' + key._id).find('.ce').find('img:first').height().toFixed(2);
+                console.log(h);
+                $("head").append("<style>#card_" + key._id + " .resize-container { height: " + h + "px; }</style>");
+            });
+
+
+
+           /* let test2 = awaitImages('.content_cnv #card_' + key._id).then(function(result) {
+                console.log('div loaded');
+                console.log($('.content_cnv #card_' + key._id));
+                //$(d).find('.ti').attr("onclick", 'testImage(event, \'' + id + '\')');
+                //$('.content_cnv #card_' + key._id).attr("onclick", 'testImage(event, \'' + id + '\')');
+
+                //io = ImageAdjustment.getImageOriginal('content_cnv', key._id);
+                //console.log(io);
+                //scale = ImageAdjustment.getScale(image_original, cropper);
+                //$(image_original).removeClass('hide');
+                //anim_h = (io.nat_height / scale).toFixed(1);
+
+
+            });*/
+
+        }
+    }
+
+    $scope.appliedClass = function(myObj) {
+        if (myObj == 'card_text') {
+            return "card_text";
+        } else {
+            return "card_image"; // Or even "", which won't add any additional classes to the element
+        }
+    }
+
     // TODO - If not following anyone suggest follow?
     getFollowing = function() {
         var deferred = $q.defer();
@@ -1338,6 +1429,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     .then(function(res) {
                         if (res.data.cards.length > 0) {
                             res.data.cards.map(function(key, array) {
+                                key.card_type = getCardType(key.content);
+                                //console.log(key.card_type);
+                                setCardMin(key);
+
+                                key.expanded = false;
+                                //console.log(key.card_min);
                                 // Get the conversation for this card
                                 var conversation_pos = General.nestedArrayIndexOfValue(res.data.conversations, 'admin', key.user);
                                 var conversation = res.data.conversations[conversation_pos];

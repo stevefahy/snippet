@@ -888,7 +888,7 @@ if (workbox) {
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "f7828b5d6025abf41e85f34d835be6e2"
+    "revision": "4fcb591951dccd6fb8e76bbcd50e055e"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -1092,7 +1092,7 @@ if (workbox) {
   },
   {
     "url": "services/image_edit.js",
-    "revision": "05d7cd72ebad29176472d0a6b1030596"
+    "revision": "05932ff8ecb3f2129be7e1e80b3f7151"
   },
   {
     "url": "services/image_filters.js",
@@ -1140,7 +1140,7 @@ if (workbox) {
   },
   {
     "url": "style/customstyle.css",
-    "revision": "23b68c06e97c82479669e312b6cf4314"
+    "revision": "e7d73f7305d83fffd60306d736e3be55"
   },
   {
     "url": "style/instagram.css",
@@ -1176,7 +1176,7 @@ if (workbox) {
   },
   {
     "url": "views/conversation.html",
-    "revision": "4515b3a294d025124864f0155e9662d1"
+    "revision": "9756e108377341f732104d35903137f2"
   },
   {
     "url": "views/conversations.html",

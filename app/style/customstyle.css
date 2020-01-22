@@ -1092,11 +1092,15 @@ li.list-group-item.d-flex.justify-content-between.align-items-center.ng-binding 
 #conversation_part {
     padding-left: 1.25em;
     padding-right: 1.25em;
-    padding-top: 9px;
+    /*padding-top: 9px;*/
     padding-bottom: 9px;
     -webkit-border-radius: 0px !important;
     -moz-border-radius: 0px !important;
     width: calc(100vw);
+}
+
+.resize-container {
+    overflow: hidden;
 }
 
 .time {
@@ -3705,4 +3709,35 @@ span.after_image {
     100% {
         top: -60px;
     }
+}
+
+
+/*
+.card_text {
+    background-color: red;
+}
+
+.card_image {
+    background-color: blue;
+        overflow: hidden;
+}
+*/
+
+.test_container {
+    position: absolute;
+    z-index: -1;
+    bottom: 100vh;
+    overflow: hidden;
+}
+
+.test_card_2 {
+    position: absolute;
+    z-index: -1;
+    bottom: 100vh;
+    overflow: hidden;
+}
+
+
+.resize-container.expanded {
+    height: unset !important;
 }

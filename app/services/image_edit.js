@@ -35,7 +35,9 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             UserData.checkUser().then(function(result) {
                 // Get the editable attibute for this card (for this user).
                 // check user has permision to edit this image.
-                if ($(scope).closest('div.ce').attr('editable') == 'true') {
+                var card_expanded = $(cropper).closest('div.card_temp').attr('expanded');
+                console.log(card_expanded);
+                if ($(scope).closest('div.ce').attr('editable') == 'true' && card_expanded == 'true') {
                     // If this image is not already being edited then allow it to be edited.
                     if (!ImageAdjustment.getImageEditing()) {
                         // Turn off content saving.
