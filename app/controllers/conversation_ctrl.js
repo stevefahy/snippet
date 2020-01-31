@@ -1,4 +1,4 @@
-cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$q', '$filter', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', 'ImageEdit', '$compile', 'ImageAdjustment', 'Keyboard', 'Scroll', '$animate', 'CropRotate', 'ImageFilters', function($scope, $rootScope, $location, $http, $window, $q, $filter, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, ImageEdit, $compile, ImageAdjustment, Keyboard, Scroll, $animate, CropRotate, ImageFilters) {
+cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$q', '$filter', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', 'ImageEdit', '$compile', 'ImageAdjustment', 'Keyboard', 'Scroll', '$animate', 'CropRotate', 'ImageFilters', 'ContentEditable', function($scope, $rootScope, $location, $http, $window, $q, $filter, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, ImageEdit, $compile, ImageAdjustment, Keyboard, Scroll, $animate, CropRotate, ImageFilters, ContentEditable) {
     openCropRotate = ImageEdit.openCropRotate;
     editImage = ImageEdit.editImage;
     closeImageEdit = ImageEdit.closeImageEdit;
@@ -256,6 +256,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         resetObserver_queue();
         intObservers();
         for (var i = 0, len = $scope.cards.length; i < len; i++) {
+
+
             //
             // If a new card has been posted.
             //
@@ -266,6 +268,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     delete $scope.cards[i].new_card;
                 }
                 var card_id = $scope.cards[i]._id;
+
+
+
                 // Get the height of the new card.
                 let test = awaitImages('#card_' + card_id).then(async function(result) {
                     // Animate the change onscreen.
@@ -303,6 +308,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 });
                 $scope.test_card.content = $scope.cards[i].content;
             } else {
+
+                setCardMin($scope.cards[i]);
+
                 createObserver($scope.cards[i]._id);
                 disableCheckboxes($scope.cards[i]._id);
             }
@@ -312,6 +320,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.$watch('cards.length', function(newStatus) {
         // Debugging
         $rootScope.cards_length = newStatus;
+
+
+
+
         $timeout(function() {
             upDateObservers();
         }, 100);
@@ -420,6 +432,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 amount = NUM_UPDATE_DISPLAY_INIT;
             }
             cards_to_move = $scope.cards_temp.splice(0, amount);
+            console.log($scope.cards_temp);
             for (var i = 0, len = cards_to_move.length; i < len; i++) {
                 $scope.cards.push(cards_to_move[i]);
             }
@@ -1328,38 +1341,283 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         return card_type;
     }
 
-    callMe = function() {
-        console.log('HELLO');
+
+    //$scope.toggleHeight = function(event, id) {
+    toggleHeight = function(event, id) {
+        if (event) {
+            event.stopPropagation();
+            //event.preventDefault();
+        }
+        Edit.closeDropdowns();
+        //console.log(id);
+        //console.log(event);
+        console.log(event.target);
+        var tgt = event.target.tagName;
+
+        var index = General.findWithAttr($scope.cards, '_id', id);
+        //console.log(index);
+        //console.log($scope.cards[index]);
+
+        var is_visible = $('.content_cnv #card_' + id).hasClass("vis");
+        console.log($('.content_cnv #card_' + id));
+        console.log(is_visible);
+
+        let cd = getCardData(id);
+        console.log(cd);
+
+        if (is_visible && tgt != "INPUT") {
+            //if ($scope.cards[index].expanded == true && event.target.tagName != "IMG") {
+            if ($scope.cards[index].expanded == true) {
+                console.log($(".content_cnv #card_" + id + " .resize-container"));
+                //$('#card_'  + id + ' .resize-container').removeClass('expanded');
+                $scope.cards[index].expanded = false;
+                $(".content_cnv #card_" + id + " .resize-container").animate({
+                    height: cd.min_height + "px"
+                }, 500, function() {
+                    // Animation complete.
+                });
+            } else {
+                $scope.cards[index].expanded = true;
+
+
+                //$('#card_'  + id + ' .resize-container').addClass('expanded');
+                $(".content_cnv #card_" + id + " .resize-container").animate({
+                    height: cd.full_height + "px"
+                }, 500, function() {
+                    // Animation complete.
+                    console.log($scope.cards[index].expanded);
+                });
+                console.log($scope.cards[index].expanded);
+            }
+        }
+
+        console.log($scope.cards[index].expanded);
+        if (!$scope.$$phase) {
+            $scope.$apply();
+        }
+        //$('#card_'  + id + ' .resize-container').height('unset');
+
+
     }
 
-    $scope.toggleHeight = function(event, id) {
+    getCardData = function(id) {
+        var adjustment_data;
+        // Custom attribute for storing image adjustments.
+        var ia = $('.content_cnv #card_' + id).attr('card-data');
+        if (ia != undefined) {
+            adjustment_data = JSON.parse(ia);
+        }
+        return adjustment_data;
+    };
+
+    setCardData = function(id, name, value) {
+        var ia = getCardData(id);
+        if (ia == undefined) {
+            ia = {};
+        }
+        ia[name] = value;
+        // Custom attribute for storing image adjustments.
+        $('.content_cnv #card_' + id).attr('card-data', JSON.stringify(ia));
+    };
+
+    $scope.cancelEdits = function(event) {
         if (event) {
+            console.log('stopPropagation');
             event.stopPropagation();
             event.preventDefault();
         }
-        console.log(id);
-        console.log(event);
-        console.log(event.target.tagName);
 
-        var index = General.findWithAttr($scope.cards, '_id', id);
-        console.log(index);
-        console.log($scope.cards[index]);
-        if($scope.cards[index].expanded == true && event.target.tagName !="IMG"){
-            $scope.cards[index].expanded = false;
-            $('#card_'  + id + ' .resize-container').removeClass('expanded');
-        } else {
-            $scope.cards[index].expanded = true;
-            $('#card_'  + id + ' .resize-container').addClass('expanded');
+        var pos = General.findWithAttr($scope.cards, '_id', currently_editing);
+        if (pos >= 0) {
+            $scope.cards[pos].editing = false;
+
+            console.log($scope.cards[pos].original_content);
+            //$scope.cards[pos].content = $scope.cards[pos].original_content;
+
+            if ($scope.cards[pos].content != editing_original) {
+                $scope.cards[pos].content = editing_original;
+                if (!$scope.$$phase) {
+                    $scope.$apply();
+                }
+
+                $scope.saveEdits();
+            }
+
+            //$('.content_cnv #card_' + currently_editing)
+
         }
-        
-        //$('#card_'  + id + ' .resize-container').height('unset');
-        
+
+        var image_id = ImageAdjustment.getImageId();
+
+        checkImageEdit(image_id);
+
+        checkImageFilters();
+
+        //$('.content_cnv #card_' + card._id).prop("onclick", null).off("click");
+        $('.content_cnv #card_' + currently_editing).attr("onclick", 'toggleHeight(event, \'' + currently_editing + '\')');
+
+        //$('.image_size_menu').addClass('active');
+        $('.decide_menu').animate({ "right": "-100vw" }, {
+            duration: 400,
+            easing: "easeOutQuad",
+            complete: function() {
+                //deferred.resolve();
+                $('.decide_menu').removeClass('active');
+            }
+        });
+    };
+
+    $scope.edit_change = true;
+
+    checkImageEdit = function(image_id) {
+        var image_editing = false;
+
+        if ($('#image_adjust_' + image_id).length > 0) {
+            image_editing = true;
+        }
+        console.log(image_editing);
+        if (image_editing) {
+            ImageEdit.closeImageEdit('e', image_id);
+        }
 
     }
 
+    checkImageFilters = function() {
+        var image_filters = false;
+        if ($('.filters_active').length > 0) {
+            image_filters = true;
+        }
+        console.log(image_filters);
+        if (image_filters) {
+            ImageEdit.closeFilters();
+        }
+    }
+
+    $scope.saveEdits = function(event) {
+        console.log('saveEdits');
+        if (event) {
+            console.log('stopPropagation');
+            event.stopPropagation();
+            event.preventDefault();
+        }
+
+        var image_id = ImageAdjustment.getImageId();
+
+        //var image_editing = false;
+        //var image_filters = false;
+        //console.log($('#image_adjust_' + image_id));
+
+        checkImageEdit(image_id);
+
+        checkImageFilters();
+        //if ($('#image_adjust_' + image_id).length > 0) {
+        //    image_editing = true;
+        //}
+
+        //console.log(image_editing);
+        //if (image_editing) {
+        //    ImageEdit.closeImageEdit('e', image_id);
+        //}
+
+        //image_filt_div filters_active
+        /*
+        if ($('.filters_active').length > 0) {
+            image_filters = true;
+        }
+        console.log(image_filters);
+        if (image_filters) {
+            ImageEdit.closeFilters();
+        }
+        */
+
+
+        //ImageEdit.closeFilters();
+
+                    for (var i = 0, len = $scope.cards.length; i < len; i++) {
+                delete $scope.cards[i].disabled;
+            }
+
+        var pos = General.findWithAttr($scope.cards, '_id', currently_editing);
+        if (pos >= 0) {
+            $scope.cards[pos].editing = false;
+            let card = $scope.cards[pos];
+            Format.getBlur(card._id, card, $scope.currentUser);
+             //$scope.editing_card = false;
+
+        }
+        $('.content_cnv #card_' + currently_editing).attr("onclick", 'toggleHeight(event, \'' + currently_editing + '\')');
+
+
+
+        $('.decide_menu').animate({ "right": "-100vw" }, {
+            duration: 400,
+            easing: "easeOutQuad",
+            complete: function() {
+                //deferred.resolve();
+                $('.decide_menu').removeClass('active');
+            }
+        });
+
+
+    }
+
+    //this.getBlur = function(id, card, currentUser)
+    //Format.getBlur
+
+    let currently_editing;
+    let editing_original;
+
+    //$scope.editing_card = false;
+
+    $scope.editCard = function(event, card) {
+        if (event) {
+            console.log('stopPropagation');
+            event.stopPropagation();
+            event.preventDefault();
+        }
+        console.log('edit card?');
+        if (card.user == $scope.currentUser._id) {
+            console.log('edit');
+            //$scope.editing_card = true;
+
+            for (var i = 0, len = $scope.cards.length; i < len; i++) {
+                $scope.cards[i].disabled = true;
+            }
+
+            var pos = General.findWithAttr($scope.cards, '_id', card._id);
+            if (pos >= 0) {
+                $scope.cards[pos].editing = true;
+                $scope.cards[pos].disabled = false;
+                currently_editing = $scope.cards[pos]._id;
+                editing_original = $scope.cards[pos].original_content;
+                
+            }
+            console.log($scope.cards[pos]);
+            //var cropper = $('.content_cnv #cropper_' + card._id);
+            //ContentEditable.setContenteditable($(cropper)[0], true);
+            //$('.content_cnv #card_' + key._id).attr("onclick", 'toggleHeight(event, \'' + key._id + '\')');
+            $('.content_cnv #card_' + card._id).prop("onclick", null).off("click");
+
+            $('.decide_menu').addClass('active');
+            //$('.image_size_menu').addClass('active');
+            $('.decide_menu').animate({ "right": "0" }, {
+                duration: 400,
+                easing: "easeOutQuad",
+                complete: function() {
+                    //deferred.resolve();
+                }
+            });
+
+        } else {
+            console.log('dont edit');
+        }
+    }
+
     setCardMin = function(key) {
+        key.active = true;
+        console.log(key.content);
         let node = $.parseHTML(key.content);
-        let html = $(key.content);
+        //let html = $(key.content);
         var card_min = {};
         if (node[0].nodeName != '#text') {
             card_min = 'card_image';
@@ -1370,27 +1628,49 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             $('.test_container .test_' + key._id + ' .ce').append(key.content);
 
             let test = awaitImages('.test_container .test_' + key._id).then(function(result) {
-                var h = $('.test_container .test_' + key._id).find('.ce').find('img:first').height().toFixed(2);
-                console.log(h);
-                $("head").append("<style>#card_" + key._id + " .resize-container { height: " + h + "px; }</style>");
+                //var h = $('.test_container .test_' + key._id).find('.ce').find('img:first').height().toFixed(2);
+                var i = $('.test_container .test_' + key._id).find('.ce').find('img:first');
+                console.log(i);
+                if (i.length > 0) {
+                    var h = $(i).height().toFixed(2);
+
+                    console.log(h);
+                    var card_h = $('.test_container .test_' + key._id).find('.resize-container').outerHeight().toFixed(2);
+                    setCardData(key._id, 'full_height', card_h);
+                    setCardData(key._id, 'min_height', h);
+
+                    $('.content_cnv #card_' + key._id + ' .resize-container').height(h);
+
+                    //$(eb).find('.ti').attr("onclick", 'testImage(event, \'' + id + '\')');
+                    // toggleHeight($event, card._id)"
+                    // ng-click="!card.active || toggleHeight($event, card._id)"
+                    $('.content_cnv #card_' + key._id).attr("onclick", 'toggleHeight(event, \'' + key._id + '\')');
+
+                    //$timeout(function() {
+                    $('.test_container .test_' + key._id).remove();
+                    //}, 500);
+                } else {
+                    console.log(i);
+                    //$("head").append("<style>#card_" + key._id + " .resize-container { max-height: " + h + "px; }</style>");
+                }
             });
 
 
 
-           /* let test2 = awaitImages('.content_cnv #card_' + key._id).then(function(result) {
-                console.log('div loaded');
-                console.log($('.content_cnv #card_' + key._id));
-                //$(d).find('.ti').attr("onclick", 'testImage(event, \'' + id + '\')');
-                //$('.content_cnv #card_' + key._id).attr("onclick", 'testImage(event, \'' + id + '\')');
+            /* let test2 = awaitImages('.content_cnv #card_' + key._id).then(function(result) {
+                 console.log('div loaded');
+                 console.log($('.content_cnv #card_' + key._id));
+                 //$(d).find('.ti').attr("onclick", 'testImage(event, \'' + id + '\')');
+                 //$('.content_cnv #card_' + key._id).attr("onclick", 'testImage(event, \'' + id + '\')');
 
-                //io = ImageAdjustment.getImageOriginal('content_cnv', key._id);
-                //console.log(io);
-                //scale = ImageAdjustment.getScale(image_original, cropper);
-                //$(image_original).removeClass('hide');
-                //anim_h = (io.nat_height / scale).toFixed(1);
+                 //io = ImageAdjustment.getImageOriginal('content_cnv', key._id);
+                 //console.log(io);
+                 //scale = ImageAdjustment.getScale(image_original, cropper);
+                 //$(image_original).removeClass('hide');
+                 //anim_h = (io.nat_height / scale).toFixed(1);
 
 
-            });*/
+             });*/
 
         }
     }
@@ -1429,9 +1709,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     .then(function(res) {
                         if (res.data.cards.length > 0) {
                             res.data.cards.map(function(key, array) {
-                                key.card_type = getCardType(key.content);
+                                //key.card_type = getCardType(key.content);
                                 //console.log(key.card_type);
-                                setCardMin(key);
+                                //setCardMin(key);
 
                                 key.expanded = false;
                                 //console.log(key.card_min);

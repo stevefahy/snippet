@@ -9,4 +9,9 @@ cardApp.service('ContentEditable', ['$rootScope', function($rootScope) {
         $(cropper).closest('div.ce').attr('contenteditable', bool);
     };
 
+    // get the cards contenteditable boolean value.
+    this.getContenteditable = function(cropper) {
+        return $(cropper).closest('div.ce').attr('contenteditable');
+    };
+
 }]);

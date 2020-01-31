@@ -20,8 +20,16 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     // Image Edit menu.
 
     this.editImage = function(scope, id) {
+
         var parent_container = getParentContainer(scope);
         var cropper = $('.' + parent_container + ' #cropper_' + id);
+
+        //var editable = ContentEditable.getContenteditable($(cropper)[0]);
+        var editable = $(cropper).closest('.ce').attr('editing');
+        console.log(editable);
+        if(editable == 'true'){
+console.log('its true');
+        
         ContentEditable.setContenteditable($(cropper)[0], false);
         // Check if this is new image to be edited.
         if (id != ImageAdjustment.getImageId()) {
@@ -46,7 +54,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                         ImageAdjustment.setImageAdjusted(false);
                         // Save any changes made to this card in case the user navigates away from conversations before finishing editing image.
                         temp_save = true;
-                        ImageFunctions.saveCropper(cropper).then(function() {
+                        //ImageFunctions.saveCropper(cropper).then(function() {
                             // Turn off contenteditable for this card.
                             ContentEditable.setContenteditable($(cropper)[0], false);
                             var image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
@@ -69,7 +77,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                                     $(eb).find('.ai').attr("onclick", 'adjustImage(event, \'' + id + '\')');
                                     $(eb).find('.fi').attr("onclick", 'openFilters(event, \'' + id + '\')');
                                     $(eb).find('.ois').attr("onclick", 'openCropRotate(event, \'' + id + '\')');
-                                    $(eb).find('.close_image_edit').attr("onclick", 'closeImageEdit(event, \'' + id + '\')');
+                                    //$(eb).find('.close_image_edit').attr("onclick", 'closeImageEdit(event, \'' + id + '\')');
+                                    $(eb).find('.close_image_edit').attr("onclick", 'closeImageEdit(\'' + id + '\')');
                                     // Adjust margin top if this is the topmost image.
                                     if ($('.' + parent_container + ' #cropper_' + id).attr('class').indexOf('no_image_space') >= 0) {
                                         $('#image_adjust_' + id).addClass('no_image_space_adjust');
@@ -78,16 +87,20 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                                     $('#image_adjust_' + id).addClass('image_adjust_on');
                                 });
                             }
-                        });
+                        //});
                     }
                 }
             });
         }
+
+    }
+
     };
 
-    this.closeImageEdit = function(e, id) {
-        e.stopPropagation();
-        var parent_container = getParentContainer(e.target);
+    //this.closeImageEdit = function(e, id) {
+this.closeImageEdit = function(id) {
+        //e.stopPropagation();
+        var parent_container = 'content_cnv';//getParentContainer(e.target);
         var cropper = $('.' + parent_container + ' #cropper_' + id);
         ContentEditable.setContenteditable(cropper, true);
         $('.image_adjust_on').remove();
@@ -168,11 +181,12 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         e.stopPropagation();
     };
 
-    this.closeFilters = function(e) {
-        var parent_container = getParentContainer(e.target);
+    //this.closeFilters = function(e) {
+    this.closeFilters = function() {
+        var parent_container = 'content_cnv';//getParentContainer(e.target);
         var id = ImageAdjustment.getImageId();
         ImageFilters.close();
-        e.stopPropagation();
+        //e.stopPropagation();
     };
 
     // testImage

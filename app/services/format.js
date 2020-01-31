@@ -500,6 +500,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     // UPLOAD ==================================================================
     uploadClickListen = function(id) {
+        console.log('ucl');
         // make the button active temporarily so that it functions.
         $('#upload-input').addClass('active');
         $('#upload-input').click();
@@ -524,6 +525,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     }
 
     this.uploadFile = function(id, card, currentUser) {
+        console.log(id);
         if (ua.indexOf('AndroidApp') >= 0) {
             if (document.activeElement.id != 'cecard_create' && id != undefined && id != 'card_create') {
                 // save the card first (Android bug)
