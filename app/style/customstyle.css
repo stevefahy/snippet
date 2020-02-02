@@ -47,7 +47,7 @@ canvas {
 .ce,
 #cec,
 #cet {
-    /* background-color: #ffffff; */
+    background-color: #fafafa;
     /* margin-top: 10px; */
     display: inline-block;
     width: 100%;
@@ -159,12 +159,14 @@ input[type="checkbox"] {
 }
 
 .cropper_cont {
+    border-top: 1px solid #efefef;
     /*margin-top: 10px;*/
     position: relative;
     width: calc(100% + 2.8em);
     position: relative;
     left: -1.38em;
-    margin-bottom: 10px;
+    /* margin-bottom: 10px; */
+    /* border-bottom: 10px solid #000000; */
     border-bottom: 1px solid #efefef;
     will-change: height;
     transform: translateZ(0);
@@ -956,7 +958,8 @@ div#user {
     height: 55px;
     float: left;
     width: 100%;
-    background-color: #ffffff;
+    background-color: #fafafa;
+    /* background-color: #ffffff; */
     display: flex;
     /* border-bottom-style: solid; */
     /* border-bottom-width: 1px; */
@@ -3123,11 +3126,9 @@ span.after_image {
 }
 
 .card_footer {
+    /* border-top: 1px solid #efefef; */
     height: 55px;
-    background-color: #ffffff;
-    /* margin-left: 1.25em; */
-    /* box-shadow: rgba(0, 0, 0, 0.14) 0px 10px 10px -10px; */
-    /*, rgba(0, 0, 0, 0.12) 0px 4px 5px -5px, rgba(0, 0, 0, 0.2) 0px 4px 5px -5px;*/
+    background-color: #fafafa;
 }
 
 .card_footer_btns {
@@ -3863,6 +3864,7 @@ span.after_image {
 }
 
 .c_footer_o {
+    /* background-color: #8d3333; */
     margin-left: 1.25em;
     height: 100%;
     display: flex;
