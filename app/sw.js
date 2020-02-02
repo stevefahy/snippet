@@ -944,7 +944,7 @@ if (workbox) {
   },
   {
     "url": "indexa.html",
-    "revision": "6bd01fdfb3bc7b33cd5f4f0cae716878"
+    "revision": "51f927661f8069390cfd5d45dd45dcc5"
   },
   {
     "url": "js/angular_moment.js",
@@ -1140,7 +1140,7 @@ if (workbox) {
   },
   {
     "url": "style/customstyle.css",
-    "revision": "6d36415ee16cf1940fad5607566846bb"
+    "revision": "03db703c5ef5bab32023be52a9310ccd"
   },
   {
     "url": "style/instagram.css",
@@ -1176,7 +1176,7 @@ if (workbox) {
   },
   {
     "url": "views/conversation.html",
-    "revision": "1418dab1fd10c92924d52f962055de3b"
+    "revision": "6aafa85bb48d9b085cc3c49291e8a2aa"
   },
   {
     "url": "views/conversations.html",
