@@ -269,7 +269,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         console.log($('.' + parent_container + ' #image_' + id));
         var td = $('.' + parent_container + ' #image_' + id).attr('title-data');
         if (td != undefined) {
-            title_data = JSON.parse(td);
+            //title_data = JSON.parse(td);
+            title_data = td;
         }
         return title_data;
     };
@@ -315,6 +316,11 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             $(filt).find('#submit_title').attr("onclick", 'submitTitle(event, \'' + id + '\')');
 
 
+            var title = self.getImageTitle('content_cnv', id);
+            console.log(title);  
+            if(title != undefined){
+                $('.title_active .add_title_text').html(title); 
+            }         
             //var data = { 'id': id, 'type': 'test' };
             //data.last_position = $rootScope.slider_settings.test.reset;
             // Get the last position of the slider.

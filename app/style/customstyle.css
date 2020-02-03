@@ -966,6 +966,9 @@ div#user {
     /* border-bottom-style: solid; */
     /* border-bottom-width: 1px; */
     /* border-bottom-color: #efefef; */
+    justify-content: baseline;
+    /* align-items: center; */
+    align-items: center;
 }
 
 /* EDIT MENU */
@@ -3943,7 +3946,7 @@ span.after_image {
 }
 
 .card_title {
-    top: 50px;
+    top: 65px;
     position: relative;
     color: #ffffff;
     left: 0px;
@@ -3952,7 +3955,7 @@ span.after_image {
     /* height: 100px; */
     width: 100%;
     background-color: rgba(0, 0, 0, 0.6);
-    padding-top: 30px;
+    padding-top: 10px;
     padding-bottom: 30px;
     line-height: 1.4;
     font-size: 19px;
@@ -3962,10 +3965,13 @@ span.after_image {
 }
 
 .user_title {
+        /* display: flex; */
+        /* align-items: center; */
         position: absolute;
         top: 0px;
         z-index: 1;
         background-color: rgba(5, 5, 5, 0.6) !important;
+        height: 65px !important;
 }
 .username_title {
         color: #ffffff !important;
