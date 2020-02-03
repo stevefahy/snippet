@@ -3954,9 +3954,11 @@ span.after_image {
     background-color: rgba(0, 0, 0, 0.6);
     padding-top: 30px;
     padding-bottom: 30px;
-    font-size: 18px;
+    line-height: 1.4;
+    font-size: 19px;
     font-weight: 600;
-    padding-left: 1.28em;
+    padding-left: 1.25em;
+    padding-right: 1.25em;
 }
 
 .user_title {
