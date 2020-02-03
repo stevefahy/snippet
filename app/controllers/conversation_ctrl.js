@@ -6,7 +6,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     closeFilters = ImageEdit.closeFilters;
     filterClick = ImageFilters.filterClick;
     adjustImage = ImageEdit.adjustImage;
+    submitTitle = ImageEdit.submitTitle;
+    cancelTitle = ImageEdit.cancelTitle;
     testImage = ImageEdit.testImage;
+    addTitle = ImageEdit.addTitle;
     cancelCrop = CropRotate.cancelCrop;
     makeCrop = CropRotate.makeCrop;
     toggleRotateSlider = CropRotate.toggleRotateSlider;
@@ -32,6 +35,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.pasteHtmlAtCaret = Format.pasteHtmlAtCaret;
     $scope.checkCursor = Format.checkCursor;
     $scope.test_card = [];
+
+
+
+
+
+
 
     // leaving controller.
     $scope.$on('$destroy', function() {
@@ -87,6 +96,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.removed_cards_top = [];
     $scope.removed_cards_bottom = [];
     $scope.cards_temp = [];
+
+    //$scope. = .content = "Enter Text here!";
+
+    $scope.image_title = {
+        content: 'Enter Text here!',
+    };
 
     var first_load = true;
     var scroll_direction;
@@ -1533,16 +1548,16 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
         //ImageEdit.closeFilters();
 
-                    for (var i = 0, len = $scope.cards.length; i < len; i++) {
-                delete $scope.cards[i].disabled;
-            }
+        for (var i = 0, len = $scope.cards.length; i < len; i++) {
+            delete $scope.cards[i].disabled;
+        }
 
         var pos = General.findWithAttr($scope.cards, '_id', currently_editing);
         if (pos >= 0) {
             $scope.cards[pos].editing = false;
             let card = $scope.cards[pos];
             Format.getBlur(card._id, card, $scope.currentUser);
-             //$scope.editing_card = false;
+            //$scope.editing_card = false;
 
         }
         $('.content_cnv #card_' + currently_editing).attr("onclick", 'toggleHeight(event, \'' + currently_editing + '\')');
@@ -1590,7 +1605,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $scope.cards[pos].disabled = false;
                 currently_editing = $scope.cards[pos]._id;
                 editing_original = $scope.cards[pos].original_content;
-                
+
             }
             console.log($scope.cards[pos]);
             //var cropper = $('.content_cnv #cropper_' + card._id);
@@ -1615,7 +1630,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     setCardMin = function(key) {
         key.active = true;
-        console.log(key.content);
+        //console.log(key.content);
         let node = $.parseHTML(key.content);
         //let html = $(key.content);
         var card_min = {};
@@ -1630,14 +1645,33 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             let test = awaitImages('.test_container .test_' + key._id).then(function(result) {
                 //var h = $('.test_container .test_' + key._id).find('.ce').find('img:first').height().toFixed(2);
                 var i = $('.test_container .test_' + key._id).find('.ce').find('img:first');
-                console.log(i);
+
+                var ti = $('.test_container .test_' + key._id).find('.ce').find('[title-data').attr('title-data');
+                //console.log($('[deleteuserid]'));
+                //ti = JSON.parse(ti);
+                console.log(ti);
+                if(ti != undefined){
+                    key.title = ti;
+                    console.log(key);
+                      if (!$scope.$$phase) {
+                $scope.$apply();
+            }
+                }
+
+                
+                //console.log(i);
                 if (i.length > 0) {
                     var h = $(i).height().toFixed(2);
 
-                    console.log(h);
+                    //console.log(h);
                     var card_h = $('.test_container .test_' + key._id).find('.resize-container').outerHeight().toFixed(2);
                     setCardData(key._id, 'full_height', card_h);
                     setCardData(key._id, 'min_height', h);
+
+                    /// Get title
+                    //console.log(i);
+                    //var t = ImageEdit.getImageTitle('test_container', key._id);
+                    //console.log(t);
 
                     $('.content_cnv #card_' + key._id + ' .resize-container').height(h);
 
@@ -1650,7 +1684,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     $('.test_container .test_' + key._id).remove();
                     //}, 500);
                 } else {
-                    console.log(i);
+                    //console.log(i);
                     //$("head").append("<style>#card_" + key._id + " .resize-container { max-height: " + h + "px; }</style>");
                 }
             });
@@ -2196,5 +2230,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         Scroll.enable('.content_cnv');
         addNewCards();
     };
+
+
 
 }]);

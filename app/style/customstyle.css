@@ -307,15 +307,17 @@ hr {
     border-style-top: solid;
     /* border-top-color: black; */
     /* border-top-style: solid; */
-    top: -12px;
+    top: -11px;
     position: relative;
     width: 100%;
     z-index: -1;
-    height: 12px;
+    height: 10px;
     /*box-shadow: rgba(0, 0, 0, 0.14) 0px 4px 5px 0px;*/
     /*box-shadow: rgba(0, 0, 0, 0.14) 0px 4px 5px 0px, rgba(0, 0, 0, 0.12) 0px 1px 10px 0px, rgba(0, 0, 0, 0.2) 0px 2px 4px -1px;*/
-    box-shadow: rgba(143, 141, 141, 0.5) 0px 5px 5px 0px;
+    /* box-shadow: rgba(143, 141, 141, 0.5) 0px 5px 5px 0px; */
     box-shadow: rgba(0, 0, 0, 0.14) 0px 4px 5px 0px, rgba(0, 0, 0, 0.12) 0px 1px 10px 0px, rgba(0, 0, 0, 0.2) 0px 2px 4px -1px;
+    /* border-bottom: 2px solid #000000; */
+    /* border-bottom: 1px solid #efefef; */
 }
 
 /* HEADER SETTINGS */
@@ -955,7 +957,7 @@ form.form-horizontal.ng-valid.ng-dirty.ng-valid-parse {
 }
 
 div#user {
-    height: 55px;
+    height: 50px;
     float: left;
     width: 100%;
     background-color: #fafafa;
@@ -1003,7 +1005,9 @@ div#user {
 .material-icons {
     font-size: 21px;
     /*cursor: default;*/
-    color: #5e5e5e;
+    color: #333333;
+    /* color: #6c6c6c; */
+    /* color: #5e5e5e; */
 }
 
 #mi-more_vert {
@@ -2918,7 +2922,7 @@ scrollIndicator directive
 }
 
 .image_adjust {
-    top: 10px;
+    /* top: 10px; */
     clear: both;
     width: calc(100% + 2.8em);
     left: -1.38em;
@@ -3002,6 +3006,39 @@ div.after_image:empty {
     z-index: 100;
     width: 100vw;
     overflow-x: scroll;
+}
+
+.image_title_div {
+    /*
+    width: calc(100% + 2.8em);
+    left: 0px;
+    clear: both;
+    visibility: hidden;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 1);
+    cursor: auto;
+    z-index: 100;
+    overflow-x: scroll;
+    */
+    display: flex;
+    align-items: center;
+    top: 100px;
+    clear: both;
+    width: calc(100% + 2.8em);
+    left: -1.38em;
+    border-bottom: .5px solid #5e5e5e;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 5px 0px, rgba(0, 0, 0, 0.2) 0px 1px 10px 0px, rgba(0, 0, 0, 0.2) 0px 2px 4px -1px;
+    visibility: hidden;
+    position: absolute;
+    /* margin-bottom: -50.5px; */
+    min-width: 200px;
+    z-index: 1;
+    background: -webkit-linear-gradient(top, #5e5e5e 0%, rgba(94, 94, 94, .85) 100%);
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    height: 50px;
 }
 
 .filter_list {
@@ -3106,7 +3143,7 @@ div.after_image:empty {
 }
 
 .no_image_space_adjust {
-    top: -10px;
+    /* top: -10px; */
 }
 
 .no_image_space_adjust_crop {
@@ -3127,7 +3164,7 @@ span.after_image {
 
 .card_footer {
     /* border-top: 1px solid #efefef; */
-    height: 55px;
+    height: 50px;
     background-color: #fafafa;
 }
 
@@ -3250,9 +3287,10 @@ span.after_image {
 .card_temp {
     position: relative;
     /* margin-top: 1px; */
-    border-top-style: solid;
-    border-top-color: rgb(235, 236, 235);
-    border-top-width: 2px;
+    /* border-top-style: solid; */
+    /* border-top-color: rgb(235, 236, 235); */
+    /* border-top-width: 2px; */
+    border-top: 1px solid #efefef;
 }
 
 .content_cnv {
@@ -3517,6 +3555,17 @@ span.after_image {
     z-index: 1001;
 }
 
+.title_accept {
+    margin-left: 1em;
+}
+
+.title_cancel {
+    text-align: right;
+    z-index: 1001;
+    margin-right: 3.8em;
+    margin-left: 1em;
+}
+
 .mi-done_crop {
     color: green;
     font-size: 30px !important;
@@ -3554,6 +3603,13 @@ span.after_image {
     position: absolute !important;
     bottom: 0;
     visibility: visible;
+}
+
+.title_active {
+     position: absolute;
+     /* top: 100px; */
+     visibility: visible;
+     margin-left: 1.25em;
 }
 
 .crop_temp {
@@ -3873,4 +3929,42 @@ span.after_image {
     /* border-bottom-color: #656363; */
     /* border-bottom-style: solid; */
     /* border-bottom-width: .5px; */
+}
+
+.add_title_text {
+    background-color: white;
+    width: 100%;
+    margin-left: 1em;
+        outline: none;
+}
+
+.add_title_text:before {
+    content: "\00a0 \00a0 ";
+}
+
+.card_title {
+    top: 50px;
+    position: relative;
+    color: #ffffff;
+    left: 0px;
+    position: absolute;
+    z-index: 1;
+    /* height: 100px; */
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    padding-top: 30px;
+    padding-bottom: 30px;
+    font-size: 18px;
+    font-weight: 600;
+    padding-left: 1.28em;
+}
+
+.user_title {
+        position: absolute;
+        top: 0px;
+        z-index: 1;
+        background-color: rgba(5, 5, 5, 0.6) !important;
+}
+.username_title {
+        color: #ffffff !important;
 }
