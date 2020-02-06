@@ -1158,6 +1158,7 @@ console.log(card);
         var promises = [];
         var cards_new = [];
         console.log($rootScope.loading_cards);
+        $rootScope.loading_cards = false;
         if (!$rootScope.loading_cards) {
             $rootScope.loading_cards = true;
             var last_card;
