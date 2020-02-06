@@ -1138,9 +1138,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     getFollowingUpdate = function() {
+        console.log('gfu');
         var deferred = $q.defer();
         var promises = [];
         var cards_new = [];
+        console.log($rootScope.loading_cards);
         if (!$rootScope.loading_cards) {
             $rootScope.loading_cards = true;
             var last_card;
@@ -1871,6 +1873,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // TODO - If not following anyone suggest follow?
     getFollowing = function() {
+        console.log('gf');
         var deferred = $q.defer();
         var promises = [];
         if (!$rootScope.loading_cards_offscreen) {

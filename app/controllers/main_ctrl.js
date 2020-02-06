@@ -238,7 +238,9 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     };
 
     runUpdate = function() {
+        console.log('ru');
         $rootScope.sync_finished = false;
+        console.log($scope.online);
         if ($scope.online) {
             var id = Conversations.getConversationId();
             // update all required models (could be new conversations, multiple cards across conversations, new users or user data - Userdata first load re call?)
@@ -294,6 +296,8 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     syncFinished = function(queue, unbind) {
         // queue this request
+        console.log(queue);
+        console.log($rootScope.loading_cards);
         if (queue) {
             checkLoadingCards()
                 .then(function(result) {
@@ -322,6 +326,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         if ($rootScope.sync_finished) {
             syncFinished(queue, false);
         } else {
+            console.log('await sync_finished');
             unbind_sync_finished = $rootScope.$watch('sync_finished', function(n) {
                 if (n) {
                     syncFinished(queue, true);
