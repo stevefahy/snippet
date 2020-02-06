@@ -3931,7 +3931,7 @@ span.after_image {
 
 .c_footer_o {
     /* background-color: #8d3333; */
-    margin-left: 1.25em;
+    /*margin-left: 1.25em;*/
     height: 100%;
     display: flex;
     align-items: center;
@@ -3962,8 +3962,8 @@ span.after_image {
     /* height: 100px; */
     width: 100%;
     background-color: rgba(0, 0, 0, 0.6);
-    padding-top: 10px;
-    padding-bottom: 30px;
+    padding-top: 5px;
+    padding-bottom: 25px;
     line-height: 1.4;
     font-size: 19px;
     font-weight: 600;
