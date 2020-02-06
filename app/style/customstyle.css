@@ -631,7 +631,7 @@ hr {
 }
 
 .card_avatar {
-    margin-left: 1em;
+    /* margin-left: 18px; */
     align-self: center;
     float: left;
     width: 38px;
@@ -972,34 +972,7 @@ color: #ffffff !important;
     position: relative;
 }
 
-div#user {
-
-z-index: 1;
-
-height: 60px;
-
-float: left;
-
-width: 100%;
-
-/*background-color: #fafafa;*/
-
-/* background-color: #ffffff; */
-
-display: flex;
-
-/* border-bottom-style: solid; */
-
-/* border-bottom-width: 1px; */
-
-/* border-bottom-color: #efefef; */
-
-justify-content: baseline;
-
-/* align-items: center; */
-
-align-items: center;
-}
+div#user {/* padding-left: 18px; */z-index: 1;height: 60px;float: left;width: 100%;/*background-color: #fafafa;*//* background-color: #ffffff; */display: flex;/* border-bottom-style: solid; *//* border-bottom-width: 1px; *//* border-bottom-color: #efefef; */justify-content: baseline;/* align-items: center; */align-items: center;}
 
 /* EDIT MENU */
 
@@ -3983,7 +3956,7 @@ span.after_image {
     top: 60px;
     position: relative;
     color: #ffffff;
-    left: 0px;
+    /* left: 0px; */
     position: absolute;
     z-index: 1;
     /* height: 100px; */
@@ -3994,8 +3967,8 @@ span.after_image {
     line-height: 1.4;
     font-size: 19px;
     font-weight: 600;
-    padding-left: 1.25em;
-    padding-right: 1.25em;
+    /* padding-left: 1em; */
+    /* padding-right: 1em; */
 }
 
 .user_title {
@@ -4032,8 +4005,8 @@ span.after_image {
 }
 
 .margins {
-    padding-left: 1.25em;
-    padding-right: 1.25em;
+    padding-left: 18px;
+    padding-right: 18px;
 }
 
 .title_area {
