@@ -312,6 +312,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     }
 
     checkDataUpdate = function(queue) {
+        console.log($rootScope.sync_finished);
         if (!'serviceWorker' in navigator) {
             $rootScope.sync_finished = true;
         }
@@ -393,6 +394,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                     sendRequested(event.data.all_requests.posted, event.data.all_requests.updated, event.data.all_requests.deleted);
                 }
                 $rootScope.sync_finished = true;
+                console.log($rootScope.sync_finished);
                 if (!$scope.$$phase) {
                     $scope.$apply();
                 }

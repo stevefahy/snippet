@@ -924,7 +924,7 @@ if (workbox) {
   },
   {
     "url": "controllers/main_ctrl.js",
-    "revision": "a3e75df6e1053c3476f201fafaf2c5f3"
+    "revision": "ee70c200f20a660bef750705ebbb6a6b"
   },
   {
     "url": "controllers/usersetting_ctrl.js",
@@ -1144,7 +1144,7 @@ if (workbox) {
   },
   {
     "url": "style/customstyle.css",
-    "revision": "bd42ff78b00260d9eb1a5b7246affd0c"
+    "revision": "8340e22497a12f4213378e0ec3971aca"
   },
   {
     "url": "style/instagram.css",
