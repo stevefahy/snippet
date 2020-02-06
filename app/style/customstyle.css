@@ -305,10 +305,13 @@ hr {
 }
 
 .footer_bottom {
+    background-image: url(/assets/images/gradient.png?refjjre);
+    background-repeat-y: no-repeat;
+    background-position: top;
     border-style-top: solid;
     /* border-top-color: black; */
     /* border-top-style: solid; */
-    top: -11px;
+    top: 0px;
     position: relative;
     width: 100%;
     z-index: -1;
@@ -316,7 +319,7 @@ hr {
     /*box-shadow: rgba(0, 0, 0, 0.14) 0px 4px 5px 0px;*/
     /*box-shadow: rgba(0, 0, 0, 0.14) 0px 4px 5px 0px, rgba(0, 0, 0, 0.12) 0px 1px 10px 0px, rgba(0, 0, 0, 0.2) 0px 2px 4px -1px;*/
     /* box-shadow: rgba(143, 141, 141, 0.5) 0px 5px 5px 0px; */
-    box-shadow: rgba(0, 0, 0, 0.14) 0px 4px 5px 0px, rgba(0, 0, 0, 0.12) 0px 1px 10px 0px, rgba(0, 0, 0, 0.2) 0px 2px 4px -1px;
+    /* box-shadow: rgba(0, 0, 0, 0.14) 0px 4px 5px 0px, rgba(0, 0, 0, 0.12) 0px 1px 10px 0px, rgba(0, 0, 0, 0.2) 0px 2px 4px -1px; */
     /* border-bottom: 2px solid #000000; */
     /* border-bottom: 1px solid #efefef; */
 }
