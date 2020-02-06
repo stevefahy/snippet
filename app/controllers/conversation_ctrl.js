@@ -228,6 +228,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     }
 
     animateCard = async function(card_id) {
+        console.log('animateCard');
         var deferred = $q.defer();
         let speed = 800;
         // Only animate the last added card.
@@ -268,6 +269,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     }
 
     upDateObservers = function() {
+        console.log('upDateObservers');
         resetObserver_queue();
         intObservers();
         for (var i = 0, len = $scope.cards.length; i < len; i++) {
@@ -297,6 +299,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                 unbindScroll();
                                 Scroll.disable('.content_cnv');
                                 var new_h = Number($('.test_card').outerHeight(true).toFixed(2));
+                                console.log(new_h);
                                 $("#card_" + card_id).css('margin-top', new_h * -1);
                                 $("#card_" + card_id).addClass('will_transform');
                                 $("#card_" + card_id).removeClass('zero_height');
@@ -321,7 +324,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         }
                     }, 100);
                 });
-                $scope.test_card.content = $scope.cards[i].content;
+                //$scope.test_card.content = $scope.cards[i].content;
+                $scope.test_card[0] = $scope.cards[i];
             } else {
 
                 //setCardMin($scope.cards[i]);
@@ -1018,8 +1022,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
         if (found_pos >= 0) {
 
-            card = parseCard(card);
-            console.log(card);
+            //card = parseCard(card);
+            //console.log(card);
 
             if (card_arrays[arr][found_pos].content != card.content) {
                 // Get the card height.
@@ -1161,9 +1165,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         var user;
                         for (var i = 0, len = res.data.cards.length; i < len; i++) {
                             var key = res.data.cards[i];
-                            console.log(key);
+                            //console.log(key);
                             key = parseCard(key);
-                            console.log(key);
+                            //console.log(key);
 
                             var user_pos = General.findWithAttr(users, '_id', key.user);
                             // Get the user for this card
@@ -1216,7 +1220,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // TODO - change if adding button to notify user of new card.
     addCards = function(arr) {
-        console.log(arr);
+        //console.log(arr);
         var deferred = $q.defer();
         var promises = [];
         var all_cards;

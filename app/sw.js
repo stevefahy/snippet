@@ -823,6 +823,10 @@ if (workbox) {
     "revision": "a3eba38ee87a2a44623ac796cd77634c"
   },
   {
+    "url": "assets/images/gradient.png",
+    "revision": "7dde21da1942ed3191447a81b1df93bb"
+  },
+  {
     "url": "assets/images/hr9.png",
     "revision": "b11f951915f5e54c8fbb5afe134d13af"
   },
@@ -888,7 +892,7 @@ if (workbox) {
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "4511a0e9d21ebf960daf1d2ab1e8918a"
+    "revision": "e2cae0a444e4c70bab73b3d66d74bb4b"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -1140,7 +1144,7 @@ if (workbox) {
   },
   {
     "url": "style/customstyle.css",
-    "revision": "371307d2610c83fa53457f8db64431a7"
+    "revision": "bd42ff78b00260d9eb1a5b7246affd0c"
   },
   {
     "url": "style/instagram.css",
@@ -1176,7 +1180,7 @@ if (workbox) {
   },
   {
     "url": "views/conversation.html",
-    "revision": "428c4324c870de3dfdc71176e7eeba08"
+    "revision": "c067cf5ad30c8cc4db533f1bad013856"
   },
   {
     "url": "views/conversations.html",

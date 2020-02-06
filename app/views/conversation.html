@@ -16,6 +16,48 @@
     </div>
     <!-- Test Card -->
     <div class="test_container"></div>
+    <div class="test_card" ng-repeat="card in test_card | orderBy :'updatedAt' : top_down ">
+        <div class="resize-container" ng-attr-editing="{{card.editing}}" ng-attr-editable="{{::card.user == currentUser._id}}" id="conversation_part" ng-click="toggleTheHeight($event, card._id);">
+            <div id="user" ng-class="{ 'user_title': card.title != undefined, user_image_title: card.title_image, user_text_title: !card.title_image}" class="margins">
+                <img ng-if="::card.avatar!='default'" alt="" class="card_avatar" ng-src="{{::card.avatar}}" />
+                <img ng-if="::card.avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="card_avatar" />
+                <div class="username" ng-class="{ 'username_title': card.title != undefined, username_image_title: card.title_image}">{{::card.user_name}}</div>
+                <div ng-if="::card.user == currentUser._id" class="edit">
+                    <div class="dropdown" ng-attr-id="cem{{::card._id}}">
+                        <div ng-click="dropDownToggle($event, 'cem'+card._id)" class="dropbtn">
+                            <i class="material-icons" id="mi-more_vert">&#xE5D4;</i>
+                        </div>
+                        <div ng-attr-id="myDropdowncem{{card._id}}" class="dropdown-content">
+                            <div ng-click="deleteCard(card._id, card.conversationId)">Delete</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="title_area margins" ng-model="::card.title_area" ng-attr-contenteditable="{{card.user == currentUser._id && card.editing == true}}"></div>
+            <div class="card_title margins" ng-show="card.title_image_text">{{::card.title_image_text}}</div>
+            <div class="content_area margins" ng-class="{'collapsed': {{::!card.expanded}}}">
+                <div class='ce' ng-attr-id="ce{{::card._id}}" ng-attr-contenteditable="{{card.user == currentUser._id && card.editing == true}}" ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id);" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce'+card._id);" ng-model="::card.content" ng-model-options="{ debounce: 1000 }"></div>
+            </div>
+            <input id="upload-input" type="file" name="uploads[]" multiple="multiple">
+            <button ng-attr-id="upload-triggerce{{::card._id}}" class="btn btn-sm upload-btn upload-trigger" type="button" ng-click="uploadFile(card._id, card, currentUser); ">Upload File</button>
+        </div>
+        <div class="card_footer" ng-attr-expanded="{{card.expanded}}">
+            <div class="c_footer_o margins">
+                <div class="card_footer_btns">
+                    <div class="cf_btn"><i class="material-icons">favorite_border</i></div>
+                    <div class="cf_btn" ng-show="{{::card.user != currentUser._id}}" ng-click="follow(card)"><i class="material-icons btn_follow" ng-class="{'following': card.following}">directions_walk</i></div>
+                    <div class="cf_btn send"><i class="material-icons send">send</i></div>
+                    <div class="cf_btn" ng-show="{{::card.user == currentUser._id}} && card.expanded && !card.disabled"><i class="material-icons edit" ng-class="{'file_edit': {{::card.user == currentUser._id}}}" ng-click="editCard($event, card)">edit</i>
+                    </div>
+                    <div moment-time-conv="card.updatedAt" id="time"></div>
+                </div>
+            </div>
+            <!--<div class="likes">7,255 likes</div>-->
+        </div>
+        <div class="footer_bottom"></div>
+    </div>
+    <!--
+    <div class="test_container"></div>
     <div class="test_card">
         <div id="user">
             <img ng-src="/assets/images/default_avatar.jpg" class="card_avatar" />
@@ -33,66 +75,34 @@
                     <div id="time"></div>
                 </div>
             </div>
-            <!--<div class="likes">likes</div>-->
+            <div class="likes">likes</div>
         </div>
     </div>
+-->
     <!-- Content onscreen -->
     <div class="content_cnv" ng-class="{ 'content_cnv_conv': !feed, 'content_cnv_hide_footer': hide_footer, 'content_cnv_no_footer': no_footer}" scroll-to-top-when="items_changed">
         <div id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : top_down " on-finish-render="ngRepeatFinished" ng-attr-id="card_{{::card._id }}" class="card_temp ng-cloak" ng-class="[appliedClass(card.card_type),{'first_load_anim': card.new_card, 'zero_height': card.new_card, card_disabled: card.disabled}]" ng-attr-expanded="{{card.expanded}}">
-
-            <!--
-            <div id="user" ng-class="{ 'user_title': card.title != undefined}">
-                <img ng-if="::card.avatar!='default'" alt="" class="card_avatar" ng-src="{{::card.avatar}}" />
-                <img ng-if="::card.avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="card_avatar" />
-                <div class="username"  ng-class="{ 'username_title': card.title != undefined}">{{::card.user_name}}</div>
-                <div ng-if="::card.user == currentUser._id" class="edit">
-                    <div class="dropdown" ng-attr-id="cem{{::card._id}}">
-                        <div ng-click="dropDownToggle($event, 'cem'+card._id)" class="dropbtn">
-                            <i class="material-icons" id="mi-more_vert">&#xE5D4;</i>
-                        </div>
-                        <div ng-attr-id="myDropdowncem{{card._id}}" class="dropdown-content">
-                            <div ng-click="deleteCard(card._id, card.conversationId)">Delete</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        -->
-            <!-- before ng-model
-                ng-blur="getBlur(card._id, card, currentUser)"
-            -->
-
-            
-
-            <div class="resize-container"  ng-attr-editing="{{card.editing}}" ng-attr-editable="{{::card.user == currentUser._id}}" id="conversation_part"  ng-click="toggleTheHeight($event, card._id);">
-
-
+            <div class="resize-container" ng-attr-editing="{{card.editing}}" ng-attr-editable="{{::card.user == currentUser._id}}" id="conversation_part" ng-click="toggleTheHeight($event, card._id);">
                 <div id="user" ng-class="{ 'user_title': card.title != undefined, user_image_title: card.title_image, user_text_title: !card.title_image}" class="margins">
-                <img ng-if="::card.avatar!='default'" alt="" class="card_avatar" ng-src="{{::card.avatar}}" />
-                <img ng-if="::card.avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="card_avatar" />
-                <div class="username"  ng-class="{ 'username_title': card.title != undefined, username_image_title: card.title_image}">{{::card.user_name}}</div>
-                <div ng-if="::card.user == currentUser._id" class="edit">
-                    <div class="dropdown" ng-attr-id="cem{{::card._id}}">
-                        <div ng-click="dropDownToggle($event, 'cem'+card._id)" class="dropbtn">
-                            <i class="material-icons" id="mi-more_vert">&#xE5D4;</i>
-                        </div>
-                        <div ng-attr-id="myDropdowncem{{card._id}}" class="dropdown-content">
-                            <div ng-click="deleteCard(card._id, card.conversationId)">Delete</div>
+                    <img ng-if="::card.avatar!='default'" alt="" class="card_avatar" ng-src="{{::card.avatar}}" />
+                    <img ng-if="::card.avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="card_avatar" />
+                    <div class="username" ng-class="{ 'username_title': card.title != undefined, username_image_title: card.title_image}">{{::card.user_name}}</div>
+                    <div ng-if="::card.user == currentUser._id" class="edit">
+                        <div class="dropdown" ng-attr-id="cem{{::card._id}}">
+                            <div ng-click="dropDownToggle($event, 'cem'+card._id)" class="dropbtn">
+                                <i class="material-icons" id="mi-more_vert">&#xE5D4;</i>
+                            </div>
+                            <div ng-attr-id="myDropdowncem{{card._id}}" class="dropdown-content">
+                                <div ng-click="deleteCard(card._id, card.conversationId)">Delete</div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
-
                 <div class="title_area margins" ng-model="::card.title_area" ng-attr-contenteditable="{{card.user == currentUser._id && card.editing == true}}"></div>
-
                 <div class="card_title margins" ng-show="card.title_image_text">{{::card.title_image_text}}</div>
-
                 <div class="content_area margins" ng-class="{'collapsed': {{::!card.expanded}}}">
-
-                <div class='ce' ng-attr-id="ce{{::card._id}}" ng-attr-contenteditable="{{card.user == currentUser._id && card.editing == true}}"  ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id);" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce'+card._id);" ng-model="::card.content" ng-model-options="{ debounce: 1000 }"></div>
-
+                    <div class='ce' ng-attr-id="ce{{::card._id}}" ng-attr-contenteditable="{{card.user == currentUser._id && card.editing == true}}" ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id);" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce'+card._id);" ng-model="::card.content" ng-model-options="{ debounce: 1000 }"></div>
                 </div>
-
                 <input id="upload-input" type="file" name="uploads[]" multiple="multiple">
                 <button ng-attr-id="upload-triggerce{{::card._id}}" class="btn btn-sm upload-btn upload-trigger" type="button" ng-click="uploadFile(card._id, card, currentUser); ">Upload File</button>
             </div>
