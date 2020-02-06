@@ -324,7 +324,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $scope.test_card.content = $scope.cards[i].content;
             } else {
 
-                setCardMin($scope.cards[i]);
+                //setCardMin($scope.cards[i]);
 
                 createObserver($scope.cards[i]._id);
                 disableCheckboxes($scope.cards[i]._id);
@@ -447,7 +447,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 amount = NUM_UPDATE_DISPLAY_INIT;
             }
             cards_to_move = $scope.cards_temp.splice(0, amount);
-            console.log($scope.cards_temp);
             for (var i = 0, len = cards_to_move.length; i < len; i++) {
                 $scope.cards.push(cards_to_move[i]);
             }
@@ -1005,6 +1004,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     }
 
     updateCard = function(card) {
+        console.log(card);
         // Check the existece of the card across all arrays.
         var card_arrays = [$scope.cards, $scope.cards_temp, $scope.removed_cards_bottom, $scope.removed_cards_top];
         var found_pos = -1;
@@ -1017,6 +1017,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }
         }
         if (found_pos >= 0) {
+
+            card = parseCard(card);
+            console.log(card);
+
             if (card_arrays[arr][found_pos].content != card.content) {
                 // Get the card height.
                 let test = awaitImages('.test_card .ce').then(function(result) {
@@ -1157,6 +1161,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         var user;
                         for (var i = 0, len = res.data.cards.length; i < len; i++) {
                             var key = res.data.cards[i];
+                            console.log(key);
+                            key = parseCard(key);
+                            console.log(key);
+
                             var user_pos = General.findWithAttr(users, '_id', key.user);
                             // Get the user for this card
                             if (user_pos < 0) {
@@ -1208,6 +1216,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // TODO - change if adding button to notify user of new card.
     addCards = function(arr) {
+        console.log(arr);
         var deferred = $q.defer();
         var promises = [];
         var all_cards;
@@ -1356,6 +1365,42 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         return card_type;
     }
 
+    $scope.toggleTheHeight = function(event, id) {
+        console.log('TTH: ' + id);
+
+        if (event) {
+            event.stopPropagation();
+        }
+
+        var tgt = event.target.tagName;
+        console.log(tgt);
+        if (tgt != "INPUT") {
+
+            var index = General.findWithAttr($scope.cards, '_id', id);
+            if (!$scope.cards[index].editing) {
+
+                var oh = $(".content_cnv #card_" + id + " .content_area .ce").outerHeight();
+                console.log(oh);
+
+
+                //key.expanded = false;
+
+                //$scope.cards[index].expanded = true;
+
+                if ($scope.cards[index].expanded) {
+                    oh = 0;
+                }
+                $scope.cards[index].expanded = !$scope.cards[index].expanded;
+                $(".content_cnv #card_" + id + " .content_area").animate({
+                    height: oh + "px"
+                }, 500, function() {
+                    // Animation complete.
+                });
+            }
+
+        }
+
+    }
 
     //$scope.toggleHeight = function(event, id) {
     toggleHeight = function(event, id) {
@@ -1368,6 +1413,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         //console.log(event);
         console.log(event.target);
         var tgt = event.target.tagName;
+
+
 
         var index = General.findWithAttr($scope.cards, '_id', id);
         //console.log(index);
@@ -1551,16 +1598,17 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         for (var i = 0, len = $scope.cards.length; i < len; i++) {
             delete $scope.cards[i].disabled;
         }
-
+        console.log(currently_editing);
         var pos = General.findWithAttr($scope.cards, '_id', currently_editing);
         if (pos >= 0) {
+            console.log($scope.cards[pos]);
             $scope.cards[pos].editing = false;
             let card = $scope.cards[pos];
             Format.getBlur(card._id, card, $scope.currentUser);
             //$scope.editing_card = false;
 
         }
-        $('.content_cnv #card_' + currently_editing).attr("onclick", 'toggleHeight(event, \'' + currently_editing + '\')');
+        // $('.content_cnv #card_' + currently_editing).attr("onclick", 'toggleHeight(event, \'' + currently_editing + '\')');
 
 
 
@@ -1649,16 +1697,16 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 var ti = $('.test_container .test_' + key._id).find('.ce').find('[title-data').attr('title-data');
                 //console.log($('[deleteuserid]'));
                 //ti = JSON.parse(ti);
-                console.log(ti);
-                if(ti != undefined){
+                //console.log(ti);
+                if (ti != undefined) {
                     key.title = ti;
-                    console.log(key);
-                      if (!$scope.$$phase) {
-                $scope.$apply();
-            }
+                    //console.log(key);
+                    if (!$scope.$$phase) {
+                        $scope.$apply();
+                    }
                 }
 
-                
+
                 //console.log(i);
                 if (i.length > 0) {
                     var h = $(i).height().toFixed(2);
@@ -1717,6 +1765,106 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     }
 
+    parseCard = function(card) {
+
+
+
+        //console.log(card.content);
+        let node = $.parseHTML(card.content);
+        console.log(node.length);
+        //let html = $(key.content);
+        //var card_min = {};
+        //var title_area = "Steve";
+        //var content_area = node;
+        var content_area = {};
+        content_area.title;
+        content_area.content = card.content;
+        //result.content_area = card.content;
+        console.log(node[0].nodeName);
+
+        var tmp = document.createElement("div");
+        tmp.appendChild(node[0]);
+        console.log(tmp.innerHTML);
+
+        if (node[0].nodeName != '#text') {
+            // card.title_image = true;
+
+            //console.log(node[0]);
+            //console.log($(node[0]).children("img"));
+            /*console.log($(node[0]).children("img").children('attributes'));
+            for (var i =0; i<$(node[0]).children("img").length; i++){
+                var at = $(node[0]).children[i];
+                console.log(at);
+            }*/
+
+            $(node[0]).children("img").each(function() {
+                //console.log(this);
+                //console.log($(this).attr('title-data'));
+                if ($(this).attr('title-data') != undefined) {
+                    card.title_image_text = $(this).attr('title-data');
+                    console.log(card.title_image_text);
+                    card.title_image = true;
+                }
+            });
+
+            //.attr('title-data');
+            //console.log(td);
+
+            if (tmp.innerHTML.includes('title-data')) {
+                var index = tmp.innerHTML.indexOf('title-data');
+                console.log(index);
+                var td = tmp.innerHTML.substr(index, tmp.innerHTML.length);
+                console.log(td);
+            }
+        }
+        // First node is an image
+        console.log(card.content);
+        console.log(node[0]);
+        // Get the image and put it into the title
+        //title_area = JSON.stringify(node[0]);
+
+        /* var tmp = document.createElement("div");
+         tmp.appendChild(node[0]);
+         console.log(tmp.innerHTML);
+         */
+
+        //var nt = node[0].nodeValue;
+        //console.log(nt);
+        content_area.title = tmp.innerHTML;
+        //title_area = tmp.innerHTML;
+        //result.title_area = tmp.innerHTML;
+        //result.title_area = node[0];
+        //// Remove second element child from todoList
+        //todoList.children[1].remove();
+        //result.content_area = card.content;
+        //node[0].remove();
+        var tmp2 = document.createElement("div");
+        for (var i = 1; i < node.length; i++) {
+            tmp2.appendChild(node[i]);
+        }
+        //tmp2.appendChild(node);
+        console.log(tmp2.innerHTML);
+        content_area.content = tmp2.innerHTML;
+
+        //}
+
+        if (content_area.title != undefined) {
+            card.title_area = content_area.title;
+
+        }
+
+        card.content = content_area.content;
+        card.editing = false;
+        card.expanded = false;
+        //console.log(title_area);
+        //return title_area;
+
+        //return result;
+
+        //return content_area;
+        return card;
+    }
+
     // TODO - If not following anyone suggest follow?
     getFollowing = function() {
         var deferred = $q.defer();
@@ -1746,8 +1894,25 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                 //key.card_type = getCardType(key.content);
                                 //console.log(key.card_type);
                                 //setCardMin(key);
+                                //var res =  parseCard(key);
+                                //console.log(res.title_area);
+                                //result.title_area = "Steve";
+                                //result.content_area = node;
 
+                                /*
+                                var r = parseCard(key);
+                                key.title_area = r.title;
+                                key.content = r.content;
+                                key.editing = false;
                                 key.expanded = false;
+                                */
+
+                                key = parseCard(key);
+                                //key.title_area = parseCard(key);
+                                //key.title_area = JSON.stringify(res.title_area);
+                                //key.content = res.content_area;
+
+
                                 //console.log(key.card_min);
                                 // Get the conversation for this card
                                 var conversation_pos = General.nestedArrayIndexOfValue(res.data.conversations, 'admin', key.user);

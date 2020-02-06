@@ -47,6 +47,7 @@ canvas {
 .ce,
 #cec,
 #cet {
+    /* height: 200px; */
     background-color: #fafafa;
     /* margin-top: 10px; */
     display: inline-block;
@@ -928,6 +929,10 @@ form.form-horizontal.ng-valid.ng-dirty.ng-valid-parse {
     float: left;
 }
 
+.username_image_title {
+color: #ffffff !important;
+    }
+
 .username.ng-binding {
     align-self: center;
     color: #262626;
@@ -956,19 +961,44 @@ form.form-horizontal.ng-valid.ng-dirty.ng-valid-parse {
     z-index: 2000;
 }
 
+.user_image_title {
+    /* height: 60px !important; */
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+
+.user_text_title {
+    position: relative;
+}
+
 div#user {
-    height: 50px;
-    float: left;
-    width: 100%;
-    background-color: #fafafa;
-    /* background-color: #ffffff; */
-    display: flex;
-    /* border-bottom-style: solid; */
-    /* border-bottom-width: 1px; */
-    /* border-bottom-color: #efefef; */
-    justify-content: baseline;
-    /* align-items: center; */
-    align-items: center;
+
+z-index: 1;
+
+height: 60px;
+
+float: left;
+
+width: 100%;
+
+/*background-color: #fafafa;*/
+
+/* background-color: #ffffff; */
+
+display: flex;
+
+/* border-bottom-style: solid; */
+
+/* border-bottom-width: 1px; */
+
+/* border-bottom-color: #efefef; */
+
+justify-content: baseline;
+
+/* align-items: center; */
+
+align-items: center;
 }
 
 /* EDIT MENU */
@@ -1126,9 +1156,12 @@ li.list-group-item.d-flex.justify-content-between.align-items-center.ng-binding 
 }
 
 #conversation_part {
+    height: 100%;
     background-color: #ffffff;
+    /*
     padding-left: 1.25em;
     padding-right: 1.25em;
+    */
     /*padding-top: 9px;*/
     /* padding-bottom: 9px; */
     -webkit-border-radius: 0px !important;
@@ -3168,7 +3201,7 @@ span.after_image {
 .card_footer {
     /* border-top: 1px solid #efefef; */
     height: 50px;
-    background-color: #fafafa;
+    background-color: #ffffff;
 }
 
 .card_footer_btns {
@@ -3609,10 +3642,11 @@ span.after_image {
 }
 
 .title_active {
-     position: absolute;
-     /* top: 100px; */
-     visibility: visible;
-     margin-left: 1.25em;
+    z-index: 10;
+    position: relative;
+    top: 50px;
+    visibility: visible;
+    /* margin-left: 1.25em;*/
 }
 
 .crop_temp {
@@ -3946,7 +3980,7 @@ span.after_image {
 }
 
 .card_title {
-    top: 65px;
+    top: 60px;
     position: relative;
     color: #ffffff;
     left: 0px;
@@ -3975,4 +4009,33 @@ span.after_image {
 }
 .username_title {
         color: #ffffff !important;
+}
+
+.content_area {
+    /* position: relative; */
+    /*height: 0px;*/
+    /* height: 0%; */
+    /*height: 100%;*/
+    /* display: inline-block; */
+    /* width: 100%; */
+    /* overflow-x: hidden; */
+    /* overflow-y: initial; */
+    /* transform: scaleY(0); */
+    /* max-height: 0; */
+    
+    /* height: 306.79px; */
+        clear: both;
+}
+
+.collapsed {
+    height: 0px;
+}
+
+.margins {
+    padding-left: 1.25em;
+    padding-right: 1.25em;
+}
+
+.title_area {
+    outline: none;
 }

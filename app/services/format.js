@@ -666,6 +666,43 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     this.getBlur = function(id, card, currentUser) {
         // Add slight delay so that document.activeElement works
         setTimeout(function() {
+            var content_title = $('.content_cnv #card_' + card._id + ' .title_area').html();
+            //var content_content = $('.content_cnv .content_area #ce' + card._id).html();
+            var content_content = $('.content_cnv #card_' + card._id + ' .content_area #ce' + card._id).html();
+           console.log(content_title);
+           console.log(content_content);
+            var content = content_title + content_content;
+            console.log(content);
+            // Get the element currently in focus
+            var active = $(document.activeElement).closest("div").attr('id');
+            // If the blurred card is not the current card or the hidden input.
+            if (('ce' + card._id != active && (active != 'hidden_input_container')) && !ImageAdjustment.getImageEditing()) {
+                // Card out of focus. Reset the marky_started_array.
+                marky_started_array = [];
+                // Check if there is a marky in progress
+                // zm launching image capture should not trigger an update. It causes error.
+                found_marky = findMarky(card.content);
+                // check the content has changed and not currently mid marky. Or that an image is being edited.
+                if ((content != card.original_content && (found_marky == false)) && !ImageAdjustment.getImageEditing()) {
+                    if (!ImageAdjustment.getImageEditing()) {
+                        //card.content = $('.content_cnv #ce' + card._id).html();
+                        var card_copy = { ...card };
+                        //card.content = content;
+                        card_copy.content = content;
+                    }
+                    // Inject the Database Service
+                    var Database = $injector.get('Database');
+                    // Update the card
+                    Database.updateCard(id, card_copy, currentUser);
+                }
+            }
+        }, 100);
+    };
+
+    /*
+    this.getBlur = function(id, card, currentUser) {
+        // Add slight delay so that document.activeElement works
+        setTimeout(function() {
             var content = $('.content_cnv #ce' + card._id).html();
             // Get the element currently in focus
             var active = $(document.activeElement).closest("div").attr('id');
@@ -689,6 +726,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             }
         }, 100);
     };
+    */
 
     this.getTagCountPrevious = function(content) {
         var tag_count_previous_local;

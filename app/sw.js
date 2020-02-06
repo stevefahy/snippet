@@ -880,7 +880,7 @@ if (workbox) {
   },
   {
     "url": "controllers/cardcreate_ctrl.js",
-    "revision": "9cce9c2eecbbe0f73a63ab94934dde41"
+    "revision": "06783bd0f67b14b8f018893dfb799103"
   },
   {
     "url": "controllers/contacts_ctrl.js",
@@ -888,7 +888,7 @@ if (workbox) {
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "95a86d66875d3aece6fc9137f4fd6771"
+    "revision": "4511a0e9d21ebf960daf1d2ab1e8918a"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -920,7 +920,7 @@ if (workbox) {
   },
   {
     "url": "controllers/main_ctrl.js",
-    "revision": "2ec547eea2f2630214653bbd23e5c3a8"
+    "revision": "a3e75df6e1053c3476f201fafaf2c5f3"
   },
   {
     "url": "controllers/usersetting_ctrl.js",
@@ -1080,7 +1080,7 @@ if (workbox) {
   },
   {
     "url": "services/format.js",
-    "revision": "3c63bf31c8287542e3aabb5bc661b717"
+    "revision": "01d28dc5f0f663a049df6741cefa10ff"
   },
   {
     "url": "services/general.js",
@@ -1092,7 +1092,7 @@ if (workbox) {
   },
   {
     "url": "services/image_edit.js",
-    "revision": "4ef0b7ad712910d5edd906757576a9ea"
+    "revision": "66b0260ecdbcea559f1d0c7c4fb65af1"
   },
   {
     "url": "services/image_filters.js",
@@ -1140,7 +1140,7 @@ if (workbox) {
   },
   {
     "url": "style/customstyle.css",
-    "revision": "147739ff349cf8921301d7592f957b36"
+    "revision": "371307d2610c83fa53457f8db64431a7"
   },
   {
     "url": "style/instagram.css",
@@ -1164,7 +1164,7 @@ if (workbox) {
   },
   {
     "url": "views/card_create.html",
-    "revision": "d509a07a7231a2537c31ea6308ee2a1a"
+    "revision": "b8bbf528c092e1c8a11fcae2ae40e13b"
   },
   {
     "url": "views/card.html",
@@ -1176,7 +1176,7 @@ if (workbox) {
   },
   {
     "url": "views/conversation.html",
-    "revision": "3fd7f7781ad6bf523c08f7051ea25984"
+    "revision": "428c4324c870de3dfdc71176e7eeba08"
   },
   {
     "url": "views/conversations.html",

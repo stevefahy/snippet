@@ -70,7 +70,7 @@ cardApp.controller("cardcreateCtrl", ['$scope', '$rootScope', '$location', '$htt
     });
 
     // If cecard_create was the last focused element restore the caret position there and create image.
-    $scope.media = function() {
+    $scope.media = function(event) {
         console.log('media');
         if (event) {
             console.log('event');

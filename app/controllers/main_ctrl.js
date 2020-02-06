@@ -65,7 +65,6 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     createObserver = function(id) {
         $('.content_cnv #card' + id).ready(function() {
             var target = document.querySelector('.content_cnv #card_' + id);
-            console.log(target);
             if(target != null){
                  var newObserver = new IntersectionObserver(intersectionCallback, $scope.observerOptions);
             observers.push(newObserver);

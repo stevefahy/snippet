@@ -27,7 +27,10 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var cropper = $('.' + parent_container + ' #cropper_' + id);
 
         //var editable = ContentEditable.getContenteditable($(cropper)[0]);
-        var editable = $(cropper).closest('.ce').attr('editing');
+        //var editable = $(cropper).closest('.ce').attr('editing');
+        console.log($(cropper));
+        console.log($(cropper).closest('.resize-container'));
+        var editable = $(cropper).closest('.resize-container').attr('editing');
         console.log(editable);
         if (editable == 'true') {
             console.log('its true');
@@ -47,7 +50,9 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                     // check user has permision to edit this image.
                     var card_expanded = $(cropper).closest('div.card_temp').attr('expanded');
                     console.log(card_expanded);
-                    if ($(scope).closest('div.ce').attr('editable') == 'true' && card_expanded == 'true') {
+                    if ($(scope).closest('div.resize-container').attr('editable') == 'true' && card_expanded == 'true') {
+                    //if ($(scope).closest('div.ce').attr('editable') == 'true') {
+                    //if ($(scope).closest('div.ce').attr('editable') == 'true' && card_expanded == 'true') {
                         // If this image is not already being edited then allow it to be edited.
                         if (!ImageAdjustment.getImageEditing()) {
                             // Turn off content saving.
@@ -56,7 +61,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                             ImageAdjustment.setImageAdjusted(false);
                             // Save any changes made to this card in case the user navigates away from conversations before finishing editing image.
                             temp_save = true;
-                            //ImageFunctions.saveCropper(cropper).then(function() {
+                            ImageFunctions.saveCropper(cropper).then(function() {
                             // Turn off contenteditable for this card.
                             ContentEditable.setContenteditable($(cropper)[0], false);
                             var image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
@@ -90,7 +95,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                                     $('#image_adjust_' + id).addClass('image_adjust_on');
                                 });
                             }
-                            //});
+                            });
                         }
                     }
                 });
@@ -307,7 +312,9 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         //var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
         var image = $('.' + parent_container + ' #image_' + id)[0];
         //$('.image_adjust_on').remove();
-        if ($('.' + parent_container + ' #cropper_' + id + ' .image_title_div').length <= 0) {
+        //if ($('.' + parent_container + ' #cropper_' + id + ' .image_title_div').length <= 0) {
+           //image_title_div ng-scope title_active
+           if ($('.' + parent_container + ' .title_active').length <= 0) {
             var filt = $('.image_title_div').clone().insertBefore('.' + parent_container + ' #cropper_' + id);
             filt.attr('id', 'title_' + id);
             filt.addClass('title_active');
