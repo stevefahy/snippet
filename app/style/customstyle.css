@@ -48,7 +48,7 @@ canvas {
 #cec,
 #cet {
     /* height: 200px; */
-    background-color: #fafafa;
+    /* background-color: #fafafa; */
     /* margin-top: 10px; */
     display: inline-block;
     width: 100%;
@@ -314,7 +314,7 @@ hr {
     top: 0px;
     position: relative;
     width: 100%;
-    z-index: -1;
+    /* z-index: -1; */
     height: 10px;
     /*box-shadow: rgba(0, 0, 0, 0.14) 0px 4px 5px 0px;*/
     /*box-shadow: rgba(0, 0, 0, 0.14) 0px 4px 5px 0px, rgba(0, 0, 0, 0.12) 0px 1px 10px 0px, rgba(0, 0, 0, 0.2) 0px 2px 4px -1px;*/
@@ -3166,6 +3166,7 @@ div.after_image:empty {
 }
 
 span.after_image {
+    /* background-color: rebeccapurple; */
     clear: both;
     display: block;
     width: 100%;
@@ -3178,6 +3179,7 @@ span.after_image {
 
 .card_footer {
     /* border-top: 1px solid #efefef; */
+    position: relative;
     height: 50px;
     background-color: #ffffff;
 }
@@ -3990,6 +3992,7 @@ span.after_image {
 }
 
 .content_area {
+    /* background-color: #ffff; */
     /* position: relative; */
     /*height: 0px;*/
     /* height: 0%; */
@@ -4000,9 +4003,8 @@ span.after_image {
     /* overflow-y: initial; */
     /* transform: scaleY(0); */
     /* max-height: 0; */
-    
     /* height: 306.79px; */
-        clear: both;
+    clear: both;
 }
 
 .collapsed {

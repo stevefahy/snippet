@@ -1022,10 +1022,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
         if (found_pos >= 0) {
 
-            //card = parseCard(card);
-            //console.log(card);
+            card = parseCard(card);
 
-            if (card_arrays[arr][found_pos].content != card.content) {
+
+                        if (!$scope.$$phase) {
+                    $scope.$apply();
+                }
+            //console.log(card);
+console.log(card);
+            if (card_arrays[arr][found_pos].content != card.content || card_arrays[arr][found_pos].title_image_text !=  card.title_image_text ||  card_arrays[arr][found_pos].title_area != card.title_area) {
                 // Get the card height.
                 let test = awaitImages('.test_card .ce').then(function(result) {
                     // Animate the change onscreen.
@@ -1044,6 +1049,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                 card_arrays[arr][found_pos].user = card.user;
                                 card_arrays[arr][found_pos].createdAt = card.createdAt;
                                 card_arrays[arr][found_pos].updatedAt = card.updatedAt;
+
+                                card_arrays[arr][found_pos].title_image_text =  card.title_image_text;
+                                card_arrays[arr][found_pos].title_area = card.title_area;
+
                                 delete card_arrays[arr][found_pos].new_card;
                                 if (card.new_h != card.old_h) {
                                     $($('#ce' + card._id)).animate({ height: card.new_h }, 500, function() {
@@ -1072,8 +1081,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             });
                     }, 1000);
                 });
-                $scope.test_card.content = card.content;
+                //$scope.test_card.content = card.content;
+                $scope.test_card[0] = card_arrays[arr][found_pos];
+                           if (!$scope.$$phase) {
+                    $scope.$apply();
+                }
+
             } else {
+                console.log('same');
                 // Same content
                 card_arrays[arr][found_pos].original_content = card.content;
                 card_arrays[arr][found_pos].createdAt = card.createdAt;
@@ -1397,11 +1412,24 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     oh = 0;
                 }
                 $scope.cards[index].expanded = !$scope.cards[index].expanded;
+                
+    if (!$scope.$$phase) {
+            $scope.$apply();
+        }
+
                 $(".content_cnv #card_" + id + " .content_area").animate({
                     height: oh + "px"
                 }, 500, function() {
                     // Animation complete.
+                    if(oh != 0){
+                        $(this).height('unset');
+                    }
+                    
                 });
+
+                console.log($scope.cards[index]);
+
+
             }
 
         }
@@ -1868,6 +1896,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         //return result;
 
         //return content_area;
+
+
         return card;
     }
 
