@@ -1808,7 +1808,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var title_tmp = document.createElement("div");
         var content_tmp = document.createElement("div");
         var content_found = false;
-        if (node[0].nodeName == 'DIV') {
+        console.log(node[0].className);
+        if (node[0].nodeName == 'DIV' && node[0].className.indexOf('cropper_cont') >=0) {
             //tmp.appendChild(node[i]);
             title_tmp.appendChild(node[0]);
             content_found = true;
