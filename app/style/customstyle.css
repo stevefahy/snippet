@@ -3308,6 +3308,9 @@ span.after_image {
     /* border-top-width: 2px; */
     border-top: 1px solid #efefef;
 
+    will-change: auto;
+    transform: translateZ(0);
+
     
 
 }
