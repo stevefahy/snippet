@@ -969,7 +969,7 @@ color: #ffffff !important;
 .user_image_title {
     /* height: 60px !important; */
     position: absolute;
-    background-color: rgba(0, 0, 0, 0.6);
+    /*background-color: rgba(0, 0, 0, 0.6);*/
 }
 
 
@@ -3972,7 +3972,7 @@ span.after_image {
     z-index: 1;
     /* height: 100px; */
     width: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
+    /*background-color: rgba(0, 0, 0, 0.6);*/
     padding-top: 5px;
     padding-bottom: 25px;
     line-height: 1.4;
