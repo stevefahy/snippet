@@ -3307,6 +3307,10 @@ span.after_image {
     /* border-top-color: rgb(235, 236, 235); */
     /* border-top-width: 2px; */
     border-top: 1px solid #efefef;
+
+    will-change: height;
+    transform: translateZ(0);
+
 }
 
 .content_cnv {
