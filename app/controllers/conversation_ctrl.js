@@ -1025,12 +1025,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             card = parseCard(card);
 
 
-                        if (!$scope.$$phase) {
-                    $scope.$apply();
-                }
+            if (!$scope.$$phase) {
+                $scope.$apply();
+            }
             //console.log(card);
-console.log(card);
-            if (card_arrays[arr][found_pos].content != card.content || card_arrays[arr][found_pos].title_image_text !=  card.title_image_text ||  card_arrays[arr][found_pos].title_area != card.title_area) {
+            console.log(card);
+            if (card_arrays[arr][found_pos].content != card.content || card_arrays[arr][found_pos].title_image_text != card.title_image_text || card_arrays[arr][found_pos].title_area != card.title_area) {
                 // Get the card height.
                 let test = awaitImages('.test_card .ce').then(function(result) {
                     // Animate the change onscreen.
@@ -1050,7 +1050,7 @@ console.log(card);
                                 card_arrays[arr][found_pos].createdAt = card.createdAt;
                                 card_arrays[arr][found_pos].updatedAt = card.updatedAt;
 
-                                card_arrays[arr][found_pos].title_image_text =  card.title_image_text;
+                                card_arrays[arr][found_pos].title_image_text = card.title_image_text;
                                 card_arrays[arr][found_pos].title_area = card.title_area;
 
                                 delete card_arrays[arr][found_pos].new_card;
@@ -1083,7 +1083,7 @@ console.log(card);
                 });
                 //$scope.test_card.content = card.content;
                 $scope.test_card[0] = card_arrays[arr][found_pos];
-                           if (!$scope.$$phase) {
+                if (!$scope.$$phase) {
                     $scope.$apply();
                 }
 
@@ -1413,19 +1413,19 @@ console.log(card);
                     oh = 0;
                 }
                 $scope.cards[index].expanded = !$scope.cards[index].expanded;
-                
-    if (!$scope.$$phase) {
-            $scope.$apply();
-        }
+
+                if (!$scope.$$phase) {
+                    $scope.$apply();
+                }
 
                 $(".content_cnv #card_" + id + " .content_area").animate({
                     height: oh + "px"
                 }, 500, function() {
                     // Animation complete.
-                    if(oh != 0){
+                    if (oh != 0) {
                         $(this).height('unset');
                     }
-                    
+
                 });
 
                 console.log($scope.cards[index]);
@@ -1711,6 +1711,7 @@ console.log(card);
         }
     }
 
+    /*
     setCardMin = function(key) {
         key.active = true;
         //console.log(key.content);
@@ -1772,25 +1773,9 @@ console.log(card);
                 }
             });
 
-
-
-            /* let test2 = awaitImages('.content_cnv #card_' + key._id).then(function(result) {
-                 console.log('div loaded');
-                 console.log($('.content_cnv #card_' + key._id));
-                 //$(d).find('.ti').attr("onclick", 'testImage(event, \'' + id + '\')');
-                 //$('.content_cnv #card_' + key._id).attr("onclick", 'testImage(event, \'' + id + '\')');
-
-                 //io = ImageAdjustment.getImageOriginal('content_cnv', key._id);
-                 //console.log(io);
-                 //scale = ImageAdjustment.getScale(image_original, cropper);
-                 //$(image_original).removeClass('hide');
-                 //anim_h = (io.nat_height / scale).toFixed(1);
-
-
-             });*/
-
         }
     }
+    */
 
     $scope.appliedClass = function(myObj) {
         if (myObj == 'card_text') {
@@ -1800,29 +1785,82 @@ console.log(card);
         }
     }
 
+    var TITLE_CHAR_LIMIT = 200;
+
     parseCard = function(card) {
-
-
-
         //console.log(card.content);
         let node = $.parseHTML(card.content);
-        console.log(node.length);
+        console.log(node);
+
         //let html = $(key.content);
         //var card_min = {};
         //var title_area = "Steve";
         //var content_area = node;
         var content_area = {};
         content_area.title;
-        content_area.content = card.content;
+        //content_area.content = card.content;
         //result.content_area = card.content;
         console.log(node[0].nodeName);
-
+        var title_end;
         var tmp = document.createElement("div");
+        //var i = 0;
+
+        var title_tmp = document.createElement("div");
+        var content_tmp = document.createElement("div");
+        var content_found = false;
+        if (node[0].nodeName == 'DIV') {
+            //tmp.appendChild(node[i]);
+            title_tmp.appendChild(node[0]);
+            content_found = true;
+        } else {
+            title_tmp.appendChild(node[0]);
+        }
+        for (var i = 1, len = node.length; i < len; i++) {
+            //while(node[i].nodeName != 'DIV'){
+            console.log(node[i].nodeName);
+            if (node[i].nodeName != 'DIV' && content_found == false) {
+                //tmp.appendChild(node[i]);
+                title_tmp.appendChild(node[i]);
+                //title_found = true;
+                console.log(title_tmp.innerHTML);
+                console.log(title_tmp.textContent);
+                console.log(title_tmp.textContent.length);
+                // first index of <br> or character limit.
+                if (title_tmp.innerHTML.indexOf('<br>') > 0) {
+                    content_found = true;
+                }
+                if(title_tmp.textContent.length > TITLE_CHAR_LIMIT){
+                    content_found = true;
+                }
+
+
+            } else {
+                content_found = true;
+                content_tmp.appendChild(node[i]);
+                //console.log('BREAK');
+                //title_end = i;
+                //break;
+            }
+
+            //i++;
+        }
+
+        console.log(title_tmp.innerHTML);
+        //console.log(title_tmp.textContent)
+        // first index of <br> or character limit.
+        //if(title_tmp.innerHTML.indexOf('<br>') > 0){
+
+        //}
+        console.log(content_tmp.innerHTML);
+
+        card.content = content_tmp.innerHTML;
+        card.title_area = title_tmp.innerHTML;
+
         tmp.appendChild(node[0]);
         console.log(tmp.innerHTML);
 
         if (node[0].nodeName != '#text') {
-            // card.title_image = true;
+            card.title_image = true;
 
             //console.log(node[0]);
             //console.log($(node[0]).children("img"));
@@ -1838,7 +1876,7 @@ console.log(card);
                 if ($(this).attr('title-data') != undefined) {
                     card.title_image_text = $(this).attr('title-data');
                     console.log(card.title_image_text);
-                    card.title_image = true;
+                    //card.title_image = true;
                 }
             });
 
@@ -1865,7 +1903,11 @@ console.log(card);
 
         //var nt = node[0].nodeValue;
         //console.log(nt);
-        content_area.title = tmp.innerHTML;
+
+        //content_area.title = tmp.innerHTML;
+
+        //content_area.title = title_tmp.innerHTML;
+
         //title_area = tmp.innerHTML;
         //result.title_area = tmp.innerHTML;
         //result.title_area = node[0];
@@ -1879,16 +1921,20 @@ console.log(card);
         }
         //tmp2.appendChild(node);
         console.log(tmp2.innerHTML);
-        content_area.content = tmp2.innerHTML;
+
+
+        //content_area.content = tmp2.innerHTML;
+
+        //content_area.content = content_tmp.innerHTML;
 
         //}
 
         if (content_area.title != undefined) {
-            card.title_area = content_area.title;
+            //card.title_area = content_area.title;
 
         }
 
-        card.content = content_area.content;
+        //card.content = content_area.content;
         card.editing = false;
         card.expanded = false;
         //console.log(title_area);
@@ -1898,7 +1944,7 @@ console.log(card);
 
         //return content_area;
 
-
+        console.log(card);
         return card;
     }
 
