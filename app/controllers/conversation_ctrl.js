@@ -1819,7 +1819,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         for (var i = 1, len = node.length; i < len; i++) {
             //while(node[i].nodeName != 'DIV'){
             console.log(node[i].nodeName);
-            if (node[i].nodeName != 'DIV' && content_found == false) {
+            if ((node[0].className.indexOf('cropper_cont') < 0) && content_found == false) {
                 //tmp.appendChild(node[i]);
                 title_tmp.appendChild(node[i]);
                 //title_found = true;
