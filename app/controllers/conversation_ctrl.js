@@ -1809,17 +1809,38 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var content_tmp = document.createElement("div");
         var content_found = false;
         console.log(node[0].className);
-        if (node[0].nodeName == 'DIV' && node[0].className.indexOf('cropper_cont') >=0) {
+        if (node[0].nodeName == 'DIV' && node[0].className.indexOf('cropper_cont') >= 0) {
             //tmp.appendChild(node[i]);
+            console.log('ONE');
             title_tmp.appendChild(node[0]);
+
+
             content_found = true;
+
+            card.title_image = true;
         } else {
+            console.log('TWO');
             title_tmp.appendChild(node[0]);
+            //content_found = true;
         }
+        var cropper_found = false;
         for (var i = 1, len = node.length; i < len; i++) {
             //while(node[i].nodeName != 'DIV'){
             console.log(node[i].nodeName);
-            if ((node[0].className.indexOf('cropper_cont') < 0) && content_found == false) {
+            //console.log(node[i].className.indexOf('cropper_cont'));
+            //if (node[i].nodeName != 'DIV' && content_found == false) {
+            
+            if (node[i].nodeName == 'DIV') {
+                if (node[i].className != undefined) {
+                    if (node[i].className.indexOf('cropper_cont') < 0) {
+                        cropper_found = true;
+                    }
+                }
+
+            }
+            //cropper_found
+            if (!cropper_found && !content_found) {
+                console.log('THREE');
                 //tmp.appendChild(node[i]);
                 title_tmp.appendChild(node[i]);
                 //title_found = true;
@@ -1830,12 +1851,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 if (title_tmp.innerHTML.indexOf('<br>') > 0) {
                     content_found = true;
                 }
-                if(title_tmp.textContent.length > TITLE_CHAR_LIMIT){
+                if (title_tmp.textContent.length > TITLE_CHAR_LIMIT) {
                     content_found = true;
                 }
 
 
             } else {
+                console.log('FOUR');
                 content_found = true;
                 content_tmp.appendChild(node[i]);
                 //console.log('BREAK');
@@ -1861,7 +1883,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log(tmp.innerHTML);
 
         if (node[0].nodeName != '#text') {
-            card.title_image = true;
+            //card.title_image = true;
 
             //console.log(node[0]);
             //console.log($(node[0]).children("img"));
