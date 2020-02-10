@@ -1418,6 +1418,17 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     $scope.$apply();
                 }
 
+/*
+        $('.decide_menu').animate({ "right": "-100vw" }, {
+            duration: 400,
+            easing: "easeOutQuad",
+            complete: function() {
+                //deferred.resolve();
+                $('.decide_menu').removeClass('active');
+            }
+        });
+ */
+ /*
                 $(".content_cnv #card_" + id + " .content_area").animate({
                     height: oh + "px"
                 }, 500, function() {
@@ -1427,6 +1438,19 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     }
 
                 });
+                */
+
+        $(".content_cnv #card_" + id + " .content_area").animate(
+        { height: oh + "px" }, {
+            duration: 400,
+            easing: "easeOutQuad",
+            complete: function() {
+                   // Animation complete.
+                    if (oh != 0) {
+                        $(this).height('unset');
+                    }
+            }
+        });
 
                 console.log($scope.cards[index]);
 
