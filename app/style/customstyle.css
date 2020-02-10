@@ -3308,8 +3308,7 @@ span.after_image {
     /* border-top-width: 2px; */
     border-top: 1px solid #efefef;
 
-    will-change: height;
-    transform: translateZ(0);
+    
 
 }
 
@@ -4009,6 +4008,9 @@ span.after_image {
     /* max-height: 0; */
     /* height: 306.79px; */
     clear: both;
+
+    will-change: height;
+    transform: translateZ(0);
 }
 
 .collapsed {
