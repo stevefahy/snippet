@@ -220,7 +220,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var pos = General.findWithAttr($scope.cards, '_id', card_id);
         if (pos >= 0) {
             createObserver($scope.cards[pos]._id);
-            disableCheckboxes($scope.cards[pos]._id);
+            //disableCheckboxes($scope.cards[pos]._id);
+            checkboxesEnabled($scope.cards[pos]._id, false);
         }
         bindScroll();
         deferred.resolve();
@@ -331,7 +332,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 //setCardMin($scope.cards[i]);
 
                 createObserver($scope.cards[i]._id);
-                disableCheckboxes($scope.cards[i]._id);
+                //disableCheckboxes($scope.cards[i]._id);
+                checkboxesEnabled($scope.cards[pos]._id, false);
             }
         }
     };
@@ -1663,6 +1665,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             console.log($scope.cards[pos]);
             $scope.cards[pos].editing = false;
             let card = $scope.cards[pos];
+
+            //disableCheckboxes(card._id);
+            checkboxesEnabled($scope.cards[pos]._id, false);
+
             Format.getBlur(card._id, card, $scope.currentUser);
             //$scope.editing_card = false;
 
@@ -1715,6 +1721,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
             }
             console.log($scope.cards[pos]);
+
+            checkboxesEnabled($scope.cards[pos]._id, true);
             //var cropper = $('.content_cnv #cropper_' + card._id);
             //ContentEditable.setContenteditable($(cropper)[0], true);
             //$('.content_cnv #card_' + key._id).attr("onclick", 'toggleHeight(event, \'' + key._id + '\')');
@@ -2378,10 +2386,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // Called as each card is loaded.
     // Disable checkboxes if the contenteditable is set to false.
-    var disableCheckboxes = function(id) {
+    var checkboxesEnabled = function(id, bool) {
+        console.log('checkboxesEnabled: ' + bool);
         var el = document.getElementById('ce' + id);
-        if ($(el).attr('contenteditable') == 'false') {
+        //if ($(el).attr('contenteditable') == 'false') {
+        if(!bool){
             $(el).find('input[type=checkbox]').attr('disabled', 'disabled');
+        } else {
+            $(el).find('input[type=checkbox]').removeAttr('disabled');
         }
     };
 
@@ -2520,7 +2532,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             var pos = General.findWithAttr($scope.cards, '_id', id);
             if (pos >= 0) {
                 createObserver($scope.cards[pos]._id);
-                disableCheckboxes($scope.cards[pos]._id);
+                //disableCheckboxes($scope.cards[pos]._id);
+                checkboxesEnabled($scope.cards[pos]._id, false);
             }
         });
         bindScroll();
