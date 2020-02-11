@@ -1406,7 +1406,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 var oh = $(".content_cnv #card_" + id + " .content_area .ce").outerHeight();
                 console.log(oh);
 
-
+               var msPerHeight = 2; //How much ms per height
+    var minRange = 400; //minimal animation time
+    var maxRange = 1000; //Maximal animation time
+    var time = oh * msPerHeight;
+console.log('time1: ' + time);
+time = Math.min(time, maxRange);
+time = Math.max(time, minRange);
+console.log('time2: ' + time);
                 //key.expanded = false;
 
                 //$scope.cards[index].expanded = true;
@@ -1444,8 +1451,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
         $(".content_cnv #card_" + id + " .content_area").animate(
         { height: oh + "px" }, {
-            duration: 200,
-            easing: "easeOutQuad",
+            duration: time,
+            easing: "easeOutExpo",
             complete: function() {
                    // Animation complete.
                     if (oh != 0) {
