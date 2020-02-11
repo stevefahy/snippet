@@ -1841,7 +1841,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
             content_found = true;
 
-            card.title_image = true;
+            //card.title_image = true;
         } else {
             console.log('TWO');
             title_tmp.appendChild(node[0]);
@@ -1924,6 +1924,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     card.title_image_text = $(this).attr('title-data');
                     console.log(card.title_image_text);
                     //card.title_image = true;
+                    card.title_image = true;
                 }
             });
 

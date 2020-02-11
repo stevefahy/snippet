@@ -892,7 +892,7 @@ if (workbox) {
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "9f91dbb1d1f238e879cc0144adeb4db1"
+    "revision": "7152a0e05e8397dbf1216a17d0c31213"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -1144,7 +1144,7 @@ if (workbox) {
   },
   {
     "url": "style/customstyle.css",
-    "revision": "5355d2c493595eb437959b9e1d6334aa"
+    "revision": "59956305838d14a95af2d1658b9eb7df"
   },
   {
     "url": "style/instagram.css",
@@ -1180,7 +1180,7 @@ if (workbox) {
   },
   {
     "url": "views/conversation.html",
-    "revision": "e2ea672f89f5a29d0c93d157afdab3bc"
+    "revision": "78bf961bf85c6adc76e1db4e12229636"
   },
   {
     "url": "views/conversations.html",

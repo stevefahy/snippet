@@ -40,24 +40,21 @@
             </div>
             <input id="upload-input" type="file" name="uploads[]" multiple="multiple">
             <button ng-attr-id="upload-triggerce{{::card._id}}" class="btn btn-sm upload-btn upload-trigger" type="button" ng-click="uploadFile(card._id, card, currentUser); ">Upload File</button>
-
             <div class="card_footer" ng-attr-expanded="{{card.expanded}}">
-            <div class="c_footer_o margins">
-                <div class="card_footer_btns">
-                    <div class="cf_btn"><i class="material-icons">favorite_border</i></div>
-                    <div class="cf_btn" ng-show="{{::card.user != currentUser._id}}" ng-click="follow(card)"><i class="material-icons btn_follow" ng-class="{'following': card.following}">directions_walk</i></div>
-                    <div class="cf_btn send"><i class="material-icons send">send</i></div>
-                    <div class="cf_btn" ng-show="{{::card.user == currentUser._id}} && card.expanded && !card.disabled"><i class="material-icons edit" ng-class="{'file_edit': {{::card.user == currentUser._id}}}" ng-click="editCard($event, card)">edit</i>
+                <div class="c_footer_o margins">
+                    <div class="card_footer_btns">
+                        <div class="cf_btn"><i class="material-icons">favorite_border</i></div>
+                        <div class="cf_btn" ng-show="{{::card.user != currentUser._id}}" ng-click="follow(card)"><i class="material-icons btn_follow" ng-class="{'following': card.following}">directions_walk</i></div>
+                        <div class="cf_btn send"><i class="material-icons send">send</i></div>
+                        <div class="cf_btn" ng-show="{{::card.user == currentUser._id}} && card.expanded && !card.disabled"><i class="material-icons edit" ng-class="{'file_edit': {{::card.user == currentUser._id}}}" ng-click="editCard($event, card)">edit</i>
+                        </div>
+                        <div moment-time-conv="card.updatedAt" id="time"></div>
                     </div>
-                    <div moment-time-conv="card.updatedAt" id="time"></div>
                 </div>
+                <!--<div class="likes">7,255 likes</div>-->
             </div>
-            <!--<div class="likes">7,255 likes</div>-->
+            <div class="footer_bottom"></div>
         </div>
-        <div class="footer_bottom"></div>
-
-        </div>
-        
     </div>
     <!--
     <div class="test_container"></div>
@@ -102,32 +99,29 @@
                     </div>
                 </div>
                 <div class="title_area margins">
-                     <div class='ce' ng-attr-id="ce_title{{::card._id}}" ng-attr-contenteditable="{{card.user == currentUser._id && card.editing == true}}" ng-change="contentChanged(card.title_area, 'ce_title'+card._id)" ng-keydown="checkKey($event,'ce_title'+card._id);" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce_title'+card._id);" ng-model="::card.title_area" ng-model-options="{ debounce: 1000 }"></div>
+                    <div class='ce' ng-attr-id="ce_title{{::card._id}}" ng-attr-contenteditable="{{card.user == currentUser._id && card.editing == true}}" ng-change="contentChanged(card.title_area, 'ce_title'+card._id)" ng-keydown="checkKey($event,'ce_title'+card._id);" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce_title'+card._id);" ng-model="::card.title_area" ng-model-options="{ debounce: 1000 }"></div>
                 </div>
                 <div class="card_title margins" ng-show="card.title_image_text">{{card.title_image_text}}</div>
                 <div class="content_area margins" ng-class="{'collapsed': !card.expanded}">
-                    <div class='ce' ng-attr-id="ce{{::card._id}}" ng-attr-contenteditable="{{card.user == currentUser._id && card.editing == true}}" ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id);" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce'+card._id);" ng-model="::card.content" ng-model-options="{ debounce: 1000 }"></div>
+                    <div class='ce' ng-attr-id="ce{{::card._id}}" ng-attr-contenteditable="{{card.user == currentUser._id && card.editing == true}}" ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id);" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce'+card._id);" ng-model="::card.content" ng-model-options="{ debounce: 1000 }" ng-class="{'collapsed_ce': !card.expanded}"></div>
                 </div>
                 <input id="upload-input" type="file" name="uploads[]" multiple="multiple">
                 <button ng-attr-id="upload-triggerce{{::card._id}}" class="btn btn-sm upload-btn upload-trigger" type="button" ng-click="uploadFile(card._id, card, currentUser); ">Upload File</button>
-
                 <div class="card_footer" ng-attr-expanded="{{card.expanded}}">
-                <div class="c_footer_o margins">
-                    <div class="card_footer_btns">
-                        <div class="cf_btn"><i class="material-icons">favorite_border</i></div>
-                        <div class="cf_btn" ng-show="{{::card.user != currentUser._id}}" ng-click="follow(card)"><i class="material-icons btn_follow" ng-class="{'following': card.following}">directions_walk</i></div>
-                        <div class="cf_btn send"><i class="material-icons send">send</i></div>
-                        <div class="cf_btn" ng-show="{{::card.user == currentUser._id}} && card.expanded && !card.disabled"><i class="material-icons edit" ng-class="{'file_edit': {{::card.user == currentUser._id}}}" ng-click="editCard($event, card)">edit</i>
+                    <div class="c_footer_o margins">
+                        <div class="card_footer_btns">
+                            <div class="cf_btn"><i class="material-icons">favorite_border</i></div>
+                            <div class="cf_btn" ng-show="{{::card.user != currentUser._id}}" ng-click="follow(card)"><i class="material-icons btn_follow" ng-class="{'following': card.following}">directions_walk</i></div>
+                            <div class="cf_btn send"><i class="material-icons send">send</i></div>
+                            <div class="cf_btn" ng-show="{{::card.user == currentUser._id}} && card.expanded && !card.disabled"><i class="material-icons edit" ng-class="{'file_edit': {{::card.user == currentUser._id}}}" ng-click="editCard($event, card)">edit</i>
+                            </div>
+                            <div moment-time-conv="card.updatedAt" id="time"></div>
                         </div>
-                        <div moment-time-conv="card.updatedAt" id="time"></div>
                     </div>
+                    <!--<div class="likes">7,255 likes</div>-->
                 </div>
-                <!--<div class="likes">7,255 likes</div>-->
+                <div class="footer_bottom"></div>
             </div>
-            <div class="footer_bottom"></div>
-
-            </div>
-            
         </div>
     </div>
     <div class="slider_container">
