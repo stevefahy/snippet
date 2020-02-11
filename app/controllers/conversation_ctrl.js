@@ -1452,7 +1452,7 @@ console.log('time2: ' + time);
         $(".content_cnv #card_" + id + " .content_area").animate(
         { height: oh + "px" }, {
             duration: time,
-            easing: "easeOutExpo",
+            easing: "swing",
             complete: function() {
                    // Animation complete.
                     if (oh != 0) {
