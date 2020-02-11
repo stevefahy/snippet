@@ -1406,9 +1406,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 var oh = $(".content_cnv #card_" + id + " .content_area .ce").outerHeight();
                 console.log(oh);
 
-               var msPerHeight = 2; //How much ms per height
-    var minRange = 400; //minimal animation time
-    var maxRange = 1000; //Maximal animation time
+               var msPerHeight = 1; //How much ms per height
+    var minRange = 200; //minimal animation time
+    var maxRange = 600; //Maximal animation time
     var time = oh * msPerHeight;
 console.log('time1: ' + time);
 time = Math.min(time, maxRange);
