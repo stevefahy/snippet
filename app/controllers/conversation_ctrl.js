@@ -333,7 +333,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
                 createObserver($scope.cards[i]._id);
                 //disableCheckboxes($scope.cards[i]._id);
-                checkboxesEnabled($scope.cards[pos]._id, false);
+                checkboxesEnabled($scope.cards[i]._id, false);
             }
         }
     };
@@ -898,24 +898,39 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     function awaitImages(div) {
         var deferred = $q.defer();
+
+        //$timeout(function() {        
         // Images loaded is zero because we're going to process a new set of images.
         var imagesLoaded = 0;
         // Total images is still the total number of <img> elements on the page.
-        var totalImages = $(div + ' img').length;
+        //var totalImages = $(div + ' img').length;
+        console.log($('.test_card'));
+        console.log(div);
+        console.log($(div));
+        $('.test_card');
+        var totalImages = $(div).find('img').length;
+        console.log('totalImages: ' + totalImages);
+        console.log($(div).find('img'));
         if (totalImages == 0) {
             deferred.resolve();
         }
         // Step through each image in the DOM, clone it, attach an onload event
         // listener, then set its source to the source of the original image. When
         // that new image has loaded, fire the imageLoaded() callback.
-        $(div + ' img').each(function(idx, img) {
+        //$(div + ' img').each(function(idx, img) {
+        $(div).find('img').each(function(idx, img) {
             $('<img>').on('load', imageLoaded).attr('src', $(img).attr('src'));
         });
+
+
+
         // Do exactly as we had before -- increment the loaded count and if all are
         // loaded, call the allImagesLoaded() function.
         function imageLoaded() {
+            console.log('image loaded');
             imagesLoaded++;
             if (imagesLoaded == totalImages) {
+                console.log('imagesLoaded: ' + imagesLoaded);
                 allImagesLoaded();
             }
         }
@@ -923,6 +938,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         function allImagesLoaded() {
             deferred.resolve();
         }
+
+        //},1000);
         return deferred.promise;
     }
 
@@ -1009,6 +1026,85 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         return deferred.promise;
     }
 
+    resizeContent = function(id, card, old_card, div) {
+        console.log('resize start: ' + div);
+        var deferred = $q.defer();
+        //card.old_h = $('#ce' + card._id).height().toFixed(2);
+        //card.new_h = $('.test_card .ce').height().toFixed(2);
+
+        card.old_h = $('#card_' + id + ' .' + div).height().toFixed(2);
+        card.new_h = $('.test_card .' + div).height().toFixed(2);
+
+        $('#card_' + id + ' .' + div).height(card.old_h);
+        $($('#card_' + id + ' .' + div))
+            .animate({ opacity: 0 }, 300, function() {
+
+                // Animation complete.
+                
+                if (card.new_id != undefined) {
+                    old_card._id = card.new_id;
+                }
+                //old_card.original_content = card.content;
+                //old_card.content = card.content;
+                old_card.user = card.user;
+                old_card.createdAt = card.createdAt;
+                old_card.updatedAt = card.updatedAt;
+
+                if(div == 'title_area'){
+                    old_card.title_image_text = card.title_image_text;
+                    old_card.title_area = card.title_area;
+                }
+
+                if(div == 'content_area'){
+                    old_card.original_content = card.content;
+                    old_card.content = card.content;
+                }
+                
+
+                delete old_card.new_card;
+                
+                var expanded = true;
+                if (div == 'content_area' && old_card.expanded == false) {
+                    expanded = false
+                }
+
+                console.log(card.new_h + ' : ' + card.old_h);
+                if (card.new_h != card.old_h && expanded) {
+
+                    console.log('animate');
+
+                    // $($('#ce' + card._id)).animate({ height: card.new_h }, 500, function() {
+                    $($('#card_' + id + ' .' + div)).animate({ height: card.new_h }, 500, function() {
+                        // Animation complete.
+                        if (!$scope.$$phase) {
+                            $scope.$apply();
+                        }
+                        $(this).animate({ opacity: 1 }, 400, function() {
+                            $(this).css('opacity', '');
+                            $(this).css('height', '');
+                            delete old_card.old_h;
+                            delete old_card.new_h;
+                            deferred.resolve();
+                        });
+                    });
+                } else {
+                    if (!$scope.$$phase) {
+                        $scope.$apply();
+                    }
+                    $(this).animate({ opacity: 1 }, 300, function() {
+                        $(this).css('opacity', '');
+                        $(this).css('height', '');
+                        delete old_card.old_h;
+                        delete old_card.new_h;
+                        deferred.resolve();
+                    });
+                }
+            });
+
+        return deferred.promise;
+
+    }
+
     updateCard = function(card) {
         console.log(card);
         // Check the existece of the card across all arrays.
@@ -1025,20 +1121,54 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         if (found_pos >= 0) {
 
             card = parseCard(card);
-
+            $scope.test_card[0] = card;
 
             if (!$scope.$$phase) {
                 $scope.$apply();
             }
             //console.log(card);
             console.log(card);
-            if (card_arrays[arr][found_pos].content != card.content || card_arrays[arr][found_pos].title_image_text != card.title_image_text || card_arrays[arr][found_pos].title_area != card.title_area) {
-                // Get the card height.
-                let test = awaitImages('.test_card .ce').then(function(result) {
+            //if (card_arrays[arr][found_pos].content != card.content) {
+            // Get the card height.
+            //$scope.test_card[0] = card;
+
+            $timeout(function() {
+                let test = awaitImages('.test_card').then(function(result) {
                     // Animate the change onscreen.
-                    $timeout(function() {
-                        card.old_h = $('#ce' + card._id).height().toFixed(2);
-                        card.new_h = $('.test_card .ce').height().toFixed(2);
+                    $timeout(async function() {
+                        if (card_arrays[arr][found_pos].title_image_text != card.title_image_text || card_arrays[arr][found_pos].title_area != card.title_area) {
+                            await resizeContent(card._id, card, card_arrays[arr][found_pos], 'title_area');
+                            console.log('resize end title_area');
+                        } else {
+                            console.log('same title');
+                            // Same content
+                            card_arrays[arr][found_pos].original_content = card.content;
+                            card_arrays[arr][found_pos].createdAt = card.createdAt;
+                            card_arrays[arr][found_pos].updatedAt = card.updatedAt;
+                            if (!$scope.$$phase) {
+                                $scope.$apply();
+                            }
+                        }
+                        if (card_arrays[arr][found_pos].content != card.content) {
+                            await resizeContent(card._id, card, card_arrays[arr][found_pos], 'content_area');
+                            console.log('resize end content_area');
+                        } else {
+                            console.log('same content');
+                            // Same content
+                            card_arrays[arr][found_pos].original_content = card.content;
+                            card_arrays[arr][found_pos].createdAt = card.createdAt;
+                            card_arrays[arr][found_pos].updatedAt = card.updatedAt;
+                            if (!$scope.$$phase) {
+                                $scope.$apply();
+                            }
+                        }
+                        /*
+                        //card.old_h = $('#ce' + card._id).height().toFixed(2);
+                        //card.new_h = $('.test_card .ce').height().toFixed(2);
+
+                        card.old_h = $('#card_' + card._id + ' .content_area').height().toFixed(2);
+                        card.new_h = $('.test_card .content_area').height().toFixed(2);
+
                         $('#ce' + card._id).height(card.old_h);
                         $($('#ce' + card._id))
                             .animate({ opacity: 0 }, 300, function() {
@@ -1056,8 +1186,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                 card_arrays[arr][found_pos].title_area = card.title_area;
 
                                 delete card_arrays[arr][found_pos].new_card;
-                                if (card.new_h != card.old_h) {
-                                    $($('#ce' + card._id)).animate({ height: card.new_h }, 500, function() {
+
+
+
+                                console.log(card.new_h + ' : ' + card.old_h);
+                                if (card.new_h != card.old_h && card_arrays[arr][found_pos].expanded) {
+                                    console.log('animate');
+
+                                    // $($('#ce' + card._id)).animate({ height: card.new_h }, 500, function() {
+                                    $($('#card_' + card._id + ' .content_area')).animate({ height: card.new_h }, 500, function() {
                                         // Animation complete.
                                         if (!$scope.$$phase) {
                                             $scope.$apply();
@@ -1081,16 +1218,21 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                     });
                                 }
                             });
+                            */
                     }, 1000);
                 });
-                //$scope.test_card.content = card.content;
-                $scope.test_card[0] = card_arrays[arr][found_pos];
-                if (!$scope.$$phase) {
-                    $scope.$apply();
-                }
+                //$scope.test_card[0] = card;
 
-            } else {
-                console.log('same');
+            });
+            //$scope.test_card.content = card.content;
+            //$scope.test_card[0] = card_arrays[arr][found_pos];
+            //$scope.test_card[0] = card;
+            if (!$scope.$$phase) {
+                $scope.$apply();
+            }
+
+            // } else {
+            /*   console.log('same');
                 // Same content
                 card_arrays[arr][found_pos].original_content = card.content;
                 card_arrays[arr][found_pos].createdAt = card.createdAt;
@@ -1098,7 +1240,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 if (!$scope.$$phase) {
                     $scope.$apply();
                 }
-            }
+            }*/
         }
     };
 
@@ -1406,14 +1548,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 var oh = $(".content_cnv #card_" + id + " .content_area .ce").outerHeight();
                 console.log(oh);
 
-               var msPerHeight = 1; //How much ms per height
-    var minRange = 200; //minimal animation time
-    var maxRange = 600; //Maximal animation time
-    var time = oh * msPerHeight;
-console.log('time1: ' + time);
-time = Math.min(time, maxRange);
-time = Math.max(time, minRange);
-console.log('time2: ' + time);
+                var msPerHeight = 2; //How much ms per height
+                var minRange = 400; //minimal animation time
+                var maxRange = 1000; //Maximal animation time
+                var time = oh * msPerHeight;
+                console.log('time1: ' + time);
+                time = Math.min(time, maxRange);
+                time = Math.max(time, minRange);
+                console.log('time2: ' + time);
                 //key.expanded = false;
 
                 //$scope.cards[index].expanded = true;
@@ -1427,39 +1569,38 @@ console.log('time2: ' + time);
                     $scope.$apply();
                 }
 
-/*
-        $('.decide_menu').animate({ "right": "-100vw" }, {
-            duration: 400,
-            easing: "easeOutQuad",
-            complete: function() {
-                //deferred.resolve();
-                $('.decide_menu').removeClass('active');
-            }
-        });
- */
- /*
-                $(".content_cnv #card_" + id + " .content_area").animate({
-                    height: oh + "px"
-                }, 500, function() {
-                    // Animation complete.
-                    if (oh != 0) {
-                        $(this).height('unset');
-                    }
+                /*
+                        $('.decide_menu').animate({ "right": "-100vw" }, {
+                            duration: 400,
+                            easing: "easeOutQuad",
+                            complete: function() {
+                                //deferred.resolve();
+                                $('.decide_menu').removeClass('active');
+                            }
+                        });
+                 */
+                /*
+                               $(".content_cnv #card_" + id + " .content_area").animate({
+                                   height: oh + "px"
+                               }, 500, function() {
+                                   // Animation complete.
+                                   if (oh != 0) {
+                                       $(this).height('unset');
+                                   }
 
+                               });
+                               */
+
+                $(".content_cnv #card_" + id + " .content_area").animate({ height: oh + "px" }, {
+                    duration: time,
+                    easing: "easeInOutCubic",
+                    complete: function() {
+                        // Animation complete.
+                        if (oh != 0) {
+                            $(this).height('unset');
+                        }
+                    }
                 });
-                */
-
-        $(".content_cnv #card_" + id + " .content_area").animate(
-        { height: oh + "px" }, {
-            duration: time,
-            easing: "swing",
-            complete: function() {
-                   // Animation complete.
-                    if (oh != 0) {
-                        $(this).height('unset');
-                    }
-            }
-        });
 
                 console.log($scope.cards[index]);
 
@@ -1866,9 +2007,14 @@ console.log('time2: ' + time);
         for (var i = 1, len = node.length; i < len; i++) {
             //while(node[i].nodeName != 'DIV'){
             console.log(node[i].nodeName);
+            console.log(node[i].outerHTML);
+
+            if((node[i].outerHTML).indexOf('cropper_cont') >= 0) {
+                cropper_found = true;
+            }
             //console.log(node[i].className.indexOf('cropper_cont'));
             //if (node[i].nodeName != 'DIV' && content_found == false) {
-            
+/*
             if (node[i].nodeName == 'DIV') {
                 if (node[i].className != undefined) {
                     if (node[i].className.indexOf('cropper_cont') < 0) {
@@ -1877,6 +2023,7 @@ console.log('time2: ' + time);
                 }
 
             }
+            */
             //cropper_found
             if (!cropper_found && !content_found) {
                 console.log('THREE');
@@ -2397,7 +2544,7 @@ console.log('time2: ' + time);
         console.log('checkboxesEnabled: ' + bool);
         var el = document.getElementById('ce' + id);
         //if ($(el).attr('contenteditable') == 'false') {
-        if(!bool){
+        if (bool == false) {
             $(el).find('input[type=checkbox]').attr('disabled', 'disabled');
         } else {
             $(el).find('input[type=checkbox]').removeAttr('disabled');

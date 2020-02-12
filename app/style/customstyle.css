@@ -3997,7 +3997,7 @@ span.after_image {
         color: #ffffff !important;
 }
 
-.content_area {
+.content_area, .title_area {
     /* background-color: #ffff; */
     /* position: relative; */
     /*height: 0px;*/
@@ -4030,7 +4030,8 @@ span.after_image {
     padding-left: 18px;
     padding-right: 18px;
 }
-
+/*
 .title_area {
     outline: none;
 }
+*/
