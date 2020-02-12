@@ -1076,7 +1076,7 @@ if (workbox) {
   },
   {
     "url": "services/edit.js",
-    "revision": "d3a22d3f010f230df13ee7de14228068"
+    "revision": "8765acc6119f2750d8f1fa15f3e598de"
   },
   {
     "url": "services/format_html.js",
