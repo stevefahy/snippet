@@ -2,10 +2,12 @@
 // Edit Service
 //
 
-cardApp.service('Edit', function() {
+cardApp.service('Edit', ['$q', function($q) {
+    
     var self = this;
     // Close currently opened dropdowns
     this.closeDropdowns = function() {
+        var deferred = $q.defer();
         var dropdowns = document.getElementsByClassName("dropdown-content");
         var i;
         for (i = 0; i < dropdowns.length; i++) {
@@ -15,16 +17,18 @@ cardApp.service('Edit', function() {
                 openDropdown.classList.remove('show');
             }
         }
+        deferred.resolve();
+        return deferred.promise;
         //document.getElementById("myDropdown" + id).classList.add("show");
     };
     // EDIT Dropdown
     // On user click toggle between hiding and showing the dropdown content
-    this.dropDownToggle = function(event, id) {
+    this.dropDownToggle = async function(event, id) {
         if (event) {
             event.stopPropagation();
         }
 
-        self.closeDropdowns();
+        await self.closeDropdowns();
 
         var show = false;
         if (!document.getElementById("myDropdown" + id).classList.contains('show')) {
@@ -50,4 +54,4 @@ cardApp.service('Edit', function() {
         }
     };
 
-});
+}]);
