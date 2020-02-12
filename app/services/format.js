@@ -960,9 +960,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     }
 
     this.markyCheck = function(content, elem) {
-        console.log('markyCheck');
-        console.log(content);
-        console.log(elem);
+        //console.log('markyCheck');
+        //console.log(content);
+        //console.log(elem);
         var escape_marky = false;
         // Inject the General Service
         var General = $injector.get('General');
@@ -1139,8 +1139,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     }
 
     this.contentChanged = function(content, elem) {
-        console.log(elem);
-        console.log(content);
         if (!self.paste_in_progress) {
             self.markyCheck(content, elem);
         } else {
@@ -1315,10 +1313,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.keyListen = function(elem) {
-        console.log(elem);
         var getKeyCode = function() {
             var editableEl = document.getElementById(elem);
-            console.log(editableEl);
             // lowercase
             var a = getCharacterPrecedingCaret(editableEl);
             return a;
@@ -1427,10 +1423,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.checkKey = function($event, elem) {
-        console.log('checkkey');
-        console.log($event.keyCode);
         if ($event.keyCode == 13) {
-
             // Stop the default behavior for the ENTER key and insert <br><br> instead
             $event.preventDefault();
             self.pasteHtmlAtCaret("<br><span class='scroll_enter_latest' id='enter_focus'></span>");

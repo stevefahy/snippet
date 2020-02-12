@@ -270,7 +270,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     }
 
     upDateObservers = function() {
-        console.log('upDateObservers');
+        //console.log('upDateObservers');
         resetObserver_queue();
         intObservers();
         for (var i = 0, len = $scope.cards.length; i < len; i++) {
@@ -287,8 +287,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 }
                 var card_id = $scope.cards[i]._id;
 
-
-
+                $scope.test_card[0] = $scope.cards[i];
+                console.log($scope.cards[i]);
+             //   $timeout(function() {
                 // Get the height of the new card.
                 let test = awaitImages('#card_' + card_id).then(async function(result) {
                     // Animate the change onscreen.
@@ -325,8 +326,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         }
                     }, 100);
                 });
+            //});
                 //$scope.test_card.content = $scope.cards[i].content;
-                $scope.test_card[0] = $scope.cards[i];
+                // $scope.test_card[0] = $scope.cards[i];
             } else {
 
                 //setCardMin($scope.cards[i]);
@@ -904,13 +906,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var imagesLoaded = 0;
         // Total images is still the total number of <img> elements on the page.
         //var totalImages = $(div + ' img').length;
-        console.log($('.test_card'));
-        console.log(div);
-        console.log($(div));
+        // console.log($('.test_card'));
+        //console.log(div);
+        //console.log($(div));
         $('.test_card');
         var totalImages = $(div).find('img').length;
-        console.log('totalImages: ' + totalImages);
-        console.log($(div).find('img'));
+        //console.log('totalImages: ' + totalImages);
+        //console.log($(div).find('img'));
         if (totalImages == 0) {
             deferred.resolve();
         }
@@ -927,10 +929,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         // Do exactly as we had before -- increment the loaded count and if all are
         // loaded, call the allImagesLoaded() function.
         function imageLoaded() {
-            console.log('image loaded');
+            //console.log('image loaded');
             imagesLoaded++;
             if (imagesLoaded == totalImages) {
-                console.log('imagesLoaded: ' + imagesLoaded);
+                //console.log('imagesLoaded: ' + imagesLoaded);
                 allImagesLoaded();
             }
         }
@@ -1040,7 +1042,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             .animate({ opacity: 0 }, 300, function() {
 
                 // Animation complete.
-                
+
                 if (card.new_id != undefined) {
                     old_card._id = card.new_id;
                 }
@@ -1050,19 +1052,19 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 old_card.createdAt = card.createdAt;
                 old_card.updatedAt = card.updatedAt;
 
-                if(div == 'title_area'){
+                if (div == 'title_area') {
                     old_card.title_image_text = card.title_image_text;
                     old_card.title_area = card.title_area;
                 }
 
-                if(div == 'content_area'){
+                if (div == 'content_area') {
                     old_card.original_content = card.content;
                     old_card.content = card.content;
                 }
-                
+
 
                 delete old_card.new_card;
-                
+
                 var expanded = true;
                 if (div == 'content_area' && old_card.expanded == false) {
                     expanded = false
@@ -1122,6 +1124,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
             card = parseCard(card);
             $scope.test_card[0] = card;
+            $scope.test_card[0].expanded = true;
 
             if (!$scope.$$phase) {
                 $scope.$apply();
@@ -1297,11 +1300,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     getFollowingUpdate = function() {
-        console.log('gfu');
         var deferred = $q.defer();
         var promises = [];
         var cards_new = [];
-        console.log($rootScope.loading_cards);
         $rootScope.loading_cards = false;
         if (!$rootScope.loading_cards) {
             $rootScope.loading_cards = true;
@@ -1548,7 +1549,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 var oh = $(".content_cnv #card_" + id + " .content_area .ce").outerHeight();
                 console.log(oh);
 
-                var msPerHeight = 2; //How much ms per height
+                var msPerHeight = 1.25; //How much ms per height
                 var minRange = 400; //minimal animation time
                 var maxRange = 1000; //Maximal animation time
                 var time = oh * msPerHeight;
@@ -1970,7 +1971,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     parseCard = function(card) {
         //console.log(card.content);
         let node = $.parseHTML(card.content);
-        console.log(node);
+        //console.log(node);
 
         //let html = $(key.content);
         //var card_min = {};
@@ -1980,7 +1981,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         content_area.title;
         //content_area.content = card.content;
         //result.content_area = card.content;
-        console.log(node[0].nodeName);
+        //console.log(node[0].nodeName);
         var title_end;
         var tmp = document.createElement("div");
         //var i = 0;
@@ -1988,7 +1989,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var title_tmp = document.createElement("div");
         var content_tmp = document.createElement("div");
         var content_found = false;
-        console.log(node[0].className);
+        //console.log(node[0].className);
         if (node[0].nodeName == 'DIV' && node[0].className.indexOf('cropper_cont') >= 0) {
             //tmp.appendChild(node[i]);
             console.log('ONE');
@@ -1999,40 +2000,40 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
             //card.title_image = true;
         } else {
-            console.log('TWO');
+            //console.log('TWO');
             title_tmp.appendChild(node[0]);
             //content_found = true;
         }
         var cropper_found = false;
         for (var i = 1, len = node.length; i < len; i++) {
             //while(node[i].nodeName != 'DIV'){
-            console.log(node[i].nodeName);
-            console.log(node[i].outerHTML);
+            //console.log(node[i].nodeName);
+            //console.log(node[i].outerHTML);
 
-            if((node[i].outerHTML).indexOf('cropper_cont') >= 0) {
+            if ((node[i].outerHTML).indexOf('cropper_cont') >= 0) {
                 cropper_found = true;
             }
             //console.log(node[i].className.indexOf('cropper_cont'));
             //if (node[i].nodeName != 'DIV' && content_found == false) {
-/*
-            if (node[i].nodeName == 'DIV') {
-                if (node[i].className != undefined) {
-                    if (node[i].className.indexOf('cropper_cont') < 0) {
-                        cropper_found = true;
-                    }
-                }
+            /*
+                        if (node[i].nodeName == 'DIV') {
+                            if (node[i].className != undefined) {
+                                if (node[i].className.indexOf('cropper_cont') < 0) {
+                                    cropper_found = true;
+                                }
+                            }
 
-            }
-            */
+                        }
+                        */
             //cropper_found
             if (!cropper_found && !content_found) {
-                console.log('THREE');
+                //console.log('THREE');
                 //tmp.appendChild(node[i]);
                 title_tmp.appendChild(node[i]);
                 //title_found = true;
-                console.log(title_tmp.innerHTML);
-                console.log(title_tmp.textContent);
-                console.log(title_tmp.textContent.length);
+                //console.log(title_tmp.innerHTML);
+                //console.log(title_tmp.textContent);
+                //console.log(title_tmp.textContent.length);
                 // first index of <br> or character limit.
                 if (title_tmp.innerHTML.indexOf('<br>') > 0) {
                     content_found = true;
@@ -2043,7 +2044,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
 
             } else {
-                console.log('FOUR');
+                //console.log('FOUR');
                 content_found = true;
                 content_tmp.appendChild(node[i]);
                 //console.log('BREAK');
@@ -2054,19 +2055,19 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             //i++;
         }
 
-        console.log(title_tmp.innerHTML);
+        //console.log(title_tmp.innerHTML);
         //console.log(title_tmp.textContent)
         // first index of <br> or character limit.
         //if(title_tmp.innerHTML.indexOf('<br>') > 0){
 
         //}
-        console.log(content_tmp.innerHTML);
+        //console.log(content_tmp.innerHTML);
 
         card.content = content_tmp.innerHTML;
         card.title_area = title_tmp.innerHTML;
 
         tmp.appendChild(node[0]);
-        console.log(tmp.innerHTML);
+        //console.log(tmp.innerHTML);
 
         if (node[0].nodeName != '#text') {
             //card.title_image = true;
@@ -2084,7 +2085,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 //console.log($(this).attr('title-data'));
                 if ($(this).attr('title-data') != undefined) {
                     card.title_image_text = $(this).attr('title-data');
-                    console.log(card.title_image_text);
+                    //console.log(card.title_image_text);
                     //card.title_image = true;
                     card.title_image = true;
                 }
@@ -2095,14 +2096,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
             if (tmp.innerHTML.includes('title-data')) {
                 var index = tmp.innerHTML.indexOf('title-data');
-                console.log(index);
+                //console.log(index);
                 var td = tmp.innerHTML.substr(index, tmp.innerHTML.length);
-                console.log(td);
+                //console.log(td);
             }
         }
         // First node is an image
-        console.log(card.content);
-        console.log(node[0]);
+        //console.log(card.content);
+        //console.log(node[0]);
         // Get the image and put it into the title
         //title_area = JSON.stringify(node[0]);
 
@@ -2130,7 +2131,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             tmp2.appendChild(node[i]);
         }
         //tmp2.appendChild(node);
-        console.log(tmp2.innerHTML);
+        //console.log(tmp2.innerHTML);
 
 
         //content_area.content = tmp2.innerHTML;
@@ -2154,13 +2155,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
         //return content_area;
 
-        console.log(card);
+        //console.log(card);
         return card;
     }
 
     // TODO - If not following anyone suggest follow?
     getFollowing = function() {
-        console.log('gf');
         var deferred = $q.defer();
         var promises = [];
         if (!$rootScope.loading_cards_offscreen) {
@@ -2541,7 +2541,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // Called as each card is loaded.
     // Disable checkboxes if the contenteditable is set to false.
     var checkboxesEnabled = function(id, bool) {
-        console.log('checkboxesEnabled: ' + bool);
+        //console.log('checkboxesEnabled: ' + bool);
         var el = document.getElementById('ce' + id);
         //if ($(el).attr('contenteditable') == 'false') {
         if (bool == false) {

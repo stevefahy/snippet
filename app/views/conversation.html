@@ -16,7 +16,7 @@
     </div>
     <!-- Test Card -->
     <div class="test_container"></div>
-    <div class="test_card" ng-repeat="card in test_card | orderBy :'updatedAt' : top_down ">
+    <div class="test_card card_temp" ng-repeat="card in test_card | orderBy :'updatedAt' : top_down ">
         <div class="resize-container" ng-attr-editing="{{card.editing}}" ng-attr-editable="{{::card.user == currentUser._id}}" id="conversation_part" ng-click="toggleTheHeight($event, card._id);">
                 <div id="user" ng-class="{ 'user_title': card.title != undefined, user_image_title: card.title_image, user_text_title: !card.title_image}" class="margins">
                     <!--<img ng-if="::card.avatar!='default'" alt="" class="card_avatar" ng-src="{{::card.avatar}}" />
@@ -37,7 +37,7 @@
                     <div class='ce' ng-attr-id="ce_title{{::card._id}}" ng-attr-contenteditable="{{card.user == currentUser._id && card.editing == true}}" ng-change="contentChanged(card.title_area, 'ce_title'+card._id)" ng-keydown="checkKey($event,'ce_title'+card._id);" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce_title'+card._id);" ng-model="::card.title_area" ng-model-options="{ debounce: 1000 }"></div>
                 </div>
                 <div class="card_title margins" ng-show="card.title_image_text">{{card.title_image_text}}</div>
-                <div class="content_area margins" ng-class="{'collapsed': false}">
+                <div class="content_area margins" ng-class="{'collapsed': !card.expanded}">
                     <div class='ce' ng-attr-id="ce{{::card._id}}" ng-attr-contenteditable="{{card.user == currentUser._id && card.editing == true}}" ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id);" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce'+card._id);" ng-model="::card.content" ng-model-options="{ debounce: 1000 }" ng-class="{'collapsed_ce': !card.expanded}"></div>
                 </div>
                 <input id="upload-input" type="file" name="uploads[]" multiple="multiple">

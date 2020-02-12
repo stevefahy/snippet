@@ -6,7 +6,6 @@ cardApp.service('Edit', function() {
     var self = this;
     // Close currently opened dropdowns
     this.closeDropdowns = function() {
-        console.log('closeDropdowns');
         var dropdowns = document.getElementsByClassName("dropdown-content");
         var i;
         for (i = 0; i < dropdowns.length; i++) {
@@ -24,17 +23,20 @@ cardApp.service('Edit', function() {
         if (event) {
             event.stopPropagation();
         }
+
+        self.closeDropdowns();
+
         var show = false;
         if (!document.getElementById("myDropdown" + id).classList.contains('show')) {
             //openDropdown.classList.remove('show');
             show = true
         }
 
-        self.closeDropdowns();
+        //self.closeDropdowns();
 
-        console.log(id);
-        console.log($("#myDropdown" + id));
-        console.log(document.getElementById("myDropdown" + id).classList);
+        //console.log(id);
+        //console.log($("#myDropdown" + id));
+        //console.log(document.getElementById("myDropdown" + id).classList);
         if (show) {
             document.getElementById("myDropdown" + id).classList.add("show");
         }
