@@ -289,7 +289,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
                 $scope.test_card[0] = $scope.cards[i];
                 console.log($scope.cards[i]);
-             //   $timeout(function() {
+                //   $timeout(function() {
                 // Get the height of the new card.
                 let test = awaitImages('#card_' + card_id).then(async function(result) {
                     // Animate the change onscreen.
@@ -302,11 +302,39 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                 Scroll.disable('.content_cnv');
                                 var new_h = Number($('.test_card').outerHeight(true).toFixed(2));
                                 console.log(new_h);
-                                $("#card_" + card_id).css('margin-top', new_h * -1);
-                                $("#card_" + card_id).addClass('will_transform');
-                                $("#card_" + card_id).removeClass('zero_height');
-                                $("#card_" + card_id).addClass('animate_down');
-                                $("#card_" + card_id).on('webkitAnimationEnd oAnimationEnd animationend ', cardAnimEnd);
+                                //$("#card_" + card_id).css('margin-top', new_h * -1);
+                                //$("#card_" + card_id).css({'transform' : 'translateY('+ (new_h*-1) +'px)'});
+                                //transform: translateY(0);
+                                // transform: "translateY(20px)"
+
+                                //$(".content_cnv").css({ 'transform': 'translateY(' + (new_h * -1) + 'px)' });
+
+                                new_h--;
+                                //$('.content_cnv').css('--v', '-300px');
+                                $('.content_cnv').css('--v', (new_h * -1) +'px');
+                                 $(".content_cnv").css('overflow-y', 'visible');
+                                $(".content_cnv").css('overflow-x', 'visible');
+                                $('.content_cnv').addClass('animate-transform').on('webkitAnimationEnd oAnimationEnd animationend ', cardAnimEnd);
+                                   
+
+                                   //$('.content_cnv').removeClass('animate-transform');
+                                    $//("#card_" + card_id).on('webkitAnimationEnd oAnimationEnd animationend ', cardAnimEnd);
+
+                                //});
+                                //  JQuery ANimate?
+                                /*
+                                $(".content_cnv").css({'transform' : 'translateY('+ (new_h*-1) +'px)'});
+                                $(".content_cnv").css('overflow-y', 'visible');
+                                $(".content_cnv").css('overflow-x', 'visible');
+                                */
+                                //overflow-y: visible;
+                                //transform: translateY(-103px);
+                                /*
+                                                                $("#card_" + card_id).addClass('will_transform');
+                                                                $("#card_" + card_id).removeClass('zero_height');
+                                                                $("#card_" + card_id).addClass('animate_down');
+                                                                $("#card_" + card_id).on('webkitAnimationEnd oAnimationEnd animationend ', cardAnimEnd);
+                                                                */
                                 var pos = General.findWithAttr($scope.cards, '_id', card_id);
                                 if (pos >= 0) {
                                     delete $scope.cards[pos].new_card;
@@ -326,7 +354,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         }
                     }, 100);
                 });
-            //});
+                //});
                 //$scope.test_card.content = $scope.cards[i].content;
                 // $scope.test_card[0] = $scope.cards[i];
             } else {
@@ -2674,11 +2702,26 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         });
 
     var cardAnimEnd = function() {
+        console.log('cardAnimEnd');
         //delete $scope.cards[i].new_card;
         var id = (this.id).substr(5, (this.id).length);
         // remove the animation end listener which called this function.
         $(this).off('webkitAnimationEnd oAnimationEnd animationend ', cardAnimEnd);
         $(this).css('margin-top', '');
+
+        $(this).removeClass('animate-transform');
+
+        $('.content_cnv').css('--v', '');
+
+        /*$('.content_cnv').css('transform', '');
+        $('.content_cnv').css('overflow-y', '');
+        $('.content_cnv').css('overflow-x', '');*/
+
+        $(".content_cnv").css('overflow-y', '');
+        $(".content_cnv").css('overflow-x', '');
+        $(".content_cnv").css('overflow', '');
+
+
         $(this).removeClass('animate_down');
         $(this).removeClass('will_transform');
         $scope.$apply(function($scope) {
