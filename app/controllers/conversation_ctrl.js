@@ -311,14 +311,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
                                 new_h--;
                                 //$('.content_cnv').css('--v', '-300px');
-                                $('.content_cnv').css('--v', (new_h * -1) +'px');
-                                 $(".content_cnv").css('overflow-y', 'visible');
+                                $('.content_cnv').css('--v', (new_h * -1) + 'px');
+                                $(".content_cnv").css('overflow-y', 'visible');
                                 $(".content_cnv").css('overflow-x', 'visible');
                                 $('.content_cnv').addClass('animate-transform').on('webkitAnimationEnd oAnimationEnd animationend ', cardAnimEnd);
-                                   
 
-                                   //$('.content_cnv').removeClass('animate-transform');
-                                    $//("#card_" + card_id).on('webkitAnimationEnd oAnimationEnd animationend ', cardAnimEnd);
+
+                                //$('.content_cnv').removeClass('animate-transform');
+                                $ //("#card_" + card_id).on('webkitAnimationEnd oAnimationEnd animationend ', cardAnimEnd);
 
                                 //});
                                 //  JQuery ANimate?
@@ -489,18 +489,18 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 console.log('ADDING: ' + cards_to_move[i]._id);
                 var exists = General.findWithAttr($scope.cards, '_id', cards_to_move[i]._id);
                 console.log(exists);
-                if(exists>=0){
+                if (exists >= 0) {
                     console.log('DUPE!');
                 } else {
                     $scope.cards.push(cards_to_move[i]);
                     var exists2 = General.findWithAttr($scope.cards_temp, '_id', cards_to_move[i]._id);
-                    if(exists2>=0){
-                    console.log('NOT SPLICED!');
+                    if (exists2 >= 0) {
+                        console.log('NOT SPLICED!');
+                    }
                 }
-                }
-                
+
             }
-                     /*   if (!$scope.$$phase) {
+            /*   if (!$scope.$$phase) {
                 $scope.$apply();
             }*/
             //console.log(JSON.stringify($scope.cards_temp));
@@ -1188,7 +1188,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     $timeout(async function() {
                         if (card_arrays[arr][found_pos].title_image_text != card.title_image_text || card_arrays[arr][found_pos].title_area != card.title_area) {
                             console.log(card.title_image);
-                            if(card.title_image){
+                            if (card.title_image) {
                                 card_arrays[arr][found_pos].title_image = true;
                             } else {
                                 card_arrays[arr][found_pos].title_image = false;
@@ -1197,9 +1197,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             await resizeContent(card._id, card, card_arrays[arr][found_pos], 'title_area');
                             console.log('resize end title_area');
                             if (!$scope.$$phase) {
-                $scope.$apply();
-            }
-            $scope.$apply(); 
+                                $scope.$apply();
+                            }
+                            $scope.$apply();
                         } else {
                             console.log('same title');
                             // Same content
@@ -2141,16 +2141,22 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
             $(node[0]).children("img").each(function() {
                 console.log(this);
-                console.log($(this).attr('title-data').length);
-                if ($(this).attr('title-data').length > 0) {
-                    card.title_image_text = $(this).attr('title-data');
-                    console.log(card.title_image_text);
-                    //card.title_image = true;
-                    card.title_image = true;
-                    console.log(card.title_image);
+                console.log($(this).attr('title-data'));
+
+                if ($(this).attr('title-data')) {
+                    if ($(this).attr('title-data').length > 0) {
+                        card.title_image_text = $(this).attr('title-data');
+                        console.log(card.title_image_text);
+                        //card.title_image = true;
+                        card.title_image = true;
+                        console.log(card.title_image);
+                    } else {
+                        delete card.title_image_text;
+                        card.title_image = false;
+                    }
                 } else {
                     delete card.title_image_text;
-                    card.title_image = false;
+                        card.title_image = false;
                 }
             });
 
