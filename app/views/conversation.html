@@ -88,7 +88,14 @@
     <div class="content_cnv" ng-class="{ 'content_cnv_conv': !feed, 'content_cnv_hide_footer': hide_footer, 'content_cnv_no_footer': no_footer}" scroll-to-top-when="items_changed">
         <div id="conversation_card" ng-repeat="card in cards | orderBy :'updatedAt' : top_down " on-finish-render="ngRepeatFinished" ng-attr-id="card_{{::card._id }}" class="card_temp ng-cloak" ng-class="[appliedClass(card.card_type),{'first_load_anim': card.new_card, 'zero_height': card.new_card, card_disabled: card.disabled}]" ng-attr-expanded="{{card.expanded}}">
             <div class="resize-container" ng-attr-editing="{{card.editing}}" ng-attr-editable="{{::card.user == currentUser._id}}" id="conversation_part" ng-click="toggleTheHeight($event, card._id);">
-                <div id="user" ng-class="{ 'user_title': card.title != undefined, user_image_title: card.title_image, user_text_title: !card.title_image}" class="margins">
+                <!--
+                    ng-class="account.currency == currency ? 'active': 'inactive'}
+                -->
+                <!--
+                <div id="user" ng-class="{ 'user_image_title': card.title_image == true, 'user_text_title': card.title_image != true}" class="margins">
+                -->
+<div id="user" ng-class="{ 'user_image_title' : card.title_image, 'user_text_title' : !card.title_image}" class="margins">
+
                     <img ng-if="::card.avatar!='default'" alt="" class="card_avatar" ng-src="{{::card.avatar}}" />
                     <img ng-if="::card.avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="card_avatar" />
                     <div class="username" ng-class="{ 'username_title': card.title != undefined, username_image_title: card.title_image}">{{::card.user_name}}</div>

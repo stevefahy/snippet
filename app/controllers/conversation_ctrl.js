@@ -1177,7 +1177,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $scope.$apply();
             }
             //console.log(card);
-            console.log(card);
+            console.log(JSON.stringify(card));
             //if (card_arrays[arr][found_pos].content != card.content) {
             // Get the card height.
             //$scope.test_card[0] = card;
@@ -1187,8 +1187,19 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     // Animate the change onscreen.
                     $timeout(async function() {
                         if (card_arrays[arr][found_pos].title_image_text != card.title_image_text || card_arrays[arr][found_pos].title_area != card.title_area) {
+                            console.log(card.title_image);
+                            if(card.title_image){
+                                card_arrays[arr][found_pos].title_image = true;
+                            } else {
+                                card_arrays[arr][found_pos].title_image = false;
+                            }
+
                             await resizeContent(card._id, card, card_arrays[arr][found_pos], 'title_area');
                             console.log('resize end title_area');
+                            if (!$scope.$$phase) {
+                $scope.$apply();
+            }
+            $scope.$apply(); 
                         } else {
                             console.log('same title');
                             // Same content
@@ -2036,6 +2047,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var title_tmp = document.createElement("div");
         var content_tmp = document.createElement("div");
         var content_found = false;
+        card.title_image = false;
         //console.log(node[0].className);
         if (node[0].nodeName == 'DIV' && node[0].className.indexOf('cropper_cont') >= 0) {
             //tmp.appendChild(node[i]);
@@ -2128,13 +2140,17 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }*/
 
             $(node[0]).children("img").each(function() {
-                //console.log(this);
-                //console.log($(this).attr('title-data'));
-                if ($(this).attr('title-data') != undefined) {
+                console.log(this);
+                console.log($(this).attr('title-data').length);
+                if ($(this).attr('title-data').length > 0) {
                     card.title_image_text = $(this).attr('title-data');
-                    //console.log(card.title_image_text);
+                    console.log(card.title_image_text);
                     //card.title_image = true;
                     card.title_image = true;
+                    console.log(card.title_image);
+                } else {
+                    delete card.title_image_text;
+                    card.title_image = false;
                 }
             });
 
@@ -2202,7 +2218,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
         //return content_area;
 
-        //console.log(card);
+        console.log(card);
         return card;
     }
 

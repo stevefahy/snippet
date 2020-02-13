@@ -308,7 +308,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
     this.submitTitle = function(event, id) {
         console.log('submitTitle: ' + id);
-        var data = $('#title_' + id + ' .add_title_text').text();
+        var data = $('.content_cnv #title_' + id + ' .add_title_text').text();
         console.log(data);
         if (event) {
             console.log('stopPropagation');
