@@ -4050,7 +4050,7 @@ span.after_image {
 }
 
 .collapsed {
-    height: 0px;
+   /* height: 0px;*/
 }
 
 .collapsed_ce {

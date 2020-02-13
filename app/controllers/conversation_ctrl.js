@@ -488,9 +488,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             for (var i = 0, len = cards_to_move.length; i < len; i++) {
                 $scope.cards.push(cards_to_move[i]);
             }
-                        if (!$scope.$$phase) {
+                     /*   if (!$scope.$$phase) {
                 $scope.$apply();
-            }
+            }*/
             console.log(JSON.stringify($scope.cards_temp));
             // Check if more temp cards need to be loaded.
             checkNext();
@@ -722,6 +722,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }
             first_load = false;
         }
+        console.log(obj.location);
         if (obj.location == 'content_cnv') {
             $rootScope.loading_cards = false;
             obj = null;
@@ -1338,7 +1339,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var deferred = $q.defer();
         var promises = [];
         var cards_new = [];
-        $rootScope.loading_cards = false;
+        //$rootScope.loading_cards = false;
         if (!$rootScope.loading_cards) {
             $rootScope.loading_cards = true;
             var last_card;
@@ -1418,7 +1419,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // TODO - change if adding button to notify user of new card.
     addCards = function(arr) {
-        //console.log(arr);
         var deferred = $q.defer();
         var promises = [];
         var all_cards;
@@ -2239,7 +2239,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                 key.expanded = false;
                                 */
 
-                                key = parseCard(key);
+                                //key = parseCard(key);
                                 //key.title_area = parseCard(key);
                                 //key.title_area = JSON.stringify(res.title_area);
                                 //key.content = res.content_area;
