@@ -483,15 +483,27 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 amount = NUM_UPDATE_DISPLAY_INIT;
             }
             cards_to_move = $scope.cards_temp.splice(0, amount);
-            console.log(JSON.stringify(cards_to_move));
-            console.log(JSON.stringify($scope.cards_temp));
+            //console.log(JSON.stringify(cards_to_move));
+            //console.log(JSON.stringify($scope.cards_temp));
             for (var i = 0, len = cards_to_move.length; i < len; i++) {
-                $scope.cards.push(cards_to_move[i]);
+                console.log('ADDING: ' + cards_to_move[i]._id);
+                var exists = General.findWithAttr($scope.cards, '_id', cards_to_move[i]._id);
+                console.log(exists);
+                if(exists>=0){
+                    console.log('DUPE!');
+                } else {
+                    $scope.cards.push(cards_to_move[i]);
+                    var exists2 = General.findWithAttr($scope.cards_temp, '_id', cards_to_move[i]._id);
+                    if(exists2>=0){
+                    console.log('NOT SPLICED!');
+                }
+                }
+                
             }
                      /*   if (!$scope.$$phase) {
                 $scope.$apply();
             }*/
-            console.log(JSON.stringify($scope.cards_temp));
+            //console.log(JSON.stringify($scope.cards_temp));
             // Check if more temp cards need to be loaded.
             checkNext();
             deferred.resolve(true);
@@ -699,7 +711,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // LOADING CHECK
 
-    imagesLoaded = function(obj) {
+    imagesLoadedx = function(obj) {
         // Check if first load.
         if ($scope.cards.length == 0) {
             tempToCards()
@@ -745,25 +757,25 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 if (this.complete) {
                     store[loc].img_loaded++;
                     if (store[loc].img_count == store[loc].img_loaded || store[loc].img_count == 0) {
-                        imagesLoaded(store[loc]);
+                        imagesLoadedx(store[loc]);
                     }
                 } else {
                     $(this).on('load', function() {
                         store[loc].img_loaded++;
                         if (store[loc].img_count == store[loc].img_loaded || store[loc].img_count == 0) {
-                            imagesLoaded(store[loc]);
+                            imagesLoadedx(store[loc]);
                         }
                     });
                     $(this).on('error', function() {
                         store[loc].img_loaded++;
                         if (store[loc].img_count == store[loc].img_loaded || store[loc].img_count == 0) {
-                            imagesLoaded(store[loc]);
+                            imagesLoadedx(store[loc]);
                         }
                     });
                 }
             });
         } else {
-            imagesLoaded(store[loc]);
+            imagesLoadedx(store[loc]);
         }
     };
 
@@ -2199,6 +2211,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log('gf');
         var deferred = $q.defer();
         var promises = [];
+        console.log('loading: ' + $rootScope.loading_cards_offscreen);
         if (!$rootScope.loading_cards_offscreen) {
             $rootScope.loading_cards_offscreen = true;
             var followed = UserData.getUser().following;
@@ -2220,9 +2233,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 last_card_stored = last_card;
                 var prom1 = Conversations.getFeed(val)
                     .then(function(res) {
+                        console.log('gf loaded');
                         console.log(res);
                         if (res.data.cards.length > 0) {
                             res.data.cards.map(function(key, array) {
+                                console.log('got: ' + key._id);
                                 //key.card_type = getCardType(key.content);
                                 //console.log(key.card_type);
                                 //setCardMin(key);
@@ -2239,7 +2254,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                 key.expanded = false;
                                 */
 
-                                //key = parseCard(key);
+                                key = parseCard(key);
                                 //key.title_area = parseCard(key);
                                 //key.title_area = JSON.stringify(res.title_area);
                                 //key.content = res.content_area;
