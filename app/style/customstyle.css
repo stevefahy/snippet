@@ -3634,7 +3634,7 @@ span.after_image {
 
 .title_active {
     z-index: 10;
-    position: relative;
+    position: absolute;
     top: 50px;
     visibility: visible;
     /* margin-left: 1.25em;*/

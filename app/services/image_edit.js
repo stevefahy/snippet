@@ -35,6 +35,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         if (editable == 'true') {
             console.log('its true');
 
+
+
             ContentEditable.setContenteditable($(cropper)[0], false);
             // Check if this is new image to be edited.
             if (id != ImageAdjustment.getImageId()) {
@@ -51,8 +53,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                     var card_expanded = $(cropper).closest('div.card_temp').attr('expanded');
                     console.log(card_expanded);
                     if ($(scope).closest('div.resize-container').attr('editable') == 'true' && card_expanded == 'true') {
-                    //if ($(scope).closest('div.ce').attr('editable') == 'true') {
-                    //if ($(scope).closest('div.ce').attr('editable') == 'true' && card_expanded == 'true') {
+                        //if ($(scope).closest('div.ce').attr('editable') == 'true') {
+                        //if ($(scope).closest('div.ce').attr('editable') == 'true' && card_expanded == 'true') {
                         // If this image is not already being edited then allow it to be edited.
                         if (!ImageAdjustment.getImageEditing()) {
                             // Turn off content saving.
@@ -62,39 +64,51 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                             // Save any changes made to this card in case the user navigates away from conversations before finishing editing image.
                             temp_save = true;
                             ImageFunctions.saveCropper(cropper).then(function() {
-                            // Turn off contenteditable for this card.
-                            ContentEditable.setContenteditable($(cropper)[0], false);
-                            var image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
-                            // restore image so that it can be accessed as a source.
-                            ImageFunctions.adjustSrc(image, 'show');
-                            // Only open editing if not already open.
-                            if ($('#image_adjust_' + id).length <= 0) {
-                                // Close existing
-                                $('.image_adjust_on').remove();
-                                $('.filters_active').remove();
-                                // Add the image edit menu.
-                                var ia = $('.image_adjust').clone();
-                                $(ia).attr('id', 'image_adjust_' + id);
-                                ia.insertBefore('.' + parent_container + ' #cropper_' + id);
-                                // Import the edit_btns html.
-                                var edit_btns = $sce.getTrustedResourceUrl('/views/edit_btns.html');
-                                $templateRequest(edit_btns).then(function(template) {
-                                    var eb = $('#image_adjust_' + id).append(template);
-                                    $(eb).find('.at').attr("onclick", 'addTitle(event, \'' + id + '\')');
-                                    $(eb).find('.ti').attr("onclick", 'testImage(event, \'' + id + '\')');
-                                    $(eb).find('.ai').attr("onclick", 'adjustImage(event, \'' + id + '\')');
-                                    $(eb).find('.fi').attr("onclick", 'openFilters(event, \'' + id + '\')');
-                                    $(eb).find('.ois').attr("onclick", 'openCropRotate(event, \'' + id + '\')');
-                                    //$(eb).find('.close_image_edit').attr("onclick", 'closeImageEdit(event, \'' + id + '\')');
-                                    $(eb).find('.close_image_edit').attr("onclick", 'closeImageEdit(\'' + id + '\')');
-                                    // Adjust margin top if this is the topmost image.
-                                    if ($('.' + parent_container + ' #cropper_' + id).attr('class').indexOf('no_image_space') >= 0) {
-                                        $('#image_adjust_' + id).addClass('no_image_space_adjust');
+                                // Turn off contenteditable for this card.
+                                ContentEditable.setContenteditable($(cropper)[0], false);
+                                var image = $('.' + parent_container + ' #cropper_' + id + ' #image_' + id)[0];
+                                // restore image so that it can be accessed as a source.
+                                ImageFunctions.adjustSrc(image, 'show');
+                                // Only open editing if not already open.
+                                if ($('#image_adjust_' + id).length <= 0) {
+                                    // Close existing
+                                    $('.image_adjust_on').remove();
+                                    $('.filters_active').remove();
+                                    // Add the image edit menu.
+                                    var ia = $('.image_adjust').clone();
+                                    $(ia).attr('id', 'image_adjust_' + id);
+                                    ia.insertBefore('.' + parent_container + ' #cropper_' + id);
+                                    //ia.insertBefore('.' + parent_container + ' #cropper_' + id).closest('.user');
+                                    //$(cropper).closest('.user'));
+                                    //.parents('.selectable').first();
+                                    var user_title_image = $(scope).closest('div.resize-container').find('.user_image_title');
+                                    var card_title_image = $(scope).closest('div.resize-container').find('.card_title');
+                                    //card_title 
+                                    console.log(user_title_image);
+                                    console.log(card_title_image);
+                                    if (user_title_image.length > 0) {
+                                        $(user_title_image).css('visibility', 'hidden');
+                                        $(card_title_image).css('visibility', 'hidden');
                                     }
-                                    // set this menu to active
-                                    $('#image_adjust_' + id).addClass('image_adjust_on');
-                                });
-                            }
+                                    // Import the edit_btns html.
+                                    var edit_btns = $sce.getTrustedResourceUrl('/views/edit_btns.html');
+                                    $templateRequest(edit_btns).then(function(template) {
+                                        var eb = $('#image_adjust_' + id).append(template);
+                                        $(eb).find('.at').attr("onclick", 'addTitle(event, \'' + id + '\')');
+                                        $(eb).find('.ti').attr("onclick", 'testImage(event, \'' + id + '\')');
+                                        $(eb).find('.ai').attr("onclick", 'adjustImage(event, \'' + id + '\')');
+                                        $(eb).find('.fi').attr("onclick", 'openFilters(event, \'' + id + '\')');
+                                        $(eb).find('.ois').attr("onclick", 'openCropRotate(event, \'' + id + '\')');
+                                        //$(eb).find('.close_image_edit').attr("onclick", 'closeImageEdit(event, \'' + id + '\')');
+                                        $(eb).find('.close_image_edit').attr("onclick", 'closeImageEdit(\'' + id + '\')');
+                                        // Adjust margin top if this is the topmost image.
+                                        if ($('.' + parent_container + ' #cropper_' + id).attr('class').indexOf('no_image_space') >= 0) {
+                                            $('#image_adjust_' + id).addClass('no_image_space_adjust');
+                                        }
+                                        // set this menu to active
+                                        $('#image_adjust_' + id).addClass('image_adjust_on');
+                                    });
+                                }
                             });
                         }
                     }
@@ -119,6 +133,18 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         if (ImageAdjustment.getImageAdjusted()) {
             ImageAdjustment.setImageAdjusted(false);
         }
+
+
+        var user_title_image = $(cropper).closest('div.resize-container').find('.user_image_title');
+        var card_title_image = $(cropper).closest('div.resize-container').find('.card_title');
+        //card_title 
+        console.log(user_title_image);
+        console.log(card_title_image);
+        if (user_title_image.length > 0) {
+            $(user_title_image).css('visibility', '');
+            $(card_title_image).css('visibility', '');
+        }
+
     };
 
     // CropRotate
@@ -313,8 +339,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         var image = $('.' + parent_container + ' #image_' + id)[0];
         //$('.image_adjust_on').remove();
         //if ($('.' + parent_container + ' #cropper_' + id + ' .image_title_div').length <= 0) {
-           //image_title_div ng-scope title_active
-           if ($('.' + parent_container + ' .title_active').length <= 0) {
+        //image_title_div ng-scope title_active
+        if ($('.' + parent_container + ' .title_active').length <= 0) {
             var filt = $('.image_title_div').clone().insertBefore('.' + parent_container + ' #cropper_' + id);
             filt.attr('id', 'title_' + id);
             filt.addClass('title_active');
@@ -324,10 +350,10 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
 
             var title = self.getImageTitle('content_cnv', id);
-            console.log(title);  
-            if(title != undefined){
-                $('.title_active .add_title_text').html(title); 
-            }         
+            console.log(title);
+            if (title != undefined) {
+                $('.title_active .add_title_text').html(title);
+            }
             //var data = { 'id': id, 'type': 'test' };
             //data.last_position = $rootScope.slider_settings.test.reset;
             // Get the last position of the slider.
