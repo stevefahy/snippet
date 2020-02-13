@@ -483,9 +483,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 amount = NUM_UPDATE_DISPLAY_INIT;
             }
             cards_to_move = $scope.cards_temp.splice(0, amount);
+            console.log(JSON.stringify(cards_to_move));
+            console.log(JSON.stringify($scope.cards_temp));
             for (var i = 0, len = cards_to_move.length; i < len; i++) {
                 $scope.cards.push(cards_to_move[i]);
             }
+                        if (!$scope.$$phase) {
+                $scope.$apply();
+            }
+            console.log(JSON.stringify($scope.cards_temp));
             // Check if more temp cards need to be loaded.
             checkNext();
             deferred.resolve(true);
@@ -1328,6 +1334,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     getFollowingUpdate = function() {
+        console.log('gfu');
         var deferred = $q.defer();
         var promises = [];
         var cards_new = [];
@@ -2189,6 +2196,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // TODO - If not following anyone suggest follow?
     getFollowing = function() {
+        console.log('gf');
         var deferred = $q.defer();
         var promises = [];
         if (!$rootScope.loading_cards_offscreen) {
@@ -2206,11 +2214,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             } else {
                 last_card = '0';
             }
+            console.log(last_card + ' : ' + last_card_stored);
             var val = { ids: followed, amount: load_amount, last_card: last_card };
             if (last_card != last_card_stored) {
                 last_card_stored = last_card;
                 var prom1 = Conversations.getFeed(val)
                     .then(function(res) {
+                        console.log(res);
                         if (res.data.cards.length > 0) {
                             res.data.cards.map(function(key, array) {
                                 //key.card_type = getCardType(key.content);
