@@ -1652,7 +1652,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                });
                                */
 
-                $(".content_cnv #card_" + id + " .content_area").animate({ height: oh + "px" }, {
+                $(".content_cnv #card_" + id + " .content_area").velocity({ height: oh + "px" }, {
                     duration: time,
                     easing: "easeInOutCubic",
                     complete: function() {

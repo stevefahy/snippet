@@ -892,7 +892,7 @@ if (workbox) {
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "88260fee0eb3749f41416d9391e88dd8"
+    "revision": "6d3d0a45b2f21e534a924d39cc4e9975"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -948,7 +948,7 @@ if (workbox) {
   },
   {
     "url": "indexa.html",
-    "revision": "51f927661f8069390cfd5d45dd45dcc5"
+    "revision": "c73cec5498826aa43bce2f500df96956"
   },
   {
     "url": "js/angular_moment.js",
@@ -1025,6 +1025,10 @@ if (workbox) {
   {
     "url": "js/scrollintoviewifneeded.js",
     "revision": "790e20f9e84dbc13e9d21de68a25681b"
+  },
+  {
+    "url": "js/velocity.min.js",
+    "revision": "2eaec1e91fe400cb493b2a18267343ed"
   },
   {
     "url": "models/card.js",
@@ -1144,7 +1148,7 @@ if (workbox) {
   },
   {
     "url": "style/customstyle.css",
-    "revision": "c4af64057ce703415821cc12d18bc457"
+    "revision": "927787dcbb28ad94da981d33ac705cde"
   },
   {
     "url": "style/instagram.css",
@@ -1180,7 +1184,7 @@ if (workbox) {
   },
   {
     "url": "views/conversation.html",
-    "revision": "a0dfa0b7d2813e64153fb9561f37497b"
+    "revision": "3f113fa4bfbf44bb90b9013a3aec6917"
   },
   {
     "url": "views/conversations.html",
