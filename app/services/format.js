@@ -669,10 +669,10 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             var content_title = $('.content_cnv #card_' + card._id + ' .title_area #ce_title'  + card._id).html();
             //var content_content = $('.content_cnv .content_area #ce' + card._id).html();
             var content_content = $('.content_cnv #card_' + card._id + ' .content_area #ce' + card._id).html();
-           console.log(content_title);
-           console.log(content_content);
+           //console.log(content_title);
+           //console.log(content_content);
             var content = content_title + content_content;
-            console.log(content);
+            //console.log(content);
             // Get the element currently in focus
             var active = $(document.activeElement).closest("div").attr('id');
             // If the blurred card is not the current card or the hidden input.
@@ -961,8 +961,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     this.markyCheck = function(content, elem) {
         //console.log('markyCheck');
-        //console.log(content);
-        //console.log(elem);
+        console.log(content);
+        console.log(elem);
         var escape_marky = false;
         // Inject the General Service
         var General = $injector.get('General');
@@ -1098,10 +1098,21 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     }
                 }
             } else if (marky_array[ma_index].script !== '' && marky_array[ma_index].script !== undefined) {
+                console.log('image get');
+                console.log(elem);
+                //ce_title5e45c1e472f70e04d8ffad6a
+                //ce5e45c1e472f70e04d8ffad6a
                 // Not HTML but SCRIPT 
                 // TODO Fix so that the actual script which is passed is called     
                 if (marky_array[ma_index].script === 'getImage') {
-                    $('#upload-trigger' + elem).trigger('click');
+                    var el = elem;
+                    var index_el = elem.indexOf('_title');
+                    if(index_el >= 0){
+                        el = elem.substr(8, el.length);
+                        el = 'ce'+el;
+                        console.log(el);
+                    }
+                    $('#upload-trigger' + el).trigger('click');
                 }
                 // Use timeout to fix bug on Galaxy S6 (Chrome, FF, Canary)
                 // Timeout causing bug on Web MS Edge. Removed and changed paste from '' to '&#x200b'
@@ -1147,8 +1158,10 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.selectText = function(element, word) {
+        console.log(element);
         var doc = document;
         var current_node;
+        console.log(doc.getElementById(element));
         var node_pos = self.findNodeNumber(doc.getElementById(element), word);
         var text = doc.getElementById(element);
         if (doc.body.createTextRange) {

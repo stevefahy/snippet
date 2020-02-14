@@ -892,7 +892,7 @@ if (workbox) {
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "6ef8d9126a154a38b91eb44a3e41c778"
+    "revision": "55175528ab419a3c76f56b991acbd36f"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -1084,7 +1084,7 @@ if (workbox) {
   },
   {
     "url": "services/format.js",
-    "revision": "077436599a3a2c63e1bb66442c8f2192"
+    "revision": "5f9195986bc14198590f3c85241065cb"
   },
   {
     "url": "services/general.js",
@@ -1096,7 +1096,7 @@ if (workbox) {
   },
   {
     "url": "services/image_edit.js",
-    "revision": "0782128eb1eb81de25f97f92ea3b5706"
+    "revision": "40e3346de76a221a76322ebaa8b09bb0"
   },
   {
     "url": "services/image_filters.js",
@@ -1180,7 +1180,7 @@ if (workbox) {
   },
   {
     "url": "views/conversation.html",
-    "revision": "760fd72db51d92ad14e555caee9452e3"
+    "revision": "300084b8a2b00d322aff8b4fda84eef5"
   },
   {
     "url": "views/conversations.html",

@@ -37,11 +37,11 @@
                     </div>
                 </div>
                 <div class="title_area margins">
-                    <div class='ce' ng-attr-id="ce_title{{::card._id}}" ng-attr-contenteditable="{{card.user == currentUser._id && card.editing == true}}" ng-change="contentChanged(card.title_area, 'ce_title'+card._id)" ng-keydown="checkKey($event,'ce_title'+card._id);" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce_title'+card._id);" ng-model="::card.title_area" ng-model-options="{ debounce: 1000 }"></div>
+                    <div class='ce' ng-attr-id="test_ce_title{{::card._id}}" ng-attr-contenteditable="{{card.user == currentUser._id && card.editing == true}}" ng-change="contentChanged(card.title_area, 'ce_title'+card._id)" ng-keydown="checkKey($event,'ce_title'+card._id);" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce_title'+card._id);" ng-model="::card.title_area" ng-model-options="{ debounce: 1000 }"></div>
                 </div>
                 <div class="card_title margins" ng-show="card.title_image_text">{{card.title_image_text}}</div>
                 <div class="content_area margins" ng-class="{'collapsed': !card.expanded}">
-                    <div class='ce' ng-attr-id="ce{{::card._id}}" ng-attr-contenteditable="{{card.user == currentUser._id && card.editing == true}}" ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id);" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce'+card._id);" ng-model="::card.content" ng-model-options="{ debounce: 1000 }" ng-class="{'collapsed_ce': !card.expanded}"></div>
+                    <div class='ce' ng-attr-id="test_ce{{::card._id}}" ng-attr-contenteditable="{{card.user == currentUser._id && card.editing == true}}" ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id);" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce'+card._id);" ng-model="::card.content" ng-model-options="{ debounce: 1000 }" ng-class="{'collapsed_ce': !card.expanded}"></div>
                 </div>
                 <input id="upload-input" type="file" name="uploads[]" multiple="multiple">
                 <button ng-attr-id="upload-triggerce{{::card._id}}" class="btn btn-sm upload-btn upload-trigger" type="button" ng-click="uploadFile(card._id, card, currentUser); ">Upload File</button>
@@ -95,6 +95,7 @@
                 <div id="user" ng-class="{ 'user_image_title': card.title_image == true, 'user_text_title': card.title_image != true}" class="margins">
                 -->
 <div id="user" ng-class="{ 'user_image_title' : card.title_image, 'user_text_title' : !card.title_image}" class="margins">
+
 
                     <img ng-if="::card.avatar!='default'" alt="" class="card_avatar" ng-src="{{::card.avatar}}" />
                     <img ng-if="::card.avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="card_avatar" />

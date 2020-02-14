@@ -119,11 +119,26 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
     };
 
+    this.updateTitle = function(id){
+        console.log($('#'+id));
+                var user_title_image = $('#' + id + ' .user_image_title');
+        var card_title_image = $('#' + id + ' .card_title');
+        //card_title 
+        console.log(user_title_image);
+        console.log(card_title_image);
+        if (user_title_image.length > 0) {
+            $(user_title_image).css('visibility', '');
+            $(card_title_image).css('visibility', '');
+        }
+    }
+
     //this.closeImageEdit = function(e, id) {
     this.closeImageEdit = function(id) {
         //e.stopPropagation();
         var parent_container = 'content_cnv'; //getParentContainer(e.target);
         var cropper = $('.' + parent_container + ' #cropper_' + id);
+        var card_id = $('.' + parent_container + ' #cropper_' + id).closest('div.card_temp').attr('id');
+        console.log(card_id);
         ContentEditable.setContenteditable(cropper, true);
         $('.image_adjust_on').remove();
         if ($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length > 0) {
@@ -134,16 +149,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             ImageAdjustment.setImageAdjusted(false);
         }
 
+        //self.updateTitle(card_id);
 
-        var user_title_image = $(cropper).closest('div.resize-container').find('.user_image_title');
-        var card_title_image = $(cropper).closest('div.resize-container').find('.card_title');
-        //card_title 
-        console.log(user_title_image);
-        console.log(card_title_image);
-        if (user_title_image.length > 0) {
-            $(user_title_image).css('visibility', '');
-            $(card_title_image).css('visibility', '');
-        }
 
     };
 

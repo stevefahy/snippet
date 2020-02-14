@@ -1177,7 +1177,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $scope.$apply();
             }
             //console.log(card);
-            console.log(JSON.stringify(card));
+            //console.log(JSON.stringify(card));
             //if (card_arrays[arr][found_pos].content != card.content) {
             // Get the card height.
             //$scope.test_card[0] = card;
@@ -1210,6 +1210,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                 $scope.$apply();
                             }
                         }
+                        console.log(card_arrays[arr][found_pos].content);
+                        console.log(card.content);
                         if (card_arrays[arr][found_pos].content != card.content) {
                             await resizeContent(card._id, card, card_arrays[arr][found_pos], 'content_area');
                             console.log('resize end content_area');
@@ -1833,6 +1835,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
         var image_id = ImageAdjustment.getImageId();
 
+        var card_id = $('.content_cnv #cropper_' + image_id).closest('div.card_temp').attr('id');
+
         //var image_editing = false;
         //var image_filters = false;
         //console.log($('#image_adjust_' + image_id));
@@ -1840,6 +1844,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         checkImageEdit(image_id);
 
         checkImageFilters();
+
+        ImageEdit.updateTitle(card_id);
         //if ($('#image_adjust_' + image_id).length > 0) {
         //    image_editing = true;
         //}
