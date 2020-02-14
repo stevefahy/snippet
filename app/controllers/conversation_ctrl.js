@@ -2155,6 +2155,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         console.log(card.title_image_text);
                         //card.title_image = true;
                         card.title_image = true;
+
+                        card.animate_title = true;
                         console.log(card.title_image);
                     } else {
                         delete card.title_image_text;

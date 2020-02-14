@@ -94,7 +94,7 @@
                 <!--
                 <div id="user" ng-class="{ 'user_image_title': card.title_image == true, 'user_text_title': card.title_image != true}" class="margins">
                 -->
-<div id="user" ng-class="{ 'user_image_title' : card.title_image, 'user_text_title' : !card.title_image}" class="margins">
+<div id="user" ng-class="{ 'user_image_title' : card.title_image, 'user_text_title' : !card.title_image, 'title_area_animate' : card.animate_title}" class="margins">
 
 
                     <img ng-if="::card.avatar!='default'" alt="" class="card_avatar" ng-src="{{::card.avatar}}" />
@@ -111,7 +111,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="title_area margins">
+                <div class="title_area margins " ng-class="{ 'title_area_image': card.title_image, 'title_area_no_image': !card.title_image, 'title_area_animate' : card.animate_title}">
                     <div class='ce' ng-attr-id="ce_title{{::card._id}}" ng-attr-contenteditable="{{card.user == currentUser._id && card.editing == true}}" ng-change="contentChanged(card.title_area, 'ce_title'+card._id)" ng-keydown="checkKey($event,'ce_title'+card._id);" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser); keyListen('ce_title'+card._id);" ng-model="::card.title_area" ng-model-options="{ debounce: 1000 }"></div>
                 </div>
                 <div class="card_title margins" ng-show="card.title_image_text">{{card.title_image_text}}</div>
