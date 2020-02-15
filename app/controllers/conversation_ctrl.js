@@ -1628,9 +1628,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 }
                 $scope.cards[index].expanded = !$scope.cards[index].expanded;
 
-                if (!$scope.$$phase) {
+                /*if (!$scope.$$phase) {
                     $scope.$apply();
-                }
+                }*/
 
                 /*
                         $('.decide_menu').animate({ "right": "-100vw" }, {
@@ -1665,7 +1665,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     }
                 });
 
-                console.log($scope.cards[index]);
+                //console.log($scope.cards[index]);
 
 
             }
@@ -1912,6 +1912,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     //$scope.editing_card = false;
 
+
     $scope.editCard = function(event, card) {
         if (event) {
             console.log('stopPropagation');
@@ -1921,6 +1922,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         console.log('edit card?');
         if (card.user == $scope.currentUser._id) {
             console.log('edit');
+
+            //removeToggleHeight(card._id);
             //$scope.editing_card = true;
 
             for (var i = 0, len = $scope.cards.length; i < len; i++) {
@@ -2074,12 +2077,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var cropper_found = false;
         for (var i = 1, len = node.length; i < len; i++) {
             //while(node[i].nodeName != 'DIV'){
-            //console.log(node[i].nodeName);
-            //console.log(node[i].outerHTML);
-
+            console.log(node[i].nodeName);
+            console.log(node[i].outerHTML);
+            if(node[i].nodeName != "#text"){
             if ((node[i].outerHTML).indexOf('cropper_cont') >= 0) {
                 cropper_found = true;
             }
+        }
             //console.log(node[i].className.indexOf('cropper_cont'));
             //if (node[i].nodeName != 'DIV' && content_found == false) {
             /*

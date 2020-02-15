@@ -736,6 +736,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             // create original vars
             tag_count_previous_local = (content_less_pre.match(reg) || []).length;
         }
+        console.log(tag_count_previous_local);
         return tag_count_previous_local;
     };
 

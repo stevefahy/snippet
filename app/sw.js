@@ -892,7 +892,7 @@ if (workbox) {
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "6d707507a1adb6a722befdbd5ab64a2d"
+    "revision": "1f54578f562e24ec84009b3481131932"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -1088,7 +1088,7 @@ if (workbox) {
   },
   {
     "url": "services/format.js",
-    "revision": "5f9195986bc14198590f3c85241065cb"
+    "revision": "7548eb17980ff39e37adfee6b5a7668c"
   },
   {
     "url": "services/general.js",
@@ -1184,7 +1184,7 @@ if (workbox) {
   },
   {
     "url": "views/conversation.html",
-    "revision": "3f113fa4bfbf44bb90b9013a3aec6917"
+    "revision": "b8e3ebca70fbd1c2fae61aa11e7b4618"
   },
   {
     "url": "views/conversations.html",
