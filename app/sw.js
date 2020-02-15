@@ -1064,7 +1064,7 @@ if (workbox) {
   },
   {
     "url": "services/crop_rotate.js",
-    "revision": "f6a160e0ff842ad09912a1f1e55c68b8"
+    "revision": "c356a344c3c7bddd85e86d6854126510"
   },
   {
     "url": "services/database.js",

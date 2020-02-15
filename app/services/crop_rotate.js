@@ -588,7 +588,7 @@ cardApp.service('CropRotate', ['$rootScope', 'Slider', 'ImageAdjustment', 'Image
         // Sroll fix
         $('#progress-thumb').removeClass('crop_fix');
         // Disable scrolling until the crop has been saved.
-        Scroll.disable('.content_cnv');
+        //Scroll.disable('.content_cnv');
         // Determine the height for the animation.
         if (swidth > cropper_width) {
             width_scale = cropper_width / swidth;
@@ -637,7 +637,7 @@ cardApp.service('CropRotate', ['$rootScope', 'Slider', 'ImageAdjustment', 'Image
                 $('.content_cnv #cropper_' + id).css('height', '');
                 // Save
                 ImageAdjustment.setImageEditing(false);
-                ImageFunctions.saveCropper(cropper);
+                //ImageFunctions.saveCropper(cropper);
             });
         });
     };
