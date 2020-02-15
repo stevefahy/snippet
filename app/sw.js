@@ -1088,7 +1088,7 @@ if (workbox) {
   },
   {
     "url": "services/format.js",
-    "revision": "7548eb17980ff39e37adfee6b5a7668c"
+    "revision": "4a8f66525d9e2bc00b14c1a56ac4ad2a"
   },
   {
     "url": "services/general.js",
@@ -1116,7 +1116,7 @@ if (workbox) {
   },
   {
     "url": "services/keyboard.js",
-    "revision": "5f352df7ac5da537a4c5a0ce8eb504d5"
+    "revision": "52d07f2c0fbc570672999473b472e3f5"
   },
   {
     "url": "services/loading.js",
