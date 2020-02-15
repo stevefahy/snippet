@@ -59,10 +59,10 @@ cardApp.service('Keyboard', ['Format', '$rootScope', function(Format, $rootScope
         $rootScope.$apply(function() {
             $rootScope.hide_footer = true;
         });
-        // Paste div that will be scrolled into view if necessary and the deleted.
-        Format.pasteHtmlAtCaret("<span class='scroll_latest_footer' id='scroll_latest_footer'></span>");
+        // Paste div that will be scrolled into view if necessary and then deleted.
+        //Format.pasteHtmlAtCaret("<span class='scroll_latest_footer' id='scroll_latest_footer'></span>");
         // Scroll into view if necessary
-        Format.scrollLatest('scroll_latest_footer');
+        //Format.scrollLatest('scroll_latest_footer');
     };
 
     showFooter = function() {

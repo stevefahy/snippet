@@ -1116,7 +1116,7 @@ if (workbox) {
   },
   {
     "url": "services/keyboard.js",
-    "revision": "f85a7bb3c9c5c2ee446ca766b5ec2f35"
+    "revision": "5f352df7ac5da537a4c5a0ce8eb504d5"
   },
   {
     "url": "services/loading.js",
