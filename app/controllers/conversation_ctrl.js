@@ -487,6 +487,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             //console.log(JSON.stringify($scope.cards_temp));
             for (var i = 0, len = cards_to_move.length; i < len; i++) {
                 console.log('ADDING: ' + cards_to_move[i]._id);
+                
                 var exists = General.findWithAttr($scope.cards, '_id', cards_to_move[i]._id);
                 console.log(exists);
                 if (exists >= 0) {
@@ -498,7 +499,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         console.log('NOT SPLICED!');
                     }
                 }
-
+                
+//$scope.cards.push(cards_to_move[i]);
             }
             /*   if (!$scope.$$phase) {
                 $scope.$apply();
