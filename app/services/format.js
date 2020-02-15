@@ -1189,7 +1189,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     // Scroll the HTML into view
     this.scrollLatest = function(clas) {
-        /*
+        
         var scroll_latest = document.querySelector('.' + clas);
         $timeout(function() {
             $timeout(function() {
@@ -1207,7 +1207,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 }
             }, 400);
         });
-        */
+        
     };
 
     this.pasteHtmlAtCaret = function(html) {
