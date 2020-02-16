@@ -4099,8 +4099,17 @@ height: auto;
 
 
 .checkbox > span {
+    /*
     color: #34495E;
     padding: 0.5rem 0.25rem;
+    */
+
+        position: relative;
+    display: block;
+    /* color: #34495E; */
+    /* padding: 0.5rem 0.25rem; */
+    /* padding-top: 38px; */
+    margin-top: 10px;
 }
 
 .checkbox > input {
