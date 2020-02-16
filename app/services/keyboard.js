@@ -60,7 +60,7 @@ cardApp.service('Keyboard', ['Format', '$rootScope', function(Format, $rootScope
             $rootScope.hide_footer = true;
         });
 
-        var x = document.activeElement.tagName;
+        var x = document.activeElement.className;
         console.log(x);
         // Paste div that will be scrolled into view if necessary and then deleted.
         Format.pasteHtmlAtCaret("<span class='scroll_latest_footer' id='scroll_latest_footer'></span>");
