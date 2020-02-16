@@ -4150,6 +4150,7 @@ height: 20px;
 .checkbox > input:checked:before {
     display: block;
     content: "\2714";
+    background-image: url(/assets/images/cb_check.png);
     position: relative;
     left: 2px;
     top: -1px;

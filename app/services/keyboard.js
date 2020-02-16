@@ -51,9 +51,6 @@ cardApp.service('Keyboard', ['Format', '$rootScope', function(Format, $rootScope
 
     hideFooter = function() {
         var focused = document.activeElement;
-        console.log(focused);
-        console.log(focused.id);
-        console.log(focused.class);
         if (focused.id != 'cecard_create') {
             $('.create_container').hide();
         }
@@ -62,9 +59,6 @@ cardApp.service('Keyboard', ['Format', '$rootScope', function(Format, $rootScope
         $rootScope.$apply(function() {
             $rootScope.hide_footer = true;
         });
-
-        var x = document.activeElement.className;
-        console.log(x);
         // Paste div that will be scrolled into view if necessary and then deleted.
         Format.pasteHtmlAtCaret("<span class='scroll_latest_footer' id='scroll_latest_footer'></span>");
         // Scroll into view if necessary
