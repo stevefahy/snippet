@@ -57,8 +57,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         charstring: INITIAL_KEY + 'c',
         html: 'input',
         attribute: 'type="checkbox" onclick="checkBoxChanged(this)" onmouseover="checkBoxMouseover(this)" onmouseout="checkBoxMouseout(this)" ',
-        span_start: '<span id="checkbox_edit" >',
+        //span_start: '<span id="checkbox_edit" >',
+        //span_end: '</span>',
+
+        span_start: '<span class="checkbox" id="checkbox_edit" >',
         span_end: '</span>',
+
         close: false
     }, {
         charstring: INITIAL_KEY + '1',

@@ -1088,7 +1088,7 @@ if (workbox) {
   },
   {
     "url": "services/format.js",
-    "revision": "1d75aa1e12b41af0e588bb5a221fc26f"
+    "revision": "0a9ee1d784fab297ad383f0b3509d8ea"
   },
   {
     "url": "services/general.js",
@@ -1148,7 +1148,7 @@ if (workbox) {
   },
   {
     "url": "style/customstyle.css",
-    "revision": "129cf0883af6c858cc08403ae0e3f40b"
+    "revision": "58d00bd5a5844dc9b7398e94781cc642"
   },
   {
     "url": "style/instagram.css",
