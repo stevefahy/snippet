@@ -144,11 +144,7 @@ canvas {
     background-color: blue;
 }
 
-input[type="checkbox"] {
-    margin-right: 5px;
-    vertical-align: middle;
-    margin-top: -2px;
-}
+
 
 .ce pre,
 #cec pre {
@@ -4095,7 +4091,17 @@ height: auto;
 /* height: -webkit-fill-available; */
 }
 
+.cb_container {
+        display: flex;
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
 
+.cb_label {
+    width: 100%;
+    padding-left: 5px;
+}
 
 
 .checkbox > span {
@@ -4147,6 +4153,9 @@ height: 20px;
     border: 2px solid #34495E;
 }
 
+
+
+
 .checkbox > input:checked:before {
     /*
     display: block;
@@ -4170,5 +4179,13 @@ height: 20px;
     width: 100%;
     height: 100%;
     /* margin: 2px; */
-    /* float: left;
+    /* float: left;*/
+}
+
+
+input[type="checkbox"] {
+    margin-right: 5px;
+    vertical-align: middle;
+    /*margin-top: -2px;*/
+    
 }

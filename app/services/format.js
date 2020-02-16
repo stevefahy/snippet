@@ -60,10 +60,13 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         //span_start: '<span id="checkbox_edit" >',
         //span_end: '</span>',
 
-        span_start: '<span class="checkbox" id="checkbox_edit" >',
-        span_end: '</span>',
+        // start class='scroll_latest' id='marky'
 
-        close: false
+
+        span_start: '<span class="cb_container"><span class="checkbox" id="checkbox_edit" >',
+        span_end: '</span><span class="cb_label scroll_latest"  id="marky"></span></span>',
+
+        close: true
     }, {
         charstring: INITIAL_KEY + '1',
         html: 'h1',
@@ -1044,8 +1047,10 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     }
                     var updateChars;
                     if (marky_array[ma_index].span_start != undefined) {
-                        updateChars = currentChars.replace(char_watch, marky_array[ma_index].span_start + "<" + marky_array[ma_index].html + " " + marky_array[ma_index].attribute + " class='scroll_latest' id='marky'>" + marky_array[ma_index].span_end);
+                        //updateChars = currentChars.replace(char_watch, marky_array[ma_index].span_start + "<" + marky_array[ma_index].html + " " + marky_array[ma_index].attribute + " class='scroll_latest' id='marky'>" + marky_array[ma_index].span_end);
+                        updateChars = currentChars.replace(char_watch, marky_array[ma_index].span_start + "<" + marky_array[ma_index].html + " " + marky_array[ma_index].attribute + ">" + marky_array[ma_index].span_end);
                     } else {
+                        //updateChars = currentChars.replace(char_watch, "<" + marky_array[ma_index].html + " " + marky_array[ma_index].attribute + " class='scroll_latest in_progress' id='marky'>");
                         updateChars = currentChars.replace(char_watch, "<" + marky_array[ma_index].html + " " + marky_array[ma_index].attribute + " class='scroll_latest in_progress' id='marky'>");
                     }
                     if (close_tag) {

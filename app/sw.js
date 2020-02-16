@@ -823,6 +823,10 @@ if (workbox) {
     "revision": "a3eba38ee87a2a44623ac796cd77634c"
   },
   {
+    "url": "assets/images/cb_check.png",
+    "revision": "984d518520855bf885640d2861a1e05c"
+  },
+  {
     "url": "assets/images/gradient.png",
     "revision": "7dde21da1942ed3191447a81b1df93bb"
   },
@@ -1088,7 +1092,7 @@ if (workbox) {
   },
   {
     "url": "services/format.js",
-    "revision": "0a9ee1d784fab297ad383f0b3509d8ea"
+    "revision": "b397ed5c44724b70681ab850288797bc"
   },
   {
     "url": "services/general.js",
@@ -1148,7 +1152,7 @@ if (workbox) {
   },
   {
     "url": "style/customstyle.css",
-    "revision": "1adaf580ccd6c26836764bb0fe85b6cd"
+    "revision": "b81d6f31f1c4b7983fcada9aedf982ec"
   },
   {
     "url": "style/instagram.css",
