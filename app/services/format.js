@@ -949,7 +949,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             var marky_html_index = arrayObjectIndexOf(marky_array, marky_started_array[z], 'charstring');
             if (marky_html_index !== -1) {
                 var marky_html = marky_array[marky_html_index].html;
-                if (marky_html != 'pre') {
+                if (marky_html != 'pre' && marky_html != 'input') {
                     var new_tag = '<' + marky_html + ' class="scroll_latest" id="focus">&#x200b</' + marky_html + '>';
                     if (loop_count > 0) {
                         var pos = complete_tag.indexOf('&#x200b');
