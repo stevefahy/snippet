@@ -1116,7 +1116,7 @@ if (workbox) {
   },
   {
     "url": "services/keyboard.js",
-    "revision": "52d07f2c0fbc570672999473b472e3f5"
+    "revision": "57410476d91a7591a465fa33d634a891"
   },
   {
     "url": "services/loading.js",
@@ -1148,7 +1148,7 @@ if (workbox) {
   },
   {
     "url": "style/customstyle.css",
-    "revision": "58d00bd5a5844dc9b7398e94781cc642"
+    "revision": "1adaf580ccd6c26836764bb0fe85b6cd"
   },
   {
     "url": "style/instagram.css",
