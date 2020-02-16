@@ -4054,7 +4054,7 @@ span.after_image {
 
 .collapsed {
     height: 0px;
-    visibility: hidden;
+    /*visibility: hidden;*/
 }
 
 .collapsed_ce {
