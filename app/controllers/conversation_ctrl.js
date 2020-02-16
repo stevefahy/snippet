@@ -1625,9 +1625,16 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
                 if ($scope.cards[index].expanded) {
                     oh = 0;
+                    
                 }
                 $scope.cards[index].expanded = !$scope.cards[index].expanded;
 
+                console.log($scope.cards[index].expanded);
+
+                if($scope.cards[index].expanded){
+                    $(".content_cnv #card_" + $scope.cards[index]._id + " .content_area").css('visibility', 'visible');
+                
+                }
                 /*if (!$scope.$$phase) {
                     $scope.$apply();
                 }*/
@@ -1661,6 +1668,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         // Animation complete.
                         if (oh != 0) {
                             $(this).height('unset');
+                            $(this).css('visibility', 'unset');
+                            
+                        } else {
+                            //$(this).css('visibility', 'hidden');
                         }
                     }
                 });

@@ -896,7 +896,7 @@ if (workbox) {
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "efe0dae6fc6e6df61b737ef9fd51aa2c"
+    "revision": "a6028afe6adc03d2b4910b814f5eb582"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -1152,7 +1152,7 @@ if (workbox) {
   },
   {
     "url": "style/customstyle.css",
-    "revision": "218938b023210e2cf3c3a4607c0fedf6"
+    "revision": "80065485711e4123cd32e85f82ff85a2"
   },
   {
     "url": "style/instagram.css",
