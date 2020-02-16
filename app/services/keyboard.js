@@ -51,6 +51,9 @@ cardApp.service('Keyboard', ['Format', '$rootScope', function(Format, $rootScope
 
     hideFooter = function() {
         var focused = document.activeElement;
+        console.log(focused);
+        console.log(focused.id);
+        console.log(focused.class);
         if (focused.id != 'cecard_create') {
             $('.create_container').hide();
         }
