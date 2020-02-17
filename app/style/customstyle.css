@@ -4134,10 +4134,19 @@ height: 20px;
     cursor: pointer;
   }
 
+
+
 .checkbox > input:checked {
      border: 2px solid #5e5e5e;
     background-color: #ffffff;
     background-image: url();
+}
+
+.checkbox > input:disabled {
+     border: 2px solid #999999;
+     cursor: default;
+    /*background-color: #ffffff;
+    background-image: url();*/
 }
 
 .checkbox > input:checked + span::before {

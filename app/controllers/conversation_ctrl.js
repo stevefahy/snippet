@@ -37,11 +37,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.test_card = [];
 
 
-
-
-
-
-
     // leaving controller.
     $scope.$on('$destroy', function() {
         // Reset image editing to false
@@ -216,6 +211,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // SCROLLING
 
     newCardAnimComplete = function(card_id) {
+        console.log(card_id);
         var deferred = $q.defer();
         var pos = General.findWithAttr($scope.cards, '_id', card_id);
         if (pos >= 0) {
@@ -229,7 +225,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     }
 
     animateCard = async function(card_id) {
-        console.log('animateCard');
+        //console.log('animateCard');
         var deferred = $q.defer();
         let speed = 800;
         // Only animate the last added card.
@@ -288,7 +284,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 var card_id = $scope.cards[i]._id;
 
                 $scope.test_card[0] = $scope.cards[i];
-                console.log($scope.cards[i]);
+                //console.log($scope.cards[i]);
                 //   $timeout(function() {
                 // Get the height of the new card.
                 let test = awaitImages('#card_' + card_id).then(async function(result) {
@@ -301,7 +297,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                 unbindScroll();
                                 Scroll.disable('.content_cnv');
                                 var new_h = Number($('.test_card').outerHeight(true).toFixed(2));
-                                console.log(new_h);
+                                //console.log(new_h);
                                 //$("#card_" + card_id).css('margin-top', new_h * -1);
                                 //$("#card_" + card_id).css({'transform' : 'translateY('+ (new_h*-1) +'px)'});
                                 //transform: translateY(0);
@@ -363,7 +359,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
                 createObserver($scope.cards[i]._id);
                 //disableCheckboxes($scope.cards[i]._id);
-                checkboxesEnabled($scope.cards[i]._id, false);
+                console.log($scope.cards[i]._id);
+                //checkboxesEnabled($scope.cards[i]._id, false);
             }
         }
     };
@@ -489,7 +486,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 console.log('ADDING: ' + cards_to_move[i]._id);
                 
                 var exists = General.findWithAttr($scope.cards, '_id', cards_to_move[i]._id);
-                console.log(exists);
+                //console.log(exists);
                 if (exists >= 0) {
                     console.log('DUPE!');
                 } else {
@@ -736,7 +733,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }
             first_load = false;
         }
-        console.log(obj.location);
+        //console.log(obj.location);
         if (obj.location == 'content_cnv') {
             $rootScope.loading_cards = false;
             obj = null;
@@ -1078,7 +1075,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     }
 
     resizeContent = function(id, card, old_card, div) {
-        console.log('resize start: ' + div);
+        //console.log('resize start: ' + div);
         var deferred = $q.defer();
         //card.old_h = $('#ce' + card._id).height().toFixed(2);
         //card.new_h = $('.test_card .ce').height().toFixed(2);
@@ -1119,10 +1116,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     expanded = false
                 }
 
-                console.log(card.new_h + ' : ' + card.old_h);
+               // console.log(card.new_h + ' : ' + card.old_h);
                 if (card.new_h != card.old_h && expanded) {
 
-                    console.log('animate');
+                    //console.log('animate');
 
                     // $($('#ce' + card._id)).animate({ height: card.new_h }, 500, function() {
                     $($('#card_' + id + ' .' + div)).animate({ height: card.new_h }, 500, function() {
@@ -1157,7 +1154,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     }
 
     updateCard = function(card) {
-        console.log(card);
+        //console.log(card);
         // Check the existece of the card across all arrays.
         var card_arrays = [$scope.cards, $scope.cards_temp, $scope.removed_cards_bottom, $scope.removed_cards_top];
         var found_pos = -1;
@@ -1189,7 +1186,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     // Animate the change onscreen.
                     $timeout(async function() {
                         if (card_arrays[arr][found_pos].title_image_text != card.title_image_text || card_arrays[arr][found_pos].title_area != card.title_area) {
-                            console.log(card.title_image);
+                            //console.log(card.title_image);
                             if (card.title_image) {
                                 card_arrays[arr][found_pos].title_image = true;
                             } else {
@@ -1203,7 +1200,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             }
                             $scope.$apply();
                         } else {
-                            console.log('same title');
+                            //console.log('same title');
                             // Same content
                             card_arrays[arr][found_pos].original_content = card.content;
                             card_arrays[arr][found_pos].createdAt = card.createdAt;
@@ -1212,13 +1209,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                 $scope.$apply();
                             }
                         }
-                        console.log(card_arrays[arr][found_pos].content);
-                        console.log(card.content);
+                        //console.log(card_arrays[arr][found_pos].content);
+                        //console.log(card.content);
                         if (card_arrays[arr][found_pos].content != card.content) {
                             await resizeContent(card._id, card, card_arrays[arr][found_pos], 'content_area');
-                            console.log('resize end content_area');
+                            //console.log('resize end content_area');
                         } else {
-                            console.log('same content');
+                            //console.log('same content');
                             // Same content
                             card_arrays[arr][found_pos].original_content = card.content;
                             card_arrays[arr][found_pos].createdAt = card.createdAt;
@@ -1362,7 +1359,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     getFollowingUpdate = function() {
-        console.log('gfu');
+        //console.log('gfu');
         var deferred = $q.defer();
         var promises = [];
         var cards_new = [];
@@ -1595,30 +1592,30 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     }
 
     $scope.toggleTheHeight = function(event, id) {
-        console.log('TTH: ' + id);
+        //console.log('TTH: ' + id);
 
         if (event) {
             event.stopPropagation();
         }
 
         var tgt = event.target.tagName;
-        console.log(tgt);
+        //console.log(tgt);
         if (tgt != "INPUT") {
 
             var index = General.findWithAttr($scope.cards, '_id', id);
             if (!$scope.cards[index].editing) {
 
                 var oh = $(".content_cnv #card_" + id + " .content_area .ce").outerHeight();
-                console.log(oh);
+                //console.log(oh);
 
                 var msPerHeight = 1.25; //How much ms per height
                 var minRange = 400; //minimal animation time
                 var maxRange = 600; //Maximal animation time
                 var time = oh * msPerHeight;
-                console.log('time1: ' + time);
+                //console.log('time1: ' + time);
                 time = Math.min(time, maxRange);
                 time = Math.max(time, minRange);
-                console.log('time2: ' + time);
+                //console.log('time2: ' + time);
                 //key.expanded = false;
 
                 //$scope.cards[index].expanded = true;
@@ -1694,7 +1691,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         Edit.closeDropdowns();
         //console.log(id);
         //console.log(event);
-        console.log(event.target);
+        //console.log(event.target);
         var tgt = event.target.tagName;
 
 
@@ -1704,16 +1701,16 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         //console.log($scope.cards[index]);
 
         var is_visible = $('.content_cnv #card_' + id).hasClass("vis");
-        console.log($('.content_cnv #card_' + id));
-        console.log(is_visible);
+        //console.log($('.content_cnv #card_' + id));
+        //console.log(is_visible);
 
         let cd = getCardData(id);
-        console.log(cd);
+        //console.log(cd);
 
         if (is_visible && tgt != "INPUT") {
             //if ($scope.cards[index].expanded == true && event.target.tagName != "IMG") {
             if ($scope.cards[index].expanded == true) {
-                console.log($(".content_cnv #card_" + id + " .resize-container"));
+                //console.log($(".content_cnv #card_" + id + " .resize-container"));
                 //$('#card_'  + id + ' .resize-container').removeClass('expanded');
                 $scope.cards[index].expanded = false;
                 $(".content_cnv #card_" + id + " .resize-container").animate({
@@ -1730,13 +1727,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     height: cd.full_height + "px"
                 }, 500, function() {
                     // Animation complete.
-                    console.log($scope.cards[index].expanded);
+                    //console.log($scope.cards[index].expanded);
                 });
-                console.log($scope.cards[index].expanded);
+                //console.log($scope.cards[index].expanded);
             }
         }
 
-        console.log($scope.cards[index].expanded);
+        //console.log($scope.cards[index].expanded);
         if (!$scope.$$phase) {
             $scope.$apply();
         }
@@ -1767,7 +1764,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     $scope.cancelEdits = function(event) {
         if (event) {
-            console.log('stopPropagation');
+            //console.log('stopPropagation');
             event.stopPropagation();
             event.preventDefault();
         }
@@ -1776,7 +1773,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         if (pos >= 0) {
             $scope.cards[pos].editing = false;
 
-            console.log($scope.cards[pos].original_content);
+            //console.log($scope.cards[pos].original_content);
             //$scope.cards[pos].content = $scope.cards[pos].original_content;
 
             if ($scope.cards[pos].content != editing_original) {
@@ -1820,7 +1817,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         if ($('#image_adjust_' + image_id).length > 0) {
             image_editing = true;
         }
-        console.log(image_editing);
+        //console.log(image_editing);
         if (image_editing) {
             ImageEdit.closeImageEdit('e', image_id);
         }
@@ -1832,14 +1829,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         if ($('.filters_active').length > 0) {
             image_filters = true;
         }
-        console.log(image_filters);
+        //console.log(image_filters);
         if (image_filters) {
             ImageEdit.closeFilters();
         }
     }
 
     $scope.saveEdits = function(event) {
-        console.log('saveEdits');
+        //console.log('saveEdits');
         if (event) {
             console.log('stopPropagation');
             event.stopPropagation();
@@ -1885,14 +1882,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         for (var i = 0, len = $scope.cards.length; i < len; i++) {
             delete $scope.cards[i].disabled;
         }
-        console.log(currently_editing);
+        //console.log(currently_editing);
         var pos = General.findWithAttr($scope.cards, '_id', currently_editing);
         if (pos >= 0) {
-            console.log($scope.cards[pos]);
+            //console.log($scope.cards[pos]);
             $scope.cards[pos].editing = false;
             let card = $scope.cards[pos];
 
             //disableCheckboxes(card._id);
+            console.log($scope.cards[pos]._id);
             checkboxesEnabled($scope.cards[pos]._id, false);
 
             Format.getBlur(card._id, card, $scope.currentUser);
@@ -1926,13 +1924,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     $scope.editCard = function(event, card) {
         if (event) {
-            console.log('stopPropagation');
+            //console.log('stopPropagation');
             event.stopPropagation();
             event.preventDefault();
         }
-        console.log('edit card?');
+        //console.log('edit card?');
         if (card.user == $scope.currentUser._id) {
-            console.log('edit');
+            //console.log('edit');
 
             //removeToggleHeight(card._id);
             //$scope.editing_card = true;
@@ -1949,8 +1947,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 editing_original = $scope.cards[pos].original_content;
 
             }
-            console.log($scope.cards[pos]);
-
+            //console.log($scope.cards[pos]);
+console.log($scope.cards[pos]._id);
             checkboxesEnabled($scope.cards[pos]._id, true);
             //var cropper = $('.content_cnv #cropper_' + card._id);
             //ContentEditable.setContenteditable($(cropper)[0], true);
@@ -1968,7 +1966,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             });
 
         } else {
-            console.log('dont edit');
+           // console.log('dont edit');
         }
     }
 
@@ -2073,7 +2071,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         //console.log(node[0].className);
         if (node[0].nodeName == 'DIV' && node[0].className.indexOf('cropper_cont') >= 0) {
             //tmp.appendChild(node[i]);
-            console.log('ONE');
+            //console.log('ONE');
             title_tmp.appendChild(node[0]);
 
 
@@ -2088,8 +2086,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var cropper_found = false;
         for (var i = 1, len = node.length; i < len; i++) {
             //while(node[i].nodeName != 'DIV'){
-            console.log(node[i].nodeName);
-            console.log(node[i].outerHTML);
+            //console.log(node[i].nodeName);
+            //console.log(node[i].outerHTML);
             if(node[i].nodeName != "#text"){
             if ((node[i].outerHTML).indexOf('cropper_cont') >= 0) {
                 cropper_found = true;
@@ -2163,18 +2161,18 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }*/
 
             $(node[0]).children("img").each(function() {
-                console.log(this);
-                console.log($(this).attr('title-data'));
+                //console.log(this);
+                //console.log($(this).attr('title-data'));
 
                 if ($(this).attr('title-data')) {
                     if ($(this).attr('title-data').length > 0) {
                         card.title_image_text = $(this).attr('title-data');
-                        console.log(card.title_image_text);
+                        //console.log(card.title_image_text);
                         //card.title_image = true;
                         card.title_image = true;
 
                         card.animate_title = true;
-                        console.log(card.title_image);
+                        //console.log(card.title_image);
                     } else {
                         delete card.title_image_text;
                         card.title_image = false;
@@ -2249,16 +2247,16 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
         //return content_area;
 
-        console.log(card);
+        //console.log(card);
         return card;
     }
 
     // TODO - If not following anyone suggest follow?
     getFollowing = function() {
-        console.log('gf');
+        //console.log('gf');
         var deferred = $q.defer();
         var promises = [];
-        console.log('loading: ' + $rootScope.loading_cards_offscreen);
+        //console.log('loading: ' + $rootScope.loading_cards_offscreen);
         if (!$rootScope.loading_cards_offscreen) {
             $rootScope.loading_cards_offscreen = true;
             var followed = UserData.getUser().following;
@@ -2274,17 +2272,17 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             } else {
                 last_card = '0';
             }
-            console.log(last_card + ' : ' + last_card_stored);
+            //console.log(last_card + ' : ' + last_card_stored);
             var val = { ids: followed, amount: load_amount, last_card: last_card };
             if (last_card != last_card_stored) {
                 last_card_stored = last_card;
                 var prom1 = Conversations.getFeed(val)
                     .then(function(res) {
-                        console.log('gf loaded');
-                        console.log(res);
+                        //console.log('gf loaded');
+                        //console.log(res);
                         if (res.data.cards.length > 0) {
                             res.data.cards.map(function(key, array) {
-                                console.log('got: ' + key._id);
+                                //console.log('got: ' + key._id);
                                 //key.card_type = getCardType(key.content);
                                 //console.log(key.card_type);
                                 //setCardMin(key);
@@ -2641,7 +2639,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // Called as each card is loaded.
     // Disable checkboxes if the contenteditable is set to false.
     var checkboxesEnabled = function(id, bool) {
-        //console.log('checkboxesEnabled: ' + bool);
+        console.log('checkboxesEnabled: ' + bool);
         var el = document.getElementById('ce' + id);
         //if ($(el).attr('contenteditable') == 'false') {
         if (bool == false) {
@@ -2774,7 +2772,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         });
 
     var cardAnimEnd = function() {
-        console.log('cardAnimEnd');
+        //console.log('cardAnimEnd');
         //delete $scope.cards[i].new_card;
         var id = (this.id).substr(5, (this.id).length);
         // remove the animation end listener which called this function.
@@ -2802,6 +2800,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             if (pos >= 0) {
                 createObserver($scope.cards[pos]._id);
                 //disableCheckboxes($scope.cards[pos]._id);
+                console.log($scope.cards[pos]._id);
                 checkboxesEnabled($scope.cards[pos]._id, false);
             }
         });
