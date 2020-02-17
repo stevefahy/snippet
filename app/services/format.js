@@ -1200,7 +1200,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     this.contentChanged = function(content, elem) {
         console.log(elem);
         if (!self.paste_in_progress) {
-            content = $('.content_cnv #' + elem).html();
+            //content = $('.content_cnv #' + elem).html();
             console.log(content);
             self.markyCheck(content, elem);
         } else {
