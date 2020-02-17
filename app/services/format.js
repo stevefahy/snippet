@@ -831,6 +831,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         console.log('moveCaretAfter');
         self.removeDeleteIds();
         var current_node = $("#" + id).get(0);
+        console.log(current_node);
         if (current_node != undefined) {
             $("<span id='delete'>&#x200b</span>").insertAfter(current_node);
             var range = document.createRange();
