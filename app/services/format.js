@@ -677,6 +677,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.getBlur = function(id, card, currentUser) {
+        console.log('getBlur');
         // Add slight delay so that document.activeElement works
         setTimeout(function() {
             var content_title = $('.content_cnv #card_' + card._id + ' .title_area #ce_title'  + card._id).html();
@@ -706,6 +707,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     // Inject the Database Service
                     var Database = $injector.get('Database');
                     // Update the card
+                    console.log(card_copy);
                     Database.updateCard(id, card_copy, currentUser);
                 }
             }

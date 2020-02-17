@@ -1200,7 +1200,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             }
                             $scope.$apply();
                         } else {
-                            //console.log('same title');
+                            console.log('same title');
                             // Same content
                             card_arrays[arr][found_pos].original_content = card.content;
                             card_arrays[arr][found_pos].createdAt = card.createdAt;
@@ -1213,9 +1213,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         //console.log(card.content);
                         if (card_arrays[arr][found_pos].content != card.content) {
                             await resizeContent(card._id, card, card_arrays[arr][found_pos], 'content_area');
-                            //console.log('resize end content_area');
+                            console.log('resize end content_area');
                         } else {
-                            //console.log('same content');
+                            console.log('same content');
                             // Same content
                             card_arrays[arr][found_pos].original_content = card.content;
                             card_arrays[arr][found_pos].createdAt = card.createdAt;
