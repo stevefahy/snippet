@@ -1154,6 +1154,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     }
 
     updateCard = function(card) {
+        if (!$scope.$$phase) {
+                $scope.$apply();
+            }
         //console.log(card);
         // Check the existece of the card across all arrays.
         var card_arrays = [$scope.cards, $scope.cards_temp, $scope.removed_cards_bottom, $scope.removed_cards_top];
@@ -1172,9 +1175,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             $scope.test_card[0] = card;
             $scope.test_card[0].expanded = true;
 
-            if (!$scope.$$phase) {
-                $scope.$apply();
-            }
+            
             //console.log(card);
             //console.log(JSON.stringify(card));
             //if (card_arrays[arr][found_pos].content != card.content) {
