@@ -1285,7 +1285,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 });
                 //$scope.test_card[0] = card;
 
-            });
+            },100);
             //$scope.test_card.content = card.content;
             //$scope.test_card[0] = card_arrays[arr][found_pos];
             //$scope.test_card[0] = card;
