@@ -875,11 +875,15 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     function moveAfterPre(id) {
         var pre_node = $("#" + id).get(0);
+        console.log($("#" + id));
+        console.log(pre_node);
         var nested_level = marky_started_array.length - 1;
+        console.log(nested_level);
         // If this PRE element is nested within elements
         if (nested_level > 0) {
             // Find the previous_node (formatting elements) which this is currently nested within.
             var previous_node = $("#" + id).get(0);
+            console.log(previous_node);
             for (var i = 0; i < nested_level; i++) {
                 par = 'parentNode';
                 previous_node = previous_node[par];
@@ -890,6 +894,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             for (var msa = 0; msa < marky_started_array.length - 1; msa++) {
                 // Find the HTML for this charstring and create that element
                 var result = $.grep(marky_array, function(e) { return e.charstring == marky_started_array[msa]; });
+                console.log(result);
                 var updateChars = document.createElement(result[0].html);
                 updateChars.attribute = result[0].attribute;
                 if (msa === 0) {
