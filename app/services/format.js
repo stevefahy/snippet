@@ -70,23 +70,25 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     }, {
         charstring: INITIAL_KEY + '1',
         html: 'h1',
+        //attribute: '',
         attribute: 'class="header_1"',
-        span_start: '<span id="header" >',
-        span_end: '</span>',
+        // class='scroll_latest' id='marky'
+        //span_start: '<span id="marky"  class="header_1 scroll_latest">',
+        //span_end: '</span>',
         close: true
     }, {
         charstring: INITIAL_KEY + '2',
         html: 'h2',
         attribute: 'class="header_2"',
-        span_start: '<span id="header" >',
-        span_end: '</span>',
+        //span_start: '<span id="header" >',
+        //span_end: '</span>',
         close: true
     }, {
         charstring: INITIAL_KEY + '3',
         html: 'h3',
         attribute: 'class="header_3"',
-        span_start: '<span id="header" >',
-        span_end: '</span>',
+        //span_start: '<span id="header" >',
+        //span_end: '</span>',
         close: true
     }, {
         charstring: INITIAL_KEY + 'r',
@@ -844,8 +846,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     }
 
     function moveCaretInto(id) {
+        console.log(id);
+        console.log($("#" + id));
         $("#" + id).html('&#x200b');
         var current_node = $("#" + id).get(0);
+        console.log(current_node);
         range = document.createRange();
         range.setStart(current_node.firstChild, 1);
         range.setEnd(current_node.firstChild, 1);
