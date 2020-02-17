@@ -538,7 +538,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         if (ua.indexOf('AndroidApp') >= 0) {
             if (document.activeElement.id != 'cecard_create' && id != undefined && id != 'card_create') {
                 // save the card first (Android bug)
-                self.saveCard(id, card, currentUser);
+                //self.saveCard(id, card, currentUser);
             }
             Android.choosePhoto();
         } else {

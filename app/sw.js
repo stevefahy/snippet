@@ -1092,7 +1092,7 @@ if (workbox) {
   },
   {
     "url": "services/format.js",
-    "revision": "ff36b136d6a5921b5cec5ecb04e8d82e"
+    "revision": "5b9a6528cc9cd854e01a3f47875beaa5"
   },
   {
     "url": "services/general.js",
@@ -1188,7 +1188,7 @@ if (workbox) {
   },
   {
     "url": "views/conversation.html",
-    "revision": "11d802248f3659ec5318b4d13cefe605"
+    "revision": "b8e3ebca70fbd1c2fae61aa11e7b4618"
   },
   {
     "url": "views/conversations.html",
