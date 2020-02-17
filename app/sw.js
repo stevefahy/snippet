@@ -1188,7 +1188,7 @@ if (workbox) {
   },
   {
     "url": "views/conversation.html",
-    "revision": "b8e3ebca70fbd1c2fae61aa11e7b4618"
+    "revision": "323c1fc5302dfd283b33d07cd00f6f24"
   },
   {
     "url": "views/conversations.html",
