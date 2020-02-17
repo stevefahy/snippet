@@ -1209,8 +1209,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                 $scope.$apply();
                             }
                         }
-                        //console.log(card_arrays[arr][found_pos].content);
-                        //console.log(card.content);
+                        console.log(card_arrays[arr][found_pos].content);
+                        console.log(card.content);
                         if (card_arrays[arr][found_pos].content != card.content) {
                             await resizeContent(card._id, card, card_arrays[arr][found_pos], 'content_area');
                             console.log('resize end content_area');
