@@ -828,6 +828,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     }
 
     function moveCaretAfter(id) {
+        console.log('moveCaretAfter');
         self.removeDeleteIds();
         var current_node = $("#" + id).get(0);
         if (current_node != undefined) {
