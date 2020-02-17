@@ -359,7 +359,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
                 createObserver($scope.cards[i]._id);
                 //disableCheckboxes($scope.cards[i]._id);
-                console.log($scope.cards[i]._id);
+                //console.log($scope.cards[i]._id);
                 //checkboxesEnabled($scope.cards[i]._id, false);
             }
         }
@@ -1948,7 +1948,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
             }
             //console.log($scope.cards[pos]);
-console.log($scope.cards[pos]._id);
+//console.log($scope.cards[pos]._id);
             checkboxesEnabled($scope.cards[pos]._id, true);
             //var cropper = $('.content_cnv #cropper_' + card._id);
             //ContentEditable.setContenteditable($(cropper)[0], true);

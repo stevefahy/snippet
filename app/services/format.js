@@ -66,7 +66,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         span_start: '<span class="cb_container"><span class="checkbox" id="checkbox_edit" >',
         span_end: '</span><span class="cb_label scroll_latest"  id="marky"></span></span>',
 
-        close: true
+        close: false
     }, {
         charstring: INITIAL_KEY + '1',
         html: 'h1',
@@ -981,6 +981,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         var content_to_match = content_less_temp;
         var mark_list_current;
         var ma_index;
+        console.log(marky_array);
         // Create a RegEx to check for all upper and lowercase variations of the markys.
         for (var ma = 0; ma < marky_array.length; ma++) {
             var char_one = marky_array[ma].charstring.substr(0, 1);
@@ -989,16 +990,20 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             var char_two_other_case = General.swapCase(char_two);
             var reg2_str = "(" + '[' + char_one + char_one_other_case + ']' + '[' + char_two + char_two_other_case + ']' + ")";
             var result = content_to_match.match(new RegExp(reg2_str, 'igm'));
+            console.log(result);
             if (result != null) {
                 // Check for escape 
                 var marky_index = content_to_match.indexOf(result);
                 var marky_preceding = content_to_match.substring(marky_index - 1, marky_index);
+                console.log(marky_preceding);
                 if (marky_preceding == ESCAPE_KEY) {
                     var currentChars = content_to_match.substring(marky_index - 1, marky_index + 2);
                     var updateChars = "<span id='marky' class='escaped'>" + currentChars.substring(1, 2) + '<WBR>' + currentChars.substring(2, 3) + "</span>";
                     // Replace the Escaped Marky with a the Marky chars separated by a <WBR> tag.
                     // Use timeout to fix bug on Galaxy S6 (Chrome, FF, Canary)
                     $timeout(function() {
+                        console.log(elem);
+                        console.log(currentChars);
                             self.selectText(elem, currentChars);
                         }, 0)
                         .then(
@@ -1030,8 +1035,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             var currentChars = mark_list_current[0];
             var char_watch = mark_list_current[0];
             var char_watch_lowercase = char_watch.toLowerCase();
+            console.log(marky_array[ma_index].html);
             if (marky_array[ma_index].html !== '') {
                 var ma_arg = marky_array[ma_index];
+                console.log(marky_started_array);
+                console.log(char_watch_lowercase);
                 if (!include(marky_started_array, char_watch_lowercase)) {
                     //
                     // Open Marky tag
@@ -1059,6 +1067,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     replaceTags.removeSpaces(elem);
                     // Use timeout to fix bug on Galaxy S6 (Chrome, FF, Canary)
                     $timeout(function() {
+                        console.log(elem);
+                        console.log(currentChars);
                             self.selectText(elem, currentChars);
                         }, 0)
                         .then(
@@ -1072,14 +1082,23 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                             function() {
                                 return $timeout(function() {
                                     document.getElementById(elem).focus();
+                                    console.log(close_tag);
+                                    console.log(ma_arg.html);
                                     if (close_tag) {
                                         if (ma_arg.html == 'pre') {
+                                        //if (ma_arg.html == 'pre' || ma_arg.html == 'input') {
+                                        //marky_html != 'input'
                                             moveAfterPre('marky');
                                         } else {
                                             moveCaretInto('marky');
                                         }
                                     } else {
-                                        moveCaretAfter('marky');
+                                        if (ma_arg.html == 'input') {
+                                            moveCaretInto('marky');
+                                        } else {
+                                            moveCaretAfter('marky');
+                                        }
+                                        
                                     }
                                 }, 0);
                             }
