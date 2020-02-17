@@ -1181,6 +1181,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             //if (card_arrays[arr][found_pos].content != card.content) {
             // Get the card height.
             //$scope.test_card[0] = card;
+                var v = card_arrays[arr][found_pos].content;
+                v = replaceTags.replace(v);
+                // DANGER These had been removed for android image save bug
+                v = replaceTags.removeDeleteId(v);
+                v = replaceTags.removeFocusIds(v);
+
+                card_arrays[arr][found_pos].content = v;
 
             $timeout(function() {
                 let test = awaitImages('.test_card').then(function(result) {
