@@ -1425,8 +1425,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         document.getElementById(elem).onkeyup = function(e) {
             var selection_start = $(self.getSelectionStart());
             // Listen for backspace
+            console.log(selection_start);
             if (e.keyCode == 8) {
-                /*
+                
                 if ($(selection_start).attr("class") != undefined) {
                     var prev_class = $(selection_start).attr("class");
                     var parent = $(selection_start).closest('.ce').attr("id");
@@ -1461,7 +1462,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                         }
                     }
                 }
-                */
+                
             }
             var selection_text = selection_start[0].nodeValue;
             if (selection_text != undefined) {
