@@ -936,7 +936,7 @@ if (workbox) {
   },
   {
     "url": "directives/directives.js",
-    "revision": "a9e61e2bb75abcfb9914de37f9595324"
+    "revision": "21016e11dcdd2a4e1b6c8cf5ce4d77f3"
   },
   {
     "url": "factories/factories.js",
@@ -1188,7 +1188,7 @@ if (workbox) {
   },
   {
     "url": "views/conversation.html",
-    "revision": "59c9fe05ad299518fdc0bf810487c484"
+    "revision": "84bc77697d0601ac1c3e1b626b8e3b54"
   },
   {
     "url": "views/conversations.html",

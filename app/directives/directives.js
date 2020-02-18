@@ -19,7 +19,7 @@ cardApp.directive("contenteditable", function() {
             element.bind("blur keyup change", function(event) {
                 // WARNING added - if (!scope.$$phase) { 31/01/18
                 if (!scope.$$phase) {
-                    scope.$apply(read);
+                    //scope.$apply(read);
                 }
             });
         }
