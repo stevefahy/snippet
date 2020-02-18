@@ -37,6 +37,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.test_card = [];
 
 
+    $scope.test_delete = "Now testing <b class='scroll_latest'>debounce</b> here.</div>";
+
     // leaving controller.
     $scope.$on('$destroy', function() {
         // Reset image editing to false

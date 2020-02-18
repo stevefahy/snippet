@@ -1202,7 +1202,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         if (!self.paste_in_progress) {
             //content = $('.content_cnv #' + elem).html();
             console.log(content);
-            //self.markyCheck(content, elem);
+            self.markyCheck(content, elem);
         } else {
             self.paste_in_progress = false;
         }
