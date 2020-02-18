@@ -1504,6 +1504,13 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             moveCaretInto('enter_focus');
             return false;
         }
+
+         var selection_start = $(self.getSelectionStart());
+            // Listen for backspace
+            console.log(selection_start);
+            if (e.keyCode == 8) {
+                $event.preventDefault();
+            }
     };
 
     this.handlePaste = function($event) {
