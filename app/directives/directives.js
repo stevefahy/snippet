@@ -18,7 +18,8 @@ cardApp.directive("contenteditable", function() {
                 //element.html(ngModel.$modelValue || "");
                 
             };
-            element.bind("blur keyup change", function(event) {
+            //element.bind("blur keyup change", function(event) {
+            element.bind("keyup", function(event) {
                 console.log(event);
                 if(event.key != "Backspace"){
                 // WARNING added - if (!scope.$$phase) { 31/01/18
