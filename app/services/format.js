@@ -1202,7 +1202,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         if (!self.paste_in_progress) {
             //content = $('.content_cnv #' + elem).html();
             console.log(content);
-            self.markyCheck(content, elem);
+            //self.markyCheck(content, elem);
         } else {
             self.paste_in_progress = false;
         }
@@ -1421,6 +1421,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 }
             }
         });
+
+        /*document.getElementById(elem).onkeydown = function(e) {
+            var selection_start = $(self.getSelectionStart());
+            console.log(selection_start);
+        };*/
 
         document.getElementById(elem).onkeyup = function(e) {
             var selection_start = $(self.getSelectionStart());
