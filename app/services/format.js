@@ -680,11 +680,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         console.log('getBlur');
         // Add slight delay so that document.activeElement works
         setTimeout(function() {
-            var content_title = $('.content_cnv #card_' + card._id + ' .title_area #ce_title'  + card._id).html();
+            var content_title = $('.content_cnv #card_' + card._id + ' .title_area #ce_title' + card._id).html();
             //var content_content = $('.content_cnv .content_area #ce' + card._id).html();
             var content_content = $('.content_cnv #card_' + card._id + ' .content_area #ce' + card._id).html();
-           //console.log(content_title);
-           //console.log(content_content);
+            //console.log(content_title);
+            //console.log(content_content);
             var content = content_title + content_content;
             //console.log(content);
             // Get the element currently in focus
@@ -1021,8 +1021,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     // Replace the Escaped Marky with a the Marky chars separated by a <WBR> tag.
                     // Use timeout to fix bug on Galaxy S6 (Chrome, FF, Canary)
                     $timeout(function() {
-                        console.log(elem);
-                        console.log(currentChars);
+                            console.log(elem);
+                            console.log(currentChars);
                             self.selectText(elem, currentChars);
                         }, 0)
                         .then(
@@ -1086,8 +1086,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     replaceTags.removeSpaces(elem);
                     // Use timeout to fix bug on Galaxy S6 (Chrome, FF, Canary)
                     $timeout(function() {
-                        console.log(elem);
-                        console.log(currentChars);
+                            console.log(elem);
+                            console.log(currentChars);
                             self.selectText(elem, currentChars);
                         }, 0)
                         .then(
@@ -1105,8 +1105,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                                     console.log(ma_arg.html);
                                     if (close_tag) {
                                         if (ma_arg.html == 'pre') {
-                                        //if (ma_arg.html == 'pre' || ma_arg.html == 'input') {
-                                        //marky_html != 'input'
+                                            //if (ma_arg.html == 'pre' || ma_arg.html == 'input') {
+                                            //marky_html != 'input'
                                             moveAfterPre('marky');
                                         } else {
                                             moveCaretInto('marky');
@@ -1117,7 +1117,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                                         } else {
                                             moveCaretAfter('marky');
                                         }
-                                        
+
                                     }
                                 }, 0);
                             }
@@ -1155,9 +1155,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 if (marky_array[ma_index].script === 'getImage') {
                     var el = elem;
                     var index_el = elem.indexOf('_title');
-                    if(index_el >= 0){
+                    if (index_el >= 0) {
                         el = elem.substr(8, el.length);
-                        el = 'ce'+el;
+                        el = 'ce' + el;
                         console.log(el);
                     }
                     $('#upload-trigger' + el).trigger('click');
@@ -1175,6 +1175,38 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             }
         }
     };
+
+    function deleteCharacterPrecedingCaret(containerEl) {
+        var precedingChar = "",
+            sel, range, precedingRange;
+        if (window.getSelection) {
+            sel = window.getSelection();
+            if (sel.rangeCount > 0) {
+                range = sel.getRangeAt(0).cloneRange();
+                range.collapse(true);
+                range.setStart(containerEl, 0);
+                console.log(range.toString());
+                precedingChar = range.toString().slice(-1);
+console.log(range.endOffset);
+                //range.setEnd(containerEl, 1);
+                //range.select();
+                    //range.setStart(current_node, node_pos.p.offset);
+                //range.setEnd(containerEl, range.endOffset-1);
+                //sel.removeAllRanges();
+               // sel.addRange(range);
+
+               // self.pasteHtmlAtCaret('DEL');
+            }
+        } else if ((sel = document.selection) && sel.type != "Control") {
+            range = sel.createRange();
+            precedingRange = range.duplicate();
+            precedingRange.moveToElementText(containerEl);
+            precedingRange.setEndPoint("EndToStart", range);
+            precedingChar = precedingRange.text.slice(-1);
+
+        }
+        return precedingChar;
+    }
 
     function getCharacterPrecedingCaret(containerEl) {
         var precedingChar = "",
@@ -1239,7 +1271,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     // Scroll the HTML into view
     this.scrollLatest = function(clas) {
-        
+
         var scroll_latest = document.querySelector('.' + clas);
         $timeout(function() {
             $timeout(function() {
@@ -1257,7 +1289,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 }
             }, 400);
         });
-        
+
     };
 
     this.pasteHtmlAtCaret = function(html) {
@@ -1432,7 +1464,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             // Listen for backspace
             console.log(selection_start);
             if (e.keyCode == 8) {
-                
+
                 if ($(selection_start).attr("class") != undefined) {
                     var prev_class = $(selection_start).attr("class");
                     var parent = $(selection_start).closest('.ce').attr("id");
@@ -1467,7 +1499,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                         }
                     }
                 }
-                
+
             }
             var selection_text = selection_start[0].nodeValue;
             if (selection_text != undefined) {
@@ -1496,6 +1528,38 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         });
     };
 
+
+    function insertTextAtCursor(value, stepback) {
+        var sel, range, textNode;
+        if (window.getSelection) {
+            sel = window.getSelection();
+            if (sel.getRangeAt && sel.rangeCount) {
+                range = sel.getRangeAt(0);
+                textNode = document.createTextNode(value);
+
+
+                //Check value of stepback: 0 or 1
+                if(!stepback) //if 0
+                range.insertNode(textNode);
+                if (stepback) { //if 1
+                    // replace the previously inserted character with the new one here
+
+                }
+
+                // Move caret to the end of the newly inserted text node   
+                range.setStart(textNode, textNode.length);
+                range.setEnd(textNode, textNode.length);
+
+                sel.removeAllRanges();
+                sel.addRange(range);
+
+            }
+        } else if (document.selection && document.selection.createRange) {
+            range = document.selection.createRange();
+            range.pasteHTML(text);
+        }
+    }
+
     this.checkKey = function($event, elem) {
         if ($event.keyCode == 13) {
             // Stop the default behavior for the ENTER key and insert <br><br> instead
@@ -1505,12 +1569,30 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             return false;
         }
 
-         var selection_start = $(self.getSelectionStart());
+/*
+        if ($event.keyCode == 8) {
+            $event.preventDefault();
+
+            var selection_start = $(self.getSelectionStart());
             // Listen for backspace
+            console.log('BACKSPACE');
             console.log(selection_start);
-            if (e.keyCode == 8) {
-                $event.preventDefault();
-            }
+
+            var node = document.getSelection();
+            console.log(node);
+
+
+            var editableEl = document.getElementById(elem);
+            // lowercase
+            var a = getCharacterPrecedingCaret(editableEl);
+            console.log(a);
+            //return a;
+            //insertTextAtCursor("value", true)
+
+            //textRange.select();
+            deleteCharacterPrecedingCaret(editableEl);
+        }
+        */
     };
 
     this.handlePaste = function($event) {

@@ -19,10 +19,13 @@ cardApp.directive("contenteditable", function() {
                 
             };
             element.bind("blur keyup change", function(event) {
+                console.log(event);
+                if(event.key != "Backspace"){
                 // WARNING added - if (!scope.$$phase) { 31/01/18
                 if (!scope.$$phase) {
                     scope.$apply(read);
                 }
+            }
             });
         }
     };
