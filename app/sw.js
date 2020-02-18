@@ -936,7 +936,7 @@ if (workbox) {
   },
   {
     "url": "directives/directives.js",
-    "revision": "e9324b38238deb5fef7801f8983b8bd6"
+    "revision": "87d02604881a395893c6481fea0e4839"
   },
   {
     "url": "factories/factories.js",
