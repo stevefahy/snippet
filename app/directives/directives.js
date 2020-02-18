@@ -14,8 +14,8 @@ cardApp.directive("contenteditable", function() {
                 ngModel.$setViewValue(element.html());
             }
             ngModel.$render = function() {
-                //element.html(ngModel.$viewValue || "");
-                element.html(ngModel.$modelValue || "");
+                element.html(ngModel.$viewValue || "");
+                //element.html(ngModel.$modelValue || "");
                 
             };
             element.bind("blur keyup change", function(event) {
