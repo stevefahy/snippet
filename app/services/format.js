@@ -838,6 +838,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             var del_span = $("<span id='delete'>&#x200b</span>").insertAfter(current_node);
             
 
+
             var range = document.createRange();
             range.setStartAfter(current_node.nextSibling);
             range.setStart(current_node.nextSibling, 1);
@@ -1671,6 +1672,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             console.log(selection_start);
         };*/
 
+
+        /*
         document.getElementById(elem).onkeyup = function(e) {
             var selection_start = $(self.getSelectionStart());
             // Listen for backspace
@@ -1725,6 +1728,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 }
             }
         };
+        */
     };
 
     function stopEditing(elem) {
@@ -1775,14 +1779,70 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     this.checkKeyUp = function($event, elem) {
         console.log('keyup');
          //var b = a.replace(/\u200B/g,'');
-         /*
+         
          if ($event.keyCode == 8 || $event.keyCode == 46) {
-        var a = $('#'+elem).html();
+        /*var a = $('#'+elem).html();
         var b = a.replace(/\u200B/g,'');
-        $('#'+elem).html(b);
+        $('#'+elem).html(b);*/
+/*
+        var range = document.createRange();
+            range.setStartAfter(current_node.nextSibling);
+            range.setStart(current_node.nextSibling, 1);
+            range.setEnd(current_node.nextSibling, 1);
+            range.collapse(true);
+            var selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            */
+            var selection = window.getSelection();
+            console.log(selection);
+            console.log(selection.anchorNode.parentNode.id);
+            if(selection.anchorNode.parentNode.id = "delete"){
+                var pre = $(selection.anchorNode.parentNode).html();
+                console.log(pre);
+                //var range = document.createRange();
+                //console.log(range);
+
+      //sel = window.getSelection();
+        console.log(sel);
+        if (selection.rangeCount > 0) {
+
+
+            range = sel.getRangeAt(0);
+            console.log(range);
+            var sc = sel.anchorNode;
+            var os = sel.anchorOffset;
+            range.collapse(true);
+        }
+
+
+
+
+                $(selection.anchorNode.parentNode).html($(selection.anchorNode.parentNode).html().replace(/\u200B/g, ""));
+                
+                range = sel.getRangeAt(0);
+                console.log(sel);
+                sc = sel.anchorNode.firstChild;
+                os = sel.anchorNode.firstChild.length;
+            console.log(range);
+range.setStart(sc, os);
+
+               // $('#' + id).html($('#' + id).html().replace(/\u200B/g, ""));
+                /*
+            var range = document.createRange();
+            range.setStartAfter(current_node.nextSibling);
+            range.setStart(current_node.nextSibling, 1);
+            range.setEnd(current_node.nextSibling, 1);
+            range.collapse(true);
+            var selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            */
+
+            }
 
     }
-     */
+     
         //console.log(a);
     }
 
