@@ -835,7 +835,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         var current_node = $("#" + id).get(0);
         console.log(current_node);
         if (current_node != undefined) {
-            $("<span id='delete'>&#x200b</span>").insertAfter(current_node);
+            var del_span = $("<span id='delete'>&#x200b</span>").insertAfter(current_node);
+            
+
             var range = document.createRange();
             range.setStartAfter(current_node.nextSibling);
             range.setStart(current_node.nextSibling, 1);
@@ -855,6 +857,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             console.log($(current_node).html());
 
             $('#' + id).removeAttr('id');
+
+            //$(del_span[0]).html($(del_span[0]).html().replace(/\u200B/g, "CAT"));
         }
         return;
     }
