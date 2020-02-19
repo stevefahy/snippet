@@ -835,7 +835,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         var current_node = $("#" + id).get(0);
         console.log(current_node);
         if (current_node != undefined) {
-            $("<span id='delete'>&#x200b </span>").insertAfter(current_node);
+            $("<span id='delete'>&#x200b</span>").insertAfter(current_node);
             var range = document.createRange();
             range.setStartAfter(current_node.nextSibling);
             range.setStart(current_node.nextSibling, 1);
@@ -848,6 +848,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             if (ua.toLowerCase().indexOf('firefox') > -1) {
                 $('#' + id).html($('#' + id).html().replace(/<br>/g, ""));
             }
+            var t = $(current_node).html();
+            console.log($(current_node).html());
+            $('#' + id).html($('#' + id).html().replace(/\u200B/g, ""));
+            //$(current_node).html(t + 'cleaned');
+            console.log($(current_node).html());
+
             $('#' + id).removeAttr('id');
         }
         return;
@@ -1762,6 +1768,19 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         }
     }
 
+    this.checkKeyUp = function($event, elem) {
+        console.log('keyup');
+         //var b = a.replace(/\u200B/g,'');
+         /*
+         if ($event.keyCode == 8 || $event.keyCode == 46) {
+        var a = $('#'+elem).html();
+        var b = a.replace(/\u200B/g,'');
+        $('#'+elem).html(b);
+        */
+    }
+        //console.log(a);
+    }
+
     this.checkKey = function($event, elem) {
         if ($event.keyCode == 13) {
             // Stop the default behavior for the ENTER key and insert <br><br> instead
@@ -1771,6 +1790,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             return false;
         }
 
+        //var b = a.replace(/\u200B/g,'');
+        //var a = $('#'+elem).html();
+        //var b = a.replace(/\u200B/g,'');
+        //$('#'+elem).html(b);
+        //console.log(a);
 
         if ($event.keyCode == 8 || $event.keyCode == 46) {
             $event.preventDefault();
