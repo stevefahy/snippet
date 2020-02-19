@@ -988,8 +988,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     this.markyCheck = function(content, elem) {
         //console.log('markyCheck');
-        console.log(content);
-        console.log(elem);
+        //console.log(content);
+        //console.log(elem);
         var escape_marky = false;
         // Inject the General Service
         var General = $injector.get('General');
@@ -1000,7 +1000,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         var content_to_match = content_less_temp;
         var mark_list_current;
         var ma_index;
-        console.log(marky_array);
+        //console.log(marky_array);
         // Create a RegEx to check for all upper and lowercase variations of the markys.
         for (var ma = 0; ma < marky_array.length; ma++) {
             var char_one = marky_array[ma].charstring.substr(0, 1);
@@ -1009,20 +1009,20 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             var char_two_other_case = General.swapCase(char_two);
             var reg2_str = "(" + '[' + char_one + char_one_other_case + ']' + '[' + char_two + char_two_other_case + ']' + ")";
             var result = content_to_match.match(new RegExp(reg2_str, 'igm'));
-            console.log(result);
+            //console.log(result);
             if (result != null) {
                 // Check for escape 
                 var marky_index = content_to_match.indexOf(result);
                 var marky_preceding = content_to_match.substring(marky_index - 1, marky_index);
-                console.log(marky_preceding);
+                //console.log(marky_preceding);
                 if (marky_preceding == ESCAPE_KEY) {
                     var currentChars = content_to_match.substring(marky_index - 1, marky_index + 2);
                     var updateChars = "<span id='marky' class='escaped'>" + currentChars.substring(1, 2) + '<WBR>' + currentChars.substring(2, 3) + "</span>";
                     // Replace the Escaped Marky with a the Marky chars separated by a <WBR> tag.
                     // Use timeout to fix bug on Galaxy S6 (Chrome, FF, Canary)
                     $timeout(function() {
-                            console.log(elem);
-                            console.log(currentChars);
+                            //console.log(elem);
+                            //console.log(currentChars);
                             self.selectText(elem, currentChars);
                         }, 0)
                         .then(
@@ -1054,11 +1054,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             var currentChars = mark_list_current[0];
             var char_watch = mark_list_current[0];
             var char_watch_lowercase = char_watch.toLowerCase();
-            console.log(marky_array[ma_index].html);
+            //console.log(marky_array[ma_index].html);
             if (marky_array[ma_index].html !== '') {
                 var ma_arg = marky_array[ma_index];
-                console.log(marky_started_array);
-                console.log(char_watch_lowercase);
+                // console.log(marky_started_array);
+                // console.log(char_watch_lowercase);
                 if (!include(marky_started_array, char_watch_lowercase)) {
                     //
                     // Open Marky tag
@@ -1086,8 +1086,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     replaceTags.removeSpaces(elem);
                     // Use timeout to fix bug on Galaxy S6 (Chrome, FF, Canary)
                     $timeout(function() {
-                            console.log(elem);
-                            console.log(currentChars);
+                            // console.log(elem);
+                            //  console.log(currentChars);
                             self.selectText(elem, currentChars);
                         }, 0)
                         .then(
@@ -1101,8 +1101,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                             function() {
                                 return $timeout(function() {
                                     document.getElementById(elem).focus();
-                                    console.log(close_tag);
-                                    console.log(ma_arg.html);
+                                    // console.log(close_tag);
+                                    // console.log(ma_arg.html);
                                     if (close_tag) {
                                         if (ma_arg.html == 'pre') {
                                             //if (ma_arg.html == 'pre' || ma_arg.html == 'input') {
@@ -1146,8 +1146,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     }
                 }
             } else if (marky_array[ma_index].script !== '' && marky_array[ma_index].script !== undefined) {
-                console.log('image get');
-                console.log(elem);
+                // console.log('image get');
+                // console.log(elem);
                 //ce_title5e45c1e472f70e04d8ffad6a
                 //ce5e45c1e472f70e04d8ffad6a
                 // Not HTML but SCRIPT 
@@ -1158,7 +1158,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     if (index_el >= 0) {
                         el = elem.substr(8, el.length);
                         el = 'ce' + el;
-                        console.log(el);
+                        // console.log(el);
                     }
                     $('#upload-trigger' + el).trigger('click');
                 }
@@ -1176,36 +1176,238 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         }
     };
 
-    function deleteCharacterPrecedingCaret(containerEl) {
-        var precedingChar = "",
-            sel, range, precedingRange;
-        if (window.getSelection) {
-            sel = window.getSelection();
-            if (sel.rangeCount > 0) {
-                range = sel.getRangeAt(0).cloneRange();
-                range.collapse(true);
-                range.setStart(containerEl, 0);
-                console.log(range.toString());
-                precedingChar = range.toString().slice(-1);
-console.log(range.endOffset);
-                //range.setEnd(containerEl, 1);
-                //range.select();
-                    //range.setStart(current_node, node_pos.p.offset);
-                //range.setEnd(containerEl, range.endOffset-1);
-                //sel.removeAllRanges();
-               // sel.addRange(range);
-
-               // self.pasteHtmlAtCaret('DEL');
+    function findNextNode(el) {
+        var found = {};
+        console.log(el.anchorNode.previousElementSibling);
+        console.log(el.anchorNode.previousElementSibling.firstChild);
+        /*
+        console.log(el);
+        console.log(el.anchorNode);
+        console.log(el.anchorNode.previousElementSibling);
+        console.log(el.anchorNode.previousElementSibling.firstChild);
+        console.log(el.anchorNode.previousElementSibling.nodeType);
+        console.log(el.anchorNode.previousElementSibling.firstChild.nodeType);
+        */
+        /*
+        var found = {};
+        found.f = 'x';
+        for (var x = 0; x < el.childNodes.length; x++) {
+            if (found.f == 'x') {
+                if (el.childNodes.item(x).nodeType == 3) {
+                    found = findChars(el.childNodes.item(x), word);
+                } else if (el.childNodes.item(x).nodeType == 1) {
+                    for (var y = 0; y < el.childNodes.item(x).childNodes.length; y++) {
+                        if (found.f == 'x') {
+                            if (el.childNodes.item(x).childNodes.item(y).nodeValue !== null) {
+                                found = findChars(el.childNodes.item(x).childNodes.item(y), word);
+                            }
+                            if (el.childNodes.item(x).childNodes.item(y).childNodes) {
+                                found = getChildNodes(el.childNodes.item(x).childNodes.item(y), word, found);
+                            }
+                        }
+                    }
+                }
+            } else {
+                return found;
             }
-        } else if ((sel = document.selection) && sel.type != "Control") {
-            range = sel.createRange();
-            precedingRange = range.duplicate();
-            precedingRange.moveToElementText(containerEl);
-            precedingRange.setEndPoint("EndToStart", range);
-            precedingChar = precedingRange.text.slice(-1);
+        }
+        return found;
+        */
+    }
+    //parentNode
+
+    function mostrarNodosV2(node) {
+        if (node == null) {
+            return;
+        }
+
+        console.log(node);
+
+        mostrarNodosV2(node.lastElementChild);
+        mostrarNodosV2(node.previousElementSibling);
+    }
+
+
+
+    function getPreviousNode(sel) {
+        var anchor = sel;
+        if (anchor.nodeName == "HTML") {
+            console.log('root');
+            return;
+        } else if (anchor.nodeType == '3') {
+            console.log('found: ' + anchor.nodeName);
+            return anchor
+        } else if (anchor.previousElementSibling != null) {
+            if (anchor.nodeType == '3') {
+                console.log('found: ' + anchor.nodeName);
+                return anchor
+            } else {
+                console.log('not found: ' + anchor.nodeName);
+                console.log(anchor);
+                getPreviousNode(anchor.previousElementSibling)
+            }
+
+        } else if (anchor.parentNode != null) {
+            console.log('not found: ' + anchor.nodeName);
+            console.log(anchor);
+            getPreviousNode(anchor.parentNode.lastChild);
 
         }
-        return precedingChar;
+        /*else if(anchor.childNodes.length > 0){
+                   console.log('not found: ' + anchor.nodeName);
+                   console.log(anchor);
+                   getPreviousNode(anchor.childNodes[0]);
+               }*/
+
+        //sel.anchorNode.previousElementSibling.nodeType == '3'){
+    }
+
+    function deleteCharacterPrecedingCaret(elem) {
+
+        var editableEl = document.getElementById(elem);
+        sel = window.getSelection();
+        console.log(sel);
+        if (sel.rangeCount > 0) {
+
+            /*
+            range = sel.getRangeAt(0);
+            range.collapse(true);
+            range.setStart(editableEl, 0);
+            precedingChar = range.toString().slice(-1);
+            */
+
+            range = sel.getRangeAt(0);
+            console.log(range);
+
+            var to1 = sel.anchorNode;
+            var prev;
+            //console.log(sel.anchorOffset);
+            //if(sel.focusOffset > 0){
+            //if (sel.anchorOffset > 0) {
+            if (range.startOffset > 0 && to1.nodeType == '3') {
+                range.collapse(true);
+                //prev = sel.anchorOffset - 1;
+                prev = range.startOffset - 1;
+                range.setStart(to1, prev);
+                //precedingChar = range.toString().slice(-1);
+
+                self.pasteHtmlAtCaret("");
+            } else if (sel.anchorNode.previousElementSibling) {
+                //moveToElementText(element);
+                //prev = sel.anchorNode.previousElementSibling;
+                /*range.selectNode(sel.anchorNode.previousElementSibling.lastChild);
+                to1 =  sel.anchorNode.previousElementSibling;
+                console.log(sel.anchorNode.previousElementSibling.lastChild);
+                prev = sel.anchorNode.previousElementSibling.lastChild.length-1;
+                */
+
+                //range.setStartBefore(sel.anchorNode);
+                //var nn = findNextNode(sel);
+                var nn;
+                //getPreviousNode(sel.anchorNode);
+                // mostrarNodosV2(sel.anchorNode);
+                console.log(sel);
+                console.log(sel.anchorNode);
+                console.log(sel.anchorNode.previousElementSibling);
+                console.log(sel.anchorNode.previousElementSibling.firstChild);
+                console.log(sel.anchorNode.previousElementSibling.nodeType);
+                console.log(sel.anchorNode.previousElementSibling.firstChild.nodeType);
+                if (sel.anchorNode.previousElementSibling.nodeType == '3') {
+                    nn = sel.anchorNode.previousElementSibling;
+                } else {
+                    nn = sel.anchorNode.previousElementSibling.firstChild;
+                }
+                console.log(nn);
+                console.log(nn.length);
+                range.collapse(true);
+                //range = sel.getRangeAt(0);
+                prev = sel.focusOffset - 1;
+                range.setStart(nn, nn.length - 1);
+                range.setEnd(nn, nn.length);
+                console.log(sel);
+                console.log(range);
+                range.deleteContents();
+
+
+            } else {
+                //if(sel.anchorNode.parentNode.previousElementSibling.tagName != "BR"
+                console.log(sel);
+                console.log(sel.anchorNode.parentNode.previousSibling);
+                if (sel.anchorNode.parentNode.previousSibling.nodeType == '3') {
+                    nn = sel.anchorNode.parentNode.previousSibling;
+                } else if(sel.anchorNode.parentNode.previousElementSibling.tagName != "BR" && sel.anchorNode.parentNode.previousSibling.firstChild){
+                    nn = sel.anchorNode.parentNode.previousSibling.firstChild;
+                } else if(sel.anchorNode.parentNode.previousElementSibling.tagName == "BR"){
+                    sel.anchorNode.parentNode.previousElementSibling.remove();
+                    //break;
+                }
+                console.log(nn);
+                if(nn != null){
+                    console.log(nn.length);
+                range.collapse(true);
+                //range = sel.getRangeAt(0);
+                prev = sel.focusOffset - 1;
+                range.setStart(nn, nn.length - 1);
+                range.setEnd(nn, nn.length);
+                console.log(sel);
+                console.log(range);
+                range.deleteContents(); 
+                }
+               
+
+            //} else {
+             //   sel.anchorNode.parentNode.previousElementSibling.remove();
+            }
+
+
+
+        }
+        /*
+
+          var range = document.createRange();
+                    range.setStartAfter(current_node.nextSibling);
+                    range.setStart(current_node.nextSibling, 1);
+                    range.setEnd(current_node.nextSibling, 1);
+                    range.collapse(true);
+                    var selection = window.getSelection();
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+
+                    */
+        /*
+                console.log(elem);
+                console.log(range);
+                //var lastChild = range.children.length-1;
+                console.log(range.endContainer);
+
+                console.log(range.endContainer.nodeValue);
+                var str = range.endContainer.nodeValue;
+                var to = range.endOffset;
+                //var ns = t.substr(0,to-1);
+                var ns = str.slice(0, to - 1) + str.slice(to);
+                //var ns2 = t.sub
+                console.log(ns);
+                */
+
+        //range.endContainer.replaceWith(ns);
+        // Select paragraph
+        //sel = window.getSelection();
+        //const range = document.createRange();
+        //range = sel.getRangeAt(0)
+        // child.replaceWith(span);
+
+
+        //range.selectNodeContents(range.endContainer);
+        //sel.addRange(range);
+        /*
+         range.setStart(current_node, node_pos.p.offset);
+                        range.setEnd(current_node, node_pos.p.offset + word.length);
+                        selection.removeAllRanges();
+                        selection.addRange(range);
+                        */
+        //range.setStart(current_node, node_pos.p.offset);
+        // range.setEnd(current_node, node_pos.p.offset + word.length);
+
     }
 
     function getCharacterPrecedingCaret(containerEl) {
@@ -1230,10 +1432,10 @@ console.log(range.endOffset);
     }
 
     this.contentChanged = function(content, elem) {
-        console.log(elem);
+        //console.log(elem);
         if (!self.paste_in_progress) {
             //content = $('.content_cnv #' + elem).html();
-            console.log(content);
+            //console.log(content);
             self.markyCheck(content, elem);
         } else {
             self.paste_in_progress = false;
@@ -1539,8 +1741,8 @@ console.log(range.endOffset);
 
 
                 //Check value of stepback: 0 or 1
-                if(!stepback) //if 0
-                range.insertNode(textNode);
+                if (!stepback) //if 0
+                    range.insertNode(textNode);
                 if (stepback) { //if 1
                     // replace the previously inserted character with the new one here
 
@@ -1569,7 +1771,7 @@ console.log(range.endOffset);
             return false;
         }
 
-/*
+
         if ($event.keyCode == 8) {
             $event.preventDefault();
 
@@ -1590,9 +1792,9 @@ console.log(range.endOffset);
             //insertTextAtCursor("value", true)
 
             //textRange.select();
-            deleteCharacterPrecedingCaret(editableEl);
+            deleteCharacterPrecedingCaret(elem);
         }
-        */
+
     };
 
     this.handlePaste = function($event) {

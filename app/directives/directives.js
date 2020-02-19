@@ -11,21 +11,22 @@ cardApp.directive("contenteditable", function() {
         require: "ngModel",
         link: function(scope, element, attrs, ngModel) {
             function read() {
-                //ngModel.$setViewValue(element.html());
-                ngModel.$setViewValue(ngModel.$viewValue); 
+                ngModel.$setViewValue(element.html());
+                //ngModel.$setViewValue(ngModel.$viewValue); 
             }
             ngModel.$render = function() {
-                //element.html(ngModel.$viewValue || "");
-                element.html(ngModel.$modelValue || "");
-                
+                element.html(ngModel.$viewValue || "");
+                //element.html(ngModel.$modelValue || "");
+                //element.html(ngModel.$rollbackViewValue() || "");
+                //element.html(element.html() || "");
             };
             element.bind("blur keyup change", function(event) {
             //element.bind("keyup", function(event) {
-                console.log(event);
+               // console.log(event);
                 //if(event.key != "Backspace"){
                 // WARNING added - if (!scope.$$phase) { 31/01/18
                 if (!scope.$$phase) {
-                    //scope.$apply(read);
+                    scope.$apply(read);
                 }
             //}
             });
