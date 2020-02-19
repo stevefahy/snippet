@@ -1776,8 +1776,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         var a = $('#'+elem).html();
         var b = a.replace(/\u200B/g,'');
         $('#'+elem).html(b);
-        */
+
     }
+     */
         //console.log(a);
     }
 
