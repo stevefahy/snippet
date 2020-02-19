@@ -1772,7 +1772,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         }
 
 
-        if ($event.keyCode == 8) {
+        if ($event.keyCode == 8 || $event.keyCode == 46) {
             $event.preventDefault();
 
             var selection_start = $(self.getSelectionStart());
