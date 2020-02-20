@@ -1674,7 +1674,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             //var node = sel.anchorNode.parentNode.previousElementSibling.firstChild;
             var node = sel.anchorNode.parentNode.previousElementSibling;
             $(node).addClass('wd');
-            var n = $('.wd')[0];
+            var n = $('.wd')[0].nextSibling;
             //var node = current_node.nextSibling;
             //var node = current_node.nextSibling.nextSibling;
             range.setStartAfter(n);
