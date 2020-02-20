@@ -1662,11 +1662,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         return node;
     };
 
-    watchdelete = function(e) {
+    watchdelete = function() {
         var sel = window.getSelection();
         console.log(sel);
         if (sel.anchorNode.length == 1) {
-            e.preventDefault();
+           
             console.log('Jump');
             //sel.anchorNode.parentNode.previousElementSibling.firstChild
 
@@ -1721,7 +1721,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         }
     }
 
-    this.keyListen = function(elem) {
+    this.keyListen = function(event, elem) {
+        console.log('keyListen');
+        console.log(event);
         var getKeyCode = function() {
             var editableEl = document.getElementById(elem);
             // lowercase
@@ -1772,20 +1774,20 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
 
 
-        document.getElementById(elem).onkeyup = function(e) {
+       // document.getElementById(elem).onkeyup = function(e) {
             var selection_start = $(self.getSelectionStart());
             // Listen for backspace
             console.log(selection_start);
             console.log($(selection_start)[0].parentNode.id);
+            console.log(event.keyCode);
 
 
-
-            if (e.keyCode == 8 || e.keyCode == 46) {
+            if (event.keyCode == 8 || event.keyCode == 46) {
 
                 if ($(selection_start)[0].parentNode.id == 'never_delete') {
                     //fixdelete();
                     console.log('never_delete');
-                    watchdelete(e);
+                    watchdelete();
                 }
 
 
@@ -1836,7 +1838,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     }
                 }
             }
-        };
+       // };
 
     };
 

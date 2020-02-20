@@ -4202,6 +4202,8 @@ input[type="checkbox"] {
 
 
 
-.space {
-    
+
+span#delete:after {
+    /*content: '\200B';*/
+    content: '&#x200b';
 }
