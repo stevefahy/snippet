@@ -1672,11 +1672,13 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             
              var node = sel.anchorNode.parentNode.previousElementSibling;
             
-            $(node).addClass('wd');
+            //$(node).addClass('wd');
             stopEditing('test');
 
             $timeout(function() {
-            var el = $('.wd')[0];
+            //var el = $('.wd')[0];
+            var el = node;
+
             //el.focus();
 
             //sel.anchorNode.parentNode.previousElementSibling.firstChild
