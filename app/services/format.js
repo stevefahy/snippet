@@ -1665,7 +1665,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     watchdelete = function() {
         var sel = window.getSelection();
         console.log(sel);
-        if (sel.anchorNode.length <= 2) {
+        if (sel.anchorNode.length == 2) {
            
 
             console.log('Jump');
