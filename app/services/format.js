@@ -1774,7 +1774,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
 
 
-       // document.getElementById(elem).onkeyup = function(e) {
+        document.getElementById(elem).onkeydown = function(e) {
             var selection_start = $(self.getSelectionStart());
             // Listen for backspace
             console.log(selection_start);
@@ -1838,7 +1838,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     }
                 }
             }
-       // };
+        };
 
     };
 
