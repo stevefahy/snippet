@@ -1673,7 +1673,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             var range = document.createRange();
             var node = sel.anchorNode.parentNode.previousElementSibling.firstChild
             //var node = current_node.nextSibling.nextSibling;
-            range.setStartBefore(node);
+            range.setStartBefore(sel.anchorNode);
             range.setStart(node, node.length);
             range.setEnd(node, node.length);
             range.collapse(true);
