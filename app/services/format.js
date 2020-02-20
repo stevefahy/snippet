@@ -1662,10 +1662,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         return node;
     };
 
-    watchdelete = function() {
+    watchdelete = function(e) {
         var sel = window.getSelection();
         console.log(sel);
         if (sel.anchorNode.length == 1) {
+            e.preventDefault();
             console.log('Jump');
             //sel.anchorNode.parentNode.previousElementSibling.firstChild
 
@@ -1784,7 +1785,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 if ($(selection_start)[0].parentNode.id == 'never_delete') {
                     //fixdelete();
                     console.log('never_delete');
-                    watchdelete();
+                    watchdelete(e);
                 }
 
 
