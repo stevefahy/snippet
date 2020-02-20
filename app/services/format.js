@@ -1667,9 +1667,14 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         console.log(sel);
         if (sel.anchorNode.length <= 2) {
            
-            console.log('Jump');
-            //sel.anchorNode.parentNode.previousElementSibling.firstChild
 
+            console.log('Jump');
+
+             var node = sel.anchorNode.parentNode.previousElementSibling;
+            $(node).addClass('wd');
+
+            //sel.anchorNode.parentNode.previousElementSibling.firstChild
+/*
             //var range = document.createRange();
             var range = sel.getRangeAt(0);
             //var node = sel.anchorNode.parentNode.previousElementSibling.firstChild;
@@ -1686,6 +1691,17 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             //var selection = window.getSelection();
             //selection.removeAllRanges();
             //selection.addRange(range);
+            */
+
+            var current_node = $(".wd").get(0);
+        console.log(current_node);
+        range = document.createRange();
+        range.setStart(current_node.firstChild, 1);
+        range.setEnd(current_node.firstChild, 1);
+        range.collapse(true);
+        var selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
 
 
         }
