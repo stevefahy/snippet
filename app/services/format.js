@@ -833,18 +833,44 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         console.log('KEYUP2');
     }
 
+/*
+function placeCaretAfterNode(node) {
+    console.log(node);
+    //document.getElementById('ce5e4dba4aa1f484081ce0e41f' ).focus();
+    $('.content_cnv #ce5e4dba4aa1f484081ce0e41f').focus();
+    if (typeof window.getSelection != "undefined") {
+        var range = document.createRange();
+        range.setStartAfter(node);
+        range.collapse(true);
+        var selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+    }
+}
+
+function moveCaret(id) {
+    //document.getElementById("deletex").focus();
+    placeCaretAfterNode( document.getElementById(id) );
+}
+*/
+
     function moveCaretAfter(id) {
         console.log('moveCaretAfter');
         self.removeDeleteIds();
         var current_node = $("#" + id).get(0);
         console.log(current_node);
         if (current_node != undefined) {
-            var del_span = $("<span id='delete'>&#x200b</span>").insertAfter(current_node);
+            //&#x200b
+            var del_span = $("<a id='delete'>&nbsp;</a>").insertAfter(current_node);
             
+
+            //fixdelete
+            //placeCaretAfterNode(del_span[0]);
             //var t = $compile(del_span)($rootScope);
             //ng-keyup='checkKeyUp2($event,'ce'+card._id)'
             //$('.content_cnv #card_' + key._id).attr("onclick", 'toggleHeight(event, \'' + key._id + '\')');
             //$(del_span).attr("onkeyup", 'checkKeyUp2(event)');
+
 
 
 
@@ -869,6 +895,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             $('#' + id).removeAttr('id');
 
             //$(del_span[0]).html($(del_span[0]).html().replace(/\u200B/g, "CAT"));
+        
         }
         return;
     }
@@ -1726,7 +1753,7 @@ range.setStart(sc, os);}
             console.log($(selection_start)[0].parentNode.id);
 
             if($(selection_start)[0].parentNode.id == 'delete'){
-                fixdelete();
+                //fixdelete();
             }
 
             if (e.keyCode == 8) {
