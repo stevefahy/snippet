@@ -1092,7 +1092,7 @@ if (workbox) {
   },
   {
     "url": "services/format.js",
-    "revision": "a3a6416f3fc96ae0a969c410892416a4"
+    "revision": "d2e4e593b5a934259eac3365a3a71704"
   },
   {
     "url": "services/general.js",
