@@ -1679,8 +1679,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             //var node = current_node.nextSibling;
             //var node = current_node.nextSibling.nextSibling;
             //range.setStartAfter(n);
-            range.setStart(n, node.length);
-            range.setEnd(n, node.length);
+            range.setStart(n, 0);
+            range.setEnd(n, 0);
             range.collapse(true);
             var selection = window.getSelection();
             selection.removeAllRanges();
