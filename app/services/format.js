@@ -1669,11 +1669,15 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
            
 
             console.log('Jump');
-
+            
              var node = sel.anchorNode.parentNode.previousElementSibling;
+            
             $(node).addClass('wd');
-            var el = $(node)[0];
-            el.focus();
+            stopEditing('test');
+
+            $timeout(function() {
+            var el = $('.wd')[0];
+            //el.focus();
 
             //sel.anchorNode.parentNode.previousElementSibling.firstChild
 /*
@@ -1702,7 +1706,7 @@ range.setStart(el.firstChild, 3);
 range.collapse(true);
 sel.removeAllRanges();
 sel.addRange(range);
-
+},2000);
 
         }
     }
