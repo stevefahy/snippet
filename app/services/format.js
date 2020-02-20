@@ -1672,6 +1672,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
              var node = sel.anchorNode.parentNode.previousElementSibling;
             $(node).addClass('wd');
+            var el = $(node)[0];
 
             //sel.anchorNode.parentNode.previousElementSibling.firstChild
 /*
@@ -1693,15 +1694,13 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             //selection.addRange(range);
             */
 
-            var current_node = $(".wd").get(0);
-        console.log(current_node);
-        range = document.createRange();
-        range.setStart(current_node.firstChild, 1);
-        range.setEnd(current_node.firstChild, 1);
-        range.collapse(true);
-        var selection = window.getSelection();
-        selection.removeAllRanges();
-        selection.addRange(range);
+//var el = document.getElementById("editable");
+var range = document.createRange();
+var sel = window.getSelection();
+range.setStart(el.firstChild, 3);
+range.collapse(true);
+sel.removeAllRanges();
+sel.addRange(range);
 
 
         }
