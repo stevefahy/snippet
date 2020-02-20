@@ -1819,7 +1819,7 @@ sel.addRange(range);
                 if ($(selection_start)[0].parentNode.id == 'never_delete') {
                     //fixdelete();
                     console.log('never_delete');
-                    watchdelete();
+                    //watchdelete();
                 }
 
 
