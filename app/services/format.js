@@ -1670,7 +1670,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             console.log('Jump');
             //sel.anchorNode.parentNode.previousElementSibling.firstChild
 
-            var range = document.createRange();
+            //var range = document.createRange();
+            var range = sel.getRangeAt(0);
             //var node = sel.anchorNode.parentNode.previousElementSibling.firstChild;
             var node = sel.anchorNode.parentNode.previousElementSibling;
             $(node).addClass('wd');
@@ -1681,10 +1682,10 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             //range.setStartAfter(n);
             range.setStart(n, 0);
             range.setEnd(n, 0);
-            range.collapse(true);
-            var selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
+            //range.collapse(true);
+            //var selection = window.getSelection();
+            //selection.removeAllRanges();
+            //selection.addRange(range);
 
 
         }
