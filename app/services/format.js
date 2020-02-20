@@ -861,7 +861,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         console.log(current_node);
         if (current_node != undefined) {
             //&#x200b
-            var del_span = $("<span id='never_delete'>&nbsp;</span>").insertAfter(current_node);
+            var del_span = $("<span id='never_delete'>x</span>").insertAfter(current_node);
 
 
             //fixdelete
