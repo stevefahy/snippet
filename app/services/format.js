@@ -1773,8 +1773,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         };*/
 
 
-
-        document.getElementById(elem).onkeydown = function(e) {
+/*.keypress(function (e) {
+    $("#keycode").html(e.which); 
+});
+*/
+        //document.getElementById(elem).onkeydown = function(e) {
+        //.getElementById(elem).keypress = function(e) {
             var selection_start = $(self.getSelectionStart());
             // Listen for backspace
             console.log(selection_start);
@@ -1782,7 +1786,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             console.log(event.keyCode);
 
 
-            if (event.keyCode == 8 || event.keyCode == 46) {
+            //if (event.keyCode == 8 || event.keyCode == 46) {
 
                 if ($(selection_start)[0].parentNode.id == 'never_delete') {
                     //fixdelete();
@@ -1826,7 +1830,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     }
                 }
 
-            }
+            //}
             var selection_text = selection_start[0].nodeValue;
             if (selection_text != undefined) {
                 var selection_text_upper = selection_text.toUpperCase();
@@ -1838,7 +1842,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     }
                 }
             }
-        };
+        //};
 
     };
 
