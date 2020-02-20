@@ -1673,6 +1673,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
              var node = sel.anchorNode.parentNode.previousElementSibling;
             $(node).addClass('wd');
             var el = $(node)[0];
+            el.focus();
 
             //sel.anchorNode.parentNode.previousElementSibling.firstChild
 /*
