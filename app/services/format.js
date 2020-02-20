@@ -1671,11 +1671,15 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             //sel.anchorNode.parentNode.previousElementSibling.firstChild
 
             var range = document.createRange();
-            var node = sel.anchorNode.parentNode.previousElementSibling.firstChild
+            //var node = sel.anchorNode.parentNode.previousElementSibling.firstChild;
+            var node = sel.anchorNode.parentNode.previousElementSibling;
+            $(node).addClass('wd');
+            var n = $('.wd')[0];
+            //var node = current_node.nextSibling;
             //var node = current_node.nextSibling.nextSibling;
-            range.setStartAfter(sel.anchorNode.parentNode.previousElementSibling);
-            range.setStart(node, node.length);
-            range.setEnd(node, node.length);
+            range.setStartAfter(n);
+            range.setStart(n, node.length);
+            range.setEnd(n, node.length);
             range.collapse(true);
             var selection = window.getSelection();
             selection.removeAllRanges();
