@@ -26,7 +26,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.getBlur = Format.getBlur;
     $scope.contentChanged = Format.contentChanged;
     $scope.checkKey = Format.checkKey;
+
     $scope.checkKeyUp = Format.checkKeyUp;
+    checkKeyUp2 = Format.checkKeyUp2;
+
     $scope.handlePaste = Format.handlePaste;
     $scope.keyListen = Format.keyListen;
     $scope.showAndroidToast = Format.showAndroidToast;

@@ -829,6 +829,10 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         return found;
     }
 
+    this.checkKeyUp2 = function(event,id){
+        console.log('KEYUP2');
+    }
+
     function moveCaretAfter(id) {
         console.log('moveCaretAfter');
         self.removeDeleteIds();
@@ -837,6 +841,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         if (current_node != undefined) {
             var del_span = $("<span id='delete'>&#x200b</span>").insertAfter(current_node);
             
+            //var t = $compile(del_span)($rootScope);
+            //ng-keyup='checkKeyUp2($event,'ce'+card._id)'
+            //$('.content_cnv #card_' + key._id).attr("onclick", 'toggleHeight(event, \'' + key._id + '\')');
+            //$(del_span).attr("onkeyup", 'checkKeyUp2(event)');
+
 
 
             var range = document.createRange();
@@ -1443,7 +1452,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     }
 
     this.contentChanged = function(content, elem) {
-        //console.log(elem);
+
+
         if (!self.paste_in_progress) {
             //content = $('.content_cnv #' + elem).html();
             //console.log(content);
@@ -1623,6 +1633,41 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         return node;
     };
 
+    fixdelete = function(){
+           var sel = window.getSelection();
+            console.log(sel);
+            console.log(sel.anchorNode.parentNode.id);
+            if(selection.anchorNode.parentNode.id = "delete"){
+                var pre = $(sel.anchorNode.parentNode).html();
+                console.log(pre);
+                //var range = document.createRange();
+                //console.log(range);
+
+      //sel = window.getSelection();
+        //console.log(sel);
+        if (sel.rangeCount > 0) {
+
+
+            range = sel.getRangeAt(0);
+            console.log(range);
+            var sc = sel.anchorNode;
+            var os = sel.anchorOffset;
+            range.collapse(true);
+        }
+
+
+
+
+                $(sel.anchorNode.parentNode).html($(sel.anchorNode.parentNode).html().replace(/\u200B/g, ""));
+                
+                range = sel.getRangeAt(0);
+                console.log(sel);
+                sc = sel.anchorNode.firstChild;
+                os = sel.anchorNode.firstChild.length;
+            console.log(range);
+range.setStart(sc, os);}
+    }
+
     this.keyListen = function(elem) {
         var getKeyCode = function() {
             var editableEl = document.getElementById(elem);
@@ -1673,11 +1718,17 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         };*/
 
 
-        /*
+        
         document.getElementById(elem).onkeyup = function(e) {
             var selection_start = $(self.getSelectionStart());
             // Listen for backspace
             console.log(selection_start);
+            console.log($(selection_start)[0].parentNode.id);
+
+            if($(selection_start)[0].parentNode.id == 'delete'){
+                fixdelete();
+            }
+
             if (e.keyCode == 8) {
 
                 if ($(selection_start).attr("class") != undefined) {
@@ -1728,7 +1779,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 }
             }
         };
-        */
+        
     };
 
     function stopEditing(elem) {
