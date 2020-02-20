@@ -829,30 +829,30 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         return found;
     }
 
-    this.checkKeyUp2 = function(event,id){
+    this.checkKeyUp2 = function(event, id) {
         console.log('KEYUP2');
     }
 
-/*
-function placeCaretAfterNode(node) {
-    console.log(node);
-    //document.getElementById('ce5e4dba4aa1f484081ce0e41f' ).focus();
-    $('.content_cnv #ce5e4dba4aa1f484081ce0e41f').focus();
-    if (typeof window.getSelection != "undefined") {
-        var range = document.createRange();
-        range.setStartAfter(node);
-        range.collapse(true);
-        var selection = window.getSelection();
-        selection.removeAllRanges();
-        selection.addRange(range);
+    /*
+    function placeCaretAfterNode(node) {
+        console.log(node);
+        //document.getElementById('ce5e4dba4aa1f484081ce0e41f' ).focus();
+        $('.content_cnv #ce5e4dba4aa1f484081ce0e41f').focus();
+        if (typeof window.getSelection != "undefined") {
+            var range = document.createRange();
+            range.setStartAfter(node);
+            range.collapse(true);
+            var selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
     }
-}
 
-function moveCaret(id) {
-    //document.getElementById("deletex").focus();
-    placeCaretAfterNode( document.getElementById(id) );
-}
-*/
+    function moveCaret(id) {
+        //document.getElementById("deletex").focus();
+        placeCaretAfterNode( document.getElementById(id) );
+    }
+    */
 
     function moveCaretAfter(id) {
         console.log('moveCaretAfter');
@@ -861,8 +861,8 @@ function moveCaret(id) {
         console.log(current_node);
         if (current_node != undefined) {
             //&#x200b
-            var del_span = $("<a id='delete'>&nbsp;</a>").insertAfter(current_node);
-            
+            var del_span = $("<span id='never_delete'>&nbsp;</span>").insertAfter(current_node);
+
 
             //fixdelete
             //placeCaretAfterNode(del_span[0]);
@@ -875,9 +875,11 @@ function moveCaret(id) {
 
 
             var range = document.createRange();
-            range.setStartAfter(current_node.nextSibling);
-            range.setStart(current_node.nextSibling, 1);
-            range.setEnd(current_node.nextSibling, 1);
+            var node = current_node.nextSibling;
+            //var node = current_node.nextSibling.nextSibling;
+            range.setStartAfter(node);
+            range.setStart(node, 1);
+            range.setEnd(node, 1);
             range.collapse(true);
             var selection = window.getSelection();
             selection.removeAllRanges();
@@ -895,7 +897,7 @@ function moveCaret(id) {
             $('#' + id).removeAttr('id');
 
             //$(del_span[0]).html($(del_span[0]).html().replace(/\u200B/g, "CAT"));
-        
+
         }
         return;
     }
@@ -1382,28 +1384,28 @@ function moveCaret(id) {
                 console.log(sel.anchorNode.parentNode.previousSibling);
                 if (sel.anchorNode.parentNode.previousSibling.nodeType == '3') {
                     nn = sel.anchorNode.parentNode.previousSibling;
-                } else if(sel.anchorNode.parentNode.previousElementSibling.tagName != "BR" && sel.anchorNode.parentNode.previousSibling.firstChild){
+                } else if (sel.anchorNode.parentNode.previousElementSibling.tagName != "BR" && sel.anchorNode.parentNode.previousSibling.firstChild) {
                     nn = sel.anchorNode.parentNode.previousSibling.firstChild;
-                } else if(sel.anchorNode.parentNode.previousElementSibling.tagName == "BR"){
+                } else if (sel.anchorNode.parentNode.previousElementSibling.tagName == "BR") {
                     sel.anchorNode.parentNode.previousElementSibling.remove();
                     //break;
                 }
                 console.log(nn);
-                if(nn != null){
+                if (nn != null) {
                     console.log(nn.length);
-                range.collapse(true);
-                //range = sel.getRangeAt(0);
-                prev = sel.focusOffset - 1;
-                range.setStart(nn, nn.length - 1);
-                range.setEnd(nn, nn.length);
-                console.log(sel);
-                console.log(range);
-                range.deleteContents(); 
+                    range.collapse(true);
+                    //range = sel.getRangeAt(0);
+                    prev = sel.focusOffset - 1;
+                    range.setStart(nn, nn.length - 1);
+                    range.setEnd(nn, nn.length);
+                    console.log(sel);
+                    console.log(range);
+                    range.deleteContents();
                 }
-               
 
-            //} else {
-             //   sel.anchorNode.parentNode.previousElementSibling.remove();
+
+                //} else {
+                //   sel.anchorNode.parentNode.previousElementSibling.remove();
             }
 
 
@@ -1660,39 +1662,62 @@ function moveCaret(id) {
         return node;
     };
 
-    fixdelete = function(){
-           var sel = window.getSelection();
-            console.log(sel);
-            console.log(sel.anchorNode.parentNode.id);
-            if(selection.anchorNode.parentNode.id = "delete"){
-                var pre = $(sel.anchorNode.parentNode).html();
-                console.log(pre);
-                //var range = document.createRange();
-                //console.log(range);
+    watchdelete = function() {
+        var sel = window.getSelection();
+        console.log(sel);
+        if (sel.anchorNode.length == 1) {
+            console.log('Jump');
+            //sel.anchorNode.parentNode.previousElementSibling.firstChild
 
-      //sel = window.getSelection();
-        //console.log(sel);
-        if (sel.rangeCount > 0) {
+            var range = document.createRange();
+            var node = sel.anchorNode.parentNode.previousElementSibling.firstChild
+            //var node = current_node.nextSibling.nextSibling;
+            //range.setStartAfter(node);
+            range.setStart(node, node.length);
+            range.setEnd(node, node.length);
+            range.collapse(true);
+            var selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
 
+
+        }
+    }
+
+    fixdelete = function() {
+        var sel = window.getSelection();
+        console.log(sel);
+        console.log(sel.anchorNode.parentNode.id);
+        if (selection.anchorNode.parentNode.id = "delete") {
+            var pre = $(sel.anchorNode.parentNode).html();
+            console.log(pre);
+            //var range = document.createRange();
+            //console.log(range);
+
+            //sel = window.getSelection();
+            //console.log(sel);
+            if (sel.rangeCount > 0) {
+
+
+                range = sel.getRangeAt(0);
+                console.log(range);
+                var sc = sel.anchorNode;
+                var os = sel.anchorOffset;
+                range.collapse(true);
+            }
+
+
+
+
+            $(sel.anchorNode.parentNode).html($(sel.anchorNode.parentNode).html().replace(/\u200B/g, ""));
 
             range = sel.getRangeAt(0);
+            console.log(sel);
+            sc = sel.anchorNode.firstChild;
+            os = sel.anchorNode.firstChild.length;
             console.log(range);
-            var sc = sel.anchorNode;
-            var os = sel.anchorOffset;
-            range.collapse(true);
+            range.setStart(sc, os);
         }
-
-
-
-
-                $(sel.anchorNode.parentNode).html($(sel.anchorNode.parentNode).html().replace(/\u200B/g, ""));
-                
-                range = sel.getRangeAt(0);
-                console.log(sel);
-                sc = sel.anchorNode.firstChild;
-                os = sel.anchorNode.firstChild.length;
-            console.log(range);
-range.setStart(sc, os);}
     }
 
     this.keyListen = function(elem) {
@@ -1745,18 +1770,23 @@ range.setStart(sc, os);}
         };*/
 
 
-        
+
         document.getElementById(elem).onkeyup = function(e) {
             var selection_start = $(self.getSelectionStart());
             // Listen for backspace
             console.log(selection_start);
             console.log($(selection_start)[0].parentNode.id);
 
-            if($(selection_start)[0].parentNode.id == 'delete'){
-                //fixdelete();
-            }
 
-            if (e.keyCode == 8) {
+
+            if (e.keyCode == 8 || e.keyCode == 46) {
+
+                if ($(selection_start)[0].parentNode.id == 'never_delete') {
+                    //fixdelete();
+                    console.log('never_delete');
+                    watchdelete();
+                }
+
 
                 if ($(selection_start).attr("class") != undefined) {
                     var prev_class = $(selection_start).attr("class");
@@ -1806,7 +1836,7 @@ range.setStart(sc, os);}
                 }
             }
         };
-        
+
     };
 
     function stopEditing(elem) {
@@ -1856,57 +1886,57 @@ range.setStart(sc, os);}
 
     this.checkKeyUp = function($event, elem) {
         console.log('keyup');
-         //var b = a.replace(/\u200B/g,'');
-         
-         //if ($event.keyCode == 8 || $event.keyCode == 46) {
-            if (false) {
-        /*var a = $('#'+elem).html();
-        var b = a.replace(/\u200B/g,'');
-        $('#'+elem).html(b);*/
-/*
-        var range = document.createRange();
-            range.setStartAfter(current_node.nextSibling);
-            range.setStart(current_node.nextSibling, 1);
-            range.setEnd(current_node.nextSibling, 1);
-            range.collapse(true);
-            var selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
-            */
+        //var b = a.replace(/\u200B/g,'');
+
+        //if ($event.keyCode == 8 || $event.keyCode == 46) {
+        if (false) {
+            /*var a = $('#'+elem).html();
+            var b = a.replace(/\u200B/g,'');
+            $('#'+elem).html(b);*/
+            /*
+                    var range = document.createRange();
+                        range.setStartAfter(current_node.nextSibling);
+                        range.setStart(current_node.nextSibling, 1);
+                        range.setEnd(current_node.nextSibling, 1);
+                        range.collapse(true);
+                        var selection = window.getSelection();
+                        selection.removeAllRanges();
+                        selection.addRange(range);
+                        */
             var selection = window.getSelection();
             console.log(selection);
             console.log(selection.anchorNode.parentNode.id);
-            if(selection.anchorNode.parentNode.id = "delete"){
+            if (selection.anchorNode.parentNode.id = "delete") {
                 var pre = $(selection.anchorNode.parentNode).html();
                 console.log(pre);
                 //var range = document.createRange();
                 //console.log(range);
 
-      //sel = window.getSelection();
-        console.log(sel);
-        if (selection.rangeCount > 0) {
+                //sel = window.getSelection();
+                console.log(sel);
+                if (selection.rangeCount > 0) {
 
 
-            range = sel.getRangeAt(0);
-            console.log(range);
-            var sc = sel.anchorNode;
-            var os = sel.anchorOffset;
-            range.collapse(true);
-        }
+                    range = sel.getRangeAt(0);
+                    console.log(range);
+                    var sc = sel.anchorNode;
+                    var os = sel.anchorOffset;
+                    range.collapse(true);
+                }
 
 
 
 
                 $(selection.anchorNode.parentNode).html($(selection.anchorNode.parentNode).html().replace(/\u200B/g, ""));
-                
+
                 range = sel.getRangeAt(0);
                 console.log(sel);
                 sc = sel.anchorNode.firstChild;
                 os = sel.anchorNode.firstChild.length;
-            console.log(range);
-range.setStart(sc, os);
+                console.log(range);
+                range.setStart(sc, os);
 
-               // $('#' + id).html($('#' + id).html().replace(/\u200B/g, ""));
+                // $('#' + id).html($('#' + id).html().replace(/\u200B/g, ""));
                 /*
             var range = document.createRange();
             range.setStartAfter(current_node.nextSibling);
@@ -1920,8 +1950,8 @@ range.setStart(sc, os);
 
             }
 
-    }
-     
+        }
+
         //console.log(a);
     }
 
