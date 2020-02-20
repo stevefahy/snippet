@@ -1780,7 +1780,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         console.log('keyup');
          //var b = a.replace(/\u200B/g,'');
          
-         if ($event.keyCode == 8 || $event.keyCode == 46) {
+         //if ($event.keyCode == 8 || $event.keyCode == 46) {
+            if (false) {
         /*var a = $('#'+elem).html();
         var b = a.replace(/\u200B/g,'');
         $('#'+elem).html(b);*/
@@ -1861,6 +1862,7 @@ range.setStart(sc, os);
         //$('#'+elem).html(b);
         //console.log(a);
 
+        /*
         if ($event.keyCode == 8 || $event.keyCode == 46) {
             $event.preventDefault();
 
@@ -1883,6 +1885,7 @@ range.setStart(sc, os);
             //textRange.select();
             deleteCharacterPrecedingCaret(elem);
         }
+        */
 
     };
 
