@@ -861,7 +861,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         console.log(current_node);
         if (current_node != undefined) {
             //&#x200b
-            var del_span = $("<span id='never_delete'>x</span>").insertAfter(current_node);
+            var del_span = $("<span id='never_delete'>xx</span>").insertAfter(current_node);
 
 
             //fixdelete
@@ -1665,7 +1665,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     watchdelete = function() {
         var sel = window.getSelection();
         console.log(sel);
-        if (sel.anchorNode.length == 1) {
+        if (sel.anchorNode.length == 2) {
            
             console.log('Jump');
             //sel.anchorNode.parentNode.previousElementSibling.firstChild
