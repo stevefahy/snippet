@@ -906,7 +906,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     function moveCaretInto(id) {
         console.log(id);
         console.log($("#" + id));
-        $("#" + id).html('&#x200b');
+        //$("#" + id).html('&#x200b');
+        $("#" + id).html('&nbsp;');
         var current_node = $("#" + id).get(0);
         console.log(current_node);
         range = document.createRange();
@@ -1019,10 +1020,13 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 var marky_html = marky_array[marky_html_index].html;
                 if (marky_html != 'pre' && marky_html != 'input') {
                     //if (marky_html != 'input') {
-                    var new_tag = '<' + marky_html + ' class="scroll_latest" id="focus">&#x200b</' + marky_html + '>';
+                    //var new_tag = '<' + marky_html + ' class="scroll_latest" id="focus">&#x200b</' + marky_html + '>';
+                    var new_tag = '<' + marky_html + ' class="scroll_latest" id="focus">&nbsp;</' + marky_html + '>';
                     if (loop_count > 0) {
-                        var pos = complete_tag.indexOf('&#x200b');
-                        complete_tag = complete_tag.slice(0, pos) + new_tag + complete_tag.slice(pos + 7, complete_tag.length);
+                        //var pos = complete_tag.indexOf('&#x200b');
+                        var pos = complete_tag.indexOf('&nbsp;');
+                        //complete_tag = complete_tag.slice(0, pos) + new_tag + complete_tag.slice(pos + 7, complete_tag.length);
+                        complete_tag = complete_tag.slice(0, pos) + new_tag + complete_tag.slice(pos + 6, complete_tag.length);
                     } else {
                         complete_tag = new_tag;
                     }
