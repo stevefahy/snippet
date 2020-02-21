@@ -861,8 +861,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         console.log(current_node);
         if (current_node != undefined) {
             //&#x200b
-            //var del_span = $("<span id='never_delete'>&nbsp;</span>").insertAfter(current_node);
-            var del_span = $("<span id='never_delete'>&#x200b</span>").insertAfter(current_node);
+            var del_span = $("<span id='never_delete'>&nbsp;</span>").insertAfter(current_node);
+            //var del_span = $("<span id='never_delete'>&#x200b</span>").insertAfter(current_node);
 
 
             //fixdelete
@@ -1673,15 +1673,20 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             $timeout(function() {
                var pre = $(sel.anchorNode.parentNode).html();
                 console.log(pre);
-                $(sel.anchorNode.parentNode).html($(sel.anchorNode.parentNode).html().replace(/\u200B/g, ""));
-            
+                //$(sel.anchorNode.parentNode).html($(sel.anchorNode.parentNode).html().replace(/\u200B/g, ""));
+                $(sel.anchorNode.parentNode).html($(sel.anchorNode.parentNode).html().replace(/\&nbsp;/g, ""));
+            //
+
+            console.log($(sel.anchorNode.parentNode));
+            //$(sel.anchorNode.parentNode).attr('id', 'never_delete_fixed');
                      range = sel.getRangeAt(0);
             console.log(sel);
             sc = sel.anchorNode.firstChild;
             os = sel.anchorNode.firstChild.length;
             console.log(range);
             range.setStart(sc, os);
-
+console.log($(sel.anchorNode.parentNode));
+            $(sel.anchorNode.parentNode).attr('id', 'never_delete_fixed');
 
             });
 
@@ -1828,23 +1833,28 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         */
         //document.getElementById(elem).onkeydown = function(e) {
         //.getElementById(elem).keypress = function(e) {
-        var selection_start = $(self.getSelectionStart());
+        
+        var sel = window.getSelection();
+        console.log(sel);
         // Listen for backspace
-        console.log(selection_start);
-        console.log($(selection_start)[0].parentNode.id);
-        console.log(event.keyCode);
+        //console.log(selection_start);
+        //console.log($(selection_start)[0].parentNode.id);
+        //console.log(event.keyCode);
 
+        //var sel = window.getSelection();
+       // console.log(sel);
 
         //if (event.keyCode == 8 || event.keyCode == 46) {
 
-        if ($(selection_start)[0].parentNode.id == 'never_delete') {
+        //if ($(sel)[0].parentNode.id == 'never_delete') {
+        if(sel.anchorNode.parentNode.id == 'never_delete'){
             //fixdelete();
             console.log('never_delete');
             //watchdelete();
             watchdelete2();
         }
 
-
+        var selection_start = $(self.getSelectionStart());
         if ($(selection_start).attr("class") != undefined) {
             var prev_class = $(selection_start).attr("class");
             var parent = $(selection_start).closest('.ce').attr("id");
