@@ -116,12 +116,13 @@
                 -->
                 <!-- ng-model-options="{ debounce: 1000 }" -->
                 <!-- ng-keyup="checkKeyUp($event,'ce'+card._id);" -->
+                <!-- ng-keyup="keyListen($event,'ce'+card._id);"-->
                 <div class="title_area margins " ng-class="{ 'title_area_image': card.title_image, 'title_area_no_image': !card.title_image, 'title_area_animate' : card.animate_title}">
                     <div class='ce' ng-attr-id="ce_title{{::card._id}}" ng-attr-contenteditable="{{card.user == currentUser._id && card.editing == true}}" ng-change="contentChanged(card.title_area, 'ce_title'+card._id)" ng-keydown="checkKey($event,'ce_title'+card._id);" ng-paste="handlePaste($event)" ng-focus="keyListen($event,'ce_title'+card._id);" ng-model="::card.title_area"></div>
                 </div>
                 <div class="card_title margins" ng-show="card.title_image_text">{{card.title_image_text}}</div>
                 <div class="content_area margins" ng-class="{'collapsed': !card.expanded}">
-                    <div class='ce' ng-attr-id="ce{{::card._id}}" ng-attr-contenteditable="{{card.user == currentUser._id && card.editing == true}}" ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id); " ng-keyup="keyListen($event,'ce'+card._id);" ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser);"  ng-model="card.content" ng-model-options="{ debounce: 1000 }"  ng-class="{'collapsed_ce': !card.expanded}" ></div>
+                    <div class='ce' ng-attr-id="ce{{::card._id}}" ng-attr-contenteditable="{{card.user == currentUser._id && card.editing == true}}" ng-change="contentChanged(card.content, 'ce'+card._id)" ng-keydown="checkKey($event,'ce'+card._id); "  ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser);"  ng-model="card.content"   ng-class="{'collapsed_ce': !card.expanded}" ></div>
                 </div>
 
 
