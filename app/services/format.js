@@ -861,7 +861,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         console.log(current_node);
         if (current_node != undefined) {
             //&#x200b
-            var del_span = $("<span id='never_delete'>&nbsp;</span>").insertAfter(current_node);
+            //var del_span = $("<span id='never_delete'>&nbsp;</span>").insertAfter(current_node);
+            var del_span = $("<span id='never_delete'>&#x200b</span>").insertAfter(current_node);
 
 
             //fixdelete
@@ -1662,53 +1663,73 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         return node;
     };
 
+    watchdelete2 = function() {
+        var sel = window.getSelection();
+        console.log(sel);
+        if (sel.anchorNode.length == 2) {
+            console.log('delete space');
+            var node = sel.anchorNode;
+            //stopEditing('test');
+            $timeout(function() {
+               var pre = $(sel.anchorNode.parentNode).html();
+                console.log(pre);
+                $(sel.anchorNode.parentNode).html($(sel.anchorNode.parentNode).html().replace(/\u200B/g, ""));
+            
+                     range = sel.getRangeAt(0);
+            console.log(sel);
+            sc = sel.anchorNode.firstChild;
+            os = sel.anchorNode.firstChild.length;
+            console.log(range);
+            range.setStart(sc, os);
+
+
+            });
+
+        }
+    }
+
     watchdelete = function() {
         var sel = window.getSelection();
         console.log(sel);
         if (sel.anchorNode.length == 1) {
-           
-
             console.log('Jump');
-            
-             var node = sel.anchorNode.parentNode.previousElementSibling;
-            
+            var node = sel.anchorNode.parentNode.previousElementSibling;
             //$(node).addClass('wd');
             stopEditing('test');
-
             $timeout(function() {
-            //var el = $('.wd')[0];
-            var el = node;
+                //var el = $('.wd')[0];
+                var el = node;
 
-            //el.focus();
+                //el.focus();
 
-            //sel.anchorNode.parentNode.previousElementSibling.firstChild
-/*
-            //var range = document.createRange();
-            var range = sel.getRangeAt(0);
-            //var node = sel.anchorNode.parentNode.previousElementSibling.firstChild;
-            var node = sel.anchorNode.parentNode.previousElementSibling;
-            $(node).addClass('wd');
-            var n = $('.wd')[0].firstChild;
-            console.log(n);
-            //var node = current_node.nextSibling;
-            //var node = current_node.nextSibling.nextSibling;
-            //range.setStartAfter(n);
-            range.setStart(n, 0);
-            range.setEnd(n, 0);
-            //range.collapse(true);
-            //var selection = window.getSelection();
-            //selection.removeAllRanges();
-            //selection.addRange(range);
-            */
+                //sel.anchorNode.parentNode.previousElementSibling.firstChild
+                /*
+                            //var range = document.createRange();
+                            var range = sel.getRangeAt(0);
+                            //var node = sel.anchorNode.parentNode.previousElementSibling.firstChild;
+                            var node = sel.anchorNode.parentNode.previousElementSibling;
+                            $(node).addClass('wd');
+                            var n = $('.wd')[0].firstChild;
+                            console.log(n);
+                            //var node = current_node.nextSibling;
+                            //var node = current_node.nextSibling.nextSibling;
+                            //range.setStartAfter(n);
+                            range.setStart(n, 0);
+                            range.setEnd(n, 0);
+                            //range.collapse(true);
+                            //var selection = window.getSelection();
+                            //selection.removeAllRanges();
+                            //selection.addRange(range);
+                            */
 
-//var el = document.getElementById("editable");
-var range = document.createRange();
-var sel = window.getSelection();
-range.setStart(el.firstChild, el.firstChild.length);
-range.collapse(true);
-sel.removeAllRanges();
-sel.addRange(range);
-});
+                //var el = document.getElementById("editable");
+                var range = document.createRange();
+                var sel = window.getSelection();
+                range.setStart(el.firstChild, el.firstChild.length);
+                range.collapse(true);
+                sel.removeAllRanges();
+                sel.addRange(range);
+            });
 
         }
     }
@@ -1801,75 +1822,76 @@ sel.addRange(range);
         };*/
 
 
-/*.keypress(function (e) {
-    $("#keycode").html(e.which); 
-});
-*/
+        /*.keypress(function (e) {
+            $("#keycode").html(e.which); 
+        });
+        */
         //document.getElementById(elem).onkeydown = function(e) {
         //.getElementById(elem).keypress = function(e) {
-            var selection_start = $(self.getSelectionStart());
-            // Listen for backspace
-            console.log(selection_start);
-            console.log($(selection_start)[0].parentNode.id);
-            console.log(event.keyCode);
+        var selection_start = $(self.getSelectionStart());
+        // Listen for backspace
+        console.log(selection_start);
+        console.log($(selection_start)[0].parentNode.id);
+        console.log(event.keyCode);
 
 
-            //if (event.keyCode == 8 || event.keyCode == 46) {
+        //if (event.keyCode == 8 || event.keyCode == 46) {
 
-                if ($(selection_start)[0].parentNode.id == 'never_delete') {
-                    //fixdelete();
-                    console.log('never_delete');
-                    //watchdelete();
+        if ($(selection_start)[0].parentNode.id == 'never_delete') {
+            //fixdelete();
+            console.log('never_delete');
+            //watchdelete();
+            watchdelete2();
+        }
+
+
+        if ($(selection_start).attr("class") != undefined) {
+            var prev_class = $(selection_start).attr("class");
+            var parent = $(selection_start).closest('.ce').attr("id");
+            // If this is a header then delete the header elements and remove from the marky_started_array if it exists.
+            if (prev_class.indexOf('header') >= 0 && parent == 'header') {
+                $(selection_start).parent().remove();
+                var del = marky_started_array.indexOf(INITIAL_KEY + prev_class.substr(7, 1));
+                marky_started_array.splice(del, 1);
+            }
+            // If this is a cropper_cont then delete the header elements and remove from the marky_started_array if it exists.
+            if (prev_class.indexOf('after_image') >= 0) {
+                if (selection_start[0].innerHTML == '<br>') {
+                    selection_start[0].innerHTML = '';
                 }
-
-
-                if ($(selection_start).attr("class") != undefined) {
-                    var prev_class = $(selection_start).attr("class");
-                    var parent = $(selection_start).closest('.ce').attr("id");
-                    // If this is a header then delete the header elements and remove from the marky_started_array if it exists.
-                    if (prev_class.indexOf('header') >= 0 && parent == 'header') {
-                        $(selection_start).parent().remove();
-                        var del = marky_started_array.indexOf(INITIAL_KEY + prev_class.substr(7, 1));
-                        marky_started_array.splice(del, 1);
+                if ($(selection_start)[0].previousElementSibling) {
+                    var slider = $(selection_start)[0].previousElementSibling;
+                    var cropper = $(selection_start)[0].previousElementSibling.previousElementSibling;
+                    var clear = $(selection_start)[0].nextElementSibling;
+                    if (slider != null) {
+                        slider.remove();
                     }
-                    // If this is a cropper_cont then delete the header elements and remove from the marky_started_array if it exists.
-                    if (prev_class.indexOf('after_image') >= 0) {
-                        if (selection_start[0].innerHTML == '<br>') {
-                            selection_start[0].innerHTML = '';
-                        }
-                        if ($(selection_start)[0].previousElementSibling) {
-                            var slider = $(selection_start)[0].previousElementSibling;
-                            var cropper = $(selection_start)[0].previousElementSibling.previousElementSibling;
-                            var clear = $(selection_start)[0].nextElementSibling;
-                            if (slider != null) {
-                                slider.remove();
-                            }
-                            if (cropper != null) {
-                                cropper.remove();
-                            }
-                            if (clear != null) {
-                                clear.remove();
-                            }
-                        }
-                        if ($('.' + prev_class).prev().prev().attr('class').indexOf('cropper_cont') >= 0) {
-                            var currentChars = $('.' + prev_class).prev().prev().parent().html();
-                            var elem = $('.' + prev_class).closest('.ce');
-                        }
+                    if (cropper != null) {
+                        cropper.remove();
+                    }
+                    if (clear != null) {
+                        clear.remove();
                     }
                 }
-
-            //}
-            var selection_text = selection_start[0].nodeValue;
-            if (selection_text != undefined) {
-                var selection_text_upper = selection_text.toUpperCase();
-                var init_key = selection_text_upper.indexOf(INITIAL_KEY.toUpperCase());
-                if (init_key >= 0) {
-                    var last_chars = selection_text_upper.substring(init_key, init_key + 2);
-                    if (marky_char_array.indexOf(last_chars) >= 0) {
-                        stopEditing(this.id);
-                    }
+                if ($('.' + prev_class).prev().prev().attr('class').indexOf('cropper_cont') >= 0) {
+                    var currentChars = $('.' + prev_class).prev().prev().parent().html();
+                    var elem = $('.' + prev_class).closest('.ce');
                 }
             }
+        }
+
+        //}
+        var selection_text = selection_start[0].nodeValue;
+        if (selection_text != undefined) {
+            var selection_text_upper = selection_text.toUpperCase();
+            var init_key = selection_text_upper.indexOf(INITIAL_KEY.toUpperCase());
+            if (init_key >= 0) {
+                var last_chars = selection_text_upper.substring(init_key, init_key + 2);
+                if (marky_char_array.indexOf(last_chars) >= 0) {
+                    stopEditing(this.id);
+                }
+            }
+        }
         //};
 
     };
