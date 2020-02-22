@@ -16,9 +16,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     var focused_user;
     var savedSelection;
 
-    //var CARET = '&nbsp;';
+    var CARET = '&nbsp;';
     //var CARET = '<wbr>';
-    var CARET = '&#x200b&#x200b';
+    //var CARET = '&#x200b&#x200b';
     // Android Javascript Interface calls from app
 
     $window.imageUploaded = self.imageUploaded;
@@ -1569,7 +1569,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         //$(".content_cnv #" + elem + " b").each(function(index) {
         //    console.log($(this));
         //});
-
+/*
         $(".content_cnv #" + elem + " i").each(function(index) {
             //console.log( index + ": " + $( this ).text() );
             console.log($(this).next());
@@ -1582,23 +1582,32 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 $("<span>&nbsp;I</span>").insertAfter($(this)[0]);
             }
         });
+        */
 
 
         $(".content_cnv #" + elem + " b").each(function(index) {
             console.log($(this));
             console.log($(this).text());
 
+            //$('#zero').remove();
+            //$('.m-active').removeClass('m-active');
 
-            if ($(this)[0].firstChild) {
-                if ($(this)[0].firstChild.nodeType == "3") {
-                    if ($(this)[0].firstChild.length == 3) {
-                        console.log($(this)[0].firstChild.textContent);
-                        var t = $(this)[0].firstChild.textContent;
+            console.log($(this)[0].innerHTML);
+            var cont = $(this)[0].innerHTML;
+            //$($(this)[0]).attr('id');
+            if(cont.includes('&nbsp;') && !$($(this)[0]).hasClass('zero')){
+                //$(this)[0].innerHTML = 'Steve';
+            //if ($(this)[0].firstChild) {
+              //  if ($(this)[0].firstChild.nodeType == "3") {
+              //      if ($(this)[0].firstChild.length == 3) {
+                        /*(console.log($(this)[0].firstChild.textContent);
+                        //var t = $(this)[0].firstChild.textContent;
+                        var t = $(this)[0].innerHTML;
                         console.log(t);
                         console.log(t.length);
                         //$(this)[0].firstChild = "steve";
                         //
-                        /*
+                        
                         var f = t.substr(0, 1);
                         var f1 = t.substr(1, 1);
                         console.log('f: ' + f);
@@ -1606,56 +1615,57 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                         console.log('f1: ' + f1);
                         console.log(f1.length);
 
-                        //t.indexOf(t.trim()) != 0;
-                        const regex = /[/^\s/]/g;
-                        var r = t.search(regex)
-                        console.log(r);
-                        */
+                      
 
-                        var b = t.replace(/\u200B/g, '');
+                        var b = t.replace(/\&nbsp;/g, '');
                         console.log(b);
                         console.log(b.length);
                         console.log(t);
                         console.log(t.length);
 
                         if (b.length < t.length) {
+                            */
+
+savedSelection = self.saveSelection($(this)[0]);
 
                             console.log('FOPUND');
 
-                            $($(this)[0]).attr('id', 'zero');
+                            $($(this)[0]).addClass( 'zero');
+                            $($(this)[0]).attr('id','zerotemp');
 
                             //savedSelection = self.saveSelection($(this)[0]);
 
-                            $timeout(function() {
-                                savedSelection = self.saveSelection(document.getElementById('zero'));
-                            
-                             //$(this)[0].firstChild.textContent = b;
-                             document.getElementById('zero').firstChild.textContent = b;
+                          //  $timeout(function() {
+                                savedSelection = self.saveSelection(document.getElementById('zerotemp'));
+
+                                //$(this)[0].firstChild.textContent = b;
+                                //document.getElementById('zero').firstChild.textContent = b;
+
+                                $(this)[0].innerHTML = cont.substr(6,cont.length);
+                                //$(this)[0].innerHTML = 'Steve';
+                               // $timeout(function() {
+                                    self.restoreSelection(document.getElementById('zerotemp'));
+                                    var sel = window.getSelection();
+                                    console.log(sel);
+
+                                    range = sel.getRangeAt(0);
+                                    // console.log(sel);
+                                    sc = sel.anchorNode;
+                                    //os = sel.anchorNode.firstChild.length;
+                                    console.log(range);
+                                    range.setStart(sc, 1);
+
+                               // });
 
 
-                            $timeout(function() {
-                                self.restoreSelection(document.getElementById('zero'));
-                            var sel = window.getSelection();
-                            console.log(sel);
 
-                             range = sel.getRangeAt(0);
-                            // console.log(sel);
-                            sc = sel.anchorNode.firstChild;
-                            os = sel.anchorNode.firstChild.length;
-                            console.log(range);
-                            range.setStart(sc, os);
-
-                            });
-
-
-
-                            });
+                           // });
 
                             //t = t[1];
                             //var node = $(this)[0].firstChild;
 
                             //$(node).textContent = f1;
-                           
+
                             //$(this)[0].firstChild.replaceWith( f1 );
                             //$(this)[0].firstChild.focus();
                             //$(this)[0].firstChild = "steve";
@@ -1668,13 +1678,15 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                             //os = sel.anchorNode.firstChild.length;
                             //console.log(range);
                             //range.setStart(sc, os);
-                        }
-                    }
-                }
-            }
+                       // }
+            //        }
+           //     }
+           // }
+       }
+            
 
 
-
+/*
             console.log($(this).next());
             if ($(this).next().length > 0) {
                 if ($(this).next()[0].tagName == 'BR') {
@@ -1684,6 +1696,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             } else {
                 $("<span>&nbsp;B</span>").insertAfter($(this)[0]);
             }
+            */
         });
 
 
