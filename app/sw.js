@@ -1092,7 +1092,7 @@ if (workbox) {
   },
   {
     "url": "services/format.js",
-    "revision": "eb2d0ea5ac93acbf619970f678bde0e7"
+    "revision": "619bf2cc5606a8ab1f8302bee2148a68"
   },
   {
     "url": "services/general.js",
@@ -1152,7 +1152,7 @@ if (workbox) {
   },
   {
     "url": "style/customstyle.css",
-    "revision": "2b98c631b8bad5262a840c8b15bf7545"
+    "revision": "3550c21db719e113ef81ac706b8691e6"
   },
   {
     "url": "style/instagram.css",
@@ -1188,7 +1188,7 @@ if (workbox) {
   },
   {
     "url": "views/conversation.html",
-    "revision": "7c4e905ef60014d4529fb5910bd09eee"
+    "revision": "38a0dbe6f77dba48f0cec84ee43bb921"
   },
   {
     "url": "views/conversations.html",

@@ -4207,3 +4207,12 @@ span#delete:after {
     /*content: '\200B';*/
     content: '&#x200b';
 }
+
+.last {
+    background-color: red;
+}
+
+span.br:after {
+    content: "\000A";
+    white-space: pre;
+}

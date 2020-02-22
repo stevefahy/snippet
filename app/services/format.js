@@ -16,6 +16,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     var focused_user;
     var savedSelection;
 
+    var CARET = '&nbsp;'
+
     // Android Javascript Interface calls from app
 
     $window.imageUploaded = self.imageUploaded;
@@ -861,7 +863,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         console.log(current_node);
         if (current_node != undefined) {
             //&#x200b
-            var del_span = $("<span id='never_delete'>&nbsp;</span>").insertAfter(current_node);
+            var del_span = $("<span id='never_delete'>" + CARET + "</span>").insertAfter(current_node);
             //var del_span = $("<span id='never_delete'>&#x200b</span>").insertAfter(current_node);
 
 
@@ -907,7 +909,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         console.log(id);
         console.log($("#" + id));
         //$("#" + id).html('&#x200b');
-        $("#" + id).html('&nbsp;');
+        $("#" + id).html(CARET);
         var current_node = $("#" + id).get(0);
         console.log(current_node);
         range = document.createRange();
@@ -1021,10 +1023,10 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 if (marky_html != 'pre' && marky_html != 'input') {
                     //if (marky_html != 'input') {
                     //var new_tag = '<' + marky_html + ' class="scroll_latest" id="focus">&#x200b</' + marky_html + '>';
-                    var new_tag = '<' + marky_html + ' class="scroll_latest" id="focus">&nbsp;</' + marky_html + '>';
+                    var new_tag = '<' + marky_html + ' class="scroll_latest" id="focus">' + CARET + '</' + marky_html + '>';
                     if (loop_count > 0) {
                         //var pos = complete_tag.indexOf('&#x200b');
-                        var pos = complete_tag.indexOf('&nbsp;');
+                        var pos = complete_tag.indexOf(CARET);
                         //complete_tag = complete_tag.slice(0, pos) + new_tag + complete_tag.slice(pos + 7, complete_tag.length);
                         complete_tag = complete_tag.slice(0, pos) + new_tag + complete_tag.slice(pos + 6, complete_tag.length);
                     } else {
@@ -1487,6 +1489,108 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     this.contentChanged = function(content, elem) {
 
+        //console.log(elem);
+
+        //$(".content_cnv #" + elem).find("span").removeClass('last');
+
+        //$(".content_cnv #" + elem + " span").last().addClass('last');
+
+        //var a = $(".content_cnv #" + elem).find("b").next();
+        //console.log(a);
+
+        $(".content_cnv #" + elem + " .br").each(function(index) {
+            console.log($(this));
+            //&& $(this)[0].lastElementChild.lastChild.nodeType != "3"
+            if($(this)[0].lastChild){
+            if($(this)[0].lastChild.nodeType != "3" ){
+                var textNode = document.createTextNode("UMPTY");
+                //$(this)[0].append(textNode);
+                //$("<span class='space'>EMPTY4</span>").insertAfter($(this)[0]);
+            }
+
+        }
+        });
+
+        $(".content_cnv #" + elem + " br").each(function(index) {
+            //console.log( index + ": " + $( this ).text() );
+            console.log($(this));
+           //$( $(this)[0]).replaceWith( "<span class='br'>&nbsp;</span>" );
+            /*
+            if ($(this).length > 0) {
+                var prevNode = this.previousSibling;
+                var nextNode = this.nextSibling;
+                console.log(prevNode);
+                console.log(nextNode);
+                if( nextNode == null){
+                    console.log('next null');
+                    $("<span class='space'>EMPTY3</span>").insertAfter($(this)[0]);
+                }
+                if (prevNode && prevNode.nodeType == 3) {
+                    //console.log("Prev sibling text node:  " + prevNode.data);
+                }
+
+                if (prevNode && prevNode.nodeType == 1) {
+                    //console.log(prevNode);
+                    //console.log("Prev sibling tag node:  " + prevNode);
+                    //console.log($(prevNode.closest("span")));
+                    //$("<span>EMPTY</span>").insertBefore(prevNode);
+                    //console.log(prevNode.className);
+                    if (prevNode.className != 'space') {
+                        $("<span class='space'>EMPTY</span>").insertBefore($(this)[0]);
+                        //} else if(prevNode.className == 'space' && !$(prevNode).is(':empty')){
+                        // $("span:not(:has(*))")
+                        //$('.test').not(':has(.example)')
+
+                    } else if (prevNode.className == 'space' && $(prevNode).firstChild != undefined) {
+                        //console.log($(prevNode).firstChild);
+                        $("<span class='space'>EMPTY2</span>").insertAfter(prevNode);
+                   // } else if (prevNode.className == 'space' && nextNode == null) {
+                    //    $("<span class='space'>EMPTY3</span>").insertAfter($(this)[0]);
+                    }
+
+                }
+
+
+                // Get the first span and check that there is an empty text after it 
+                // if not add it.
+
+                //if()
+
+           
+            }
+            */
+
+        });
+
+        //$(".content_cnv #" + elem + " b").each(function(index) {
+        //    console.log($(this));
+        //});
+
+        
+        $(".content_cnv #" + elem + " b").each(function(index) {
+            //console.log( index + ": " + $( this ).text() );
+            console.log($(this).next());
+            if ($(this).next().length > 0) {
+                if ($(this).next()[0].tagName == 'BR') {
+                    console.log('not a span');
+                    $("<span>EMPTY</span>").insertBefore($(this).next()[0]);
+                }
+            } else {
+                $("<span>EMPTY B</span>").insertAfter($(this)[0]);
+            }
+        });
+        
+
+        /*
+                if($( ".content_cnv #" + elem + " b" ).next().length > 0){
+                if($( ".content_cnv #" + elem + " b" ).next()[0].tagName == 'BR'){
+                    console.log('not a span');
+                    $( "<span>EMPTY</span>" ).insertBefore( $( ".content_cnv #" + elem + " b" ).next()[0] );
+                }
+            }
+            */
+
+
 
         if (!self.paste_in_progress) {
             //content = $('.content_cnv #' + elem).html();
@@ -1675,22 +1779,22 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             var node = sel.anchorNode;
             //stopEditing('test');
             $timeout(function() {
-               var pre = $(sel.anchorNode.parentNode).html();
+                var pre = $(sel.anchorNode.parentNode).html();
                 console.log(pre);
                 //$(sel.anchorNode.parentNode).html($(sel.anchorNode.parentNode).html().replace(/\u200B/g, ""));
                 $(sel.anchorNode.parentNode).html($(sel.anchorNode.parentNode).html().replace(/\&nbsp;/g, ""));
-            //
+                //
 
-            console.log($(sel.anchorNode.parentNode));
-            //$(sel.anchorNode.parentNode).attr('id', 'never_delete_fixed');
-                     range = sel.getRangeAt(0);
-            console.log(sel);
-            sc = sel.anchorNode.firstChild;
-            os = sel.anchorNode.firstChild.length;
-            console.log(range);
-            range.setStart(sc, os);
-console.log($(sel.anchorNode.parentNode));
-            $(sel.anchorNode.parentNode).attr('id', 'never_delete_fixed');
+                console.log($(sel.anchorNode.parentNode));
+                //$(sel.anchorNode.parentNode).attr('id', 'never_delete_fixed');
+                range = sel.getRangeAt(0);
+                console.log(sel);
+                sc = sel.anchorNode.firstChild;
+                os = sel.anchorNode.firstChild.length;
+                console.log(range);
+                range.setStart(sc, os);
+                console.log($(sel.anchorNode.parentNode));
+                $(sel.anchorNode.parentNode).attr('id', 'never_delete_fixed');
 
             });
 
@@ -1837,7 +1941,7 @@ console.log($(sel.anchorNode.parentNode));
         */
         //document.getElementById(elem).onkeydown = function(e) {
         //.getElementById(elem).keypress = function(e) {
-        
+
         var sel = window.getSelection();
         console.log(sel);
         // Listen for backspace
@@ -1846,12 +1950,12 @@ console.log($(sel.anchorNode.parentNode));
         //console.log(event.keyCode);
 
         //var sel = window.getSelection();
-       // console.log(sel);
+        // console.log(sel);
 
         //if (event.keyCode == 8 || event.keyCode == 46) {
 
         //if ($(sel)[0].parentNode.id == 'never_delete') {
-        if(sel.anchorNode.parentNode.id == 'never_delete'){
+        if (sel.anchorNode.parentNode.id == 'never_delete') {
             //fixdelete();
             console.log('never_delete');
             //watchdelete();
