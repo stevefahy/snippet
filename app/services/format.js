@@ -885,6 +885,8 @@ $timeout(function() {
             //range.setStartAfter(node);
             range.setStart(node.firstChild, 0);
             range.setEnd(node.firstChild, 1);
+
+            selection.addRange(range);
             //range.collapse(true);
             //var selection = window.getSelection();
             //selection.removeAllRanges();
