@@ -913,13 +913,15 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         $("#" + id).html(CARET);
         var current_node = $("#" + id).get(0);
         console.log(current_node);
-        range = document.createRange();
-        range.setStart(current_node.firstChild, 1);
+        //range = document.createRange();
+            var selection = window.getSelection();
+         range = selection.getRangeAt(0);
+        range.setStart(current_node.firstChild, 0);
         range.setEnd(current_node.firstChild, 1);
-        range.collapse(true);
-        var selection = window.getSelection();
-        selection.removeAllRanges();
-        selection.addRange(range);
+        //range.collapse(true);
+        //var selection = window.getSelection();
+        //selection.removeAllRanges();
+        //selection.addRange(range);
         // Fix for Firefox which replaces the zero width space with a <br> tag
         if (ua.toLowerCase().indexOf('firefox') > -1) {
             $('#' + id).html($('#' + id).html().replace(/<br>/g, ""));
@@ -1569,22 +1571,22 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         //$(".content_cnv #" + elem + " b").each(function(index) {
         //    console.log($(this));
         //});
+        /*
+                $(".content_cnv #" + elem + " i").each(function(index) {
+                    //console.log( index + ": " + $( this ).text() );
+                    console.log($(this).next());
+                    if ($(this).next().length > 0) {
+                        if ($(this).next()[0].tagName == 'BR') {
+                            console.log('not a span');
+                            $("<span>&nbsp;I1</span>").insertBefore($(this).next()[0]);
+                        }
+                    } else {
+                        $("<span>&nbsp;I</span>").insertAfter($(this)[0]);
+                    }
+                });
+                */
+
 /*
-        $(".content_cnv #" + elem + " i").each(function(index) {
-            //console.log( index + ": " + $( this ).text() );
-            console.log($(this).next());
-            if ($(this).next().length > 0) {
-                if ($(this).next()[0].tagName == 'BR') {
-                    console.log('not a span');
-                    $("<span>&nbsp;I1</span>").insertBefore($(this).next()[0]);
-                }
-            } else {
-                $("<span>&nbsp;I</span>").insertAfter($(this)[0]);
-            }
-        });
-        */
-
-
         $(".content_cnv #" + elem + " b").each(function(index) {
             console.log($(this));
             console.log($(this).text());
@@ -1595,109 +1597,41 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             console.log($(this)[0].innerHTML);
             var cont = $(this)[0].innerHTML;
             //$($(this)[0]).attr('id');
-            if(cont.includes('&nbsp;') && !$($(this)[0]).hasClass('zero')){
+            if (cont.includes('&nbsp;') && !$($(this)[0]).hasClass('zero')) {
+               
+                savedSelection = self.saveSelection($(this)[0]);
+
+                console.log('FOPUND');
+
+                $($(this)[0]).addClass('zero');
+                $($(this)[0]).attr('id', 'zerotemp');
+
+                //savedSelection = self.saveSelection($(this)[0]);
+
+                //  $timeout(function() {
+                savedSelection = self.saveSelection(document.getElementById('zerotemp'));
+
+                //$(this)[0].firstChild.textContent = b;
+                //document.getElementById('zero').firstChild.textContent = b;
+
+                $(this)[0].innerHTML = cont.substr(6, cont.length);
                 //$(this)[0].innerHTML = 'Steve';
-            //if ($(this)[0].firstChild) {
-              //  if ($(this)[0].firstChild.nodeType == "3") {
-              //      if ($(this)[0].firstChild.length == 3) {
-                        /*(console.log($(this)[0].firstChild.textContent);
-                        //var t = $(this)[0].firstChild.textContent;
-                        var t = $(this)[0].innerHTML;
-                        console.log(t);
-                        console.log(t.length);
-                        //$(this)[0].firstChild = "steve";
-                        //
-                        
-                        var f = t.substr(0, 1);
-                        var f1 = t.substr(1, 1);
-                        console.log('f: ' + f);
-                        console.log(f.length);
-                        console.log('f1: ' + f1);
-                        console.log(f1.length);
+                // $timeout(function() {
+                self.restoreSelection(document.getElementById('zerotemp'));
+                var sel = window.getSelection();
+                console.log(sel);
 
-                      
+                range = sel.getRangeAt(0);
+                // console.log(sel);
+                sc = sel.anchorNode;
+                //os = sel.anchorNode.firstChild.length;
+                console.log(range);
+                range.setStart(sc, 1);
 
-                        var b = t.replace(/\&nbsp;/g, '');
-                        console.log(b);
-                        console.log(b.length);
-                        console.log(t);
-                        console.log(t.length);
-
-                        if (b.length < t.length) {
-                            */
-
-savedSelection = self.saveSelection($(this)[0]);
-
-                            console.log('FOPUND');
-
-                            $($(this)[0]).addClass( 'zero');
-                            $($(this)[0]).attr('id','zerotemp');
-
-                            //savedSelection = self.saveSelection($(this)[0]);
-
-                          //  $timeout(function() {
-                                savedSelection = self.saveSelection(document.getElementById('zerotemp'));
-
-                                //$(this)[0].firstChild.textContent = b;
-                                //document.getElementById('zero').firstChild.textContent = b;
-
-                                $(this)[0].innerHTML = cont.substr(6,cont.length);
-                                //$(this)[0].innerHTML = 'Steve';
-                               // $timeout(function() {
-                                    self.restoreSelection(document.getElementById('zerotemp'));
-                                    var sel = window.getSelection();
-                                    console.log(sel);
-
-                                    range = sel.getRangeAt(0);
-                                    // console.log(sel);
-                                    sc = sel.anchorNode;
-                                    //os = sel.anchorNode.firstChild.length;
-                                    console.log(range);
-                                    range.setStart(sc, 1);
-
-                               // });
-
-
-
-                           // });
-
-                            //t = t[1];
-                            //var node = $(this)[0].firstChild;
-
-                            //$(node).textContent = f1;
-
-                            //$(this)[0].firstChild.replaceWith( f1 );
-                            //$(this)[0].firstChild.focus();
-                            //$(this)[0].firstChild = "steve";
-                            //$('.zero').focus();
-                            //var sel = window.getSelection();
-                            //console.log(sel);
-                            //range = sel.getRangeAt(0);
-                            // console.log(sel);
-                            //sc = sel.anchorNode.firstChild;
-                            //os = sel.anchorNode.firstChild.length;
-                            //console.log(range);
-                            //range.setStart(sc, os);
-                       // }
-            //        }
-           //     }
-           // }
-       }
-            
-
-
-/*
-            console.log($(this).next());
-            if ($(this).next().length > 0) {
-                if ($(this).next()[0].tagName == 'BR') {
-                    console.log('not a span');
-                    $("<span>&nbsp;B1</span>").insertBefore($(this).next()[0]);
-                }
-            } else {
-                $("<span>&nbsp;B</span>").insertAfter($(this)[0]);
             }
-            */
+
         });
+        */
 
 
         /*
