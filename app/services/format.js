@@ -16,8 +16,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     var focused_user;
     var savedSelection;
 
-    var CARET = '&nbsp;'
-
+    //var CARET = '&nbsp;';
+    //var CARET = '<wbr>';
+    var CARET = '&#x200b&#x200b';
     // Android Javascript Interface calls from app
 
     $window.imageUploaded = self.imageUploaded;
@@ -923,6 +924,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         if (ua.toLowerCase().indexOf('firefox') > -1) {
             $('#' + id).html($('#' + id).html().replace(/<br>/g, ""));
         }
+
+        //$('#' + id).html($('#' + id).html().replace(/\u200B/g, ""));
+
         $('#' + id).addClass('scroll_enter_latest');
         $('#' + id).removeAttr('id');
         // Scroll the pasted HTML into view
@@ -1501,20 +1505,20 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         $(".content_cnv #" + elem + " .br").each(function(index) {
             console.log($(this));
             //&& $(this)[0].lastElementChild.lastChild.nodeType != "3"
-            if($(this)[0].lastChild){
-            if($(this)[0].lastChild.nodeType != "3" ){
-                var textNode = document.createTextNode("UMPTY");
-                //$(this)[0].append(textNode);
-                //$("<span class='space'>EMPTY4</span>").insertAfter($(this)[0]);
-            }
+            if ($(this)[0].lastChild) {
+                if ($(this)[0].lastChild.nodeType != "3") {
+                    var textNode = document.createTextNode("UMPTY");
+                    //$(this)[0].append(textNode);
+                    //$("<span class='space'>EMPTY4</span>").insertAfter($(this)[0]);
+                }
 
-        }
+            }
         });
 
         $(".content_cnv #" + elem + " br").each(function(index) {
             //console.log( index + ": " + $( this ).text() );
             console.log($(this));
-           //$( $(this)[0]).replaceWith( "<span class='br'>&nbsp;</span>" );
+            //$( $(this)[0]).replaceWith( "<span class='br'>&nbsp;</span>" );
             /*
             if ($(this).length > 0) {
                 var prevNode = this.previousSibling;
@@ -1572,27 +1576,116 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             if ($(this).next().length > 0) {
                 if ($(this).next()[0].tagName == 'BR') {
                     console.log('not a span');
-                    $("<span>&nbsp;</span>").insertBefore($(this).next()[0]);
+                    $("<span>&nbsp;I1</span>").insertBefore($(this).next()[0]);
                 }
             } else {
-                $("<span>&nbsp;</span>").insertAfter($(this)[0]);
+                $("<span>&nbsp;I</span>").insertAfter($(this)[0]);
             }
         });
 
-        
+
         $(".content_cnv #" + elem + " b").each(function(index) {
-            //console.log( index + ": " + $( this ).text() );
+            console.log($(this));
+            console.log($(this).text());
+
+
+            if ($(this)[0].firstChild) {
+                if ($(this)[0].firstChild.nodeType == "3") {
+                    if ($(this)[0].firstChild.length == 3) {
+                        console.log($(this)[0].firstChild.textContent);
+                        var t = $(this)[0].firstChild.textContent;
+                        console.log(t);
+                        console.log(t.length);
+                        //$(this)[0].firstChild = "steve";
+                        //
+                        /*
+                        var f = t.substr(0, 1);
+                        var f1 = t.substr(1, 1);
+                        console.log('f: ' + f);
+                        console.log(f.length);
+                        console.log('f1: ' + f1);
+                        console.log(f1.length);
+
+                        //t.indexOf(t.trim()) != 0;
+                        const regex = /[/^\s/]/g;
+                        var r = t.search(regex)
+                        console.log(r);
+                        */
+
+                        var b = t.replace(/\u200B/g, '');
+                        console.log(b);
+                        console.log(b.length);
+                        console.log(t);
+                        console.log(t.length);
+
+                        if (b.length < t.length) {
+
+                            console.log('FOPUND');
+
+                            $($(this)[0]).attr('id', 'zero');
+
+                            //savedSelection = self.saveSelection($(this)[0]);
+
+                            $timeout(function() {
+                                savedSelection = self.saveSelection(document.getElementById('zero'));
+                            
+                             //$(this)[0].firstChild.textContent = b;
+                             document.getElementById('zero').firstChild.textContent = b;
+
+
+                            $timeout(function() {
+                                self.restoreSelection(document.getElementById('zero'));
+                            var sel = window.getSelection();
+                            console.log(sel);
+
+                             range = sel.getRangeAt(0);
+                            // console.log(sel);
+                            sc = sel.anchorNode.firstChild;
+                            os = sel.anchorNode.firstChild.length;
+                            console.log(range);
+                            range.setStart(sc, os);
+
+                            });
+
+
+
+                            });
+
+                            //t = t[1];
+                            //var node = $(this)[0].firstChild;
+
+                            //$(node).textContent = f1;
+                           
+                            //$(this)[0].firstChild.replaceWith( f1 );
+                            //$(this)[0].firstChild.focus();
+                            //$(this)[0].firstChild = "steve";
+                            //$('.zero').focus();
+                            //var sel = window.getSelection();
+                            //console.log(sel);
+                            //range = sel.getRangeAt(0);
+                            // console.log(sel);
+                            //sc = sel.anchorNode.firstChild;
+                            //os = sel.anchorNode.firstChild.length;
+                            //console.log(range);
+                            //range.setStart(sc, os);
+                        }
+                    }
+                }
+            }
+
+
+
             console.log($(this).next());
             if ($(this).next().length > 0) {
                 if ($(this).next()[0].tagName == 'BR') {
                     console.log('not a span');
-                    $("<span>&nbsp;</span>").insertBefore($(this).next()[0]);
+                    $("<span>&nbsp;B1</span>").insertBefore($(this).next()[0]);
                 }
             } else {
-                $("<span>&nbsp;</span>").insertAfter($(this)[0]);
+                $("<span>&nbsp;B</span>").insertAfter($(this)[0]);
             }
         });
-        
+
 
         /*
                 if($( ".content_cnv #" + elem + " b" ).next().length > 0){
