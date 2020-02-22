@@ -883,7 +883,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             var node = current_node.nextSibling;
             //var node = current_node.nextSibling.nextSibling;
             range.setStartAfter(node);
-            range.setStart(node, 0);
+            range.setStart(node, 1);
             range.setEnd(node, 1);
             //range.collapse(true);
             //var selection = window.getSelection();
