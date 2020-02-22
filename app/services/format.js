@@ -875,26 +875,26 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             //$('.content_cnv #card_' + key._id).attr("onclick", 'toggleHeight(event, \'' + key._id + '\')');
             //$(del_span).attr("onkeyup", 'checkKeyUp2(event)');
 
+            var selection = window.getSelection();
+            range = selection.getRangeAt(0);
 
-
-
-            var range = document.createRange();
+            //var range = document.createRange();
             var node = current_node.nextSibling;
             //var node = current_node.nextSibling.nextSibling;
             range.setStartAfter(node);
-            range.setStart(node, 1);
+            range.setStart(node, 0);
             range.setEnd(node, 1);
-            range.collapse(true);
-            var selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
+            //range.collapse(true);
+            //var selection = window.getSelection();
+            //selection.removeAllRanges();
+            //selection.addRange(range);
             // Fix for Firefox which replaces the zero width space with a <br> tag
             if (ua.toLowerCase().indexOf('firefox') > -1) {
                 $('#' + id).html($('#' + id).html().replace(/<br>/g, ""));
             }
             var t = $(current_node).html();
             console.log($(current_node).html());
-            $('#' + id).html($('#' + id).html().replace(/\u200B/g, ""));
+            //$('#' + id).html($('#' + id).html().replace(/\u200B/g, ""));
             //$(current_node).html(t + 'cleaned');
             console.log($(current_node).html());
 
