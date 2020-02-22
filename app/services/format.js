@@ -859,7 +859,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     function moveCaretAfter(id) {
         console.log('moveCaretAfter');
-        self.removeDeleteIds();
+        //self.removeDeleteIds();
         var current_node = $("#" + id).get(0);
         console.log(current_node);
         if (current_node != undefined) {
@@ -882,9 +882,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             //var range = document.createRange();
             var node = current_node.nextSibling;
             //var node = current_node.nextSibling.nextSibling;
-            range.setStartAfter(node);
-            range.setStart(node, 1);
-            range.setEnd(node, 1);
+            //range.setStartAfter(node);
+            range.setStart(node.firstChild, 0);
+            range.setEnd(node.firstChild, 1);
             //range.collapse(true);
             //var selection = window.getSelection();
             //selection.removeAllRanges();
