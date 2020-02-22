@@ -874,7 +874,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             //ng-keyup='checkKeyUp2($event,'ce'+card._id)'
             //$('.content_cnv #card_' + key._id).attr("onclick", 'toggleHeight(event, \'' + key._id + '\')');
             //$(del_span).attr("onkeyup", 'checkKeyUp2(event)');
-
+$timeout(function() {
   var selection = window.getSelection();
          range = selection.getRangeAt(0);
 
@@ -902,7 +902,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             $('#' + id).removeAttr('id');
 
             //$(del_span[0]).html($(del_span[0]).html().replace(/\u200B/g, "CAT"));
-
+},1000);
         }
         return;
     }
