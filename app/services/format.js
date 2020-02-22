@@ -1566,6 +1566,19 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         //    console.log($(this));
         //});
 
+        $(".content_cnv #" + elem + " i").each(function(index) {
+            //console.log( index + ": " + $( this ).text() );
+            console.log($(this).next());
+            if ($(this).next().length > 0) {
+                if ($(this).next()[0].tagName == 'BR') {
+                    console.log('not a span');
+                    $("<span>&nbsp;</span>").insertBefore($(this).next()[0]);
+                }
+            } else {
+                $("<span>&nbsp;</span>").insertAfter($(this)[0]);
+            }
+        });
+
         
         $(".content_cnv #" + elem + " b").each(function(index) {
             //console.log( index + ": " + $( this ).text() );
@@ -1573,10 +1586,10 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             if ($(this).next().length > 0) {
                 if ($(this).next()[0].tagName == 'BR') {
                     console.log('not a span');
-                    $("<span>EMPTY</span>").insertBefore($(this).next()[0]);
+                    $("<span>&nbsp;</span>").insertBefore($(this).next()[0]);
                 }
             } else {
-                $("<span>EMPTY B</span>").insertAfter($(this)[0]);
+                $("<span>&nbsp;</span>").insertAfter($(this)[0]);
             }
         });
         
