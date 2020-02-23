@@ -4217,3 +4217,13 @@ span.br:after {
     white-space: pre;
 }
 */
+
+i.scroll_latest {
+    display: inline-block;
+    margin-left: -.2em;
+}
+
+b.scroll_latest {
+    display: inline-block;
+    margin-left: -.2em;
+}

@@ -123,7 +123,7 @@
                 </div>
                 <div class="card_title margins" ng-show="card.title_image_text">{{card.title_image_text}}</div>
                 <div class="content_area margins" ng-class="{'collapsed': !card.expanded}">
-                    <div class='ce' ng-attr-id="ce{{::card._id}}" ng-attr-contenteditable="{{card.user == currentUser._id && card.editing == true}}" ng-change="contentChanged(card.content, 'ce'+card._id)"  ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser);"  ng-model="card.content"   ng-class="{'collapsed_ce': !card.expanded}" ng-keyup="checkKey($event,'ce'+card._id);"></div>
+                    <div class='ce' ng-attr-id="ce{{::card._id}}" ng-attr-contenteditable="{{card.user == currentUser._id && card.editing == true}}" ng-change="contentChanged(card.content, 'ce'+card._id)"  ng-paste="handlePaste($event)" ng-focus="getFocus(card._id, card, currentUser);"  ng-model="card.content"   ng-class="{'collapsed_ce': !card.expanded}"></div>
                 </div>
 
 

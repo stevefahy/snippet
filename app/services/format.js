@@ -911,11 +911,23 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     function moveCaretInto(id) {
         $("#" + id).html(CARET);
         var current_node = $("#" + id).get(0);
-        range = document.createRange();
+
+                current_node.focus();
+
+      var selection = window.getSelection();
+         range = selection.getRangeAt(0);
+
+        // var node = current_node;
+          //  console.log(node);
+
+            range.setStartAfter(current_node.firstChild);
+
+
+        //range = document.createRange();
         range.setStart(current_node.firstChild, 1);
         range.setEnd(current_node.firstChild, 1);
-        range.collapse(true);
-        var selection = window.getSelection();
+        //range.collapse(true);
+        //var selection = window.getSelection();
         selection.removeAllRanges();
         selection.addRange(range);
         // Fix for Firefox which replaces the zero width space with a <br> tag
