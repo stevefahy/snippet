@@ -4202,9 +4202,9 @@ input[type="checkbox"] {
 
 
 
-
+/*
 span#delete:after {
-    /*content: '\200B';*/
+    content: '\200B';
     content: '&#x200b';
 }
 
@@ -4216,3 +4216,4 @@ span.br:after {
     content: "\000A";
     white-space: pre;
 }
+*/

@@ -886,7 +886,51 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     }
 }
 
+ function moveCaretAfter(id) {
+        self.removeDeleteIds();
+        var current_node = $("#" + id).get(0);
+        if (current_node != undefined) {
+            $("<span id='delete'>&#x200b</span>").insertAfter(current_node);
+            var range = document.createRange();
+            range.setStartAfter(current_node.nextSibling);
+            range.setStart(current_node.nextSibling, 1);
+            range.setEnd(current_node.nextSibling, 1);
+            range.collapse(true);
+            var selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            // Fix for Firefox which replaces the zero width space with a <br> tag
+            if (ua.toLowerCase().indexOf('firefox') > -1) {
+                $('#' + id).html($('#' + id).html().replace(/<br>/g, ""));
+            }
+            $('#' + id).removeAttr('id');
+        }
+        return;
+    }
 
+    function moveCaretInto(id) {
+        $("#" + id).html('&#x200b');
+        var current_node = $("#" + id).get(0);
+        range = document.createRange();
+        range.setStart(current_node.firstChild, 1);
+        range.setEnd(current_node.firstChild, 1);
+        range.collapse(true);
+        var selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        // Fix for Firefox which replaces the zero width space with a <br> tag
+        if (ua.toLowerCase().indexOf('firefox') > -1) {
+            $('#' + id).html($('#' + id).html().replace(/<br>/g, ""));
+        }
+        $('#' + id).addClass('scroll_enter_latest');
+        $('#' + id).removeAttr('id');
+        // Scroll the pasted HTML into view
+        self.scrollLatest('scroll_enter_latest');
+        return;
+    }
+
+
+/*
     function moveCaretAfter(id) {
         console.log('moveCaretAfter: ' + id);
         self.removeDeleteIds();
@@ -1011,6 +1055,7 @@ $timeout(function() {
 
         },1000);
     }
+    */
 
     function moveAfterPre(id) {
         var pre_node = $("#" + id).get(0);
@@ -1585,7 +1630,7 @@ $timeout(function() {
 
         //var a = $(".content_cnv #" + elem).find("b").next();
         //console.log(a);
-
+/*
         $(".content_cnv #" + elem + " .br").each(function(index) {
             console.log($(this));
             //&& $(this)[0].lastElementChild.lastChild.nodeType != "3"
@@ -1598,6 +1643,7 @@ $timeout(function() {
 
             }
         });
+        */
 
         $(".content_cnv #" + elem + " br").each(function(index) {
             //console.log( index + ": " + $( this ).text() );
