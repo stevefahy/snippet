@@ -16,9 +16,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     var focused_user;
     var savedSelection;
 
-    var CARET = '&nbsp;';
+    var CARET = '_';
     //var CARET = '<wbr>';
-    //var CARET = '&#x200b&#x200b';
+    //var CARET2 = '&#x200b';
+    //var CARET2 = '&nbsp;';
+    var CARET2 = '_';
     // Android Javascript Interface calls from app
 
     $window.imageUploaded = self.imageUploaded;
@@ -857,14 +859,49 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     }
     */
 
+    function insertNodeAtCaret(node) {
+    if (typeof window.getSelection != "undefined") {
+        var sel = window.getSelection();
+        if (sel.rangeCount) {
+            var range = sel.getRangeAt(0);
+            range.collapse(false);
+            range.insertNode(node);
+            range = range.cloneRange();
+            range.selectNodeContents(node);
+            range.collapse(false);
+            sel.removeAllRanges();
+            sel.addRange(range);
+        }
+    } else if (typeof document.selection != "undefined" && document.selection.type != "Control") {
+        var html = (node.nodeType == 1) ? node.outerHTML : node.data;
+        var id = "marker_" + ("" + Math.random()).slice(2);
+        html += '<span id="' + id + '"></span>';
+        var textRange = document.selection.createRange();
+        textRange.collapse(false);
+        textRange.pasteHTML(html);
+        var markerSpan = document.getElementById(id);
+        textRange.moveToElementText(markerSpan);
+        textRange.select();
+        markerSpan.parentNode.removeChild(markerSpan);
+    }
+}
+
+
     function moveCaretAfter(id) {
-        console.log('moveCaretAfter');
-        //self.removeDeleteIds();
+        console.log('moveCaretAfter: ' + id);
+        self.removeDeleteIds();
         var current_node = $("#" + id).get(0);
         console.log(current_node);
         if (current_node != undefined) {
+
+
             //&#x200b
-            var del_span = $("<span id='never_delete'>" + CARET + "</span>").insertAfter(current_node);
+            //var c = current_node.innerHTML;
+
+            //current_node.innerHTML = c+'&nbsp;';
+            //current_node.append(updateChars);
+
+            var del_span = $("<span id='never_delete'>" + CARET2 + "</span>").insertAfter(current_node);
             //var del_span = $("<span id='never_delete'>&#x200b</span>").insertAfter(current_node);
 
 
@@ -877,16 +914,37 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 $timeout(function() {
   var selection = window.getSelection();
          range = selection.getRangeAt(0);
-
-
             //var range = document.createRange();
             var node = current_node.nextSibling;
+            console.log(node);
+
+            //node.focus();
             //var node = current_node.nextSibling.nextSibling;
             //range.setStartAfter(node);
-            range.setStart(node.firstChild, 0);
-            range.setEnd(node.firstChild, 1);
 
-            selection.addRange(range);
+//selection.collapse(node.firstChild, 0);
+//selection.selectAllChildren(node);
+//range.setStartAfter(node.firstChild);
+range.setStart(node.firstChild, 1);
+range.setEnd(node.firstChild, 1);
+
+
+//range.collapse(true);
+        //var selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+
+//selection.collapseToStart();
+
+//selection.removeAllRanges();
+//selection.addRange(range);
+
+           // range.setStart(node.firstChild, 0);
+           // range.setEnd(node.firstChild, 1);
+
+            //selection.addRange(range);
+
+            //console.log(selection);
             //range.collapse(true);
             //var selection = window.getSelection();
             //selection.removeAllRanges();
@@ -916,12 +974,25 @@ $timeout(function() {
         $("#" + id).html(CARET);
         var current_node = $("#" + id).get(0);
         console.log(current_node);
+
+        //var del_span = $("<span id='never_delete'>" + CARET + "</span>").appendTo(current_node);
         //range = document.createRange();
+
+        current_node.focus();
+$timeout(function() {
             var selection = window.getSelection();
          range = selection.getRangeAt(0);
-        range.setStart(current_node.firstChild, 0);
-        range.setEnd(current_node.firstChild, 1);
-        //range.collapse(true);
+
+         var node = current_node;
+            console.log(node);
+
+            range.setStartAfter(node.firstChild);
+        range.setStart(node.firstChild, 1);
+        range.setEnd(node.firstChild, 1);
+
+         selection.removeAllRanges();
+        selection.addRange(range);
+        //selection.collapse(node.firstChild);
         //var selection = window.getSelection();
         //selection.removeAllRanges();
         //selection.addRange(range);
@@ -937,6 +1008,8 @@ $timeout(function() {
         // Scroll the pasted HTML into view
         self.scrollLatest('scroll_enter_latest');
         return;
+
+        },1000);
     }
 
     function moveAfterPre(id) {
@@ -1046,6 +1119,7 @@ $timeout(function() {
             }
         }
         if (complete_tag != undefined) {
+            console.log('unclosed');
             self.pasteHtmlAtCaret(complete_tag);
         }
         return;
@@ -1499,6 +1573,11 @@ $timeout(function() {
     this.contentChanged = function(content, elem) {
 
         //console.log(elem);
+       // console.log(content);
+
+       
+
+
 
         //$(".content_cnv #" + elem).find("span").removeClass('last');
 
@@ -2187,6 +2266,8 @@ $timeout(function() {
     }
 
     this.checkKey = function($event, elem) {
+
+
         if ($event.keyCode == 13) {
             // Stop the default behavior for the ENTER key and insert <br><br> instead
             $event.preventDefault();
