@@ -890,7 +890,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         self.removeDeleteIds();
         var current_node = $("#" + id).get(0);
         if (current_node != undefined) {
-            $("<span id='delete'>&#x200b</span>").insertAfter(current_node);
+            $("<span id='delete'>"+ CARET + "</span>").insertAfter(current_node);
             var range = document.createRange();
             range.setStartAfter(current_node.nextSibling);
             range.setStart(current_node.nextSibling, 1);
@@ -909,7 +909,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     }
 
     function moveCaretInto(id) {
-        $("#" + id).html('&#x200b');
+        $("#" + id).html(CARET);
         var current_node = $("#" + id).get(0);
         range = document.createRange();
         range.setStart(current_node.firstChild, 1);
