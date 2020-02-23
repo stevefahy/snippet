@@ -16,11 +16,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     var focused_user;
     var savedSelection;
 
-    //var CARET = '&nbsp;';
+    var CARET = '&nbsp;';
     //var CARET = '<wbr>';
-    var CARET = '&#x200b';
-    var CARET2 = '&#x200b';
-    //var CARET2 = '&nbsp;';
+    //var CARET = '&#x200b';
+    //var CARET2 = '&#x200b';
+    var CARET2 = '&nbsp;';
     // Android Javascript Interface calls from app
 
     $window.imageUploaded = self.imageUploaded;
