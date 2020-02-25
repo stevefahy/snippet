@@ -4218,12 +4218,8 @@ span.br:after {
 }
 */
 
-i.scroll_latest {
+b.scroll_latest, i.scroll_latest {
     display: inline-block;
-    margin-left: -.3em;
-}
-
-b.scroll_latest {
-    display: inline-block;
-    margin-left: -.3em;
+    margin-left: -.45ch;
+    margin-right: -.45ch;
 }
