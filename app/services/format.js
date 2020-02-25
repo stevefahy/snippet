@@ -860,37 +860,37 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     */
 
     function insertNodeAtCaret(node) {
-    if (typeof window.getSelection != "undefined") {
-        var sel = window.getSelection();
-        if (sel.rangeCount) {
-            var range = sel.getRangeAt(0);
-            range.collapse(false);
-            range.insertNode(node);
-            range = range.cloneRange();
-            range.selectNodeContents(node);
-            range.collapse(false);
-            sel.removeAllRanges();
-            sel.addRange(range);
+        if (typeof window.getSelection != "undefined") {
+            var sel = window.getSelection();
+            if (sel.rangeCount) {
+                var range = sel.getRangeAt(0);
+                range.collapse(false);
+                range.insertNode(node);
+                range = range.cloneRange();
+                range.selectNodeContents(node);
+                range.collapse(false);
+                sel.removeAllRanges();
+                sel.addRange(range);
+            }
+        } else if (typeof document.selection != "undefined" && document.selection.type != "Control") {
+            var html = (node.nodeType == 1) ? node.outerHTML : node.data;
+            var id = "marker_" + ("" + Math.random()).slice(2);
+            html += '<span id="' + id + '"></span>';
+            var textRange = document.selection.createRange();
+            textRange.collapse(false);
+            textRange.pasteHTML(html);
+            var markerSpan = document.getElementById(id);
+            textRange.moveToElementText(markerSpan);
+            textRange.select();
+            markerSpan.parentNode.removeChild(markerSpan);
         }
-    } else if (typeof document.selection != "undefined" && document.selection.type != "Control") {
-        var html = (node.nodeType == 1) ? node.outerHTML : node.data;
-        var id = "marker_" + ("" + Math.random()).slice(2);
-        html += '<span id="' + id + '"></span>';
-        var textRange = document.selection.createRange();
-        textRange.collapse(false);
-        textRange.pasteHTML(html);
-        var markerSpan = document.getElementById(id);
-        textRange.moveToElementText(markerSpan);
-        textRange.select();
-        markerSpan.parentNode.removeChild(markerSpan);
     }
-}
 
- function moveCaretAfter(id) {
+    function moveCaretAfter(id) {
         self.removeDeleteIds();
         var current_node = $("#" + id).get(0);
         if (current_node != undefined) {
-            $("<span id='delete'>"+ CARET + "</span>").insertAfter(current_node);
+            $("<span id='delete'>" + CARET + "</span>").insertAfter(current_node);
             var range = document.createRange();
             range.setStartAfter(current_node.nextSibling);
             range.setStart(current_node.nextSibling, 1);
@@ -912,15 +912,15 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         $("#" + id).html(CARET);
         var current_node = $("#" + id).get(0);
 
-                current_node.focus();
+        current_node.focus();
 
-      var selection = window.getSelection();
-         range = selection.getRangeAt(0);
+        var selection = window.getSelection();
+        range = selection.getRangeAt(0);
 
         // var node = current_node;
-          //  console.log(node);
+        //  console.log(node);
 
-            range.setStartAfter(current_node.firstChild);
+        range.setStartAfter(current_node.firstChild);
 
 
         //range = document.createRange();
@@ -942,66 +942,113 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     }
 
 
-/*
-    function moveCaretAfter(id) {
-        console.log('moveCaretAfter: ' + id);
-        self.removeDeleteIds();
-        var current_node = $("#" + id).get(0);
-        console.log(current_node);
-        if (current_node != undefined) {
+    /*
+        function moveCaretAfter(id) {
+            console.log('moveCaretAfter: ' + id);
+            self.removeDeleteIds();
+            var current_node = $("#" + id).get(0);
+            console.log(current_node);
+            if (current_node != undefined) {
 
 
-            //&#x200b
-            //var c = current_node.innerHTML;
+                //&#x200b
+                //var c = current_node.innerHTML;
 
-            //current_node.innerHTML = c+'&nbsp;';
-            //current_node.append(updateChars);
+                //current_node.innerHTML = c+'&nbsp;';
+                //current_node.append(updateChars);
 
-            var del_span = $("<span id='never_delete'>" + CARET2 + "</span>").insertAfter(current_node);
-            //var del_span = $("<span id='never_delete'>&#x200b</span>").insertAfter(current_node);
-
-
-            //fixdelete
-            //placeCaretAfterNode(del_span[0]);
-            //var t = $compile(del_span)($rootScope);
-            //ng-keyup='checkKeyUp2($event,'ce'+card._id)'
-            //$('.content_cnv #card_' + key._id).attr("onclick", 'toggleHeight(event, \'' + key._id + '\')');
-            //$(del_span).attr("onkeyup", 'checkKeyUp2(event)');
-$timeout(function() {
-  var selection = window.getSelection();
-         range = selection.getRangeAt(0);
-            //var range = document.createRange();
-            var node = current_node.nextSibling;
-            console.log(node);
-
-            //node.focus();
-            //var node = current_node.nextSibling.nextSibling;
-            //range.setStartAfter(node);
-
-//selection.collapse(node.firstChild, 0);
-//selection.selectAllChildren(node);
-//range.setStartAfter(node.firstChild);
-range.setStart(node.firstChild, 1);
-range.setEnd(node.firstChild, 1);
+                var del_span = $("<span id='never_delete'>" + CARET2 + "</span>").insertAfter(current_node);
+                //var del_span = $("<span id='never_delete'>&#x200b</span>").insertAfter(current_node);
 
 
-//range.collapse(true);
-        //var selection = window.getSelection();
-        selection.removeAllRanges();
-        selection.addRange(range);
+                //fixdelete
+                //placeCaretAfterNode(del_span[0]);
+                //var t = $compile(del_span)($rootScope);
+                //ng-keyup='checkKeyUp2($event,'ce'+card._id)'
+                //$('.content_cnv #card_' + key._id).attr("onclick", 'toggleHeight(event, \'' + key._id + '\')');
+                //$(del_span).attr("onkeyup", 'checkKeyUp2(event)');
+    $timeout(function() {
+      var selection = window.getSelection();
+             range = selection.getRangeAt(0);
+                //var range = document.createRange();
+                var node = current_node.nextSibling;
+                console.log(node);
 
-//selection.collapseToStart();
+                //node.focus();
+                //var node = current_node.nextSibling.nextSibling;
+                //range.setStartAfter(node);
 
-//selection.removeAllRanges();
-//selection.addRange(range);
+    //selection.collapse(node.firstChild, 0);
+    //selection.selectAllChildren(node);
+    //range.setStartAfter(node.firstChild);
+    range.setStart(node.firstChild, 1);
+    range.setEnd(node.firstChild, 1);
 
-           // range.setStart(node.firstChild, 0);
-           // range.setEnd(node.firstChild, 1);
 
-            //selection.addRange(range);
+    //range.collapse(true);
+            //var selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
 
-            //console.log(selection);
-            //range.collapse(true);
+    //selection.collapseToStart();
+
+    //selection.removeAllRanges();
+    //selection.addRange(range);
+
+               // range.setStart(node.firstChild, 0);
+               // range.setEnd(node.firstChild, 1);
+
+                //selection.addRange(range);
+
+                //console.log(selection);
+                //range.collapse(true);
+                //var selection = window.getSelection();
+                //selection.removeAllRanges();
+                //selection.addRange(range);
+                // Fix for Firefox which replaces the zero width space with a <br> tag
+                if (ua.toLowerCase().indexOf('firefox') > -1) {
+                    $('#' + id).html($('#' + id).html().replace(/<br>/g, ""));
+                }
+                var t = $(current_node).html();
+                console.log($(current_node).html());
+                //$('#' + id).html($('#' + id).html().replace(/\u200B/g, ""));
+                //$(current_node).html(t + 'cleaned');
+                console.log($(current_node).html());
+
+                $('#' + id).removeAttr('id');
+
+                //$(del_span[0]).html($(del_span[0]).html().replace(/\u200B/g, "CAT"));
+    },1000);
+            }
+            return;
+        }
+
+        function moveCaretInto(id) {
+            console.log(id);
+            console.log($("#" + id));
+            //$("#" + id).html('&#x200b');
+            $("#" + id).html(CARET);
+            var current_node = $("#" + id).get(0);
+            console.log(current_node);
+
+            //var del_span = $("<span id='never_delete'>" + CARET + "</span>").appendTo(current_node);
+            //range = document.createRange();
+
+            current_node.focus();
+    $timeout(function() {
+                var selection = window.getSelection();
+             range = selection.getRangeAt(0);
+
+             var node = current_node;
+                console.log(node);
+
+                range.setStartAfter(node.firstChild);
+            range.setStart(node.firstChild, 1);
+            range.setEnd(node.firstChild, 1);
+
+             selection.removeAllRanges();
+            selection.addRange(range);
+            //selection.collapse(node.firstChild);
             //var selection = window.getSelection();
             //selection.removeAllRanges();
             //selection.addRange(range);
@@ -1009,65 +1056,18 @@ range.setEnd(node.firstChild, 1);
             if (ua.toLowerCase().indexOf('firefox') > -1) {
                 $('#' + id).html($('#' + id).html().replace(/<br>/g, ""));
             }
-            var t = $(current_node).html();
-            console.log($(current_node).html());
+
             //$('#' + id).html($('#' + id).html().replace(/\u200B/g, ""));
-            //$(current_node).html(t + 'cleaned');
-            console.log($(current_node).html());
 
+            $('#' + id).addClass('scroll_enter_latest');
             $('#' + id).removeAttr('id');
+            // Scroll the pasted HTML into view
+            self.scrollLatest('scroll_enter_latest');
+            return;
 
-            //$(del_span[0]).html($(del_span[0]).html().replace(/\u200B/g, "CAT"));
-},1000);
+            },1000);
         }
-        return;
-    }
-
-    function moveCaretInto(id) {
-        console.log(id);
-        console.log($("#" + id));
-        //$("#" + id).html('&#x200b');
-        $("#" + id).html(CARET);
-        var current_node = $("#" + id).get(0);
-        console.log(current_node);
-
-        //var del_span = $("<span id='never_delete'>" + CARET + "</span>").appendTo(current_node);
-        //range = document.createRange();
-
-        current_node.focus();
-$timeout(function() {
-            var selection = window.getSelection();
-         range = selection.getRangeAt(0);
-
-         var node = current_node;
-            console.log(node);
-
-            range.setStartAfter(node.firstChild);
-        range.setStart(node.firstChild, 1);
-        range.setEnd(node.firstChild, 1);
-
-         selection.removeAllRanges();
-        selection.addRange(range);
-        //selection.collapse(node.firstChild);
-        //var selection = window.getSelection();
-        //selection.removeAllRanges();
-        //selection.addRange(range);
-        // Fix for Firefox which replaces the zero width space with a <br> tag
-        if (ua.toLowerCase().indexOf('firefox') > -1) {
-            $('#' + id).html($('#' + id).html().replace(/<br>/g, ""));
-        }
-
-        //$('#' + id).html($('#' + id).html().replace(/\u200B/g, ""));
-
-        $('#' + id).addClass('scroll_enter_latest');
-        $('#' + id).removeAttr('id');
-        // Scroll the pasted HTML into view
-        self.scrollLatest('scroll_enter_latest');
-        return;
-
-        },1000);
-    }
-    */
+        */
 
     function moveAfterPre(id) {
         var pre_node = $("#" + id).get(0);
@@ -1630,9 +1630,9 @@ $timeout(function() {
     this.contentChanged = function(content, elem) {
 
         //console.log(elem);
-       // console.log(content);
+        // console.log(content);
 
-       
+
 
 
 
@@ -1642,24 +1642,35 @@ $timeout(function() {
 
         //var a = $(".content_cnv #" + elem).find("b").next();
         //console.log(a);
-/*
-        $(".content_cnv #" + elem + " .br").each(function(index) {
-            console.log($(this));
-            //&& $(this)[0].lastElementChild.lastChild.nodeType != "3"
-            if ($(this)[0].lastChild) {
-                if ($(this)[0].lastChild.nodeType != "3") {
-                    var textNode = document.createTextNode("UMPTY");
-                    //$(this)[0].append(textNode);
-                    //$("<span class='space'>EMPTY4</span>").insertAfter($(this)[0]);
-                }
+        /*
+                $(".content_cnv #" + elem + " .br").each(function(index) {
+                    console.log($(this));
+                    //&& $(this)[0].lastElementChild.lastChild.nodeType != "3"
+                    if ($(this)[0].lastChild) {
+                        if ($(this)[0].lastChild.nodeType != "3") {
+                            var textNode = document.createTextNode("UMPTY");
+                            //$(this)[0].append(textNode);
+                            //$("<span class='space'>EMPTY4</span>").insertAfter($(this)[0]);
+                        }
 
+                    }
+                });
+                */
+
+        $(".content_cnv #" + elem + " .cb_container").each(function(index) {
+            console.log($(this));
+            console.log($(this)[0].children.length);
+            if($(this)[0].children.length > 2){
+                for(var i=2; i<=$(this)[0].children.length-1; i++){
+                    console.log(i);
+                    $(this)[0].children[i].remove();
+                }
             }
-        });
-        */
+        })
 
         $(".content_cnv #" + elem + " br").each(function(index) {
             //console.log( index + ": " + $( this ).text() );
-            console.log($(this));
+            //console.log($(this));
             //$( $(this)[0]).replaceWith( "<span class='br'>&nbsp;</span>" );
             /*
             if ($(this).length > 0) {
@@ -1726,52 +1737,52 @@ $timeout(function() {
                 });
                 */
 
-/*
-        $(".content_cnv #" + elem + " b").each(function(index) {
-            console.log($(this));
-            console.log($(this).text());
+        /*
+                $(".content_cnv #" + elem + " b").each(function(index) {
+                    console.log($(this));
+                    console.log($(this).text());
 
-            //$('#zero').remove();
-            //$('.m-active').removeClass('m-active');
+                    //$('#zero').remove();
+                    //$('.m-active').removeClass('m-active');
 
-            console.log($(this)[0].innerHTML);
-            var cont = $(this)[0].innerHTML;
-            //$($(this)[0]).attr('id');
-            if (cont.includes('&nbsp;') && !$($(this)[0]).hasClass('zero')) {
-               
-                savedSelection = self.saveSelection($(this)[0]);
+                    console.log($(this)[0].innerHTML);
+                    var cont = $(this)[0].innerHTML;
+                    //$($(this)[0]).attr('id');
+                    if (cont.includes('&nbsp;') && !$($(this)[0]).hasClass('zero')) {
+                       
+                        savedSelection = self.saveSelection($(this)[0]);
 
-                console.log('FOPUND');
+                        console.log('FOPUND');
 
-                $($(this)[0]).addClass('zero');
-                $($(this)[0]).attr('id', 'zerotemp');
+                        $($(this)[0]).addClass('zero');
+                        $($(this)[0]).attr('id', 'zerotemp');
 
-                //savedSelection = self.saveSelection($(this)[0]);
+                        //savedSelection = self.saveSelection($(this)[0]);
 
-                //  $timeout(function() {
-                savedSelection = self.saveSelection(document.getElementById('zerotemp'));
+                        //  $timeout(function() {
+                        savedSelection = self.saveSelection(document.getElementById('zerotemp'));
 
-                //$(this)[0].firstChild.textContent = b;
-                //document.getElementById('zero').firstChild.textContent = b;
+                        //$(this)[0].firstChild.textContent = b;
+                        //document.getElementById('zero').firstChild.textContent = b;
 
-                $(this)[0].innerHTML = cont.substr(6, cont.length);
-                //$(this)[0].innerHTML = 'Steve';
-                // $timeout(function() {
-                self.restoreSelection(document.getElementById('zerotemp'));
-                var sel = window.getSelection();
-                console.log(sel);
+                        $(this)[0].innerHTML = cont.substr(6, cont.length);
+                        //$(this)[0].innerHTML = 'Steve';
+                        // $timeout(function() {
+                        self.restoreSelection(document.getElementById('zerotemp'));
+                        var sel = window.getSelection();
+                        console.log(sel);
 
-                range = sel.getRangeAt(0);
-                // console.log(sel);
-                sc = sel.anchorNode;
-                //os = sel.anchorNode.firstChild.length;
-                console.log(range);
-                range.setStart(sc, 1);
+                        range = sel.getRangeAt(0);
+                        // console.log(sel);
+                        sc = sel.anchorNode;
+                        //os = sel.anchorNode.firstChild.length;
+                        console.log(range);
+                        range.setStart(sc, 1);
 
-            }
+                    }
 
-        });
-        */
+                });
+                */
 
 
         /*
@@ -1854,7 +1865,18 @@ $timeout(function() {
             var selection_start = $(self.getSelectionStart());
             if (sel.getRangeAt && sel.rangeCount) {
                 range = sel.getRangeAt(0);
+                console.log(range);
                 range.deleteContents();
+
+                                // Check box
+                if (html.includes('cb_container')) {
+                    console.log('paste cb');
+                    if (range.startContainer.parentNode.className.includes('cb_label')) {
+                        console.log(range.startContainer.parentNode.parentNode);
+                        range.setStartAfter(range.startContainer.parentNode.parentNode);
+                    }
+                }
+
                 var el = document.createElement("div");
                 el.innerHTML = html;
                 var frag = document.createDocumentFragment(),

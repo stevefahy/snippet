@@ -72,6 +72,12 @@ canvas {
     margin-top: 10px;
     margin-bottom: 5px;
     font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 15px;
+    line-height: 18px;
+}
+
+pre b {
+    font-weight: 700;
 }
 
 #cecard_create {
@@ -4094,9 +4100,9 @@ height: auto;
 
 .cb_container {
         display: flex;
-    width: 100%;
-    margin-top: 10px;
-    margin-bottom: 10px;
+        width: 100%;
+        margin-top: 10px;
+        /* margin-bottom: 10px; */
 }
 
 .cb_label {
@@ -4110,13 +4116,12 @@ height: auto;
     color: #34495E;
     padding: 0.5rem 0.25rem;
     */
-
-        position: relative;
+    position: relative;
     display: block;
     /* color: #34495E; */
     /* padding: 0.5rem 0.25rem; */
     /* padding-top: 38px; */
-    margin-top: 10px;
+    /* margin-top: 10px; */
 }
 
 .checkbox > input {
@@ -4218,8 +4223,51 @@ span.br:after {
 }
 */
 
-b.scroll_latest, i.scroll_latest {
+b.scroll_latest {
     display: inline-block;
     margin-left: -.45ch;
-    margin-right: -.45ch;
+    margin-right: -.4ch;
 }
+
+i.scroll_latest {
+    display: inline-block;
+    margin-left: -.45ch;
+    margin-right: -.4ch;
+}
+
+b.scroll_latest i.scroll_latest {
+    display: inline-block;
+    margin-right: 0.4ch;
+}
+
+b.scroll_latest+i.scroll_latest {
+    display: inline-block;
+    margin-left: -1ch;
+}
+
+
+i.scroll_latest+b.scroll_latest {
+    /* display: inline-block; */
+    margin-left: 0ch;
+    /* margin-right: -.4ch; */
+}
+
+b.scroll_latest > i.scroll_latest+b.scroll_latest {
+    margin-left: -1.2ch;
+    margin-right: 0ch;
+}
+
+pre > b.scroll_latest {
+    margin-left: -1ch;
+}
+
+pre > b.scroll_latest+i.scroll_latest {
+    margin-left: -1.2ch;
+}
+
+/*
+span.br:after {
+    content: ' ';
+    display: block;
+}
+*/
