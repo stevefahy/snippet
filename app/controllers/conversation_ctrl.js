@@ -2,6 +2,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     openCropRotate = ImageEdit.openCropRotate;
     editImage = ImageEdit.editImage;
     closeImageEdit = ImageEdit.closeImageEdit;
+    deleteImage = ImageEdit.deleteImage;
     openFilters = ImageEdit.openFilters;
     closeFilters = ImageEdit.closeFilters;
     filterClick = ImageFilters.filterClick;

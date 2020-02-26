@@ -104,6 +104,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         charstring: INITIAL_KEY + 'q',
         html: 'q',
         attribute: '',
+        span_start: '<q><span class="q_container" id="marky">',
+        span_end: '</span></q>',
         close: true
     }, {
         charstring: INITIAL_KEY + 'm',

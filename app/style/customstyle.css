@@ -2943,6 +2943,8 @@ scrollIndicator directive
     }
 }
 
+
+
 .image_adjust {
     /* top: 10px; */
     clear: both;
@@ -2962,6 +2964,11 @@ scrollIndicator directive
     user-select: none;
 }
 
+.image_adjust_on {
+    position: relative;
+    visibility: visible;
+}
+
 .image_edit_btns {
     display: flex;
     height: 100%;
@@ -2969,10 +2976,20 @@ scrollIndicator directive
     justify-content: space-around;
 }
 
+
+
 .image_edit {
     color: white;
     text-shadow: 1px 1px 2px #050505;
     cursor: pointer;
+}
+
+.image_editor {
+    height: 50px;
+}
+
+.image_delete_editor {
+    height: 50px;
 }
 
 div.after_image:empty {
@@ -3009,9 +3026,7 @@ div.after_image:empty {
     font-size: 35px;
 }
 
-.image_editor {
-    height: 50px;
-}
+
 
 .set_crop {
     margin-left: auto;
@@ -3624,10 +3639,7 @@ span.after_image {
     max-width: 100%
 }
 
-.image_adjust_on {
-    position: relative;
-    visibility: visible;
-}
+
 
 .filters_active {
     position: absolute !important;
@@ -4273,15 +4285,28 @@ span.br:after {
 */
 
 q::before {
-    font-size: 1.5em;
-    font-family: serif;
+    font-size: 2em;
+    content: open-quote;
+    content: '“';
+    position: relative;
+    bottom: -.5ch;
 }
 
 q::after {
-    font-size: 1.5em;
-    font-family: serif;
+    font-size: 2em;
+    content: '”';
+    position: relative;
+    bottom: -.5ch;
 }
 
 q {
-    font-size: 1.5em;
+font-size: 1.5em;
+    font-family: 'Montserrat';
+    font-style: italic;
 }
+/*
+span.q_container {
+    display: inline-block;
+    margin-left: -.45ch;
+}
+*/

@@ -19,6 +19,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         return parent_container;
     };
 
+
+
     // Image Edit menu.
 
     this.editImage = function(scope, id) {
@@ -99,6 +101,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                                         $(eb).find('.ai').attr("onclick", 'adjustImage(event, \'' + id + '\')');
                                         $(eb).find('.fi').attr("onclick", 'openFilters(event, \'' + id + '\')');
                                         $(eb).find('.ois').attr("onclick", 'openCropRotate(event, \'' + id + '\')');
+
+                                        $(eb).find('.di').attr("onclick", 'deleteImage(event, \'' + id + '\')');
                                         //$(eb).find('.close_image_edit').attr("onclick", 'closeImageEdit(event, \'' + id + '\')');
                                         $(eb).find('.close_image_edit').attr("onclick", 'closeImageEdit(\'' + id + '\')');
                                         // Adjust margin top if this is the topmost image.
@@ -108,6 +112,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                                         // set this menu to active
                                         $('#image_adjust_' + id).addClass('image_adjust_on');
                                     });
+
+
                                 }
                             });
                         }
@@ -119,9 +125,9 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
 
     };
 
-    this.updateTitle = function(id){
-        console.log($('#'+id));
-                var user_title_image = $('#' + id + ' .user_image_title');
+    this.updateTitle = function(id) {
+        console.log($('#' + id));
+        var user_title_image = $('#' + id + ' .user_image_title');
         var card_title_image = $('#' + id + ' .card_title');
         //card_title 
         console.log(user_title_image);
@@ -130,6 +136,18 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
             $(user_title_image).css('visibility', '');
             $(card_title_image).css('visibility', '');
         }
+    }
+
+    this.deleteImage = function(e, id){
+        console.log('deleteImage: ' + id);
+        var parent_container = 'content_cnv'; //getParentContainer(e.target);
+        var cropper = $('.' + parent_container + ' #cropper_' + id);
+        console.log(cropper);
+        ContentEditable.setContenteditable(cropper, true);
+        $('.image_adjust_on').remove();
+        ImageAdjustment.setImageEditing(false);
+        ImageAdjustment.setImageAdjusted(false);
+        $(cropper)[0].remove();
     }
 
     //this.closeImageEdit = function(e, id) {
