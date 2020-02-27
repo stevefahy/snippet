@@ -327,9 +327,6 @@ cardApp.service('Database', ['$window', '$rootScope', '$timeout', '$q', '$http',
         if (!$rootScope.online) {
             let previous_card = await deleteCard(card_id);
             UserData.conversationsLatestCardDelete(conversation_id, card_id, previous_card);
-            var type = Conversations.getConversationType();
-            let temp_card = { _id: card_id };
-            //send_message_to_sw("card_create_update", { operation: 'delete', card: temp_card, conversation_type: type });
         }
         Cards.delete(card_id)
             .then(function(returned) {

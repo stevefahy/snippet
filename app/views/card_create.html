@@ -1,7 +1,7 @@
 <div ng-controller="cardcreateCtrl">
     <div class="create_container" ng-class="{ 'create_container_conv': !feed, 'create_container_hide_footer': hide_footer}">
         <div class="create_a transition" ng-class="{'create_a_input': input}" id="create_cont">
-            <div class='ce' ng-attr-id="{{ 'ce' + card_create._id }}" contenteditable="true" ng-attr-editable="true" ng-change="contentChanged(card_create.content, 'ce'+card_create._id)" ng-keydown="checkKey($event,'ce'+card_create._id);" ng-keyup="checkCursor($event,'ce'+card_create._id)" ng-click="checkCursor($event,'ce'+card_create._id)" ng-paste="handlePaste($event)" ng-focus="keyListen('ce'+card_create._id); checkCursor($event,'ce'+card_create._id)" ng-model="card_create.content" ng-model-options="{ debounce: 1000 }"></div>
+            <div class='ce' ng-attr-id="{{ 'ce' + card_create._id }}" contenteditable="true" ng-attr-editable="true" ng-change="contentChanged(card_create.content, 'ce'+card_create._id)" ng-keyup="checkCursor($event,'ce'+card_create._id)" ng-click="checkCursor($event,'ce'+card_create._id)" ng-paste="handlePaste($event)" ng-focus="keyListen('ce'+card_create._id); checkCursor($event,'ce'+card_create._id)" ng-model="card_create.content" ng-model-options="{ debounce: 1000 }"></div>
             <div ng-class="{'placeholderDiv_feed': feed}" id="placeholderDiv"></div>
         </div>
         <div class="create_b">

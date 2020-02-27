@@ -93,13 +93,10 @@ cardApp.service('ImageFilters', ['$rootScope', 'Format', '$q', 'ContentEditable'
         }
     };
 
-
-    
     this.close = function() {
         var deferred = $q.defer();
         var promises = [];
         var parent_container = ImageAdjustment.getImageParent();
-        console.log(parent_container);
         var id = ImageAdjustment.getImageId();
         var cropper = $('.' + parent_container + ' #cropper_' + id);
         ContentEditable.setContenteditable(cropper, true);
@@ -139,13 +136,10 @@ cardApp.service('ImageFilters', ['$rootScope', 'Format', '$q', 'ContentEditable'
             deferred.resolve();
         }
         $q.all(promises).then(function() {
-            // SAVE
             ImageAdjustment.setImageEditing(false);
-//            ImageFunctions.saveCropper($('.' + parent_container + ' #cropper_' + id));
             deferred.resolve();
         });
         return deferred.promise;
     };
-    
 
 }]);

@@ -45,7 +45,6 @@ cardApp.service('ImageFunctions', ['$rootScope', 'Format', '$q', 'ContentEditabl
                     img_new.setAttribute('original-image-name', result.original_image);
                     deferred.resolve(img_new);
                 }
-
             });
         });
         return deferred.promise;
@@ -79,7 +78,6 @@ cardApp.service('ImageFunctions', ['$rootScope', 'Format', '$q', 'ContentEditabl
     };
 
     this.saveCropper = function(cropper) {
-        console.log('saveCropper');
         var deferred = $q.defer();
         // Turn on contenteditable for this card before saving
         ContentEditable.setContenteditable($(cropper)[0], true);

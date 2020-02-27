@@ -14,31 +14,18 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         if ($(scope).parents('div.card_create_container').length > 0) {
             parent_container = 'card_create_container';
         } else {
-            parent_container = 'content_cnv';
+            parent_container = PARENTCONTAINER;
         }
         return parent_container;
     };
 
-
-
     // Image Edit menu.
 
     this.editImage = function(scope, id) {
-
         var parent_container = getParentContainer(scope);
         var cropper = $('.' + parent_container + ' #cropper_' + id);
-
-        //var editable = ContentEditable.getContenteditable($(cropper)[0]);
-        //var editable = $(cropper).closest('.ce').attr('editing');
-        console.log($(cropper));
-        console.log($(cropper).closest('.resize-container'));
         var editable = $(cropper).closest('.resize-container').attr('editing');
-        console.log(editable);
         if (editable == 'true') {
-            console.log('its true');
-
-
-
             ContentEditable.setContenteditable($(cropper)[0], false);
             // Check if this is new image to be edited.
             if (id != ImageAdjustment.getImageId()) {
@@ -53,10 +40,7 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                     // Get the editable attibute for this card (for this user).
                     // check user has permision to edit this image.
                     var card_expanded = $(cropper).closest('div.card_temp').attr('expanded');
-                    console.log(card_expanded);
                     if ($(scope).closest('div.resize-container').attr('editable') == 'true' && card_expanded == 'true') {
-                        //if ($(scope).closest('div.ce').attr('editable') == 'true') {
-                        //if ($(scope).closest('div.ce').attr('editable') == 'true' && card_expanded == 'true') {
                         // If this image is not already being edited then allow it to be edited.
                         if (!ImageAdjustment.getImageEditing()) {
                             // Turn off content saving.
@@ -80,14 +64,8 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                                     var ia = $('.image_adjust').clone();
                                     $(ia).attr('id', 'image_adjust_' + id);
                                     ia.insertBefore('.' + parent_container + ' #cropper_' + id);
-                                    //ia.insertBefore('.' + parent_container + ' #cropper_' + id).closest('.user');
-                                    //$(cropper).closest('.user'));
-                                    //.parents('.selectable').first();
                                     var user_title_image = $(scope).closest('div.resize-container').find('.user_image_title');
                                     var card_title_image = $(scope).closest('div.resize-container').find('.card_title');
-                                    //card_title 
-                                    console.log(user_title_image);
-                                    console.log(card_title_image);
                                     if (user_title_image.length > 0) {
                                         $(user_title_image).css('visibility', 'hidden');
                                         $(card_title_image).css('visibility', 'hidden');
@@ -101,48 +79,34 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                                         $(eb).find('.ai').attr("onclick", 'adjustImage(event, \'' + id + '\')');
                                         $(eb).find('.fi').attr("onclick", 'openFilters(event, \'' + id + '\')');
                                         $(eb).find('.ois').attr("onclick", 'openCropRotate(event, \'' + id + '\')');
-
                                         $(eb).find('.di').attr("onclick", 'deleteImage(event, \'' + id + '\')');
-                                        //$(eb).find('.close_image_edit').attr("onclick", 'closeImageEdit(event, \'' + id + '\')');
                                         $(eb).find('.close_image_edit').attr("onclick", 'closeImageEdit(\'' + id + '\')');
-                                        // Adjust margin top if this is the topmost image.
-                                        if ($('.' + parent_container + ' #cropper_' + id).attr('class').indexOf('no_image_space') >= 0) {
-                                            $('#image_adjust_' + id).addClass('no_image_space_adjust');
-                                        }
                                         // set this menu to active
                                         $('#image_adjust_' + id).addClass('image_adjust_on');
                                     });
-
-
                                 }
                             });
                         }
                     }
                 });
             }
-
         }
 
     };
 
     this.updateTitle = function(id) {
-        console.log($('#' + id));
         var user_title_image = $('#' + id + ' .user_image_title');
         var card_title_image = $('#' + id + ' .card_title');
         //card_title 
-        console.log(user_title_image);
-        console.log(card_title_image);
         if (user_title_image.length > 0) {
             $(user_title_image).css('visibility', '');
             $(card_title_image).css('visibility', '');
         }
     }
 
-    this.deleteImage = function(e, id){
-        console.log('deleteImage: ' + id);
-        var parent_container = 'content_cnv'; //getParentContainer(e.target);
+    this.deleteImage = function(e, id) {
+        var parent_container = PARENTCONTAINER;
         var cropper = $('.' + parent_container + ' #cropper_' + id);
-        console.log(cropper);
         ContentEditable.setContenteditable(cropper, true);
         $('.image_adjust_on').remove();
         ImageAdjustment.setImageEditing(false);
@@ -150,13 +114,10 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         $(cropper)[0].remove();
     }
 
-    //this.closeImageEdit = function(e, id) {
     this.closeImageEdit = function(id) {
-        //e.stopPropagation();
-        var parent_container = 'content_cnv'; //getParentContainer(e.target);
+        var parent_container = PARENTCONTAINER;
         var cropper = $('.' + parent_container + ' #cropper_' + id);
         var card_id = $('.' + parent_container + ' #cropper_' + id).closest('div.card_temp').attr('id');
-        console.log(card_id);
         ContentEditable.setContenteditable(cropper, true);
         $('.image_adjust_on').remove();
         if ($('.' + parent_container + ' #cropper_' + id + ' img.adjusted').length > 0) {
@@ -166,10 +127,6 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         if (ImageAdjustment.getImageAdjusted()) {
             ImageAdjustment.setImageAdjusted(false);
         }
-
-        //self.updateTitle(card_id);
-
-
     };
 
     // CropRotate
@@ -240,12 +197,10 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         e.stopPropagation();
     };
 
-    //this.closeFilters = function(e) {
     this.closeFilters = function() {
-        var parent_container = 'content_cnv'; //getParentContainer(e.target);
+        var parent_container = PARENTCONTAINER;
         var id = ImageAdjustment.getImageId();
         ImageFilters.close();
-        //e.stopPropagation();
     };
 
     // testImage
@@ -259,62 +214,13 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
         ctx_target.putImageData(data, 0, 0);
     };
 
-    /*
-    this.adjustImage = function(e, id) {
-        var parent_container = getParentContainer(e.target);
-        ImageAdjustment.setImageId(id);
-        ImageAdjustment.setImageParent(parent_container);
-        var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
-        var image = $('.' + parent_container + ' #image_' + id)[0];
-        $('.image_adjust_on').remove();
-        if ($('.' + parent_container + ' #cropper_' + id + ' .image_adjust_div').length <= 0) {
-            var filt = $('.image_adjust_div').clone().insertAfter('.' + parent_container + ' #cropper_' + id);
-            filt.attr('id', 'adjust_' + id);
-            filt.addClass('filters_active');
-            var data = { 'id': id, 'type': 'sharpen' };
-            data.last_position = $rootScope.slider_settings.sharpen.reset;
-            // Get the last position of the slider.
-            if (ia != undefined) {
-                if (ia.sharpen != undefined) {
-                    data.last_position = ia.sharpen;
-                }
-            }
-            addSlider(Slider.slider_sharpen, parent_container, id, data);
-        }
-        var target = ImageFunctions.imageToCanvas(image);
-        var source = ImageFunctions.imageToCanvas(image);
-        target.setAttribute('id', 'temp_canvas_filtered_' + id);
-        $(target).addClass('target_canvas');
-        $(source).addClass('source_canvas');
-        $(target).addClass('hide');
-        $(source).addClass('hide');
-        $(target).insertBefore('.' + parent_container + ' #image_' + id);
-        $(source).insertBefore('.' + parent_container + ' #image_' + id);
-        ImageAdjustment.setSource(source);
-        ImageAdjustment.setTarget(target);
-        // Apply all adjustments.
-        ImageAdjustment.applyFilters(source, ia).then(function(result) {
-            target.width = result.width;
-            target.height = result.height;
-            var ctx = target.getContext('2d');
-            ctx.drawImage(result, 0, 0);
-            ImageFunctions.hideOriginal(parent_container, id);
-            ImageFunctions.hideAdjusted(parent_container, id);
-            $(target).removeClass('hide');
-        });
-        e.stopPropagation();
-    };
-    */
-
-    // Set all image adjustments as one object.
+    // Set image title as one object.
     this.setImageTitle = function(parent_container, id, values) {
-        console.log(values)
         if (values == undefined) {
-            // If the image adjustment object is empty then remove the adjustment-data attribute.
+            // If the image title object is empty then remove the title-data attribute.
             $('.' + parent_container + ' #image_' + id).removeAttr('title-data');
         } else {
-            // Custom attribute for storing image adjustments.
-            //$('.' + parent_container + ' #image_' + id).attr('title-data', JSON.stringify(values));
+            // Custom attribute for storing title.
             $('.' + parent_container + ' #image_' + id).attr('title-data', values);
         }
     };
@@ -322,72 +228,45 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
     this.getImageTitle = function(parent_container, id) {
         var title_data;
         // Custom attribute for storing image adjustments.
-        console.log($('.' + parent_container + ' #image_' + id));
         var td = $('.' + parent_container + ' #image_' + id).attr('title-data');
         if (td != undefined) {
-            //title_data = JSON.parse(td);
             title_data = td;
         }
         return title_data;
     };
 
     this.submitTitle = function(event, id) {
-        console.log('submitTitle: ' + id);
         var data = $('.content_cnv #title_' + id + ' .add_title_text').text();
-        console.log(data);
         if (event) {
-            console.log('stopPropagation');
             event.stopPropagation();
             event.preventDefault();
         }
-        var it = self.setImageTitle('content_cnv', id, data);
+        var it = self.setImageTitle(PARENTCONTAINER, id, data);
         self.cancelTitle();
-
     }
 
     this.cancelTitle = function(event) {
         if (event) {
-            console.log('stopPropagation');
             event.stopPropagation();
             event.preventDefault();
         }
-        console.log('cancelTitle');
         $('.image_title_div.title_active').remove();
     }
 
     this.addTitle = function(e, id) {
-        console.log('add title');
         var parent_container = getParentContainer(e.target);
         ImageAdjustment.setImageId(id);
         ImageAdjustment.setImageParent(parent_container);
-        //var ia = ImageAdjustment.getImageAdjustments(parent_container, id);
         var image = $('.' + parent_container + ' #image_' + id)[0];
-        //$('.image_adjust_on').remove();
-        //if ($('.' + parent_container + ' #cropper_' + id + ' .image_title_div').length <= 0) {
-        //image_title_div ng-scope title_active
         if ($('.' + parent_container + ' .title_active').length <= 0) {
             var filt = $('.image_title_div').clone().insertBefore('.' + parent_container + ' #cropper_' + id);
             filt.attr('id', 'title_' + id);
             filt.addClass('title_active');
-
-            //var eb = $('#image_adjust_' + id).append(template);
             $(filt).find('#submit_title').attr("onclick", 'submitTitle(event, \'' + id + '\')');
-
-
-            var title = self.getImageTitle('content_cnv', id);
-            console.log(title);
+            var title = self.getImageTitle(PARENTCONTAINER, id);
             if (title != undefined) {
                 $('.title_active .add_title_text').html(title);
             }
-            //var data = { 'id': id, 'type': 'test' };
-            //data.last_position = $rootScope.slider_settings.test.reset;
-            // Get the last position of the slider.
-            //if (ia != undefined) {
-            //    if (ia.test != undefined) {
-            //        data.last_position = ia.test;
-            //    }
-            //}
-            //addSlider(Slider.slider_test, parent_container, id, data);
         }
     }
 

@@ -864,7 +864,7 @@ if (workbox) {
   },
   {
     "url": "configs/config.js",
-    "revision": "5d336195135e3839a80aa8a49f793274"
+    "revision": "797299fa42b92f0f8b3f3dfa0437ab65"
   },
   {
     "url": "configs/fcm.js",
@@ -884,11 +884,11 @@ if (workbox) {
   },
   {
     "url": "controllers/card_ctrl.js",
-    "revision": "fd579dd3056125454245f4471c30ac7e"
+    "revision": "63fd624b8e663b86270bc10b63d4c637"
   },
   {
     "url": "controllers/cardcreate_ctrl.js",
-    "revision": "06783bd0f67b14b8f018893dfb799103"
+    "revision": "6168a5b770b9d74f85abd9e311f4f5de"
   },
   {
     "url": "controllers/contacts_ctrl.js",
@@ -896,7 +896,7 @@ if (workbox) {
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "c7e9558a336cc63e01943c4c946445e9"
+    "revision": "266001c31eb725042c2ba73ed4f2721d"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -928,15 +928,15 @@ if (workbox) {
   },
   {
     "url": "controllers/main_ctrl.js",
-    "revision": "b05c84d08d44707ddaff26d78ce500dd"
+    "revision": "b83c24308a9f4f7aad6ad9684264c0f8"
   },
   {
     "url": "controllers/usersetting_ctrl.js",
-    "revision": "4386b7fc37d17159d7ad8dd7673827a8"
+    "revision": "5a1bc8df3d97461b379b312b06f65e3b"
   },
   {
     "url": "directives/directives.js",
-    "revision": "5b215ab5a549a9e43ee27834a4f4279f"
+    "revision": "a9e61e2bb75abcfb9914de37f9595324"
   },
   {
     "url": "factories/factories.js",
@@ -952,7 +952,7 @@ if (workbox) {
   },
   {
     "url": "indexa.html",
-    "revision": "c73cec5498826aa43bce2f500df96956"
+    "revision": "3608f84a9678de8e7b8d9bc1fd03f4f3"
   },
   {
     "url": "js/angular_moment.js",
@@ -1072,7 +1072,7 @@ if (workbox) {
   },
   {
     "url": "services/database.js",
-    "revision": "ba4b3590020a5680523acb8cae1c6c22"
+    "revision": "b7ee07fc3ab35f76490edb43660a1b33"
   },
   {
     "url": "services/debug.js",
@@ -1084,7 +1084,7 @@ if (workbox) {
   },
   {
     "url": "services/edit.js",
-    "revision": "8765acc6119f2750d8f1fa15f3e598de"
+    "revision": "cc5526d39d462e21fbf327f25d2c8f9c"
   },
   {
     "url": "services/format_html.js",
@@ -1092,7 +1092,7 @@ if (workbox) {
   },
   {
     "url": "services/format.js",
-    "revision": "e2ab57bd484d698dc1f0b5957d0f6ef4"
+    "revision": "874475e5acdf88a53d310410c372c211"
   },
   {
     "url": "services/general.js",
@@ -1100,19 +1100,19 @@ if (workbox) {
   },
   {
     "url": "services/image_adjustment.js",
-    "revision": "fc14dcb4efc230b8c0e1a38d081c9be7"
+    "revision": "1608ca1d3c4656098713170f69f5a7bd"
   },
   {
     "url": "services/image_edit.js",
-    "revision": "96c5bd6647fb2c94eca7dd3011fcbaea"
+    "revision": "ff88ca585ffed5df46344abafc5d3db4"
   },
   {
     "url": "services/image_filters.js",
-    "revision": "221f4f6f06e7ce216c5adf9973a6fc79"
+    "revision": "d7d9cb83273f3e4edce3207998f42aa4"
   },
   {
     "url": "services/image_functions.js",
-    "revision": "627e3c845f1403e3117179401b6d1851"
+    "revision": "d1977d2997e4b628e76819078ad2b95f"
   },
   {
     "url": "services/image_manipulate.js",
@@ -1152,7 +1152,7 @@ if (workbox) {
   },
   {
     "url": "style/customstyle.css",
-    "revision": "91fd70e2b1e89e467f23ff2bdc54ee86"
+    "revision": "5db4bbb6058a13161be32780993b10d0"
   },
   {
     "url": "style/instagram.css",
@@ -1176,7 +1176,7 @@ if (workbox) {
   },
   {
     "url": "views/card_create.html",
-    "revision": "b8bbf528c092e1c8a11fcae2ae40e13b"
+    "revision": "e9746f544aef06e6d0c1c03ac26f49de"
   },
   {
     "url": "views/card.html",
@@ -1188,7 +1188,7 @@ if (workbox) {
   },
   {
     "url": "views/conversation.html",
-    "revision": "574c5412da6906f2ca5f378012e1d9fc"
+    "revision": "5569ba9571efdb91675378cffaf097fc"
   },
   {
     "url": "views/conversations.html",
@@ -1200,7 +1200,7 @@ if (workbox) {
   },
   {
     "url": "views/edit_btns.html",
-    "revision": "0d34e3d6b51e8601bd9dac303853210e"
+    "revision": "688555e323e9c88c0269fc3ea836a1f3"
   },
   {
     "url": "views/footer.html",
@@ -1216,7 +1216,7 @@ if (workbox) {
   },
   {
     "url": "views/header_conv.html",
-    "revision": "2add3367c6a895d825459d8a8a6d717a"
+    "revision": "da63d3789c6926390ba15adf699f97da"
   },
   {
     "url": "views/header_group.html",
@@ -1224,7 +1224,7 @@ if (workbox) {
   },
   {
     "url": "views/header_settings.html",
-    "revision": "18d58882beb16ecce938e6327652c98f"
+    "revision": "24d5ab06a21667dd366dba0e4a1e1576"
   },
   {
     "url": "views/header.html",

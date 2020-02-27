@@ -2,7 +2,7 @@
 // ImageAdjustment Service
 //
 
-cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', 'General', '$injector', function($window, $rootScope, $timeout, $q, General, $injector) {
+cardApp.service('ImageAdjustment', ['$window', '$rootScope', '$timeout', '$q', 'General', function($window, $rootScope, $timeout, $q, General) {
 
     var self = this;
     var image_id;

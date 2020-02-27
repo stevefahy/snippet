@@ -6,21 +6,22 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114346969-1"></script>
     <script>
-        window.dataLayer = window.dataLayer || [];
+    window.dataLayer = window.dataLayer || [];
+
     function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
     gtag('config', 'UA-114346969-1');
     </script>
     <script>
-        var pathArray = location.href.split('/');
-        var protocol = pathArray[0];
-        var host = pathArray[2];
-        var theurl = protocol + '//' + host + '/';
-        if (document.location.hostname === "localhost" || document.location.hostname === "127.0.0.1") {
-            document.write('<base href="' + theurl + '" />');
-        } else {
-            document.write('<base href="/" />');
-        }
+    var pathArray = location.href.split('/');
+    var protocol = pathArray[0];
+    var host = pathArray[2];
+    var theurl = protocol + '//' + host + '/';
+    if (document.location.hostname === "localhost" || document.location.hostname === "127.0.0.1") {
+        document.write('<base href="' + theurl + '" />');
+    } else {
+        document.write('<base href="/" />');
+    }
     </script>
     <!-- META -->
     <meta charset="utf-8">
@@ -29,14 +30,9 @@
     <!-- Load Fonts -->
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Montserrat+Alternates:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Fira+Sans+Extra+Condensed:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,300">
-    <link href='https://fonts.googleapis.com/css?family=Arimo:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
-    <link href="https://fonts.googleapis.com/css?family=Amatic+SC|Anton|Architects+Daughter|Baloo+Bhaijaan|Boogaloo|Carter+One|Caveat+Brush|Cherry+Swash:700|Condiment|Courgette|Damion|Dancing+Script|Kaushan+Script|Lobster|Lobster+Two|Merienda+One|Niconne|Oleo+Script+Swash+Caps|Oregano|Pacifico|Permanent+Marker|Reenie+Beanie|Righteous|Sedgwick+Ave|Sedgwick+Ave+Display|Wendy+One" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Oleo+Script:400,700" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i&display=swap" rel="stylesheet">
+    <!-- Snipbee -->
+    <link href="https://fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
     <!-- Google Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- Angular -->
@@ -77,7 +73,6 @@
     <script src="/js/rzslider.js" defer></script>
     <!-- velocityjs -->
     <script src="/js/velocity.min.js" defer></script>
-
     <!-- load our main application -->
     <script src="/modules/app.js" defer></script>
     <!-- Configs -->

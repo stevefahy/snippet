@@ -17,10 +17,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     var savedSelection;
 
     var CARET = '&nbsp;';
-    //var CARET = '<wbr>';
-    //var CARET = '&#x200b';
-    //var CARET2 = '&#x200b';
-    var CARET2 = '&nbsp;';
+
     // Android Javascript Interface calls from app
 
     $window.imageUploaded = self.imageUploaded;
@@ -62,38 +59,23 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         charstring: INITIAL_KEY + 'c',
         html: 'input',
         attribute: 'type="checkbox" onclick="checkBoxChanged(this)" onmouseover="checkBoxMouseover(this)" onmouseout="checkBoxMouseout(this)" ',
-        //span_start: '<span id="checkbox_edit" >',
-        //span_end: '</span>',
-
-        // start class='scroll_latest' id='marky'
-
-
         span_start: '<span class="cb_container"><span class="checkbox" id="checkbox_edit" >',
         span_end: '</span><span class="cb_label scroll_latest"  id="marky"></span></span>',
-
         close: false
     }, {
         charstring: INITIAL_KEY + '1',
         html: 'h1',
-        //attribute: '',
         attribute: 'class="header_1"',
-        // class='scroll_latest' id='marky'
-        //span_start: '<span id="marky"  class="header_1 scroll_latest">',
-        //span_end: '</span>',
         close: true
     }, {
         charstring: INITIAL_KEY + '2',
         html: 'h2',
         attribute: 'class="header_2"',
-        //span_start: '<span id="header" >',
-        //span_end: '</span>',
         close: true
     }, {
         charstring: INITIAL_KEY + '3',
         html: 'h3',
         attribute: 'class="header_3"',
-        //span_start: '<span id="header" >',
-        //span_end: '</span>',
         close: true
     }, {
         charstring: INITIAL_KEY + 'r',
@@ -292,64 +274,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         $('#cropper_' + unique_id).attr('image-original', JSON.stringify(original_image_data));
         $('#cropper_' + unique_id).css('maxWidth', new_image.naturalWidth);
         $('#cropper_' + unique_id).css('cssFloat', 'left');
-        // Check if this image is the first piece of content. If it is then add a class to remove spacing between card and image (only required if text is the directly after the title area).
-        var previous_node = $(new_image).parent()[0].previousSibling;
-        var card_id = $(new_image).parent().closest('.ce').attr('id');
-        var is_topmost = true;
-        var end_search = false;
-        $('#' + 'image_' + unique_id).parent().parents().each(function(index, item) {
-            if (is_topmost && !end_search) {
-                if ($(item)[0].className == 'after_image' && is_topmost) {
-                    $(item).contents().each(function(index2, item2) {
-                        if ($(item2)[0].nodeType != 3) {
-                            if ($(item2)[0].className.indexOf('cropper_cont') >= 0) {
-                                if ($(item2)[0].id.indexOf(unique_id) >= 0) {
-                                    end_search = true;
-                                    return false;
-                                } else {
-                                    is_topmost = false;
-                                    return false;
-                                }
-                            } else if ($(item2)[0].className.indexOf('after_image') >= 0) {
-                                if ($(item2)[0].firstChild != null) {
-                                    if ($(item2)[0].firstChild.childNodes.length > 0) {
-                                        is_topmost = false;
-                                        return false;
-                                    }
-                                }
-                            }
-                        } else {
-                            if ($(item2)[0].nodeValue != "") {
-                                is_topmost = false;
-                                return false;
-                            }
-                        }
-                    });
-                }
-                if ($(item)[0].className.indexOf('ce') >= 0 && $(item)[0].className.indexOf('ce') < 3) {
-                    $(item).contents().each(function(index3, item3) {
-                        if ($(item3)[0].nodeType == 3 && $(item3)[0].length > 0) {
-                            is_topmost = false;
-                            return false;
-                        } else if ($(item3)[0].nodeType == 1) {
-                            if ($(item3)[0].id.indexOf(unique_id) >= 0) {
-                                end_search = true;
-                                return false;
-                            } else {
-                                is_topmost = false;
-                                return false;
-                            }
-                        }
-                    });
-                    return false;
-                }
-            }
-        });
-        if (is_topmost) {
-            // First remove the no_image_space class from all other croper_cont in this card
-            $('#' + card_id + ' .no_image_space').removeClass('no_image_space');
-            $('#cropper_' + unique_id).addClass('no_image_space');
-        }
         // Move the cursor into the after image span
         moveCaretInto('after_image_' + unique_id);
         $rootScope.$broadcast('imagePasted');
@@ -516,7 +440,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     // UPLOAD ==================================================================
     uploadClickListen = function(id) {
-        console.log('ucl');
         // make the button active temporarily so that it functions.
         $('#upload-input').addClass('active');
         $('#upload-input').click();
@@ -541,7 +464,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     }
 
     this.uploadFile = function(id, card, currentUser) {
-        console.log(id);
         if (ua.indexOf('AndroidApp') >= 0) {
             if (document.activeElement.id != 'cecard_create' && id != undefined && id != 'card_create') {
                 // save the card first (Android bug)
@@ -638,7 +560,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     checkUpdate = function() {
-        console.log('checkUpdate');
         if (ua.indexOf('AndroidApp') >= 0) {
             if (focused_id != undefined) {
                 self.getBlurAndroid(focused_id, focused_card, focused_user);
@@ -648,9 +569,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     // Called by Android onPause. Update the card.
     this.getBlurAndroid = function(id, card, currentUser) {
-        console.log('getBlurAndroid');
-        console.log(id);
-        console.log(card);
         if (id != undefined && card != undefined && currentUser != undefined) {
             // Check if there is a marky in progress
             // zm launching image capture should not trigger an update. It causes error.
@@ -684,16 +602,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.getBlur = function(id, card, currentUser) {
-        console.log('getBlur');
         // Add slight delay so that document.activeElement works
         setTimeout(function() {
             var content_title = $('.content_cnv #card_' + card._id + ' .title_area #ce_title' + card._id).html();
-            //var content_content = $('.content_cnv .content_area #ce' + card._id).html();
             var content_content = $('.content_cnv #card_' + card._id + ' .content_area #ce' + card._id).html();
-            //console.log(content_title);
-            //console.log(content_content);
             var content = content_title + content_content;
-            //console.log(content);
             // Get the element currently in focus
             var active = $(document.activeElement).closest("div").attr('id');
             // If the blurred card is not the current card or the hidden input.
@@ -706,49 +619,17 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 // check the content has changed and not currently mid marky. Or that an image is being edited.
                 if ((content != card.original_content && (found_marky == false)) && !ImageAdjustment.getImageEditing()) {
                     if (!ImageAdjustment.getImageEditing()) {
-                        //card.content = $('.content_cnv #ce' + card._id).html();
                         var card_copy = { ...card };
-                        //card.content = content;
                         card_copy.content = content;
                     }
                     // Inject the Database Service
                     var Database = $injector.get('Database');
                     // Update the card
-                    console.log(card_copy);
                     Database.updateCard(id, card_copy, currentUser);
                 }
             }
         }, 100);
     };
-
-    /*
-    this.getBlur = function(id, card, currentUser) {
-        // Add slight delay so that document.activeElement works
-        setTimeout(function() {
-            var content = $('.content_cnv #ce' + card._id).html();
-            // Get the element currently in focus
-            var active = $(document.activeElement).closest("div").attr('id');
-            // If the blurred card is not the current card or the hidden input.
-            if (('ce' + card._id != active && (active != 'hidden_input_container')) && !ImageAdjustment.getImageEditing()) {
-                // Card out of focus. Reset the marky_started_array.
-                marky_started_array = [];
-                // Check if there is a marky in progress
-                // zm launching image capture should not trigger an update. It causes error.
-                found_marky = findMarky(card.content);
-                // check the content has changed and not currently mid marky. Or that an image is being edited.
-                if ((content != card.original_content && (found_marky == false)) && !ImageAdjustment.getImageEditing()) {
-                    if (!ImageAdjustment.getImageEditing()) {
-                        card.content = $('.content_cnv #ce' + card._id).html();
-                    }
-                    // Inject the Database Service
-                    var Database = $injector.get('Database');
-                    // Update the card
-                    Database.updateCard(id, card, currentUser);
-                }
-            }
-        }, 100);
-    };
-    */
 
     this.getTagCountPrevious = function(content) {
         var tag_count_previous_local;
@@ -758,7 +639,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             // create original vars
             tag_count_previous_local = (content_less_pre.match(reg) || []).length;
         }
-        console.log(tag_count_previous_local);
         return tag_count_previous_local;
     };
 
@@ -836,58 +716,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         return found;
     }
 
-    this.checkKeyUp2 = function(event, id) {
-        console.log('KEYUP2');
-    }
-
-    /*
-    function placeCaretAfterNode(node) {
-        console.log(node);
-        //document.getElementById('ce5e4dba4aa1f484081ce0e41f' ).focus();
-        $('.content_cnv #ce5e4dba4aa1f484081ce0e41f').focus();
-        if (typeof window.getSelection != "undefined") {
-            var range = document.createRange();
-            range.setStartAfter(node);
-            range.collapse(true);
-            var selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
-        }
-    }
-
-    function moveCaret(id) {
-        //document.getElementById("deletex").focus();
-        placeCaretAfterNode( document.getElementById(id) );
-    }
-    */
-
-    function insertNodeAtCaret(node) {
-        if (typeof window.getSelection != "undefined") {
-            var sel = window.getSelection();
-            if (sel.rangeCount) {
-                var range = sel.getRangeAt(0);
-                range.collapse(false);
-                range.insertNode(node);
-                range = range.cloneRange();
-                range.selectNodeContents(node);
-                range.collapse(false);
-                sel.removeAllRanges();
-                sel.addRange(range);
-            }
-        } else if (typeof document.selection != "undefined" && document.selection.type != "Control") {
-            var html = (node.nodeType == 1) ? node.outerHTML : node.data;
-            var id = "marker_" + ("" + Math.random()).slice(2);
-            html += '<span id="' + id + '"></span>';
-            var textRange = document.selection.createRange();
-            textRange.collapse(false);
-            textRange.pasteHTML(html);
-            var markerSpan = document.getElementById(id);
-            textRange.moveToElementText(markerSpan);
-            textRange.select();
-            markerSpan.parentNode.removeChild(markerSpan);
-        }
-    }
-
     function moveCaretAfter(id) {
         self.removeDeleteIds();
         var current_node = $("#" + id).get(0);
@@ -913,23 +741,12 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     function moveCaretInto(id) {
         $("#" + id).html(CARET);
         var current_node = $("#" + id).get(0);
-
         current_node.focus();
-
         var selection = window.getSelection();
         range = selection.getRangeAt(0);
-
-        // var node = current_node;
-        //  console.log(node);
-
         range.setStartAfter(current_node.firstChild);
-
-
-        //range = document.createRange();
         range.setStart(current_node.firstChild, 1);
         range.setEnd(current_node.firstChild, 1);
-        //range.collapse(true);
-        //var selection = window.getSelection();
         selection.removeAllRanges();
         selection.addRange(range);
         // Fix for Firefox which replaces the zero width space with a <br> tag
@@ -943,145 +760,13 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         return;
     }
 
-
-    /*
-        function moveCaretAfter(id) {
-            console.log('moveCaretAfter: ' + id);
-            self.removeDeleteIds();
-            var current_node = $("#" + id).get(0);
-            console.log(current_node);
-            if (current_node != undefined) {
-
-
-                //&#x200b
-                //var c = current_node.innerHTML;
-
-                //current_node.innerHTML = c+'&nbsp;';
-                //current_node.append(updateChars);
-
-                var del_span = $("<span id='never_delete'>" + CARET2 + "</span>").insertAfter(current_node);
-                //var del_span = $("<span id='never_delete'>&#x200b</span>").insertAfter(current_node);
-
-
-                //fixdelete
-                //placeCaretAfterNode(del_span[0]);
-                //var t = $compile(del_span)($rootScope);
-                //ng-keyup='checkKeyUp2($event,'ce'+card._id)'
-                //$('.content_cnv #card_' + key._id).attr("onclick", 'toggleHeight(event, \'' + key._id + '\')');
-                //$(del_span).attr("onkeyup", 'checkKeyUp2(event)');
-    $timeout(function() {
-      var selection = window.getSelection();
-             range = selection.getRangeAt(0);
-                //var range = document.createRange();
-                var node = current_node.nextSibling;
-                console.log(node);
-
-                //node.focus();
-                //var node = current_node.nextSibling.nextSibling;
-                //range.setStartAfter(node);
-
-    //selection.collapse(node.firstChild, 0);
-    //selection.selectAllChildren(node);
-    //range.setStartAfter(node.firstChild);
-    range.setStart(node.firstChild, 1);
-    range.setEnd(node.firstChild, 1);
-
-
-    //range.collapse(true);
-            //var selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
-
-    //selection.collapseToStart();
-
-    //selection.removeAllRanges();
-    //selection.addRange(range);
-
-               // range.setStart(node.firstChild, 0);
-               // range.setEnd(node.firstChild, 1);
-
-                //selection.addRange(range);
-
-                //console.log(selection);
-                //range.collapse(true);
-                //var selection = window.getSelection();
-                //selection.removeAllRanges();
-                //selection.addRange(range);
-                // Fix for Firefox which replaces the zero width space with a <br> tag
-                if (ua.toLowerCase().indexOf('firefox') > -1) {
-                    $('#' + id).html($('#' + id).html().replace(/<br>/g, ""));
-                }
-                var t = $(current_node).html();
-                console.log($(current_node).html());
-                //$('#' + id).html($('#' + id).html().replace(/\u200B/g, ""));
-                //$(current_node).html(t + 'cleaned');
-                console.log($(current_node).html());
-
-                $('#' + id).removeAttr('id');
-
-                //$(del_span[0]).html($(del_span[0]).html().replace(/\u200B/g, "CAT"));
-    },1000);
-            }
-            return;
-        }
-
-        function moveCaretInto(id) {
-            console.log(id);
-            console.log($("#" + id));
-            //$("#" + id).html('&#x200b');
-            $("#" + id).html(CARET);
-            var current_node = $("#" + id).get(0);
-            console.log(current_node);
-
-            //var del_span = $("<span id='never_delete'>" + CARET + "</span>").appendTo(current_node);
-            //range = document.createRange();
-
-            current_node.focus();
-    $timeout(function() {
-                var selection = window.getSelection();
-             range = selection.getRangeAt(0);
-
-             var node = current_node;
-                console.log(node);
-
-                range.setStartAfter(node.firstChild);
-            range.setStart(node.firstChild, 1);
-            range.setEnd(node.firstChild, 1);
-
-             selection.removeAllRanges();
-            selection.addRange(range);
-            //selection.collapse(node.firstChild);
-            //var selection = window.getSelection();
-            //selection.removeAllRanges();
-            //selection.addRange(range);
-            // Fix for Firefox which replaces the zero width space with a <br> tag
-            if (ua.toLowerCase().indexOf('firefox') > -1) {
-                $('#' + id).html($('#' + id).html().replace(/<br>/g, ""));
-            }
-
-            //$('#' + id).html($('#' + id).html().replace(/\u200B/g, ""));
-
-            $('#' + id).addClass('scroll_enter_latest');
-            $('#' + id).removeAttr('id');
-            // Scroll the pasted HTML into view
-            self.scrollLatest('scroll_enter_latest');
-            return;
-
-            },1000);
-        }
-        */
-
     function moveAfterPre(id) {
         var pre_node = $("#" + id).get(0);
-        console.log($("#" + id));
-        console.log(pre_node);
         var nested_level = marky_started_array.length - 1;
-        console.log(nested_level);
         // If this PRE element is nested within elements
         if (nested_level > 0) {
             // Find the previous_node (formatting elements) which this is currently nested within.
             var previous_node = $("#" + id).get(0);
-            console.log(previous_node);
             for (var i = 0; i < nested_level; i++) {
                 par = 'parentNode';
                 previous_node = previous_node[par];
@@ -1092,7 +777,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             for (var msa = 0; msa < marky_started_array.length - 1; msa++) {
                 // Find the HTML for this charstring and create that element
                 var result = $.grep(marky_array, function(e) { return e.charstring == marky_started_array[msa]; });
-                console.log(result);
                 var updateChars = document.createElement(result[0].html);
                 updateChars.attribute = result[0].attribute;
                 if (msa === 0) {
@@ -1162,14 +846,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             if (marky_html_index !== -1) {
                 var marky_html = marky_array[marky_html_index].html;
                 if (marky_html != 'pre' && marky_html != 'input') {
-                    //if (marky_html != 'input') {
-                    //var new_tag = '<' + marky_html + ' class="scroll_latest" id="focus">&#x200b</' + marky_html + '>';
                     var new_tag = '<' + marky_html + ' class="scroll_latest" id="focus">' + CARET + '</' + marky_html + '>';
                     if (loop_count > 0) {
-                        //var pos = complete_tag.indexOf('&#x200b');
                         var pos = complete_tag.indexOf(CARET);
-                        //complete_tag = complete_tag.slice(0, pos) + new_tag + complete_tag.slice(pos + 7, complete_tag.length);
-                        complete_tag = complete_tag.slice(0, pos) + new_tag + complete_tag.slice(pos + 6, complete_tag.length);
+                        var caret_length = CARET.length;
+                        complete_tag = complete_tag.slice(0, pos) + new_tag + complete_tag.slice(pos + caret_length, complete_tag.length);
                     } else {
                         complete_tag = new_tag;
                     }
@@ -1178,27 +859,21 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             }
         }
         if (complete_tag != undefined) {
-            console.log('unclosed');
             self.pasteHtmlAtCaret(complete_tag);
         }
         return;
     }
 
     this.markyCheck = function(content, elem) {
-        //console.log('markyCheck');
-        //console.log(content);
-        //console.log(elem);
         var escape_marky = false;
         // Inject the General Service
         var General = $injector.get('General');
         // Ignore Canvas Images (which may contain chars from markey_array).
-        //const copied = Object.assign({}, content)
         var string_copy = (' ' + content).slice(1);
         var content_less_temp = self.removeTempFiltered(string_copy);
         var content_to_match = content_less_temp;
         var mark_list_current;
         var ma_index;
-        //console.log(marky_array);
         // Create a RegEx to check for all upper and lowercase variations of the markys.
         for (var ma = 0; ma < marky_array.length; ma++) {
             var char_one = marky_array[ma].charstring.substr(0, 1);
@@ -1207,20 +882,16 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             var char_two_other_case = General.swapCase(char_two);
             var reg2_str = "(" + '[' + char_one + char_one_other_case + ']' + '[' + char_two + char_two_other_case + ']' + ")";
             var result = content_to_match.match(new RegExp(reg2_str, 'igm'));
-            //console.log(result);
             if (result != null) {
                 // Check for escape 
                 var marky_index = content_to_match.indexOf(result);
                 var marky_preceding = content_to_match.substring(marky_index - 1, marky_index);
-                //console.log(marky_preceding);
                 if (marky_preceding == ESCAPE_KEY) {
                     var currentChars = content_to_match.substring(marky_index - 1, marky_index + 2);
                     var updateChars = "<span id='marky' class='escaped'>" + currentChars.substring(1, 2) + '<WBR>' + currentChars.substring(2, 3) + "</span>";
                     // Replace the Escaped Marky with a the Marky chars separated by a <WBR> tag.
                     // Use timeout to fix bug on Galaxy S6 (Chrome, FF, Canary)
                     $timeout(function() {
-                            //console.log(elem);
-                            //console.log(currentChars);
                             self.selectText(elem, currentChars);
                         }, 0)
                         .then(
@@ -1252,11 +923,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             var currentChars = mark_list_current[0];
             var char_watch = mark_list_current[0];
             var char_watch_lowercase = char_watch.toLowerCase();
-            //console.log(marky_array[ma_index].html);
             if (marky_array[ma_index].html !== '') {
                 var ma_arg = marky_array[ma_index];
-                // console.log(marky_started_array);
-                // console.log(char_watch_lowercase);
                 if (!include(marky_started_array, char_watch_lowercase)) {
                     //
                     // Open Marky tag
@@ -1284,8 +952,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     replaceTags.removeSpaces(elem);
                     // Use timeout to fix bug on Galaxy S6 (Chrome, FF, Canary)
                     $timeout(function() {
-                            // console.log(elem);
-                            //  console.log(currentChars);
                             self.selectText(elem, currentChars);
                         }, 0)
                         .then(
@@ -1299,12 +965,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                             function() {
                                 return $timeout(function() {
                                     document.getElementById(elem).focus();
-                                    // console.log(close_tag);
-                                    // console.log(ma_arg.html);
                                     if (close_tag) {
                                         if (ma_arg.html == 'pre') {
-                                            //if (ma_arg.html == 'pre' || ma_arg.html == 'input') {
-                                            //marky_html != 'input'
                                             moveAfterPre('marky');
                                         } else {
                                             moveCaretInto('marky');
@@ -1315,7 +977,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                                         } else {
                                             moveCaretAfter('marky');
                                         }
-
                                     }
                                 }, 0);
                             }
@@ -1344,10 +1005,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     }
                 }
             } else if (marky_array[ma_index].script !== '' && marky_array[ma_index].script !== undefined) {
-                // console.log('image get');
-                // console.log(elem);
-                //ce_title5e45c1e472f70e04d8ffad6a
-                //ce5e45c1e472f70e04d8ffad6a
                 // Not HTML but SCRIPT 
                 // TODO Fix so that the actual script which is passed is called     
                 if (marky_array[ma_index].script === 'getImage') {
@@ -1356,7 +1013,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                     if (index_el >= 0) {
                         el = elem.substr(8, el.length);
                         el = 'ce' + el;
-                        // console.log(el);
                     }
                     $('#upload-trigger' + el).trigger('click');
                 }
@@ -1373,240 +1029,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             }
         }
     };
-
-    function findNextNode(el) {
-        var found = {};
-        console.log(el.anchorNode.previousElementSibling);
-        console.log(el.anchorNode.previousElementSibling.firstChild);
-        /*
-        console.log(el);
-        console.log(el.anchorNode);
-        console.log(el.anchorNode.previousElementSibling);
-        console.log(el.anchorNode.previousElementSibling.firstChild);
-        console.log(el.anchorNode.previousElementSibling.nodeType);
-        console.log(el.anchorNode.previousElementSibling.firstChild.nodeType);
-        */
-        /*
-        var found = {};
-        found.f = 'x';
-        for (var x = 0; x < el.childNodes.length; x++) {
-            if (found.f == 'x') {
-                if (el.childNodes.item(x).nodeType == 3) {
-                    found = findChars(el.childNodes.item(x), word);
-                } else if (el.childNodes.item(x).nodeType == 1) {
-                    for (var y = 0; y < el.childNodes.item(x).childNodes.length; y++) {
-                        if (found.f == 'x') {
-                            if (el.childNodes.item(x).childNodes.item(y).nodeValue !== null) {
-                                found = findChars(el.childNodes.item(x).childNodes.item(y), word);
-                            }
-                            if (el.childNodes.item(x).childNodes.item(y).childNodes) {
-                                found = getChildNodes(el.childNodes.item(x).childNodes.item(y), word, found);
-                            }
-                        }
-                    }
-                }
-            } else {
-                return found;
-            }
-        }
-        return found;
-        */
-    }
-    //parentNode
-
-    function mostrarNodosV2(node) {
-        if (node == null) {
-            return;
-        }
-
-        console.log(node);
-
-        mostrarNodosV2(node.lastElementChild);
-        mostrarNodosV2(node.previousElementSibling);
-    }
-
-
-
-    function getPreviousNode(sel) {
-        var anchor = sel;
-        if (anchor.nodeName == "HTML") {
-            console.log('root');
-            return;
-        } else if (anchor.nodeType == '3') {
-            console.log('found: ' + anchor.nodeName);
-            return anchor
-        } else if (anchor.previousElementSibling != null) {
-            if (anchor.nodeType == '3') {
-                console.log('found: ' + anchor.nodeName);
-                return anchor
-            } else {
-                console.log('not found: ' + anchor.nodeName);
-                console.log(anchor);
-                getPreviousNode(anchor.previousElementSibling)
-            }
-
-        } else if (anchor.parentNode != null) {
-            console.log('not found: ' + anchor.nodeName);
-            console.log(anchor);
-            getPreviousNode(anchor.parentNode.lastChild);
-
-        }
-        /*else if(anchor.childNodes.length > 0){
-                   console.log('not found: ' + anchor.nodeName);
-                   console.log(anchor);
-                   getPreviousNode(anchor.childNodes[0]);
-               }*/
-
-        //sel.anchorNode.previousElementSibling.nodeType == '3'){
-    }
-
-    function deleteCharacterPrecedingCaret(elem) {
-
-        var editableEl = document.getElementById(elem);
-        sel = window.getSelection();
-        console.log(sel);
-        if (sel.rangeCount > 0) {
-
-            /*
-            range = sel.getRangeAt(0);
-            range.collapse(true);
-            range.setStart(editableEl, 0);
-            precedingChar = range.toString().slice(-1);
-            */
-
-            range = sel.getRangeAt(0);
-            console.log(range);
-
-            var to1 = sel.anchorNode;
-            var prev;
-            //console.log(sel.anchorOffset);
-            //if(sel.focusOffset > 0){
-            //if (sel.anchorOffset > 0) {
-            if (range.startOffset > 0 && to1.nodeType == '3') {
-                range.collapse(true);
-                //prev = sel.anchorOffset - 1;
-                prev = range.startOffset - 1;
-                range.setStart(to1, prev);
-                //precedingChar = range.toString().slice(-1);
-
-                self.pasteHtmlAtCaret("");
-            } else if (sel.anchorNode.previousElementSibling) {
-                //moveToElementText(element);
-                //prev = sel.anchorNode.previousElementSibling;
-                /*range.selectNode(sel.anchorNode.previousElementSibling.lastChild);
-                to1 =  sel.anchorNode.previousElementSibling;
-                console.log(sel.anchorNode.previousElementSibling.lastChild);
-                prev = sel.anchorNode.previousElementSibling.lastChild.length-1;
-                */
-
-                //range.setStartBefore(sel.anchorNode);
-                //var nn = findNextNode(sel);
-                var nn;
-                //getPreviousNode(sel.anchorNode);
-                // mostrarNodosV2(sel.anchorNode);
-                console.log(sel);
-                console.log(sel.anchorNode);
-                console.log(sel.anchorNode.previousElementSibling);
-                console.log(sel.anchorNode.previousElementSibling.firstChild);
-                console.log(sel.anchorNode.previousElementSibling.nodeType);
-                console.log(sel.anchorNode.previousElementSibling.firstChild.nodeType);
-                if (sel.anchorNode.previousElementSibling.nodeType == '3') {
-                    nn = sel.anchorNode.previousElementSibling;
-                } else {
-                    nn = sel.anchorNode.previousElementSibling.firstChild;
-                }
-                console.log(nn);
-                console.log(nn.length);
-                range.collapse(true);
-                //range = sel.getRangeAt(0);
-                prev = sel.focusOffset - 1;
-                range.setStart(nn, nn.length - 1);
-                range.setEnd(nn, nn.length);
-                console.log(sel);
-                console.log(range);
-                range.deleteContents();
-
-
-            } else {
-                //if(sel.anchorNode.parentNode.previousElementSibling.tagName != "BR"
-                console.log(sel);
-                console.log(sel.anchorNode.parentNode.previousSibling);
-                if (sel.anchorNode.parentNode.previousSibling.nodeType == '3') {
-                    nn = sel.anchorNode.parentNode.previousSibling;
-                } else if (sel.anchorNode.parentNode.previousElementSibling.tagName != "BR" && sel.anchorNode.parentNode.previousSibling.firstChild) {
-                    nn = sel.anchorNode.parentNode.previousSibling.firstChild;
-                } else if (sel.anchorNode.parentNode.previousElementSibling.tagName == "BR") {
-                    sel.anchorNode.parentNode.previousElementSibling.remove();
-                    //break;
-                }
-                console.log(nn);
-                if (nn != null) {
-                    console.log(nn.length);
-                    range.collapse(true);
-                    //range = sel.getRangeAt(0);
-                    prev = sel.focusOffset - 1;
-                    range.setStart(nn, nn.length - 1);
-                    range.setEnd(nn, nn.length);
-                    console.log(sel);
-                    console.log(range);
-                    range.deleteContents();
-                }
-
-
-                //} else {
-                //   sel.anchorNode.parentNode.previousElementSibling.remove();
-            }
-
-
-
-        }
-        /*
-
-          var range = document.createRange();
-                    range.setStartAfter(current_node.nextSibling);
-                    range.setStart(current_node.nextSibling, 1);
-                    range.setEnd(current_node.nextSibling, 1);
-                    range.collapse(true);
-                    var selection = window.getSelection();
-                    selection.removeAllRanges();
-                    selection.addRange(range);
-
-                    */
-        /*
-                console.log(elem);
-                console.log(range);
-                //var lastChild = range.children.length-1;
-                console.log(range.endContainer);
-
-                console.log(range.endContainer.nodeValue);
-                var str = range.endContainer.nodeValue;
-                var to = range.endOffset;
-                //var ns = t.substr(0,to-1);
-                var ns = str.slice(0, to - 1) + str.slice(to);
-                //var ns2 = t.sub
-                console.log(ns);
-                */
-
-        //range.endContainer.replaceWith(ns);
-        // Select paragraph
-        //sel = window.getSelection();
-        //const range = document.createRange();
-        //range = sel.getRangeAt(0)
-        // child.replaceWith(span);
-
-
-        //range.selectNodeContents(range.endContainer);
-        //sel.addRange(range);
-        /*
-         range.setStart(current_node, node_pos.p.offset);
-                        range.setEnd(current_node, node_pos.p.offset + word.length);
-                        selection.removeAllRanges();
-                        selection.addRange(range);
-                        */
-        //range.setStart(current_node, node_pos.p.offset);
-        // range.setEnd(current_node, node_pos.p.offset + word.length);
-
-    }
 
     function getCharacterPrecedingCaret(containerEl) {
         var precedingChar = "",
@@ -1630,177 +1052,17 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     }
 
     this.contentChanged = function(content, elem) {
-
-        //console.log(elem);
-        // console.log(content);
-
-
-
-
-
-        //$(".content_cnv #" + elem).find("span").removeClass('last');
-
-        //$(".content_cnv #" + elem + " span").last().addClass('last');
-
-        //var a = $(".content_cnv #" + elem).find("b").next();
-        //console.log(a);
-        /*
-                $(".content_cnv #" + elem + " .br").each(function(index) {
-                    console.log($(this));
-                    //&& $(this)[0].lastElementChild.lastChild.nodeType != "3"
-                    if ($(this)[0].lastChild) {
-                        if ($(this)[0].lastChild.nodeType != "3") {
-                            var textNode = document.createTextNode("UMPTY");
-                            //$(this)[0].append(textNode);
-                            //$("<span class='space'>EMPTY4</span>").insertAfter($(this)[0]);
-                        }
-
-                    }
-                });
-                */
-
+        // CLEAN UP CONTENT
+        // Check to remove extra cb_containers created when user presses enter within a checkbox label. Remove if they have been created.
         $(".content_cnv #" + elem + " .cb_container").each(function(index) {
-            console.log($(this));
-            console.log($(this)[0].children.length);
-            if($(this)[0].children.length > 2){
-                for(var i=2; i<=$(this)[0].children.length-1; i++){
-                    console.log(i);
+            if ($(this)[0].children.length > 2) {
+                for (var i = 2; i <= $(this)[0].children.length - 1; i++) {
                     $(this)[0].children[i].remove();
                 }
             }
         })
-
-        $(".content_cnv #" + elem + " br").each(function(index) {
-            //console.log( index + ": " + $( this ).text() );
-            //console.log($(this));
-            //$( $(this)[0]).replaceWith( "<span class='br'>&nbsp;</span>" );
-            /*
-            if ($(this).length > 0) {
-                var prevNode = this.previousSibling;
-                var nextNode = this.nextSibling;
-                console.log(prevNode);
-                console.log(nextNode);
-                if( nextNode == null){
-                    console.log('next null');
-                    $("<span class='space'>EMPTY3</span>").insertAfter($(this)[0]);
-                }
-                if (prevNode && prevNode.nodeType == 3) {
-                    //console.log("Prev sibling text node:  " + prevNode.data);
-                }
-
-                if (prevNode && prevNode.nodeType == 1) {
-                    //console.log(prevNode);
-                    //console.log("Prev sibling tag node:  " + prevNode);
-                    //console.log($(prevNode.closest("span")));
-                    //$("<span>EMPTY</span>").insertBefore(prevNode);
-                    //console.log(prevNode.className);
-                    if (prevNode.className != 'space') {
-                        $("<span class='space'>EMPTY</span>").insertBefore($(this)[0]);
-                        //} else if(prevNode.className == 'space' && !$(prevNode).is(':empty')){
-                        // $("span:not(:has(*))")
-                        //$('.test').not(':has(.example)')
-
-                    } else if (prevNode.className == 'space' && $(prevNode).firstChild != undefined) {
-                        //console.log($(prevNode).firstChild);
-                        $("<span class='space'>EMPTY2</span>").insertAfter(prevNode);
-                   // } else if (prevNode.className == 'space' && nextNode == null) {
-                    //    $("<span class='space'>EMPTY3</span>").insertAfter($(this)[0]);
-                    }
-
-                }
-
-
-                // Get the first span and check that there is an empty text after it 
-                // if not add it.
-
-                //if()
-
-           
-            }
-            */
-
-        });
-
-        //$(".content_cnv #" + elem + " b").each(function(index) {
-        //    console.log($(this));
-        //});
-        /*
-                $(".content_cnv #" + elem + " i").each(function(index) {
-                    //console.log( index + ": " + $( this ).text() );
-                    console.log($(this).next());
-                    if ($(this).next().length > 0) {
-                        if ($(this).next()[0].tagName == 'BR') {
-                            console.log('not a span');
-                            $("<span>&nbsp;I1</span>").insertBefore($(this).next()[0]);
-                        }
-                    } else {
-                        $("<span>&nbsp;I</span>").insertAfter($(this)[0]);
-                    }
-                });
-                */
-
-        /*
-                $(".content_cnv #" + elem + " b").each(function(index) {
-                    console.log($(this));
-                    console.log($(this).text());
-
-                    //$('#zero').remove();
-                    //$('.m-active').removeClass('m-active');
-
-                    console.log($(this)[0].innerHTML);
-                    var cont = $(this)[0].innerHTML;
-                    //$($(this)[0]).attr('id');
-                    if (cont.includes('&nbsp;') && !$($(this)[0]).hasClass('zero')) {
-                       
-                        savedSelection = self.saveSelection($(this)[0]);
-
-                        console.log('FOPUND');
-
-                        $($(this)[0]).addClass('zero');
-                        $($(this)[0]).attr('id', 'zerotemp');
-
-                        //savedSelection = self.saveSelection($(this)[0]);
-
-                        //  $timeout(function() {
-                        savedSelection = self.saveSelection(document.getElementById('zerotemp'));
-
-                        //$(this)[0].firstChild.textContent = b;
-                        //document.getElementById('zero').firstChild.textContent = b;
-
-                        $(this)[0].innerHTML = cont.substr(6, cont.length);
-                        //$(this)[0].innerHTML = 'Steve';
-                        // $timeout(function() {
-                        self.restoreSelection(document.getElementById('zerotemp'));
-                        var sel = window.getSelection();
-                        console.log(sel);
-
-                        range = sel.getRangeAt(0);
-                        // console.log(sel);
-                        sc = sel.anchorNode;
-                        //os = sel.anchorNode.firstChild.length;
-                        console.log(range);
-                        range.setStart(sc, 1);
-
-                    }
-
-                });
-                */
-
-
-        /*
-                if($( ".content_cnv #" + elem + " b" ).next().length > 0){
-                if($( ".content_cnv #" + elem + " b" ).next()[0].tagName == 'BR'){
-                    console.log('not a span');
-                    $( "<span>EMPTY</span>" ).insertBefore( $( ".content_cnv #" + elem + " b" ).next()[0] );
-                }
-            }
-            */
-
-
-
+        // MARKY CHECK
         if (!self.paste_in_progress) {
-            //content = $('.content_cnv #' + elem).html();
-            //console.log(content);
             self.markyCheck(content, elem);
         } else {
             self.paste_in_progress = false;
@@ -1808,10 +1070,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
     };
 
     this.selectText = function(element, word) {
-        console.log(element);
         var doc = document;
         var current_node;
-        console.log(doc.getElementById(element));
         var node_pos = self.findNodeNumber(doc.getElementById(element), word);
         var text = doc.getElementById(element);
         if (doc.body.createTextRange) {
@@ -1838,7 +1098,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     // Scroll the HTML into view
     this.scrollLatest = function(clas) {
-
         var scroll_latest = document.querySelector('.' + clas);
         $timeout(function() {
             $timeout(function() {
@@ -1869,16 +1128,15 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 range = sel.getRangeAt(0);
                 console.log(range);
                 range.deleteContents();
-
-                                // Check box
+                // CHECK PLACEMENT
+                //
+                // Check box
                 if (html.includes('cb_container')) {
-                    console.log('paste cb');
                     if (range.startContainer.parentNode.className.includes('cb_label')) {
-                        console.log(range.startContainer.parentNode.parentNode);
                         range.setStartAfter(range.startContainer.parentNode.parentNode);
                     }
                 }
-
+                //
                 var el = document.createElement("div");
                 el.innerHTML = html;
                 var frag = document.createDocumentFragment(),
@@ -1988,121 +1246,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         return node;
     };
 
-    watchdelete2 = function() {
-        var sel = window.getSelection();
-        console.log(sel);
-        if (sel.anchorNode.length == 2) {
-            console.log('delete space');
-            var node = sel.anchorNode;
-            //stopEditing('test');
-            $timeout(function() {
-                var pre = $(sel.anchorNode.parentNode).html();
-                console.log(pre);
-                //$(sel.anchorNode.parentNode).html($(sel.anchorNode.parentNode).html().replace(/\u200B/g, ""));
-                $(sel.anchorNode.parentNode).html($(sel.anchorNode.parentNode).html().replace(/\&nbsp;/g, ""));
-                //
-
-                console.log($(sel.anchorNode.parentNode));
-                //$(sel.anchorNode.parentNode).attr('id', 'never_delete_fixed');
-                range = sel.getRangeAt(0);
-                console.log(sel);
-                sc = sel.anchorNode.firstChild;
-                os = sel.anchorNode.firstChild.length;
-                console.log(range);
-                range.setStart(sc, os);
-                console.log($(sel.anchorNode.parentNode));
-                $(sel.anchorNode.parentNode).attr('id', 'never_delete_fixed');
-
-            });
-
-        }
-    }
-
-    watchdelete = function() {
-        var sel = window.getSelection();
-        console.log(sel);
-        if (sel.anchorNode.length == 1) {
-            console.log('Jump');
-            var node = sel.anchorNode.parentNode.previousElementSibling;
-            //$(node).addClass('wd');
-            stopEditing('test');
-            $timeout(function() {
-                //var el = $('.wd')[0];
-                var el = node;
-
-                //el.focus();
-
-                //sel.anchorNode.parentNode.previousElementSibling.firstChild
-                /*
-                            //var range = document.createRange();
-                            var range = sel.getRangeAt(0);
-                            //var node = sel.anchorNode.parentNode.previousElementSibling.firstChild;
-                            var node = sel.anchorNode.parentNode.previousElementSibling;
-                            $(node).addClass('wd');
-                            var n = $('.wd')[0].firstChild;
-                            console.log(n);
-                            //var node = current_node.nextSibling;
-                            //var node = current_node.nextSibling.nextSibling;
-                            //range.setStartAfter(n);
-                            range.setStart(n, 0);
-                            range.setEnd(n, 0);
-                            //range.collapse(true);
-                            //var selection = window.getSelection();
-                            //selection.removeAllRanges();
-                            //selection.addRange(range);
-                            */
-
-                //var el = document.getElementById("editable");
-                var range = document.createRange();
-                var sel = window.getSelection();
-                range.setStart(el.firstChild, el.firstChild.length);
-                range.collapse(true);
-                sel.removeAllRanges();
-                sel.addRange(range);
-            });
-
-        }
-    }
-
-    fixdelete = function() {
-        var sel = window.getSelection();
-        console.log(sel);
-        console.log(sel.anchorNode.parentNode.id);
-        if (selection.anchorNode.parentNode.id = "delete") {
-            var pre = $(sel.anchorNode.parentNode).html();
-            console.log(pre);
-            //var range = document.createRange();
-            //console.log(range);
-
-            //sel = window.getSelection();
-            //console.log(sel);
-            if (sel.rangeCount > 0) {
-
-
-                range = sel.getRangeAt(0);
-                console.log(range);
-                var sc = sel.anchorNode;
-                var os = sel.anchorOffset;
-                range.collapse(true);
-            }
-
-
-
-
-            $(sel.anchorNode.parentNode).html($(sel.anchorNode.parentNode).html().replace(/\u200B/g, ""));
-
-            range = sel.getRangeAt(0);
-            console.log(sel);
-            sc = sel.anchorNode.firstChild;
-            os = sel.anchorNode.firstChild.length;
-            console.log(range);
-            range.setStart(sc, os);
-        }
-    }
-
+    // TODO - Still needed? Use within content changed?
+    /*
     this.keyListen = function(event, elem) {
-        console.log('keyListen');
-        console.log(event);
         var getKeyCode = function() {
             var editableEl = document.getElementById(elem);
             // lowercase
@@ -2127,7 +1273,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 }
             };
         })();
-
         // Observe a specific DOM element:
         observeDOM(document.querySelector("#" + elem), function(m) {
             if (m.addedNodes.length == 0 && m.removedNodes.length > 0) {
@@ -2145,40 +1290,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 }
             }
         });
-
-        /*document.getElementById(elem).onkeydown = function(e) {
-            var selection_start = $(self.getSelectionStart());
-            console.log(selection_start);
-        };*/
-
-
-        /*.keypress(function (e) {
-            $("#keycode").html(e.which); 
-        });
-        */
-        //document.getElementById(elem).onkeydown = function(e) {
-        //.getElementById(elem).keypress = function(e) {
-
-        var sel = window.getSelection();
-        console.log(sel);
-        // Listen for backspace
-        //console.log(selection_start);
-        //console.log($(selection_start)[0].parentNode.id);
-        //console.log(event.keyCode);
-
-        //var sel = window.getSelection();
-        // console.log(sel);
-
-        //if (event.keyCode == 8 || event.keyCode == 46) {
-
-        //if ($(sel)[0].parentNode.id == 'never_delete') {
-        if (sel.anchorNode.parentNode.id == 'never_delete') {
-            //fixdelete();
-            console.log('never_delete');
-            //watchdelete();
-            watchdelete2();
-        }
-
         var selection_start = $(self.getSelectionStart());
         if ($(selection_start).attr("class") != undefined) {
             var prev_class = $(selection_start).attr("class");
@@ -2214,8 +1325,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 }
             }
         }
-
-        //}
         var selection_text = selection_start[0].nodeValue;
         if (selection_text != undefined) {
             var selection_text_upper = selection_text.toUpperCase();
@@ -2227,8 +1336,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 }
             }
         }
-        //};
-
     };
 
     function stopEditing(elem) {
@@ -2236,159 +1343,13 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         // The hidden input is fixed to the bottom offscreen so that scrolling does not occur on mobile
         $('#hidden_input').focus();
     }
+    */
 
     this.checkCursor = function($event, elem) {
         // Store current caret pos
         $timeout(function() {
             savedSelection = self.saveSelection(document.getElementById(elem));
         });
-    };
-
-
-    function insertTextAtCursor(value, stepback) {
-        var sel, range, textNode;
-        if (window.getSelection) {
-            sel = window.getSelection();
-            if (sel.getRangeAt && sel.rangeCount) {
-                range = sel.getRangeAt(0);
-                textNode = document.createTextNode(value);
-
-
-                //Check value of stepback: 0 or 1
-                if (!stepback) //if 0
-                    range.insertNode(textNode);
-                if (stepback) { //if 1
-                    // replace the previously inserted character with the new one here
-
-                }
-
-                // Move caret to the end of the newly inserted text node   
-                range.setStart(textNode, textNode.length);
-                range.setEnd(textNode, textNode.length);
-
-                sel.removeAllRanges();
-                sel.addRange(range);
-
-            }
-        } else if (document.selection && document.selection.createRange) {
-            range = document.selection.createRange();
-            range.pasteHTML(text);
-        }
-    }
-
-    this.checkKeyUp = function($event, elem) {
-        console.log('keyup');
-        //var b = a.replace(/\u200B/g,'');
-
-        //if ($event.keyCode == 8 || $event.keyCode == 46) {
-        if (false) {
-            /*var a = $('#'+elem).html();
-            var b = a.replace(/\u200B/g,'');
-            $('#'+elem).html(b);*/
-            /*
-                    var range = document.createRange();
-                        range.setStartAfter(current_node.nextSibling);
-                        range.setStart(current_node.nextSibling, 1);
-                        range.setEnd(current_node.nextSibling, 1);
-                        range.collapse(true);
-                        var selection = window.getSelection();
-                        selection.removeAllRanges();
-                        selection.addRange(range);
-                        */
-            var selection = window.getSelection();
-            console.log(selection);
-            console.log(selection.anchorNode.parentNode.id);
-            if (selection.anchorNode.parentNode.id = "delete") {
-                var pre = $(selection.anchorNode.parentNode).html();
-                console.log(pre);
-                //var range = document.createRange();
-                //console.log(range);
-
-                //sel = window.getSelection();
-                console.log(sel);
-                if (selection.rangeCount > 0) {
-
-
-                    range = sel.getRangeAt(0);
-                    console.log(range);
-                    var sc = sel.anchorNode;
-                    var os = sel.anchorOffset;
-                    range.collapse(true);
-                }
-
-
-
-
-                $(selection.anchorNode.parentNode).html($(selection.anchorNode.parentNode).html().replace(/\u200B/g, ""));
-
-                range = sel.getRangeAt(0);
-                console.log(sel);
-                sc = sel.anchorNode.firstChild;
-                os = sel.anchorNode.firstChild.length;
-                console.log(range);
-                range.setStart(sc, os);
-
-                // $('#' + id).html($('#' + id).html().replace(/\u200B/g, ""));
-                /*
-            var range = document.createRange();
-            range.setStartAfter(current_node.nextSibling);
-            range.setStart(current_node.nextSibling, 1);
-            range.setEnd(current_node.nextSibling, 1);
-            range.collapse(true);
-            var selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
-            */
-
-            }
-
-        }
-
-        //console.log(a);
-    }
-
-    this.checkKey = function($event, elem) {
-
-
-        if ($event.keyCode == 13) {
-            // Stop the default behavior for the ENTER key and insert <br><br> instead
-            $event.preventDefault();
-            self.pasteHtmlAtCaret("<br><span class='scroll_enter_latest' id='enter_focus'></span>");
-            moveCaretInto('enter_focus');
-            return false;
-        }
-
-        //var b = a.replace(/\u200B/g,'');
-        //var a = $('#'+elem).html();
-        //var b = a.replace(/\u200B/g,'');
-        //$('#'+elem).html(b);
-        //console.log(a);
-
-        /*
-        if ($event.keyCode == 8 || $event.keyCode == 46) {
-            $event.preventDefault();
-
-            var selection_start = $(self.getSelectionStart());
-            // Listen for backspace
-            console.log('BACKSPACE');
-            console.log(selection_start);
-
-            var node = document.getSelection();
-            console.log(node);
-
-
-            var editableEl = document.getElementById(elem);
-            // lowercase
-            var a = getCharacterPrecedingCaret(editableEl);
-            console.log(a);
-            //return a;
-            //insertTextAtCursor("value", true)
-
-            //textRange.select();
-            deleteCharacterPrecedingCaret(elem);
-        }
-        */
-
     };
 
     this.handlePaste = function($event) {

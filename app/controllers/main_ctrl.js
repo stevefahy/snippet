@@ -65,12 +65,12 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     createObserver = function(id) {
         $('.content_cnv #card' + id).ready(function() {
             var target = document.querySelector('.content_cnv #card_' + id);
-            if(target != null){
-                 var newObserver = new IntersectionObserver(intersectionCallback, $scope.observerOptions);
-            observers.push(newObserver);
-            newObserver.observe(target);
+            if (target != null) {
+                var newObserver = new IntersectionObserver(intersectionCallback, $scope.observerOptions);
+                observers.push(newObserver);
+                newObserver.observe(target);
             }
-           
+
         });
     };
 
@@ -238,9 +238,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     };
 
     runUpdate = function() {
-        console.log('ru');
         $rootScope.sync_finished = false;
-        console.log($scope.online);
         if ($scope.online) {
             var id = Conversations.getConversationId();
             // update all required models (could be new conversations, multiple cards across conversations, new users or user data - Userdata first load re call?)
@@ -296,8 +294,6 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     syncFinished = function(queue, unbind) {
         // queue this request
-        console.log(queue);
-        console.log($rootScope.loading_cards);
         if (queue) {
             checkLoadingCards()
                 .then(function(result) {
@@ -316,7 +312,6 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     }
 
     checkDataUpdate = function(queue) {
-        console.log($rootScope.sync_finished);
         if (!'serviceWorker' in navigator) {
             $rootScope.sync_finished = true;
         }
@@ -326,7 +321,6 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         if ($rootScope.sync_finished) {
             syncFinished(queue, false);
         } else {
-            console.log('await sync_finished');
             unbind_sync_finished = $rootScope.$watch('sync_finished', function(n) {
                 if (n) {
                     syncFinished(queue, true);
@@ -399,7 +393,6 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                     sendRequested(event.data.all_requests.posted, event.data.all_requests.updated, event.data.all_requests.deleted);
                 }
                 $rootScope.sync_finished = true;
-                console.log($rootScope.sync_finished);
                 if (!$scope.$$phase) {
                     $scope.$apply();
                 }

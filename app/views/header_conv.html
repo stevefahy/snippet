@@ -1,25 +1,25 @@
 <div ng-controller="headerCtrl">
     <div class="header">
         <div ng-show="!no_back" class="btn_zindex" href ng-click="goBack()">
-            <a >
-            <div class="header_back">
-                <i class="material-icons header-mi">&#xE5C4;</i>
-            </div>
-        </a>
+            <a>
+                <div class="header_back">
+                    <i class="material-icons header-mi">&#xE5C4;</i>
+                </div>
+            </a>
         </div>
         <div class="header_conv_name">{{conversation_name}}</div>
         <div class="user_right">
             <img ng-if="avatar!='default'" alt="" class="heading_avatar" ng-src="{{avatar}}" />
             <img ng-if="avatar=='default'" alt="" ng-src="/assets/images/default_avatar.jpg" class="heading_avatar" />
         </div>
-            <div ng-if="true" class="header_edit">
-                <div class="dropdown" ng-attr-id="{{ 'cem' + card._id }}">
-                    <div ng-click="dropDownToggle($event, 'cem'+card._id)" class="dropbtn">
-                        <i class="material-icons" id="mi-more_vert">&#xE5D4;</i>
-                    </div>
-                    <div ng-attr-id="myDropdown{{ 'cem' + card._id }}" class="dropdown-content">
-                        <div ng-show="conv_type == 'group'" ng-click="changePathGroup()">Group Info</div>
-                        <div ng-show="conv_type == 'two'" " ng-click=" changePathGroup() ">Contact Info</div>
+        <div ng-if="true" class="header_edit">
+            <div class="dropdown" ng-attr-id="{{ 'cem' + card._id }}">
+                <div ng-click="dropDownToggle($event, 'cem'+card._id)" class="dropbtn">
+                    <i class="material-icons" id="mi-more_vert">&#xE5D4;</i>
+                </div>
+                <div ng-attr-id="myDropdown{{ 'cem' + card._id }}" class="dropdown-content">
+                    <div ng-show="conv_type == 'group'" ng-click="changePathGroup()">Group Info</div>
+                    <div ng-show="conv_type == 'two'" " ng-click=" changePathGroup() ">Contact Info</div>
                 </div>
             </div>
         </div>

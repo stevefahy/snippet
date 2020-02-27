@@ -5,7 +5,6 @@ cardApp.controller("cardCtrl", ['$scope', 'Cards', 'Conversations', 'Users', 're
 
     $scope.getFocus = Format.getFocus;
     $scope.contentChanged = Format.contentChanged;
-    $scope.checkKey = Format.checkKey;
     $scope.handlePaste = Format.handlePaste;
     $scope.keyListen = Format.keyListen;
     $scope.showAndroidToast = Format.showAndroidToast;

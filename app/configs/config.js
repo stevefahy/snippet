@@ -16,3 +16,6 @@ var ESCAPE_KEY = '\\';
 
 // Image Adjust
 var IMAGE_MARGIN = 10;
+
+var PARENTCONTAINER = 'content_cnv';
+var TITLE_CHAR_LIMIT = 200;

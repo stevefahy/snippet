@@ -109,7 +109,7 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
         Users.update_user(pms)
             .then(function(data) {})
             .catch(function(error) {
-                console.log('error: ' + error);
+                //console.log('error: ' + error);
             });
         // Find this users public conversation by id.
         // LDB
@@ -128,11 +128,11 @@ cardApp.controller("usersettingCtrl", ['$scope', '$timeout', 'Format', 'Invites'
                         UserData.updateUserContact(UserData.getUser(), UserData.getUser()._id, contacts_ids);
                     })
                     .catch(function(error) {
-                        console.log('error: ' + error);
+                        //console.log('error: ' + error);
                     });
             })
             .catch(function(error) {
-                console.log('error: ' + error);
+                //console.log('error: ' + error);
             });
     };
 
