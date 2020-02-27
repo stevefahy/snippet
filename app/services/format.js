@@ -1126,7 +1126,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             var selection_start = $(self.getSelectionStart());
             if (sel.getRangeAt && sel.rangeCount) {
                 range = sel.getRangeAt(0);
-                console.log(range);
                 range.deleteContents();
                 // CHECK PLACEMENT
                 //

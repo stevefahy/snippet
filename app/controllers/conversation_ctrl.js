@@ -1,4 +1,5 @@
 cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$q', '$filter', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', 'ImageEdit', '$compile', 'ImageAdjustment', 'Keyboard', 'Scroll', '$animate', 'CropRotate', 'ImageFilters', 'ContentEditable', function($scope, $rootScope, $location, $http, $window, $q, $filter, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, ImageEdit, $compile, ImageAdjustment, Keyboard, Scroll, $animate, CropRotate, ImageFilters, ContentEditable) {
+
     openCropRotate = ImageEdit.openCropRotate;
     editImage = ImageEdit.editImage;
     closeImageEdit = ImageEdit.closeImageEdit;
@@ -1926,9 +1927,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // Called as each card is loaded.
     // Disable checkboxes if the contenteditable is set to false.
     var checkboxesEnabled = function(id, bool) {
-        console.log('checkboxesEnabled: ' + bool);
         var el = document.getElementById('ce' + id);
-        //if ($(el).attr('contenteditable') == 'false') {
         if (bool == false) {
             $(el).find('input[type=checkbox]').attr('disabled', 'disabled');
         } else {
