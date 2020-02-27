@@ -225,7 +225,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     }
 
     animateCard = async function(card_id) {
-        //console.log('animateCard');
         var deferred = $q.defer();
         let speed = 800;
         // Only animate the last added card.
@@ -266,7 +265,6 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     }
 
     upDateObservers = function() {
-        //console.log('upDateObservers');
         resetObserver_queue();
         intObservers();
         for (var i = 0, len = $scope.cards.length; i < len; i++) {
@@ -992,7 +990,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     resizeContent = function(id, card, old_card, div) {
         var deferred = $q.defer();
-        card.old_h = $('#card_' + id + ' .' + div).height().toFixed(2);
+        card.old_h = $('.' + PARENTCONTAINER + ' #card_' + id + ' .' + div).height().toFixed(2);
         card.new_h = $('.test_card .' + div).height().toFixed(2);
         $('#card_' + id + ' .' + div).height(card.old_h);
         $($('#card_' + id + ' .' + div))
@@ -1016,6 +1014,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 var expanded = true;
                 if (div == 'content_area' && old_card.expanded == false) {
                     expanded = false
+                }
+                // Ensure the model updates before animating.
+                if (!$scope.$$phase) {
+                    $scope.$apply();
                 }
                 if (card.new_h != card.old_h && expanded) {
                     $($('#card_' + id + ' .' + div)).animate({ height: card.new_h }, 500, function() {
@@ -1042,7 +1044,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     }
 
     updateCard = function(card) {
-        // Check the existece of the card across all arrays.
+        // Check the existence of the card across all arrays.
         var card_arrays = [$scope.cards, $scope.cards_temp, $scope.removed_cards_bottom, $scope.removed_cards_top];
         var found_pos = -1;
         var arr;
@@ -1068,25 +1070,17 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     // Animate the change onscreen.
                     $timeout(async function() {
                         if (card_arrays[arr][found_pos].title_image_text != card.title_image_text || card_arrays[arr][found_pos].title_area != card.title_area) {
-                            //console.log(card.title_image);
                             if (card.title_image) {
                                 card_arrays[arr][found_pos].title_image = true;
                             } else {
                                 card_arrays[arr][found_pos].title_image = false;
                             }
                             await resizeContent(card._id, card, card_arrays[arr][found_pos], 'title_area');
-                            if (!$scope.$$phase) {
-                                $scope.$apply();
-                            }
-                            $scope.$apply();
                         } else {
                             // Same content
                             card_arrays[arr][found_pos].original_content = card.content;
                             card_arrays[arr][found_pos].createdAt = card.createdAt;
                             card_arrays[arr][found_pos].updatedAt = card.updatedAt;
-                            if (!$scope.$$phase) {
-                                $scope.$apply();
-                            }
                         }
                         if (card_arrays[arr][found_pos].content != card.content) {
                             await resizeContent(card._id, card, card_arrays[arr][found_pos], 'content_area');
@@ -1095,11 +1089,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             card_arrays[arr][found_pos].original_content = card.content;
                             card_arrays[arr][found_pos].createdAt = card.createdAt;
                             card_arrays[arr][found_pos].updatedAt = card.updatedAt;
-                            if (!$scope.$$phase) {
-                                $scope.$apply();
-                            }
                         }
-                    }, 1000);
+                    });
                 });
             });
         }
@@ -1442,7 +1433,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     }
 
-    $scope.saveEdits = function(event) {
+    $scope.saveEdits = async function(event) {
         if (event) {
             event.stopPropagation();
             event.preventDefault();
@@ -1459,8 +1450,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         if (pos >= 0) {
             $scope.cards[pos].editing = false;
             let card = $scope.cards[pos];
-            checkboxesEnabled($scope.cards[pos]._id, false);
             Format.getBlur(card._id, card, $scope.currentUser);
+            // Wait until the content is saved before disabling the checkboxes.
+            $timeout(function() {
+                checkboxesEnabled($scope.cards[pos]._id, false);
+            }, 1000);
         }
         $('.decide_menu').animate({ "right": "-100vw" }, {
             duration: 400,
@@ -1927,12 +1921,17 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // Called as each card is loaded.
     // Disable checkboxes if the contenteditable is set to false.
     var checkboxesEnabled = function(id, bool) {
-        var el = document.getElementById('ce' + id);
+        var deferred = $q.defer();
+        var el = $('.' + PARENTCONTAINER + ' #ce' + id)[0];
+        var pos = General.findWithAttr($scope.cards, '_id', id);
         if (bool == false) {
             $(el).find('input[type=checkbox]').attr('disabled', 'disabled');
+            deferred.resolve();
         } else {
             $(el).find('input[type=checkbox]').removeAttr('disabled');
+            deferred.resolve();
         }
+        return deferred.promise;
     };
 
     // TODO - make service (also in card_create.js)

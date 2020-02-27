@@ -617,7 +617,8 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 // zm launching image capture should not trigger an update. It causes error.
                 found_marky = findMarky(card.content);
                 // check the content has changed and not currently mid marky. Or that an image is being edited.
-                if ((content != card.original_content && (found_marky == false)) && !ImageAdjustment.getImageEditing()) {
+                //if ((content != card.original_content && (found_marky == false)) && !ImageAdjustment.getImageEditing()) {
+                if (((found_marky == false)) && !ImageAdjustment.getImageEditing()) {
                     if (!ImageAdjustment.getImageEditing()) {
                         var card_copy = { ...card };
                         card_copy.content = content;

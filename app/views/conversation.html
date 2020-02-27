@@ -23,20 +23,19 @@
     <div class="test_container"></div>
     <div class="test_card card_temp" ng-repeat="card in test_card | orderBy :'updatedAt' : top_down ">
         <div class="resize-container" id="conversation_part">
-            <div id="user" ng-class="{ 'user_image_title' : card.title_image, 'user_text_title' : !card.title_image, 'title_area_animate' : card.animate_title}" class="margins">
-                <img alt="" ng-src="/assets/images/default_avatar.jpg" class="card_avatar" />
+            <div id="user" ng-class="{ 'user_title': card.title != undefined, user_image_title: card.title_image, user_text_title: !card.title_image}" class="margins">
                 <div class="username" ng-class="{ 'username_title': card.title != undefined, username_image_title: card.title_image}">{{::card.user_name}}</div>
             </div>
             <!-- TITLE AREA -->
             <div class="title_area margins " ng-class="{ 'title_area_image': card.title_image, 'title_area_no_image': !card.title_image, 'title_area_animate' : card.animate_title}">
-                <div class='ce' ng-attr-id="ce_title{{::card._id}}" ng-model="card.title_area"></div>
+                <div class='ce' ng-attr-contenteditable="true" ng-model="card.title_area"></div>
             </div>
             <div class="card_title margins" ng-show="card.title_image_text">{{card.title_image_text}}</div>
             <!-- CONTENT AREA -->
             <div class="content_area margins" ng-class="{'collapsed': !card.expanded}">
-                <div class='ce' ng-attr-id="ce{{::card._id}}" ng-model="card.content" ng-class="{'collapsed_ce': !card.expanded}"></div>
+                <div class='ce' ng-attr-contenteditable="true" ng-model="card.content" ng-class="{'collapsed_ce': !card.expanded}"></div>
             </div>
-            <div class="card_footer" ng-attr-expanded="{{card.expanded}}">
+            <div class="card_footer">
                 <div class="c_footer_o margins">
                     <div class="card_footer_btns">
                         <div class="cf_btn"><i class="material-icons">favorite_border</i></div>
