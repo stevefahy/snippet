@@ -432,7 +432,21 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }
             cards_to_move = $scope.cards_temp.splice(0, amount);
             for (var i = 0, len = cards_to_move.length; i < len; i++) {
-                $scope.cards.push(cards_to_move[i]);
+                //$scope.cards.push(cards_to_move[i]);
+
+                var exists = General.findWithAttr($scope.cards, '_id', cards_to_move[i]._id);
+                console.log(exists);
+                if (exists >= 0) {
+                    console.log('DUPE!');
+                    console.log(cards_to_move[i]._id);
+                } else {
+                    $scope.cards.push(cards_to_move[i]);
+                    var exists2 = General.findWithAttr($scope.cards_temp, '_id', cards_to_move[i]._id);
+                    if (exists2 >= 0) {
+                        console.log('NOT SPLICED!');
+                    }
+                }
+
             }
             // Check if more temp cards need to be loaded.
             checkNext();
