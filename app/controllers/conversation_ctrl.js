@@ -431,8 +431,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 amount = NUM_UPDATE_DISPLAY_INIT;
             }
             cards_to_move = $scope.cards_temp.splice(0, amount);
+
             for (var i = 0, len = cards_to_move.length; i < len; i++) {
                 //$scope.cards.push(cards_to_move[i]);
+                $('.load_off_screen #card_' + cards_to_move[i]._id).remove();
 
                 var exists = General.findWithAttr($scope.cards, '_id', cards_to_move[i]._id);
                 console.log(exists);
@@ -1578,6 +1580,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         return card;
     }
 
+    var test_got= "";
     // TODO - If not following anyone suggest follow?
     getFollowing = function() {
         var deferred = $q.defer();
@@ -1598,6 +1601,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 last_card = '0';
             }
             var val = { ids: followed, amount: load_amount, last_card: last_card };
+            console.log(last_card + ' : ' + last_card_stored);
             if (last_card != last_card_stored) {
                 last_card_stored = last_card;
                 var prom1 = Conversations.getFeed(val)
@@ -1605,6 +1609,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         if (res.data.cards.length > 0) {
                             res.data.cards.map(function(key, array) {
                                 key = parseCard(key);
+                                console.log('Got: ' + key._id);
+                                if(test_got.includes(key._id)){
+                                    console.log('DUPY: ' + key._id);
+                                }
+                                test_got+=key._id;
+                                console.log(test_got);
                                 // Get the conversation for this card
                                 var conversation_pos = General.nestedArrayIndexOfValue(res.data.conversations, 'admin', key.user);
                                 var conversation = res.data.conversations[conversation_pos];

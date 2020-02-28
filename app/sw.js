@@ -896,7 +896,7 @@ if (workbox) {
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "5b681b3b1b8f6189d92b722dde2076b3"
+    "revision": "e205649b7c41097f0159b01dd809db1f"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -936,7 +936,7 @@ if (workbox) {
   },
   {
     "url": "directives/directives.js",
-    "revision": "e9c06f8f36db5786ab3858a0c85505b1"
+    "revision": "be75ef44804f9c94efd576389216f880"
   },
   {
     "url": "factories/factories.js",
