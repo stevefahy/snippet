@@ -146,6 +146,7 @@ cardApp.directive("doRepeat", function($compile, $log, UserData) {
         link: function(scope, element, attrs) {
             scope.$watch('doRepeat', function(newValue, oldValue) {
                 if (newValue) {
+                    console.log(newValue);
                     angular.forEach(newValue, function(card, index) {
                         if (index == newValue.length - 1) {
                             element.append("<div class=\"card_temp\" id=\"card_" + card._id + "\">" + card.content + "</div><img id= \"delete_image\" src=\"/assets/images/bee_65.png\" onload=\"domUpdated()\">");
