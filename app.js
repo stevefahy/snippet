@@ -299,7 +299,7 @@ for (var k in interfaces) {
     }
 }
 // Dell XPS 13 or other local networks
-
+addresses = addresses[0];
 console.log('addresses: ' + addresses);
 if (addresses == '192.168.43.51' || '192.168.192.59' || addresses == '10.21.221.127' || addresses == '10.61.137.245' || addresses == '10.32.139.207' || addresses == '192.168.43.199' || addresses == '10.70.216.59' || addresses == '192.168.1.85' || addresses == '192.168.43.62') {
     console.log('localhost');
