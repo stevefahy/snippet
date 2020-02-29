@@ -370,7 +370,8 @@ cardApp.factory('Conversations', ['$http', '$q', 'LocalDB', function($http, $q, 
             return $http.get('/chat/get_conversation_latest_card/' + id);
         },
         getFeed: function(val) {
-            var theurl = '/chat/get_feed/' + val.ids + '/' + val.last_card;
+            //var theurl = '/chat/get_feed/' + val.ids + '/' + val.last_card;
+            var theurl = '/chat/get_feed/' + val.ids + '/' + val.last_card + '/' + val.direction;
             val.ids = JSON.stringify(val.ids);
             var config = {
                 params: val

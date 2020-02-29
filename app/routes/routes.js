@@ -1405,20 +1405,38 @@ module.exports = function(app, passport) {
     });
 
     // Get cards for the Users Feed conversations by conversation id(s).
-    app.get('/chat/get_feed/:ids/:last_card', function(req, res) {
+    app.get('/chat/get_feed/:ids/:last_card/:direction', function(req, res) {
         var user_array = JSON.parse(req.query.ids);
         var amount = Number(req.query.amount);
         var last_card = req.query.last_card;
+        var direction = req.query.direction;
         var feed = {};
         var query;
         var query1 = {};
         var oid;
+        //if(direction == 'older'){
+
+        //}
+        var DIR2 = -1;
         if (last_card == '0') {
             query = { 'conversationId': { $in: user_array.map(function(o) { return mongoose.Types.ObjectId(o); }) } };
         } else {
             oid = mongoose.Types.ObjectId(last_card);
-            query1['$lt'] = oid;
+            //oid =  last_card;
+            //query1['$lt'] = oid;
+
+            //query1 {$lte: ISODate( last_card )} 
+            query1[direction] = oid;
             query = { 'conversationId': { $in: user_array.map(function(o) { return mongoose.Types.ObjectId(o); }) }, _id: query1 };
+            //query = { 'conversationId': { $in: user_array.map(function(o) { return mongoose.Types.ObjectId(o); }) }, updatedAt: query1 };
+            console.log(query);
+            // .find({'updatedAt':{$lte: ISODate("2019-02-04T20:14:19.208Z")}})
+            
+            if(direction == '$gt'){
+                DIR2 = 1;
+            }
+            console.log(DIR2);
+
         }
         Conversation.find({
             '_id': {
@@ -1427,18 +1445,19 @@ module.exports = function(app, passport) {
             'conversation_type': 'public'
         }, function(err, conversations) {
             if (err) {
-                //console.log(err);
+                console.log(err);
             }
             feed.conversations = conversations;
+            console.log(query);
             Card.find(
                 query,
                 function(err, cards) {
                     if (err) {
-                        //console.log(err);
+                        console.log(err);
                     }
                     feed.cards = cards;
                     res.json(feed);
-                }).sort({ "updatedAt": -1 }).limit(amount);
+                }).sort({ "updatedAt": DIR2 }).limit(amount);
         });
     });
 

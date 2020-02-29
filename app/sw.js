@@ -896,7 +896,7 @@ if (workbox) {
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "e205649b7c41097f0159b01dd809db1f"
+    "revision": "7ffe0ed1fe8dce9ad9da794c9820c8b9"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -940,7 +940,7 @@ if (workbox) {
   },
   {
     "url": "factories/factories.js",
-    "revision": "4326d28ded2c16c5476ea5efa6117008"
+    "revision": "2fe204c7cbdd1783745e78b325dff159"
   },
   {
     "url": "factories/local_db.js",
@@ -952,7 +952,7 @@ if (workbox) {
   },
   {
     "url": "indexa.html",
-    "revision": "3608f84a9678de8e7b8d9bc1fd03f4f3"
+    "revision": "caaf3c4d8ab83d36f90bd707e0818712"
   },
   {
     "url": "js/angular_moment.js",
@@ -1056,7 +1056,7 @@ if (workbox) {
   },
   {
     "url": "routes/routes.js",
-    "revision": "fb930331358c40cf6b938b0bf472c3ac"
+    "revision": "0e13368d0929f93f93d405bb387bf89f"
   },
   {
     "url": "service-worker.js",

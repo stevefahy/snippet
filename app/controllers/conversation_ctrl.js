@@ -369,12 +369,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         if (mobile) {
             updateScrollBar();
         }
+        console.log(scroll_updating);
         if (!scroll_updating) {
             if (dir == 1 && scrolled <= UP_PERCENT) {
-                //console.log('FIRE UP!');
+                console.log('FIRE UP!');
                 addMoreTop()
                     .then(function(result) {
-                        //console.log('AMT END');
+                        console.log('AMT END');
                         scroll_updating = false;
                     });
             }
@@ -460,6 +461,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     addMoreTop = function() {
+        console.log('AMT');
         var deferred = $q.defer();
         scroll_updating = true;
         unRemoveCardsTop()
@@ -505,11 +507,28 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         return deferred.promise;
     };
 
+    checkBefore = function(card) {
+        var id = Conversations.getConversationId();
+        if (Conversations.getConversationType() == 'feed') {
+            //if ($scope.cards_temp.length < MIN_TEMP) {
+            getFollowingBefore('$gt', card);
+            //}
+        } else if (Conversations.getConversationType() == 'private') {
+            if ($scope.cards_temp.length < MIN_TEMP) {
+                getCards(id);
+            }
+        } else if (Conversations.getConversationType() == 'public') {
+            if ($scope.cards_temp.length < MIN_TEMP) {
+                getPublicCards(id);
+            }
+        }
+    };
+
     checkNext = function() {
         var id = Conversations.getConversationId();
         if (Conversations.getConversationType() == 'feed') {
             if ($scope.cards_temp.length < MIN_TEMP) {
-                getFollowing();
+                getFollowing('$lt');
             }
         } else if (Conversations.getConversationType() == 'private') {
             if ($scope.cards_temp.length < MIN_TEMP) {
@@ -574,6 +593,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         if (removed_length < amount) {
             amount = removed_length;
         }
+        //console.log('$scope.top_down: ' + $scope.top_down);
         if (removed_length > 0) {
             if (!$scope.top_down) {
                 $scope.removed_cards_top = $filter('orderBy')($scope.removed_cards_top, 'updatedAt', true);
@@ -586,7 +606,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }
             deferred.resolve(removed_length);
         } else {
-            deferred.resolve(0);
+            //deferred.resolve(0);
+            $scope.cards = $filter('orderBy')($scope.cards, 'updatedAt');
+            checkBefore($scope.cards[$scope.cards.length - 1]);
+            deferred.resolve();
         }
         return deferred.promise;
     };
@@ -615,6 +638,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         return deferred.promise;
     };
 
+    var MAX_BOTTOM = 30;
+    var MAX_TOP = 30;
+
     removeCardsTop = function() {
         var deferred = $q.defer();
         var amount = getCardAmountTop();
@@ -626,7 +652,19 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }
             var removed_cards_top_temp = $scope.cards.splice(0, amount);
             for (var i = 0, len = removed_cards_top_temp.length; i < len; i++) {
-                $scope.removed_cards_top.push(removed_cards_top_temp[i]);
+
+                if ($scope.removed_cards_top.length < MAX_TOP) {
+                    $scope.removed_cards_top.push(removed_cards_top_temp[i]);
+                    //} else {
+                    //   console.log(removed_cards_top_temp[i]);
+                    //    checkBefore(removed_cards_top_temp[i]);
+                } else {
+                    $scope.removed_cards_top = [];
+                    $scope.removed_cards_top.push(removed_cards_top_temp[i]);
+                    //console.log($scope.cards);
+                    //$scope.cards = $filter('orderBy')($scope.cards, 'updatedAt', true);
+                    // checkBefore($scope.cards[0]);
+                }
             }
             deferred.resolve(amount);
         } else {
@@ -634,6 +672,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
         return deferred.promise;
     };
+
+
 
     removeCardsBottom = function() {
         var deferred = $q.defer();
@@ -646,7 +686,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }
             var removed_cards_bottom_temp = $scope.cards.splice(0, amount);
             for (var i = 0, len = removed_cards_bottom_temp.length; i < len; i++) {
-                $scope.removed_cards_bottom.push(removed_cards_bottom_temp[i]);
+
+                if ($scope.removed_cards_bottom.length < MAX_BOTTOM) {
+                    $scope.removed_cards_bottom.push(removed_cards_bottom_temp[i]);
+                }
+
             }
             deferred.resolve(amount);
         } else {
@@ -1580,27 +1624,34 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         return card;
     }
 
-    var test_got= "";
+    var test_got = "";
     // TODO - If not following anyone suggest follow?
-    getFollowing = function() {
+    getFollowing = function(dir, last_cardy) {
+        console.log(last_cardy);
         var deferred = $q.defer();
         var promises = [];
         if (!$rootScope.loading_cards_offscreen) {
             $rootScope.loading_cards_offscreen = true;
             var followed = UserData.getUser().following;
-            var last_card;
+
             var operand;
             var sort_card;
-            var load_amount = NUM_TO_LOAD;;
-            if ($scope.cards.length > 0) {
-                // Only get newer than temp but check removed cards
-                var all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
-                sort_card = $filter('orderBy')(all_cards, 'updatedAt');
-                last_card = sort_card[0]._id;
-            } else {
-                last_card = '0';
+            var load_amount = NUM_TO_LOAD;
+            var last_card;
+            if (last_cardy == undefined) {
+                
+
+                if ($scope.cards.length > 0) {
+                    // Only get newer than temp but check removed cards
+                    var all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
+                    sort_card = $filter('orderBy')(all_cards, 'updatedAt');
+                    last_card = sort_card[0]._id;
+                    //last_card = sort_card[0].updatedAt;
+                } else {
+                    last_card = '0';
+                }
             }
-            var val = { ids: followed, amount: load_amount, last_card: last_card };
+            var val = { ids: followed, amount: load_amount, last_card: last_card, direction: dir };
             console.log(last_card + ' : ' + last_card_stored);
             if (last_card != last_card_stored) {
                 last_card_stored = last_card;
@@ -1610,10 +1661,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             res.data.cards.map(function(key, array) {
                                 key = parseCard(key);
                                 console.log('Got: ' + key._id);
-                                if(test_got.includes(key._id)){
+                                if (test_got.includes(key._id)) {
                                     console.log('DUPY: ' + key._id);
                                 }
-                                test_got+=key._id;
+                                test_got += key._id;
                                 console.log(test_got);
                                 // Get the conversation for this card
                                 var conversation_pos = General.nestedArrayIndexOfValue(res.data.conversations, 'admin', key.user);
@@ -1639,6 +1690,81 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     deferred.resolve();
                 });
             }
+        }
+        return deferred.promise;
+    };
+
+
+    getFollowingBefore = function(dir, last_cardy) {
+        console.log(last_cardy.title_area);
+        var deferred = $q.defer();
+        var promises = [];
+        if (!$rootScope.loading_cards_offscreen) {
+            $rootScope.loading_cards_offscreen = true;
+            var followed = UserData.getUser().following;
+
+            var operand;
+            var sort_card;
+            var load_amount = NUM_TO_LOAD;
+            var last_card;
+            if (last_cardy == undefined) {
+
+
+                if ($scope.cards.length > 0) {
+                    // Only get newer than temp but check removed cards
+                    var all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
+                    sort_card = $filter('orderBy')(all_cards, 'updatedAt');
+                    last_card = sort_card[0]._id;
+                } else {
+                    last_card = '0';
+                }
+            } else {
+                //last_card = last_cardy.updatedAt;
+                last_card = last_cardy._id;
+            }
+            var val = { ids: followed, amount: load_amount, last_card: last_card, direction: dir };
+            console.log(last_card);
+            //if (last_card != last_card_stored) {
+            //  last_card_stored = last_card;
+            var prom1 = Conversations.getFeed(val)
+                .then(function(res) {
+                    if (res.data.cards.length > 0) {
+                        res.data.cards.map(function(key, array) {
+                            key = parseCard(key);
+                            console.log(key);
+                            //console.log('Got: ' + key._id);
+                            if (test_got.includes(key._id)) {
+                                //console.log('DUPY: ' + key._id);
+                            }
+                            test_got += key._id;
+                            //console.log(test_got);
+                            // Get the conversation for this card
+                            var conversation_pos = General.nestedArrayIndexOfValue(res.data.conversations, 'admin', key.user);
+                            var conversation = res.data.conversations[conversation_pos];
+                            // Store the original characters of the card.
+                            key.original_content = key.content;
+                            // Get the user name for the user id
+                            key.user_name = conversation.conversation_name;
+                            key.avatar = conversation.conversation_avatar;
+                            key.following = true;
+                            // Load any images offScreen
+                            //$scope.cards_temp.push(key);
+                            $scope.removed_cards_top.push(key);
+
+                        });
+                    } else {
+                        $rootScope.loading_cards_offscreen = false;
+                    }
+                }).catch(function(error) {
+                    //console.log(error);
+                });
+            promises.push(prom1);
+            // All the cards have been mapped.
+            $q.all(promises).then(function() {
+                $rootScope.loading_cards_offscreen = false;
+                deferred.resolve();
+            });
+            //}
         }
         return deferred.promise;
     };
@@ -1858,7 +1984,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             if (result._id != undefined) {
                 // TODO STORE THE CONVERSATION
                 Conversations.setConversationId(result._id);
-                getFollowing();
+                getFollowing('$lt');
             }
         });
     };
