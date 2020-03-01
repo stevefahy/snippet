@@ -1697,7 +1697,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                                 key.avatar = conversation.conversation_avatar;
                                 key.following = true;
                                 // Load any images offScreen
-                                $scope.cards_temp.push(key);
+                                //$scope.cards_temp.push(key);
+                                if(last_card == '0'){
+                                    $scope.cards_temp.push(key);
+                                } else {
+                                    $scope.removed_cards_bottom.push(key);
+                                }
+                                
                             });
                         } else {
                             $rootScope.loading_cards_offscreen = false;
@@ -1708,6 +1714,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 promises.push(prom1);
                 // All the cards have been mapped.
                 $q.all(promises).then(function() {
+                    $rootScope.loading_cards_offscreen = false;
                     deferred.resolve();
                 });
             }
