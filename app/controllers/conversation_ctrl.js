@@ -467,13 +467,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         unRemoveCardsTop()
             .then(function(result) {
                 if (result == 0 && !$scope.top_down) {
-                    tempToCards()
-                        .then(function(result) {
+                    //tempToCards()
+                        //.then(function(result) {
                             removeCardsBottom()
                                 .then(function(result) {
                                     deferred.resolve();
                                 });
-                        });
+                       // });
                 } else {
                     removeCardsBottom()
                         .then(function(result) {
@@ -491,13 +491,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         unRemoveCardsBottom()
             .then(function(result) {
                 if (result == 0 && $scope.top_down) {
-                    tempToCards()
-                        .then(function(result) {
+                    //tempToCards()
+                        //.then(function(result) {
                             removeCardsTop()
                                 .then(function(result) {
                                     deferred.resolve();
                                 });
-                        });
+                        //});
                 } else {
                     removeCardsTop()
                         .then(function(result) {
