@@ -683,8 +683,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 if ($scope.removed_cards_top.length < MAX_TOP) {
                     $scope.removed_cards_top.push(removed_cards_top_temp[i]);
                 } else {
-                    $scope.removed_cards_top = [];
+                    //$scope.removed_cards_top = [];
+                    //$scope.removed_cards_top.push(removed_cards_top_temp[i]);
+                                        $scope.removed_cards_top = $filter('orderBy')($scope.removed_cards_top, 'updatedAt');
+                    console.log($scope.removed_cards_top[$scope.removed_cards_top.length-1].updatedAt + ' : ' + $scope.removed_cards_top[0].updatedAt);
+                    $scope.removed_cards_top.pop();
                     $scope.removed_cards_top.push(removed_cards_top_temp[i]);
+
                 }
             }
             deferred.resolve(amount);
