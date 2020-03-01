@@ -710,6 +710,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
                 if ($scope.removed_cards_bottom.length < MAX_BOTTOM) {
                     $scope.removed_cards_bottom.push(removed_cards_bottom_temp[i]);
+                } else {
+                    $scope.removed_cards_bottom = $filter('orderBy')($scope.removed_cards_bottom, 'updatedAt');
+                    console.log($scope.removed_cards_bottom[$scope.removed_cards_bottom.length-1].updatedAt + ' : ' + $scope.removed_cards_bottom[0].updatedAt);
+                    $scope.removed_cards_bottom.shift();
+                    $scope.removed_cards_bottom.push(removed_cards_bottom_temp[i]);
                 }
 
             }
