@@ -1666,6 +1666,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     getFollowingUpdate = function() {
+        console.log('gfu');
         var deferred = $q.defer();
         var promises = [];
         var cards_new = [];
@@ -1688,6 +1689,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             var val = { ids: followed, amount: NUM_TO_LOAD, last_card: last_card };
             var prom1 = Conversations.updateFeed(val)
                 .then(function(res) {
+                    console.log(res);
                     if (res.data.cards.length > 0) {
                         var users = UserData.getContacts();
                         var user;
