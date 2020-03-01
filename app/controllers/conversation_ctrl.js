@@ -1,4 +1,4 @@
-cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$q', '$filter', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', 'ImageEdit', '$compile', 'ImageAdjustment', 'Keyboard', 'Scroll', '$animate', 'CropRotate', 'ImageFilters', 'ContentEditable', function($scope, $rootScope, $location, $http, $window, $q, $filter, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, ImageEdit, $compile, ImageAdjustment, Keyboard, Scroll, $animate, CropRotate, ImageFilters, ContentEditable) {
+cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$q', '$filter', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', 'ImageEdit', '$compile', 'ImageAdjustment', 'Keyboard', 'Scroll', '$animate', 'CropRotate', 'ImageFilters', 'ContentEditable', 'InfiniteScroll', function($scope, $rootScope, $location, $http, $window, $q, $filter, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, ImageEdit, $compile, ImageAdjustment, Keyboard, Scroll, $animate, CropRotate, ImageFilters, ContentEditable, InfiniteScroll) {
 
     openCropRotate = ImageEdit.openCropRotate;
     editImage = ImageEdit.editImage;
@@ -380,10 +380,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     });
             }
             if (dir == 0 && scrolled >= DOWN_PERCENT) {
-                //console.log('FIRE DOWN!');
+                console.log('FIRE DOWN!');
                 addMoreBottom()
                     .then(function(result) {
-                        //console.log('AMB END');
+                        console.log('AMB END');
                         scroll_updating = false;
                     });
             }
@@ -485,6 +485,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     addMoreBottom = function() {
+        console.log('AMB');
         var deferred = $q.defer();
         scroll_updating = true;
         unRemoveCardsBottom()
@@ -505,6 +506,23 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 }
             });
         return deferred.promise;
+    };
+
+    checkAfter = function(card) {
+        var id = Conversations.getConversationId();
+        if (Conversations.getConversationType() == 'feed') {
+            //if ($scope.cards_temp.length < MIN_TEMP) {
+            getFollowingAfter('$lt', card);
+            //}
+        } else if (Conversations.getConversationType() == 'private') {
+            if ($scope.cards_temp.length < MIN_TEMP) {
+                getCards(id);
+            }
+        } else if (Conversations.getConversationType() == 'public') {
+            if ($scope.cards_temp.length < MIN_TEMP) {
+                getPublicCards(id);
+            }
+        }
     };
 
     checkBefore = function(card) {
@@ -607,8 +625,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             deferred.resolve(removed_length);
         } else {
             //deferred.resolve(0);
-            $scope.cards = $filter('orderBy')($scope.cards, 'updatedAt');
-            checkBefore($scope.cards[$scope.cards.length - 1]);
+            //$scope.cards = $filter('orderBy')($scope.cards, 'updatedAt');
+            //checkBefore($scope.cards[$scope.cards.length - 1]);
+            var all_cards = $scope.cards.concat($scope.removed_cards_top, $scope.removed_cards_bottom);
+            var sort_card = $filter('orderBy')(all_cards, 'updatedAt');
+
+            checkBefore(sort_card[sort_card.length - 1]);
             deferred.resolve();
         }
         return deferred.promise;
@@ -633,7 +655,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }
             deferred.resolve(removed_length);
         } else {
-            deferred.resolve(0);
+            //deferred.resolve(0);
+            var all_cards = $scope.cards.concat( $scope.removed_cards_top, $scope.removed_cards_bottom);
+            var sort_card = $filter('orderBy')(all_cards, 'updatedAt');
+
+            checkAfter(sort_card[0]);
+            deferred.resolve();
         }
         return deferred.promise;
     };
@@ -655,15 +682,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
                 if ($scope.removed_cards_top.length < MAX_TOP) {
                     $scope.removed_cards_top.push(removed_cards_top_temp[i]);
-                    //} else {
-                    //   console.log(removed_cards_top_temp[i]);
-                    //    checkBefore(removed_cards_top_temp[i]);
                 } else {
                     $scope.removed_cards_top = [];
                     $scope.removed_cards_top.push(removed_cards_top_temp[i]);
-                    //console.log($scope.cards);
-                    //$scope.cards = $filter('orderBy')($scope.cards, 'updatedAt', true);
-                    // checkBefore($scope.cards[0]);
                 }
             }
             deferred.resolve(amount);
@@ -1639,7 +1660,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             var load_amount = NUM_TO_LOAD;
             var last_card;
             if (last_cardy == undefined) {
-                
+
 
                 if ($scope.cards.length > 0) {
                     // Only get newer than temp but check removed cards
@@ -1694,6 +1715,78 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         return deferred.promise;
     };
 
+    getFollowingAfter = function(dir, last_cardy) {
+        console.log(last_cardy.title_area);
+        var deferred = $q.defer();
+        var promises = [];
+        if (!$rootScope.loading_cards_offscreen) {
+            $rootScope.loading_cards_offscreen = true;
+            var followed = UserData.getUser().following;
+
+            var operand;
+            var sort_card;
+            var load_amount = NUM_TO_LOAD;
+            var last_card;
+            if (last_cardy == undefined) {
+                if ($scope.cards.length > 0) {
+                    // Only get newer than temp but check removed cards
+                    var all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
+                    sort_card = $filter('orderBy')(all_cards, 'updatedAt');
+                    last_card = sort_card[0]._id;
+                } else {
+                    last_card = '0';
+                }
+            } else {
+                //last_card = last_cardy.updatedAt;
+                last_card = last_cardy._id;
+            }
+            var val = { ids: followed, amount: load_amount, last_card: last_card, direction: dir };
+            console.log(last_card);
+            //if (last_card != last_card_stored) {
+            //  last_card_stored = last_card;
+            var prom1 = Conversations.getFeed(val)
+                .then(function(res) {
+                    if (res.data.cards.length > 0) {
+                        res.data.cards.map(function(key, array) {
+                            key = parseCard(key);
+                            console.log(key);
+                            //console.log('Got: ' + key._id);
+                            if (test_got.includes(key._id)) {
+                                console.log('DUPY: ' + key._id);
+                            }
+                            test_got += key._id;
+                            //console.log(test_got);
+                            // Get the conversation for this card
+                            var conversation_pos = General.nestedArrayIndexOfValue(res.data.conversations, 'admin', key.user);
+                            var conversation = res.data.conversations[conversation_pos];
+                            // Store the original characters of the card.
+                            key.original_content = key.content;
+                            // Get the user name for the user id
+                            key.user_name = conversation.conversation_name;
+                            key.avatar = conversation.conversation_avatar;
+                            key.following = true;
+                            // Load any images offScreen
+                            //$scope.cards_temp.push(key);
+                            $scope.removed_cards_bottom.push(key);
+
+                        });
+                    } else {
+                        $rootScope.loading_cards_offscreen = false;
+                    }
+                }).catch(function(error) {
+                    //console.log(error);
+                });
+            promises.push(prom1);
+            // All the cards have been mapped.
+            $q.all(promises).then(function() {
+                $rootScope.loading_cards_offscreen = false;
+                //$scope.removed_cards_bottom = [];
+                deferred.resolve();
+            });
+            //}
+        }
+        return deferred.promise;
+    };
 
     getFollowingBefore = function(dir, last_cardy) {
         console.log(last_cardy.title_area);
@@ -1734,7 +1827,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             console.log(key);
                             //console.log('Got: ' + key._id);
                             if (test_got.includes(key._id)) {
-                                //console.log('DUPY: ' + key._id);
+                                console.log('DUPY: ' + key._id);
                             }
                             test_got += key._id;
                             //console.log(test_got);
@@ -1762,6 +1855,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             // All the cards have been mapped.
             $q.all(promises).then(function() {
                 $rootScope.loading_cards_offscreen = false;
+                //$scope.removed_cards_bottom = [];
                 deferred.resolve();
             });
             //}
