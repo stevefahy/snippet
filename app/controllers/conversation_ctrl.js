@@ -652,7 +652,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             var sort_card = $filter('orderBy')(all_cards, 'updatedAt');
 
             //$scope.removed_cards_top = [];
-            checkBefore(sort_card[sort_card.length - 1], amount);
+            checkBefore(sort_card[sort_card.length - 1], OUTER_TO_LOAD - (OUTER_TO_LOAD - amount));
 
             deferred.resolve(removed_length);
         } else {
@@ -694,7 +694,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             console.log('removed_length: ' + removed_length);
             console.log(amount);
             //var replace = (removed_length - OUTER_TO_LOAD)
-            checkAfter(sort_card[0],  amount);
+            checkAfter(sort_card[0],  OUTER_TO_LOAD - (OUTER_TO_LOAD - amount));
 
             deferred.resolve(removed_length);
         } else {
