@@ -119,6 +119,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var time_1;
     var time_2;
 
+    var LATEST_CARD_TIME;
+
     // Adding cards
     let new_cards = [];
 
@@ -430,6 +432,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             var cards_to_move;
             if ($scope.cards.length == 0) {
                 amount = NUM_UPDATE_DISPLAY_INIT;
+                console.log($scope.cards_temp[0]);
+                LATEST_CARD_TIME = $scope.cards_temp[0].updatedAt;
             }
             cards_to_move = $scope.cards_temp.splice(0, amount);
 
@@ -1135,6 +1139,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     }
 
     updateCard = function(card) {
+        console.log('updateCard');
         // Check the existence of the card across all arrays.
         var card_arrays = [$scope.cards, $scope.cards_temp, $scope.removed_cards_bottom, $scope.removed_cards_top];
         var found_pos = -1;
@@ -1147,7 +1152,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }
         }
         if (found_pos >= 0) {
-            card = parseCard(card);
+            //card = parseCard(card);
             $scope.test_card[0] = card;
             $scope.test_card[0].expanded = true;
             var v = card_arrays[arr][found_pos].content;
@@ -1260,6 +1265,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var sort_card;
         var spliced;
         let new_cards_temp = [];
+
+        all_latest_cards = [...arr];
+
         all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
         // Check if card already exists (may have been created by this user offline).
         var i = arr.length;
@@ -1297,13 +1305,24 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }
         } else {
             if ($scope.removed_cards_top.length > 0) {
-                sort_card = $filter('orderBy')(all_cards, 'updatedAt', true);
-                spliced = sort_card.splice(0, MAX_OUT_BOUNDS);
-                $scope.removed_cards_bottom = sort_card;
+                //sort_card = $filter('orderBy')(all_cards, 'updatedAt', true);
+                //spliced = sort_card.splice(0, MAX_OUT_BOUNDS);
+                //$scope.removed_cards_bottom = sort_card;
+                $scope.removed_cards_bottom = [];
                 $scope.removed_cards_top = [];
                 $scope.cards = [];
                 $scope.cards_temp = [];
-                $scope.cards = $scope.cards.concat(arr, spliced);
+
+                scroll_updating = true;
+
+
+            $scope.cards = all_latest_cards;
+                if (!$scope.$$phase) {
+                $scope.$apply();
+            }
+                //$scope.cards = $scope.cards.concat(arr, spliced);
+                //addNewCards();
+                scroll_updating = false;
                 //checkNext();
                 programmatic_scroll = true;
                 deferred.resolve();
@@ -1686,6 +1705,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 last_card = General.getISODate();
                 operand = '$lt';
             }
+
+            //last_card = LATEST_CARD_TIME;
+            last_card = General.getISODate();
+
             var val = { ids: followed, amount: NUM_TO_LOAD, last_card: last_card };
             var prom1 = Conversations.updateFeed(val)
                 .then(function(res) {

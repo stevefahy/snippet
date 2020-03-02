@@ -1392,7 +1392,8 @@ module.exports = function(app, passport) {
                     })
                 },
                 'updatedAt': {
-                    '$gt': last_card
+                    //'$gt': last_card
+                    '$lte': last_card
                 }
             }, function(err, cards) {
                 if (err) {
