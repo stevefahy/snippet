@@ -11,17 +11,37 @@
     </div>
     <div ng-if="debug">
         <div class="debug">
-            <button ng-click="pause()">pause</button>
-            <button ng-click="resume()">resume</button>
-            <br>
-            Loading cards: {{loading_cards}}<br>
-            socket m: {{socket_m.connected}}<br>
-            socket n: {{socket_n.connected}}<br>
-            onlne: {{online}}<br>
-            cards: {{cards_length}}<br>
-            cards_temp: {{cards_temp_length}}<br>
-            removed_cards_top: {{removed_cards_top_length}}<br>
-            removed_cards_bottom: {{removed_cards_bottom_length}}
+            <div class="debug_left">
+                <button ng-click="pause()">pause</button>
+                <button ng-click="resume()">resume</button>
+                <br>
+                Loading cards: {{loading_cards}}<br>
+                socket m: {{socket_m.connected}}<br>
+                socket n: {{socket_n.connected}}<br>
+                onlne: {{online}}<br>
+                cards: {{cards_length}}<br>
+                cards_temp: {{cards_temp_length}}<br>
+                removed_cards_top: {{removed_cards_top_length}}<br>
+                removed_cards_bottom: {{removed_cards_bottom_length}}<br>
+            </div>
+            <div class="debug_removed_top">
+                removed_cards_top:
+                <div class="debug_list" ng-repeat="card in removed_cards_top_list ">
+                    <div>{{card._id}}</div>
+                </div>
+            </div>
+            <div class="debug_removed_bottom">
+                removed_cards_bottom:
+                <div class="debug_list" ng-repeat="card in removed_cards_bottom_list ">
+                    <div>{{card._id}}</div>
+                </div>
+            </div>
+            <div class="debug_cards">
+                cards:
+                <div class="debug_list" ng-repeat="card in cards_list ">
+                    <div>{{card._id}}</div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -3159,12 +3159,17 @@ span.after_image {
     position: absolute;
     z-index: 10000;
     top: 70px;
-    width: 50%;
+    width: 90%;
+    max-height: 80vh;
+    /* height: auto; */
     left: 10px;
     background-color: rgba(0, 0, 0, 0.5);
     color: #ffffff;
     padding: 10px;
     line-height: 1.5;
+    display: flex;
+    /* overflow: auto; */
+    /* display: inline-block; */
 }
 
 .debug_btn {
@@ -4028,4 +4033,48 @@ q {
     font-size: 1.5em;
     font-family: 'Montserrat';
     font-style: italic;
+}
+
+.debug_removed_top {
+    /* background-color: rgba(0, 0, 0, 0.5); */
+    /* background-color: blanchedalmond; */
+    /* position: absolute; */
+    /* top: 0px; */
+    /* left: 50%; */
+    /* display: table-row; */
+    /* overflow: scroll; */
+    /* max-height: 70vh; */
+    overflow-y: scroll;
+}
+
+.debug_removed_bottom {
+    /* background-color: rgba(0, 0, 0, 0.5); */
+    /* background-color: blanchedalmond; */
+    /* position: absolute; */
+    /* top: 0px; */
+    /* left: 50%; */
+    /* display: table-row; */
+    /* overflow: scroll; */
+    /* max-height: 70vh; */
+    overflow-y: scroll;
+}
+
+.debug_cards {
+    /* background-color: rgba(0, 0, 0, 0.5); */
+    /* background-color: blanchedalmond; */
+    /* position: absolute; */
+    /* top: 0px; */
+    /* left: 50%; */
+    /* display: table-row; */
+    /* overflow: scroll; */
+    /* max-height: 70vh; */
+    overflow-y: scroll;
+}
+
+.debug > div {
+    flex: 1;
+}
+
+.debug_list.ng-scope {
+    font-size: x-small;
 }

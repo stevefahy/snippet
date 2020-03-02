@@ -146,9 +146,25 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             });
             unbinddb2 = $scope.$watch('removed_cards_top.length', function(newStatus) {
                 $rootScope.removed_cards_top_length = newStatus;
+                $rootScope.removed_cards_top_list = [];
+                for(var i in $scope.removed_cards_top){
+                    $rootScope.removed_cards_top_list.push($scope.removed_cards_top[i]);
+                }
+                //$rootScope.removed_cards_top = $scope.removed_cards_top;
             });
             unbinddb3 = $scope.$watch('removed_cards_bottom.length', function(newStatus) {
                 $rootScope.removed_cards_bottom_length = newStatus;
+                $rootScope.removed_cards_bottom_list = [];
+                for(var i in $scope.removed_cards_bottom){
+                    $rootScope.removed_cards_bottom_list.push($scope.removed_cards_bottom[i]);
+                }
+            });
+            unbinddb4 = $scope.$watch('cards.length', function(newStatus) {
+                $rootScope.cards_length = newStatus;
+                $rootScope.cards_list = [];
+                for(var i in $scope.cards){
+                    $rootScope.cards_list.push($scope.cards[i]);
+                }
             });
         } else {
             $rootScope.cards_temp_length = 'NA';
@@ -634,6 +650,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             var all_cards = $scope.cards.concat($scope.removed_cards_top, $scope.removed_cards_bottom);
             var sort_card = $filter('orderBy')(all_cards, 'updatedAt');
 
+            $scope.removed_cards_top= [];
             checkBefore(sort_card[sort_card.length - 1]);
             deferred.resolve();
         }
@@ -662,7 +679,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             //deferred.resolve(0);
             var all_cards = $scope.cards.concat($scope.removed_cards_top, $scope.removed_cards_bottom);
             var sort_card = $filter('orderBy')(all_cards, 'updatedAt');
-
+            $scope.removed_cards_bottom = [];
             checkAfter(sort_card[0]);
             deferred.resolve();
         }
@@ -682,9 +699,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $scope.cards = $filter('orderBy')($scope.cards, 'updatedAt', true);
             }
             var removed_cards_top_temp = $scope.cards.splice(0, amount);
+            console.log(removed_cards_top_temp);
             for (var i = 0, len = removed_cards_top_temp.length; i < len; i++) {
-
+                delete removed_cards_top_temp[i].$$hashKey;
                 if ($scope.removed_cards_top.length < MAX_TOP) {
+
                     $scope.removed_cards_top.push(removed_cards_top_temp[i]);
                 } else {
                     //$scope.removed_cards_top = [];
@@ -716,7 +735,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }
             var removed_cards_bottom_temp = $scope.cards.splice(0, amount);
             for (var i = 0, len = removed_cards_bottom_temp.length; i < len; i++) {
-
+                delete removed_cards_bottom_temp[i].$$hashKey;
                 if ($scope.removed_cards_bottom.length < MAX_BOTTOM) {
                     $scope.removed_cards_bottom.push(removed_cards_bottom_temp[i]);
                 } else {
@@ -1266,7 +1285,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var spliced;
         let new_cards_temp = [];
 
-        all_latest_cards = [...arr];
+        //all_latest_cards = [...arr];
+        var all_latest_cards = JSON.parse(JSON.stringify(arr));
 
         all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
         // Check if card already exists (may have been created by this user offline).
@@ -1304,7 +1324,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 deferred.resolve();
             }
         } else {
+            // If not at top, show alert of new cards
             if ($scope.removed_cards_top.length > 0) {
+                console.log('NOT AT TOP');
+
+                unbindScroll();
+                Scroll.disable('.content_cnv');
                 //sort_card = $filter('orderBy')(all_cards, 'updatedAt', true);
                 //spliced = sort_card.splice(0, MAX_OUT_BOUNDS);
                 //$scope.removed_cards_bottom = sort_card;
@@ -1313,18 +1338,45 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $scope.cards = [];
                 $scope.cards_temp = [];
 
-                scroll_updating = true;
+                //scroll_updating = true;
 
 
-            $scope.cards = all_latest_cards;
+                $scope.cards = all_latest_cards;
                 if (!$scope.$$phase) {
-                $scope.$apply();
+                    $scope.$apply();
+                }
+
+                
+
+//$timeout(function() {
+                var max_s;
+            if (!$scope.top_down) {
+                max_s = $(".content_cnv")[0].scrollHeight - $(".content_cnv")[0].clientHeight;
+            } else {
+                max_s = 0;
             }
+let speed = 800;
+
+console.log(max_s);
+   $(".content_cnv").animate({
+                scrollTop: max_s
+            }, speed, "easeOutQuad", async function() {
+                // Animation complete.
+                //await newCardAnimComplete(card_id);
+                deferred.resolve();
+            });
+
+
+bindScroll();
+                Scroll.enable('.content_cnv');
+
+           // },1000);
+
                 //$scope.cards = $scope.cards.concat(arr, spliced);
                 //addNewCards();
-                scroll_updating = false;
+                //scroll_updating = false;
                 //checkNext();
-                programmatic_scroll = true;
+                //programmatic_scroll = true;
                 deferred.resolve();
             } else {
                 // No cards have been removed due to scrolling.
@@ -1609,7 +1661,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         return card;
     }
 
-    var test_got = "";
+    //var test_got = "";
     // TODO - If not following anyone suggest follow?
     getFollowing = function(dir, last_cardy) {
         console.log(last_cardy);
@@ -1644,11 +1696,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             res.data.cards.map(function(key, array) {
                                 key = parseCard(key);
                                 console.log('Got: ' + key._id);
-                                if (test_got.includes(key._id)) {
-                                    console.log('DUPY: ' + key._id);
-                                }
-                                test_got += key._id;
-                                console.log(test_got);
+                                //if (test_got.includes(key._id)) {
+                                //    console.log('DUPY: ' + key._id);
+                                //}
+                                //test_got += key._id;
+                                //console.log(test_got);
                                 // Get the conversation for this card
                                 var conversation_pos = General.nestedArrayIndexOfValue(res.data.conversations, 'admin', key.user);
                                 var conversation = res.data.conversations[conversation_pos];
@@ -1792,10 +1844,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             key = parseCard(key);
                             console.log(key);
                             //console.log('Got: ' + key._id);
-                            if (test_got.includes(key._id)) {
-                                console.log('DUPY: ' + key._id);
-                            }
-                            test_got += key._id;
+                            //if (test_got.includes(key._id)) {
+                             //   console.log('DUPY: ' + key._id);
+                            //}
+                            //test_got += key._id;
                             //console.log(test_got);
                             // Get the conversation for this card
                             var conversation_pos = General.nestedArrayIndexOfValue(res.data.conversations, 'admin', key.user);
@@ -1867,10 +1919,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             key = parseCard(key);
                             console.log(key);
                             //console.log('Got: ' + key._id);
-                            if (test_got.includes(key._id)) {
-                                console.log('DUPY: ' + key._id);
-                            }
-                            test_got += key._id;
+                            //if (test_got.includes(key._id)) {
+                            //    console.log('DUPY: ' + key._id);
+                            //}
+                            //test_got += key._id;
                             //console.log(test_got);
                             // Get the conversation for this card
                             var conversation_pos = General.nestedArrayIndexOfValue(res.data.conversations, 'admin', key.user);
