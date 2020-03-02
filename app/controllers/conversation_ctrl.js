@@ -69,7 +69,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     var OUTER_TO_LOAD = 30;
 
-    var NUM_UPDATE_DISPLAY = 10;
+    var MAX_BOTTOM = 30;
+    var MAX_TOP = 30;
+
+    var NUM_UPDATE_DISPLAY = 15; //10
     var NUM_UPDATE_DISPLAY_INIT = 30;
     // Minimum number of $scope.cards_temp to keep loaded.
     var MIN_TEMP = 40;
@@ -715,8 +718,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         return deferred.promise;
     };
 
-    var MAX_BOTTOM = 30;
-    var MAX_TOP = 30;
+
 
     removeCardsTop = function() {
         var deferred = $q.defer();
