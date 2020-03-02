@@ -896,7 +896,7 @@ if (workbox) {
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "6008aa367df6d2c40ce621409e6e970e"
+    "revision": "37a68d55a5d54f4468cbab98f9b898b2"
   },
   {
     "url": "controllers/conversations_ctrl.js",

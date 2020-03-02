@@ -656,10 +656,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             console.log('MAX_TOP: ' + MAX_TOP);
             console.log('removed_length: ' + removed_length);
             console.log('amount: ' + amount);
-            console.log('GET: ' + MAX_TOP - (MAX_TOP - amount));
+            console.log('GET: ' + Number(Number(MAX_TOP) - (Number($scope.removed_cards_top.length))));
             
             //$scope.removed_cards_top = [];
-            checkBefore(sort_card[sort_card.length - 1], MAX_TOP - ($scope.removed_cards_top.length));
+            checkBefore(sort_card[sort_card.length - 1], Number(Number(MAX_TOP) - (Number($scope.removed_cards_top.length))));
 
             deferred.resolve(removed_length);
         } else {
