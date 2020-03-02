@@ -58,8 +58,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // SCROLLING
 
     // Percent from top and bottom after which a check for more cards is executed.
-    var UP_PERCENT = 25; //10
-    var DOWN_PERCENT = 75; // 90
+    var UP_PERCENT = 20; //10
+    var DOWN_PERCENT = 80; // 90
     // Percent from top and bottom after which a check to move the scroll position and check for mre cards is executed.
     var TOP_END = 0;
     var BOTTOM_END = 100;
@@ -72,7 +72,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var MAX_BOTTOM = 30;
     var MAX_TOP = 30;
 
-    var NUM_UPDATE_DISPLAY = 15; //10
+    var NUM_UPDATE_DISPLAY = 10; //10
     var NUM_UPDATE_DISPLAY_INIT = 30;
     // Minimum number of $scope.cards_temp to keep loaded.
     var MIN_TEMP = 40;
@@ -277,16 +277,37 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         intObservers();
 
 
+
+
+
+
+        // Remove Duplicate IDs
+        $scope.cards = $scope.cards.reduce((accumulator, current) => {
+            if (checkIfAlreadyExist(current)) {
+                return accumulator;
+            } else {
+                return [...accumulator, current];
+            }
+
+            function checkIfAlreadyExist(currentVal) {
+                return accumulator.some((item) => {
+                    return (item._id === currentVal._id);
+                });
+            }
+        }, []);
+
+        // Check duplicate IDs
         const lookup = $scope.cards.reduce((a, e) => {
             a[e._id] = ++a[e._id] || 0;
             return a;
         }, {});
 
         var dupe = $scope.cards.filter(e => lookup[e._id]);
-        if(dupe.length>0){
+        if (dupe.length > 0) {
             console.log('CARDS DUPE:');
             console.log(dupe);
         }
+
         //console.log($scope.cards.filter(e => lookup[e._id]));
 
         for (var i = 0, len = $scope.cards.length; i < len; i++) {
@@ -651,13 +672,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $scope.cards.push(spliced[i]);
             }
 
-             var all_cards = $scope.cards.concat($scope.removed_cards_top, $scope.removed_cards_bottom);
+            var all_cards = $scope.cards.concat($scope.removed_cards_top, $scope.removed_cards_bottom);
             var sort_card = $filter('orderBy')(all_cards, 'updatedAt');
             console.log('MAX_TOP: ' + MAX_TOP);
             console.log('removed_length: ' + removed_length);
             console.log('amount: ' + amount);
             console.log('GET: ' + Number(Number(MAX_TOP) - (Number($scope.removed_cards_top.length))));
-            
+
             //$scope.removed_cards_top = [];
             checkBefore(sort_card[sort_card.length - 1], Number(Number(MAX_TOP) - (Number($scope.removed_cards_top.length))));
 
@@ -694,7 +715,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 $scope.cards.push(spliced[i]);
             }
 
-                        //deferred.resolve(0);
+            //deferred.resolve(0);
             var all_cards = $scope.cards.concat($scope.removed_cards_top, $scope.removed_cards_bottom);
             var sort_card = $filter('orderBy')(all_cards, 'updatedAt');
             //$scope.removed_cards_bottom = [];
@@ -704,7 +725,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             console.log('Get:' + (MAX_BOTTOM - ($scope.removed_cards_bottom.length)));
             console.log('MAX_BOTTOM: ' + MAX_BOTTOM);
             //var replace = (removed_length - OUTER_TO_LOAD)
-            checkAfter(sort_card[0], Number(Number(MAX_BOTTOM) - (Number($scope.removed_cards_bottom.length))) );
+            checkAfter(sort_card[0], Number(Number(MAX_BOTTOM) - (Number($scope.removed_cards_bottom.length))));
 
             deferred.resolve(removed_length);
         } else {
@@ -1358,7 +1379,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             // If not at top, show alert of new cards
             if ($scope.removed_cards_top.length > 0) {
                 console.log('NOT AT TOP');
-
+/*
                 unbindScroll();
                 Scroll.disable('.content_cnv');
                 //sort_card = $filter('orderBy')(all_cards, 'updatedAt', true);
@@ -1400,7 +1421,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
                 bindScroll();
                 Scroll.enable('.content_cnv');
-
+*/
                 // },1000);
 
                 //$scope.cards = $scope.cards.concat(arr, spliced);
@@ -1872,7 +1893,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             var prom1 = Conversations.getFeed(val)
                 .then(function(res) {
                     console.log('$scope.removed_cards_bottom:' + $scope.removed_cards_bottom.length);
-                    console.log('getFollowingAfter: ' + res.data.cards.length );
+                    console.log('getFollowingAfter: ' + res.data.cards.length);
                     if (res.data.cards.length > 0) {
                         res.data.cards.map(function(key, array) {
                             key = parseCard(key);
@@ -1950,7 +1971,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             //  last_card_stored = last_card;
             var prom1 = Conversations.getFeed(val)
                 .then(function(res) {
-                     console.log('getFollowingBefore: ' + res.data.cards.length );
+                    console.log('getFollowingBefore: ' + res.data.cards.length);
                     if (res.data.cards.length > 0) {
                         res.data.cards.map(function(key, array) {
                             key = parseCard(key);
