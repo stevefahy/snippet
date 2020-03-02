@@ -701,10 +701,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             console.log('$scope.removed_cards_bottom: ' + $scope.removed_cards_bottom.length);
             console.log('removed_length: ' + removed_length);
             console.log(amount);
-            console.log('Get:' + (MAX_BOTTOM - (MAX_BOTTOM - amount)));
+            console.log('Get:' + (MAX_BOTTOM - ($scope.removed_cards_bottom.length)));
             console.log('MAX_BOTTOM: ' + MAX_BOTTOM);
             //var replace = (removed_length - OUTER_TO_LOAD)
-            checkAfter(sort_card[0],  MAX_BOTTOM - ( $scope.removed_cards_bottom.length));
+            checkAfter(sort_card[0], Number(Number(MAX_BOTTOM) - (Number($scope.removed_cards_bottom.length))) );
 
             deferred.resolve(removed_length);
         } else {
