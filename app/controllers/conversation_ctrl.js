@@ -550,11 +550,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     };
 
-    checkBefore = function(card) {
+    checkBefore = function(card, amount) {
         var id = Conversations.getConversationId();
         if (Conversations.getConversationType() == 'feed') {
             //if ($scope.cards_temp.length < MIN_TEMP) {
-            getFollowingBefore('$gt', card);
+            getFollowingBefore('$gt', card, amount);
             //}
         } else if (Conversations.getConversationType() == 'private') {
             if ($scope.cards_temp.length < MIN_TEMP) {
@@ -647,6 +647,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             for (var i = 0, len = spliced.length; i < len; i++) {
                 $scope.cards.push(spliced[i]);
             }
+
+             var all_cards = $scope.cards.concat($scope.removed_cards_top, $scope.removed_cards_bottom);
+            var sort_card = $filter('orderBy')(all_cards, 'updatedAt');
+
+            //$scope.removed_cards_top = [];
+            checkBefore(sort_card[sort_card.length - 1], amount);
+
             deferred.resolve(removed_length);
         } else {
             //deferred.resolve(0);
@@ -655,8 +662,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             var all_cards = $scope.cards.concat($scope.removed_cards_top, $scope.removed_cards_bottom);
             var sort_card = $filter('orderBy')(all_cards, 'updatedAt');
 
-            $scope.removed_cards_top = [];
-            checkBefore(sort_card[sort_card.length - 1]);
+            //$scope.removed_cards_top = [];
+            checkBefore(sort_card[sort_card.length - 1], OUTER_TO_LOAD);
             deferred.resolve();
         }
         return deferred.promise;
@@ -1898,7 +1905,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         return deferred.promise;
     };
 
-    getFollowingBefore = function(dir, last_cardy) {
+    getFollowingBefore = function(dir, last_cardy, amount) {
         console.log(last_cardy.title_area);
         var deferred = $q.defer();
         var promises = [];
@@ -1908,7 +1915,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
             var operand;
             var sort_card;
-            var load_amount = NUM_TO_LOAD;
+            //var load_amount = NUM_TO_LOAD;
+            var load_amount = amount;
+
             var last_card;
             if (last_cardy == undefined) {
 
@@ -1931,10 +1940,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             //  last_card_stored = last_card;
             var prom1 = Conversations.getFeed(val)
                 .then(function(res) {
+                     console.log('getFollowingBefore: ' + res.data.cards.length );
                     if (res.data.cards.length > 0) {
                         res.data.cards.map(function(key, array) {
                             key = parseCard(key);
-                            console.log(key);
+                            //console.log(key);
                             //console.log('Got: ' + key._id);
                             //if (test_got.includes(key._id)) {
                             //    console.log('DUPY: ' + key._id);
