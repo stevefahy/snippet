@@ -58,14 +58,17 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // SCROLLING
 
     // Percent from top and bottom after which a check for more cards is executed.
-    var UP_PERCENT = 20; //10
-    var DOWN_PERCENT = 80; // 90
+    var UP_PERCENT = 25; //10
+    var DOWN_PERCENT = 75; // 90
     // Percent from top and bottom after which a check to move the scroll position and check for mre cards is executed.
     var TOP_END = 0;
     var BOTTOM_END = 100;
     // Numbers of cards to load or display.
     var INIT_NUM_TO_LOAD = 50;
     var NUM_TO_LOAD = 20;
+
+    var OUTER_TO_LOAD = 30;
+
     var NUM_UPDATE_DISPLAY = 10;
     var NUM_UPDATE_DISPLAY_INIT = 30;
     // Minimum number of $scope.cards_temp to keep loaded.
@@ -146,25 +149,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             });
             unbinddb2 = $scope.$watch('removed_cards_top.length', function(newStatus) {
                 $rootScope.removed_cards_top_length = newStatus;
-                $rootScope.removed_cards_top_list = [];
-                for(var i in $scope.removed_cards_top){
-                    $rootScope.removed_cards_top_list.push($scope.removed_cards_top[i]);
-                }
-                //$rootScope.removed_cards_top = $scope.removed_cards_top;
             });
             unbinddb3 = $scope.$watch('removed_cards_bottom.length', function(newStatus) {
                 $rootScope.removed_cards_bottom_length = newStatus;
-                $rootScope.removed_cards_bottom_list = [];
-                for(var i in $scope.removed_cards_bottom){
-                    $rootScope.removed_cards_bottom_list.push($scope.removed_cards_bottom[i]);
-                }
-            });
-            unbinddb4 = $scope.$watch('cards.length', function(newStatus) {
-                $rootScope.cards_length = newStatus;
-                $rootScope.cards_list = [];
-                for(var i in $scope.cards){
-                    $rootScope.cards_list.push($scope.cards[i]);
-                }
             });
         } else {
             $rootScope.cards_temp_length = 'NA';
@@ -285,7 +272,24 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     upDateObservers = function() {
         resetObserver_queue();
         intObservers();
+
+
+        const lookup = $scope.cards.reduce((a, e) => {
+            a[e._id] = ++a[e._id] || 0;
+            return a;
+        }, {});
+
+        var dupe = $scope.cards.filter(e => lookup[e._id]);
+        if(dupe.length>0){
+            console.log('CARDS DUPE:');
+            console.log(dupe);
+        }
+        //console.log($scope.cards.filter(e => lookup[e._id]));
+
         for (var i = 0, len = $scope.cards.length; i < len; i++) {
+
+
+
             //
             // If a new card has been posted.
             //
@@ -650,7 +654,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             var all_cards = $scope.cards.concat($scope.removed_cards_top, $scope.removed_cards_bottom);
             var sort_card = $filter('orderBy')(all_cards, 'updatedAt');
 
-            $scope.removed_cards_top= [];
+            $scope.removed_cards_top = [];
             checkBefore(sort_card[sort_card.length - 1]);
             deferred.resolve();
         }
@@ -679,7 +683,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             //deferred.resolve(0);
             var all_cards = $scope.cards.concat($scope.removed_cards_top, $scope.removed_cards_bottom);
             var sort_card = $filter('orderBy')(all_cards, 'updatedAt');
-            $scope.removed_cards_bottom = [];
+            //$scope.removed_cards_bottom = [];
             checkAfter(sort_card[0]);
             deferred.resolve();
         }
@@ -1346,31 +1350,31 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     $scope.$apply();
                 }
 
-                
 
-//$timeout(function() {
+
+                //$timeout(function() {
                 var max_s;
-            if (!$scope.top_down) {
-                max_s = $(".content_cnv")[0].scrollHeight - $(".content_cnv")[0].clientHeight;
-            } else {
-                max_s = 0;
-            }
-let speed = 800;
+                if (!$scope.top_down) {
+                    max_s = $(".content_cnv")[0].scrollHeight - $(".content_cnv")[0].clientHeight;
+                } else {
+                    max_s = 0;
+                }
+                let speed = 800;
 
-console.log(max_s);
-   $(".content_cnv").animate({
-                scrollTop: max_s
-            }, speed, "easeOutQuad", async function() {
-                // Animation complete.
-                //await newCardAnimComplete(card_id);
-                deferred.resolve();
-            });
+                console.log(max_s);
+                $(".content_cnv").animate({
+                    scrollTop: max_s
+                }, speed, "easeOutQuad", async function() {
+                    // Animation complete.
+                    //await newCardAnimComplete(card_id);
+                    deferred.resolve();
+                });
 
 
-bindScroll();
+                bindScroll();
                 Scroll.enable('.content_cnv');
 
-           // },1000);
+                // },1000);
 
                 //$scope.cards = $scope.cards.concat(arr, spliced);
                 //addNewCards();
@@ -1695,7 +1699,7 @@ bindScroll();
                         if (res.data.cards.length > 0) {
                             res.data.cards.map(function(key, array) {
                                 key = parseCard(key);
-                                console.log('Got: ' + key._id);
+                                //console.log('Got: ' + key._id);
                                 //if (test_got.includes(key._id)) {
                                 //    console.log('DUPY: ' + key._id);
                                 //}
@@ -1818,7 +1822,7 @@ bindScroll();
 
             var operand;
             var sort_card;
-            var load_amount = NUM_TO_LOAD;
+            var load_amount = OUTER_TO_LOAD;
             var last_card;
             if (last_cardy == undefined) {
                 if ($scope.cards.length > 0) {
@@ -1839,13 +1843,14 @@ bindScroll();
             //  last_card_stored = last_card;
             var prom1 = Conversations.getFeed(val)
                 .then(function(res) {
+                    console.log('getFollowingAfter: ' + res.data.cards.length );
                     if (res.data.cards.length > 0) {
                         res.data.cards.map(function(key, array) {
                             key = parseCard(key);
-                            console.log(key);
+                            //console.log(key);
                             //console.log('Got: ' + key._id);
                             //if (test_got.includes(key._id)) {
-                             //   console.log('DUPY: ' + key._id);
+                            //   console.log('DUPY: ' + key._id);
                             //}
                             //test_got += key._id;
                             //console.log(test_got);
