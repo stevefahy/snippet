@@ -514,6 +514,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         scroll_updating = true;
         unRemoveCardsBottom()
             .then(function(result) {
+                console.log(result);
                 if (result == 0 && $scope.top_down) {
                     //tempToCards()
                     //.then(function(result) {
@@ -532,11 +533,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         return deferred.promise;
     };
 
-    checkAfter = function(card) {
+    checkAfter = function(card, amount) {
         var id = Conversations.getConversationId();
         if (Conversations.getConversationType() == 'feed') {
             //if ($scope.cards_temp.length < MIN_TEMP) {
-            getFollowingAfter('$lt', card);
+            getFollowingAfter('$lt', card, amount);
             //}
         } else if (Conversations.getConversationType() == 'private') {
             if ($scope.cards_temp.length < MIN_TEMP) {
@@ -678,13 +679,23 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             for (var i = 0, len = spliced.length; i < len; i++) {
                 $scope.cards.push(spliced[i]);
             }
+
+                        //deferred.resolve(0);
+            var all_cards = $scope.cards.concat($scope.removed_cards_top, $scope.removed_cards_bottom);
+            var sort_card = $filter('orderBy')(all_cards, 'updatedAt');
+            //$scope.removed_cards_bottom = [];
+            console.log('removed_length: ' + removed_length);
+            console.log(amount);
+            //var replace = (removed_length - OUTER_TO_LOAD)
+            checkAfter(sort_card[0],  amount);
+
             deferred.resolve(removed_length);
         } else {
             //deferred.resolve(0);
             var all_cards = $scope.cards.concat($scope.removed_cards_top, $scope.removed_cards_bottom);
             var sort_card = $filter('orderBy')(all_cards, 'updatedAt');
             //$scope.removed_cards_bottom = [];
-            checkAfter(sort_card[0]);
+            checkAfter(sort_card[0], OUTER_TO_LOAD);
             deferred.resolve();
         }
         return deferred.promise;
@@ -1812,7 +1823,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         return deferred.promise;
     };
 
-    getFollowingAfter = function(dir, last_cardy) {
+    getFollowingAfter = function(dir, last_cardy, amount) {
         console.log(last_cardy.title_area);
         var deferred = $q.defer();
         var promises = [];
@@ -1822,7 +1833,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
             var operand;
             var sort_card;
-            var load_amount = OUTER_TO_LOAD;
+            //var load_amount = OUTER_TO_LOAD;
+            var load_amount = amount;
             var last_card;
             if (last_cardy == undefined) {
                 if ($scope.cards.length > 0) {
