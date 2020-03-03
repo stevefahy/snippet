@@ -3761,6 +3761,58 @@ span.after_image {
     }
 }
 
+.notify_container {
+    position: absolute;
+    z-index: 10000;
+    width: 100%;
+    top: 1%;
+    display: flex;
+    justify-content: center;
+    transition: all linear 5s;
+    top: -60px;
+}
+
+
+.notify_anim.notify_anim_on {
+    -webkit-animation: opennotify 5s ease-in-out forwards;
+}
+
+.notify_anim.notify_anim_off {
+    -webkit-animation: closenotify .6s ease-in-out forwards;
+}
+
+@keyframes opennotify {
+    0% {
+        top: -40px;
+    }
+
+    10% {
+        top: 70px;
+    }
+
+    90% {
+        top: 70px;
+    }
+
+    100% {
+        top: 70px;
+    }
+}
+
+@keyframes closenotify {
+    0% {
+        top: 70px;
+    }
+
+    10% {
+        top: 75px;
+    }
+
+    100% {
+        top: -40px;
+    }
+}
+
 .test_container {
     position: absolute;
     z-index: -1;
@@ -4077,4 +4129,35 @@ q {
 
 .debug_list.ng-scope {
     font-size: x-small;
+}
+
+.notify_container .badge {
+    /* padding: .6em; */
+    padding-left: .9em;
+    padding-right: .9em;
+    padding-top: .5em;
+    padding-bottom: .5em;
+    font-size: 100%;
+    font-weight: 400;
+    background-color: #007bff;
+    cursor: pointer;
+}
+
+.notify_outer {
+
+display: flex;
+
+align-items: center;
+}
+
+.notify_arrow {
+
+color: #ffffff;
+
+margin-right: 5px;
+}
+
+.notify_text {
+
+margin-right: 5px;
 }

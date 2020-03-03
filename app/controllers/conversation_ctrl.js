@@ -1,4 +1,4 @@
-cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$q', '$filter', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', 'ImageEdit', '$compile', 'ImageAdjustment', 'Keyboard', 'Scroll', '$animate', 'CropRotate', 'ImageFilters', 'ContentEditable', 'InfiniteScroll', function($scope, $rootScope, $location, $http, $window, $q, $filter, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, ImageEdit, $compile, ImageAdjustment, Keyboard, Scroll, $animate, CropRotate, ImageFilters, ContentEditable, InfiniteScroll) {
+cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$http', '$window', '$q', '$filter', 'Cards', 'replaceTags', 'Format', 'Edit', 'Conversations', 'Users', '$routeParams', '$timeout', 'moment', 'socket', 'Database', 'General', 'Profile', 'principal', 'UserData', 'ImageEdit', '$compile', 'ImageAdjustment', 'Keyboard', 'Scroll', '$animate', 'CropRotate', 'ImageFilters', 'ContentEditable', 'InfiniteScroll', 'Notify', function($scope, $rootScope, $location, $http, $window, $q, $filter, Cards, replaceTags, Format, Edit, Conversations, Users, $routeParams, $timeout, moment, socket, Database, General, Profile, principal, UserData, ImageEdit, $compile, ImageAdjustment, Keyboard, Scroll, $animate, CropRotate, ImageFilters, ContentEditable, InfiniteScroll, Notify) {
 
     openCropRotate = ImageEdit.openCropRotate;
     editImage = ImageEdit.editImage;
@@ -126,6 +126,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var time_2;
 
     var LATEST_CARD_TIME;
+
+    var all_latest_cards;
 
     // Adding cards
     let new_cards = [];
@@ -1327,6 +1329,54 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
     };
 
+    showLatest = function(){
+        console.log('showLatest');
+        Notify.removeNotify();
+        
+                unbindScroll();
+                Scroll.disable('.content_cnv');
+                //sort_card = $filter('orderBy')(all_cards, 'updatedAt', true);
+                //spliced = sort_card.splice(0, MAX_OUT_BOUNDS);
+                //$scope.removed_cards_bottom = sort_card;
+                $scope.removed_cards_bottom = [];
+                $scope.removed_cards_top = [];
+                $scope.cards = [];
+                $scope.cards_temp = [];
+
+                //scroll_updating = true;
+
+
+                $scope.cards = all_latest_cards;
+                if (!$scope.$$phase) {
+                    $scope.$apply();
+                }
+
+
+
+                //$timeout(function() {
+                var max_s;
+                if (!$scope.top_down) {
+                    max_s = $(".content_cnv")[0].scrollHeight - $(".content_cnv")[0].clientHeight;
+                } else {
+                    max_s = 0;
+                }
+                let speed = 800;
+
+                console.log(max_s);
+                $(".content_cnv").animate({
+                    scrollTop: max_s
+                }, speed, "easeOutQuad", async function() {
+                    // Animation complete.
+                    //await newCardAnimComplete(card_id);
+                    //deferred.resolve();
+                });
+
+
+                bindScroll();
+                Scroll.enable('.content_cnv');
+
+    }
+
     // TODO - change if adding button to notify user of new card.
     addCards = function(arr) {
         console.log(arr);
@@ -1338,7 +1388,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         let new_cards_temp = [];
 
         //all_latest_cards = [...arr];
-        var all_latest_cards = JSON.parse(JSON.stringify(arr));
+        all_latest_cards = JSON.parse(JSON.stringify(arr));
 
         all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
         // Check if card already exists (may have been created by this user offline).
@@ -1379,6 +1429,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             // If not at top, show alert of new cards
             if ($scope.removed_cards_top.length > 0) {
                 console.log('NOT AT TOP');
+                Notify.addNotify();
 /*
                 unbindScroll();
                 Scroll.disable('.content_cnv');

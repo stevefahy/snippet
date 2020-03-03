@@ -329,6 +329,11 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
         }
     };
 
+
+
+
+    // Alert
+
     function alertAddEnd() {
         $(".alert_anim_on").off('animationend', alertAddEnd);
         addingalert = false;

@@ -16,6 +16,7 @@ if (workbox) {
     self.addEventListener('install', (event) => {
         const urls = [
             '/views/alert.html',
+            '/views/notify.html',
             '/views/card.html',
             '/views/card_create.html',
             '/views/contacts.html',

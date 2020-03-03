@@ -16,6 +16,7 @@ if (workbox) {
     self.addEventListener('install', (event) => {
         const urls = [
             '/views/alert.html',
+            '/views/notify.html',
             '/views/card.html',
             '/views/card_create.html',
             '/views/contacts.html',
@@ -896,7 +897,7 @@ if (workbox) {
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "9f85ee428d897ec5df95e2f20eae70ee"
+    "revision": "31d450d0ca553acdcada1f5df5bb7e9c"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -928,7 +929,7 @@ if (workbox) {
   },
   {
     "url": "controllers/main_ctrl.js",
-    "revision": "b83c24308a9f4f7aad6ad9684264c0f8"
+    "revision": "8831c3c0bf6377f67cdb285ae478eb9a"
   },
   {
     "url": "controllers/usersetting_ctrl.js",
@@ -952,7 +953,7 @@ if (workbox) {
   },
   {
     "url": "indexa.html",
-    "revision": "9ea6539d9c4bfece170177a2abe3ced2"
+    "revision": "32b401844ddca6982ec24a296edfcf54"
   },
   {
     "url": "js/angular_moment.js",
@@ -1060,7 +1061,7 @@ if (workbox) {
   },
   {
     "url": "service-worker.js",
-    "revision": "8a27f2b3bfb831577f35b3ff1c52ed8b"
+    "revision": "8fcd32aad2fac260111e748bf828093a"
   },
   {
     "url": "services/content_editable.js",
@@ -1131,6 +1132,10 @@ if (workbox) {
     "revision": "40e6b7a676ca62d49d0783d2cf5b9b47"
   },
   {
+    "url": "services/notify.js",
+    "revision": "1b9a6f3be8be504469e2acd706f0e8d3"
+  },
+  {
     "url": "services/replace_tags.js",
     "revision": "d4665d616781d288e03028d7dbc3cf83"
   },
@@ -1156,7 +1161,7 @@ if (workbox) {
   },
   {
     "url": "style/customstyle.css",
-    "revision": "6765d250c8cf6342f8ed3e1f086fc33b"
+    "revision": "b6be9d93339105f7830606c96cfccd2a"
   },
   {
     "url": "style/instagram.css",
@@ -1245,6 +1250,10 @@ if (workbox) {
   {
     "url": "views/login.html",
     "revision": "ee415d18c1aa5292680e55e5449c5eec"
+  },
+  {
+    "url": "views/notify.html",
+    "revision": "f5c01506261bd991e739aa7fd1ad8218"
   },
   {
     "url": "views/offline.html",
