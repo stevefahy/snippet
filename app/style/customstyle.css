@@ -3765,11 +3765,12 @@ span.after_image {
     position: absolute;
     z-index: 10000;
     width: 100%;
-    top: 1%;
+    /*top: 1%;*/
     display: flex;
     justify-content: center;
     transition: all linear 5s;
-    top: -60px;
+    /*top: -60px;*/
+    transform: translateY(-40px);
 }
 
 
@@ -3777,10 +3778,55 @@ span.after_image {
     -webkit-animation: opennotify 5s ease-in-out forwards;
 }
 
-.notify_anim.notify_anim_off {
-    -webkit-animation: closenotify .6s ease-in-out forwards;
+/*
+.animate-transform {
+    animation: change .5s ease-out forwards;
 }
 
+@keyframes change {
+    from {
+        transform: translateY(var(--v));
+    }
+}
+*/
+.notify_anim.notify_anim_off {
+    -webkit-animation: closenotify .6s ease-in-out forwards;
+   
+}
+
+@keyframes opennotify {
+    0% {
+        transform: translateY(-40px);
+    }
+
+    10% {
+        transform: translateY(70px);
+    }
+
+    90% {
+        transform: translateY(70px);
+    }
+
+    100% {
+        transform: translateY(70px);
+    }
+}
+
+@keyframes closenotify {
+    0% {
+        transform: translateY(70px);
+    }
+
+    10% {
+        transform: translateY(75px);
+    }
+
+    100% {
+        transform: translateY(-40px);
+    }
+}
+
+/*
 @keyframes opennotify {
     0% {
         top: -40px;
@@ -3798,7 +3844,8 @@ span.after_image {
         top: 70px;
     }
 }
-
+*/
+/*
 @keyframes closenotify {
     0% {
         top: 70px;
@@ -3812,6 +3859,7 @@ span.after_image {
         top: -40px;
     }
 }
+*/
 
 .test_container {
     position: absolute;
