@@ -3555,7 +3555,7 @@ span.after_image {
 }
 
 .animate-transform {
-    animation: change .5s ease-out forwards;
+    animation: change .2s ease-out forwards;
 }
 
 @keyframes change {
