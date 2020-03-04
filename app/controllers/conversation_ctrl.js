@@ -1443,12 +1443,22 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             var new_card_found = false;
             if(d1 < d2){
                 new_card_found = true;
-                
+
             } 
+
+            console.log(all_latest_cards[0].user + ' : ' + $scope.currentUser._id);
+
+            var sender_is_reciever = (all_latest_cards[0].user == $scope.currentUser._id);
+            console.log(sender_is_reciever);
             console.log('new_card_found: ' + new_card_found);
-            if(new_card_found &&  (last_scrolled != undefined || last_scrolled <10)){
+            console.log('last_scrolled: ' + last_scrolled);
+            console.log(last_scrolled < 10);
+            console.log(last_scrolled >=0);
+            if(new_card_found &&   last_scrolled > 10 ) {
                 console.log('NOT AT TOP');
-                Notify.addNotify();
+                if(!sender_is_reciever){
+                    Notify.addNotify();
+                }
 /*
                 unbindScroll();
                 Scroll.disable('.content_cnv');
