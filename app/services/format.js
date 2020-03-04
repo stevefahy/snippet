@@ -1128,12 +1128,18 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             if (sel.getRangeAt && sel.rangeCount) {
                 range = sel.getRangeAt(0);
                 range.deleteContents();
+                //
                 // CHECK PLACEMENT
                 //
                 // Check box
                 if (html.includes('cb_container')) {
-                    if (range.startContainer.parentNode.className.includes('cb_label')) {
-                        range.setStartAfter(range.startContainer.parentNode.parentNode);
+                    console.log(range);
+                    //console.log(selection_start);
+                    console.log($(selection_start).closest('.cb_container'));
+                    if($(selection_start).parents('.cb_container').length){
+                    //if (range.startContainer.parentNode.className.includes('cb_label')) {
+                        //range.setStartAfter(range.startContainer.parentNode.parentNode);
+                        range.setStartAfter($(selection_start).closest('.cb_container')[0]);
                     }
                 }
                 //
