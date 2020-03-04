@@ -1414,6 +1414,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
         new_cards = [...arr];
         if (!$scope.top_down) {
+
             if ($scope.removed_cards_bottom.length > 0) {
                 sort_card = $filter('orderBy')(all_cards, 'updatedAt', true);
                 spliced = sort_card.splice(0, MAX_OUT_BOUNDS);
@@ -1431,8 +1432,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 deferred.resolve();
             }
         } else {
+            console.log(last_scrolled);
             // If not at top, show alert of new cards
-            if ($scope.removed_cards_top.length > 0) {
+            //if ($scope.removed_cards_top.length > 0) {
+            if(last_scrolled != undefined || last_scrolled <10){
                 console.log('NOT AT TOP');
                 Notify.addNotify();
 /*

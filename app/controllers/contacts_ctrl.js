@@ -159,64 +159,46 @@ cardApp.controller("contactsCtrl", ['$scope', '$route', '$rootScope', '$location
 
     $scope.followBtn = function(contact) {
         var following;
-        console.log(contact);
         // Find the public conversation for the selected user.
-        // LDB
-        
-        //Conversations.find_user_public_conversation_by_id(card.user)
-            //.then(function(result) {
-                //if (result.conversation_type == 'public') {
-                    var conversation_id = contact.public_conversation
-                    // If following then unfollow
-                    //var conversation_id = result._id;
-                    var pms = { 'id': conversation_id, 'user': UserData.getUser()._id };
-                   
-
-                if ($scope.currentUser.following.indexOf(conversation_id) >= 0) {
-                    // The user is following this user.
-                    contact.following = true;
-                } else {
-                    // The user is not following this user.
-                    contact.following = false;
-                }
-console.log(contact.following);
-                   
-                    if (contact.following) {
-                        // Update the Conversation in the DB.
-                        // LDB
-                        Conversations.deleteFollower(pms)
-                            .then(function(conversation) {
-                                // Update the User in the DB.
-                                // LDB
-                                Users.unfollow_conversation(conversation._id)
-                                    .then(function(user) {
-                                        UserData.setUser(user);
-                                        $scope.currentUser = UserData.getUser();
-                                        //removeUserCards(conversation_id);
-                                        //updateFollowingIcons($scope.cards);
-                                    });
-                            });
-                            contact.following = false;
-                    } else {
-                        
-                        // If not following then follow. Update the Conversation in the DB.
-                        // LDB
-                        Conversations.addFollower(pms)
-                            .then(function(conversation) {
-                                // Update the User in the DB.
-                                // LDB
-                                Users.follow_conversation(conversation._id)
-                                    .then(function(user) {
-                                        UserData.setUser(user);
-                                        $scope.currentUser = UserData.getUser();
-                                        //updateFollowingIcons($scope.cards);
-                                    });
-                            });
-                            contact.following = true;
-                    }
-                //}
-            //});
-            
+        var conversation_id = contact.public_conversation;
+        var pms = { 'id': conversation_id, 'user': UserData.getUser()._id };
+        // Check whether following
+        if ($scope.currentUser.following.indexOf(conversation_id) >= 0) {
+            // The user is following this user.
+            contact.following = true;
+        } else {
+            // The user is not following this user.
+            contact.following = false;
+        }
+        if (contact.following) {
+            // Update the Conversation in the DB.
+            // LDB
+            Conversations.deleteFollower(pms)
+                .then(function(conversation) {
+                    // Update the User in the DB.
+                    // LDB
+                    Users.unfollow_conversation(conversation._id)
+                        .then(function(user) {
+                            UserData.setUser(user);
+                            $scope.currentUser = UserData.getUser();
+                        });
+                });
+            contact.following = false;
+        } else {
+            // If not following then follow. Update the Conversation in the DB.
+            // LDB
+            Conversations.addFollower(pms)
+                .then(function(conversation) {
+                    // Update the User in the DB.
+                    // LDB
+                    Users.follow_conversation(conversation._id)
+                        .then(function(user) {
+                            UserData.setUser(user);
+                            $scope.currentUser = UserData.getUser();
+                        });
+                });
+            contact.following = true;
+        }
     };
 
     $scope.doSelect = function(contact) {

@@ -877,7 +877,7 @@ if (workbox) {
   },
   {
     "url": "configs/passport.js",
-    "revision": "b3cb5254891a8deb9e5c428b15155528"
+    "revision": "41fd9e5436f2201c9a4d71099623f2d8"
   },
   {
     "url": "configs/urls.js",
@@ -893,11 +893,11 @@ if (workbox) {
   },
   {
     "url": "controllers/contacts_ctrl.js",
-    "revision": "d6444bbf4a2f4e28df122601b878b523"
+    "revision": "d9c65b4e43a9b88c685a9d1aa4639312"
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "929feecf31583a9156695afd743a5993"
+    "revision": "d22b8b408c544f1badcff07a8a021dd2"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -1193,7 +1193,7 @@ if (workbox) {
   },
   {
     "url": "views/contacts.html",
-    "revision": "f1750dab2f975882e170701c20abb653"
+    "revision": "484320460968447dbd77c7e5002a7d14"
   },
   {
     "url": "views/conversation.html",
