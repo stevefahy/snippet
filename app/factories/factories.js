@@ -1101,6 +1101,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                 $q.all(promises).then(function() {
                     deferred.resolve(res);
                 }).catch(function(err) {
+                    deferred.resolve();
                     //console.log('error: ' + err);
                 });
             });
@@ -1141,16 +1142,18 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
         var self = this;
         isLoading = true;
         var deferred = $q.defer();
-        //console.log('GET 0 WDDB');
+        console.log('GET 0 WDDB');
         UserData.initWorker().then(function() {
-            //console.log('GOT 0 WDDB');
+            console.log('GOT 0 WDDB');
         }).then(function() {
-            //console.log('GET 1 LU');
+            console.log('GET 1 LU');
             return UserData.loadUser();
         }).then(function(user) {
+            console.log(user);
             if (user != null) {
                 return UserData.setUser(user);
             } else {
+                console.log('no user');
                 // No user.
                 // Set loaded to true.
                 $rootScope.loaded = true;
@@ -1160,20 +1163,20 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                 deferred.resolve();
             }
         }).then(function() {
-            //console.log('GET 2 getFCMToken');
+            console.log('GET 2 getFCMToken');
             return UserData.getFCMToken();
         }).then(function() {
-            //console.log('GET 3 loadUserContacts');
+            console.log('GET 3 loadUserContacts');
             return UserData.loadUserContacts();
         }).then(function() {
-            //console.log('GET 4 loadConversations');
+            console.log('GET 4 loadConversations');
             return UserData.loadConversations();
         }).then(function() {
-            //console.log('GET 5 loadConversationsUsers');
+            console.log('GET 5 loadConversationsUsers');
             // Adds the conversations users to the "contacts"
             return UserData.loadConversationsUsers();
         }).then(function() {
-            //console.log('GET 6 getConversationsLatestCard');
+            console.log('GET 6 getConversationsLatestCard');
             return UserData.getConversationsLatestCard();
         }).then(function() {
             // connect to socket.io via socket service 
@@ -1184,7 +1187,7 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
             $rootScope.loaded = true;
             $rootScope.dataLoading = false;
             isLoading = false;
-            //console.log('FIN loadUserData');
+            console.log('FIN loadUserData');
             deferred.resolve();
         });
         return deferred.promise;
@@ -1192,10 +1195,10 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
 
     // Check whether the loadUserData is loading or has been loaded already.
     UserData.checkUser = function() {
-        //console.log('checkUser');
+        console.log('checkUser');
         var deferred = $q.defer();
         if (isLoading) {
-            //console.log('already loading...wait');
+            console.log('already loading...wait');
             $rootScope.$watch('loaded', function(n) {
                 if (n) {
                     // loaded!
@@ -1203,13 +1206,13 @@ cardApp.factory('UserData', function($rootScope, $route, $timeout, $window, $htt
                 }
             });
         } else {
-            //console.log('not loading...get');
+            console.log('not loading...get');
             // Check whether the user data has already been retrieved.
             if (UserData.getUser() != undefined) {
-                //console.log('CALL VAR /api/user_data');
+                console.log('CALL VAR /api/user_data');
                 deferred.resolve(user);
             } else {
-                //console.log('CALL HTTP /api/user_data');
+                console.log('CALL HTTP /api/user_data');
                 deferred.resolve(loadUserData());
             }
         }

@@ -357,7 +357,9 @@ module.exports = function(passport) {
                             //newUser.contacts = ''; Empty
                             newUser.first_login = true;
                             newUser.user_name = profile.displayName;
-                            if (!profile._json.image.isDefault) {
+                            console.log(profile);
+                            //if (!profile._json.image.isDefault) {
+                            if (profile._json.picture) {
                                 newUser.avatar = (profile.photos[0].value || '');
                             } else {
                                 newUser.avatar = 'default';

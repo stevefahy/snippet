@@ -877,7 +877,7 @@ if (workbox) {
   },
   {
     "url": "configs/passport.js",
-    "revision": "3a6df02912cb38275b1c881424e9b563"
+    "revision": "b3cb5254891a8deb9e5c428b15155528"
   },
   {
     "url": "configs/urls.js",
@@ -893,11 +893,11 @@ if (workbox) {
   },
   {
     "url": "controllers/contacts_ctrl.js",
-    "revision": "a2f1acd789576577721d5f2aa966deaa"
+    "revision": "d6444bbf4a2f4e28df122601b878b523"
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "31d450d0ca553acdcada1f5df5bb7e9c"
+    "revision": "929feecf31583a9156695afd743a5993"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -941,7 +941,7 @@ if (workbox) {
   },
   {
     "url": "factories/factories.js",
-    "revision": "2fe204c7cbdd1783745e78b325dff159"
+    "revision": "794218450274588bea2e8a5905199c5c"
   },
   {
     "url": "factories/local_db.js",
@@ -1057,7 +1057,7 @@ if (workbox) {
   },
   {
     "url": "routes/routes.js",
-    "revision": "22bc7d5b44eb1e4c4189bcc6135c1f05"
+    "revision": "586c94362a6e76a5945a20d17118ee76"
   },
   {
     "url": "service-worker.js",
@@ -1161,7 +1161,7 @@ if (workbox) {
   },
   {
     "url": "style/customstyle.css",
-    "revision": "d61184e4c4eef19276b2760c837fb8ff"
+    "revision": "fd9c164424908f1abf530e5e822915de"
   },
   {
     "url": "style/instagram.css",
@@ -1193,7 +1193,7 @@ if (workbox) {
   },
   {
     "url": "views/contacts.html",
-    "revision": "6fd7ebb0624306b88168220f8fdc9532"
+    "revision": "f1750dab2f975882e170701c20abb653"
   },
   {
     "url": "views/conversation.html",
@@ -1205,7 +1205,7 @@ if (workbox) {
   },
   {
     "url": "views/debug.html",
-    "revision": "1b8046d2a65d75b2bda87a6551a05dda"
+    "revision": "f6edad34ccf1a85c2227819d35f24a4e"
   },
   {
     "url": "views/edit_btns.html",

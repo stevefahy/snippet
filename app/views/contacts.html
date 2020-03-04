@@ -259,6 +259,15 @@
                                             <div class="convs_b" id="convs_name">{{contact.user_name}}</div>
                                         </div>
                                     </div>
+                                    <!--
+                                        <div class="cf_btn" ng-show="{{::card.user != currentUser._id}}" ng-click="follow(card)"><i class="material-icons btn_follow" ng-class="{'following': card.following}">directions_walk</i></div>
+                                    -->
+                                    <div class="convs_col_b3" ng-show="!contact.is_current_user && !group_selected">
+                                        <div class="cf_btn" ng-click="followBtn(contact)">
+                                            <i class="material-icons btn_follow" ng-class="{'following': contact.following}">directions_walk</i>
+                                        </div>
+                                    </div>
+
                                     <div class="convs_col_b2" ng-show="!contact.is_current_user && !group_selected">
                                         <div class="search_chat_user" ng-click="contactBtn(contact)">
                                             <i class="material-icons mi-search-chat">chat_bubble_outline</i>

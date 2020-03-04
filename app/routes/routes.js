@@ -1430,13 +1430,13 @@ module.exports = function(app, passport) {
             query1[direction] = oid;
             query = { 'conversationId': { $in: user_array.map(function(o) { return mongoose.Types.ObjectId(o); }) }, _id: query1 };
             //query = { 'conversationId': { $in: user_array.map(function(o) { return mongoose.Types.ObjectId(o); }) }, updatedAt: query1 };
-            console.log(query);
+            //console.log(query);
             // .find({'updatedAt':{$lte: ISODate("2019-02-04T20:14:19.208Z")}})
             
             if(direction == '$gt'){
                 DIR2 = 1;
             }
-            console.log(DIR2);
+            //console.log(DIR2);
 
         }
         Conversation.find({
@@ -1449,7 +1449,7 @@ module.exports = function(app, passport) {
                 console.log(err);
             }
             feed.conversations = conversations;
-            console.log(query);
+            //console.log(query);
             Card.find(
                 query,
                 function(err, cards) {

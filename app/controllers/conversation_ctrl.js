@@ -125,7 +125,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var time_1;
     var time_2;
 
-    var LATEST_CARD_TIME;
+    $rootScope.LATEST_CARD_TIME;
 
     var all_latest_cards;
 
@@ -327,6 +327,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 }
                 var card_id = $scope.cards[i]._id;
                 $scope.test_card[0] = $scope.cards[i];
+
+                $rootScope.LATEST_CARD_TIME = $scope.cards[i].updatedAt;
                 // Get the height of the new card.
                 let test = awaitImages('#card_' + card_id).then(async function(result) {
                     // Animate the change onscreen.
@@ -479,7 +481,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             if ($scope.cards.length == 0) {
                 amount = NUM_UPDATE_DISPLAY_INIT;
                 console.log($scope.cards_temp[0]);
-                LATEST_CARD_TIME = $scope.cards_temp[0].updatedAt;
+                $rootScope.LATEST_CARD_TIME = $scope.cards_temp[0].updatedAt;
+                console.log($rootScope.LATEST_CARD_TIME);
             }
             cards_to_move = $scope.cards_temp.splice(0, amount);
 
@@ -1351,6 +1354,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     $scope.$apply();
                 }
 
+                $rootScope.LATEST_CARD_TIME = $scope.cards[0].updatedAt;
+
 
 
                 //$timeout(function() {
@@ -1863,6 +1868,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
             //last_card = LATEST_CARD_TIME;
             last_card = General.getISODate();
+            //last_card = $rootScope.LATEST_CARD_TIME;
 
             var val = { ids: followed, amount: NUM_TO_LOAD, last_card: last_card };
             var prom1 = Conversations.updateFeed(val)
@@ -2266,6 +2272,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     loadFeed = function() {
+        console.log('loadFeed');
         // Set the users profile
         var profile = {};
         profile.user_name = UserData.getUser().user_name;
@@ -2276,6 +2283,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         // Load the users public conversation
         // LDB
         Conversations.find_user_public_conversation_by_id(UserData.getUser()._id).then(function(result) {
+            console.log(result);
             // Set the conversation id so that it can be retrieved by cardcreate_ctrl
             if (result._id != undefined) {
                 // TODO STORE THE CONVERSATION
@@ -2469,11 +2477,17 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // START - find the conversation id
     getConversationId()
         .then(function(res) {
+            console.log(res);
             // Load the public feed, public conversation or private conversation.
+            console.log(principal);
+            console.log(principal.isValid());
             if (principal.isValid()) {
+console.log('valid');
                 // Logged in
                 UserData.checkUser().then(function(result) {
+                    console.log(result);
                     setUp(res).then(function() {
+                        console.log(UserData);
                         $scope.currentUser = UserData.getUser();
                         if (Conversations.getConversationType() == 'feed') {
                             // Display the users feed.
