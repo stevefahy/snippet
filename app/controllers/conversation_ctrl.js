@@ -1435,7 +1435,18 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             console.log(last_scrolled);
             // If not at top, show alert of new cards
             //if ($scope.removed_cards_top.length > 0) {
-            if(last_scrolled != undefined || last_scrolled <10){
+                all_latest_cards = $filter('orderBy')(all_latest_cards, 'updatedAt', true);
+            console.log($rootScope.LATEST_CARD_TIME + ' : ' + all_latest_cards[0].updatedAt);
+            var d1 = new Date($rootScope.LATEST_CARD_TIME);
+            var d2 = new Date(all_latest_cards[0].updatedAt);
+
+            var new_card_found = false;
+            if(d1 < d2){
+                new_card_found = true;
+                $rootScope.LATEST_CARD_TIME = all_latest_cards[0].updatedAt;
+            } 
+            console.log('new_card_found: ' + new_card_found);
+            if(new_card_found &&  (last_scrolled != undefined || last_scrolled <10)){
                 console.log('NOT AT TOP');
                 Notify.addNotify();
 /*
