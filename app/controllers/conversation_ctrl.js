@@ -1443,7 +1443,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             var new_card_found = false;
             if(d1 < d2){
                 new_card_found = true;
-                $rootScope.LATEST_CARD_TIME = all_latest_cards[0].updatedAt;
+                
             } 
             console.log('new_card_found: ' + new_card_found);
             if(new_card_found &&  (last_scrolled != undefined || last_scrolled <10)){
