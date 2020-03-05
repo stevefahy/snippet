@@ -112,8 +112,8 @@ privateDeleted = function(data) {
 };
 
 publicCreated = function(data) {
-    console.log('socket_ns public_created, conv id: ' + data.conversation_id + ' , card id: ' + data.card_id + ' , followers: ' + data.followers);
-    console.log('socket_ns namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    //console.log('socket_ns public_created, conv id: ' + data.conversation_id + ' , card id: ' + data.card_id + ' , followers: ' + data.followers);
+    //console.log('socket_ns namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     // notify relevant namespace(s) of the card creation
     for (var i in data.followers) {
         for (var y in Object.keys(io.nsps)) {
@@ -146,8 +146,8 @@ publicDeleted = function(data) {
 };
 
 publicUpdated = function(data) {
-    console.log('socket_ns public_updated, conv id: ' + data.conversation_id + ' card id: ' + data.card_id + ' , followers: ' + data.followers);
-    console.log('socket_ns namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    //console.log('socket_ns public_updated, conv id: ' + data.conversation_id + ' card id: ' + data.card_id + ' , followers: ' + data.followers);
+    //console.log('socket_ns namespace: ' + this.nsp.name + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     // notify relevant namespace(s) of the cards creation
     for (var i in data.followers) {
         for (var y in Object.keys(io.nsps)) {
@@ -200,14 +200,14 @@ contactChange = function(data) {
 };
 
 create_ns = function(ns) {
-    console.log('IO create ns: ' + ns);
+    //console.log('IO create ns: ' + ns);
     // Check whether this namespace has been created already.
     var instances = Object.keys(io.nsps).indexOf('/' + ns);
     //console.log(instances);
     // Only create the namespace if it has not already been created.
     if (instances < 0) {
         // create unique namespace requested by client
-        console.log('socket create_ns Creating ns: ' + ns);
+        //console.log('socket create_ns Creating ns: ' + ns);
         var socket_ns = io.of('/' + ns);
         //console.log(socket_ns);
         socket_ns.on('connection', socket_connection);
@@ -246,7 +246,7 @@ create_ns = function(ns) {
 
 showSockets = function() {
     setTimeout(function() {
-        console.log('clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+        //console.log('clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     }, 500);
 };
 
@@ -275,13 +275,13 @@ socket_connection = function(socket_ns) {
 };
 
 io.on('connect', function(socket) {
-    console.log('IO CONNECT: ' + socket.id + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+    //console.log('IO CONNECT: ' + socket.id + ', clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     // namespace sent by client
     socket.on('create_ns', create_ns);
 
     // on socket disconnect
     socket.on('disconnect', function(sockets) {
-         console.log('SOCKET DISCONNECT2, clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
+        //console.log('SOCKET DISCONNECT2, clients: ' + Object.keys(io.sockets.sockets) + ', namespaces: ' + Object.keys(io.nsps));
     });
 });
 
@@ -302,7 +302,7 @@ for (var k in interfaces) {
 //addresses = addresses[0];
 console.log('addresses: ' + addresses);
 //if (addresses == '192.168.43.51' || '192.168.192.59' || addresses == '10.21.221.127' || addresses == '10.61.137.245' || addresses == '10.32.139.207' || addresses == '192.168.43.199' || addresses == '10.70.216.59' || addresses == '192.168.1.85' || addresses == '192.168.43.62') {
-if(addresses == '192.168.192.59'){
+if (addresses == '192.168.192.59') {
     console.log('localhost');
     // MongoDB
     var dburl = urls.localUrl;

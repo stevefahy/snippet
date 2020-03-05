@@ -70,7 +70,6 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                 observers.push(newObserver);
                 newObserver.observe(target);
             }
-
         });
     };
 
@@ -257,7 +256,6 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
                             }, 100, result.length);
                         }
                     });
-
             } else if (Conversations.getConversationType() == 'private') {
                 getCardsUpdate(id)
                     .then(function(result) {
@@ -328,9 +326,6 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             });
         }
     };
-
-
-
 
     // Alert
 

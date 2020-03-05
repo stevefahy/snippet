@@ -897,7 +897,7 @@ if (workbox) {
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "78b8f9964fc942c4c2bb94b64e235fcc"
+    "revision": "47db730964d678159f997b8c6680c141"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -929,7 +929,7 @@ if (workbox) {
   },
   {
     "url": "controllers/main_ctrl.js",
-    "revision": "8831c3c0bf6377f67cdb285ae478eb9a"
+    "revision": "495eda0ff11632dd1db286dc8801a475"
   },
   {
     "url": "controllers/usersetting_ctrl.js",
@@ -937,11 +937,11 @@ if (workbox) {
   },
   {
     "url": "directives/directives.js",
-    "revision": "4242053341c91f69aafb232f1a641d71"
+    "revision": "7de972bdb9b7754bd8f07ad7dd8202f2"
   },
   {
     "url": "factories/factories.js",
-    "revision": "794218450274588bea2e8a5905199c5c"
+    "revision": "869f6b704bff71f1f25209325cf7b859"
   },
   {
     "url": "factories/local_db.js",
@@ -1057,7 +1057,7 @@ if (workbox) {
   },
   {
     "url": "routes/routes.js",
-    "revision": "586c94362a6e76a5945a20d17118ee76"
+    "revision": "2bf015fbc19fa70078fe3a46b5f370a5"
   },
   {
     "url": "service-worker.js",
@@ -1093,7 +1093,7 @@ if (workbox) {
   },
   {
     "url": "services/format.js",
-    "revision": "24e005213915f8aec141f965b828956e"
+    "revision": "72e1a4c3de2b97de55dd6f994cfda25f"
   },
   {
     "url": "services/general.js",
@@ -1133,7 +1133,7 @@ if (workbox) {
   },
   {
     "url": "services/notify.js",
-    "revision": "1b9a6f3be8be504469e2acd706f0e8d3"
+    "revision": "e63ced6edf3979a32e11b5edf027ca3a"
   },
   {
     "url": "services/replace_tags.js",
@@ -1161,7 +1161,7 @@ if (workbox) {
   },
   {
     "url": "style/customstyle.css",
-    "revision": "c2a07457c2309d99a97d6e747ebce8fd"
+    "revision": "8e5ed5d8fcd240d8ea1530f3d6757957"
   },
   {
     "url": "style/instagram.css",
@@ -1197,7 +1197,7 @@ if (workbox) {
   },
   {
     "url": "views/conversation.html",
-    "revision": "56f2de799e52e224e82036819b2ec079"
+    "revision": "0b4f68246646c30d46ad0adaf39acffb"
   },
   {
     "url": "views/conversations.html",

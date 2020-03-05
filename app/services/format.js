@@ -1133,12 +1133,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 //
                 // Check box
                 if (html.includes('cb_container')) {
-                    console.log(range);
-                    //console.log(selection_start);
-                    console.log($(selection_start).closest('.cb_container'));
-                    if($(selection_start).parents('.cb_container').length){
-                    //if (range.startContainer.parentNode.className.includes('cb_label')) {
-                        //range.setStartAfter(range.startContainer.parentNode.parentNode);
+                    if ($(selection_start).parents('.cb_container').length) {
                         range.setStartAfter($(selection_start).closest('.cb_container')[0]);
                     }
                 }
@@ -1251,105 +1246,6 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         var node = document.getSelection().anchorNode;
         return node;
     };
-
-    // TODO - Still needed? Use within content changed?
-    /*
-    this.keyListen = function(event, elem) {
-        var getKeyCode = function() {
-            var editableEl = document.getElementById(elem);
-            // lowercase
-            var a = getCharacterPrecedingCaret(editableEl);
-            return a;
-        };
-        var observeDOM = (function() {
-            var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-            return function(obj, callback) {
-                if (!obj || !obj.nodeType === 1) return; // validation
-                if (MutationObserver) {
-                    // define a new observer
-                    var obs = new MutationObserver(function(mutations, observer) {
-                        if (mutations[0].addedNodes.length || mutations[0].removedNodes.length)
-                            callback(mutations[0]);
-                    });
-                    // have the observer observe foo for changes in children
-                    obs.observe(obj, { childList: true, subtree: true });
-                } else if (window.addEventListener) {
-                    obj.addEventListener('DOMNodeInserted', callback, false);
-                    obj.addEventListener('DOMNodeRemoved', callback, false);
-                }
-            };
-        })();
-        // Observe a specific DOM element:
-        observeDOM(document.querySelector("#" + elem), function(m) {
-            if (m.addedNodes.length == 0 && m.removedNodes.length > 0) {
-                if (m.removedNodes[0].className == 'in_progress') {
-                    // Removed an in progress node.
-                    // Inject the General Service
-                    var General = $injector.get('General');
-                    // Get the position of this HTML element in the marky_array.
-                    var index = General.findWithAttr(marky_array, 'html', m.removedNodes[0].nodeName.toLowerCase());
-                    // If this tag exists in the marky_started_array then remove it.
-                    var del = marky_started_array.indexOf(marky_array[index].charstring);
-                    if (del >= 0) {
-                        marky_started_array.splice(del, 1);
-                    }
-                }
-            }
-        });
-        var selection_start = $(self.getSelectionStart());
-        if ($(selection_start).attr("class") != undefined) {
-            var prev_class = $(selection_start).attr("class");
-            var parent = $(selection_start).closest('.ce').attr("id");
-            // If this is a header then delete the header elements and remove from the marky_started_array if it exists.
-            if (prev_class.indexOf('header') >= 0 && parent == 'header') {
-                $(selection_start).parent().remove();
-                var del = marky_started_array.indexOf(INITIAL_KEY + prev_class.substr(7, 1));
-                marky_started_array.splice(del, 1);
-            }
-            // If this is a cropper_cont then delete the header elements and remove from the marky_started_array if it exists.
-            if (prev_class.indexOf('after_image') >= 0) {
-                if (selection_start[0].innerHTML == '<br>') {
-                    selection_start[0].innerHTML = '';
-                }
-                if ($(selection_start)[0].previousElementSibling) {
-                    var slider = $(selection_start)[0].previousElementSibling;
-                    var cropper = $(selection_start)[0].previousElementSibling.previousElementSibling;
-                    var clear = $(selection_start)[0].nextElementSibling;
-                    if (slider != null) {
-                        slider.remove();
-                    }
-                    if (cropper != null) {
-                        cropper.remove();
-                    }
-                    if (clear != null) {
-                        clear.remove();
-                    }
-                }
-                if ($('.' + prev_class).prev().prev().attr('class').indexOf('cropper_cont') >= 0) {
-                    var currentChars = $('.' + prev_class).prev().prev().parent().html();
-                    var elem = $('.' + prev_class).closest('.ce');
-                }
-            }
-        }
-        var selection_text = selection_start[0].nodeValue;
-        if (selection_text != undefined) {
-            var selection_text_upper = selection_text.toUpperCase();
-            var init_key = selection_text_upper.indexOf(INITIAL_KEY.toUpperCase());
-            if (init_key >= 0) {
-                var last_chars = selection_text_upper.substring(init_key, init_key + 2);
-                if (marky_char_array.indexOf(last_chars) >= 0) {
-                    stopEditing(this.id);
-                }
-            }
-        }
-    };
-
-    function stopEditing(elem) {
-        // Move focus to the hidden input field so that editing is stopped.
-        // The hidden input is fixed to the bottom offscreen so that scrolling does not occur on mobile
-        $('#hidden_input').focus();
-    }
-    */
 
     this.checkCursor = function($event, elem) {
         // Store current caret pos

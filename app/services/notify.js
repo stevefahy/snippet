@@ -4,9 +4,8 @@
 
 cardApp.service('Notify', ['$rootScope', '$templateRequest', '$sce', '$timeout', function($rootScope, $templateRequest, $sce, $timeout) {
 
-	var self = this;
+    var self = this;
 
-	//var endnotify = false;
     var addingnotify = false;
 
     // Notify
@@ -26,24 +25,17 @@ cardApp.service('Notify', ['$rootScope', '$templateRequest', '$sce', '$timeout',
     }
 
     this.removeNotify = function() {
-    	//addingnotify = false;
-        //if (!addingnotify) {
-            $(".notify_container").addClass('notify_anim_off');
-            $(".notify_anim_off").on('animationend', notifyRemoveEnd);
-        //}
+        $(".notify_container").addClass('notify_anim_off');
+        $(".notify_anim_off").on('animationend', notifyRemoveEnd);
     }
 
-   function notifyAddEnd() {
+    function notifyAddEnd() {
         $(".notify_anim_on").off('animationend', notifyAddEnd);
-        //addingnotify = false;
-        //if (endnotify) {
-            self.removeNotify();
-        //}
+        self.removeNotify();
     }
 
     function notifyRemoveEnd() {
-    	addingnotify = false;
-        //endnotify = false;
+        addingnotify = false;
         $(".notify_anim_off").off('animationend', notifyRemoveEnd);
         $(".notify_container").removeClass('notify_anim_off');
         $(".notify_container").remove();

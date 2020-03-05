@@ -2905,8 +2905,6 @@ scrollIndicator directive
     justify-content: space-around;
 }
 
-
-
 .image_edit {
     color: white;
     text-shadow: 1px 1px 2px #050505;
@@ -2914,10 +2912,6 @@ scrollIndicator directive
 }
 
 .image_editor {
-    height: 50px;
-}
-
-.image_delete_editor {
     height: 50px;
 }
 
@@ -3161,15 +3155,12 @@ span.after_image {
     top: 70px;
     width: 90%;
     max-height: 80vh;
-    /* height: auto; */
     left: 10px;
     background-color: rgba(0, 0, 0, 0.5);
     color: #ffffff;
     padding: 10px;
     line-height: 1.5;
     display: flex;
-    /* overflow: auto; */
-    /* display: inline-block; */
 }
 
 .debug_btn {
@@ -3765,11 +3756,9 @@ span.after_image {
     position: absolute;
     z-index: 10000;
     width: 100%;
-    /*top: 1%;*/
     display: flex;
     justify-content: center;
     transition: all linear 5s;
-    /*top: -60px;*/
     transform: translateY(-40px);
 }
 
@@ -3778,20 +3767,9 @@ span.after_image {
     -webkit-animation: opennotify 5s ease-in-out forwards;
 }
 
-/*
-.animate-transform {
-    animation: change .5s ease-out forwards;
-}
-
-@keyframes change {
-    from {
-        transform: translateY(var(--v));
-    }
-}
-*/
 .notify_anim.notify_anim_off {
     -webkit-animation: closenotify .6s ease-in-out forwards;
-   
+
 }
 
 @keyframes opennotify {
@@ -3825,41 +3803,6 @@ span.after_image {
         transform: translateY(-40px);
     }
 }
-
-/*
-@keyframes opennotify {
-    0% {
-        top: -40px;
-    }
-
-    10% {
-        top: 70px;
-    }
-
-    90% {
-        top: 70px;
-    }
-
-    100% {
-        top: 70px;
-    }
-}
-*/
-/*
-@keyframes closenotify {
-    0% {
-        top: 70px;
-    }
-
-    10% {
-        top: 75px;
-    }
-
-    100% {
-        top: -40px;
-    }
-}
-*/
 
 .test_container {
     position: absolute;
@@ -4136,52 +4079,7 @@ q {
     font-style: italic;
 }
 
-.debug_removed_top {
-    /* background-color: rgba(0, 0, 0, 0.5); */
-    /* background-color: blanchedalmond; */
-    /* position: absolute; */
-    /* top: 0px; */
-    /* left: 50%; */
-    /* display: table-row; */
-    /* overflow: scroll; */
-    /* max-height: 70vh; */
-    overflow-y: scroll;
-}
-
-.debug_removed_bottom {
-    /* background-color: rgba(0, 0, 0, 0.5); */
-    /* background-color: blanchedalmond; */
-    /* position: absolute; */
-    /* top: 0px; */
-    /* left: 50%; */
-    /* display: table-row; */
-    /* overflow: scroll; */
-    /* max-height: 70vh; */
-    overflow-y: scroll;
-}
-
-.debug_cards {
-    /* background-color: rgba(0, 0, 0, 0.5); */
-    /* background-color: blanchedalmond; */
-    /* position: absolute; */
-    /* top: 0px; */
-    /* left: 50%; */
-    /* display: table-row; */
-    /* overflow: scroll; */
-    /* max-height: 70vh; */
-    overflow-y: scroll;
-}
-
-.debug > div {
-    flex: 1;
-}
-
-.debug_list.ng-scope {
-    font-size: x-small;
-}
-
 .notify_container .badge {
-    /* padding: .6em; */
     padding-left: .9em;
     padding-right: .9em;
     padding-top: .5em;
@@ -4193,24 +4091,18 @@ q {
 }
 
 .notify_outer {
-
-display: flex;
-
-align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .notify_arrow {
-
-color: #ffffff;
-
-margin-right: 5px;
+    color: #ffffff;
+    margin-right: 5px;
 }
 
 .notify_text {
-
-margin-right: 5px;
+    margin-right: 5px;
 }
-
 
 .convs_col_b3 {
     margin-right: auto;

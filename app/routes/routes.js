@@ -1415,29 +1415,16 @@ module.exports = function(app, passport) {
         var query;
         var query1 = {};
         var oid;
-        //if(direction == 'older'){
-
-        //}
         var DIR2 = -1;
         if (last_card == '0') {
             query = { 'conversationId': { $in: user_array.map(function(o) { return mongoose.Types.ObjectId(o); }) } };
         } else {
             oid = mongoose.Types.ObjectId(last_card);
-            //oid =  last_card;
-            //query1['$lt'] = oid;
-
-            //query1 {$lte: ISODate( last_card )} 
             query1[direction] = oid;
             query = { 'conversationId': { $in: user_array.map(function(o) { return mongoose.Types.ObjectId(o); }) }, _id: query1 };
-            //query = { 'conversationId': { $in: user_array.map(function(o) { return mongoose.Types.ObjectId(o); }) }, updatedAt: query1 };
-            //console.log(query);
-            // .find({'updatedAt':{$lte: ISODate("2019-02-04T20:14:19.208Z")}})
-            
-            if(direction == '$gt'){
+            if (direction == '$gt') {
                 DIR2 = 1;
             }
-            //console.log(DIR2);
-
         }
         Conversation.find({
             '_id': {
@@ -1449,7 +1436,6 @@ module.exports = function(app, passport) {
                 console.log(err);
             }
             feed.conversations = conversations;
-            //console.log(query);
             Card.find(
                 query,
                 function(err, cards) {
