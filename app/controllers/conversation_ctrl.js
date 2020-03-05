@@ -712,9 +712,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             for (var i = 0, len = removed_cards_top_temp.length; i < len; i++) {
                 delete removed_cards_top_temp[i].$$hashKey;
                 if ($scope.removed_cards_top.length < MAX_TOP) {
-
+                    console.log('push: ' + removed_cards_top_temp[i]._id);
                     $scope.removed_cards_top.push(removed_cards_top_temp[i]);
                 } else {
+                    console.log('pop push: ' + removed_cards_top_temp[i]._id);
                     $scope.removed_cards_top = $filter('orderBy')($scope.removed_cards_top, 'updatedAt');
                     $scope.removed_cards_top.pop();
                     $scope.removed_cards_top.push(removed_cards_top_temp[i]);
