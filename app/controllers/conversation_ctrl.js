@@ -425,7 +425,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 addMoreBottom()
                     .then(function(result) {
                         console.log('AMB END');
-                        scroll_updating = false;
+                        $timeout(function() {
+                            scroll_updating = false;
+                        },500);
                     });
             }
         }
