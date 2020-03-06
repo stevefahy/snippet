@@ -4111,7 +4111,7 @@ q {
     margin-bottom: auto;
 }
 
-.cars_top_container {
+.cards_top_container {
     position: absolute;
     z-index: 1;
     left: 90px;
@@ -4148,20 +4148,35 @@ q {
 
 .cards_cards_container .ce {
     background-color: aliceblue;
+     font-size: 12px;
 }
 
 .cards_bottom_container .ce {
     background-color: beige;
+     font-size: 12px;
 }
 
-.cars_top_container .title_area_no_image {
+.cards_top_container .ce {
+    background-color: floralwhite;
+     font-size: 12px;
+}
+
+.cards_bottom_container .card_temp {
+   /* transform: scale(.3);*/
+}
+
+.cards_top_container .title_area_no_image {
     margin-top: unset;
+    font-size: 12px;
+
 }
 
 .cards_cards_container .title_area_no_image {
     margin-top: unset;
+    font-size: 12px;
 }
 
 .cards_bottom_container .title_area_no_image {
     margin-top: unset;
+    font-size: 12px;
 }
