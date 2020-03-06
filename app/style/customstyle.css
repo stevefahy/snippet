@@ -4151,6 +4151,18 @@ q {
      font-size: 12px;
 }
 
+.cards_top_container .card_temp {
+    font-size: 12px;
+}
+
+.cards_cards_container .card_temp {
+    font-size: 12px;
+}
+
+.cards_bottom_container .card_temp {
+    font-size: 12px;
+}
+
 .cards_bottom_container .ce {
     background-color: beige;
      font-size: 12px;
@@ -4161,9 +4173,6 @@ q {
      font-size: 12px;
 }
 
-.cards_bottom_container .card_temp {
-   /* transform: scale(.3);*/
-}
 
 .cards_top_container .title_area_no_image {
     margin-top: unset;
