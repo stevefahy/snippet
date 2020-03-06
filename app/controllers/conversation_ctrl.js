@@ -425,9 +425,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 addMoreBottom()
                     .then(function(result) {
                         console.log('AMB END');
-                        $timeout(function() {
+                        //$timeout(function() {
                             scroll_updating = false;
-                        },500);
+                        //},500);
                     });
             }
         }
@@ -646,7 +646,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             amount = removed_length;
         }
         //console.log('$scope.top_down: ' + $scope.top_down);
-        if (removed_length > 0) {
+        if (amount > 0) {
             if (!$scope.top_down) {
                 $scope.removed_cards_top = $filter('orderBy')($scope.removed_cards_top, 'updatedAt', true);
             } else {
@@ -661,12 +661,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             var sort_card = $filter('orderBy')(all_cards, 'updatedAt');
             console.log('GET: ' + Number(Number(MAX_TOP) - (Number($scope.removed_cards_top.length))));
             checkBefore(sort_card[sort_card.length - 1], Number(Number(MAX_TOP) - (Number($scope.removed_cards_top.length))));
-            deferred.resolve(removed_length);
+            deferred.resolve(amount);
         } else {
             var all_cards = $scope.cards.concat($scope.removed_cards_top, $scope.removed_cards_bottom);
             var sort_card = $filter('orderBy')(all_cards, 'updatedAt');
             checkBefore(sort_card[sort_card.length - 1], MAX_TOP);
-            deferred.resolve();
+            deferred.resolve(amount);
         }
         return deferred.promise;
     };
@@ -1872,7 +1872,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 }
             } else {
                 //last_card = last_cardy.updatedAt;
-                last_card = last_cardy._id;
+                //last_card = last_cardy._id;
+                last_card = last_cardy.updatedAt;
             }
             var val = { ids: followed, amount: load_amount, last_card: last_card, direction: dir };
             console.log(last_card);
