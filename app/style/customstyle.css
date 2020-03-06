@@ -4132,6 +4132,7 @@ q {
     overflow-x: hidden;
     opacity: 1;
     width: 50%;
+        top: 0px;
 }
 
 .cards_cards_container {

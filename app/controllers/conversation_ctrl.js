@@ -694,7 +694,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             var all_cards = $scope.cards.concat($scope.removed_cards_top, $scope.removed_cards_bottom);
             var sort_card = $filter('orderBy')(all_cards, 'updatedAt');
             checkAfter(sort_card[0], MAX_BOTTOM);
-            deferred.resolve();
+            deferred.resolve(removed_length);
         }
         return deferred.promise;
     };
