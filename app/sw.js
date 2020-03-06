@@ -897,7 +897,7 @@ if (workbox) {
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "969088a653e3a82895e3f589bcacb525"
+    "revision": "6581894487c611b485137ac221d05a13"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -1057,7 +1057,7 @@ if (workbox) {
   },
   {
     "url": "routes/routes.js",
-    "revision": "2bf015fbc19fa70078fe3a46b5f370a5"
+    "revision": "81edf35e3cce96d8d9ffcc6a0f281a80"
   },
   {
     "url": "service-worker.js",

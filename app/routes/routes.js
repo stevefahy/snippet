@@ -1407,6 +1407,7 @@ module.exports = function(app, passport) {
 
     // Get cards for the Users Feed conversations by conversation id(s).
     app.get('/chat/get_feed/:ids/:last_card/:direction', function(req, res) {
+        console.log('gfa');
         var user_array = JSON.parse(req.query.ids);
         var amount = Number(req.query.amount);
         var last_card = req.query.last_card;
@@ -1419,9 +1420,11 @@ module.exports = function(app, passport) {
         if (last_card == '0') {
             query = { 'conversationId': { $in: user_array.map(function(o) { return mongoose.Types.ObjectId(o); }) } };
         } else {
-            oid = mongoose.Types.ObjectId(last_card);
+            //oid = mongoose.Types.ObjectId(last_card);
+            oid = last_card;
             query1[direction] = oid;
-            query = { 'conversationId': { $in: user_array.map(function(o) { return mongoose.Types.ObjectId(o); }) }, _id: query1 };
+            //query = { 'conversationId': { $in: user_array.map(function(o) { return mongoose.Types.ObjectId(o); }) }, _id: query1 };
+            query = { 'conversationId': { $in: user_array.map(function(o) { return mongoose.Types.ObjectId(o); }) }, updatedAt: query1 };
             if (direction == '$gt') {
                 DIR2 = 1;
             }
@@ -1436,6 +1439,7 @@ module.exports = function(app, passport) {
                 console.log(err);
             }
             feed.conversations = conversations;
+            console.log(query);
             Card.find(
                 query,
                 function(err, cards) {

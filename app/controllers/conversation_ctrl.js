@@ -1788,6 +1788,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     getFollowingAfter = function(dir, last_cardy, amount) {
+        console.log('gfa');
         var deferred = $q.defer();
         var promises = [];
         if (!$rootScope.loading_cards_offscreen) {
@@ -1807,7 +1808,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     last_card = '0';
                 }
             } else {
-                last_card = last_cardy._id;
+                //last_card = last_cardy._id;
+                last_card = last_cardy.updatedAt;
             }
             var val = { ids: followed, amount: load_amount, last_card: last_card, direction: dir };
             console.log(last_card);
