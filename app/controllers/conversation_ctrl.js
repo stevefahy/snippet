@@ -1111,8 +1111,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     resizeContent = function(id, card, old_card, div) {
         var deferred = $q.defer();
-        card.old_h = $('.' + PARENTCONTAINER + ' #card_' + id + ' .' + div).height().toFixed(2);
-        card.new_h = $('.test_card .' + div).height().toFixed(2);
+        card.old_h = $('.' + PARENTCONTAINER + ' #card_' + id + ' .' + div + ' .ce').height().toFixed(2);
+        card.new_h = $('.test_card .' + div + ' .ce').height().toFixed(2);
+        console.log(card.old_h + ' : ' + card.new_h);
         $('#card_' + id + ' .' + div).height(card.old_h);
         $($('#card_' + id + ' .' + div))
             .animate({ opacity: 0 }, 300, function() {
@@ -1141,6 +1142,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     $scope.$apply();
                 }
                 if (card.new_h != card.old_h && expanded) {
+                    console.log('new height');
                     $($('#card_' + id + ' .' + div)).animate({ height: card.new_h }, 500, function() {
                         // Animation complete.
                         $(this).animate({ opacity: 1 }, 400, function() {
@@ -1152,6 +1154,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         });
                     });
                 } else {
+                    console.log('same height');
                     $(this).animate({ opacity: 1 }, 300, function() {
                         $(this).css('opacity', '');
                         $(this).css('height', '');
@@ -1165,6 +1168,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     }
 
     updateCard = function(card) {
+        
+        card = parseCard(card);
+        console.log(card);
         // Check the existence of the card across all arrays.
         var card_arrays = [$scope.cards, $scope.cards_temp, $scope.removed_cards_bottom, $scope.removed_cards_top];
         var found_pos = -1;
@@ -1180,6 +1186,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             //card = parseCard(card);
             $scope.test_card[0] = card;
             $scope.test_card[0].expanded = true;
+
+            /*
+            var content_title = $('.content_cnv #card_' + card._id + ' .title_area #ce_title' + card._id).html();
+            var content_content = $('.content_cnv #card_' + card._id + ' .content_area #ce' + card._id).html();
+            var content = content_title + content_content;
+            */
+
+
             var v = card_arrays[arr][found_pos].content;
             v = replaceTags.replace(v);
             // DANGER These had been removed for android image save bug
@@ -1203,6 +1217,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             card_arrays[arr][found_pos].createdAt = card.createdAt;
                             card_arrays[arr][found_pos].updatedAt = card.updatedAt;
                         }
+                        console.log(card_arrays[arr][found_pos].content);
+                        console.log(card.content);
                         if (card_arrays[arr][found_pos].content != card.content) {
                             await resizeContent(card._id, card, card_arrays[arr][found_pos], 'content_area');
                         } else {
@@ -2217,10 +2233,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // Called as each card is loaded.
     // Disable checkboxes if the contenteditable is set to false.
     var checkboxesEnabled = function(id, bool) {
+        console.log('checkboxesEnabled: ' + bool);
         var deferred = $q.defer();
         var el = $('.' + PARENTCONTAINER + ' #ce' + id)[0];
         var pos = General.findWithAttr($scope.cards, '_id', id);
         if (bool == false) {
+            console.log(el);
             $(el).find('input[type=checkbox]').attr('disabled', 'disabled');
             deferred.resolve();
         } else {

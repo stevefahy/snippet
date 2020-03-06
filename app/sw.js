@@ -897,7 +897,7 @@ if (workbox) {
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "5c9ab6cc81e8a45ccf51a398cd10009d"
+    "revision": "5ebd9a382f90e838ffc13770447e6d57"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -1161,7 +1161,7 @@ if (workbox) {
   },
   {
     "url": "style/customstyle.css",
-    "revision": "60753007fd483e039b41ff83c9288ce9"
+    "revision": "156525259fe455e77d50e814c9203313"
   },
   {
     "url": "style/instagram.css",
@@ -1197,15 +1197,19 @@ if (workbox) {
   },
   {
     "url": "views/conversation.html",
-    "revision": "e61363545930ebe6cd7302ca6dfaedad"
+    "revision": "45f308bbff234b75888790a4566c759b"
   },
   {
     "url": "views/conversations.html",
     "revision": "8275d6b1a04d32a57f8a1b98a80b9a0d"
   },
   {
+    "url": "views/debug_cards.html",
+    "revision": "92b543db369caed36c8615e4e605cda4"
+  },
+  {
     "url": "views/debug.html",
-    "revision": "96d8b946b11445d038cab28d4658f675"
+    "revision": "2a9e28f997d700fd68a199962cdaafeb"
   },
   {
     "url": "views/edit_btns.html",
