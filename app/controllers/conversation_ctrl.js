@@ -668,6 +668,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     unRemoveCardsBottom = function() {
+        console.log('unRemoveCardsBottom');
         var deferred = $q.defer();
         var removed_length = $scope.removed_cards_bottom.length;
         amount = NUM_UPDATE_DISPLAY;
@@ -686,15 +687,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             }
             var all_cards = $scope.cards.concat($scope.removed_cards_top, $scope.removed_cards_bottom);
             var sort_card = $filter('orderBy')(all_cards, 'updatedAt');
-            console.log('card: ' + sort_card[0]);
+            console.log('card: ' + sort_card[0]._id);
             console.log('amount: ' + Number(Number(MAX_BOTTOM) - (Number($scope.removed_cards_bottom.length))));
             checkAfter(sort_card[0], Number(Number(MAX_BOTTOM) - (Number($scope.removed_cards_bottom.length))));
-            deferred.resolve(removed_length);
+            deferred.resolve(amount);
         } else {
             var all_cards = $scope.cards.concat($scope.removed_cards_top, $scope.removed_cards_bottom);
             var sort_card = $filter('orderBy')(all_cards, 'updatedAt');
             checkAfter(sort_card[0], MAX_BOTTOM);
-            deferred.resolve(removed_length);
+            deferred.resolve(amount);
         }
         return deferred.promise;
     };
