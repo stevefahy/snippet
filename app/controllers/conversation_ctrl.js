@@ -491,7 +491,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 }
             }
             // Check if more temp cards need to be loaded.
-            checkNext();
+            //checkNext();
             deferred.resolve(true);
         } else {
             deferred.resolve(false);
@@ -787,7 +787,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         } else if (obj.location == 'load_off_screen') {
             $rootScope.loading_cards_offscreen = false;
             obj = null;
-            checkNext();
+            //checkNext();
         }
     };
 

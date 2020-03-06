@@ -2,10 +2,17 @@ cardApp.controller("debugCtrl", ['$scope', '$rootScope', function($scope, $rootS
 
     $scope.debug = false;
     $rootScope.debug = false;
+    $scope.debugcards = false;
+    $rootScope.debugcards = false;
 
     $scope.changeDebug = function() {
         $scope.debug = !$scope.debug;
         $rootScope.debug = !$rootScope.debug;
+    };
+
+    $scope.changeDebugCards = function() {
+        $scope.debugcards = !$scope.debugcards;
+        $rootScope.debugcards = !$rootScope.debugcards;
     };
 
     $scope.pause = function() {

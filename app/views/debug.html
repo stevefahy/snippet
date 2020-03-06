@@ -9,6 +9,16 @@
             </div>
         </a>
     </div>
+    <div class="debug_btn_cards">
+        <a ng-click="changeDebugCards()">
+            <div ng-show="!debugcards">
+                <i class=" material-icons debug_icon">zoom_in</i>
+            </div>
+            <div ng-show="debugcards">
+                <i class=" material-icons debug_icon">zoom_out</i>
+            </div>
+        </a>
+    </div>
     <div ng-if="debug">
         <div class="debug">
             <div class="debug_left">

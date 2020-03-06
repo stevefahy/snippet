@@ -14,6 +14,9 @@
     <div class="load_off_screen">
         <div do-repeat="cards_temp"></div>
     </div>
+
+     <div ng-if="debugcards">
+        <div class="debugcards">
     <!-- CARDS TOP -->
     <div class="cards_top_container">
         <div class="card_temp" ng-repeat="card in removed_cards_top | orderBy :'updatedAt' : top_down " ng-attr-id="top_{{::card._id }}">
@@ -109,6 +112,9 @@
             </div>
         </div>
     </div>
+
+</div>
+</div>
 
     <!-- -->
     <!-- Test Card -->

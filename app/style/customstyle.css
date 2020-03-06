@@ -3163,6 +3163,18 @@ span.after_image {
     display: flex;
 }
 
+.debug_btn_cards {
+    position: absolute;
+    left: 60px;
+    top: 12px;
+    z-index: 10000;
+    background-color: #ffffff;
+    outline: darkgray;
+    outline-width: 1px;
+    outline-style: solid;
+    cursor: pointer;
+}
+
 .debug_btn {
     position: absolute;
     right: 103px;
@@ -4114,7 +4126,7 @@ q {
 .cards_top_container {
     position: absolute;
     z-index: 1;
-    left: 90px;
+    left: 140px;
     height: 30vh;
     overflow-y: scroll;
     overflow-x: hidden;
@@ -4125,7 +4137,7 @@ q {
 .cards_cards_container {
     position: absolute;
     z-index: 1;
-    left: 90px;
+    left: 140px;
     height: 30vh;
     overflow-y: scroll;
     overflow-x: hidden;
@@ -4137,7 +4149,7 @@ q {
 .cards_bottom_container {
     position: absolute;
     z-index: 1000000;
-    left: 90px;
+    left: 140px;
     height: 30vh;
     overflow-y: scroll;
     overflow-x: hidden;
@@ -4148,7 +4160,7 @@ q {
 
 .cards_cards_container .ce {
     background-color: aliceblue;
-     font-size: 12px;
+    font-size: 12px;
 }
 
 .cards_top_container .card_temp {
@@ -4165,12 +4177,12 @@ q {
 
 .cards_bottom_container .ce {
     background-color: beige;
-     font-size: 12px;
+    font-size: 12px;
 }
 
 .cards_top_container .ce {
     background-color: floralwhite;
-     font-size: 12px;
+    font-size: 12px;
 }
 
 
