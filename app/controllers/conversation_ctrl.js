@@ -528,15 +528,17 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             .then(function(result) {
                 console.log(result);
                 if (result == 0 && $scope.top_down) {
-                    removeCardsTop()
+                    /*removeCardsTop()
                         .then(function(result) {
                             deferred.resolve();
-                        });
+                        });*/
+                        deferred.resolve();
                 } else {
-                    removeCardsTop()
+                   /* removeCardsTop()
                         .then(function(result) {
                             deferred.resolve();
-                        });
+                        });*/
+                        deferred.resolve();
                 }
             });
         return deferred.promise;
