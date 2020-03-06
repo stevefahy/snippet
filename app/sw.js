@@ -1197,7 +1197,7 @@ if (workbox) {
   },
   {
     "url": "views/conversation.html",
-    "revision": "f03883a4818162b6fd7304567db3c43f"
+    "revision": "e61363545930ebe6cd7302ca6dfaedad"
   },
   {
     "url": "views/conversations.html",
@@ -1205,7 +1205,7 @@ if (workbox) {
   },
   {
     "url": "views/debug.html",
-    "revision": "2a9e28f997d700fd68a199962cdaafeb"
+    "revision": "96d8b946b11445d038cab28d4658f675"
   },
   {
     "url": "views/edit_btns.html",
