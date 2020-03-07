@@ -39,6 +39,7 @@ cardApp.service('Notify', ['$rootScope', '$templateRequest', '$sce', '$timeout',
         $(".notify_anim_off").off('animationend', notifyRemoveEnd);
         $(".notify_container").removeClass('notify_anim_off');
         $(".notify_container").remove();
+        $rootScope.$broadcast('notifyEnd');
     }
 
 }]);

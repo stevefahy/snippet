@@ -897,7 +897,7 @@ if (workbox) {
   },
   {
     "url": "controllers/conversation_ctrl.js",
-    "revision": "5ebd9a382f90e838ffc13770447e6d57"
+    "revision": "f76035073f3de5f3a95aa3da1bb20d68"
   },
   {
     "url": "controllers/conversations_ctrl.js",
@@ -929,7 +929,7 @@ if (workbox) {
   },
   {
     "url": "controllers/main_ctrl.js",
-    "revision": "495eda0ff11632dd1db286dc8801a475"
+    "revision": "d1e5f8134d5381c5bca7d0074a56a336"
   },
   {
     "url": "controllers/usersetting_ctrl.js",
@@ -1133,7 +1133,7 @@ if (workbox) {
   },
   {
     "url": "services/notify.js",
-    "revision": "e63ced6edf3979a32e11b5edf027ca3a"
+    "revision": "61841150ba9e8f9aaf80ce7cc537a729"
   },
   {
     "url": "services/replace_tags.js",

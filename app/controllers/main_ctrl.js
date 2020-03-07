@@ -458,6 +458,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
             getFollowingUpdate()
                 .then(function(result) {
                     if (result.length > 0) {
+                        console.log(result);
                         addCards(result);
                         // Update Conversations
                         for (var i = 0, len = result.length; i < len; i++) {

@@ -124,6 +124,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     var mobile = false;
     var time_1;
     var time_2;
+    var latest_card_time;
 
     $rootScope.LATEST_CARD_TIME;
 
@@ -217,6 +218,27 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             $('.cropper-container').remove();
             $('.cropper-hidden').removeClass('cropper-hidden');
         }
+    });
+
+    $scope.$on('notifyEnd', function() {
+        console.log('notifyEnd');
+        //$rootScope.LATEST_CARD_TIME = $scope.cards[0].updatedAt;
+/*
+        var d1 = new Date($rootScope.LATEST_CARD_TIME);
+        var d2 = new Date($scope.cards[0].updatedAt);
+        console.log(d1);
+        console.log(d2);
+        //var new_card_found = false;
+        if (d1 < d2) {
+
+            $rootScope.LATEST_CARD_TIME = $scope.cards[0].updatedAt;
+            console.log('update: ' + $rootScope.LATEST_CARD_TIME);
+        } else {
+            console.log('not newer: ' + $scope.cards[0].updatedAt);
+        }
+        */
+
+        $rootScope.LATEST_CARD_TIME = latest_card_time;
     });
 
     // SCROLLING
@@ -426,7 +448,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     .then(function(result) {
                         console.log('AMB END');
                         //$timeout(function() {
-                            scroll_updating = false;
+                        scroll_updating = false;
                         //},500);
                     });
             }
@@ -534,13 +556,13 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         .then(function(result) {
                             deferred.resolve();
                         });
-                        deferred.resolve();
+                    deferred.resolve();
                 } else {
                     removeCardsTop()
                         .then(function(result) {
                             deferred.resolve();
                         });
-                        deferred.resolve();
+                    deferred.resolve();
                 }
             });
         return deferred.promise;
@@ -949,6 +971,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     addCard = function(card) {
+        console.log('addCard');
         // Get the user for this card
         var users = UserData.getContacts();
         var user_pos = General.findWithAttr(users, '_id', card.user);
@@ -1168,8 +1191,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     }
 
     updateCard = function(card) {
-        
-        card = parseCard(card);
+
+        //card = parseCard(card);
         console.log(card);
         // Check the existence of the card across all arrays.
         var card_arrays = [$scope.cards, $scope.cards_temp, $scope.removed_cards_bottom, $scope.removed_cards_top];
@@ -1328,6 +1351,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
     // TODO - change if adding button to notify user of new card.
     addCards = function(arr) {
+        console.log('addCards');
         var deferred = $q.defer();
         var promises = [];
         var all_cards;
@@ -1346,6 +1370,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             } else {
                 // Already exists (may have been added offline).
                 let card_data = JSON.parse(JSON.stringify(arr[i]));
+                console.log(card_data);
                 updateCard(card_data);
                 // Remove this card from the array of cards to add.
                 new_cards_temp.push(card_data);
@@ -1386,6 +1411,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             if (new_card_found && last_scrolled > 10) {
                 console.log('NOT AT TOP');
                 if (!sender_is_reciever) {
+                    latest_card_time = all_latest_cards[0].updatedAt
                     Notify.addNotify();
                 }
                 deferred.resolve();
