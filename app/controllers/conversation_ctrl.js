@@ -1146,7 +1146,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 }
                 old_card.user = card.user;
                 old_card.createdAt = card.createdAt;
-                old_card.updatedAt = card.updatedAt;
+                //old_card.updatedAt = card.updatedAt;
                 if (div == 'title_area') {
                     old_card.title_image_text = card.title_image_text;
                     old_card.title_area = card.title_area;
@@ -1240,7 +1240,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             // Same content
                             card_arrays[arr][found_pos].original_content = card.content;
                             card_arrays[arr][found_pos].createdAt = card.createdAt;
-                            card_arrays[arr][found_pos].updatedAt = card.updatedAt;
+                            //card_arrays[arr][found_pos].updatedAt = card.updatedAt;
                         }
                         console.log(card_arrays[arr][found_pos].content);
                         console.log(card.content);
@@ -1250,7 +1250,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             // Same content
                             card_arrays[arr][found_pos].original_content = card.content;
                             card_arrays[arr][found_pos].createdAt = card.createdAt;
-                            card_arrays[arr][found_pos].updatedAt = card.updatedAt;
+                            //card_arrays[arr][found_pos].updatedAt = card.updatedAt;
                         }
                     });
                 });
@@ -2265,7 +2265,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     };
 
     // DELETE ==================================================================
-    $scope.deleteCard = function(card_id, conversation_id) {
+    $scope.deleteCard = function(event, card_id, conversation_id) {
+        console.log('deleteCard');
+                if (event) {
+            event.stopPropagation();
+        }
         Database.deleteCard(card_id, conversation_id, $scope.currentUser);
     };
 
