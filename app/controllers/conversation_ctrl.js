@@ -1147,6 +1147,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 old_card.user = card.user;
                 old_card.createdAt = card.createdAt;
                 //old_card.updatedAt = card.updatedAt;
+                //old_card.storedUpdatedAt = card.updatedAt;
                 if (div == 'title_area') {
                     old_card.title_image_text = card.title_image_text;
                     old_card.title_area = card.title_area;
@@ -1241,6 +1242,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             card_arrays[arr][found_pos].original_content = card.content;
                             card_arrays[arr][found_pos].createdAt = card.createdAt;
                             //card_arrays[arr][found_pos].updatedAt = card.updatedAt;
+                            //card_arrays[arr][found_pos].storedUpdatedAt = card.updatedAt;
                         }
                         console.log(card_arrays[arr][found_pos].content);
                         console.log(card.content);
@@ -1251,6 +1253,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             card_arrays[arr][found_pos].original_content = card.content;
                             card_arrays[arr][found_pos].createdAt = card.createdAt;
                             //card_arrays[arr][found_pos].updatedAt = card.updatedAt;
+                            //card_arrays[arr][found_pos].storedUpdatedAt = card.updatedAt;
                         }
                     });
                 });
@@ -1864,7 +1867,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 }
             } else {
                 //last_card = last_cardy._id;
-                last_card = last_cardy.updatedAt;
+                //if(last_cardy.storedUpdatedAt){
+                //    last_card = last_cardy.storedUpdatedAt;
+                //} else {
+                    last_card = last_cardy.updatedAt;
+                //}
+                
             }
             var val = { ids: followed, amount: load_amount, last_card: last_card, direction: dir };
             console.log(last_card);
@@ -1928,7 +1936,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             } else {
                 //last_card = last_cardy.updatedAt;
                 //last_card = last_cardy._id;
-                last_card = last_cardy.updatedAt;
+                //if(last_cardy.storedUpdatedAt){
+                //    last_card = last_cardy.storedUpdatedAt;
+                //} else {
+                    last_card = last_cardy.updatedAt;
+                //}
+                
             }
             var val = { ids: followed, amount: load_amount, last_card: last_card, direction: dir };
             console.log(last_card);
@@ -1939,18 +1952,23 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     console.log('getFollowingBefore: ' + res.data.cards.length);
                     if (res.data.cards.length > 0) {
                         res.data.cards.map(function(key, array) {
-                            key = parseCard(key);
-                            // Get the conversation for this card
-                            var conversation_pos = General.nestedArrayIndexOfValue(res.data.conversations, 'admin', key.user);
-                            var conversation = res.data.conversations[conversation_pos];
-                            // Store the original characters of the card.
-                            key.original_content = key.content;
-                            // Get the user name for the user id
-                            key.user_name = conversation.conversation_name;
-                            key.avatar = conversation.conversation_avatar;
-                            key.following = true;
-                            // Load any images offScreen
-                            $scope.removed_cards_top.push(key);
+
+                            var pos = General.findWithAttr($scope.cards, '_id', key._id);
+                            // Dont allow Dupes. (Updated Card).
+                            if (pos < 0) {                            
+                                key = parseCard(key);
+                                // Get the conversation for this card
+                                var conversation_pos = General.nestedArrayIndexOfValue(res.data.conversations, 'admin', key.user);
+                                var conversation = res.data.conversations[conversation_pos];
+                                // Store the original characters of the card.
+                                key.original_content = key.content;
+                                // Get the user name for the user id
+                                key.user_name = conversation.conversation_name;
+                                key.avatar = conversation.conversation_avatar;
+                                key.following = true;
+                                // Load any images offScreen
+                                $scope.removed_cards_top.push(key);
+                            }
                         });
                     } else {
                         $rootScope.loading_cards_offscreen = false;
