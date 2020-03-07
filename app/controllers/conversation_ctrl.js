@@ -1411,7 +1411,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             if (new_card_found && last_scrolled > 10) {
                 console.log('NOT AT TOP');
                 if (!sender_is_reciever) {
-                    latest_card_time = all_latest_cards[0].updatedAt
+                    //latest_card_time = all_latest_cards[0].updatedAt
+                    $rootScope.LATEST_CARD_TIME = all_latest_cards[0].updatedAt;
                     Notify.addNotify();
                 }
                 deferred.resolve();
