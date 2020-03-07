@@ -238,7 +238,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
         */
 
-        $rootScope.LATEST_CARD_TIME = latest_card_time;
+        //$rootScope.LATEST_CARD_TIME = latest_card_time;
     });
 
     // SCROLLING
