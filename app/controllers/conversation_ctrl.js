@@ -1191,8 +1191,10 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     }
 
     updateCard = function(card) {
-
-        //card = parseCard(card);
+        if(!card.parsed){
+            card = parseCard(card);
+        }
+        //
         console.log(card);
         // Check the existence of the card across all arrays.
         var card_arrays = [$scope.cards, $scope.cards_temp, $scope.removed_cards_bottom, $scope.removed_cards_top];
@@ -1358,6 +1360,15 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var sort_card;
         var spliced;
         let new_cards_temp = [];
+
+        for(var i=0, len = arr.length; i < len; i++){
+            if(!arr[i].parsed){
+                arr[i] = parseCard(arr[i]);
+            }
+        }
+    
+
+
         all_latest_cards = JSON.parse(JSON.stringify(arr));
         all_cards = $scope.cards.concat($scope.cards_temp, $scope.removed_cards_top, $scope.removed_cards_bottom);
         // Check if card already exists (may have been created by this user offline).
@@ -1416,7 +1427,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     Notify.addNotify();
                 }
                 deferred.resolve();
-            } else if (last_scrolled < 10) {
+            } else if (last_scrolled < 10 || last_scrolled == undefined) {
                 // No cards have been removed due to scrolling.
                 addNewCards();
                 deferred.resolve();
@@ -1696,6 +1707,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         }
         card.editing = false;
         card.expanded = false;
+        card.parsed = true;
         return card;
     }
 
