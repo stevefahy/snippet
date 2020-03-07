@@ -1416,7 +1416,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                     Notify.addNotify();
                 }
                 deferred.resolve();
-            } else {
+            } else if (last_scrolled < 10) {
                 // No cards have been removed due to scrolling.
                 addNewCards();
                 deferred.resolve();
