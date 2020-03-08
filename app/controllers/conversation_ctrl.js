@@ -223,20 +223,20 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     $scope.$on('notifyEnd', function() {
         console.log('notifyEnd');
         //$rootScope.LATEST_CARD_TIME = $scope.cards[0].updatedAt;
-/*
-        var d1 = new Date($rootScope.LATEST_CARD_TIME);
-        var d2 = new Date($scope.cards[0].updatedAt);
-        console.log(d1);
-        console.log(d2);
-        //var new_card_found = false;
-        if (d1 < d2) {
+        /*
+                var d1 = new Date($rootScope.LATEST_CARD_TIME);
+                var d2 = new Date($scope.cards[0].updatedAt);
+                console.log(d1);
+                console.log(d2);
+                //var new_card_found = false;
+                if (d1 < d2) {
 
-            $rootScope.LATEST_CARD_TIME = $scope.cards[0].updatedAt;
-            console.log('update: ' + $rootScope.LATEST_CARD_TIME);
-        } else {
-            console.log('not newer: ' + $scope.cards[0].updatedAt);
-        }
-        */
+                    $rootScope.LATEST_CARD_TIME = $scope.cards[0].updatedAt;
+                    console.log('update: ' + $rootScope.LATEST_CARD_TIME);
+                } else {
+                    console.log('not newer: ' + $scope.cards[0].updatedAt);
+                }
+                */
 
         //$rootScope.LATEST_CARD_TIME = latest_card_time;
     });
@@ -1191,8 +1191,16 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         return deferred.promise;
     }
 
+    disableCheckBoxes = function(content) {
+        var tmp = document.createElement("div");
+        tmp.innerHTML = content;
+        $(tmp).find('input[type=checkbox]').attr('disabled', 'disabled');
+        return tmp.innerHTML;
+    }
+
+
     updateCard = function(card) {
-        if(!card.parsed){
+        if (!card.parsed) {
             card = parseCard(card);
         }
         //
@@ -1230,7 +1238,14 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 let test = awaitImages('.test_card').then(function(result) {
                     // Animate the change onscreen.
                     $timeout(async function() {
-                        if (card_arrays[arr][found_pos].title_image_text != card.title_image_text || card_arrays[arr][found_pos].title_area != card.title_area) {
+                        // Create a copy of the existing content which has any checkboxes disabled. Checkboxes are disabled whe saved to the Database.
+                        //var existing_card_title_image_text = disableCheckBoxes(card_arrays[arr][found_pos].title_image_text);
+                        var existing_card_title_area = disableCheckBoxes(card_arrays[arr][found_pos].title_area);
+                        //console.log(existing_card_title_image_text);
+                        console.log(card.title_image_text);
+                        console.log(existing_card_title_area);
+                        console.log(card.title_area);
+                        if (card_arrays[arr][found_pos].title_image_text != card.title_image_text || existing_card_title_area != card.title_area) {
                             if (card.title_image) {
                                 card_arrays[arr][found_pos].title_image = true;
                             } else {
@@ -1244,9 +1259,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                             //card_arrays[arr][found_pos].updatedAt = card.updatedAt;
                             //card_arrays[arr][found_pos].storedUpdatedAt = card.updatedAt;
                         }
-                        console.log(card_arrays[arr][found_pos].content);
-                        console.log(card.content);
-                        if (card_arrays[arr][found_pos].content != card.content) {
+                        // Create a copy of the existing content which has any checkboxes disabled. Checkboxes are disabled whe saved to the Database.
+                        var existing_card = disableCheckBoxes(card_arrays[arr][found_pos].content);
+                        if (existing_card != card.content) {
                             await resizeContent(card._id, card, card_arrays[arr][found_pos], 'content_area');
                         } else {
                             // Same content
@@ -1364,12 +1379,12 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         var spliced;
         let new_cards_temp = [];
 
-        for(var i=0, len = arr.length; i < len; i++){
-            if(!arr[i].parsed){
+        for (var i = 0, len = arr.length; i < len; i++) {
+            if (!arr[i].parsed) {
                 arr[i] = parseCard(arr[i]);
             }
         }
-    
+
 
 
         all_latest_cards = JSON.parse(JSON.stringify(arr));
@@ -1603,7 +1618,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             Format.getBlur(card._id, card, $scope.currentUser);
             // Wait until the content is saved before disabling the checkboxes.
             $timeout(function() {
-               // checkboxesEnabled($scope.cards[pos]._id, false);
+                // checkboxesEnabled($scope.cards[pos]._id, false);
             }, 1000);
         }
         $('.decide_menu').animate({ "right": "-100vw" }, {
@@ -1871,9 +1886,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 //if(last_cardy.storedUpdatedAt){
                 //    last_card = last_cardy.storedUpdatedAt;
                 //} else {
-                    last_card = last_cardy.updatedAt;
+                last_card = last_cardy.updatedAt;
                 //}
-                
+
             }
             var val = { ids: followed, amount: load_amount, last_card: last_card, direction: dir };
             console.log(last_card);
@@ -1940,9 +1955,9 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 //if(last_cardy.storedUpdatedAt){
                 //    last_card = last_cardy.storedUpdatedAt;
                 //} else {
-                    last_card = last_cardy.updatedAt;
+                last_card = last_cardy.updatedAt;
                 //}
-                
+
             }
             var val = { ids: followed, amount: load_amount, last_card: last_card, direction: dir };
             console.log(last_card);
@@ -1956,7 +1971,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
 
                             var pos = General.findWithAttr($scope.cards, '_id', key._id);
                             // Dont allow Dupes. (Updated Card).
-                            if (pos < 0) {                            
+                            if (pos < 0) {
                                 key = parseCard(key);
                                 // Get the conversation for this card
                                 var conversation_pos = General.nestedArrayIndexOfValue(res.data.conversations, 'admin', key.user);
@@ -2286,7 +2301,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
     // DELETE ==================================================================
     $scope.deleteCard = function(event, card_id, conversation_id) {
         console.log('deleteCard');
-                if (event) {
+        if (event) {
             event.stopPropagation();
         }
         Database.deleteCard(card_id, conversation_id, $scope.currentUser);
