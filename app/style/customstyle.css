@@ -4202,3 +4202,23 @@ q {
     margin-top: unset;
     font-size: 12px;
 }
+
+.card_max {
+     transition: max-height 10s ease-in;
+     max-height: 500px;
+   
+    
+}
+
+.card_min {
+     transition: max-height 10s ease-in;
+     max-height: 0px;
+   
+}
+
+.card_anim {
+   /* max-height: 500px;
+        transition: max-height 10s ease-in;*/
+        height: 0px;
+        transition: height .4s  ease-out;
+}

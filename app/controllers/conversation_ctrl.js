@@ -1534,10 +1534,28 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                 var time = oh * msPerHeight;
                 time = Math.min(time, maxRange);
                 time = Math.max(time, minRange);
+
+                var expand = true;
                 if ($scope.cards[index].expanded) {
                     oh = 0;
+                    expand = false;
                 }
                 $scope.cards[index].expanded = !$scope.cards[index].expanded;
+                
+//$(".content_cnv #card_" + id + " .content_area").addClass('card_anim');
+                
+$(".content_cnv #card_" + id + " .content_area").css('height', oh+'px');
+                if(expand){
+
+                   // $(".content_cnv #card_" + id + " .content_area").removeClass('card_min');
+                    //$(".content_cnv #card_" + id + " .content_area").addClass('card_max');
+                } else {
+                    //$(".content_cnv #card_" + id + " .content_area").removeClass('card_max');
+                    //$(".content_cnv #card_" + id + " .content_area").addClass('card_min');
+                }
+                
+
+                /*
                 $(".content_cnv #card_" + id + " .content_area").velocity({ height: oh + "px" }, {
                     duration: time,
                     easing: "easeInOutCubic",
@@ -1548,6 +1566,8 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
                         }
                     }
                 });
+                */
+
             }
         }
     }
