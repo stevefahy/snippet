@@ -249,7 +249,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         if (pos >= 0) {
             createObserver($scope.cards[pos]._id);
             //disableCheckboxes($scope.cards[pos]._id);
-            checkboxesEnabled($scope.cards[pos]._id, false);
+            //checkboxesEnabled($scope.cards[pos]._id, false);
         }
         bindScroll();
         deferred.resolve();
@@ -1599,10 +1599,11 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
         if (pos >= 0) {
             $scope.cards[pos].editing = false;
             let card = $scope.cards[pos];
+            checkboxesEnabled($scope.cards[pos]._id, false);
             Format.getBlur(card._id, card, $scope.currentUser);
             // Wait until the content is saved before disabling the checkboxes.
             $timeout(function() {
-                checkboxesEnabled($scope.cards[pos]._id, false);
+               // checkboxesEnabled($scope.cards[pos]._id, false);
             }, 1000);
         }
         $('.decide_menu').animate({ "right": "-100vw" }, {
@@ -2446,7 +2447,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             var pos = General.findWithAttr($scope.cards, '_id', id);
             if (pos >= 0) {
                 createObserver($scope.cards[pos]._id);
-                checkboxesEnabled($scope.cards[pos]._id, false);
+                //checkboxesEnabled($scope.cards[pos]._id, false);
             }
         });
         bindScroll();
