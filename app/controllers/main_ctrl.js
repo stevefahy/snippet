@@ -237,8 +237,10 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
     };
 
     runUpdate = function() {
+        console.log('runUpdate');
         $rootScope.sync_finished = false;
-        if ($scope.online) {
+        console.log('$rootScope.editing: ' + $rootScope.editing);
+        if ($scope.online && !$rootScope.editing) {
             var id = Conversations.getConversationId();
             // update all required models (could be new conversations, multiple cards across conversations, new users or user data - Userdata first load re call?)
             if (Conversations.getConversationType() == 'feed') {
@@ -441,7 +443,7 @@ cardApp.controller("MainCtrl", ['$scope', '$window', '$rootScope', '$timeout', '
 
     // NOTIFICATION for public conversation.
     $rootScope.$on('PUBLIC_NOTIFICATION_CREATED', function(event, msg) {
-        //console.log('PUBLIC_NOTIFICATION_CREATED');
+        console.log('PUBLIC_NOTIFICATION_CREATED');
         var id = Conversations.getConversationId();
         // only update the conversation if the user is currently in that conversation
         if (id === msg.conversation_id && Conversations.getConversationType() != 'feed') {

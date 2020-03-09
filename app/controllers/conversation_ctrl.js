@@ -1637,6 +1637,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             complete: function() {
                 //deferred.resolve();
                 $('.decide_menu').removeClass('active');
+                $rootScope.editing = false;
             }
         });
     }
@@ -1646,6 +1647,7 @@ cardApp.controller("conversationCtrl", ['$scope', '$rootScope', '$location', '$h
             event.stopPropagation();
             event.preventDefault();
         }
+        $rootScope.editing = true;
         if (card.user == $scope.currentUser._id) {
             for (var i = 0, len = $scope.cards.length; i < len; i++) {
                 $scope.cards[i].disabled = true;

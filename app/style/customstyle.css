@@ -3069,6 +3069,10 @@ div.after_image:empty {
     color: red;
 }
 
+.pasted .escaped {
+    color: unset;
+}
+
 .conversation_card {
     background-color: #fafafa;
 }

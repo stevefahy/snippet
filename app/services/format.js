@@ -513,6 +513,28 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         return content_less_pre;
     };
 
+    this.removePasted = function(content) {
+        
+        var content_less_pre;
+        if (content !== undefined) {
+            var reg_pre = /<!--StartFragment-->([\s\S]*?)<!--EndFragment-->/ig;
+            content_less_pre = content;
+            var pre_match = content_less_pre.match(reg_pre);
+            for (var v in pre_match) {
+                content_less_pre = content_less_pre.replace(pre_match[v], '');
+            }
+        }
+        return content_less_pre;
+
+        /*
+        var el = document.createElement("div");
+        el.innerHTML = content;
+        $(el).find('.pasted').remove();
+        var content_less_pre = el.innerHTML;
+        return content_less_pre;
+        */
+    };
+
     this.removePreTag = function(content) {
         var content_less_pre;
         if (content !== undefined) {
@@ -569,12 +591,16 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     // Called by Android onPause. Update the card.
     this.getBlurAndroid = function(id, card, currentUser) {
+        console.log('getBlurAndroid: ' + id);
         if (id != undefined && card != undefined && currentUser != undefined) {
             // Check if there is a marky in progress
             // zm launching image capture should not trigger an update. It causes error.
+            console.log(card.content);
             found_marky = findMarky(card.content);
+            console.log(found_marky);
             // check the content has changed and not currently mid marky
             if (card.content != card.original_content && (found_marky == false)) {
+                console.log('updateCard');
                 // Inject the Database Service
                 var Database = $injector.get('Database');
                 // Update the card
@@ -872,7 +898,11 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         // Ignore Canvas Images (which may contain chars from markey_array).
         var string_copy = (' ' + content).slice(1);
         var content_less_temp = self.removeTempFiltered(string_copy);
-        var content_to_match = content_less_temp;
+        
+        var content_less_temp2 = self.removePasted(content_less_temp);
+        console.log(content_less_temp2);
+        var content_to_match = content_less_temp2;
+        console.log(content_to_match);
         var mark_list_current;
         var ma_index;
         // Create a RegEx to check for all upper and lowercase variations of the markys.
@@ -887,6 +917,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 // Check for escape 
                 var marky_index = content_to_match.indexOf(result);
                 var marky_preceding = content_to_match.substring(marky_index - 1, marky_index);
+                console.log(marky_preceding);
                 if (marky_preceding == ESCAPE_KEY) {
                     var currentChars = content_to_match.substring(marky_index - 1, marky_index + 2);
                     var updateChars = "<span id='marky' class='escaped'>" + currentChars.substring(1, 2) + '<WBR>' + currentChars.substring(2, 3) + "</span>";
@@ -1119,6 +1150,60 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
 
     };
 
+    this.pasteTextAtCaret = function(html) {
+        var sel, range, scroll_latest;
+        if (window.getSelection) {
+            // IE9 and non-IE
+            sel = window.getSelection();
+            var selection_start = $(self.getSelectionStart());
+            if (sel.getRangeAt && sel.rangeCount) {
+                range = sel.getRangeAt(0);
+                range.deleteContents();
+                //
+                // CHECK PLACEMENT
+                //
+                // Check box
+                if (html.includes('cb_container')) {
+                    if ($(selection_start).parents('.cb_container').length) {
+                        range.setStartAfter($(selection_start).closest('.cb_container')[0]);
+                    }
+                }
+                //
+                var el = document.createElement("div");
+                el.innerText = html;
+                var frag = document.createDocumentFragment(),
+                    node, lastNode;
+                while ((node = el.firstChild)) {
+                    lastNode = frag.appendChild(node);
+                }
+                range.insertNode(frag);
+                // Preserve the selection
+                if (lastNode) {
+                    range = range.cloneRange();
+                    // Firefox fix
+                    if (ua.toLowerCase().indexOf('firefox') > -1) {
+                        range.setStart(lastNode, 0);
+                    } else {
+                        range.setStartAfter(lastNode);
+                    }
+                    range.collapse(true);
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                }
+                if (html.indexOf('scroll_image_latest') >= 0) {
+                    self.scrollLatest('scroll_image_latest');
+                }
+            }
+        } else if (document.selection && document.selection.type != "Control") {
+            // IE < 9
+            document.selection.createRange().pasteHTML(html);
+            if (html.indexOf('scroll_image_latest') >= 0) {
+                self.scrollLatest('scroll_image_latest');
+            }
+        }
+        return;
+    };
+
     this.pasteHtmlAtCaret = function(html) {
         var sel, range, scroll_latest;
         if (window.getSelection) {
@@ -1254,7 +1339,97 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         });
     };
 
+
+    this.escapeContent = function(content_to_match) {
+        // Inject the General Service
+        var General = $injector.get('General');
+
+        for (var ma = 0; ma < marky_array.length; ma++) {
+            var char_one = marky_array[ma].charstring.substr(0, 1);
+            var char_two = marky_array[ma].charstring.substr(1, 1);
+            var char_one_other_case = General.swapCase(char_one);
+            var char_two_other_case = General.swapCase(char_two);
+            var reg2_str = "(" + '[' + char_one + char_one_other_case + ']' + '[' + char_two + char_two_other_case + ']' + ")";
+            var result = content_to_match.match(new RegExp(reg2_str, 'igm'));
+            console.log(result);
+            if (result != null) {
+                // Check for escape 
+                var marky_index = content_to_match.indexOf(result);
+                var marky_preceding = content_to_match.substring(marky_index - 1, marky_index);
+                console.log(marky_preceding);
+                if (marky_preceding != ESCAPE_KEY) {
+                    content_to_match = content_to_match.slice(0, marky_index - 1) + "<span class='escaped'>" + content_to_match.slice(marky_index, marky_index + 1) + "<WBR>" + content_to_match.slice(marky_index + 1, marky_index + 2) + "</span>" + content_to_match.slice(marky_index + 2, content_to_match.length);
+                    //var updateChars = "<span id='marky' class='escaped'>" + currentChars.substring(1, 2) + '<WBR>' + currentChars.substring(2, 3) + "</span>";
+                    console.log(content_to_match);
+                }
+            }
+        }
+        return content_to_match;
+    }
+
     this.handlePaste = function($event) {
+        console.log('handlePaste');
+        console.log($event);
+        //$event.preventDefault();
+
+        var data_type = 'text/html';
+        var target = $($event.target);
+        if (target.is("pre")) {
+            data_type = 'text/plain';
+        }
+
+        var current_node = $event.target;
+        self.paste_in_progress = true;
+
+        var copied = $event.clipboardData.getData('text/html');
+        console.log(copied.length);
+        console.log(copied);
+        if(copied.length <=0){
+            copied = $event.clipboardData.getData('text');
+        }
+
+        //copied = self.escapeContent(copied);
+        //console.log(copied);
+        var paste = '<span class="pasted">' + copied + '</span><span id="marky">' + CARET + '</span>';
+        //console.log(paste);
+        //console.log(current_node);
+        //$(paste).insertAfter(current_node);
+        //$timeout(function() {
+       // self.pasteHtmlAtCaret(paste);
+   // },1000);
+        //self.pasteTextAtCaret(copied);
+
+self.pasteHtmlAtCaret(paste);
+/*
+        $timeout(function() {
+                self.pasteHtmlAtCaret(paste)
+            }, 0)
+            .then(function() {
+                    return $timeout(function() {
+                        //document.getElementById('marky').focus();
+                        //moveCaretInto('marky');
+                    }, 1000);
+                }
+            );
+            */
+
+        /*
+        var pastedText = undefined;
+        if (window.clipboardData && window.clipboardData.getData) { // IE
+            pastedText = window.clipboardData.getData('Text');
+        } else if ($event.clipboardData && $event.clipboardData.getData) {
+            pastedText = $event.clipboardData.getData('text/plain');
+        }
+        $event.preventDefault();
+        $event.target.value = "You just pasted '" + pastedText + "'";
+        return false;
+        */
+        $event.preventDefault();
+    };
+
+    /*
+    this.handlePaste = function($event) {
+        console.log('handlePaste');
         self.paste_in_progress = true;
         var data_type = 'text/html';
         var target = $($event.target);
@@ -1281,7 +1456,10 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
             }
         }
         if (text) {
-            document.execCommand('inserttext', false, text);
+            text_span = '<span class="pasted">' + text + '</span>';
+            console.log(text_span);
+            document.execCommand('inserttext', false, text_span);
         }
     };
+    */
 }]);
