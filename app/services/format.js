@@ -1,6 +1,6 @@
 // Format Service
 
-cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', 'Cards', 'replaceTags', 'socket', '$injector', 'ImageAdjustment', function($window, $rootScope, $timeout, $q, Users, Cards, replaceTags, socket, $injector, ImageAdjustment) {
+cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', '$sanitize', 'Users', 'Cards', 'replaceTags', 'socket', '$injector', 'ImageAdjustment', function($window, $rootScope, $timeout, $q, $sanitize, Users, Cards, replaceTags, socket, $injector, ImageAdjustment) {
 
     var self = this;
     var tag_count_previous;
@@ -641,7 +641,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
                 marky_started_array = [];
                 // Check if there is a marky in progress
                 // zm launching image capture should not trigger an update. It causes error.
-                found_marky = findMarky(card.content);
+                //found_marky = findMarky(card.content);
+                var content_less_pasted = self.removePasted(content);
+                found_marky = findMarky(content_less_pasted);
                 // check the content has changed and not currently mid marky. Or that an image is being edited.
                 //if ((content != card.original_content && (found_marky == false)) && !ImageAdjustment.getImageEditing()) {
                 if (((found_marky == false)) && !ImageAdjustment.getImageEditing()) {
@@ -1382,15 +1384,17 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', 'Users', '
         self.paste_in_progress = true;
 
         var copied = $event.clipboardData.getData('text/html');
-        console.log(copied.length);
-        console.log(copied);
+        //console.log(copied.length);
+        //console.log(copied);
         if(copied.length <=0){
             copied = $event.clipboardData.getData('text');
         }
 
+        //copied = $sanitize(copied);
+
         //copied = self.escapeContent(copied);
         //console.log(copied);
-        var paste = '<span class="pasted">' + copied + '</span><span id="marky">' + CARET + '</span>';
+        var paste = '<span class="pasted">' + copied + '</span><span>' + CARET + '</span>';
         //console.log(paste);
         //console.log(current_node);
         //$(paste).insertAfter(current_node);
