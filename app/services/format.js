@@ -644,6 +644,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', '$sanitize
                 //found_marky = findMarky(card.content);
                 var content_less_pasted = self.removePasted(content);
                 found_marky = findMarky(content_less_pasted);
+                console.log(found_marky);
                 // check the content has changed and not currently mid marky. Or that an image is being edited.
                 //if ((content != card.original_content && (found_marky == false)) && !ImageAdjustment.getImageEditing()) {
                 if (((found_marky == false)) && !ImageAdjustment.getImageEditing()) {
@@ -1355,8 +1356,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', '$sanitize
             var result = content_to_match.match(new RegExp(reg2_str, 'igm'));
             console.log(result);
             if (result != null) {
-                // Check for escape 
-                var marky_index = content_to_match.indexOf(result);
+                for (var i = 0, len = result.length; i < len; i++) {
+                var marky_index = content_to_match.indexOf(result[i]);
+                console.log(marky_index);
                 var marky_preceding = content_to_match.substring(marky_index - 1, marky_index);
                 console.log(marky_preceding);
                 if (marky_preceding != ESCAPE_KEY) {
@@ -1364,6 +1366,7 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', '$sanitize
                     //var updateChars = "<span id='marky' class='escaped'>" + currentChars.substring(1, 2) + '<WBR>' + currentChars.substring(2, 3) + "</span>";
                     console.log(content_to_match);
                 }
+            }
             }
         }
         return content_to_match;
@@ -1374,13 +1377,13 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', '$sanitize
         console.log($event);
         //$event.preventDefault();
 
-        var data_type = 'text/html';
+        /*var data_type = 'text/html';
         var target = $($event.target);
         if (target.is("pre")) {
             data_type = 'text/plain';
-        }
+        }*/
 
-        var current_node = $event.target;
+        //var current_node = $event.target;
         self.paste_in_progress = true;
 
         var copied = $event.clipboardData.getData('text/html');
@@ -1392,9 +1395,9 @@ cardApp.service('Format', ['$window', '$rootScope', '$timeout', '$q', '$sanitize
 
         //copied = $sanitize(copied);
 
-        //copied = self.escapeContent(copied);
+        var copied_escaped = self.escapeContent(copied);
         //console.log(copied);
-        var paste = '<span class="pasted">' + copied + '</span><span>' + CARET + '</span>';
+        var paste = '<span class="pasted">' + copied_escaped + '</span><span>' + CARET + '</span>';
         //console.log(paste);
         //console.log(current_node);
         //$(paste).insertAfter(current_node);
