@@ -91,7 +91,6 @@ cardApp.service('ImageEdit', ['$window', '$rootScope', '$timeout', '$q', '$http'
                 });
             }
         }
-
     };
 
     this.updateTitle = function(id) {

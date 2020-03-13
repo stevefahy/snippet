@@ -3,30 +3,12 @@
     <div class="cards_top_container">
         <div class="card_temp" ng-repeat="card in removed_cards_top | orderBy :'updatedAt' : top_down " ng-attr-id="top_{{::card._id }}">
             <div class="resize-container" id="conversation_part">
-                <!--<div id="user" ng-class="{ 'user_title': card.title != undefined, user_image_title: card.title_image, user_text_title: !card.title_image}" class="margins">
-                <div class="username" ng-class="{ 'username_title': card.title != undefined, username_image_title: card.title_image}">{{::card.user_name}}</div>
-            </div>-->
                 <!-- TITLE AREA -->
                 <div class="title_area margins " ng-class="{ 'title_area_image': card.title_image, 'title_area_no_image': !card.title_image, 'title_area_animate' : card.animate_title}">
                     <div class='ce' ng-attr-contenteditable="true" ng-model="card.title_area"></div>
                     {{card._id}}
                 </div>
                 <div class="card_title margins" ng-show="card.title_image_text">{{card.title_image_text}}</div>
-                <!-- CONTENT AREA -->
-                <!--
-            <div class="content_area margins" ng-class="{'collapsed': !card.expanded}">
-                <div class='ce' ng-attr-contenteditable="true" ng-model="card.content" ng-class="{'collapsed_ce': !card.expanded}"></div>
-            </div>
-            <div class="card_footer">
-                <div class="c_footer_o margins">
-                    <div class="card_footer_btns">
-                        <div class="cf_btn"><i class="material-icons">favorite_border</i></div>
-                        <div class="cf_btn send"><i class="material-icons send">send</i></div>
-                    </div>
-                </div>
-            </div>
-            <div class="footer_bottom"></div>
-        -->
             </div>
         </div>
     </div>
@@ -34,30 +16,12 @@
     <div class="cards_cards_container">
         <div class="card_temp" ng-repeat="card in cards | orderBy :'updatedAt' : top_down " ng-attr-id="middle_{{::card._id }}">
             <div class="resize-container" id="conversation_part">
-                <!--<div id="user" ng-class="{ 'user_title': card.title != undefined, user_image_title: card.title_image, user_text_title: !card.title_image}" class="margins">
-                <div class="username" ng-class="{ 'username_title': card.title != undefined, username_image_title: card.title_image}">{{::card.user_name}}</div>
-            </div>-->
                 <!-- TITLE AREA -->
                 <div class="title_area margins " ng-class="{ 'title_area_image': card.title_image, 'title_area_no_image': !card.title_image, 'title_area_animate' : card.animate_title}">
                     <div class='ce' ng-attr-contenteditable="true" ng-model="card.title_area"></div>
                     {{card._id}}
                 </div>
                 <div class="card_title margins" ng-show="card.title_image_text">{{card.title_image_text}}</div>
-                <!-- CONTENT AREA -->
-                <!--
-            <div class="content_area margins" ng-class="{'collapsed': !card.expanded}">
-                <div class='ce' ng-attr-contenteditable="true" ng-model="card.content" ng-class="{'collapsed_ce': !card.expanded}"></div>
-            </div>
-            <div class="card_footer">
-                <div class="c_footer_o margins">
-                    <div class="card_footer_btns">
-                        <div class="cf_btn"><i class="material-icons">favorite_border</i></div>
-                        <div class="cf_btn send"><i class="material-icons send">send</i></div>
-                    </div>
-                </div>
-            </div>
-            <div class="footer_bottom"></div>
-        -->
             </div>
         </div>
     </div>
@@ -65,30 +29,12 @@
     <div class="cards_bottom_container">
         <div class="card_temp" ng-repeat="card in removed_cards_bottom | orderBy :'updatedAt' : top_down " ng-attr-id="bottom_{{::card._id }}">
             <div class="resize-container" id="conversation_part">
-                <!--<div id="user" ng-class="{ 'user_title': card.title != undefined, user_image_title: card.title_image, user_text_title: !card.title_image}" class="margins">
-                <div class="username" ng-class="{ 'username_title': card.title != undefined, username_image_title: card.title_image}">{{::card.user_name}}</div>
-            </div>-->
                 <!-- TITLE AREA -->
                 <div class="title_area margins " ng-class="{ 'title_area_image': card.title_image, 'title_area_no_image': !card.title_image, 'title_area_animate' : card.animate_title}">
                     <div class='ce' ng-attr-contenteditable="true" ng-model="card.title_area"></div>
                     {{card._id}}
                 </div>
                 <div class="card_title margins" ng-show="card.title_image_text">{{card.title_image_text}}</div>
-                <!-- CONTENT AREA -->
-                <!--
-            <div class="content_area margins" ng-class="{'collapsed': !card.expanded}">
-                <div class='ce' ng-attr-contenteditable="true" ng-model="card.content" ng-class="{'collapsed_ce': !card.expanded}"></div>
-            </div>
-            <div class="card_footer">
-                <div class="c_footer_o margins">
-                    <div class="card_footer_btns">
-                        <div class="cf_btn"><i class="material-icons">favorite_border</i></div>
-                        <div class="cf_btn send"><i class="material-icons send">send</i></div>
-                    </div>
-                </div>
-            </div>
-            <div class="footer_bottom"></div>
-        -->
             </div>
         </div>
     </div>

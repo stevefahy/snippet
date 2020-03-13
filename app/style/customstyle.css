@@ -3172,10 +3172,6 @@ span.after_image {
     right: 120px;
     top: 12px;
     z-index: 10000;
-    /* background-color: #ffffff; */
-    /* outline: black; */
-    /* outline-width: 2px; */
-    /* outline-style: solid; */
     cursor: pointer;
 }
 
@@ -4054,7 +4050,7 @@ b.scroll_latest i.scroll_latest {
 
 b.scroll_latest+i.scroll_latest {
     display: inline-block;
-    margin-left: -1ch;
+    /*margin-left: -1ch;*/
 }
 
 i.scroll_latest+b.scroll_latest {
@@ -4136,7 +4132,7 @@ q {
     overflow-x: hidden;
     opacity: 1;
     width: 50%;
-        top: 0px;
+    top: 0px;
 }
 
 .cards_cards_container {
@@ -4206,24 +4202,3 @@ q {
     margin-top: unset;
     font-size: 12px;
 }
-
-/*
-.card_max {
-     transition: max-height 10s ease-in;
-     max-height: 500px;
-   
-    
-}
-
-.card_min {
-     transition: max-height 10s ease-in;
-     max-height: 0px;
-   
-}
-
-.card_anim {
- 
-        height: 0px;
-        transition: height .4s  ease-out;
-}
-*/

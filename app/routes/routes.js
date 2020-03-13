@@ -1407,7 +1407,6 @@ module.exports = function(app, passport) {
 
     // Get cards for the Users Feed conversations by conversation id(s).
     app.get('/chat/get_feed/:ids/:last_card/:direction', function(req, res) {
-        console.log('gfa');
         var user_array = JSON.parse(req.query.ids);
         var amount = Number(req.query.amount);
         var last_card = req.query.last_card;
@@ -1439,7 +1438,6 @@ module.exports = function(app, passport) {
                 console.log(err);
             }
             feed.conversations = conversations;
-            console.log(query);
             Card.find(
                 query,
                 function(err, cards) {
