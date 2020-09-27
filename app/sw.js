@@ -997,7 +997,7 @@ if (workbox) {
   },
   {
     "url": "js/exif.js",
-    "revision": "bb882034f8ea66b2ad6c0f06adcc2e91"
+    "revision": "6d9fab385971f3ee94255c00457f8cee"
   },
   {
     "url": "js/jquery/jquery-3.4.1.min.js",
@@ -1017,11 +1017,11 @@ if (workbox) {
   },
   {
     "url": "js/ng-img-crop.js",
-    "revision": "2a8b0215f45edcbf106d8cb1721b73ae"
+    "revision": "a02de8cf1bf6656ce4b1116a45ef1a9a"
   },
   {
     "url": "js/perspective.js",
-    "revision": "9ade5dc5090db211d83b9a2314bed606"
+    "revision": "3763d5608e8c5bb198b1ab16cfb0dbd6"
   },
   {
     "url": "js/rzslider.js",
@@ -1157,7 +1157,7 @@ if (workbox) {
   },
   {
     "url": "style/customstyle.css",
-    "revision": "2a4f2ea9d5f0e16d957ca038bcc41645"
+    "revision": "c9cd61e98d73ffc5eaffc041a889520b"
   },
   {
     "url": "style/instagram.css",
@@ -1169,7 +1169,7 @@ if (workbox) {
   },
   {
     "url": "style/ng-img-crop.css",
-    "revision": "1505a7e9fd54bf243410c00df5c27d68"
+    "revision": "5067fc1d1fb051c44b0ae76ab0547895"
   },
   {
     "url": "style/rzslider.css",
