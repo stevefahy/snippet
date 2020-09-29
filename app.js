@@ -344,7 +344,11 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 // configuration ===============================================================
 //mongoose.set('debug', true);
-mongoose.connect(dburl, { useNewUrlParser: true }); // Connect to local MongoDB instance. A remoteUrl is also available (modulus.io)
+//mongoose.connect(dburl, { useNewUrlParser: true }); // Connect to local MongoDB instance. A remoteUrl is also available (modulus.io)
+mongoose.connect(dburl, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  });
 
 var db = mongoose.connection;
 
@@ -369,7 +373,12 @@ db.on('disconnecting', function() {
 });
 db.on('disconnected', function() {
     //console.log('MongoDB disconnected!');
-    mongoose.connect(dburl, { server: { auto_reconnect: true } });
+    //mongoose.connect(dburl, { server: { auto_reconnect: true } });
+    mongoose.connect(dburl, {
+        server: {auto_reconnect: true},
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+      });
 });
 
 // routes ======================================================================
