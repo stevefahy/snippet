@@ -1249,7 +1249,7 @@ if (workbox) {
   },
   {
     "url": "views/login.html",
-    "revision": "ee415d18c1aa5292680e55e5449c5eec"
+    "revision": "78a2f911411fb2075653368416ec3153"
   },
   {
     "url": "views/notify.html",
