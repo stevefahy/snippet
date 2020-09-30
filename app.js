@@ -342,13 +342,20 @@ app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse applica
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
+
+//const mongoURI = "mongodb://localhost:27017/ciphertrick?authSource=admin"; //connecting to ciphertrick
+const options = {
+    user:"AdminSteve",
+    pass:"Stevempass@9",
+    keepAlive: true,
+    keepAliveInitialDelay: 300000,
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+};
 // configuration ===============================================================
 //mongoose.set('debug', true);
 // mongoose.connect(dburl, { useNewUrlParser: true }); // Connect to local MongoDB instance. A remoteUrl is also available (modulus.io)
-mongoose.connect(dburl, {
-    // useNewUrlParser: true,
-    useUnifiedTopology: true
-  });
+mongoose.connect(dburl,options);
 // const options = {
 //     useNewUrlParser: true,
 //     useUnifiedTopology: true,
