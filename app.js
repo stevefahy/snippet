@@ -347,15 +347,37 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 const options = {
     user:"AdminSteve",
     pass:"Stevempass@9",
-    keepAlive: true,
-    keepAliveInitialDelay: 300000,
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+    // serverSelectionTimeoutMS: 5000,
+    // pass:"Stevempass%409",
+     useNewUrlParser: true,
+    //  useUnifiedTopology: true
+    // useUnifiedTopology: true
 };
+// const options = {
+//     user:"cardUser",
+//      pass:"Stevempass@9",
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+//     useCreateIndex: true,
+//     useFindAndModify: false,
+//     autoIndex: false, // Don't build indexes
+//     poolSize: 10, // Maintain up to 10 socket connections
+//     serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
+//     socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+//     family: 4 // Use IPv4, skip trying IPv6
+//   };
 // configuration ===============================================================
-//mongoose.set('debug', true);
+mongoose.set('debug', true);
+// mongoose.set('useNewUrlParser', true);
+// mongoose.set('useFindAndModify', false);
+// mongoose.set('useCreateIndex', true);
+// mongoose.set('useUnifiedTopology', true);
+// mongoose.set('useUnifiedTopology', true);
 // mongoose.connect(dburl, { useNewUrlParser: true }); // Connect to local MongoDB instance. A remoteUrl is also available (modulus.io)
-mongoose.connect(dburl,options);
+mongoose.connect(dburl,options)
+.then((con) => {
+    console.log("Connection successfully");
+  }).catch(err => console.log('Error'));
 // const options = {
 //     useNewUrlParser: true,
 //     useUnifiedTopology: true,
@@ -378,11 +400,11 @@ var db = mongoose.connection;
 db.on('connecting', function() {
     console.log('connecting to MongoDB...');
 });
-db.on('error', function(error) {
+db.once('error', function(error) {
     console.error('Error in MongoDb connection: ' + error);
     mongoose.disconnect();
 });
-db.on('connected', function() {
+db.once('connected', function() {
     console.log('MongoDB connected!');
 });
 db.once('open', function() {
@@ -396,8 +418,10 @@ db.on('disconnecting', function() {
 });
 db.on('disconnected', function() {
     console.log('MongoDB disconnected!');
+    // mongoose.connect(dburl,options);
+
     // mongoose.connection.close();
-    mongoose.connect(dburl, { server: { auto_reconnect: true } });
+    // mongoose.connect(dburl, { server: { auto_reconnect: true } });
     // mongoose.connect(dburl, {
     //     //server: {auto_reconnect: true},
     //     useNewUrlParser: true,
