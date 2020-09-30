@@ -881,7 +881,7 @@ if (workbox) {
   },
   {
     "url": "configs/urls.js",
-    "revision": "705544b88df773f7988d03f9a770d2a2"
+    "revision": "f3eb40863e2da70594abbe0f595a2da4"
   },
   {
     "url": "controllers/card_ctrl.js",

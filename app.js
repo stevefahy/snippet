@@ -342,58 +342,23 @@ app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse applica
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
-
-//const mongoURI = "mongodb://localhost:27017/ciphertrick?authSource=admin"; //connecting to ciphertrick
 const options = {
     user:"AdminSteve",
     pass:"Stevempass@9",
-    // serverSelectionTimeoutMS: 5000,
-    // pass:"Stevempass%409",
-     useNewUrlParser: true,
-    //  useUnifiedTopology: true
-    // useUnifiedTopology: true
+    useNewUrlParser: true
 };
-// const options = {
-//     user:"cardUser",
-//      pass:"Stevempass@9",
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//     useCreateIndex: true,
-//     useFindAndModify: false,
-//     autoIndex: false, // Don't build indexes
-//     poolSize: 10, // Maintain up to 10 socket connections
-//     serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
-//     socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
-//     family: 4 // Use IPv4, skip trying IPv6
-//   };
+const options_reconnect =  {
+    user:"AdminSteve",
+    pass:"Stevempass@9",
+    useNewUrlParser: true,
+    server: { auto_reconnect: true } 
+}
 // configuration ===============================================================
-mongoose.set('debug', true);
-// mongoose.set('useNewUrlParser', true);
-// mongoose.set('useFindAndModify', false);
-// mongoose.set('useCreateIndex', true);
-// mongoose.set('useUnifiedTopology', true);
-// mongoose.set('useUnifiedTopology', true);
-// mongoose.connect(dburl, { useNewUrlParser: true }); // Connect to local MongoDB instance. A remoteUrl is also available (modulus.io)
+// mongoose.set('debug', true);
 mongoose.connect(dburl,options)
 .then((con) => {
-    console.log("Connection successfully");
-  }).catch(err => console.log('Error'));
-// const options = {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//     useCreateIndex: true,
-//     useFindAndModify: false,
-//     autoIndex: false, // Don't build indexes
-//     poolSize: 10, // Maintain up to 10 socket connections
-//     serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
-//     socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
-//     family: 4 // Use IPv4, skip trying IPv6
-//   };
-
-// mongoose
-// .connect( dburl, options)
-// .then(() => console.log( 'Database Connected' ))
-// .catch(err => console.log( err ));
+    console.log("Mongoose Connection successful");
+  }).catch(err => console.log('Mongoose Connection Error'));
 
 var db = mongoose.connection;
 
@@ -418,19 +383,8 @@ db.on('disconnecting', function() {
 });
 db.on('disconnected', function() {
     console.log('MongoDB disconnected!');
-    // mongoose.connect(dburl,options);
-
-    // mongoose.connection.close();
-    // mongoose.connect(dburl, { server: { auto_reconnect: true } });
-    // mongoose.connect(dburl, {
-    //     //server: {auto_reconnect: true},
-    //     useNewUrlParser: true,
-    //     useUnifiedTopology: true
-    //   });
-    // mongoose
-    // .connect( dburl, { useNewUrlParser: true, useUnifiedTopology: true })
-    // .then(() => console.log( 'Database Connected' ))
-    // .catch(err => console.log( err ));
+    //mongoose.connect(dburl, { server: { auto_reconnect: true } });
+    mongoose.connect(dburl, options_reconnect);
 });
 
 // routes ======================================================================
