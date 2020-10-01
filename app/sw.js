@@ -812,6 +812,10 @@ if (workbox) {
     "revision": "9d533ce4e23a00ed0ae3859d91ccb264"
   },
   {
+    "url": "assets/images/bee_64_cropped.png",
+    "revision": "49695dc87c9d4864438bc90f4ecd1a5b"
+  },
+  {
     "url": "assets/images/bee_64.png",
     "revision": "eed1dd1e87b2972321707f457522c4c4"
   },

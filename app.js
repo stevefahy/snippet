@@ -384,7 +384,10 @@ db.on('disconnecting', function() {
 db.on('disconnected', function() {
     console.log('MongoDB disconnected!');
     //mongoose.connect(dburl, { server: { auto_reconnect: true } });
-    mongoose.connect(dburl, options_reconnect);
+    mongoose.connect(dburl, options_reconnect)
+    .then((con) => {
+        console.log("Mongoose Re-Connection successful");
+      }).catch(err => console.log('Mongoose Re-Connection Error'));
 });
 
 // routes ======================================================================
